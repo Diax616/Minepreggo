@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "ingredient": {
+    "item": "minecraft:water_bucket"
+  },
+
+  "result": {
+    "item": "minepreggo:salt",
+    "count": 48
+  },
+  
+  "experience": 4,
+  "cookingtime": 200
+}

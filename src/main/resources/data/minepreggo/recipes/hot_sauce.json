@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minepreggo:chili_pepper"
+    },
+    {
+      "item": "minepreggo:chili_pepper"
+    },
+    {
+      "item": "minepreggo:chili_pepper"
+    }
+  ],
+  "result": {
+    "item": "minepreggo:hot_sauce",
+    "count": 1
+  }
+}

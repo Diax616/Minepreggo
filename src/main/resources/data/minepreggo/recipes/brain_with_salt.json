@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minepreggo:salt"
+    },
+    {
+      "item": "minepreggo:salt"
+    },
+    {
+      "item": "minepreggo:salt"
+    },
+    {
+      "item": "minepreggo:villager_brain"
+    }
+  ],
+  "result": {
+    "item": "minepreggo:brain_with_salt",
+    "count": 1
+  }
+}

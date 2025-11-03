@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "minepreggo:item/leather_kneebraces",
+	  "layer1": "minepreggo:item/leather_kneebraces_overlay"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "forge:add_spawns",
+  "biomes": {
+    "type": "forge:any"
+  },
+  "spawners": {
+    "type": "minepreggo:monster_creeper_girl_p3",
+    "weight": 19,
+    "minCount": 1,
+    "maxCount": 1
+  }
+}

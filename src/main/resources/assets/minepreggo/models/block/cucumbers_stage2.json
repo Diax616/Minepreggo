@@ -1,0 +1,7 @@
+{
+  "parent": "block/crop",
+  "textures": {
+    "crop": "minepreggo:block/cucumbers_stage2"
+  },
+  "render_type": "cutout"
+}

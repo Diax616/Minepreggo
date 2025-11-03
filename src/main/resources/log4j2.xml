@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+
+    <Appenders>
+	    <!-- Console appender for DEBUG/TRACE: includes method and line -->
+	    <Console name="DebugConsole" target="SYSTEM_OUT">
+	      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{20}.%M():%L - %msg%n"/>
+	      <ThresholdFilter level="DEBUG" onMatch="ACCEPT" onMismatch="DENY"/>
+	    </Console>
+	
+	    <!-- Console appender for INFO and above: cleaner format -->
+	    <Console name="InfoConsole" target="SYSTEM_OUT">
+	      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+	      <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+	      <!-- This will accept INFO, WARN, ERROR, FATAL -->
+	    </Console>
+	
+	    <!-- File appender for ERROR with full stack trace -->
+	    <File name="ErrorFile" fileName="logs/errors.log">
+	      <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n%ex{full}"/>
+	      <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+	    </File>
+
+    </Appenders>
+
+    <Loggers>
+        <!-- Logger específico para tu paquete (ej: com.miempresa) -->
+        <!-- En desarrollo, puedes activar la consola; en producción, comenta esta sección -->
+        <Logger name="dev.dixmk.minepreggo" level="debug" additivity="false">
+            <AppenderRef ref="DebugConsole"/>
+			<AppenderRef ref="InfoConsole"/>
+		    <AppenderRef ref="ErrorFile"/>
+        </Logger>
+
+        <!-- Logger raíz (por defecto para todos los demás paquetes) -->
+        <Root level="debug">
+            <AppenderRef ref="DebugConsole"/>
+		    <AppenderRef ref="InfoConsole"/>
+		    <AppenderRef ref="ErrorFile"/>
+            <!-- En producción, NO incluyas ConsoleAppender aquí -->
+        </Root>
+        
+        
+    </Loggers>
+</Configuration>

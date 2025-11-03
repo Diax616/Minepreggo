@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minepreggo:activated_gunpowder"
+    },
+    {
+      "item": "minepreggo:activated_gunpowder"
+    },
+	{
+	  "item": "minepreggo:activated_gunpowder"
+	},
+	{
+	  "item": "minepreggo:hot_sauce"
+	}
+  ],
+  "result": {
+    "item": "minepreggo:activated_gunpowder_with_hot_sauce",
+    "count": 3
+  }
+}

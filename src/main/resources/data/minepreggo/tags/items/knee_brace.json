@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "minepreggo:iron_knee_brace",
+    "minepreggo:golden_knee_brace",
+    "minepreggo:diamond_knee_brace",
+	"minepreggo:leather_knee_brace",
+    "minepreggo:netherite_knee_brace"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minepreggo:activated_gunpowder"
+    },
+    {
+      "item": "minepreggo:lemon"
+    }
+  ],
+  "result": {
+    "item": "minepreggo:sour_activated_gunpowder",
+    "count": 1
+  }
+}

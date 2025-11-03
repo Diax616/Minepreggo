@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aaa",
+    " b ",
+    "ccc"
+  ],
+  "key": {
+    "a": {
+      "item": "minepreggo:lemon"
+    },
+    "b": {
+      "item": "minecraft:milk_bucket"
+    },
+    "c": {
+      "item": "minecraft:snowball"
+    }
+  },
+  "result": {
+    "item": "minepreggo:lemon_ice_cream",
+    "count": 6
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:netherite_scrap"
+    },
+    {
+      "item": "minecraft:netherite_scrap"
+    },
+    {
+      "item": "minecraft:netherite_chestplate"
+    },
+    {
+      "item": "minecraft:netherite_scrap"
+    },
+    {
+      "item": "minecraft:netherite_scrap"
+    },
+    {
+      "item": "minecraft:netherite_scrap"
+    },
+    {
+      "item": "minecraft:netherite_scrap"
+    },
+	{
+	  "item": "minecraft:netherite_scrap"
+	},
+	{
+	  "item": "minecraft:netherite_scrap"
+	}
+  ],
+  "result": {
+    "item": "minepreggo:maternity_netherite_p4_chestplate",
+    "count": 1
+  }
+}

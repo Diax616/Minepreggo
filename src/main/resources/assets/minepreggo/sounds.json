@@ -1,0 +1,83 @@
+{
+  "belly_touch": {
+    "subtitle": "subtitles.belly_touch",
+    "sounds": [
+      {
+        "name": "minepreggo:bellytouch",
+        "stream": false
+      }
+    ]
+  },
+  "preggo_death": {
+    "subtitle": "subtitles.preggo_death",
+    "sounds": [
+      {
+        "name": "minepreggo:preggo_death",
+        "stream": false
+      }
+    ]
+  },
+  "pregnancy_pain1": {
+    "subtitle": "subtitles.pregnancy_pain1",
+    "sounds": [
+      {
+        "name": "minepreggo:pregnancypain1",
+        "stream": false
+      }
+    ]
+  },
+  "pregnancy_pain2": {
+    "subtitle": "subtitles.pregnancy_pain2",
+    "sounds": [
+      {
+        "name": "minepreggo:pregnancypain2",
+        "stream": false
+      }
+    ]
+  },
+  "kicking1": {
+    "subtitle": "subtitles.kicking1",
+    "sounds": [
+      {
+        "name": "minepreggo:kicking1",
+        "stream": false
+      }
+    ]
+  },
+  "kicking2": {
+    "subtitle": "subtitles.kicking2",
+    "sounds": [
+      {
+        "name": "minepreggo:kicking2",
+        "stream": false
+      }
+    ]
+  },
+  "birth": {
+    "subtitle": "subtitles.birth",
+    "sounds": [
+      {
+        "name": "minepreggo:birth",
+        "stream": false
+      }
+    ]
+  },
+  "contraction1": {
+    "subtitle": "subtitles.contraction1",
+    "sounds": [
+      {
+        "name": "minepreggo:contraction1",
+        "stream": false
+      }
+    ]
+  },
+  "miscarriage": {
+    "subtitle": "subtitles.miscarriage",
+    "sounds": [
+      {
+        "name": "minepreggo:miscarriage",
+        "stream": false
+      }
+    ]
+  }
+}

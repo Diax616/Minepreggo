@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+	"layer0": "minepreggo:item/maternity_leather_chestplate",
+	"layer1": "minepreggo:item/maternity_leather_chestplate_overlay"
+  }
+}

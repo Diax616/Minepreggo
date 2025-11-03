@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_chestplate"
+    }
+  ],
+  "result": {
+    "item": "minepreggo:female_iron_p0_chestplate",
+    "count": 1
+  }
+}

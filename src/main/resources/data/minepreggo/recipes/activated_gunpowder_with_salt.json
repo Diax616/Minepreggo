@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  
+  "ingredients": [
+    {
+      "item": "minepreggo:activated_gunpowder"
+    },
+    {
+      "item": "minepreggo:activated_gunpowder"
+    },
+    {
+      "item": "minepreggo:salt"
+    }
+  ],
+  "result": {
+    "item": "minepreggo:activated_gunpowder_with_salt",
+    "count": 2
+  }
+}

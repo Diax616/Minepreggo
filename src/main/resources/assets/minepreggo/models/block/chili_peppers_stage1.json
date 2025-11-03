@@ -1,0 +1,7 @@
+{
+  "parent": "block/crop",
+  "textures": {
+    "crop": "minepreggo:block/chili_peppers_stage1"
+  },
+  "render_type": "cutout"
+}

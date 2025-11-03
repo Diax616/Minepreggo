@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minepreggo:activated_gunpowder"
+    },
+    {
+      "item": "minepreggo:activated_gunpowder"
+    },
+    {
+      "item": "minepreggo:chocolate_bar"
+    },
+    {
+      "item": "minepreggo:activated_gunpowder"
+    },
+    {
+      "item": "minepreggo:activated_gunpowder"
+    }
+  ],
+  "result": {
+    "item": "minepreggo:activated_gunpowder_with_chocolate",
+    "count": 4
+  }
+}

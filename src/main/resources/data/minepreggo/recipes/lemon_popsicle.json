@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aaa",
+    " b ",
+    " c "
+  ],
+  "key": {
+    "a": {
+      "item": "minepreggo:lemon"
+    },
+    "b": {
+      "item": "minecraft:ice"
+    },
+    "c": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "item": "minepreggo:lemon_ice_popsicles",
+    "count": 6
+  }
+}

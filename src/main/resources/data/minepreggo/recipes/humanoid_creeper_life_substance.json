@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aab",
+    "acb",
+    "abb"
+  ],
+  "key": {
+    "a": {
+      "item": "minepreggo:dead_humanoid_creeper_fetus"
+    },
+    "b": {
+      "item": "minecraft:gunpowder"
+    },
+    "c": {
+      "item": "minepreggo:cum_specimen_tube"
+    }
+  },
+  "result": {
+    "item": "minepreggo:humanoid_creeper_life_substance",
+    "count": 1
+  }
+}

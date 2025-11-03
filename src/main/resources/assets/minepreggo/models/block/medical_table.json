@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "minepreggo:block/medical_table",
+    "up": "minepreggo:block/medical_table",
+    "north": "minepreggo:block/medical_table",
+    "east": "minepreggo:block/medical_table",
+    "south": "minepreggo:block/medical_table",
+    "west": "minepreggo:block/medical_table",
+    "particle": "minepreggo:block/medical_table"
+  },
+  "render_type": "solid"
+}

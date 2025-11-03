@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minepreggo:villager_brain"
+    },
+    {
+      "item": "minepreggo:hot_sauce"
+    }
+  ],
+  "result": {
+    "item": "minepreggo:brain_with_hot_sauce",
+    "count": 1
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "age=0": {
+      "model": "minepreggo:block/cucumbers_stage0"
+    },
+    "age=1": {
+      "model": "minepreggo:block/cucumbers_stage0"
+    },
+    "age=2": {
+      "model": "minepreggo:block/cucumbers_stage1"
+    },
+    "age=3": {
+      "model": "minepreggo:block/cucumbers_stage1"
+    },
+    "age=4": {
+      "model": "minepreggo:block/cucumbers_stage2"
+    },
+    "age=5": {
+      "model": "minepreggo:block/cucumbers_stage2"
+    },
+    "age=6": {
+      "model": "minepreggo:block/cucumbers_stage2"
+    },
+    "age=7": {
+      "model": "minepreggo:block/cucumbers_stage3"
+    }
+  }
+}

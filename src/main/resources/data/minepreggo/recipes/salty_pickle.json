@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aaa",
+    "aba",
+    "aaa"
+  ],
+  "key": {
+    "a": {
+      "item": "minepreggo:cucumber"
+    },
+    "b": {
+      "item": "minepreggo:salty_water_bottle"
+    }
+  },
+  "result": {
+    "item": "minepreggo:pickle",
+    "count": 8
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "minepreggo:activated_gunpowder",
+    "minepreggo:activated_gunpowder_with_chocolate",
+    "minepreggo:activated_gunpowder_with_salt",
+    "minepreggo:activated_gunpowder_with_hot_sauce",
+    "minepreggo:sour_activated_gunpowder"
+  ]
+}

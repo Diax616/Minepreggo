@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minepreggo:villager_brain"
+    },
+    {
+      "item": "minepreggo:chocolate_bar"
+    }
+  ],
+  "result": {
+    "item": "minepreggo:brain_with_chocolate",
+    "count": 1
+  }
+}

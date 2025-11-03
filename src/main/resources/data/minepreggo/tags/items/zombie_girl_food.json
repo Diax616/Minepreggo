@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "minepreggo:villager_brain",
+    "minepreggo:pillager_brain",
+    "minepreggo:witch_brain",
+    "minepreggo:brain_with_chocolate",
+    "minepreggo:brain_with_salt",
+    "minepreggo:brain_with_hot_sauce",
+    "minepreggo:sour_brain"
+  ]
+}

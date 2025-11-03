@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+	"minepreggo:maternity_chainmail_p2_chestplate",
+	"minepreggo:maternity_iron_p2_chestplate",
+	"minepreggo:maternity_golden_p2_chestplate",
+	"minepreggo:maternity_diamond_p2_chestplate",
+	"minepreggo:maternity_netherite_p2_chestplate",
+	"minepreggo:maternity_leather_p2_chestplate"
+  ]
+}

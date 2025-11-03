@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minepreggo:salt"
+    },
+    {
+      "item": "minecraft:potion"
+    },
+    {
+      "item": "minepreggo:chili_pepper"
+    }
+  ],
+  "result": {
+    "item": "minepreggo:salty_water_bottle",
+    "count": 1
+  }
+}

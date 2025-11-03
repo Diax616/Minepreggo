@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aab",
+    "acb",
+    "abb"
+  ],
+  "key": {
+    "a": {
+      "item": "minepreggo:dead_zombie_fetus"
+    },
+    "b": {
+      "item": "minecraft:rotten_flesh"
+    },
+    "c": {
+      "item": "minepreggo:cum_specimen_tube"
+    }
+  },
+  "result": {
+    "item": "minepreggo:zombie_life_substance",
+    "count": 1
+  }
+}
