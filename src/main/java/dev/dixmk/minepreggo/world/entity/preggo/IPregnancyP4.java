@@ -1,10 +1,10 @@
 package dev.dixmk.minepreggo.world.entity.preggo;
 
-public interface IPregnancyP4 extends IPregnancyP3 {
-	int getHorny();
-	void setHorny(int horny);
+import dev.dixmk.minepreggo.network.capability.IPregnancyEffectsHandler;
+import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
 
-	int getHornyTimer();
-	void setHornyTimer(int timer);
-	
+public interface IPregnancyP4 
+	<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler & IPregnancyEffectsHandler> {
+
+	PregnancySystemP4<E> getPregnancySystemP4();
 }

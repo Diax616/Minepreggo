@@ -3,60 +3,69 @@ package dev.dixmk.minepreggo.world.entity.preggo;
 import javax.annotation.Nonnull;
 
 import dev.dixmk.minepreggo.MinepreggoModConfig;
-import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem.Result;
+import dev.dixmk.minepreggo.network.capability.IPregnancyEffectsHandler;
+import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
 import net.minecraft.server.level.ServerLevel;
 
 public abstract class PregnancySystemP8<E extends PreggoMob
-	& ITamablePreggoMob & IPregnancySystem & IPregnancyP8> extends PregnancySystemP7<E> {
+	& ITamablePreggoMob & IPregnancySystemHandler & IPregnancyEffectsHandler> extends PregnancySystemP7<E> {
 
 	protected PregnancySystemP8(@Nonnull E preggoMob) {
 		super(preggoMob);
 	}
 	
 	@Override
-	protected final void changePregnancyStage() {}
-	
-	@Override
-	public void evaluateOnTick() {
-		
-		final var level = preggoMob.level();
-		
-		if (level.isClientSide()) {
+	public void onServerTick() {
+		final var level = preggoMob.level();	
+		if (level.isClientSide()) {			
 			return;
 		}
 		
-		final var x =  preggoMob.getX();
-		final var y = preggoMob.getY();
-		final var z = preggoMob.getZ();
-		
-		if (level instanceof ServerLevel serverLevel
-				&& this.evaluteBirth(serverLevel, x, y, z,
-				PregnancySystemConstants.TOTAL_TICKS_PREBIRTH_P8,
-				PregnancySystemConstants.TOTAL_TICKS_BIRTH_P8) == Result.SUCCESS) {
+		if (isInLabor()) {		
+			if (level instanceof ServerLevel serverLevel) {
+				evaluateBirth(serverLevel, PregnancySystemConstants.TOTAL_TICKS_PREBIRTH_P8, PregnancySystemConstants.TOTAL_TICKS_BIRTH_P8);
+			}		
 			return;
 		}
 		
-		if (this.evaluatePregnancyStageChange() == Result.SUCCESS) {
+		if (isMiscarriageActive()) {
+			if (level instanceof ServerLevel serverLevel) {
+				evaluateMiscarriage(serverLevel, preggoMob.getX(), preggoMob.getY(), preggoMob.getZ(), PregnancySystemConstants.TOTAL_TICKS_MISCARRIAGE);
+			}		
 			return;
 		}
 		
-		if (level instanceof ServerLevel serverLevel
-				&& this.evaluateMiscarriage(serverLevel, x, y, z, PregnancySystemConstants.TOTAL_TICKS_MISCARRIAGE) == Result.SUCCESS) {
-			return; 
+		evaluatePregnancyTimer();
+		if (canAdvanceNextPregnancyPhase()) {			
+			if (hasToGiveBirth()) {
+				startLabor();
+			}
+			else {
+				advanceToNextPregnancyPhase();
+				preggoMob.discard();
+			}
+			return;
+		}
+
+		evaluateCravingTimer(MinepreggoModConfig.getTotalTicksOfCravingP8());
+		evaluateMilkingTimer(MinepreggoModConfig.getTotalTicksOfMilkingP8());
+		evaluateBellyRubsTimer(MinepreggoModConfig.getTotalTicksOfBellyRubsP8());
+		evaluateHornyTimer(MinepreggoModConfig.getTotalTicksOfHornyP8());
+		
+		if (!hasPregnancyPain()) {
+			tryInitRandomPregnancyPain();	
+		}
+		else {
+			evaluatePregnancyPains();
 		}
 		
-		this.evaluatePregnancyTimer();
-		this.evaluateCravingTimer(MinepreggoModConfig.getTotalTicksOfCravingP7());
-		this.evaluateMilkingTimer(MinepreggoModConfig.getTotalTicksOfMilkingP7());
-		this.evaluateBellyRubsTimer(MinepreggoModConfig.getTotalTicksOfBellyRubsP7());
-		this.evaluateHornyTimer(MinepreggoModConfig.getTotalTicksOfHornyP7());
-		this.evaluateAngry(level, x, y, z, PregnancySystemConstants.HIGH_ANGER_PROBABILITY);
-		
-		this.evaluatePregnancySymptoms();
-		this.evaluatePregnancyPains(
-				PregnancySystemConstants.LOW_MORNING_SICKNESS_PROBABILITY,
-				PregnancySystemConstants.HIGH_PREGNANCY_PAIN_PROBABILITY,
-				PregnancySystemConstants.TOTAL_TICKS_KICKING_P8,
-				PregnancySystemConstants.TOTAL_TICKS_CONTRACTION_P8);
+		if (!hasPregnancySymptom()) {
+			tryInitPregnancySymptom();
+		}
+		else {
+			evaluatePregnancySymptoms();
+		}
+			
+		evaluateAngry(level, preggoMob.getX(), preggoMob.getY(), preggoMob.getZ(), PregnancySystemConstants.HIGH_ANGER_PROBABILITY);		
 	}
 }

@@ -1,11 +1,11 @@
 package dev.dixmk.minepreggo.world.entity.ai.goal;
 
-import dev.dixmk.minepreggo.world.entity.preggo.IPregnancySystem;
+import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import net.minecraft.world.entity.ai.goal.target.OwnerHurtByTargetGoal;
 
-public class PregnantPreggoMobOwnerHurtByTargetGoal<T extends PreggoMob & ITamablePreggoMob & IPregnancySystem> extends OwnerHurtByTargetGoal {
+public class PregnantPreggoMobOwnerHurtByTargetGoal<T extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler> extends OwnerHurtByTargetGoal {
 	private final T preggoMob;
 	
 	public PregnantPreggoMobOwnerHurtByTargetGoal(T p_26107_) {

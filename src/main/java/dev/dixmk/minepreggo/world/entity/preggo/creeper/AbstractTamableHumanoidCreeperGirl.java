@@ -33,5 +33,4 @@ public abstract class AbstractTamableHumanoidCreeperGirl<S extends PreggoMobSyst
 		return (ItemHelper.isChest(armor) && PreggoMobHelper.canUseChestplate(armor, PregnancyStage.getNonPregnancyStage()))
 				|| (ItemHelper.isLegging(armor) && PreggoMobHelper.canUseLegging(armor, PregnancyStage.getNonPregnancyStage()));
 	}
-
 }

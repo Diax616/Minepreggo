@@ -3,6 +3,8 @@ package dev.dixmk.minepreggo.network.packet;
 import java.util.UUID;
 import java.util.function.Supplier;
 
+import org.jetbrains.annotations.Nullable;
+
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.world.entity.preggo.Craving;
@@ -14,15 +16,18 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.NetworkEvent;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-public record SyncPregnancyEffectsS2CPacket(UUID targetId, int craving, int milking, int bellyRubs, int horny, Craving typeOfCraving) {		
-	public static SyncPregnancyEffectsS2CPacket decode(FriendlyByteBuf buffer) {	
-		return new SyncPregnancyEffectsS2CPacket(
-				buffer.readUUID(),
-				buffer.readInt(),
-				buffer.readInt(),
-				buffer.readInt(),
-				buffer.readInt(),
-				buffer.readEnum(Craving.class));
+public record SyncPregnancyEffectsS2CPacket(UUID targetId, int craving, int milking, int bellyRubs, int horny, @Nullable Craving typeOfCraving) {		
+	public static SyncPregnancyEffectsS2CPacket decode(FriendlyByteBuf buffer) {		
+		UUID targetId = buffer.readUUID();
+		int craving = buffer.readInt();
+		int milking = buffer.readInt();	
+		int bellyRubs = buffer.readInt();
+		int horny = buffer.readInt();
+		Craving typeOfCraving = null;
+		if (buffer.readBoolean()) {
+			typeOfCraving = buffer.readEnum(Craving.class);
+		}
+		return new SyncPregnancyEffectsS2CPacket(targetId, craving, milking, bellyRubs, horny, typeOfCraving);
 	}
 	
 	public static void encode(SyncPregnancyEffectsS2CPacket message, FriendlyByteBuf buffer) {
@@ -31,7 +36,11 @@ public record SyncPregnancyEffectsS2CPacket(UUID targetId, int craving, int milk
 		buffer.writeInt(message.milking);
 		buffer.writeInt(message.bellyRubs);
 		buffer.writeInt(message.horny);
-		buffer.writeEnum(message.typeOfCraving);
+		buffer.writeBoolean(message.typeOfCraving != null);
+		if (message.typeOfCraving != null) {
+			buffer.writeEnum(message.typeOfCraving);
+		}
+		
 	}
 	
 	public static void handler(SyncPregnancyEffectsS2CPacket message, Supplier<NetworkEvent.Context> contextSupplier) {

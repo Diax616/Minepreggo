@@ -2,7 +2,6 @@ package dev.dixmk.minepreggo.world.entity.preggo.zombie;
 
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
-import dev.dixmk.minepreggo.world.entity.preggo.Craving;
 import dev.dixmk.minepreggo.world.entity.preggo.IPregnancyP1;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancyStage;
@@ -13,18 +12,17 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.PlayMessages;
 
-public class TamableZombieGirlP1 extends AbstractTamablePregnantZombieGirl<PregnantPreggoMobSystem<TamableZombieGirlP1>, PregnancySystemP1<TamableZombieGirlP1>> implements IPregnancyP1 {
+public class TamableZombieGirlP1 extends AbstractTamablePregnantZombieGirl<PregnantPreggoMobSystem<TamableZombieGirlP1>, PregnancySystemP1<TamableZombieGirlP1>> implements IPregnancyP1<TamableZombieGirlP1> {
 	
 	public TamableZombieGirlP1(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P1.get(), world);
 	}
 
 	public TamableZombieGirlP1(EntityType<TamableZombieGirlP1> type, Level world) {
-		super(type, world);
+		super(type, world, PregnancyStage.P1);
 		xpReward = 10;
 		setNoAi(false);
 		setMaxUpStep(0.6f);
@@ -39,7 +37,7 @@ public class TamableZombieGirlP1 extends AbstractTamablePregnantZombieGirl<Pregn
 	protected PregnancySystemP1<TamableZombieGirlP1> createPregnancySystem() {
 		return new PregnancySystemP1<>(this) {
 			@Override
-			protected void changePregnancyStage() {
+			protected void advanceToNextPregnancyPhase() {
 				if (preggoMob.level() instanceof ServerLevel serverLevel) {
 					var zombieGirl = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P2.get().spawn(serverLevel, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), MobSpawnType.CONVERSION);		
 					PreggoMobHelper.transferPregnancyP1Data(preggoMob, zombieGirl);			
@@ -49,7 +47,7 @@ public class TamableZombieGirlP1 extends AbstractTamablePregnantZombieGirl<Pregn
 			}
 			
 			@Override
-			protected void postMiscarriage() {
+			protected void initPostMiscarriage() {
 				TamableZombieGirlP0.onPostMiscarriage(preggoMob);
 			}
 		};
@@ -58,44 +56,9 @@ public class TamableZombieGirlP1 extends AbstractTamablePregnantZombieGirl<Pregn
 	public static AttributeSupplier.Builder createAttributes() {
 		return getBasicAttributes(0.235);
 	}
-	
-	@Override
-	public PregnancyStage getCurrentPregnancyStage() {
-		return PregnancyStage.P1;
-	}
-	
-	@Override
-	public int getCraving() {
-		return this.entityData.get(DATA_CRAVING);
-	}
 
 	@Override
-	public void setCraving(int craving) {
-		this.entityData.set(DATA_CRAVING, craving);
-	}
-	
-	@Override
-	public int getCravingTimer() {
-		return this.cravingTimer;
-	}
-
-	@Override
-	public void setCravingTimer(int timer) {
-		this.cravingTimer = timer;
-	}
-
-	@Override
-	public Craving getTypeOfCraving() {
-		return this.entityData.get(DATA_CRAVING_CHOSEN);
-	}
-	
-	@Override
-	public void setTypeOfCraving(Craving craving) {
-		this.entityData.set(DATA_CRAVING_CHOSEN, craving);
-	}
-
-	@Override
-	public boolean isValidCraving(Craving craving, Item item) {
-		return this.isCraving(craving, item);
+	public PregnancySystemP1<TamableZombieGirlP1> getPregnancySystemP1() {
+		return pregnancySystem;
 	}
 }

@@ -1,11 +1,11 @@
 package dev.dixmk.minepreggo.world.entity.preggo;
 
-public interface IPregnancyP3 extends IPregnancyP2 {
-	
-    int getBellyRubs();
-    void setBellyRubs(int bellyRubs);
+import dev.dixmk.minepreggo.network.capability.IPregnancyEffectsHandler;
+import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
 
-    int getBellyRubsTimer();
-    void setBellyRubsTimer(int timer);
+public interface IPregnancyP3 
+	<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler & IPregnancyEffectsHandler> {
+
+	PregnancySystemP3<E> getPregnancySystemP3();
 
 }

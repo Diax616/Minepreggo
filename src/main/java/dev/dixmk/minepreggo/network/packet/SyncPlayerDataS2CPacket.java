@@ -3,6 +3,7 @@ package dev.dixmk.minepreggo.network.packet;
 import java.util.UUID;
 import java.util.function.Supplier;
 
+import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.network.capability.Gender;
@@ -36,15 +37,18 @@ public record SyncPlayerDataS2CPacket(UUID source, Gender gender, boolean custom
 
             	var target = Minecraft.getInstance().player.level().players().stream()
             			.filter(p -> p.getUUID().equals(message.source))
-            			.findFirst()
-            			.orElse(null);
+            			.findFirst();
             	
-                if (target != null) {
-                    target.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(c -> {
+            	
+            	target.ifPresent(t -> {
+                    t.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(c -> {
                         c.setGender(message.gender);
                         c.setCustomSkin(message.customSKin);
                     });
-                }
+                    
+                    MinepreggoMod.LOGGER.debug("Synchronized player data for {} from {}", 
+                    		Minecraft.getInstance().player.getName().getString(), t.getDisplayName().getString());
+            	});      	
             }
 		});
 		context.setPacketHandled(true);

@@ -1,11 +1,12 @@
 package dev.dixmk.minepreggo.world.entity.preggo;
 
-public interface IPregnancyP2 extends IPregnancyP1 {
+import dev.dixmk.minepreggo.network.capability.IPregnancyEffectsHandler;
+import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
 
-	public int getMilking();	
-	public void setMilking(int milking);
+public interface IPregnancyP2 
+	<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler & IPregnancyEffectsHandler> {
+
+	PregnancySystemP2<E> getPregnancySystemP2();
 	
-	public int getMilkingTimer();	
-	public void setMilkingTimer(int timer);
-
+	
 }

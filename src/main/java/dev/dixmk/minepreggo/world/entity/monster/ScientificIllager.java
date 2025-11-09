@@ -72,9 +72,9 @@ import com.google.common.collect.Maps;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
+import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.world.entity.npc.Trades;
-import dev.dixmk.minepreggo.world.entity.preggo.IPregnancySystem;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.IllCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.IllQuadrupedCreeperGirl;
@@ -204,7 +204,7 @@ public class ScientificIllager extends AbstractIllager implements Merchant {
     		final var blockPos = serverPlayer.blockPosition();
     		final var scientificIllagerId = this.getId();   		
 			final Vec3 center = new Vec3(serverPlayer.getX(), serverPlayer.getY(), serverPlayer.getZ());	
-    		final List<Integer> list = serverPlayer.level().getEntitiesOfClass(PreggoMob.class, new AABB(center, center).inflate(16D), e -> e.isOwnedBy(serverPlayer) && e instanceof IPregnancySystem)
+    		final List<Integer> list = serverPlayer.level().getEntitiesOfClass(PreggoMob.class, new AABB(center, center).inflate(16D), e -> e.isOwnedBy(serverPlayer) && e instanceof IPregnancySystemHandler)
     					.stream()
     					.map(e -> e.getId())
     					.collect(Collectors.toCollection(ArrayList::new));

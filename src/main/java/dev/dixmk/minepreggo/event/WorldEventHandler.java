@@ -6,7 +6,7 @@ import java.util.stream.StreamSupport;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
-import dev.dixmk.minepreggo.world.entity.preggo.IPregnancySystem;
+import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
@@ -29,15 +29,15 @@ public class WorldEventHandler {
             if (lastProcessedDay.getOrDefault(serverLevel, -1L) < currentDay) {
                 lastProcessedDay.put(serverLevel, currentDay);
                                         
-                List<IPregnancySystem> entities = StreamSupport.stream(serverLevel.getAllEntities().spliterator(), false)
-                		.filter(IPregnancySystem.class::isInstance)
-                		.map(IPregnancySystem.class::cast)
+                List<IPregnancySystemHandler> entities = StreamSupport.stream(serverLevel.getAllEntities().spliterator(), false)
+                		.filter(IPregnancySystemHandler.class::isInstance)
+                		.map(IPregnancySystemHandler.class::cast)
                 		.toList();
                                   
                 entities.forEach(preggoMob -> {
                 	final var tickResult = preggoMob.getPregnancyTimer() + (int) (24000L - currentDay);
-    				final var numOfDays = Math.min(tickResult / MinepreggoModConfig.getTotalTicksByDay(), preggoMob.getDaysByStage() - preggoMob.getDaysPassed());
-    				final var remainingTicks = tickResult % MinepreggoModConfig.getTotalTicksByDay();
+    				final var numOfDays = Math.min(tickResult / MinepreggoModConfig.getTotalTicksByPregnancyDay(), preggoMob.getDaysByStage() - preggoMob.getDaysPassed());
+    				final var remainingTicks = tickResult % MinepreggoModConfig.getTotalTicksByPregnancyDay();
                    				
     				if (numOfDays > 0) {
     					preggoMob.setPregnancyTimer(remainingTicks);

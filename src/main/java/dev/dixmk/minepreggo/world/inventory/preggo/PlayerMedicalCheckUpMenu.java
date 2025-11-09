@@ -7,7 +7,7 @@ import org.joml.Vector3i;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoModMenus;
-import dev.dixmk.minepreggo.network.capability.PregnancySystemImpl;
+import dev.dixmk.minepreggo.network.capability.PlayerPregnancySystemImpl;
 import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
 import dev.dixmk.minepreggo.world.entity.preggo.Baby;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancyStage;
@@ -29,7 +29,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.network.NetworkHooks;
 
 public abstract class PlayerMedicalCheckUpMenu<T extends Mob> extends AbstractMedicalCheckUpMenu<Player, T> {	
-	protected Optional<PregnancySystemImpl.DataGUI> dataGUI;
+	protected Optional<PlayerPregnancySystemImpl.DataGUI> dataGUI;
 	protected boolean valid;
 	
 	protected PlayerMedicalCheckUpMenu(MenuType<?> p_38851_, int id, Inventory inv) {
@@ -87,7 +87,7 @@ public abstract class PlayerMedicalCheckUpMenu<T extends Mob> extends AbstractMe
 		
 			Player s = null;	
 			Villager t = null;
-			PregnancySystemImpl.DataGUI d = null;
+			PlayerPregnancySystemImpl.DataGUI d = null;
 			Vector3i p = null;
 			
 			if (extraData != null) {
@@ -102,7 +102,7 @@ public abstract class PlayerMedicalCheckUpMenu<T extends Mob> extends AbstractMe
 					t = villager;
 				}			
 								
-				d = new PregnancySystemImpl.DataGUI(extraData.readNbt());		
+				d = new PlayerPregnancySystemImpl.DataGUI(extraData.readNbt());		
 			}
 			
 
@@ -135,7 +135,7 @@ public abstract class PlayerMedicalCheckUpMenu<T extends Mob> extends AbstractMe
 			}
 		}
 		
-		public static void showMedicalCheckUpMenu(@NonNull ServerPlayer serverPlayer, @NonNull Villager villager, PregnancySystemImpl.DataGUI data) {					
+		public static void showMedicalCheckUpMenu(@NonNull ServerPlayer serverPlayer, @NonNull Villager villager, PlayerPregnancySystemImpl.DataGUI data) {					
 			final var bpos = BlockPos.containing(serverPlayer.getX(), serverPlayer.getY(), serverPlayer.getZ());
 			final var playerId = serverPlayer.getId();
 			final var villagerId = villager.getId();
@@ -171,7 +171,7 @@ public abstract class PlayerMedicalCheckUpMenu<T extends Mob> extends AbstractMe
 		
 			Player s = null;	
 			ScientificIllager t = null;
-			PregnancySystemImpl.DataGUI d = null;
+			PlayerPregnancySystemImpl.DataGUI d = null;
 			Vector3i p = null;
 			
 			if (extraData != null) {
@@ -186,7 +186,7 @@ public abstract class PlayerMedicalCheckUpMenu<T extends Mob> extends AbstractMe
 					t = scientificIllager;
 				}			
 								
-				d = new PregnancySystemImpl.DataGUI(extraData.readNbt());		
+				d = new PlayerPregnancySystemImpl.DataGUI(extraData.readNbt());		
 			}
 			
 			this.target = Optional.ofNullable(t);
@@ -217,7 +217,7 @@ public abstract class PlayerMedicalCheckUpMenu<T extends Mob> extends AbstractMe
 			}
 		}
 		
-		public static void showMedicalCheckUpMenu(@NonNull ServerPlayer serverPlayer, @NonNull ScientificIllager scientificIllager, PregnancySystemImpl.DataGUI data) {						
+		public static void showMedicalCheckUpMenu(@NonNull ServerPlayer serverPlayer, @NonNull ScientificIllager scientificIllager, PlayerPregnancySystemImpl.DataGUI data) {						
 			final var bpos = BlockPos.containing(serverPlayer.getX(), serverPlayer.getY(), serverPlayer.getZ());
 			final var playerId = serverPlayer.getId();
 			final var scientificIllagerId = scientificIllager.getId();

@@ -9,7 +9,7 @@ import org.checkerframework.checker.index.qual.NonNegative;
 import dev.dixmk.minepreggo.world.entity.preggo.Craving;
 import net.minecraft.world.food.FoodProperties;
 
-public class HotChickenItem extends Item implements ICraving {
+public class HotChickenItem extends Item implements IItemCraving {
 	public HotChickenItem() {
 		super(new Item.Properties().stacksTo(64).rarity(Rarity.COMMON).food((new FoodProperties.Builder()).nutrition(5).saturationMod(0.2f).meat().build()));
 	}

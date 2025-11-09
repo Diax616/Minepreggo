@@ -1,7 +1,8 @@
 package dev.dixmk.minepreggo.world.entity.preggo;
 
 public enum PostPregnancy {
-	NONE,
 	MISCARRIAGE,
-	PARTUM,
+	PARTUM;
+	
+	public static final String NBT_KEY = "PostPregnancyType";
 }

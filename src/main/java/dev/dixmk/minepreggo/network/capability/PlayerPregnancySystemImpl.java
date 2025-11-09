@@ -2,9 +2,12 @@ package dev.dixmk.minepreggo.network.capability;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
+import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.network.packet.SyncPregnancySystemS2CPacket;
@@ -12,6 +15,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.Baby;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPain;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancySymptom;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemConstants;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -19,7 +23,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraftforge.network.PacketDistributor;
 
-public class PregnancySystemImpl implements IPregnancySystemHandler {	
+public class PlayerPregnancySystemImpl implements IPlayerPregnancySystemHandler {	
 	// Server Data
 	private int daysByStage = 0;
 	private int daysToGiveBirth = 0;
@@ -34,9 +38,10 @@ public class PregnancySystemImpl implements IPregnancySystemHandler {
 	private EnumMap<Baby, @NonNull Integer> babies = new EnumMap<>(Baby.class);
 
 	// Client Data
-	private PregnancySymptom currentPregnancySymptom = PregnancySymptom.NONE;
-	private PregnancyPain currentPregnancyPain = PregnancyPain.NONE;
+	private Optional<PregnancySymptom> currentPregnancySymptom = Optional.empty();
+	private Optional<PregnancyPain> currentPregnancyPain = Optional.empty();
 	
+
 	@Override
 	public int getDaysByStage() {
 		return this.daysByStage;
@@ -54,7 +59,7 @@ public class PregnancySystemImpl implements IPregnancySystemHandler {
 
 	@Override
 	public void setPregnancyHealth(int health) {
-		this.pregnancyHealth = Mth.clamp(health, 0, 100);
+		this.pregnancyHealth = Mth.clamp(health, 0, PregnancySystemConstants.MAX_PREGNANCY_HEALTH);
 	}
 
 	@Override
@@ -84,7 +89,7 @@ public class PregnancySystemImpl implements IPregnancySystemHandler {
 
 	@Override
 	public void reduceDaysToGiveBirth() {
-		if (this.daysToGiveBirth > 0) --this.daysToGiveBirth;
+		setDaysToGiveBirth(daysByStage - 1);
 	}
 	
 	@Override
@@ -103,12 +108,12 @@ public class PregnancySystemImpl implements IPregnancySystemHandler {
 	}
 	
 	@Override
-	public PregnancyStage getMaxPregnancyStage() {
+	public PregnancyStage getLastPregnancyStage() {
 		return this.lastPregnancyStage;
 	}
 
 	@Override
-	public void setMaxPregnancyStage(PregnancyStage stage) {
+	public void setLastPregnancyStage(PregnancyStage stage) {
 		this.lastPregnancyStage = stage;
 	}
 
@@ -123,25 +128,93 @@ public class PregnancySystemImpl implements IPregnancySystemHandler {
 	}
 
 	@Override
+	@Nullable
 	public PregnancySymptom getPregnancySymptom() {
-		return this.currentPregnancySymptom;
+		if (this.currentPregnancySymptom.isPresent()) {
+			return this.currentPregnancySymptom.get();
+		}
+		return null;
 	}
 
 	@Override
-	public void setPregnancySymptom(PregnancySymptom symptom) {
-		this.currentPregnancySymptom = symptom;
+	public void setPregnancySymptom(@Nullable PregnancySymptom symptom) {
+		this.currentPregnancySymptom = Optional.ofNullable(symptom);
 	}
 
 	@Override
+	@Nullable
 	public PregnancyPain getPregnancyPain() {
-		return this.currentPregnancyPain;
+		if (this.currentPregnancyPain.isPresent()) {
+			return this.currentPregnancyPain.get();
+		}
+		return null;
 	}
 
 	@Override
-	public void setPregnancyPain(PregnancyPain pain) {
-		this.currentPregnancyPain = pain;
+	public void setPregnancyPain(@Nullable PregnancyPain pain) {
+		this.currentPregnancyPain = Optional.ofNullable(pain);
 	}
 
+	@Override
+	public void resetPregnancyTimer() {
+		this.pregnancyTimer = 0;	
+	}
+
+	@Override
+	public int getPregnancyPainTimer() {
+		return this.pregnancyPainTimer;
+	}
+
+	@Override
+	public void setPregnancyPainTimer(@NonNegative int ticks) {
+		this.pregnancyPainTimer = Math.max(ticks, 0);
+	}
+
+	@Override
+	public void incrementPregnancyPainTimer() {
+		++this.pregnancyPainTimer;
+	}
+
+	@Override
+	public void resetPregnancyPainTimer() {
+		this.pregnancyPainTimer = 0;
+	}
+
+	@Override
+	public void resetDaysPassed() {
+		this.daysPassed = 0;	
+	}
+
+	@Override
+	public void reducePregnancyHealth(int amount) {
+		setPregnancyHealth(pregnancyHealth - amount);
+	}
+
+	@Override
+	public void resetPregnancyHealth() {
+		pregnancyHealth = 0;
+	}
+
+	@Override
+	public void clearPregnancySymptom() {
+		currentPregnancySymptom = Optional.empty();
+	}
+
+	@Override
+	public void clearPregnancyPain() {
+		currentPregnancyPain = Optional.empty();	
+	}
+
+	@Override
+	public Baby getDefaultTypeOfBaby() {
+		return Baby.HUMAN;
+	}
+
+	@Override
+	public boolean isIncapacitated() {
+		return currentPregnancyPain.isPresent();
+	}	
+	
 	@Override
 	public Set<Baby> getTypesOfBabies() {
 		return this.babies.keySet();
@@ -162,6 +235,8 @@ public class PregnancySystemImpl implements IPregnancySystemHandler {
 		this.babies.compute(babyType, (k, v) -> (v == null) ? count : v + count);	
 	}
 	
+	
+	
 	@NonNull
 	public Tag serializeNBT() {
 		CompoundTag nbt = new CompoundTag();
@@ -172,9 +247,10 @@ public class PregnancySystemImpl implements IPregnancySystemHandler {
 		nbt.putInt("DataPregnancyTimer", pregnancyTimer);
 		nbt.putInt("DataCurrentPregnancyStage", currentPregnancyStage.ordinal());
 		nbt.putInt("DataLastPregnancyStage", lastPregnancyStage.ordinal());
-		nbt.putInt("DataCurrentPregnancySymptom", currentPregnancySymptom.ordinal());
-		nbt.putInt("DataCurrentPregnancyPain", currentPregnancyPain.ordinal());
-		
+			
+		currentPregnancySymptom.ifPresent(symptom -> nbt.putString(PregnancySymptom.NBT_KEY, symptom.name()));
+		currentPregnancyPain.ifPresent(pain -> nbt.putString(PregnancyPain.NBT_KEY, pain.name()));
+	
 		ListTag list = new ListTag();
 		this.babies.forEach((key, value) -> {		
 			CompoundTag pair = new CompoundTag();
@@ -196,8 +272,22 @@ public class PregnancySystemImpl implements IPregnancySystemHandler {
 		pregnancyTimer = nbt.getInt("DataPregnancyTimer");
 		currentPregnancyStage = PregnancyStage.values()[nbt.getInt("DataCurrentPregnancyStage")];
 		lastPregnancyStage = PregnancyStage.values()[nbt.getInt("DataLastPregnancyStage")];
-		currentPregnancySymptom = PregnancySymptom.values()[nbt.getInt("DataCurrentPregnancySymptom")];
-		currentPregnancyPain = PregnancyPain.values()[nbt.getInt("DataCurrentPregnancyPain")];	
+		
+	    if (nbt.contains(PregnancyPain.NBT_KEY, Tag.TAG_STRING)) {
+	        String name = nbt.getString(PregnancyPain.NBT_KEY);
+	        PregnancyPain pain = PregnancyPain.valueOf(name);
+	        setPregnancyPain(pain);
+	    } else {
+	    	setPregnancyPain(null);
+	    }    
+	    if (nbt.contains(PregnancySymptom.NBT_KEY, Tag.TAG_STRING)) {
+	        String name = nbt.getString(PregnancySymptom.NBT_KEY);
+			PregnancySymptom symptom = PregnancySymptom.valueOf(name);
+			setPregnancySymptom(symptom);
+	    } else {
+	        setPregnancySymptom(null);
+	    } 
+		
 		
 		EnumMap<@NonNull Baby, @NonNull Integer> b = new EnumMap<>(Baby.class);
 		
@@ -213,7 +303,7 @@ public class PregnancySystemImpl implements IPregnancySystemHandler {
 		babies = b;
 	}
 	
-	public void copyFrom(@NonNull PregnancySystemImpl newData) {
+	public void copyFrom(@NonNull PlayerPregnancySystemImpl newData) {
 		this.babies = newData.babies;
 		this.currentPregnancyPain = newData.currentPregnancyPain;
 		this.currentPregnancyStage = newData.currentPregnancyStage;
@@ -231,7 +321,7 @@ public class PregnancySystemImpl implements IPregnancySystemHandler {
 	
 	public void sync(ServerPlayer serverPlayer) {
 		MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> serverPlayer), 
-				new SyncPregnancySystemS2CPacket(serverPlayer.getId(), this.currentPregnancySymptom, this.currentPregnancyPain));
+				new SyncPregnancySystemS2CPacket(serverPlayer.getId(), getPregnancySymptom(), getPregnancyPain()));
 	}
 	
 	@NonNull
@@ -248,7 +338,7 @@ public class PregnancySystemImpl implements IPregnancySystemHandler {
 		public final PregnancyStage lastPregnancyStage;
 		public final Map<Baby, @NonNull Integer> babies;
 	
-		public DataGUI(@NonNull PregnancySystemImpl source) {
+		public DataGUI(@NonNull PlayerPregnancySystemImpl source) {
 			this.daysByStage = source.daysByStage;
 			this.daysToGiveBirth = source.daysToGiveBirth;
 			this.daysPassed = source.daysPassed;
@@ -300,5 +390,5 @@ public class PregnancySystemImpl implements IPregnancySystemHandler {
 			
 			return nbt;
 		}
-	}	
+	}
 }

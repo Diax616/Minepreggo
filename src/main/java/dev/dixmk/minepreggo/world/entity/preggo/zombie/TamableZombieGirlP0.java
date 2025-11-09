@@ -13,10 +13,16 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 
+import java.util.Optional;
 import java.util.UUID;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
@@ -33,12 +39,15 @@ public class TamableZombieGirlP0 extends AbstractTamableZombieGirl<PreggoMobSyst
 	private static final AttributeModifier SPEED_MODIFIER_TIRENESS = new AttributeModifier(SPEED_MODIFIER_TIRENESS_UUID, "Tireness speed", -0.1D, AttributeModifier.Operation.MULTIPLY_BASE);		
 	private static final UUID MAX_HEALTH_MODIFIER_TIRENESS_UUID = UUID.fromString("598672e2-1413-4f1e-8e77-3166716d0bd9");
 	private static final AttributeModifier MAX_HEALTH_MODIFIER_TIRENESS = new AttributeModifier(MAX_HEALTH_MODIFIER_TIRENESS_UUID, "Tireness max health", -0.3D, AttributeModifier.Operation.MULTIPLY_BASE);	
-	private static final EntityDataAccessor<PostPregnancy> DATA_POST_PREGNANCY = SynchedEntityData.defineId(TamableZombieGirlP0.class, MinepreggoModEntityDataSerializers.POST_PREGNANCY);
+	private static final EntityDataAccessor<Optional<PostPregnancy>> DATA_POST_PREGNANCY = SynchedEntityData.defineId(TamableZombieGirlP0.class, MinepreggoModEntityDataSerializers.OPTIONAL_POST_PREGNANCY);
 	protected static final EntityDataAccessor<Boolean> DATA_PREGNANT = SynchedEntityData.defineId(TamableZombieGirlP0.class, EntityDataSerializers.BOOLEAN);
-
+	
 	
 	private int postPregnancyTimer = 0;
 	private int pregnancyInitializerTimer = 0;
+	private float fertilityRate = 0;
+	private int fertilityRateTimer = 0;
+	private int numOfOffSpring = 0; 
 	
 	private final FertilitySystem<TamableZombieGirlP0> fertilitySystem;
 	
@@ -72,26 +81,42 @@ public class TamableZombieGirlP0 extends AbstractTamableZombieGirl<PreggoMobSyst
 	@Override
 	protected void defineSynchedData() {
 		super.defineSynchedData();
-		this.entityData.define(DATA_POST_PREGNANCY, PostPregnancy.NONE);
+		this.entityData.define(DATA_POST_PREGNANCY, Optional.empty());
 		this.entityData.define(DATA_PREGNANT, false);
 	}
 	
 	@Override
 	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
-		compound.putInt("DataPostPregnancy", this.entityData.get(DATA_POST_PREGNANCY).ordinal());
-		compound.putInt("DataPregnancyInitializerTimer", pregnancyInitializerTimer);
-		compound.putInt("DataPostPregnancyTimer", postPregnancyTimer);
 		compound.putBoolean("DataPregnant", this.entityData.get(DATA_PREGNANT));
+		compound.putFloat("DataFertilityRate", fertilityRate);
+		compound.putInt("DataPostPregnancyTimer", postPregnancyTimer);
+		compound.putInt("DataPregnancyInitializerTimer", pregnancyInitializerTimer);
+		compound.putInt("DataFertilityRateTimer", fertilityRateTimer);
+		compound.putInt("DataNumOfOffSpring", numOfOffSpring);
+		
+		var postPregnancy = getPostPregnancyPhase();
+		if (postPregnancy != null) {
+			compound.putString(PostPregnancy.NBT_KEY, postPregnancy.name());
+		}
 	}
 	
 	@Override
 	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
-		this.entityData.set(DATA_POST_PREGNANCY, PostPregnancy.values()[compound.getInt("DataPostPregnancy")]);
-		this.pregnancyInitializerTimer = compound.getInt("DataPregnancyInitializerTimer");
-		this.postPregnancyTimer = compound.getInt("DataPostPregnancyTimer");
 		this.entityData.set(DATA_PREGNANT, compound.getBoolean("DataPregnant"));
+		fertilityRate = compound.getFloat("DataFertilityRate");
+		postPregnancyTimer = compound.getInt("DataPostPregnancyTimer");
+		pregnancyInitializerTimer = compound.getInt("DataPregnancyInitializerTimer");
+		fertilityRateTimer = compound.getInt("DataFertilityRateTimer");
+		numOfOffSpring = compound.getInt("DataNumOfOffSpring");
+		
+	    if (compound.contains(PostPregnancy.NBT_KEY, Tag.TAG_STRING)) {
+	        String name = compound.getString(PostPregnancy.NBT_KEY);
+	        this.entityData.set(DATA_POST_PREGNANCY, Optional.of(PostPregnancy.valueOf(name)));
+	    } else {
+	    	this.entityData.set(DATA_POST_PREGNANCY, Optional.empty());
+	    }
 	}
 	
 	@Override
@@ -102,12 +127,12 @@ public class TamableZombieGirlP0 extends AbstractTamableZombieGirl<PreggoMobSyst
     	  return;
       }
       
-      this.fertilitySystem.onTick();
+      this.fertilitySystem.onServerTick();
       
-      if (this.entityData.get(DATA_POST_PREGNANCY) != PostPregnancy.NONE) {	  
-    	  if (postPregnancyTimer > 6000) {
+      if (getPostPregnancyPhase() != null) {	  
+    	  if (postPregnancyTimer > 7000) {
     		  postPregnancyTimer = 0;
-    		  this.entityData.set(DATA_POST_PREGNANCY, PostPregnancy.NONE);
+    		  this.entityData.set(DATA_POST_PREGNANCY, Optional.empty());
     		  removePostPregnancyAttibutes(this);
     	  }
     	  else {
@@ -127,7 +152,7 @@ public class TamableZombieGirlP0 extends AbstractTamableZombieGirl<PreggoMobSyst
 
 	@Override
 	public void setPregnancyInitializerTimer(int ticks) {
-		this.pregnancyInitializerTimer = ticks;		
+		this.pregnancyInitializerTimer = Math.max(0, ticks);		
 	}
 	
 	@Override
@@ -142,19 +167,69 @@ public class TamableZombieGirlP0 extends AbstractTamableZombieGirl<PreggoMobSyst
 	
 	@Override
 	public boolean canGetPregnant() {
-		return this.entityData.get(DATA_POST_PREGNANCY) == PostPregnancy.NONE;
+		return getPostPregnancyPhase() == null;
+	}
+	
+	@Override
+	public void incrementPregnancyInitializerTimer() {
+		++this.pregnancyInitializerTimer;
+	}
+
+	@Override
+	public int getFertilityRateTimer() {
+		return this.fertilityRateTimer;
+	}
+
+	@Override
+	public void setFertilityRateTimer(int ticks) {
+		this.fertilityRateTimer = Math.max(0, ticks);	
+	}
+
+	@Override
+	public void incrementFertilityRateTimer() {
+		++this.fertilityRateTimer;	
+	}
+
+	@Override
+	public float getFertilityRate() {
+		return this.fertilityRate;
+	}
+
+	@Override
+	public void setFertilityRate(float rate) {
+		this.fertilityRate = Mth.clamp(rate, 0, 1F);
+	}
+
+	@Override
+	public void incrementFertilityRate(float rate) {
+		this.fertilityRate = Mth.clamp(this.fertilityRate + rate, 0F, 1F);
+	}
+	
+	@Override
+	public @Nullable PostPregnancy getPostPregnancyPhase() {
+		final var data = this.entityData.get(DATA_POST_PREGNANCY);
+		return data.isPresent() ? data.get() : null;
+	}
+
+	@Override
+	public boolean tryActivatePostPregnancyPhase(@NonNull PostPregnancy postPregnancy) {
+		if (getSpawnType() == MobSpawnType.CONVERSION) {
+			this.entityData.set(DATA_POST_PREGNANCY, Optional.of(postPregnancy));
+			return true;
+		}
+		return false;	
 	}
 	
 	static TamableZombieGirlP0 spawnPostMiscarriage(ServerLevel serverLevel, double x, double y, double z) {
 		var zombieGirl = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);	
-		zombieGirl.getEntityData().set(DATA_POST_PREGNANCY, PostPregnancy.MISCARRIAGE);
+		zombieGirl.tryActivatePostPregnancyPhase(PostPregnancy.MISCARRIAGE);
 		addPostPregnancyAttibutes(zombieGirl);
 		return zombieGirl;
 	}
 	
 	static TamableZombieGirlP0 spawnPostPartum(ServerLevel serverLevel, double x, double y, double z) {
 		var zombieGirl = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);	
-		zombieGirl.getEntityData().set(DATA_POST_PREGNANCY, PostPregnancy.PARTUM);
+		zombieGirl.tryActivatePostPregnancyPhase(PostPregnancy.PARTUM);
 		addPostPregnancyAttibutes(zombieGirl);
 		return zombieGirl;
 	}

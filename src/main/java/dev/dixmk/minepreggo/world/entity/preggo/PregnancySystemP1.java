@@ -1,16 +1,17 @@
 package dev.dixmk.minepreggo.world.entity.preggo;
 
-import java.util.Comparator;
-import java.util.List;
-
 import javax.annotation.Nonnull;
+
+import org.jetbrains.annotations.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.network.capability.IPregnancyEffectsHandler;
+import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem.Result;
-import dev.dixmk.minepreggo.world.item.ICraving;
+import dev.dixmk.minepreggo.world.item.IItemCraving;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
@@ -30,7 +31,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public abstract class PregnancySystemP1<
-	E extends PreggoMob & ITamablePreggoMob & IPregnancySystem & IPregnancyP1> {
+	E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler & IPregnancyEffectsHandler> {
 
 	protected final RandomSource randomSource;	
 	protected final E preggoMob;
@@ -40,109 +41,78 @@ public abstract class PregnancySystemP1<
 		this.randomSource = preggoMob.getRandom();
 	}
 	
-	protected Result evaluatePregnancyStageChange() {
-	    if (preggoMob.getDaysPassed() >= preggoMob.getDaysByStage()) {
-	    	this.changePregnancyStage();
-	    	
-	    	MinepreggoMod.LOGGER.debug("PREGNANCY CHANGE STAGE: id={}, class={}, currentPregnancyStage={}",
-	    		 	preggoMob.getId(), preggoMob.getClass().getSimpleName(), preggoMob.getCurrentPregnancyStage());
-	        	    	    	
-	    	this.preggoMob.discard();
-	    	return Result.SUCCESS;
-	    }
-	    return Result.NOTHING;
-	}
-	
 	protected void evaluatePregnancyTimer() {
-        if (preggoMob.getPregnancyTimer() >= MinepreggoModConfig.getTotalTicksByDay()) {
-        	preggoMob.setPregnancyTimer(0);
-        	preggoMob.setDaysPassed(preggoMob.getDaysPassed() + 1);
-        	preggoMob.setDaysToGiveBirth(preggoMob.getDaysToGiveBirth() - 1);
+        if (preggoMob.getPregnancyTimer() >= MinepreggoModConfig.getTotalTicksByPregnancyDay()) {
+        	preggoMob.resetPregnancyTimer();
+        	preggoMob.incrementDaysPassed();
+        	preggoMob.reduceDaysToGiveBirth();
         } else {
-        	preggoMob.setPregnancyTimer(preggoMob.getPregnancyTimer() + 1);
+        	preggoMob.incrementPregnancyTimer();
         }
 	}
 	
-	protected Result evaluateMiscarriage(ServerLevel serverLevel, double x, double y, double z, final int totalTicksOfMiscarriage) {	    
-	    if (preggoMob.getPregnancyPain() == PregnancyPain.MISCARRIAGE) {
-	        if (preggoMob.getPregnancyPainTimer() < totalTicksOfMiscarriage) {
-	        	preggoMob.setPregnancyPainTimer(preggoMob.getPregnancyPainTimer() + 1);	        		        	
-	    		for (ServerPlayer player : serverLevel.getServer().getPlayerList().getPlayers()) {
-	    		    if (player.distanceToSqr(preggoMob) <= 512.0) { 
-	    				serverLevel.sendParticles(player, ParticleTypes.FALLING_DRIPSTONE_LAVA, true, x, (y + preggoMob.getBbHeight() * 0.35), z,
-	    						1, 0, 1, 0, 0.02);
-	    		    }
-	    		}
-	        
-	        } else {        	
-	        	PreggoMobHelper.setItemstackOnOffHand(preggoMob, new ItemStack(Baby.getDeadBabyItem(preggoMob.getTypeOfBaby()), PreggoMobHelper.getNumberOfChildrens(preggoMob.getLastPregnancyStage())));
-	        	this.postMiscarriage();	 
-	        	this.preggoMob.discard();
-	        	return Result.SUCCESS;
-	        }
-	        return Result.PROCESS; 
-	    }
-	    
-	    return Result.NOTHING;
+	protected void evaluateMiscarriage(ServerLevel serverLevel, double x, double y, double z, final int totalTicksOfMiscarriage) {	    
+        if (preggoMob.getPregnancyPainTimer() < totalTicksOfMiscarriage) {
+        	preggoMob.setPregnancyPainTimer(preggoMob.getPregnancyPainTimer() + 1);	        		        	
+    		for (ServerPlayer player : serverLevel.getServer().getPlayerList().getPlayers()) {
+    		    if (player.distanceToSqr(preggoMob) <= 512.0) { 
+    				serverLevel.sendParticles(player, ParticleTypes.FALLING_DRIPSTONE_LAVA, true, x, (y + preggoMob.getBbHeight() * 0.35), z,
+    						1, 0, 1, 0, 0.02);
+    		    }
+    		}
+        
+        } else {        	
+        	PreggoMobHelper.setItemstackOnOffHand(preggoMob, new ItemStack(Baby.getDeadBabyItem(preggoMob.getDefaultTypeOfBaby()), IBreedable.getOffspringsByMaxPregnancyStage(preggoMob.getLastPregnancyStage())));
+        	initPostMiscarriage();	 
+        	preggoMob.discard();
+        }	
 	}
 	
 	protected void evaluateCravingTimer(final int totalTicksOfCraving) {   				
-		if (preggoMob.getCraving() < 20) {
+		if (preggoMob.getCraving() < PregnancySystemConstants.MAX_CRAVING_LEVEL) {
 	        if (preggoMob.getCravingTimer() >= totalTicksOfCraving) {
-	        	preggoMob.setCraving(preggoMob.getCraving() + 1);
-	        	preggoMob.setCravingTimer(0);
+	        	preggoMob.incrementCraving();
+	        	preggoMob.resetCravingTimer();
 	        }
 	        else {
-	        	preggoMob.setCravingTimer(preggoMob.getCravingTimer() + 1);
+	        	preggoMob.incrementCravingTimer();
 	        }
 		}	
 	}
 	
 	protected void evaluateAngry(Level level, double x, double y, double z, final float angerProbability) {
-
 	    if (!preggoMob.isAngry() && this.canBeAngry()) {
 	    	preggoMob.setAngry(true);
 	    } else {
 	        if (!PreggoMobHelper.hasValidTarget(preggoMob) && randomSource.nextFloat() < angerProbability) {
 	            final Vec3 center = new Vec3(x, y, z);      
-	            List<Player> owner = level.getEntitiesOfClass(Player.class, new AABB(center, center).inflate(12), preggoMob::isOwnedBy)
-	                    .stream()
-	                    .sorted(Comparator.comparingDouble(entcnd -> entcnd.distanceToSqr(center)))
-	                    .toList();	           
-	            if (!owner.isEmpty() && !PreggoMobHelper.isPlayerInCreativeOrSpectator(owner.get(0))) {
-	            	preggoMob.setTarget(owner.get(0));
+	            var players = level.getEntitiesOfClass(Player.class, new AABB(center, center).inflate(12), preggoMob::isOwnedBy);
+	                  
+	            if (!players.isEmpty()) {
+	            	var owner = players.get(0);
+		            if (!PreggoMobHelper.isPlayerInCreativeOrSpectator(owner)) {
+		            	preggoMob.setTarget(owner);
+		            } 
 	            }
 	        }
 	    }
 	}
 
 	protected void evaluatePregnancyPains() {
-		if (preggoMob.getPregnancyPain() == PregnancyPain.NONE) {		
-			if (randomSource.nextFloat() < PregnancySystemConstants.LOW_MORNING_SICKNESS_PROBABILITY) {
-				preggoMob.setPregnancyPain(PregnancyPain.MORNING_SICKNESS);		
-			}		
-		} 
-		else {
+		if (preggoMob.getPregnancyPain() == PregnancyPain.MORNING_SICKNESS) {
 			if (preggoMob.getPregnancyPainTimer() >= PregnancySystemConstants.TOTAL_TICKS_MORNING_SICKNESS) {
-				preggoMob.setPregnancyPainTimer(0);
-				preggoMob.setPregnancyPain(PregnancyPain.NONE);
-			}
-			else {
-				preggoMob.setPregnancyPainTimer(preggoMob.getPregnancyPainTimer() + 1);
+				preggoMob.clearPregnancyPain();
+				preggoMob.resetPregnancyPainTimer();
+			} else {
+				preggoMob.incrementPregnancyPainTimer();
 			}
 		}
 	}
 	
-	protected void evaluatePregnancySymptoms() {		
-		if (preggoMob.getPregnancySymptom() == PregnancySymptom.NONE) {
-			if (preggoMob.getCraving() >= PregnancySystemConstants.ACTIVATE_CRAVING_SYMPTOM) {		
-				preggoMob.setPregnancySymptom(PregnancySymptom.CRAVING);	
-			}
-		}
-		else {
-			if (preggoMob.getTypeOfCraving() == Craving.NONE) {
-				preggoMob.setTypeOfCraving(CravingFactory.getRandomCraving(randomSource));
-			}
+	protected void evaluatePregnancySymptoms() {	
+		if (preggoMob.getPregnancySymptom() == PregnancySymptom.CRAVING && preggoMob.getCraving() <= PregnancySystemConstants.DESACTIVATE_CRAVING_SYMPTOM) {
+			preggoMob.clearPregnancySymptom();
+			preggoMob.clearTypeOfCraving();
 		}
 	}
 	
@@ -179,92 +149,139 @@ public abstract class PregnancySystemP1<
 		}
 	}
 	
-	public void evaluateOnTick() {		
-		
-		final var level = preggoMob.level();
-		
-		if (level.isClientSide()) {			
-			return;
-		}
-		
-		if (this.evaluatePregnancyStageChange() == Result.SUCCESS) {
-			return;
-		}
-		
-		final var x =  preggoMob.getX();
-		final var y = preggoMob.getY();
-		final var z = preggoMob.getZ();
-				
-		if (level instanceof ServerLevel serverLevel
-				&& this.evaluateMiscarriage(serverLevel, x, y, z, PregnancySystemConstants.TOTAL_TICKS_MISCARRIAGE) == Result.SUCCESS) {
-			return; 
-		}
-		
-		this.evaluatePregnancyTimer();	
-		this.evaluateCravingTimer(MinepreggoModConfig.getTotalTicksOfCravingP1());
-		this.evaluateAngry(level, x, y, z, PregnancySystemConstants.LOW_ANGER_PROBABILITY);	
-		this.evaluatePregnancySymptoms();
-		this.evaluatePregnancyPains();
+	public boolean isMiscarriageActive() {
+	    return preggoMob.getPregnancyPain() == PregnancyPain.MISCARRIAGE;
 	}
 	
-	protected boolean canBeAngry() {
-		return preggoMob.getCraving() >= 20 || preggoMob.getHungry() <= 2;
+	public boolean canAdvanceNextPregnancyPhase() {
+	    return preggoMob.getDaysPassed() >= preggoMob.getDaysByStage();
 	}
-
-	public InteractionResult evaluateRightClick(Player source) {	
-		final var level = preggoMob.level();
-		
-		if (!preggoMob.isOwnedBy(source) || level.isClientSide() || !(level instanceof ServerLevel serverLevel)) {
-			return InteractionResult.PASS;
-		}			
-		
-		Result result;
-		
-		if ((result = evaluateCraving(serverLevel, source)) != Result.NOTHING) {
-			PreggoMobSystem.spawnParticles(preggoMob, serverLevel, result);
+	
+	public boolean canTriggerMiscarriage() {
+	    return preggoMob.getPregnancyHealth() <= 0;
+	}
+	
+	public boolean hasPregnancyPain() {
+	    return preggoMob.getPregnancyPain() != null;
+	}
+	
+	public boolean hasPregnancySymptom() {
+	    return preggoMob.getPregnancySymptom() != null;
+	}
+	
+	protected boolean tryInitRandomPregnancyPain() {
+	    if (randomSource.nextFloat() < PregnancySystemConstants.LOW_MORNING_SICKNESS_PROBABILITY) {
+	        preggoMob.setPregnancyPain(PregnancyPain.MORNING_SICKNESS);
+	        preggoMob.resetPregnancyPainTimer();
+	        return true;
+	    }
+	    return false;
+	}
+	
+	protected boolean tryInitPregnancySymptom() {
+		if (preggoMob.getCraving() >= PregnancySystemConstants.ACTIVATE_CRAVING_SYMPTOM) {
+	    	preggoMob.setPregnancySymptom(PregnancySymptom.CRAVING);
+	    	preggoMob.setTypeOfCraving(Craving.getRandomCraving(randomSource));
+	    	return true;		
 		}
-		
-		return PreggoMobSystem.onRightClickResult(result);	
+	    return false;
 	}
-		
+	
+	@Nullable
 	protected Result evaluateCraving(Level level, Player source) {
 		if (preggoMob.getPregnancySymptom() != PregnancySymptom.CRAVING) {
-			return Result.NOTHING;
+			return null;
 		}
 		
 	    var mainHandItem = source.getMainHandItem().getItem();
 	    var currentCraving = preggoMob.getCraving();
 	    
 	    if (currentCraving > PregnancySystemConstants.DESACTIVATE_CRAVING_SYMPTOM) {    	
-
-	    	if (!(mainHandItem instanceof ICraving craving)) {
+	    	if (!preggoMob.isValidCraving(mainHandItem) && !(mainHandItem instanceof IItemCraving)) {
 	    		return Result.ANGRY;
 	    	}
 	    	    	
-	    	if (preggoMob.isValidCraving(preggoMob.getTypeOfCraving(), mainHandItem)) {
-	           
-	    		source.getInventory().clearOrCountMatchingItems(p -> mainHandItem == p.getItem(), 1, source.inventoryMenu.getCraftSlots());
-	            currentCraving = Math.max(0, currentCraving - craving.getGratification());
-                preggoMob.setCraving(currentCraving);
-	            preggoMob.setHungry(Math.min(preggoMob.getHungry() + 2, 20));
-                
-            	level.playSound(null, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.generic.eat")), SoundSource.NEUTRAL, 0.75f, 1);	
-                
-	            if (currentCraving <= PregnancySystemConstants.DESACTIVATE_CRAVING_SYMPTOM) {
-	    	    	preggoMob.setPregnancySymptom(PregnancySymptom.NONE);
-	            }
-	    		     
-	            return Result.SUCCESS; 
-	    	} else {
-	    		return Result.FAIL;
-	    	}
+    		source.getInventory().clearOrCountMatchingItems(p -> mainHandItem == p.getItem(), 1, source.inventoryMenu.getCraftSlots());         
+            preggoMob.setCraving(currentCraving - ((IItemCraving)mainHandItem).getGratification()); 
+            preggoMob.increaseFullness(2);    
+
+            if (!level.isClientSide) {
+            	level.playSound(null, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.generic.eat")), SoundSource.NEUTRAL, 0.75f, 1);	          
+            }
+            
+            return Result.SUCCESS; 
 	    }
 	    
-	    return Result.NOTHING;
+	    return null;
 	}
 	
-	protected abstract void changePregnancyStage();
 	
-	protected abstract void postMiscarriage();
+	
+	
+	public boolean canBeAngry() {
+		return preggoMob.getCraving() >= 20 || preggoMob.getFullness() <= 2;
+	}
+	
+	
+	public void onServerTick() {
+		final var level = preggoMob.level();	
+		if (level.isClientSide()) {			
+			return;
+		}
+	
+		if (isMiscarriageActive()) {
+			if (level instanceof ServerLevel serverLevel) {
+				evaluateMiscarriage(serverLevel, preggoMob.getX(), preggoMob.getY(), preggoMob.getZ(), PregnancySystemConstants.TOTAL_TICKS_MISCARRIAGE);
+			}		
+			return;
+		}
+		
+		this.evaluatePregnancyTimer();
+		if (canAdvanceNextPregnancyPhase()) {
+			advanceToNextPregnancyPhase();
+			preggoMob.discard();
+			return;
+		}
+		
+		this.evaluateCravingTimer(MinepreggoModConfig.getTotalTicksOfCravingP1());
+	
+		if (!hasPregnancyPain()) {
+			tryInitRandomPregnancyPain();	
+		}
+		else {
+			evaluatePregnancyPains();
+		}
+		
+		if (!hasPregnancySymptom()) {
+			tryInitPregnancySymptom();
+		}
+		else {
+			evaluatePregnancySymptoms();
+		}
+			
+		evaluateAngry(level, preggoMob.getX(), preggoMob.getY(), preggoMob.getZ(), PregnancySystemConstants.LOW_ANGER_PROBABILITY);		
+	}
+	
+	public InteractionResult onRightClick(Player source) {		
+		if (!preggoMob.isOwnedBy(source) || preggoMob.isIncapacitated()) {
+			return InteractionResult.FAIL;
+		}				
+		var level = preggoMob.level();
+
+		Result result = evaluateCraving(level, source);
+		
+		if (result != null) {			
+			if (level instanceof ServerLevel serverLevel) {
+				PreggoMobSystem.spawnParticles(preggoMob, serverLevel, result);
+			}
+			return InteractionResult.sidedSuccess(level.isClientSide);
+		}
+
+		return InteractionResult.PASS;
+	}
+
+	protected abstract void advanceToNextPregnancyPhase();
+	
+	protected abstract void initPostMiscarriage();
 }
 

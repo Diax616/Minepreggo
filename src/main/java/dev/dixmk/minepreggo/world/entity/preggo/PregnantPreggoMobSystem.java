@@ -1,9 +1,10 @@
 package dev.dixmk.minepreggo.world.entity.preggo;
 
+import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
 import net.minecraft.world.entity.player.Player;
 
 public class PregnantPreggoMobSystem
-	<E extends PreggoMob & ITamablePreggoMob & IPregnancySystem> extends PreggoMobSystem<E> {
+	<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler> extends PreggoMobSystem<E> {
 
 	public PregnantPreggoMobSystem(E preggoMob, int totalTicksOfHungry) {
 		super(preggoMob, totalTicksOfHungry);
@@ -15,7 +16,7 @@ public class PregnantPreggoMobSystem
 	}
 	
 	@Override
-	protected boolean canFeedHerself() {
+	public boolean canFeedHerself() {
 		return super.canFeedHerself() && !preggoMob.isIncapacitated();
 	}
 }

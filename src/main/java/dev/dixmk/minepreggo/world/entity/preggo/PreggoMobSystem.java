@@ -1,8 +1,8 @@
 package dev.dixmk.minepreggo.world.entity.preggo;
 
-import java.util.Comparator;
-
 import javax.annotation.Nonnull;
+
+import org.jetbrains.annotations.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
@@ -17,7 +17,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -30,8 +29,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob> {
 	
-	public static final int MIN_HUNGRY_TO_HEAL = 16;
-	public static final int MIN_HUNGRY_TO_TAME_AGAIN = 12;
+	public static final int MIN_FULLNESS_TO_HEAL = 16;
+	public static final int MIN_FULLNESS_TO_TAME_AGAIN = 12;
 	
 	protected final RandomSource randomSource;	
 	protected final E preggoMob;
@@ -49,10 +48,218 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob> {
 		this.totalTicksOfHungry = totalTicksOfHungry;
 	}
 	
-    public void setCinematicOwner(ServerPlayer player) { this.cinematicOwner = player; }
+	protected boolean tryStartSavage() {		
+		if (preggoMob.getFullness() <= 0) {
+			preggoMob.setSavage(true);
+			return true;
+		}
+		return false;
+	}
+
+	
+	
+	protected void evaluateSavage(Level level) {		
+		if (preggoMob.getTarget() == null && preggoMob.isTame()) {
+	        final Vec3 center = new Vec3(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ());      
+	        var player = level.getEntitiesOfClass(Player.class, new AABB(center, center).inflate(32)).stream()
+	        		.sorted((p1, p2) -> Double.compare(p1.distanceToSqr(preggoMob), p2.distanceToSqr(preggoMob)))
+	        		.findFirst();          
+	        player.ifPresent(preggoMob::setTarget);        
+		}       
+	}
+	
+	protected void evaluateHealing() {  
+	    final var currentHungry = preggoMob.getFullness();
+		if (currentHungry >= MIN_FULLNESS_TO_HEAL
+				&& preggoMob.getHealth() < preggoMob.getMaxHealth()) {     	
+			if (healingCooldownTimer >= 60) {
+		 	preggoMob.heal(1F);
+		 	preggoMob.setFullness(currentHungry - 1);
+		 	healingCooldownTimer = 0;
+			}
+			else {
+				++healingCooldownTimer;
+			}
+		} 
+	}
+	
+	protected void evaluateHungryTimer() {			
+	    final var currentHungry = preggoMob.getFullness();
+	    var currentHungryTimer = preggoMob.getHungryTimer();
+		    	
+	    if (currentHungry >= ITamablePreggoMob.MAX_FULLNESS) {
+	    	return;
+	    }
+	    
+        int timerIncrement = 1;
+        if (preggoMob.getDeltaMovement().x() != 0 || preggoMob.getDeltaMovement().z() != 0) {
+            timerIncrement += 1;              
+            if (preggoMob.isInWater()) {
+                timerIncrement += 2;
+            }
+        }
+       
+        currentHungryTimer += timerIncrement;
+        
+        if (currentHungryTimer >= totalTicksOfHungry) {
+        	preggoMob.resetHungryTimer();
+        	preggoMob.increaseFullness(1);
+        }
+        else {
+        	preggoMob.setHungryTimer(currentHungryTimer);
+        } 
+	}
+		
+	public boolean canFeedHerself() {
+		final var currentHungry = preggoMob.getFullness();
+		return (currentHungry < 10 || (preggoMob.getHealth() < 20 && currentHungry < 18)) && !preggoMob.isAggressive();
+	}
+	
+	protected void evaluateAutoFeeding(Level level) {
+	
+		if (!this.canFeedHerself()) {
+			return;
+		}
+				
+		if (autoFeedingCooldownTimer < 40) {
+			++autoFeedingCooldownTimer;
+			return;
+		}
+		
+		preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(capability -> {		
+			ItemStack food = capability.extractItem(ITamablePreggoMob.FOOD_INVENTORY_SLOT, 1, false);
+			
+			if (food.isEmpty()) {
+				return;
+			}
+			
+			final var foodProperties = food.getFoodProperties(preggoMob);
+			
+			if (foodProperties == null) {
+				return;
+			}
+			
+			preggoMob.increaseFullness(foodProperties.getNutrition());	
+	        level.playSound(null, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.generic.eat")), SoundSource.NEUTRAL, 0.75f, 1);	          	
+		
+			MinepreggoMod.LOGGER.debug("AUTO FEEDING: id={}, class={}, food={}",
+					preggoMob.getId(), preggoMob.getClass().getSimpleName(), food.getDisplayName().getString());
+		
+			autoFeedingCooldownTimer = 0;			
+		});
+	}
+	
+	public void onServerTick() {
+		final var level = preggoMob.level();
+		
+		if (level.isClientSide()) {
+			return;
+		}
+		
+		if (preggoMob.isSavage()) {
+			evaluateSavage(level);
+			return;
+		}
+		else {
+			tryStartSavage();
+		}
+			
+		evaluateHungryTimer();
+		evaluateHealing();
+		evaluateAutoFeeding(level);
+	}
+	
+	
+	
+	
+	public InteractionResult onRightClick(Player source) {
+		if (!preggoMob.isOwnedBy(source)) {
+			return InteractionResult.PASS;
+		}			
+		var level = preggoMob.level();		
+		Result result = evaluateFullness(level, source);
+		
+		if (result == null) {
+			return InteractionResult.PASS;
+		}
+				
+		if (level instanceof ServerLevel serverLevel) {
+			spawnParticles(preggoMob, serverLevel, result);
+		}	
+		return InteractionResult.sidedSuccess(level.isClientSide);
+	}
+	
+	public boolean canOwnerAccessGUI(Player source) {			
+		return preggoMob.isOwnedBy(source)
+				&& !preggoMob.isAggressive()
+				&& !preggoMob.isSavage()
+				&& !preggoMob.isFood(source.getMainHandItem());
+	}
+	
+	@Nullable
+	protected Result evaluateFullness(Level level, Player source) {		
+		
+	    var mainHandItem = source.getMainHandItem();
+	    var currentFullness = preggoMob.getFullness();
+    
+	    if (currentFullness >= ITamablePreggoMob.MAX_FULLNESS) {
+	    	return null;
+	    }
+
+        if (preggoMob.isFood(mainHandItem)) {      	           	
+        	final var foodProperties = mainHandItem.getFoodProperties(preggoMob);
+        	
+        	if (foodProperties == null) {
+        		return null;
+        	}
+        	    	
+        	int foodValue = foodProperties.getNutrition();          	
+            source.getInventory().clearOrCountMatchingItems(p -> mainHandItem.getItem() == p.getItem(), 1, source.inventoryMenu.getCraftSlots());
+            currentFullness += foodValue;          
+            preggoMob.setFullness(currentFullness);
+        	        	      
+            if (!level.isClientSide) {
+                level.playSound(null, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.generic.eat")), SoundSource.NEUTRAL, 0.75f, 1);	          	
+                 
+                if (preggoMob.isSavage() && preggoMob.isTame() && currentFullness >= MIN_FULLNESS_TO_TAME_AGAIN) {
+                	preggoMob.setSavage(false);
+                } 
+            }
+
+            return Result.SUCCESS;       	        
+        } 
+	      
+	    return null;		
+	}
+	
+	public static<E extends TamableAnimal & ITamablePreggoMob> void spawnParticles(E preggoMob, ServerLevel serverLevel, Result result) {
+
+		ParticleOptions particleoptions;
+			
+		if (result == Result.SUCCESS)
+			particleoptions = ParticleTypes.HEART;
+		else if (result == Result.FAIL)
+			particleoptions = ParticleTypes.SMOKE;
+		else if (result == Result.ANGRY)
+			particleoptions = ParticleTypes.ANGRY_VILLAGER;
+		else 
+			return;
+					
+		for (ServerPlayer player : serverLevel.getServer().getPlayerList().getPlayers()) {
+		    if (player.distanceToSqr(preggoMob) <= 512.0) {
+				serverLevel.sendParticles(player, particleoptions, true, preggoMob.getRandomX(1.0), preggoMob.getRandomY() + 0.5, preggoMob.getRandomZ(1.0),
+						7, serverLevel.random.nextGaussian() * 0.3, serverLevel.random.nextGaussian() * 0.5, serverLevel.random.nextGaussian() * 0.3, 0.02);
+		    }
+		}
+	}
+	
+    public void setCinematicOwner(ServerPlayer player) { 
+    	this.cinematicOwner = player;
+    }
    
     public void setCinematicEndTime(long time) { this.cinematicEndTime = time; }
 	
+    
 	public void cinematicTick() {
         if (cinematicEndTime > 0 && preggoMob.level().getGameTime() >= cinematicEndTime) {
             endCinematic();
@@ -72,211 +279,9 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob> {
         cinematicEndTime = -1;
     }
 	
-	
-	protected void evaluateHungryTimer(Level level, double x, double y, double z) {
-
-	    final var currentHungry = preggoMob.getHungry();
-	    final var currentHungryTimer = preggoMob.getHungryTimer();
-	      
-	    if (!preggoMob.isSavage()) {
-	        if (currentHungry > 0) {     	
-	            int timerIncrement = 1;
-	            if (preggoMob.getDeltaMovement().x() != 0 || preggoMob.getDeltaMovement().z() != 0) {
-	                timerIncrement += 1;              
-		            if (preggoMob.isInWater()) {
-		                timerIncrement += 2;
-		            }
-	            }
-	            
-	            if (currentHungryTimer >= totalTicksOfHungry) {
-	            	preggoMob.setHungryTimer(0);
-	            	preggoMob.setHungry(currentHungry + 1);
-	            }
-	            else {
-	            	preggoMob.setHungryTimer(currentHungryTimer + timerIncrement);
-	            }
-	                    
-	            if (currentHungry >= MIN_HUNGRY_TO_HEAL
-	            		&& preggoMob.getHealth() < preggoMob.getMaxHealth()) {     	
-	            	if (healingCooldownTimer >= 60) {
-		            	preggoMob.heal(1F);
-		            	preggoMob.setHungry(currentHungry - 1);
-		            	healingCooldownTimer = 0;
-	            	}
-	            	else {
-	            		++healingCooldownTimer;
-	            	}
-	            }            
-	        } 
-	        else {
-	        	preggoMob.setSavage(true);
-	        }
-	    } else {
-	        if (preggoMob.isTame() && !PreggoMobHelper.hasValidTarget(preggoMob)) {
-	            final var center = new Vec3(x, y, z);
-	        		
-	            Player player = level.getEntitiesOfClass(Player.class, new AABB(center, center).inflate(12), e -> true).stream().sorted(new Object() {
-					Comparator<Entity> compareDistOf(double _x, double _y, double _z) {
-						return Comparator.comparingDouble(entcnd -> entcnd.distanceToSqr(_x, _y, _z));
-					}
-				}.compareDistOf(x, y, z)).findFirst().orElse(null);
-	        	
-	        	if (player != null && !PreggoMobHelper.isPlayerInCreativeOrSpectator(player))
-	        		preggoMob.setTarget(player);
-	        }
-	    }
-	}
-		
-	protected boolean canFeedHerself() {
-		final var currentHungry = preggoMob.getHungry();
-		return (currentHungry < 10 || (preggoMob.getHealth() < 20 && currentHungry < 18)) && !preggoMob.isAggressive();
-	}
-	
-	protected void evaluateAutoFeeding(Level level) {
-	
-		if (!this.canFeedHerself()) {
-			return;
-		}
-				
-		if (autoFeedingCooldownTimer < 40) {
-			++autoFeedingCooldownTimer;
-			return;
-		}
-		
-		preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(capability -> {		
-			ItemStack food = capability.extractItem(ITamablePreggoMob.FOOD_INVENTORY_SLOT, 1, false);
-			
-			if (food.isEmpty()) {
-				return;
-			}
-			
-			final var foodProperties = food.getFoodProperties(preggoMob);
-			
-			if (foodProperties == null) {
-				return;
-			}
-			
-			preggoMob.setHungry(Math.min(preggoMob.getHungry() + foodProperties.getNutrition(), 25));	
-	        level.playSound(null, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.generic.eat")), SoundSource.NEUTRAL, 0.75f, 1);	          	
-		
-			MinepreggoMod.LOGGER.debug("AUTO FEEDING: id={}, class={}, food={}",
-					preggoMob.getId(), preggoMob.getClass().getSimpleName(), food.getDisplayName().getString());
-		
-			autoFeedingCooldownTimer = 0;			
-		});
-	}
-	
-	public void evaluateOnTick() {
-		final var level = preggoMob.level();
-		
-		if (level.isClientSide()) {
-			return;
-		}
-			
-		this.evaluateHungryTimer(level, preggoMob.getX(), preggoMob.getY(), preggoMob.getZ());
-		this.evaluateAutoFeeding(level);
-	}
-	
-	public InteractionResult evaluateRightClick(Player source) {			
-		final var level = preggoMob.level();
-		
-		if (!preggoMob.isOwnedBy(source) || level.isClientSide()) {
-			return InteractionResult.PASS;
-		}	
-		
-		Result result;
-		
-		if ((result = this.evaluateHungry(level, source)) != Result.NOTHING && level instanceof ServerLevel serverLevel) {
-			spawnParticles(preggoMob, serverLevel, result);
-		}
-			
-		return onRightClickResult(result);	
-	}
-	
-	public boolean canOwnerAccessGUI(Player source) {			
-		return preggoMob.isOwnedBy(source)
-				&& !preggoMob.isAggressive()
-				&& !preggoMob.isSavage()
-				&& !preggoMob.isFood(source.getMainHandItem());
-	}
-	
-	protected Result evaluateHungry(Level level, Player source) {		
-		
-	    var mainHandItem = source.getMainHandItem();
-	    var currentHunger = preggoMob.getHungry();
-    
-	    if (currentHunger < 20) {
-	        int foodValue = 0;
-
-	        if (preggoMob.isFood(mainHandItem)) {      	           	
-	        	final var foodProperties = mainHandItem.getFoodProperties(preggoMob);
-	        	
-	        	if (foodProperties == null) {
-	        		return Result.NOTHING;
-	        	}
-	        	
-	        	foodValue = foodProperties.getNutrition();     
-	        	
-		        if (foodValue > 0) {      	
-
-	                source.getInventory().clearOrCountMatchingItems(p -> mainHandItem.getItem() == p.getItem(), 1, source.inventoryMenu.getCraftSlots());
-	                currentHunger += foodValue;          
-	                preggoMob.setHungry(Math.min(currentHunger, 25));
-		        	        	
-	                level.playSound(null, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.generic.eat")), SoundSource.NEUTRAL, 0.75f, 1);	          	
-	      
-	                if (preggoMob.isSavage() && preggoMob.isTame() && currentHunger >= MIN_HUNGRY_TO_TAME_AGAIN) {
-	                	preggoMob.setSavage(false);
-	                } 
-		        	
-		            return Result.SUCCESS;
-		        }	       	        
-	        }      
-	    }
-	    
-	    return Result.NOTHING;		
-	}
-	
-	public static final InteractionResult onRightClickResult(Result result) {
-		if (result == Result.SUCCESS) {
-			return InteractionResult.SUCCESS;
-		}
-		else if (result == Result.NOTHING) {
-			return InteractionResult.PASS;
-		}
-		else {
-			return InteractionResult.CONSUME;
-		}
-	}
-	
-	public static<E extends TamableAnimal & ITamablePreggoMob> void spawnParticles(E preggoMob, ServerLevel serverLevel, Result result) {
-
-		ParticleOptions particleoptions;
-			
-		if (result == Result.SUCCESS)
-			particleoptions = ParticleTypes.HEART;
-		else if (result == Result.FAIL)
-			particleoptions = ParticleTypes.SMOKE;
-		else if (result == Result.ANGRY)
-			particleoptions = ParticleTypes.ANGRY_VILLAGER;
-		else 
-			return;
-					
-		for (ServerPlayer player : serverLevel.getServer().getPlayerList().getPlayers()) {
-		    if (player.distanceToSqr(preggoMob) <= 1024.0) { // 32 blocks
-				serverLevel.sendParticles(player, particleoptions, true, preggoMob.getRandomX(1.0), preggoMob.getRandomY() + 0.5, preggoMob.getRandomZ(1.0),
-						7, serverLevel.random.nextGaussian() * 0.3, serverLevel.random.nextGaussian() * 0.5, serverLevel.random.nextGaussian() * 0.3, 0.02);
-		    }
-		}
-	}
-	
-	
-	
 	protected enum Result {
 		ANGRY,
 		FAIL,
-		PROCESS,
-		NOTHING,
 		SUCCESS
 	}
 }

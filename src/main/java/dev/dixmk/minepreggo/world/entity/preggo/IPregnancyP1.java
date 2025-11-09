@@ -1,15 +1,11 @@
 package dev.dixmk.minepreggo.world.entity.preggo;
 
-import net.minecraft.world.item.Item;
+import dev.dixmk.minepreggo.network.capability.IPregnancyEffectsHandler;
+import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
 
-public interface IPregnancyP1 {
-	Craving getTypeOfCraving();
-	boolean isValidCraving(Craving craving, Item item);
-	void setTypeOfCraving(Craving craving);
+public interface IPregnancyP1
+	<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler & IPregnancyEffectsHandler> {
+
+	PregnancySystemP1<E> getPregnancySystemP1();
 	
-	int getCraving();
-	void setCraving(int craving);
-	
-	int getCravingTimer();
-	void setCravingTimer(int timer);
 }

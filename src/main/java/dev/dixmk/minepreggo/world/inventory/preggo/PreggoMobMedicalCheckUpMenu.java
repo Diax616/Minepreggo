@@ -6,11 +6,11 @@ import org.joml.Vector3i;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoModMenus;
+import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
 import dev.dixmk.minepreggo.world.entity.preggo.Baby;
-import dev.dixmk.minepreggo.world.entity.preggo.IPregnancySystem;
+import dev.dixmk.minepreggo.world.entity.preggo.IBreedable;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
-import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancyStage;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.sounds.SoundEvents;
@@ -20,13 +20,13 @@ import net.minecraft.world.entity.player.Inventory;
 public class PreggoMobMedicalCheckUpMenu extends AbstractMedicalCheckUpMenu<PreggoMob, ScientificIllager> {
 
 	private final boolean valid;
-	private final Optional<IPregnancySystem> pregnancySystem;
+	private final Optional<IPregnancySystemHandler> pregnancySystem;
 	
 	public PreggoMobMedicalCheckUpMenu(int id, Inventory inv, FriendlyByteBuf extraData) {
 		super(MinepreggoModMenus.PREGGO_MOB_MEDICAL_CHECKUP_MENU.get(), id, inv);	
 		
 		PreggoMob s = null;	
-		IPregnancySystem ps = null;
+		IPregnancySystemHandler ps = null;
 		ScientificIllager t = null;
 		Vector3i p = null;
 		
@@ -36,7 +36,7 @@ public class PreggoMobMedicalCheckUpMenu extends AbstractMedicalCheckUpMenu<Preg
 		
 			if (level.getEntity(extraData.readVarInt()) instanceof PreggoMob preggoMob)  {
 				s = preggoMob;			
-				if (preggoMob instanceof IPregnancySystem pregSystem) {
+				if (preggoMob instanceof IPregnancySystemHandler pregSystem) {
 					ps = pregSystem;
 				}		
 			}	
@@ -91,12 +91,12 @@ public class PreggoMobMedicalCheckUpMenu extends AbstractMedicalCheckUpMenu<Preg
 
 	@Override
 	public int getNumberOfChildren() {
-		return this.valid ? PreggoMobHelper.getNumberOfChildrens(this.pregnancySystem.get().getLastPregnancyStage()) : -1;
+		return this.valid ? IBreedable.getOffspringsByMaxPregnancyStage(this.pregnancySystem.get().getLastPregnancyStage()) : -1;
 	}
 
 	@Override
 	public Baby getBabyType() {
-		return this.valid ? this.pregnancySystem.get().getTypeOfBaby() : null;
+		return this.valid ? this.pregnancySystem.get().getDefaultTypeOfBaby() : null;
 	}
 
 	@Override

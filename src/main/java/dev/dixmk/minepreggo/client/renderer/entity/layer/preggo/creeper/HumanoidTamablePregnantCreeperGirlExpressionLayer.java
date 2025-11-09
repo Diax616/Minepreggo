@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractTamablePregnantCreeperGirlModel;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobState;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancySymptom;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantHumanoidCreeperGirl;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
@@ -20,31 +19,35 @@ public class HumanoidTamablePregnantCreeperGirlExpressionLayer
 	}
 	
 	@Override
-	public Optional<RenderType> renderType(E creeperGirl) {		
-		switch (creeperGirl.getPregnancyPain()) {
-		case MORNING_SICKNESS: {		
-			return Optional.of(PAIN4);
+	public Optional<RenderType> renderType(E creeperGirl) {			
+		final var pain = creeperGirl.getPregnancyPain();
+			
+		if (pain != null) {
+			switch (pain) {
+			case MORNING_SICKNESS: {		
+				return Optional.of(PAIN4);
+			}
+			case KICKING: {		
+				return Optional.of(PAIN1);
+			}
+			case CONTRACTION: {		
+				return Optional.of(PAIN2);
+			}
+			case MISCARRIAGE: {		
+				return Optional.of(SURPRISED1);
+			}
+			case PREBIRTH: {		
+				return Optional.of(PAIN3);
+			}
+			case BIRTH: {		
+				return Optional.of(PAIN1);
+			}
+			default:
+				break;
+			}
 		}
-		case KICKING: {		
-			return Optional.of(PAIN1);
-		}
-		case CONTRACTION: {		
-			return Optional.of(PAIN2);
-		}
-		case MISCARRIAGE: {		
-			return Optional.of(SURPRISED1);
-		}
-		case PREBIRTH: {		
-			return Optional.of(PAIN3);
-		}
-		case BIRTH: {		
-			return Optional.of(PAIN1);
-		}
-		default:
-			break;
-		}
-		
-		if (creeperGirl.getPregnancySymptom() != PregnancySymptom.NONE) {
+	
+		if (creeperGirl.getPregnancySymptom() != null) {
 			return Optional.of(SAD1);
 		}
 		else if (creeperGirl.getState() == PreggoMobState.BLUSHED) {

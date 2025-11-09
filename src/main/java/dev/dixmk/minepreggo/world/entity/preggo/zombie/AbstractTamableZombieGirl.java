@@ -17,7 +17,6 @@ import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobState;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancyStage;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancySymptom;
 import dev.dixmk.minepreggo.world.inventory.preggo.zombie.ZombieGirlMenuHelper;
 import dev.dixmk.minepreggo.world.item.ItemHelper;
 import net.minecraft.core.Direction;
@@ -28,6 +27,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
@@ -57,14 +57,11 @@ import net.minecraftforge.items.wrapper.EntityHandsInvWrapper;
 
 public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> extends AbstractZombieGirl implements ITamablePreggoMob {
 	protected static final EntityDataAccessor<Integer> DATA_HUNGRY = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.INT);
-	protected static final EntityDataAccessor<PregnancyStage> DATA_MAX_PREGNANCY_STAGE = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, MinepreggoModEntityDataSerializers.PREGNANCY_STAGE);
-	protected static final EntityDataAccessor<PregnancySymptom> DATA_PREGNANCY_SYMPTOM = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, MinepreggoModEntityDataSerializers.PREGNANCY_SYMPTOM);
 	protected static final EntityDataAccessor<Boolean> DATA_SAVAGE = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Boolean> DATA_ANGRY = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Boolean> DATA_WAITING = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Boolean> DATA_PANIC = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<PreggoMobState> DATA_STATE = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, MinepreggoModEntityDataSerializers.STATE);
-
 	protected static final EntityDataAccessor<Boolean> DATA_BREAK_BLOCKS = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Boolean> DATA_PICKUP_ITEMS = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
 	
@@ -89,14 +86,12 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 	protected void defineSynchedData() {
 		super.defineSynchedData();
 		this.entityData.define(DATA_HUNGRY, 4);		
-		this.entityData.define(DATA_SAVAGE, false);
+		this.entityData.define(DATA_SAVAGE, true);
 		this.entityData.define(DATA_ANGRY, false);
 		this.entityData.define(DATA_WAITING, false);
 		this.entityData.define(DATA_PANIC, false);
 		this.entityData.define(DATA_BREAK_BLOCKS, false);
 		this.entityData.define(DATA_PICKUP_ITEMS, this.canPickUpLoot());
-		this.entityData.define(DATA_MAX_PREGNANCY_STAGE, PregnancyStage.P0);
-		this.entityData.define(DATA_PREGNANCY_SYMPTOM, PregnancySymptom.NONE);	
 		this.entityData.define(DATA_STATE, PreggoMobState.IDLE);
 	}
 	
@@ -112,9 +107,7 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 		compound.putBoolean("DataPanic", this.entityData.get(DATA_PANIC));	
 		compound.putBoolean("DataBreakBlocks", this.entityData.get(DATA_BREAK_BLOCKS));
 		compound.putBoolean("DataPickUpItems", this.entityData.get(DATA_PICKUP_ITEMS));
-		compound.putInt("DataMaxPregnancyStage", this.entityData.get(DATA_MAX_PREGNANCY_STAGE).ordinal());
-		compound.putInt("DataPregnancySymptom", this.entityData.get(DATA_PREGNANCY_SYMPTOM).ordinal());	
-		compound.putInt("DataStage", this.entityData.get(DATA_STATE).ordinal());
+		compound.putInt("DataState", this.entityData.get(DATA_STATE).ordinal());
 	}
 	
 	@Override
@@ -131,9 +124,7 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 		this.entityData.set(DATA_PANIC, compound.getBoolean("DataPanic"));	
 		this.entityData.set(DATA_BREAK_BLOCKS, compound.getBoolean("DataBreakBlocks"));	
 		this.entityData.set(DATA_PICKUP_ITEMS, compound.getBoolean("DataPickUpItems"));
-		this.entityData.set(DATA_PREGNANCY_SYMPTOM, PregnancySymptom.values()[compound.getInt("DataPregnancySymptom")]);
-		this.entityData.set(DATA_MAX_PREGNANCY_STAGE, PregnancyStage.values()[compound.getInt("DataMaxPregnancyStage")]);
-		this.entityData.set(DATA_STATE, PreggoMobState.values()[compound.getInt("DataStage")]);
+		this.entityData.set(DATA_STATE, PreggoMobState.values()[compound.getInt("DataState")]);
 	}
 
 	@Override
@@ -222,7 +213,7 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
       super.aiStep();
       this.updateSwingTime();      
       if (this.isAlive()) {	  
-          this.preggoMobSystem.evaluateOnTick();       
+          this.preggoMobSystem.onServerTick();       
       }
 	}
 	
@@ -241,7 +232,7 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 			return InteractionResult.SUCCESS;
 		}
 		else {		
-			return preggoMobSystem.evaluateRightClick(sourceentity);
+			return preggoMobSystem.onRightClick(sourceentity);
 		}	
 	}
 	
@@ -295,13 +286,13 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 	}
 	
 	@Override
-	public int getHungry() {
+	public int getFullness() {
 	    return this.entityData.get(DATA_HUNGRY);
 	}
 
 	@Override
-	public void setHungry(int hungry) {
-	    this.entityData.set(DATA_HUNGRY, hungry);
+	public void setFullness(int hungry) {
+		this.entityData.set(DATA_HUNGRY, Mth.clamp(hungry, 0, ITamablePreggoMob.MAX_FULLNESS));
 	}
 
 	@Override
@@ -312,6 +303,26 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 	@Override
 	public void setHungryTimer(int ticks) {
 	    this.hungryTimer = ticks;
+	}
+	
+	@Override
+	public void increaseFullness(int amount) {
+		this.setFullness(this.getFullness() + amount);
+	}
+	
+	@Override
+	public void reduceFullness(int amount) {
+		this.setFullness(this.getFullness() - amount);		
+	}
+
+	@Override
+	public void increaseHungryTimer() {
+		++this.hungryTimer;
+	}
+
+	@Override
+	public void resetHungryTimer() {
+		this.hungryTimer = 0;	
 	}
 	
 	@Override

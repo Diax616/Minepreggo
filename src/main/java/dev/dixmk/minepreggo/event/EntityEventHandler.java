@@ -47,10 +47,10 @@ public class EntityEventHandler {
         var mob = event.getEntity();
         
         if (mob instanceof AbstractTamablePregnantZombieGirl<?,?> zombieGirl && zombieGirl.getSpawnType() != MobSpawnType.CONVERSION) {
-        	PreggoMobHelper.startPregnancy(zombieGirl);
+        	PreggoMobHelper.initPregnancy(zombieGirl);
         }
         else if (mob instanceof AbstractTamablePregnantCreeperGirl<?,?> creeperGirl && creeperGirl.getSpawnType() != MobSpawnType.CONVERSION) {
-        	PreggoMobHelper.startPregnancy(creeperGirl);
+        	PreggoMobHelper.initPregnancy(creeperGirl);
         }        
         else if (mob instanceof AbstractMonsterHumanoidCreeperGirl) {  	
         	mob.setCanPickUpLoot(mob.getRandom().nextFloat() < 0.35F * event.getDifficulty().getSpecialMultiplier());    

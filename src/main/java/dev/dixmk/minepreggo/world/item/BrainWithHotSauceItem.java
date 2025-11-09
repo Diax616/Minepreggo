@@ -4,7 +4,7 @@ import org.checkerframework.checker.index.qual.NonNegative;
 
 import dev.dixmk.minepreggo.world.entity.preggo.Craving;
 
-public class BrainWithHotSauceItem extends AbstractBrain implements ICraving {
+public class BrainWithHotSauceItem extends AbstractBrain implements IItemCraving {
 	public BrainWithHotSauceItem() {
 		super(7);
 	}

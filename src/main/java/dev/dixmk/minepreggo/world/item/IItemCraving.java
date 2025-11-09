@@ -4,7 +4,7 @@ import org.checkerframework.checker.index.qual.NonNegative;
 
 import dev.dixmk.minepreggo.world.entity.preggo.Craving;
 
-public interface ICraving {
+public interface IItemCraving {
 
 	@NonNegative
 	int getGratification();

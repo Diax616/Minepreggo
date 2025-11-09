@@ -4,7 +4,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import com.google.common.collect.ImmutableMap;
 
-import dev.dixmk.minepreggo.world.entity.preggo.IPregnancySystem;
+import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancyStage;
@@ -38,7 +38,7 @@ public class MessageHelper {
 			5, "chat.minepreggo.preggo_mob.armor.message.chestplate_p5_does_not_fit",
 			6, "chat.minepreggo.preggo_mob.armor.message.chestplate_p6_does_not_fit",
 			7, "chat.minepreggo.preggo_mob.armor.message.chestplate_p7_does_not_fit",
-			8, "chat.minepreggo.preggo_mob.armor.message.chestplate_p7_does_not_fit"
+			8, "chat.minepreggo.preggo_mob.armor.message.chestplate_p8_does_not_fit"
 	));
 	
 	
@@ -54,20 +54,20 @@ public class MessageHelper {
 		return Component.translatable("chat.minepreggo.preggo_mob.armor.message.leggings_p1_does_not_fit", name);
 	}
 	
-	public static<T extends PreggoMob & ITamablePreggoMob & IPregnancySystem> void warningOwnerPossibleMiscarriageEvent(@NonNull T preggoMob) {	
+	public static<T extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler> void warningOwnerPossibleMiscarriageEvent(@NonNull T preggoMob) {	
 		if (preggoMob.isTame() && preggoMob.getOwner() != null  && !preggoMob.level().isClientSide()) {		
 			sendMessageToPlayer((Player) preggoMob.getOwner(), Component.translatable("chat.minepreggo.preggo_mob.pregnancy.message.miscarriage_warning", preggoMob.getName()));		
 		}			
 	}
 	
-	public static<T extends PreggoMob & ITamablePreggoMob & IPregnancySystem> void warningOwnerPospartumEvent(@NonNull T preggoMob) {	
+	public static<T extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler> void warningOwnerPospartumEvent(@NonNull T preggoMob) {	
 		if (preggoMob.isTame() && preggoMob.getOwner() != null && !preggoMob.level().isClientSide()) {		
 			final var owner = (Player) preggoMob.getOwner();
 			sendMessageToPlayer(owner, Component.translatable("chat.minepreggo.preggo_mob.message.post_partum", preggoMob.getSimpleName(), owner.getDisplayName().getString()));	
 		}			
 	}
 	
-	public static<T extends PreggoMob & ITamablePreggoMob & IPregnancySystem> void warningOwnerMiscarriageEvent(@NonNull T preggoMob) {	
+	public static<T extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler> void warningOwnerMiscarriageEvent(@NonNull T preggoMob) {	
 		if (preggoMob.isTame() && preggoMob.getOwner() != null && !preggoMob.level().isClientSide()) {		
 			sendMessageToPlayer((Player) preggoMob.getOwner(), Component.translatable("chat.minepreggo.preggo_mob.message.post_miscarriage", preggoMob.getSimpleName()));	
 		}			

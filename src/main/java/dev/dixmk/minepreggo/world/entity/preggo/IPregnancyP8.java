@@ -1,6 +1,11 @@
 package dev.dixmk.minepreggo.world.entity.preggo;
 
-public interface IPregnancyP8 extends IPregnancyP7 {
+import dev.dixmk.minepreggo.network.capability.IPregnancyEffectsHandler;
+import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
 
+public interface IPregnancyP8
+	<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler & IPregnancyEffectsHandler> {
+
+	PregnancySystemP8<E> getPregnancySystemP8();
 }
 

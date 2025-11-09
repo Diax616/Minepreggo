@@ -1,6 +1,6 @@
 package dev.dixmk.minepreggo.world.entity.ai.goal;
 
-import dev.dixmk.minepreggo.world.entity.preggo.IPregnancySystem;
+import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
@@ -345,7 +345,7 @@ public class PreggoMobAIHelper {
 		preggoMob.goalSelector.addGoal(11, new FloatGoal(preggoMob));
 	}
 	
-	private static<T extends PreggoMob & ITamablePreggoMob & IPregnancySystem> void setBasicPregnantPreggoMobGoals(T preggoMob) {	
+	private static<T extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler> void setBasicPregnantPreggoMobGoals(T preggoMob) {	
 		
 		preggoMob.targetSelector.addGoal(2, new HurtByTargetGoal(preggoMob) {
 			@Override

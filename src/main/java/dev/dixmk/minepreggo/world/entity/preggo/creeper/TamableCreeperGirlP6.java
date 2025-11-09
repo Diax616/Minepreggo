@@ -2,7 +2,6 @@ package dev.dixmk.minepreggo.world.entity.preggo.creeper;
 
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
-import dev.dixmk.minepreggo.world.entity.preggo.Craving;
 import dev.dixmk.minepreggo.world.entity.preggo.IPregnancyP6;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancyStage;
@@ -13,18 +12,17 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.PlayMessages;
 
-public class TamableCreeperGirlP6 extends AbstractTamablePregnantHumanoidCreeperGirl<PregnantPreggoMobSystem<TamableCreeperGirlP6>,PregnancySystemP6<TamableCreeperGirlP6>> implements IPregnancyP6 {
+public class TamableCreeperGirlP6 extends AbstractTamablePregnantHumanoidCreeperGirl<PregnantPreggoMobSystem<TamableCreeperGirlP6>,PregnancySystemP6<TamableCreeperGirlP6>> implements IPregnancyP6<TamableCreeperGirlP6> {
 	
 	public TamableCreeperGirlP6(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P6.get(), world);
 	}
 
 	public TamableCreeperGirlP6(EntityType<TamableCreeperGirlP6> type, Level world) {
-		super(type, world);
+		super(type, world, PregnancyStage.P6);
 		xpReward = 10;
 		setNoAi(false);
 		setMaxUpStep(0.6f);
@@ -39,7 +37,7 @@ public class TamableCreeperGirlP6 extends AbstractTamablePregnantHumanoidCreeper
 	protected PregnancySystemP6<TamableCreeperGirlP6> createPregnancySystem() {
 		return new PregnancySystemP6<>(this) {
 			@Override
-			protected void changePregnancyStage() {
+			protected void advanceToNextPregnancyPhase() {
 				if (preggoMob.level() instanceof ServerLevel serverLevel) {
 					var creeperGirl = MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P7.get().spawn(serverLevel, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), MobSpawnType.CONVERSION);
 					PreggoMobHelper.transferPregnancyP4Data(preggoMob, creeperGirl);
@@ -49,12 +47,12 @@ public class TamableCreeperGirlP6 extends AbstractTamablePregnantHumanoidCreeper
 			}
 			
 			@Override
-			protected void postMiscarriage() {
+			protected void initPostMiscarriage() {
 				TamableCreeperGirlP0.onPostPartum(preggoMob);
 			}
 			
 			@Override
-			protected void postBirth() {
+			protected void initPostBirth() {
 				TamableCreeperGirlP0.onPostPartum(preggoMob);
 			}
 		};
@@ -63,104 +61,9 @@ public class TamableCreeperGirlP6 extends AbstractTamablePregnantHumanoidCreeper
 	public static AttributeSupplier.Builder createAttributes() {
 		return AbstractTamableHumanoidCreeperGirl.getBasicAttributes(0.20);
 	}
-	
-	@Override
-	public PregnancyStage getCurrentPregnancyStage() {
-		return PregnancyStage.P6;
-	}
-	
-	@Override
-	public int getCraving() {
-		return this.entityData.get(DATA_CRAVING);
-	}
 
 	@Override
-	public void setCraving(int craving) {
-		this.entityData.set(DATA_CRAVING, craving);
-	}
-	
-	@Override
-	public int getCravingTimer() {
-		return this.cravingTimer;
-	}
-
-	@Override
-	public void setCravingTimer(int timer) {
-		this.cravingTimer = timer;
-	}
-
-	@Override
-	public Craving getTypeOfCraving() {
-		return this.entityData.get(DATA_CRAVING_CHOSEN);
-	}
-
-	@Override
-	public void setTypeOfCraving(Craving craving) {
-		this.entityData.set(DATA_CRAVING_CHOSEN, craving);
-	}
-
-	@Override
-	public int getMilking() {
-	    return this.entityData.get(DATA_MILKING);
-	}
-	
-	@Override
-	public void setMilking(int milking) {
-	    this.entityData.set(DATA_MILKING, milking);
-	}
-	
-	@Override
-	public int getMilkingTimer() {
-	    return this.milkingTimer;
-	}
-	
-	@Override
-	public void setMilkingTimer(int timer) {
-	    this.milkingTimer = timer;
-	}
-	
-	@Override
-	public int getBellyRubs() {
-	    return this.entityData.get(DATA_BELLY_RUBS);
-	}
-	
-	@Override
-	public void setBellyRubs(int bellyRubs) {
-	    this.entityData.set(DATA_BELLY_RUBS, bellyRubs);
-	}
-	
-	@Override
-	public int getBellyRubsTimer() {
-	    return this.bellyRubsTimer;
-	}
-	
-	@Override
-	public void setBellyRubsTimer(int timer) {
-        this.bellyRubsTimer = timer;
-    }
-
-	@Override
-	public int getHorny() {
-        return this.entityData.get(DATA_HORNY);
-    }
-	
-	@Override
-	public void setHorny(int horny) {
-        this.entityData.set(DATA_HORNY, horny);
-    }
-	
-	@Override
-	public int getHornyTimer() {
-        return this.hornyTimer;
-    }
-	
-	@Override
-	public void setHornyTimer(int timer) {
-        this.hornyTimer = timer;
-    }
-	
-	@Override
-	public boolean isValidCraving(Craving craving, Item item) {
-		return this.isCraving(craving, item);
+	public PregnancySystemP6<TamableCreeperGirlP6> getPregnancySystemP6() {
+		return pregnancySystem;
 	}
 }

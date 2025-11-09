@@ -4,9 +4,17 @@ public class PregnancySystemConstants {
 	
 	private PregnancySystemConstants() {}
 	
+	public static final int MAX_PREGNANCY_HEALTH = 100;
+	
+	public static final int MAX_PREGNANCY_FERTILITY = 100;
+	
+	public static final int MAX_CRAVING_LEVEL = 20;
+	public static final int MAX_MILKING_LEVEL = 20;
+	public static final int MAX_BELLY_RUBBING_LEVEL = 20;
+	public static final int MAX_HORNY_LEVEL = 20;
+	
 	// Days
 	public static final int TOTAL_PREGNANCY_DAYS = 70;
-	
 	
 	// Ticks
 	public static final int TOTAL_TICKS_MISCARRIAGE = 400;

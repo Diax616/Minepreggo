@@ -329,6 +329,9 @@
 	"subtitles.kicking2": "kicking belly",
 	"subtitles.kicking1": "kicking belly",
 	
+	
+	
+	
 	"chat.minepreggo.preggo_mob.pregnancy.message.miscarriage_warning": "%s feels pain below her pregnant belly, something isn't right...",
 	"chat.minepreggo.preggo_mob.pregnancy.message.post_partum": "%s just gave birth your babies, congratulation %s!",
 	"chat.minepreggo.preggo_mob.pregnancy.message.post_miscarriage": "%s just lost the babies...",
@@ -355,6 +358,13 @@
 	"chat.minepreggo.player.armor.message.leggings_p1_does_not_fit": "Your butt and hips are too big to fit this armor",
 	"chat.minepreggo.player.armor.message.lactating": "Your lactating boobs don't fit in this armor",
 
+	"chat.minepreggo.player.birth.message.labor": "Your babies wanna come out, You can't stand up!",
+	"chat.minepreggo.player.birth.message.water_breaking": "Your water just broke, the babies are comming!",
+	"chat.minepreggo.player.birth.message.successful_birth": "Congratulations, you gave birth to %s babies!",
+
+	"chat.minepreggo.player.miscarriage.message.lost": "You just lost your babies...",
+
+	
 	"chat.minepreggo.scientific_illager.no_pregnant_entities": "There are no pregnant entities to checkup"
 
 }

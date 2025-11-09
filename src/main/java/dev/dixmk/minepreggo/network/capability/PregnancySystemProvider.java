@@ -12,8 +12,8 @@ import net.minecraftforge.common.util.LazyOptional;
 
 public class PregnancySystemProvider implements ICapabilitySerializable<Tag> {
 
-	private final PregnancySystemImpl pregnancySystem = new PregnancySystemImpl();
-	private final LazyOptional<PregnancySystemImpl> instance = LazyOptional.of(() -> pregnancySystem);
+	private final PlayerPregnancySystemImpl pregnancySystem = new PlayerPregnancySystemImpl();
+	private final LazyOptional<PlayerPregnancySystemImpl> instance = LazyOptional.of(() -> pregnancySystem);
 	
 	@Override
 	public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {

@@ -1,5 +1,7 @@
 package dev.dixmk.minepreggo.init;
 
+import java.util.Optional;
+
 import dev.dixmk.minepreggo.world.entity.preggo.Craving;
 import dev.dixmk.minepreggo.world.entity.preggo.PostPregnancy;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobState;
@@ -14,23 +16,47 @@ public class MinepreggoModEntityDataSerializers {
 
 	private MinepreggoModEntityDataSerializers() {}
 	
-	public static final EntityDataSerializer<PregnancySymptom> PREGNANCY_SYMPTOM = EntityDataSerializer.simpleEnum(PregnancySymptom.class);	
 	public static final EntityDataSerializer<PregnancyStage> PREGNANCY_STAGE = EntityDataSerializer.simpleEnum(PregnancyStage.class);
-	public static final EntityDataSerializer<PregnancyPain> PREGNANCY_PAIN = EntityDataSerializer.simpleEnum(PregnancyPain.class);
-	
 	public static final EntityDataSerializer<CombatMode> COMBAT_MODE = EntityDataSerializer.simpleEnum(CombatMode.class);
-	public static final EntityDataSerializer<PreggoMobState> STATE = EntityDataSerializer.simpleEnum(PreggoMobState.class);
-	public static final EntityDataSerializer<Craving> CRAVING = EntityDataSerializer.simpleEnum(Craving.class);
+	public static final EntityDataSerializer<PreggoMobState> STATE = EntityDataSerializer.simpleEnum(PreggoMobState.class);	
+
+    public static final EntityDataSerializer<Optional<Craving>> OPTIONAL_CRAVING =
+    		EntityDataSerializer.optional(
+                // Writer: write enum name (safe)
+                (buf, craving) -> buf.writeUtf(craving.name(), 32),
+                // Reader: read enum name and parse
+                buf -> Craving.valueOf(buf.readUtf(32))
+            );
 	
-	public static final EntityDataSerializer<PostPregnancy> POST_PREGNANCY = EntityDataSerializer.simpleEnum(PostPregnancy.class);	
+    public static final EntityDataSerializer<Optional<PregnancyPain>> OPTIONAL_PREGNANCY_PAIN =
+    		EntityDataSerializer.optional(
+                (buf, pain) -> buf.writeUtf(pain.name(), 32),
+                buf -> PregnancyPain.valueOf(buf.readUtf(32))
+            );
+    
+    public static final EntityDataSerializer<Optional<PregnancySymptom>> OPTIONAL_PREGNANCY_SYMPTOM =
+    		EntityDataSerializer.optional(
+                (buf, symptom) -> buf.writeUtf(symptom.name(), 32),
+                buf -> PregnancySymptom.valueOf(buf.readUtf(32))
+            );
+    
+    public static final EntityDataSerializer<Optional<PostPregnancy>> OPTIONAL_POST_PREGNANCY =
+    		EntityDataSerializer.optional(
+                (buf, post) -> buf.writeUtf(post.name(), 32),
+                buf -> PostPregnancy.valueOf(buf.readUtf(32))
+            );
+    
+	
+	
+	
 	
     public static void register() {
-        EntityDataSerializers.registerSerializer(PREGNANCY_SYMPTOM);
+        EntityDataSerializers.registerSerializer(OPTIONAL_PREGNANCY_SYMPTOM);
         EntityDataSerializers.registerSerializer(PREGNANCY_STAGE);
-        EntityDataSerializers.registerSerializer(PREGNANCY_PAIN);
+        EntityDataSerializers.registerSerializer(OPTIONAL_PREGNANCY_PAIN);
         EntityDataSerializers.registerSerializer(COMBAT_MODE);
         EntityDataSerializers.registerSerializer(STATE);
-        EntityDataSerializers.registerSerializer(CRAVING);
-        EntityDataSerializers.registerSerializer(POST_PREGNANCY);
+        EntityDataSerializers.registerSerializer(OPTIONAL_CRAVING);
+        EntityDataSerializers.registerSerializer(OPTIONAL_POST_PREGNANCY);
     }
 }

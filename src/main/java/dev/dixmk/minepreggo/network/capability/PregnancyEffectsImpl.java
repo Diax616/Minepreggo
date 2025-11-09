@@ -1,10 +1,15 @@
 package dev.dixmk.minepreggo.network.capability;
 
+import java.util.Optional;
+
+import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.network.packet.SyncPregnancyEffectsS2CPacket;
 import dev.dixmk.minepreggo.world.entity.preggo.Craving;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemConstants;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
@@ -25,20 +30,24 @@ public class PregnancyEffectsImpl implements IPregnancyEffectsHandler {
 	private int milking = 0;
 	private int bellyRubs = 0;
 	private int horny = 0;
-	private Craving typeOfCraving = Craving.NONE;
+	private Optional<Craving> typeOfCraving = Optional.empty();
 	
 	@Override
-	public Craving getTypeOfCraving() {
-		return this.typeOfCraving;
+	@Nullable
+	public Craving getTypeOfCraving() {	
+		if (typeOfCraving.isPresent()) {
+			return typeOfCraving.get();
+		}	
+		return null;
 	}
 	
 	@Override
-	public void setTypeOfCraving(Craving craving) {
-		this.typeOfCraving = craving;
+	public void setTypeOfCraving(@Nullable Craving craving) {
+		this.typeOfCraving = Optional.ofNullable(craving);
 	}
 	
 	@Override
-	public boolean isValidCraving(Craving craving, Item item) {
+	public boolean isValidCraving(Item item) {
 		return false;
 	}
 	
@@ -48,8 +57,8 @@ public class PregnancyEffectsImpl implements IPregnancyEffectsHandler {
 	}
 	
 	@Override
-	public void setCraving(int craving) {
-		this.craving = Mth.clamp(craving, 0, 20);
+	public void setCraving(@NonNegative int craving) {
+		this.craving = Mth.clamp(craving, 0, PregnancySystemConstants.MAX_CRAVING_LEVEL);
 	}
 	
 	@Override
@@ -78,8 +87,8 @@ public class PregnancyEffectsImpl implements IPregnancyEffectsHandler {
 	}
 	
 	@Override
-	public void setMilking(int milking) {
-		this.milking = Mth.clamp(milking, 0, 20);
+	public void setMilking(@NonNegative int milking) {
+		this.milking = Mth.clamp(milking, 0, PregnancySystemConstants.MAX_MILKING_LEVEL);
 	}
 	
 	@Override
@@ -110,7 +119,7 @@ public class PregnancyEffectsImpl implements IPregnancyEffectsHandler {
 	
 	@Override
 	public void setBellyRubs(int bellyRubs) {
-		this.bellyRubs = Mth.clamp(bellyRubs, 0, 20);
+		this.bellyRubs = Mth.clamp(bellyRubs, 0, PregnancySystemConstants.MAX_BELLY_RUBBING_LEVEL);
 	}
 	
 	@Override
@@ -140,7 +149,7 @@ public class PregnancyEffectsImpl implements IPregnancyEffectsHandler {
 	
 	@Override
 	public void setHorny(int horny) {
-		this.horny = Mth.clamp(horny, 0, 20);
+		this.horny = Mth.clamp(horny, 0, PregnancySystemConstants.MAX_HORNY_LEVEL);
 		
 	}
 	
@@ -165,18 +174,66 @@ public class PregnancyEffectsImpl implements IPregnancyEffectsHandler {
 		++this.hornyTimer;	
 	}
 	
+	@Override
+	public void clearTypeOfCraving() {
+		this.typeOfCraving = null;	
+	}
+
+	@Override
+	public void decrementCraving(int amount) {
+		setCraving(craving - amount);
+	}
+
+	@Override
+	public void resetCravingTimer() {
+		this.cravingTimer = 0;
+	}
+
+	@Override
+	public void decrementMilking(int amount) {
+		setMilking(this.milking - amount);
+	}
+
+	@Override
+	public void resetMilkingTimer() {
+		this.milkingTimer = 0;
+	}
+
+	@Override
+	public void decrementBellyRubs(int amount) {
+		setBellyRubs(this.bellyRubs - amount);
+	}
+
+	@Override
+	public void resetBellyRubsTimer() {
+		this.bellyRubsTimer = 0;
+	}
+
+	@Override
+	public void resetHornyTimer() {
+		this.hornyTimer = 0;
+	}
+	
 	@NonNull
 	public Tag serializeNBT() {
 		CompoundTag nbt = new CompoundTag();
 		nbt.putInt("DataCraving", craving);
 		nbt.putInt("DataCravingTimer", cravingTimer);
-		nbt.putInt("DataTypeOfCraving", typeOfCraving.ordinal());
 		nbt.putInt("DataMilking", milking);
 		nbt.putInt("DataMilkingTimer", milkingTimer);
 		nbt.putInt("DataBellyRubs", bellyRubs);
 		nbt.putInt("DataBellyRubsTimer", bellyRubsTimer);
 		nbt.putInt("DataHorny", horny);
 		nbt.putInt("DataHornyTimer", hornyTimer);
+	
+	    if (nbt.contains(Craving.NBT_KEY, Tag.TAG_STRING)) {
+	        String name = nbt.getString(Craving.NBT_KEY);
+        	Craving t = Craving.valueOf(name);
+        	setTypeOfCraving(t);
+	    } else {
+	        setTypeOfCraving(null);
+	    }
+	    
 		return nbt;
 	}
 	
@@ -184,13 +241,15 @@ public class PregnancyEffectsImpl implements IPregnancyEffectsHandler {
 		CompoundTag nbt = (CompoundTag) tag;
 		craving = nbt.getInt("DataCraving");
 		cravingTimer = nbt.getInt("DataCravingTimer");
-		typeOfCraving = Craving.values()[nbt.getInt("DataTypeOfCraving")];
 		milking = nbt.getInt("DataMilking");
 		milkingTimer = nbt.getInt("DataMilkingTimer");
 		bellyRubs = nbt.getInt("DataBellyRubs");
 		bellyRubsTimer = nbt.getInt("DataBellyRubsTimer");
 		horny = nbt.getInt("DataHorny");
 		hornyTimer = nbt.getInt("DataHornyTimer");
+		if (typeOfCraving.isPresent()) {
+			nbt.putString(Craving.NBT_KEY, typeOfCraving.get().name());
+		}
 	}
 	
 	public void copyFrom(@NonNull PregnancyEffectsImpl newData) {
@@ -207,6 +266,6 @@ public class PregnancyEffectsImpl implements IPregnancyEffectsHandler {
 	
 	public void sync(ServerPlayer serverPlayer) {
 		MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> serverPlayer), 
-				new SyncPregnancyEffectsS2CPacket(serverPlayer.getUUID(), this.craving, this.milking, this.bellyRubs, this.horny, this.typeOfCraving));
+				new SyncPregnancyEffectsS2CPacket(serverPlayer.getUUID(), this.craving, this.milking, this.bellyRubs, this.horny, getTypeOfCraving()));
 	}
 }

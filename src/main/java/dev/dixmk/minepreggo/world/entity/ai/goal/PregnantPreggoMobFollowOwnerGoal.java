@@ -1,10 +1,10 @@
 package dev.dixmk.minepreggo.world.entity.ai.goal;
 
-import dev.dixmk.minepreggo.world.entity.preggo.IPregnancySystem;
+import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 
-public class PregnantPreggoMobFollowOwnerGoal<T extends PreggoMob & ITamablePreggoMob & IPregnancySystem> extends PreggoMobFollowOwnerGoal<T> {
+public class PregnantPreggoMobFollowOwnerGoal<T extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler> extends PreggoMobFollowOwnerGoal<T> {
 	
 	public PregnantPreggoMobFollowOwnerGoal(T p_25294_, double p_25295_, float p_25296_, float p_25297_, boolean p_25298_) {
 		super(p_25294_, p_25295_, p_25296_, p_25297_, p_25298_);	

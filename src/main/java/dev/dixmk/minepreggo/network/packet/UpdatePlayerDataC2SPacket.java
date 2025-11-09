@@ -3,6 +3,7 @@ package dev.dixmk.minepreggo.network.packet;
 import java.util.UUID;
 import java.util.function.Supplier;
 
+import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.network.capability.Gender;
@@ -34,6 +35,10 @@ public record UpdatePlayerDataC2SPacket(UUID source, Gender gender, boolean cust
 			if (context.getDirection().getReceptionSide().isServer()) {				
 				var serverPlayer = context.getSender();
 				serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> cap.setShowMainMenu(false));
+				
+				MinepreggoMod.LOGGER.info("Updating player data for {}: gender={}, customSkin={}",
+						serverPlayer.getDisplayName().getString(), message.gender, message.customSkin);
+						
         		MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> serverPlayer), new SyncPlayerDataS2CPacket(message.source, message.gender, message.customSkin));
 			}			
 		});

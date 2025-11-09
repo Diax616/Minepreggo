@@ -52,6 +52,15 @@ import dev.dixmk.minepreggo.client.model.armor.MaternityChestPlateP2Model;
 import dev.dixmk.minepreggo.client.model.armor.MaternityChestPlateP3Model;
 import dev.dixmk.minepreggo.client.model.armor.MaternityChestPlateP4Model;
 import dev.dixmk.minepreggo.client.model.armor.KneeBraceModel;
+import dev.dixmk.minepreggo.client.model.entity.player.BoobsModel;
+import dev.dixmk.minepreggo.client.model.entity.player.PregnantBodyP1Model;
+import dev.dixmk.minepreggo.client.model.entity.player.PregnantBodyP2Model;
+import dev.dixmk.minepreggo.client.model.entity.player.PregnantBodyP3Model;
+import dev.dixmk.minepreggo.client.model.entity.player.PregnantBodyP4Model;
+import dev.dixmk.minepreggo.client.model.entity.player.PregnantBodyP5Model;
+import dev.dixmk.minepreggo.client.model.entity.player.PregnantBodyP6Model;
+import dev.dixmk.minepreggo.client.model.entity.player.PregnantBodyP7Model;
+import dev.dixmk.minepreggo.client.model.entity.player.PregnantBodyP8Model;
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractHumanoidCreeperGirlModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.quadruped.AbstractQueadrupedCreeperGirlModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.ender.AbstractEnderGirlModel;
@@ -101,7 +110,7 @@ import dev.dixmk.minepreggo.init.MinepreggoModTabs;
 import dev.dixmk.minepreggo.init.MinepreggoModVillagerProfessions;
 import dev.dixmk.minepreggo.network.capability.PlayerDataImpl;
 import dev.dixmk.minepreggo.network.capability.PregnancyEffectsImpl;
-import dev.dixmk.minepreggo.network.capability.PregnancySystemImpl;
+import dev.dixmk.minepreggo.network.capability.PlayerPregnancySystemImpl;
 import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterQuadrupedCreeperGirl;
@@ -350,6 +359,17 @@ public class MinepreggoMod {
 		event.registerLayerDefinition(MaternityChestPlateP3Model.LAYER_LOCATION, MaternityChestPlateP3Model::createBodyLayer);
 		event.registerLayerDefinition(MaternityChestPlateP4Model.LAYER_LOCATION, MaternityChestPlateP4Model::createBodyLayer);
 		event.registerLayerDefinition(KneeBraceModel.LAYER_LOCATION, KneeBraceModel::createBodyLayer);
+	
+		// Boobs
+		event.registerLayerDefinition(BoobsModel.LAYER_LOCATION, BoobsModel::createBodyLayer);
+		event.registerLayerDefinition(PregnantBodyP1Model.LAYER_LOCATION, PregnantBodyP1Model::createBodyLayer);
+		event.registerLayerDefinition(PregnantBodyP2Model.LAYER_LOCATION, PregnantBodyP2Model::createBodyLayer);
+		event.registerLayerDefinition(PregnantBodyP3Model.LAYER_LOCATION, PregnantBodyP3Model::createBodyLayer);
+		event.registerLayerDefinition(PregnantBodyP4Model.LAYER_LOCATION, PregnantBodyP4Model::createBodyLayer);
+		event.registerLayerDefinition(PregnantBodyP5Model.LAYER_LOCATION, PregnantBodyP5Model::createBodyLayer);
+		event.registerLayerDefinition(PregnantBodyP6Model.LAYER_LOCATION, PregnantBodyP6Model::createBodyLayer);
+		event.registerLayerDefinition(PregnantBodyP7Model.LAYER_LOCATION, PregnantBodyP7Model::createBodyLayer);
+		event.registerLayerDefinition(PregnantBodyP8Model.LAYER_LOCATION, PregnantBodyP8Model::createBodyLayer);
 	}
 	
 	private void clientLoad(FMLClientSetupEvent event) {
@@ -444,7 +464,7 @@ public class MinepreggoMod {
 	}
 	
 	private void registerCapabilities(RegisterCapabilitiesEvent event) {
-		event.register(PregnancySystemImpl.class);
+		event.register(PlayerPregnancySystemImpl.class);
 		event.register(PlayerDataImpl.class);
 		event.register(PregnancyEffectsImpl.class);
 	}

@@ -1,9 +1,13 @@
 package dev.dixmk.minepreggo.network.capability;
 
+import java.util.Optional;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.network.packet.SyncPlayerDataS2CPacket;
+import dev.dixmk.minepreggo.world.entity.preggo.PostPregnancy;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
@@ -19,8 +23,12 @@ public class PlayerDataImpl implements IPlayerData {
 	
 	// Server Data
 	private float fertility = 0;
+	private int fertilityRateTimer = 0;
 	private int pregnancyInitializerTimer = 0;
 		
+	Optional<PostPregnancy> postPregnancy = Optional.empty();
+	
+	
 	@Override
 	public void setGender(Gender gender) {
 		this.gender = gender;
@@ -52,33 +60,23 @@ public class PlayerDataImpl implements IPlayerData {
 	}
 
 	@Override
-	public float getFertilityPercentage() {
+	public float getFertilityRate() {
 		return this.fertility;
 	}
 
 	@Override
-	public void setFertilityPercentage(float percentage) {
+	public void setFertilityRate(float percentage) {
 		this.fertility = Mth.clamp(percentage, 0, 1F);
 	}
 
 	@Override
-	public void incrementFertilityPercentage() {
-		this.fertility = Math.min(this.fertility + 0.05F, 1F);
+	public void incrementFertilityRate(float amount) {
+		this.fertility = Mth.clamp(this.fertility + amount, 0, 1F);
 	}
 
 	@Override
-	public void reduceFertilityPercentage() {
-		this.fertility = Math.max(this.fertility - 0.05F, 0F);	
-	}
-
-	@Override
-	public void incrementFertilityTimer() {
+	public void incrementFertilityRateTimer() {
 		++this.pregnancyInitializerTimer;
-	}
-
-	@Override
-	public void startPregnancy() {
-
 	}
 	
 	@Override
@@ -96,6 +94,58 @@ public class PlayerDataImpl implements IPlayerData {
 		this.pregnant = value;
 	}
 	
+	@Override
+	public int getPregnancyInitializerTimer() {
+		return this.pregnancyInitializerTimer;
+	}
+
+	@Override
+	public void setPregnancyInitializerTimer(int ticks) {
+		this.pregnancyInitializerTimer = Math.max(0, ticks);
+		
+	}
+
+	@Override
+	public void incrementPregnancyInitializerTimer() {
+		++this.pregnancyInitializerTimer;
+		
+	}
+
+	@Override
+	public int getFertilityRateTimer() {
+		return this.fertilityRateTimer;
+	}
+
+	@Override
+	public void setFertilityRateTimer(int ticks) {
+		this.fertilityRateTimer = Math.max(0, ticks);
+		
+	}
+
+	@Override
+	public void impregnate() {
+		this.pregnant = true;
+	}
+
+	@Override
+	public @Nullable PostPregnancy getPostPregnancyPhase() {
+		if (this.postPregnancy.isPresent()) {
+			return this.postPregnancy.get();
+		}
+		return null;
+	}
+
+	@Override
+	public boolean tryActivatePostPregnancyPhase(@NonNull PostPregnancy postPregnancy) {
+		if (pregnant) {
+			this.postPregnancy = Optional.of(postPregnancy);
+			this.pregnant = false;
+			return true;
+		}
+		return false;
+	}
+	
+	
 	@NonNull
 	public Tag serializeNBT() {
 		CompoundTag nbt = new CompoundTag();
@@ -105,6 +155,11 @@ public class PlayerDataImpl implements IPlayerData {
 		nbt.putBoolean("DataCustomSkin", customSkin);
 		nbt.putBoolean("DataPregnant", pregnant);
 		nbt.putBoolean("DataShowMainMenu", showMainMenu);
+		
+		if (postPregnancy.isPresent()) {
+			nbt.putString(PostPregnancy.NBT_KEY, postPregnancy.get().name());
+		}
+		
 		return nbt;
 	}
 	
@@ -116,6 +171,13 @@ public class PlayerDataImpl implements IPlayerData {
 		customSkin = nbt.getBoolean("DataCustomSkin");
 		pregnant = nbt.getBoolean("DataPregnant");
 		showMainMenu = nbt.getBoolean("DataShowMainMenu");
+		
+	    if (nbt.contains(PostPregnancy.NBT_KEY, Tag.TAG_STRING)) {
+	        String name = nbt.getString(PostPregnancy.NBT_KEY);
+	        postPregnancy = Optional.of(PostPregnancy.valueOf(name));
+	    } else {
+	    	postPregnancy = Optional.empty();
+	    }
 	}
 	
 	public void sync(ServerPlayer serverPlayer) {

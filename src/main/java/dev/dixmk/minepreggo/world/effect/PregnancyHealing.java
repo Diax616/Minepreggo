@@ -2,13 +2,16 @@ package dev.dixmk.minepreggo.world.effect;
 
 import javax.annotation.Nullable;
 
-import dev.dixmk.minepreggo.world.entity.preggo.IPregnancySystem;
+import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
+import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
+import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemConstants;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.TamableAnimal;
-import net.minecraft.world.entity.player.Player;
 
 public class PregnancyHealing extends MobEffect {
 	
@@ -18,27 +21,22 @@ public class PregnancyHealing extends MobEffect {
 	
 	@Override
 	public void applyInstantenousEffect(@Nullable Entity p_19462_, @Nullable Entity p_19463_, LivingEntity p_19464_, int p_19465_, double p_19466_) { 
-		if (p_19464_ instanceof TamableAnimal t && t instanceof IPregnancySystem p) {		
-			p.setPregnancyHealth(100);
+		if (p_19464_ instanceof PreggoMob t && t instanceof IPregnancySystemHandler p) {		
+			p.setPregnancyHealth(PregnancySystemConstants.MAX_PREGNANCY_HEALTH);
 			t.heal(2F);
 		}
 		
-		/*
-		else if (p_19464_ instanceof Player player
-				&& player.getCapability(MinepreggoModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new MinepreggoModVariables.PlayerVariables()).isPlayerPregnant) {				
-			player.getCapability(MinepreggoModVariables.PLAYER_VARIABLES_CAPABILITY, null).ifPresent(capability -> {
-				capability.playerPregnancyHealth = 100;
-				capability.syncPlayerVariables(player);
-			});		
-			player.heal(4F);
-		}	
-		*/
+		else if (p_19464_ instanceof ServerPlayer player && PlayerHelper.isFemaleAndPregnant(player)) {										
+			player.getCapability(MinepreggoCapabilities.PLAYER_PREGNANCY_SYSTEM).ifPresent(cap -> {
+				cap.setPregnancyHealth(PregnancySystemConstants.MAX_PREGNANCY_HEALTH);
+				player.heal(2F);
+			});			
+		}
 	}
 	
-	
+
 	@Override
 	public boolean isInstantenous() {
 		return true;
 	}
-
 }

@@ -20,8 +20,8 @@ public class MinepreggoModConfig {
     static final Client CLIENT;
     static final Server SERVER;
     
-    
-    private static int totalTickByDays;
+    private static int totalTickByPregnancyDays;
+    private static int totalPregnancyDays;
     private static int ticksToStartPregnancy;
     
     private static int totalTicksOfHungryP0;
@@ -70,10 +70,14 @@ public class MinepreggoModConfig {
     private static boolean enablePreggoMobsMoans;  
     private static boolean enablePlayerMoans;
     
-    public static int getTotalTicksByDay() {
-    	return totalTickByDays;
+    public static int getTotalPregnancyDays() {
+    	return totalPregnancyDays;
     }
-      
+     
+    public static int getTotalTicksByPregnancyDay() {
+    	return totalTickByPregnancyDays;
+    }
+    
     public static int getTicksToStartPregnancy() {
     	return ticksToStartPregnancy;
     }
@@ -257,7 +261,8 @@ public class MinepreggoModConfig {
     static void onLoad(final ModConfigEvent.Loading event) {  	
     	  	
         if (event.getConfig().getSpec() == COMMON_SPEC) {
-        	totalTickByDays = COMMON.totalTickByDays.get();
+        	totalTickByPregnancyDays = COMMON.totalTickByPregnancyDays.get();
+        	totalPregnancyDays = COMMON.totalPregnancyDays.get();
         	ticksToStartPregnancy = COMMON.ticksToStartPregnancy.get();
         	totalTicksOfHungryP0 = COMMON.totalTicksOfHungry.get();
         	totalTicksOfCravingP1 = COMMON.totalTicksOfCraving.get();
@@ -282,8 +287,9 @@ public class MinepreggoModConfig {
     }
     
     static class Common {  	
+        final ForgeConfigSpec.IntValue totalPregnancyDays;
         final ForgeConfigSpec.IntValue ticksToStartPregnancy;
-        final ForgeConfigSpec.IntValue totalTickByDays;
+        final ForgeConfigSpec.IntValue totalTickByPregnancyDays;
         final ForgeConfigSpec.IntValue totalTicksOfHungry;
         final ForgeConfigSpec.IntValue totalTicksOfCraving;
         final ForgeConfigSpec.IntValue totalTicksOfMilking;
@@ -293,7 +299,11 @@ public class MinepreggoModConfig {
         Common(ForgeConfigSpec.Builder builder) {
             builder.push("Common"); // category name
 
-            totalTickByDays = builder
+            totalPregnancyDays = builder
+                    .comment("Maximum number of entities allowed.")
+                    .defineInRange("totalPregnancyDays", 70, 8, Integer.MAX_VALUE);
+            
+            totalTickByPregnancyDays = builder
                     .comment("Maximum number of entities allowed.")
                     .defineInRange("totalTickByDays", 24000, 100, 24000);
 
@@ -321,6 +331,7 @@ public class MinepreggoModConfig {
                     .comment("Maximum number of entities allowed.")
                     .defineInRange("totalTicksOfHorny", 7200, 100, 24000);
                   
+   
             builder.pop();
         }
     }

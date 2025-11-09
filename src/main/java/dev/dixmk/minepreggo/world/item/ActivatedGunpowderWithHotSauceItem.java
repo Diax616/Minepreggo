@@ -4,7 +4,7 @@ import org.checkerframework.checker.index.qual.NonNegative;
 
 import dev.dixmk.minepreggo.world.entity.preggo.Craving;
 
-public class ActivatedGunpowderWithHotSauceItem extends ActivatedGunpowderItem implements ICraving {
+public class ActivatedGunpowderWithHotSauceItem extends ActivatedGunpowderItem implements IItemCraving {
 	public ActivatedGunpowderWithHotSauceItem() {
 		super();
 	}

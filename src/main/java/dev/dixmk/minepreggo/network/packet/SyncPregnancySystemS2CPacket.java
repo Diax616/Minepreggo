@@ -2,6 +2,8 @@ package dev.dixmk.minepreggo.network.packet;
 
 import java.util.function.Supplier;
 
+import org.jetbrains.annotations.Nullable;
+
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPain;
@@ -14,19 +16,33 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.NetworkEvent;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-public record SyncPregnancySystemS2CPacket(int targetId, PregnancySymptom pregnancySymptom, PregnancyPain pregnancyPain) {
+public record SyncPregnancySystemS2CPacket(int targetId, @Nullable PregnancySymptom pregnancySymptom, @Nullable PregnancyPain pregnancyPain) {
 
 	public static SyncPregnancySystemS2CPacket decode(FriendlyByteBuf buffer) {	
-		return new SyncPregnancySystemS2CPacket(
-				buffer.readVarInt(), 
-				buffer.readEnum(PregnancySymptom.class), 
-				buffer.readEnum(PregnancyPain.class));
+		
+		int targetId = buffer.readVarInt();
+		PregnancySymptom pregnancySymptom = null;
+		PregnancyPain pregnancyPain = null;
+		if (buffer.readBoolean()) {
+			pregnancySymptom = buffer.readEnum(PregnancySymptom.class);
+		}
+		if (buffer.readBoolean()) {
+			pregnancyPain = buffer.readEnum(PregnancyPain.class);
+		}
+		
+		return new SyncPregnancySystemS2CPacket(targetId, pregnancySymptom, pregnancyPain);
 	}
 	
-	public static void encode(SyncPregnancySystemS2CPacket message, FriendlyByteBuf buffer) {
+	public static void encode(SyncPregnancySystemS2CPacket message, FriendlyByteBuf buffer) {	
 		buffer.writeVarInt(message.targetId);
-		buffer.writeEnum(message.pregnancySymptom);
-		buffer.writeEnum(message.pregnancyPain);
+		buffer.writeBoolean(message.pregnancySymptom != null);
+		if (message.pregnancySymptom != null) {
+			buffer.writeEnum(message.pregnancySymptom);
+		}
+		buffer.writeBoolean(message.pregnancyPain != null);
+		if (message.pregnancyPain != null) {
+			buffer.writeEnum(message.pregnancyPain);
+		}
 	}
 	
 	public static void handler(SyncPregnancySystemS2CPacket message, Supplier<NetworkEvent.Context> contextSupplier) {

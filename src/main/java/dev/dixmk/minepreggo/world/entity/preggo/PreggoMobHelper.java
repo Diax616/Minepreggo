@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -13,6 +12,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
+import dev.dixmk.minepreggo.network.capability.IPregnancyEffectsHandler;
+import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.utils.MathHelper;
 import dev.dixmk.minepreggo.utils.TagHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractCreeperGirl;
@@ -54,24 +55,28 @@ public class PreggoMobHelper {
 			
 	private PreggoMobHelper() {}
 	
-	public static<E extends PreggoMob & ITamablePreggoMob> void transferBasicData(@NonNull E source, @NonNull E target) {		
+	public static void copyPosAndRot(@NonNull LivingEntity source, @NonNull LivingEntity target) {		
 		target.setYRot(source.getYRot());
 		target.setYBodyRot(source.getYRot());
 		target.setYHeadRot(source.getYRot());
 		target.setXRot(source.getXRot());
 		target.setHealth(source.getHealth());
+	}
+	
+	public static<E extends PreggoMob & ITamablePreggoMob> void transferBasicData(@NonNull E source, @NonNull E target) {		
+		copyPosAndRot(source, target);
 			
 		if (source.hasCustomName()) target.setCustomName(source.getCustomName());
 		if (source.isTame() && source.getOwner() != null) target.tame((Player) source.getOwner());
 				
-		target.setHungry(source.getHungry());
+		target.setFullness(source.getFullness());
 		target.setHungryTimer(source.getHungryTimer());
 		target.setWaiting(source.isWaiting());
 		target.setAngry(source.isAngry());
 		target.setSavage(source.isSavage());
 	}
 	
-	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystem & IPregnancyP1> void transferPregnancyP1Data(E source, E target) {
+	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler & IPregnancyEffectsHandler> void transferPregnancyP1Data(E source, E target) {
 		transferBasicData(source, target);
 		target.setCraving(source.getCraving());
 		target.setCravingTimer(source.getCravingTimer());
@@ -88,19 +93,19 @@ public class PreggoMobHelper {
 		target.setLastPregnancyStage(source.getLastPregnancyStage());
 	}
 	
-	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystem & IPregnancyP2> void transferPregnancyP2Data(@NonNull E source, @NonNull E target) {
+	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler & IPregnancyEffectsHandler> void transferPregnancyP2Data(@NonNull E source, @NonNull E target) {
 		transferPregnancyP1Data(source, target);
 		target.setMilking(source.getMilking());
 		target.setMilkingTimer(source.getMilkingTimer());
 	}
 
-	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystem & IPregnancyP3> void transferPregnancyP3Data(@NonNull E source, @NonNull E target) {
+	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler & IPregnancyEffectsHandler> void transferPregnancyP3Data(@NonNull E source, @NonNull E target) {
 		transferPregnancyP2Data(source, target);
 		target.setBellyRubs(source.getBellyRubs());
 		target.setBellyRubsTimer(source.getBellyRubsTimer());
 	}
 	
-	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystem & IPregnancyP4> void transferPregnancyP4Data(@NonNull E source, @NonNull E target) {
+	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler & IPregnancyEffectsHandler> void transferPregnancyP4Data(@NonNull E source, @NonNull E target) {
 		transferPregnancyP3Data(source, target);
 		target.setHorny(source.getHorny());
 		target.setHornyTimer(source.getHornyTimer());
@@ -210,7 +215,7 @@ public class PreggoMobHelper {
 		});	
 	}
 	
-	private static <E extends PreggoMob> void transferSlots(@NonNull E source, @NonNull E target) {
+	public static void transferSlots(@NonNull Mob source, @NonNull Mob target) {
 		target.setItemInHand(InteractionHand.MAIN_HAND, source.getMainHandItem());
 		target.setItemInHand(InteractionHand.OFF_HAND, source.getOffhandItem());
 		target.setItemSlot(EquipmentSlot.HEAD, source.getItemBySlot(EquipmentSlot.HEAD));
@@ -218,6 +223,10 @@ public class PreggoMobHelper {
 		target.setItemSlot(EquipmentSlot.LEGS, source.getItemBySlot(EquipmentSlot.LEGS));
 		target.setItemSlot(EquipmentSlot.FEET, source.getItemBySlot(EquipmentSlot.FEET));
 	}
+	
+	
+	
+	
 	
 	public static void transferAttackTarget(@NonNull Mob source, @NonNull Mob target) {
 		final Vec3 center = new Vec3(source.getX(), source.getY(), source.getZ());
@@ -235,50 +244,36 @@ public class PreggoMobHelper {
 		}
 	}
 
-	@Nonnegative
-	public static int getNumberOfChildrens(PregnancyStage maxPregnancyStage) {			
-		switch (maxPregnancyStage) {
-		case P5: {		
-			return 2;
-		}
-		case P6: {		
-			return 3;
-		}
-		case P7: {		
-			return 4;
-		}
-		case P8: {		
-			return 5;
-		}
-		default:
-			return 1;
-		}
-	}
-		
-	@Nonnegative
-	public static int getNumberOfDaysByMaxPregnancyStage(PregnancyStage maxPregnancyStage) {
-		return PregnancySystemConstants.TOTAL_PREGNANCY_DAYS / maxPregnancyStage.ordinal();
-	}
-	
-	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystem> void startPregnancy(@NonNull E preggoMob, PregnancyStage maxPregnancyStage) {	
-		final int daysByStage = getNumberOfDaysByMaxPregnancyStage(maxPregnancyStage);
-		final int daysToBirth = (maxPregnancyStage.ordinal() - preggoMob.getCurrentPregnancyStage().ordinal() + 1) * daysByStage;
-		
-		preggoMob.setDaysPassed(0);
+	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler> void initPregnancy(@NonNull E preggoMob, PregnancyStage maxPregnancyStage) {	
+		final int daysByStage = PregnancySystemConstants.TOTAL_PREGNANCY_DAYS / maxPregnancyStage.ordinal();
+		final int daysToBirth = IPregnancySystemHandler.calculateDaysToGiveBirth(preggoMob);	
+		preggoMob.resetDaysPassed();
 		preggoMob.setLastPregnancyStage(maxPregnancyStage);
 		preggoMob.setDaysByStage(daysByStage);
 		preggoMob.setDaysToGiveBirth(daysToBirth);
-		preggoMob.setPregnancyHealth(100);
-		
+		preggoMob.setPregnancyHealth(PregnancySystemConstants.MAX_PREGNANCY_HEALTH);	
 		MinepreggoMod.LOGGER.debug("START PREGNANCY: id={}, class={}, currentPregnancyStage={}, maxPregnancyStage={}, daysByStage={}, daysToBirth={}",
 				preggoMob.getId(), preggoMob.getClass().getSimpleName(),preggoMob.getCurrentPregnancyStage(), maxPregnancyStage, daysByStage, daysToBirth);
 	}
 		
-	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystem> void startPregnancy(@NonNull E preggoMob) {		
-		startPregnancy(preggoMob, PregnancyStage.getRandomStageFrom(preggoMob.getCurrentPregnancyStage()));
+	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler> void initPregnancy(@NonNull E preggoMob) {		
+		initPregnancy(preggoMob, PregnancyStage.getRandomStageFrom(preggoMob.getCurrentPregnancyStage()));
 	}
 	
-	private static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystem> float getSpawnProbabilityBasedPregnancy(@NonNull E preggoMob, float t0, float k, float pMin, float pMax) {
+	
+	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler> void initPregnancyByPotion(@NonNull E preggoMob, int amplifier) {	
+		final int numOfBabies = IBreedable.calculateNumOfOffspringByPotion(amplifier);
+		final PregnancyStage lastPregnancyStage = IBreedable.getMaxPregnancyStageByOffsprings(numOfBabies);
+	
+		initPregnancy(preggoMob, lastPregnancyStage);
+			
+		MinepreggoMod.LOGGER.debug("START PREGNANCY BY POTION: id={}, class={}, currentPregnancyStage={}, lastPregnancyStage={}, numOfBabies={}",
+				preggoMob.getId(), preggoMob.getClass().getSimpleName(), preggoMob.getCurrentPregnancyStage(), lastPregnancyStage, numOfBabies);
+	}
+	
+	
+	
+	private static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler> float getSpawnProbabilityBasedPregnancy(@NonNull E preggoMob, float t0, float k, float pMin, float pMax) {
 		final int totalDays = preggoMob.getLastPregnancyStage().ordinal() * preggoMob.getDaysByStage();
 		final int totalDaysPassed = Math.max(0, preggoMob.getCurrentPregnancyStage().ordinal() - 1) * preggoMob.getDaysByStage() + preggoMob.getDaysPassed();  				
 		final float t = Mth.clamp(totalDaysPassed / (float) totalDays, 0, 1);	
@@ -394,28 +389,30 @@ public class PreggoMobHelper {
 		
 	public static void spawnBabyAndFetusZombies(@NonNull AbstractTamablePregnantZombieGirl<?,?> zombieGirl) {		
 
-		final var numOfBabies = getNumberOfChildrens(zombieGirl.getLastPregnancyStage());
-		
-		if (zombieGirl instanceof IPregnancyP3) {
+		final var numOfBabies = IBreedable.getOffspringsByMaxPregnancyStage(zombieGirl.getLastPregnancyStage());
+		final var pregnancyStage = zombieGirl.getCurrentPregnancyStage();
+
+		if (pregnancyStage.ordinal() >= 3) {
 			final var alive = getSpawnProbabilityBasedPregnancy(zombieGirl, 0.6F, 0.1F, 0.2F, 0.95F);
 			spawnBabyOrFetusZombies(alive, numOfBabies, zombieGirl);
 		}	
 		else {		
-			final var fetusSpawn = getSpawnProbabilityBasedPregnancy(zombieGirl, 0.3F, 0.1F, 0.5F, 0.9F);
+			final var fetusSpawn = getSpawnProbabilityBasedPregnancy(zombieGirl, 0.3F, 0.1F, 0.1F, 0.6F);
 			spawnFetusZombies(fetusSpawn, numOfBabies, zombieGirl);
 		}
 	}
 	
 	public static void spawnBabyAndFetusCreepers(@NonNull AbstractTamablePregnantCreeperGirl<?,?> creeperGirl) {
 		
-		final var numOfBabies = getNumberOfChildrens(creeperGirl.getLastPregnancyStage());
-	
-		if (creeperGirl instanceof IPregnancyP3) {
+		final var numOfBabies = IBreedable.getOffspringsByMaxPregnancyStage(creeperGirl.getLastPregnancyStage());
+		final var pregnancyStage = creeperGirl.getCurrentPregnancyStage();
+		
+		if (pregnancyStage.ordinal() >= 3) {
 			final var alive = getSpawnProbabilityBasedPregnancy(creeperGirl, 0.6F, 0.15F, 0.15F, 0.8F);
 			spawnBabyOrFetusCreepers(alive, numOfBabies, creeperGirl);
 		}	
 		else {		
-			final var fetusSpawn = getSpawnProbabilityBasedPregnancy(creeperGirl, 0.3F, 0.15F, 0.5F, 0.9F);
+			final var fetusSpawn = getSpawnProbabilityBasedPregnancy(creeperGirl, 0.3F, 0.15F, 0.1F, 0.6F);
 			spawnFetusCreepers(fetusSpawn, numOfBabies, creeperGirl);
 		}
 	}
@@ -429,13 +426,13 @@ public class PreggoMobHelper {
 			return;
 		}
 			
-		final var numOfBabies = getNumberOfChildrens(creeperGirl.getCurrentPregnancyStage());
+		final var numOfBabies = IBreedable.getOffspringsByMaxPregnancyStage(creeperGirl.getCurrentPregnancyStage());
 		final var totalDaysPassed = creeperGirl.getTotalDaysPassed();
 		final var t = Mth.clamp(totalDaysPassed / (float) PregnancySystemConstants.TOTAL_PREGNANCY_DAYS, 0, 1);
 		float p;
 		
 		if (currentPregnancyStage.ordinal() > 2) {
-			p = MathHelper.sigmoid(0.2F, 0.8F, 0.15F, t, 0.6F);
+			p = MathHelper.sigmoid(0.1F, 0.6F, 0.15F, t, 0.6F);
 			spawnBabyOrFetusCreepers(p, numOfBabies, creeperGirl);
 		}
 		else {
@@ -455,17 +452,17 @@ public class PreggoMobHelper {
 			return;
 		}
 		
-		final var numOfBabies = getNumberOfChildrens(zombie.getCurrentPregnancyStage()); 
+		final var numOfBabies = IBreedable.getOffspringsByMaxPregnancyStage(zombie.getCurrentPregnancyStage()); 
 		final var totalDaysPassed = zombie.getTotalDaysPassed();
 		final var t = Mth.clamp(totalDaysPassed / (float) PregnancySystemConstants.TOTAL_PREGNANCY_DAYS, 0, 1);
 		float p;
 		
 		if (currentPregnancyStage.ordinal() > 2) {
-			p = MathHelper.sigmoid(0.2F, 0.9F, 0.1F, t, 0.7F);
+			p = MathHelper.sigmoid(0.1F, 0.6F, 0.1F, t, 0.7F);
 			spawnBabyOrFetusZombies(p, numOfBabies, zombie);
 		}
 		else {
-			p = MathHelper.sigmoid(0.2F, 0.9F, 0.1F, t, 0.3F);
+			p = MathHelper.sigmoid(0.1F, 0.9F, 0.1F, t, 0.3F);
 			spawnFetusZombies(p, numOfBabies, zombie);
 		}
 		
@@ -573,7 +570,7 @@ public class PreggoMobHelper {
 	    });
 	}
 
-	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystem> void setItemstackOnOffHand(@Nonnull E preggoMob, @Nonnull ItemStack itemStack) {			
+	public static<E extends PreggoMob & ITamablePreggoMob> void setItemstackOnOffHand(@Nonnull E preggoMob, @Nonnull ItemStack itemStack) {			
 		preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler -> {			    	
 			if (handler instanceof IItemHandlerModifiable modHandler) {
 				

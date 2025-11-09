@@ -1,5 +1,7 @@
 package dev.dixmk.minepreggo.world.entity.preggo;
 
+import org.checkerframework.checker.index.qual.NonNegative;
+
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 
@@ -13,9 +15,13 @@ public interface ITamablePreggoMob {
 	static final int OFFHAND_INVENTORY_SLOT = EquipmentSlot.OFFHAND.getFilterFlag();
 	static final int FOOD_INVENTORY_SLOT = 6;
 	
-    int getHungry();
-    void setHungry(int hungry);
-
+	static final int MAX_FULLNESS = 20;
+	
+    int getFullness();
+    void setFullness(@NonNegative int fullness);
+    void increaseFullness(@NonNegative int amount);
+    void reduceFullness(@NonNegative int amount);
+    
     boolean isWaiting();
     void setWaiting(boolean waiting);
     
@@ -27,6 +33,8 @@ public interface ITamablePreggoMob {
     
     int getHungryTimer();
     void setHungryTimer(int ticks);
+    void increaseHungryTimer();
+    void resetHungryTimer();
     
     boolean isPanic();
     void setPanic(boolean panic);
