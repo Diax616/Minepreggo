@@ -6,7 +6,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.IPregnancyP3;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemP3;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnantPreggoMobSystem;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnantP2PreggoMobSystem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
@@ -15,7 +15,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.PlayMessages;
 
-public class TamableCreeperGirlP3 extends AbstractTamablePregnantHumanoidCreeperGirl<PregnantPreggoMobSystem<TamableCreeperGirlP3>,PregnancySystemP3<TamableCreeperGirlP3>> implements IPregnancyP3<TamableCreeperGirlP3> {
+public class TamableCreeperGirlP3 extends AbstractTamablePregnantHumanoidCreeperGirl<PregnantP2PreggoMobSystem<TamableCreeperGirlP3>,PregnancySystemP3<TamableCreeperGirlP3>> implements IPregnancyP3<TamableCreeperGirlP3> {
 	
 	public TamableCreeperGirlP3(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P3.get(), world);
@@ -29,8 +29,8 @@ public class TamableCreeperGirlP3 extends AbstractTamablePregnantHumanoidCreeper
 	}
 	
 	@Override
-	protected PregnantPreggoMobSystem<TamableCreeperGirlP3> createPreggoMobSystem() {
-		return new PregnantPreggoMobSystem<>(this, MinepreggoModConfig.getTotalTicksOfHungryP3());
+	protected PregnantP2PreggoMobSystem<TamableCreeperGirlP3> createPreggoMobSystem() {
+		return new PregnantP2PreggoMobSystem<>(this, MinepreggoModConfig.getTotalTicksOfHungryP3());
 	}
 	
 	@Override
@@ -40,9 +40,7 @@ public class TamableCreeperGirlP3 extends AbstractTamablePregnantHumanoidCreeper
 			protected void advanceToNextPregnancyPhase() {
 				if (preggoMob.level() instanceof ServerLevel serverLevel) {
 					var creeperGirl = MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P4.get().spawn(serverLevel, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), MobSpawnType.CONVERSION);
-					PreggoMobHelper.transferPregnancyP3Data(preggoMob, creeperGirl);
-					PreggoMobHelper.transferInventary(preggoMob, creeperGirl);
-					PreggoMobHelper.transferAttackTarget(preggoMob, creeperGirl);
+					PreggoMobHelper.copyDataToAdvanceToNextPregnancyPhase(preggoMob, creeperGirl);
 				}
 			}
 			

@@ -22,7 +22,7 @@ public class ZombieGirlP6MainScreen extends AbstractZombieGirlMainScreen<Tamable
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
-		guiGraphics.blit(ScreenHelper.DEFAULT_P4_MAIN_GUI_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
+		guiGraphics.blit(DEFAULT_P4_MAIN_GUI_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
 		
 		this.preggoMob.ifPresent(zombieGirl -> ScreenHelper.renderZombieGirlP4MainGUI(guiGraphics, this.leftPos, this.topPos, zombieGirl));
 

@@ -1,5 +1,9 @@
-package dev.dixmk.minepreggo.client.screen.effect;
+package dev.dixmk.minepreggo.client.screens.effect;
 
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
+@OnlyIn(Dist.CLIENT)
 public class SexOverlayManager {
 	
 	private SexOverlayManager() {}

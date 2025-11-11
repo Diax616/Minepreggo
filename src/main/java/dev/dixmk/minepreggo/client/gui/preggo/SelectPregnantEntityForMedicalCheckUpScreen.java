@@ -15,7 +15,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
-import dev.dixmk.minepreggo.client.gui.ScreenHelper;
 import dev.dixmk.minepreggo.client.gui.component.PreggoMobScrollList;
 import dev.dixmk.minepreggo.network.packet.RequestPlayerMedicalCheckUpPacket;
 import dev.dixmk.minepreggo.network.packet.RequestPreggoMobMedicalCheckUpPacket;
@@ -28,7 +27,11 @@ import dev.dixmk.minepreggo.world.inventory.preggo.SelectPregnantEntityForMedica
 public class SelectPregnantEntityForMedicalCheckUpScreen extends AbstractContainerScreen<SelectPregnantEntityForMedicalCheckUpMenu> {
 	
 	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/select_preggo_mob_for_medical_check_up_gui.png");
-	
+
+	private static final ResourceLocation DEFAULT_ICON_CREEPER_GIRL_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/creeper_girl_p0.png");
+	private static final ResourceLocation DEFAULT_ICON_ZOMBIE_GIRL_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/zombie_girl_p0.png");
+	// private static final ResourceLocation DEFAULT_ICON_HUMAN_TEXTURE = ResourceLocation.withDefaultNamespace("textures/entity/player/wide/alex.png");
+
 	private final Optional<ScientificIllager> scientificIllager;
 	private final List<? extends LivingEntity> pregnantEntities;
 	
@@ -78,10 +81,10 @@ public class SelectPregnantEntityForMedicalCheckUpScreen extends AbstractContain
 		
 		this.pregnantEntities.forEach(entity -> {		
 			if (entity instanceof AbstractCreeperGirl creeperGirl) {
-				list.addEntry(creeperGirl.getSimpleName(), ScreenHelper.DEFAULT_ICON_CREEPER_GIRL_TEXTURE, 64, 96, this.createRequestMedicalCheckUpPacket(creeperGirl));
+				list.addEntry(creeperGirl.getSimpleName(), DEFAULT_ICON_CREEPER_GIRL_TEXTURE, 64, 96, this.createRequestMedicalCheckUpPacket(creeperGirl));
 			}
 			else if (entity instanceof AbstractZombieGirl zombieGirl) {
-				list.addEntry(zombieGirl.getSimpleName(), ScreenHelper.DEFAULT_ICON_ZOMBIE_GIRL_TEXTURE, 64, 96, this.createRequestMedicalCheckUpPacket(zombieGirl));
+				list.addEntry(zombieGirl.getSimpleName(), DEFAULT_ICON_ZOMBIE_GIRL_TEXTURE, 64, 96, this.createRequestMedicalCheckUpPacket(zombieGirl));
 			}
 			else if (entity instanceof AbstractClientPlayer abstractClientPlayer) {
 				list.addEntry(abstractClientPlayer.getDisplayName().getString(), abstractClientPlayer.getSkinTextureLocation(), 64, 64, this.createRequestMedicalCheckUpPacket());

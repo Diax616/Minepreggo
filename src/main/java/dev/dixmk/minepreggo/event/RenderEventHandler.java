@@ -1,7 +1,7 @@
 package dev.dixmk.minepreggo.event;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.client.screen.effect.SexOverlayManager;
+import dev.dixmk.minepreggo.client.screens.effect.SexOverlayManager;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderGuiEvent;

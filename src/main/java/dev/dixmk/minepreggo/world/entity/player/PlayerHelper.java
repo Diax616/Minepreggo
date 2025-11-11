@@ -1,18 +1,33 @@
 package dev.dixmk.minepreggo.world.entity.player;
 
+import java.util.List;
+
+import javax.annotation.CheckForNull;
+
+import com.google.common.collect.ImmutableMap;
+
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.network.capability.Gender;
 import dev.dixmk.minepreggo.world.entity.preggo.Baby;
+import dev.dixmk.minepreggo.world.entity.preggo.Craving;
 import dev.dixmk.minepreggo.world.entity.preggo.IBreedable;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancyStage;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 
 public class PlayerHelper {
 
 	private PlayerHelper() {}
+	
+	protected static final ImmutableMap<Craving, List<ResourceLocation>> CRAVING_ICONS = ImmutableMap.of(
+			Craving.SALTY, List.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/salty_pickle.png")), 
+			Craving.SWEET, List.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/chocolate_bar.png")), 
+			Craving.SOUR, List.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/lemon_ice_popsicles.png"),
+					ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/lemon_ice_cream.png")),
+			Craving.SPICY, List.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/spicy_chicken.png")));
 	
 	public static boolean tryToStartPregnancy(ServerPlayer player, Baby typeOfBaby, int amplifier) {
 		var playerDataCap = player.getCapability(MinepreggoCapabilities.PLAYER_DATA).resolve();	
@@ -66,5 +81,13 @@ public class PlayerHelper {
 			return false;
 		}	
 		return cap.get().getGender() == Gender.FEMALE;
+	}
+	
+	@CheckForNull
+	public static List<ResourceLocation> getCravingIcon(Craving craving) {
+		if (craving == null) {
+			return null;
+		}
+		return CRAVING_ICONS.get(craving);	
 	}
 }

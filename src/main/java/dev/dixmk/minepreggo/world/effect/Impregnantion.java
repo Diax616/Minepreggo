@@ -56,21 +56,23 @@ public class Impregnantion extends MobEffect {
 			final double y = entity.getY();	
 			final double z = entity.getZ();
 			
-			if (entity instanceof MonsterCreeperGirlP0 creeperGirl) {
+			if (entity instanceof MonsterCreeperGirlP0 creeperGirl && !creeperGirl.isBaby()) {
 				TamableCreeperGirlP1 nextStage = MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P1.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
 				initPregnancy(creeperGirl, nextStage, amplifier);
 			}
-			else if (entity instanceof MonsterZombieGirlP0 zombieGirl) {
+			else if (entity instanceof MonsterZombieGirlP0 zombieGirl && !zombieGirl.isBaby()) {
 				TamableZombieGirlP1 nextStage = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P1.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
 				initPregnancy(zombieGirl, nextStage, amplifier);
 			}
 			else if (entity instanceof TamableCreeperGirlP0 creeperGirl) {
 				TamableCreeperGirlP1 nextStage = MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P1.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
 				initPregnancy(creeperGirl, nextStage, amplifier);
+				PreggoMobHelper.copyOwner(creeperGirl, nextStage);
 			}
 			else if (entity instanceof TamableZombieGirlP0 zombieGirl) {
 				TamableZombieGirlP1 nextStage = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P1.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
 				initPregnancy(zombieGirl, nextStage, amplifier);
+				PreggoMobHelper.copyOwner(zombieGirl, nextStage);
 			}
 			else {
 				entity.hurt(new DamageSource(entity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.GENERIC)), 1);
@@ -92,7 +94,7 @@ public class Impregnantion extends MobEffect {
 	
 	
 	protected static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler> void initPregnancy(PreggoMob source, E target, int amplifier) {
-		PreggoMobHelper.copyPosAndRot(source, target);
+		PreggoMobHelper.copyRotation(source, target);
 		PreggoMobHelper.transferSlots(source, target);
 		PreggoMobHelper.syncFromEquipmentSlotToInventory(target);
 		PreggoMobHelper.transferAttackTarget(source, target);

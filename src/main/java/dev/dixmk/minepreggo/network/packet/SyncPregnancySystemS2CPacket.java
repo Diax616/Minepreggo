@@ -1,5 +1,6 @@
 package dev.dixmk.minepreggo.network.packet;
 
+import java.util.UUID;
 import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
@@ -16,11 +17,11 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.NetworkEvent;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-public record SyncPregnancySystemS2CPacket(int targetId, @Nullable PregnancySymptom pregnancySymptom, @Nullable PregnancyPain pregnancyPain) {
+public record SyncPregnancySystemS2CPacket(UUID targetId, @Nullable PregnancySymptom pregnancySymptom, @Nullable PregnancyPain pregnancyPain) {
 
 	public static SyncPregnancySystemS2CPacket decode(FriendlyByteBuf buffer) {	
 		
-		int targetId = buffer.readVarInt();
+		var targetId = buffer.readUUID();
 		PregnancySymptom pregnancySymptom = null;
 		PregnancyPain pregnancyPain = null;
 		if (buffer.readBoolean()) {
@@ -34,7 +35,7 @@ public record SyncPregnancySystemS2CPacket(int targetId, @Nullable PregnancySymp
 	}
 	
 	public static void encode(SyncPregnancySystemS2CPacket message, FriendlyByteBuf buffer) {	
-		buffer.writeVarInt(message.targetId);
+		buffer.writeUUID(message.targetId);
 		buffer.writeBoolean(message.pregnancySymptom != null);
 		if (message.pregnancySymptom != null) {
 			buffer.writeEnum(message.pregnancySymptom);
@@ -49,10 +50,13 @@ public record SyncPregnancySystemS2CPacket(int targetId, @Nullable PregnancySymp
 		NetworkEvent.Context context = contextSupplier.get();
 		context.enqueueWork(() -> {			
 			if (context.getDirection().getReceptionSide().isClient()) {
-				Minecraft.getInstance().player.level().getEntity(message.targetId).getCapability(MinepreggoCapabilities.PLAYER_PREGNANCY_SYSTEM).ifPresent(c -> {										
-					c.setPregnancySymptom(message.pregnancySymptom);					
-					c.setPregnancyPain(message.pregnancyPain);
-				});			
+				final var target = Minecraft.getInstance().player.level().getPlayerByUUID(message.targetId);
+				if (target != null) {
+					target.getCapability(MinepreggoCapabilities.PLAYER_PREGNANCY_SYSTEM).ifPresent(cap -> {
+						cap.setPregnancySymptom(message.pregnancySymptom);
+						cap.setPregnancyPain(message.pregnancyPain);
+					});
+				}	
 			}			
 		});
 		context.setPacketHandled(true);

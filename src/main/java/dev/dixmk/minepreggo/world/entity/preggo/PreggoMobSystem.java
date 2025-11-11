@@ -103,7 +103,7 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob> {
         
         if (currentHungryTimer >= totalTicksOfHungry) {
         	preggoMob.resetHungryTimer();
-        	preggoMob.increaseFullness(1);
+        	preggoMob.incrementFullness(1);
         }
         else {
         	preggoMob.setHungryTimer(currentHungryTimer);
@@ -139,7 +139,7 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob> {
 				return;
 			}
 			
-			preggoMob.increaseFullness(foodProperties.getNutrition());	
+			preggoMob.incrementFullness(foodProperties.getNutrition());	
 	        level.playSound(null, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.generic.eat")), SoundSource.NEUTRAL, 0.75f, 1);	          	
 		
 			MinepreggoMod.LOGGER.debug("AUTO FEEDING: id={}, class={}, food={}",
@@ -247,7 +247,7 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob> {
 					
 		for (ServerPlayer player : serverLevel.getServer().getPlayerList().getPlayers()) {
 		    if (player.distanceToSqr(preggoMob) <= 512.0) {
-				serverLevel.sendParticles(player, particleoptions, true, preggoMob.getRandomX(1.0), preggoMob.getRandomY() + 0.5, preggoMob.getRandomZ(1.0),
+				serverLevel.sendParticles(player, particleoptions, true, preggoMob.getRandomX(1.0), preggoMob.getRandomY() + 1, preggoMob.getRandomZ(1.0),
 						7, serverLevel.random.nextGaussian() * 0.3, serverLevel.random.nextGaussian() * 0.5, serverLevel.random.nextGaussian() * 0.3, 0.02);
 		    }
 		}

@@ -5,7 +5,6 @@ import java.util.function.Supplier;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
-import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.network.capability.Gender;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -34,7 +33,6 @@ public record UpdatePlayerDataC2SPacket(UUID source, Gender gender, boolean cust
 		context.enqueueWork(() -> {			
 			if (context.getDirection().getReceptionSide().isServer()) {				
 				var serverPlayer = context.getSender();
-				serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> cap.setShowMainMenu(false));
 				
 				MinepreggoMod.LOGGER.info("Updating player data for {}: gender={}, customSkin={}",
 						serverPlayer.getDisplayName().getString(), message.gender, message.customSkin);

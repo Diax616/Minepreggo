@@ -22,12 +22,19 @@ import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 public abstract class AbstractPreggoMobMainScreen
 	<E extends PreggoMob & ITamablePreggoMob, M extends AbstractPreggoMobMainMenu<E>> extends AbstractContainerScreen<M> {
+	
+	protected static final ResourceLocation DEFAULT_P0_MAIN_GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/default_preggo_mob_p0_main_gui.png");
+	protected static final ResourceLocation DEFAULT_P1_MAIN_GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/default_preggo_mob_p1_main_gui.png");
+	protected static final ResourceLocation DEFAULT_P2_MAIN_GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/default_preggo_mob_p2_main_gui.png");
+	protected static final ResourceLocation DEFAULT_P3_MAIN_GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/default_preggo_mob_p3_main_gui.png");
+	protected static final ResourceLocation DEFAULT_P4_MAIN_GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/default_preggo_mob_p4_main_gui.png");
 	
 	protected final Level world;
 	protected final int x;
@@ -103,11 +110,11 @@ public abstract class AbstractPreggoMobMainScreen
 			final var isWaiting = mob.isWaiting();
 			final var id = mob.getId();
 					
-			inventoryButton = new ImageButton(this.leftPos - 24, this.topPos + 6, 16, 16, 1, 57, 16, ScreenHelper.ICONS_TEXTURE, 256, 256, 
+			inventoryButton = new ImageButton(this.leftPos - 24, this.topPos + 6, 16, 16, 1, 57, 16, ScreenHelper.MINEPREGGO_ICONS_TEXTURE, 256, 256, 
 					e -> MinepreggoModPacketHandler.INSTANCE.sendToServer(new PreggoMobInventoryMenuPacket(x, y, z, id)));	
 			inventoryButton.setTooltip(Tooltip.create(Component.translatable("gui.minepreggo.preggo_mob_inventory.tooltip_inventory")));
 								
-			sexButton = new ImageButton(this.leftPos - 24, this.topPos + 32, 16, 16, this.xSexSprite, this.ySexSprite, 16, ScreenHelper.ICONS_TEXTURE, 256, 256, 
+			sexButton = new ImageButton(this.leftPos - 24, this.topPos + 32, 16, 16, this.xSexSprite, this.ySexSprite, 16, ScreenHelper.MINEPREGGO_ICONS_TEXTURE, 256, 256, 
 					e -> {
 						MinepreggoModPacketHandler.INSTANCE.sendToServer(new RequestSexCinematicPacket(id));
 						this.minecraft.player.closeContainer();

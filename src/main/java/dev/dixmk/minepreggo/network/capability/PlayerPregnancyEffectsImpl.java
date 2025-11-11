@@ -2,14 +2,17 @@ package dev.dixmk.minepreggo.network.capability;
 
 import java.util.Optional;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Nullable;
 
+import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.network.packet.SyncPregnancyEffectsS2CPacket;
 import dev.dixmk.minepreggo.world.entity.preggo.Craving;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemConstants;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
@@ -18,7 +21,7 @@ import net.minecraft.world.item.Item;
 
 import net.minecraftforge.network.PacketDistributor;
 
-public class PregnancyEffectsImpl implements IPregnancyEffectsHandler {
+public class PlayerPregnancyEffectsImpl implements IPlayerPregnancyEffectsHandler {
 	// Server Data
 	private int cravingTimer = 0;
 	private int milkingTimer = 0;
@@ -30,24 +33,55 @@ public class PregnancyEffectsImpl implements IPregnancyEffectsHandler {
 	private int milking = 0;
 	private int bellyRubs = 0;
 	private int horny = 0;
-	private Optional<Craving> typeOfCraving = Optional.empty();
+	
+	private Optional<Pair<Craving, Species>> typeOfCraving = Optional.empty();
 	
 	@Override
 	@Nullable
 	public Craving getTypeOfCraving() {	
 		if (typeOfCraving.isPresent()) {
-			return typeOfCraving.get();
+			return typeOfCraving.get().getKey();
 		}	
+		return null;
+	}
+
+	@Override
+	public @Nullable Species getTypeOfSpecies() {
+		if (typeOfCraving.isPresent()) {
+			return typeOfCraving.get().getValue();
+		}			
 		return null;
 	}
 	
 	@Override
-	public void setTypeOfCraving(@Nullable Craving craving) {
-		this.typeOfCraving = Optional.ofNullable(craving);
+	public void setTypeOfCraving(@Nullable Craving craving) {	
+		if (craving != null) {
+			this.typeOfCraving = Optional.of(Pair.of(craving, Species.HUMAN));
+		} else {
+			this.typeOfCraving = Optional.empty();
+		}
 	}
 	
 	@Override
 	public boolean isValidCraving(Item item) {
+
+		if (typeOfCraving.isEmpty()) return false;
+		
+		final var tOfCraving = typeOfCraving.get().getLeft();
+		final var tOfSpecies = typeOfCraving.get().getRight();
+		final var items = PregnancySystemHelper.getCravingItems(tOfSpecies, tOfCraving);
+			
+		if (items == null) return false;
+		
+		MinepreggoMod.LOGGER.debug("Type of craving: {} for species: {} has items: {}", tOfCraving, tOfSpecies, items);
+		
+		for (final var i : items) {
+			if (item == i) {
+				MinepreggoMod.LOGGER.debug("Checking craving item: {} against item: {}", item, i);					
+				return true;
+			}	
+		}
+		
 		return false;
 	}
 	
@@ -58,7 +92,7 @@ public class PregnancyEffectsImpl implements IPregnancyEffectsHandler {
 	
 	@Override
 	public void setCraving(@NonNegative int craving) {
-		this.craving = Mth.clamp(craving, 0, PregnancySystemConstants.MAX_CRAVING_LEVEL);
+		this.craving = Mth.clamp(craving, 0, PregnancySystemHelper.MAX_CRAVING_LEVEL);
 	}
 	
 	@Override
@@ -88,7 +122,7 @@ public class PregnancyEffectsImpl implements IPregnancyEffectsHandler {
 	
 	@Override
 	public void setMilking(@NonNegative int milking) {
-		this.milking = Mth.clamp(milking, 0, PregnancySystemConstants.MAX_MILKING_LEVEL);
+		this.milking = Mth.clamp(milking, 0, PregnancySystemHelper.MAX_MILKING_LEVEL);
 	}
 	
 	@Override
@@ -119,7 +153,7 @@ public class PregnancyEffectsImpl implements IPregnancyEffectsHandler {
 	
 	@Override
 	public void setBellyRubs(int bellyRubs) {
-		this.bellyRubs = Mth.clamp(bellyRubs, 0, PregnancySystemConstants.MAX_BELLY_RUBBING_LEVEL);
+		this.bellyRubs = Mth.clamp(bellyRubs, 0, PregnancySystemHelper.MAX_BELLY_RUBBING_LEVEL);
 	}
 	
 	@Override
@@ -149,7 +183,7 @@ public class PregnancyEffectsImpl implements IPregnancyEffectsHandler {
 	
 	@Override
 	public void setHorny(int horny) {
-		this.horny = Mth.clamp(horny, 0, PregnancySystemConstants.MAX_HORNY_LEVEL);
+		this.horny = Mth.clamp(horny, 0, PregnancySystemHelper.MAX_HORNY_LEVEL);
 		
 	}
 	
@@ -176,7 +210,7 @@ public class PregnancyEffectsImpl implements IPregnancyEffectsHandler {
 	
 	@Override
 	public void clearTypeOfCraving() {
-		this.typeOfCraving = null;	
+		this.clearTypeOfCravingBySpecies();
 	}
 
 	@Override
@@ -214,6 +248,25 @@ public class PregnancyEffectsImpl implements IPregnancyEffectsHandler {
 		this.hornyTimer = 0;
 	}
 	
+	@Override
+	public @Nullable Pair<Craving, Species> getTypeOfCravingBySpecies() {
+		if (this.typeOfCraving.isPresent()) {
+			return this.typeOfCraving.get();
+		}
+		return null;
+	}
+
+	@Override
+	public void setTypeOfCravingBySpecies(@Nullable Pair<Craving, Species> craving) {
+		this.typeOfCraving = Optional.ofNullable(craving);
+	}
+	
+
+	@Override
+	public void clearTypeOfCravingBySpecies() {
+		this.typeOfCraving = Optional.empty();	
+	}
+	
 	@NonNull
 	public Tag serializeNBT() {
 		CompoundTag nbt = new CompoundTag();
@@ -225,15 +278,12 @@ public class PregnancyEffectsImpl implements IPregnancyEffectsHandler {
 		nbt.putInt("DataBellyRubsTimer", bellyRubsTimer);
 		nbt.putInt("DataHorny", horny);
 		nbt.putInt("DataHornyTimer", hornyTimer);
-	
-	    if (nbt.contains(Craving.NBT_KEY, Tag.TAG_STRING)) {
-	        String name = nbt.getString(Craving.NBT_KEY);
-        	Craving t = Craving.valueOf(name);
-        	setTypeOfCraving(t);
-	    } else {
-	        setTypeOfCraving(null);
-	    }
-	    
+		
+		if (typeOfCraving.isPresent()) {
+			nbt.putString(Craving.NBT_KEY, typeOfCraving.get().getLeft().name());
+			nbt.putString(Species.NBT_KEY, typeOfCraving.get().getRight().name());
+		}
+	 
 		return nbt;
 	}
 	
@@ -246,13 +296,20 @@ public class PregnancyEffectsImpl implements IPregnancyEffectsHandler {
 		bellyRubs = nbt.getInt("DataBellyRubs");
 		bellyRubsTimer = nbt.getInt("DataBellyRubsTimer");
 		horny = nbt.getInt("DataHorny");
-		hornyTimer = nbt.getInt("DataHornyTimer");
-		if (typeOfCraving.isPresent()) {
-			nbt.putString(Craving.NBT_KEY, typeOfCraving.get().name());
-		}
+		hornyTimer = nbt.getInt("DataHornyTimer");	
+
+	    if (nbt.contains(Craving.NBT_KEY, Tag.TAG_STRING) && nbt.contains(Species.NBT_KEY, Tag.TAG_STRING)) {
+	        String cravingName = nbt.getString(Craving.NBT_KEY);
+	        String speciesName = nbt.getString(Species.NBT_KEY);        
+        	Craving c = Craving.valueOf(cravingName);
+        	Species e = Species.valueOf(speciesName);
+        	setTypeOfCravingBySpecies(Pair.of(c, e));
+	    } else {
+	    	setTypeOfCravingBySpecies(null);
+	    }
 	}
 	
-	public void copyFrom(@NonNull PregnancyEffectsImpl newData) {
+	public void copyFrom(@NonNull PlayerPregnancyEffectsImpl newData) {
 		this.bellyRubs = newData.bellyRubs;
 		this.bellyRubsTimer = newData.bellyRubsTimer;
 		this.craving = newData.craving;
@@ -265,7 +322,11 @@ public class PregnancyEffectsImpl implements IPregnancyEffectsHandler {
 	}
 	
 	public void sync(ServerPlayer serverPlayer) {
-		MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> serverPlayer), 
-				new SyncPregnancyEffectsS2CPacket(serverPlayer.getUUID(), this.craving, this.milking, this.bellyRubs, this.horny, getTypeOfCraving()));
+	    serverPlayer.getServer().execute(() -> {
+	        MinepreggoModPacketHandler.INSTANCE.send(
+	            PacketDistributor.PLAYER.with(() -> serverPlayer), 
+	            new SyncPregnancyEffectsS2CPacket(serverPlayer.getUUID(), this.craving, this.milking, this.bellyRubs, this.horny, getTypeOfCravingBySpecies()));
+	    });
 	}
+
 }

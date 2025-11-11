@@ -10,13 +10,14 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class PregnancyEffectsProvider implements ICapabilitySerializable<Tag> {
-	private final PregnancyEffectsImpl pregnancyEffects = new PregnancyEffectsImpl();
-	private final LazyOptional<PregnancyEffectsImpl> instance = LazyOptional.of(() -> pregnancyEffects);
+public class PlayerPregnancySystemProvider implements ICapabilitySerializable<Tag> {
+
+	private final PlayerPregnancySystemImpl pregnancySystem = new PlayerPregnancySystemImpl();
+	private final LazyOptional<PlayerPregnancySystemImpl> instance = LazyOptional.of(() -> pregnancySystem);
 	
 	@Override
 	public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == MinepreggoCapabilities.PLAYER_PREGNANCY_EFFECTS) {
+        if (cap == MinepreggoCapabilities.PLAYER_PREGNANCY_SYSTEM) {
             return instance.cast();
         }
         return LazyOptional.empty();	
@@ -24,11 +25,11 @@ public class PregnancyEffectsProvider implements ICapabilitySerializable<Tag> {
 
 	@Override
 	public Tag serializeNBT() {
-		return this.pregnancyEffects.serializeNBT();
+		return this.pregnancySystem.serializeNBT();
 	}
 
 	@Override
 	public void deserializeNBT(Tag nbt) {
-		this.pregnancyEffects.deserializeNBT(nbt);
+		this.pregnancySystem.deserializeNBT(nbt);
 	}
 }

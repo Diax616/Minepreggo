@@ -20,17 +20,17 @@ public interface ISimplePregnancy {
 		int max = maxPregnancyStage.ordinal();
 		int current = currentPregnancyStage.ordinal();
 		
-		if (max < 4) {
-			max = 4;
+		if (max < PregnancyStage.P4.ordinal()) {
+			max = PregnancyStage.P4.ordinal();
 		} 
 		
 		if (current > max) {
 			current = max;
-		} else if (current == 0) {
-			current = 1;
+		} else if (current == PregnancyStage.P0.ordinal()) {
+			current = PregnancyStage.P1.ordinal();
 		}
 		
-		final int daysByStage = PregnancySystemConstants.TOTAL_PREGNANCY_DAYS / max;	
+		final int daysByStage = PregnancySystemHelper.TOTAL_PREGNANCY_DAYS / max;	
 		return daysByStage * (current - 1) + randomSource.nextInt(0, daysByStage);
 	}
 }

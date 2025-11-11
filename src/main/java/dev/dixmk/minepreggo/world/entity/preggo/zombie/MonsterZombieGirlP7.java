@@ -15,7 +15,7 @@ public class MonsterZombieGirlP7 extends AbstractMonsterPregnantZombieGirl {
 	}
 
 	public MonsterZombieGirlP7(EntityType<MonsterZombieGirlP7> type, Level world) {
-		super(type, world, PregnancyStage.P7, PregnancyStage.P7);
+		super(type, world, PregnancyStage.P7);
 		xpReward = 10;
 		setNoAi(false);
 		setMaxUpStep(0.6f);

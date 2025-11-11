@@ -1,6 +1,6 @@
 package dev.dixmk.minepreggo.world.effect;
 
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemConstants;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemHelper;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
@@ -24,7 +24,7 @@ public class FetalMovement extends AbstractPregnancyPain {
 		if (!(entity instanceof Player player)) return;
 		
 		if (!player.level().isClientSide) {	
-			player.addEffect(new MobEffectInstance(MobEffects.CONFUSION, PregnancySystemConstants.TOTAL_TICKS_MORNING_SICKNESS, 0, false, false));			
+			player.addEffect(new MobEffectInstance(MobEffects.CONFUSION, PregnancySystemHelper.TOTAL_TICKS_MORNING_SICKNESS, 0, false, false));			
 		
 			AttributeInstance speedAttr = entity.getAttribute(Attributes.MOVEMENT_SPEED);
 			AttributeInstance attackSpeedAttr = entity.getAttribute(Attributes.ATTACK_SPEED);

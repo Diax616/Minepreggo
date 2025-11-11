@@ -109,7 +109,7 @@ import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.init.MinepreggoModTabs;
 import dev.dixmk.minepreggo.init.MinepreggoModVillagerProfessions;
 import dev.dixmk.minepreggo.network.capability.PlayerDataImpl;
-import dev.dixmk.minepreggo.network.capability.PregnancyEffectsImpl;
+import dev.dixmk.minepreggo.network.capability.PlayerPregnancyEffectsImpl;
 import dev.dixmk.minepreggo.network.capability.PlayerPregnancySystemImpl;
 import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterCreeperGirl;
@@ -466,6 +466,6 @@ public class MinepreggoMod {
 	private void registerCapabilities(RegisterCapabilitiesEvent event) {
 		event.register(PlayerPregnancySystemImpl.class);
 		event.register(PlayerDataImpl.class);
-		event.register(PregnancyEffectsImpl.class);
+		event.register(PlayerPregnancyEffectsImpl.class);
 	}
 }

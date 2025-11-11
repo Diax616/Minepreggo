@@ -40,6 +40,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -55,20 +56,29 @@ public class PreggoMobHelper {
 			
 	private PreggoMobHelper() {}
 	
-	public static void copyPosAndRot(@NonNull LivingEntity source, @NonNull LivingEntity target) {		
+	public static void copyRotation(@NonNull LivingEntity source, @NonNull LivingEntity target) {		
 		target.setYRot(source.getYRot());
 		target.setYBodyRot(source.getYRot());
 		target.setYHeadRot(source.getYRot());
 		target.setXRot(source.getXRot());
 		target.setHealth(source.getHealth());
 	}
+
+	public static void copyOwner(@NonNull TamableAnimal source, @NonNull TamableAnimal target) {
+		if (source.isTame() && source.getOwner() != null)
+			target.tame((Player) source.getOwner());
+	}
 	
-	public static<E extends PreggoMob & ITamablePreggoMob> void transferBasicData(@NonNull E source, @NonNull E target) {		
-		copyPosAndRot(source, target);
-			
-		if (source.hasCustomName()) target.setCustomName(source.getCustomName());
-		if (source.isTame() && source.getOwner() != null) target.tame((Player) source.getOwner());
-				
+	public static void copyData(PreggoMob source, PreggoMob target) {
+		target.setHealth(source.getHealth());
+		if (source.hasCustomName())
+			target.setCustomName(source.getCustomName());
+		copyOwner(source, target);
+		copyRotation(source, target);
+	}
+	
+	public static<E extends PreggoMob & ITamablePreggoMob> void copyTamableData(@NonNull E source, @NonNull E target) {
+		copyData(source, target);
 		target.setFullness(source.getFullness());
 		target.setHungryTimer(source.getHungryTimer());
 		target.setWaiting(source.isWaiting());
@@ -76,41 +86,34 @@ public class PreggoMobHelper {
 		target.setSavage(source.isSavage());
 	}
 	
-	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler & IPregnancyEffectsHandler> void transferPregnancyP1Data(E source, E target) {
-		transferBasicData(source, target);
-		target.setCraving(source.getCraving());
-		target.setCravingTimer(source.getCravingTimer());
-		target.setTypeOfCraving(source.getTypeOfCraving());
+	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler & IPregnancyEffectsHandler> void copyDataToAdvanceToNextPregnancyPhase(@NonNull E source, @NonNull E target) {
+		copyTamableData(source, target);
+		transferInventary(source, target);
+		transferAttackTarget(source, target);
 		
+		target.resetDaysPassed();
+		target.resetPregnancyTimer();
 		target.setDaysByStage(source.getDaysByStage());
-		target.setDaysPassed(0);
 		target.setDaysToGiveBirth(source.getDaysToGiveBirth());
 		target.setPregnancyHealth(source.getPregnancyHealth());
 		target.setPregnancyPain(source.getPregnancyPain());
 		target.setPregnancySymptom(source.getPregnancySymptom());
 		target.setPregnancyPainTimer(source.getPregnancyPainTimer());
-		target.setPregnancyTimer(0);
 		target.setLastPregnancyStage(source.getLastPregnancyStage());
-	}
-	
-	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler & IPregnancyEffectsHandler> void transferPregnancyP2Data(@NonNull E source, @NonNull E target) {
-		transferPregnancyP1Data(source, target);
+		
+		target.setCraving(source.getCraving());
+		target.setCravingTimer(source.getCravingTimer());
+		target.setTypeOfCraving(source.getTypeOfCraving());
 		target.setMilking(source.getMilking());
 		target.setMilkingTimer(source.getMilkingTimer());
-	}
-
-	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler & IPregnancyEffectsHandler> void transferPregnancyP3Data(@NonNull E source, @NonNull E target) {
-		transferPregnancyP2Data(source, target);
 		target.setBellyRubs(source.getBellyRubs());
 		target.setBellyRubsTimer(source.getBellyRubsTimer());
-	}
-	
-	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler & IPregnancyEffectsHandler> void transferPregnancyP4Data(@NonNull E source, @NonNull E target) {
-		transferPregnancyP3Data(source, target);
 		target.setHorny(source.getHorny());
 		target.setHornyTimer(source.getHornyTimer());
 	}
-		
+	
+	
+	
 	public static boolean hasValidTarget(Mob entity) {
 	    LivingEntity target = entity.getTarget();
 	    return target != null && target.isAlive() && entity.canAttack(target);
@@ -244,14 +247,14 @@ public class PreggoMobHelper {
 		}
 	}
 
-	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler> void initPregnancy(@NonNull E preggoMob, PregnancyStage maxPregnancyStage) {	
-		final int daysByStage = PregnancySystemConstants.TOTAL_PREGNANCY_DAYS / maxPregnancyStage.ordinal();
-		final int daysToBirth = IPregnancySystemHandler.calculateDaysToGiveBirth(preggoMob);	
+	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler> void initPregnancy(@NonNull E preggoMob, PregnancyStage maxPregnancyStage) {		
+		final int daysByStage = IPregnancySystemHandler.calculateDaysByStage(maxPregnancyStage);
+		final int daysToBirth = IPregnancySystemHandler.calculateInitialDaysToGiveBirth(maxPregnancyStage);	
 		preggoMob.resetDaysPassed();
-		preggoMob.setLastPregnancyStage(maxPregnancyStage);
+		preggoMob.setLastPregnancyStage(maxPregnancyStage);	
 		preggoMob.setDaysByStage(daysByStage);
 		preggoMob.setDaysToGiveBirth(daysToBirth);
-		preggoMob.setPregnancyHealth(PregnancySystemConstants.MAX_PREGNANCY_HEALTH);	
+		preggoMob.setPregnancyHealth(PregnancySystemHelper.MAX_PREGNANCY_HEALTH);	
 		MinepreggoMod.LOGGER.debug("START PREGNANCY: id={}, class={}, currentPregnancyStage={}, maxPregnancyStage={}, daysByStage={}, daysToBirth={}",
 				preggoMob.getId(), preggoMob.getClass().getSimpleName(),preggoMob.getCurrentPregnancyStage(), maxPregnancyStage, daysByStage, daysToBirth);
 	}
@@ -267,15 +270,14 @@ public class PreggoMobHelper {
 	
 		initPregnancy(preggoMob, lastPregnancyStage);
 			
-		MinepreggoMod.LOGGER.debug("START PREGNANCY BY POTION: id={}, class={}, currentPregnancyStage={}, lastPregnancyStage={}, numOfBabies={}",
-				preggoMob.getId(), preggoMob.getClass().getSimpleName(), preggoMob.getCurrentPregnancyStage(), lastPregnancyStage, numOfBabies);
+		MinepreggoMod.LOGGER.debug("START PREGNANCY BY POTION: class={}, currentPregnancyStage={}, lastPregnancyStage={}, amplifier={}, numOfBabies={}",
+			preggoMob.getClass().getSimpleName(), preggoMob.getCurrentPregnancyStage(), lastPregnancyStage, amplifier, numOfBabies);
 	}
-	
-	
 	
 	private static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler> float getSpawnProbabilityBasedPregnancy(@NonNull E preggoMob, float t0, float k, float pMin, float pMax) {
 		final int totalDays = preggoMob.getLastPregnancyStage().ordinal() * preggoMob.getDaysByStage();
-		final int totalDaysPassed = Math.max(0, preggoMob.getCurrentPregnancyStage().ordinal() - 1) * preggoMob.getDaysByStage() + preggoMob.getDaysPassed();  				
+		final int totalDaysPassed = IPregnancySystemHandler.calculateTotalDaysPassedFromP1(preggoMob);
+		
 		final float t = Mth.clamp(totalDaysPassed / (float) totalDays, 0, 1);	
 		final float p = MathHelper.sigmoid(pMin, pMax, k, t, t0);
 		
@@ -428,7 +430,7 @@ public class PreggoMobHelper {
 			
 		final var numOfBabies = IBreedable.getOffspringsByMaxPregnancyStage(creeperGirl.getCurrentPregnancyStage());
 		final var totalDaysPassed = creeperGirl.getTotalDaysPassed();
-		final var t = Mth.clamp(totalDaysPassed / (float) PregnancySystemConstants.TOTAL_PREGNANCY_DAYS, 0, 1);
+		final var t = Mth.clamp(totalDaysPassed / (float) PregnancySystemHelper.TOTAL_PREGNANCY_DAYS, 0, 1);
 		float p;
 		
 		if (currentPregnancyStage.ordinal() > 2) {
@@ -454,7 +456,7 @@ public class PreggoMobHelper {
 		
 		final var numOfBabies = IBreedable.getOffspringsByMaxPregnancyStage(zombie.getCurrentPregnancyStage()); 
 		final var totalDaysPassed = zombie.getTotalDaysPassed();
-		final var t = Mth.clamp(totalDaysPassed / (float) PregnancySystemConstants.TOTAL_PREGNANCY_DAYS, 0, 1);
+		final var t = Mth.clamp(totalDaysPassed / (float) PregnancySystemHelper.TOTAL_PREGNANCY_DAYS, 0, 1);
 		float p;
 		
 		if (currentPregnancyStage.ordinal() > 2) {
@@ -462,7 +464,7 @@ public class PreggoMobHelper {
 			spawnBabyOrFetusZombies(p, numOfBabies, zombie);
 		}
 		else {
-			p = MathHelper.sigmoid(0.1F, 0.9F, 0.1F, t, 0.3F);
+			p = MathHelper.sigmoid(0.5F, 0.9F, 0.1F, t, 0.3F);
 			spawnFetusZombies(p, numOfBabies, zombie);
 		}
 		

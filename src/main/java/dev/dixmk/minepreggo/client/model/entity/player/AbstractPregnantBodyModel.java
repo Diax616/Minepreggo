@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import dev.dixmk.minepreggo.client.jiggle.JigglePhysics;
+import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -35,6 +36,12 @@ public abstract class AbstractPregnantBodyModel extends EntityModel<AbstractClie
 	public void setupAnim(AbstractClientPlayer entity, float p_102619_, float p_102620_, float p_102621_, float p_102622_, float p_102623_) {
 		updateBelly((float)entity.getY());
 		updateBoobs((float)entity.getY());
+		
+		if (entity.hasEffect(MinepreggoModMobEffects.LACTATION.get())) {
+			this.boobs.zScale = 1.2F;
+			this.boobs.xScale = 1.2F;
+			this.boobs.yScale = 1.1F;			
+		} 
 	}
 	
 	protected void updateBoobs(float yPos) {

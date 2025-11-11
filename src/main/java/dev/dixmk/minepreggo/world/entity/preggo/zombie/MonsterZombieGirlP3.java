@@ -15,7 +15,7 @@ public class MonsterZombieGirlP3 extends AbstractMonsterPregnantZombieGirl {
 	}
 
 	public MonsterZombieGirlP3(EntityType<MonsterZombieGirlP3> type, Level world) {
-		super(type, world, PregnancyStage.P3, PregnancyStage.getRandomStageFrom(PregnancyStage.P3));
+		super(type, world, PregnancyStage.P3);
 		xpReward = 10;
 		setNoAi(false);
 		setMaxUpStep(0.6f);

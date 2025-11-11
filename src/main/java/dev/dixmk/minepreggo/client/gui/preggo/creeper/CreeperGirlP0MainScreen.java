@@ -25,7 +25,7 @@ public class CreeperGirlP0MainScreen extends AbstractCreeperGirlMainScreen<Tamab
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 		
-		guiGraphics.blit(ScreenHelper.DEFAULT_P0_MAIN_GUI_TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight, imageWidth, imageHeight);
+		guiGraphics.blit(DEFAULT_P0_MAIN_GUI_TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight, imageWidth, imageHeight);
 		
 		this.preggoMob.ifPresent(creeperGirl -> ScreenHelper.renderCreeperGirlMainScreen(guiGraphics, this.leftPos, this.topPos, creeperGirl));
 	

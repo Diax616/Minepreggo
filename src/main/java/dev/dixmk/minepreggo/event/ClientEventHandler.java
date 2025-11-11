@@ -3,7 +3,7 @@ package dev.dixmk.minepreggo.event;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.client.SexCinematicManager;
-import dev.dixmk.minepreggo.client.screen.effect.SexOverlayManager;
+import dev.dixmk.minepreggo.client.screens.effect.SexOverlayManager;
 import dev.dixmk.minepreggo.network.packet.SexCinematicAbortPacket;
 
 import net.minecraft.client.Minecraft;

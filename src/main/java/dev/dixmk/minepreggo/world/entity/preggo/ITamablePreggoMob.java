@@ -19,7 +19,7 @@ public interface ITamablePreggoMob {
 	
     int getFullness();
     void setFullness(@NonNegative int fullness);
-    void increaseFullness(@NonNegative int amount);
+    void incrementFullness(@NonNegative int amount);
     void reduceFullness(@NonNegative int amount);
     
     boolean isWaiting();
@@ -33,7 +33,7 @@ public interface ITamablePreggoMob {
     
     int getHungryTimer();
     void setHungryTimer(int ticks);
-    void increaseHungryTimer();
+    void incrementHungryTimer();
     void resetHungryTimer();
     
     boolean isPanic();

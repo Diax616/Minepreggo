@@ -15,7 +15,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.Baby;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPain;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancySymptom;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemConstants;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -59,7 +59,7 @@ public class PlayerPregnancySystemImpl implements IPlayerPregnancySystemHandler 
 
 	@Override
 	public void setPregnancyHealth(int health) {
-		this.pregnancyHealth = Mth.clamp(health, 0, PregnancySystemConstants.MAX_PREGNANCY_HEALTH);
+		this.pregnancyHealth = Mth.clamp(health, 0, PregnancySystemHelper.MAX_PREGNANCY_HEALTH);
 	}
 
 	@Override
@@ -321,7 +321,7 @@ public class PlayerPregnancySystemImpl implements IPlayerPregnancySystemHandler 
 	
 	public void sync(ServerPlayer serverPlayer) {
 		MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> serverPlayer), 
-				new SyncPregnancySystemS2CPacket(serverPlayer.getId(), getPregnancySymptom(), getPregnancyPain()));
+				new SyncPregnancySystemS2CPacket(serverPlayer.getUUID(), getPregnancySymptom(), getPregnancyPain()));
 	}
 	
 	@NonNull

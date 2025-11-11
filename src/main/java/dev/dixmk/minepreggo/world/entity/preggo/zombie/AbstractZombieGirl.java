@@ -9,10 +9,13 @@ import net.minecraft.world.entity.monster.ZombieVillager;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.level.LevelAccessor;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
 import dev.dixmk.minepreggo.utils.TagHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -48,6 +51,11 @@ public abstract class AbstractZombieGirl extends PreggoMob implements Enemy {
 		return MobType.UNDEAD;
 	}
 		
+	@Override
+	public @NonNull Species getSpecies() {
+		return Species.ZOMBIE;
+	}
+	
 	protected boolean isSunSensitive() {
 		return true;
 	}

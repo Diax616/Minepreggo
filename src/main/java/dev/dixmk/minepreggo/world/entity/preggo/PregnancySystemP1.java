@@ -36,6 +36,9 @@ public abstract class PregnancySystemP1<
 	protected final RandomSource randomSource;	
 	protected final E preggoMob;
 	
+	protected int pregnancyPainTicks = 0;
+	protected int pregnancysymptonsTicks = 0;
+	
 	protected PregnancySystemP1(@Nonnull E preggoMob) {
 		this.preggoMob = preggoMob;	
 		this.randomSource = preggoMob.getRandom();
@@ -60,16 +63,25 @@ public abstract class PregnancySystemP1<
     						1, 0, 1, 0, 0.02);
     		    }
     		}
-        
-        } else {        	
-        	PreggoMobHelper.setItemstackOnOffHand(preggoMob, new ItemStack(Baby.getDeadBabyItem(preggoMob.getDefaultTypeOfBaby()), IBreedable.getOffspringsByMaxPregnancyStage(preggoMob.getLastPregnancyStage())));
+    		MinepreggoMod.LOGGER.debug("Miscarriage in progress: class={}, timer={}", preggoMob.getClass().getSimpleName(), preggoMob.getPregnancyPainTimer());
+        } else {  
+        	final var babyItem = PregnancySystemHelper.getDeadBabyItem(preggoMob.getDefaultTypeOfBaby());
+        	if (babyItem == null) {
+				MinepreggoMod.LOGGER.error("Failed to get dead baby item for miscarriage event. mobId={}, mobClass={}",
+						preggoMob.getId(), preggoMob.getClass().getSimpleName());
+			} else {
+				ItemStack droppedItem = new ItemStack(babyItem, IBreedable.getOffspringsByMaxPregnancyStage(preggoMob.getLastPregnancyStage()));
+	        	PreggoMobHelper.setItemstackOnOffHand(preggoMob, droppedItem);
+			}      	
         	initPostMiscarriage();	 
         	preggoMob.discard();
+        	MinepreggoMod.LOGGER.debug("Miscarriage completed: id={}, class={}", preggoMob.getId(), preggoMob.getClass().getSimpleName());
         }	
 	}
 	
 	protected void evaluateCravingTimer(final int totalTicksOfCraving) {   				
-		if (preggoMob.getCraving() < PregnancySystemConstants.MAX_CRAVING_LEVEL) {
+		if (preggoMob.getCraving() < PregnancySystemHelper.MAX_CRAVING_LEVEL
+				&& preggoMob.getPregnancySymptom() != PregnancySymptom.CRAVING) {
 	        if (preggoMob.getCravingTimer() >= totalTicksOfCraving) {
 	        	preggoMob.incrementCraving();
 	        	preggoMob.resetCravingTimer();
@@ -100,7 +112,7 @@ public abstract class PregnancySystemP1<
 
 	protected void evaluatePregnancyPains() {
 		if (preggoMob.getPregnancyPain() == PregnancyPain.MORNING_SICKNESS) {
-			if (preggoMob.getPregnancyPainTimer() >= PregnancySystemConstants.TOTAL_TICKS_MORNING_SICKNESS) {
+			if (preggoMob.getPregnancyPainTimer() >= PregnancySystemHelper.TOTAL_TICKS_MORNING_SICKNESS) {
 				preggoMob.clearPregnancyPain();
 				preggoMob.resetPregnancyPainTimer();
 			} else {
@@ -110,7 +122,7 @@ public abstract class PregnancySystemP1<
 	}
 	
 	protected void evaluatePregnancySymptoms() {	
-		if (preggoMob.getPregnancySymptom() == PregnancySymptom.CRAVING && preggoMob.getCraving() <= PregnancySystemConstants.DESACTIVATE_CRAVING_SYMPTOM) {
+		if (preggoMob.getPregnancySymptom() == PregnancySymptom.CRAVING && preggoMob.getCraving() <= PregnancySystemHelper.DESACTIVATE_CRAVING_SYMPTOM) {
 			preggoMob.clearPregnancySymptom();
 			preggoMob.clearTypeOfCraving();
 		}
@@ -170,7 +182,7 @@ public abstract class PregnancySystemP1<
 	}
 	
 	protected boolean tryInitRandomPregnancyPain() {
-	    if (randomSource.nextFloat() < PregnancySystemConstants.LOW_MORNING_SICKNESS_PROBABILITY) {
+	    if (randomSource.nextFloat() < PregnancySystemHelper.LOW_MORNING_SICKNESS_PROBABILITY) {
 	        preggoMob.setPregnancyPain(PregnancyPain.MORNING_SICKNESS);
 	        preggoMob.resetPregnancyPainTimer();
 	        return true;
@@ -179,9 +191,9 @@ public abstract class PregnancySystemP1<
 	}
 	
 	protected boolean tryInitPregnancySymptom() {
-		if (preggoMob.getCraving() >= PregnancySystemConstants.ACTIVATE_CRAVING_SYMPTOM) {
+		if (preggoMob.getCraving() >= PregnancySystemHelper.ACTIVATE_CRAVING_SYMPTOM) {
 	    	preggoMob.setPregnancySymptom(PregnancySymptom.CRAVING);
-	    	preggoMob.setTypeOfCraving(Craving.getRandomCraving(randomSource));
+	    	preggoMob.setTypeOfCraving(PregnancySystemHelper.getRandomCraving(randomSource));
 	    	return true;		
 		}
 	    return false;
@@ -196,14 +208,13 @@ public abstract class PregnancySystemP1<
 	    var mainHandItem = source.getMainHandItem().getItem();
 	    var currentCraving = preggoMob.getCraving();
 	    
-	    if (currentCraving > PregnancySystemConstants.DESACTIVATE_CRAVING_SYMPTOM) {    	
-	    	if (!preggoMob.isValidCraving(mainHandItem) && !(mainHandItem instanceof IItemCraving)) {
+	    if (currentCraving > PregnancySystemHelper.DESACTIVATE_CRAVING_SYMPTOM) {    	
+	    	if (!preggoMob.isValidCraving(mainHandItem) || !(mainHandItem instanceof IItemCraving)) {
 	    		return Result.ANGRY;
 	    	}
 	    	    	
     		source.getInventory().clearOrCountMatchingItems(p -> mainHandItem == p.getItem(), 1, source.inventoryMenu.getCraftSlots());         
-            preggoMob.setCraving(currentCraving - ((IItemCraving)mainHandItem).getGratification()); 
-            preggoMob.increaseFullness(2);    
+            preggoMob.setCraving(currentCraving - ((IItemCraving)mainHandItem).getGratification());    
 
             if (!level.isClientSide) {
             	level.playSound(null, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.generic.eat")), SoundSource.NEUTRAL, 0.75f, 1);	          
@@ -231,7 +242,7 @@ public abstract class PregnancySystemP1<
 	
 		if (isMiscarriageActive()) {
 			if (level instanceof ServerLevel serverLevel) {
-				evaluateMiscarriage(serverLevel, preggoMob.getX(), preggoMob.getY(), preggoMob.getZ(), PregnancySystemConstants.TOTAL_TICKS_MISCARRIAGE);
+				evaluateMiscarriage(serverLevel, preggoMob.getX(), preggoMob.getY(), preggoMob.getZ(), PregnancySystemHelper.TOTAL_TICKS_MISCARRIAGE);
 			}		
 			return;
 		}
@@ -243,23 +254,34 @@ public abstract class PregnancySystemP1<
 			return;
 		}
 		
-		this.evaluateCravingTimer(MinepreggoModConfig.getTotalTicksOfCravingP1());
-	
 		if (!hasPregnancyPain()) {
-			tryInitRandomPregnancyPain();	
+			if (pregnancyPainTicks > 40) {
+				tryInitRandomPregnancyPain();
+				pregnancyPainTicks = 0;
+			}
+			else {
+				++pregnancyPainTicks;
+			}
 		}
 		else {
 			evaluatePregnancyPains();
 		}
 		
 		if (!hasPregnancySymptom()) {
-			tryInitPregnancySymptom();
+			if (pregnancysymptonsTicks > 40) {
+				tryInitPregnancySymptom();
+				pregnancysymptonsTicks = 0;
+			}
+			else {
+				++pregnancysymptonsTicks;
+			}
 		}
 		else {
 			evaluatePregnancySymptoms();
 		}
 			
-		evaluateAngry(level, preggoMob.getX(), preggoMob.getY(), preggoMob.getZ(), PregnancySystemConstants.LOW_ANGER_PROBABILITY);		
+		evaluateCravingTimer(MinepreggoModConfig.getTotalTicksOfCravingP1());
+		evaluateAngry(level, preggoMob.getX(), preggoMob.getY(), preggoMob.getZ(), PregnancySystemHelper.LOW_ANGER_PROBABILITY);		
 	}
 	
 	public InteractionResult onRightClick(Player source) {		
@@ -268,18 +290,30 @@ public abstract class PregnancySystemP1<
 		}				
 		var level = preggoMob.level();
 
-		Result result = evaluateCraving(level, source);
-		
+		// Belly rubs has priority over other right click actions
+		if (canOwnerRubBelly(source) && level instanceof ServerLevel serverLevel) {
+			PreggoMobSystem.spawnParticles(preggoMob, serverLevel, Result.FAIL);
+			return InteractionResult.SUCCESS;
+		}
+					
+		Result result = evaluateCraving(level, source);	
 		if (result != null) {			
 			if (level instanceof ServerLevel serverLevel) {
 				PreggoMobSystem.spawnParticles(preggoMob, serverLevel, result);
 			}
 			return InteractionResult.sidedSuccess(level.isClientSide);
 		}
-
+		
 		return InteractionResult.PASS;
 	}
-
+	
+	public boolean canOwnerRubBelly(Player source) {
+		return source.isShiftKeyDown()
+				&& source.getMainHandItem().isEmpty() 
+				&& source.getDirection() == preggoMob.getDirection().getOpposite()
+				&& preggoMob.getItemBySlot(EquipmentSlot.CHEST).isEmpty();
+	}
+	
 	protected abstract void advanceToNextPregnancyPhase();
 	
 	protected abstract void initPostMiscarriage();

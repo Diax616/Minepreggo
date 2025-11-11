@@ -23,14 +23,14 @@ public abstract class PregnancySystemP6<E extends PreggoMob
 		
 		if (isInLabor()) {		
 			if (level instanceof ServerLevel serverLevel) {
-				evaluateBirth(serverLevel, PregnancySystemConstants.TOTAL_TICKS_PREBIRTH_P6, PregnancySystemConstants.TOTAL_TICKS_BIRTH_P6);
+				evaluateBirth(serverLevel, PregnancySystemHelper.TOTAL_TICKS_PREBIRTH_P6, PregnancySystemHelper.TOTAL_TICKS_BIRTH_P6);
 			}		
 			return;
 		}
 		
 		if (isMiscarriageActive()) {
 			if (level instanceof ServerLevel serverLevel) {
-				evaluateMiscarriage(serverLevel, preggoMob.getX(), preggoMob.getY(), preggoMob.getZ(), PregnancySystemConstants.TOTAL_TICKS_MISCARRIAGE);
+				evaluateMiscarriage(serverLevel, preggoMob.getX(), preggoMob.getY(), preggoMob.getZ(), PregnancySystemHelper.TOTAL_TICKS_MISCARRIAGE);
 			}		
 			return;
 		}
@@ -66,6 +66,6 @@ public abstract class PregnancySystemP6<E extends PreggoMob
 			evaluatePregnancySymptoms();
 		}
 			
-		evaluateAngry(level, preggoMob.getX(), preggoMob.getY(), preggoMob.getZ(), PregnancySystemConstants.HIGH_ANGER_PROBABILITY);		
+		evaluateAngry(level, preggoMob.getX(), preggoMob.getY(), preggoMob.getZ(), PregnancySystemHelper.HIGH_ANGER_PROBABILITY);		
 	}
 }

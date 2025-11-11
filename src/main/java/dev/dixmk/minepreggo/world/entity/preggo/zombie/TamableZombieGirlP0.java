@@ -65,7 +65,7 @@ public class TamableZombieGirlP0 extends AbstractTamableZombieGirl<PreggoMobSyst
 			protected void startPregnancy() {
 				if (preggoMob.level() instanceof ServerLevel serverLevel) {
 					var zombieGirl = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P1.get().spawn(serverLevel, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), MobSpawnType.CONVERSION);		
-					PreggoMobHelper.transferBasicData(preggoMob, zombieGirl);			
+					PreggoMobHelper.copyData(preggoMob, zombieGirl);			
 					PreggoMobHelper.transferInventary(preggoMob, zombieGirl);
 					PreggoMobHelper.transferAttackTarget(preggoMob, zombieGirl);
 				}
@@ -237,7 +237,7 @@ public class TamableZombieGirlP0 extends AbstractTamableZombieGirl<PreggoMobSyst
 	static<E extends AbstractTamablePregnantZombieGirl<?,?>> void onPostMiscarriage(E source) {
 		if (source.level() instanceof ServerLevel serverLevel) {
 			var zombieGirl = TamableZombieGirlP0.spawnPostMiscarriage(serverLevel, source.getX(), source.getY(), source.getZ());
-			PreggoMobHelper.transferBasicData(source, zombieGirl);
+			PreggoMobHelper.copyData(source, zombieGirl);
 			PreggoMobHelper.transferInventary(source, zombieGirl);
 			PreggoMobHelper.transferAttackTarget(source, zombieGirl);
 		}
@@ -246,7 +246,7 @@ public class TamableZombieGirlP0 extends AbstractTamableZombieGirl<PreggoMobSyst
 	static<E extends AbstractTamablePregnantZombieGirl<?,?>> void onPostPartum(E source) {
 		if (source.level() instanceof ServerLevel serverLevel) {
 			var zombieGirl = TamableZombieGirlP0.spawnPostPartum(serverLevel, source.getX(), source.getY(), source.getZ());
-			PreggoMobHelper.transferBasicData(source, zombieGirl);
+			PreggoMobHelper.copyData(source, zombieGirl);
 			PreggoMobHelper.transferInventary(source, zombieGirl);
 			PreggoMobHelper.transferAttackTarget(source, zombieGirl);
 		}

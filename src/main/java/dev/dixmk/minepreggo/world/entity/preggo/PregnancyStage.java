@@ -24,7 +24,13 @@ public enum PregnancyStage {
 		if (c < 4) {
 			c = 4;
 		}	
-
 		return PregnancyStage.values()[RANDOM.nextInt(c, PregnancyStage.values().length)];	
     }
+	
+	public static PregnancyStage calculateMaxPregnancyStage(PregnancyStage currentPregnancyStage) {
+		if (currentPregnancyStage.ordinal() > PregnancyStage.P4.ordinal()) {
+			return PregnancyStage.values()[Math.min(currentPregnancyStage.ordinal() + 1, PregnancyStage.values().length - 1)];
+		}	
+		return PregnancyStage.P4;
+	}
 }

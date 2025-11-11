@@ -306,7 +306,7 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 	}
 	
 	@Override
-	public void increaseFullness(int amount) {
+	public void incrementFullness(int amount) {
 		this.setFullness(this.getFullness() + amount);
 	}
 	
@@ -316,7 +316,7 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 	}
 
 	@Override
-	public void increaseHungryTimer() {
+	public void incrementHungryTimer() {
 		++this.hungryTimer;
 	}
 

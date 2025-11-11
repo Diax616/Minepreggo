@@ -3,16 +3,16 @@ package dev.dixmk.minepreggo.world.entity.preggo;
 import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
 import net.minecraft.world.entity.player.Player;
 
-public class PregnantPreggoMobSystem
+public class PregnantP1PreggoMobSystem
 	<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler> extends PreggoMobSystem<E> {
 
-	public PregnantPreggoMobSystem(E preggoMob, int totalTicksOfHungry) {
+	public PregnantP1PreggoMobSystem(E preggoMob, int totalTicksOfHungry) {
 		super(preggoMob, totalTicksOfHungry);
 	}
 
 	@Override
 	public boolean canOwnerAccessGUI(Player source) {
-		return super.canOwnerAccessGUI(source) && !preggoMob.isIncapacitated();
+		return super.canOwnerAccessGUI(source) && !source.isShiftKeyDown() && !preggoMob.isIncapacitated();
 	}
 	
 	@Override

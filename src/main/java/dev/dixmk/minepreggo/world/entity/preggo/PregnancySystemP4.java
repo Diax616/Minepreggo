@@ -2,6 +2,7 @@ package dev.dixmk.minepreggo.world.entity.preggo;
 
 import javax.annotation.Nonnull;
 
+import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.network.capability.IPregnancyEffectsHandler;
 import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
@@ -42,7 +43,15 @@ public abstract class PregnancySystemP4<E extends PreggoMob
 		}
 		else if (pain == PregnancyPain.BIRTH) {
 			if (preggoMob.getPregnancyPainTimer() >= totalTicksOfBirth) {
-	        	PreggoMobHelper.setItemstackOnOffHand(preggoMob, new ItemStack(Baby.getAliveBabyItem(preggoMob.getDefaultTypeOfBaby()), IBreedable.getOffspringsByMaxPregnancyStage(preggoMob.getLastPregnancyStage())));
+				
+				final var babyItem = PregnancySystemHelper.getAliveBabyItem(preggoMob.getDefaultTypeOfBaby());
+				
+				if (babyItem != null) {
+				    PreggoMobHelper.setItemstackOnOffHand(preggoMob, new ItemStack(babyItem, IBreedable.getOffspringsByMaxPregnancyStage(preggoMob.getLastPregnancyStage())));
+				} else {
+					MinepreggoMod.LOGGER.error("Failed to get baby item for pregnancy system {} birth.", preggoMob.getCurrentPregnancyStage());
+				}
+				
 				initPostBirth();
 	        	preggoMob.discard();
 			}	
@@ -78,7 +87,7 @@ public abstract class PregnancySystemP4<E extends PreggoMob
 		if (super.tryInitPregnancySymptom()) {
 			return true;
 		}
-		if (preggoMob.getHorny() >= PregnancySystemConstants.ACTIVATE_HORNY_SYMPTOM) {
+		if (preggoMob.getHorny() >= PregnancySystemHelper.ACTIVATE_HORNY_SYMPTOM) {
 	    	preggoMob.setPregnancySymptom(PregnancySymptom.HORNY);
 	    	return true;		
 		}
@@ -87,12 +96,12 @@ public abstract class PregnancySystemP4<E extends PreggoMob
 	
 	@Override
 	protected boolean tryInitRandomPregnancyPain() {
-	    if (randomSource.nextFloat() < PregnancySystemConstants.LOW_MORNING_SICKNESS_PROBABILITY) {
+	    if (randomSource.nextFloat() < PregnancySystemHelper.LOW_MORNING_SICKNESS_PROBABILITY) {
 	        preggoMob.setPregnancyPain(PregnancyPain.MORNING_SICKNESS);
 	        preggoMob.resetPregnancyPainTimer();
 	        return true;
 	    }
-		else if (randomSource.nextFloat() < PregnancySystemConstants.MEDIUM_PREGNANCY_PAIN_PROBABILITY) {
+		else if (randomSource.nextFloat() < PregnancySystemHelper.MEDIUM_PREGNANCY_PAIN_PROBABILITY) {
 			
 			if (hasToGiveBirth()) {
 				preggoMob.setPregnancyPain(PregnancyPain.CONTRACTION);
@@ -112,9 +121,9 @@ public abstract class PregnancySystemP4<E extends PreggoMob
 	protected void evaluatePregnancyPains() {
 		final var pain = preggoMob.getPregnancyPain();
 	
-		if ((pain == PregnancyPain.MORNING_SICKNESS && preggoMob.getPregnancyPainTimer() >= PregnancySystemConstants.TOTAL_TICKS_MORNING_SICKNESS)
-				|| (pain == PregnancyPain.KICKING && preggoMob.getPregnancyPainTimer() >= PregnancySystemConstants.TOTAL_TICKS_KICKING_P4)
-				|| (pain == PregnancyPain.CONTRACTION && preggoMob.getPregnancyPainTimer() >= PregnancySystemConstants.TOTAL_TICKS_CONTRACTION_P4)) {
+		if ((pain == PregnancyPain.MORNING_SICKNESS && preggoMob.getPregnancyPainTimer() >= PregnancySystemHelper.TOTAL_TICKS_MORNING_SICKNESS)
+				|| (pain == PregnancyPain.KICKING && preggoMob.getPregnancyPainTimer() >= PregnancySystemHelper.TOTAL_TICKS_KICKING_P4)
+				|| (pain == PregnancyPain.CONTRACTION && preggoMob.getPregnancyPainTimer() >= PregnancySystemHelper.TOTAL_TICKS_CONTRACTION_P4)) {
 			preggoMob.clearPregnancyPain();
 			preggoMob.resetPregnancyPainTimer();
 		}
@@ -124,7 +133,7 @@ public abstract class PregnancySystemP4<E extends PreggoMob
 	}
 	
 	protected void evaluateHornyTimer(final int totalTicksOfHorny) {
-		if (preggoMob.getHorny() < PregnancySystemConstants.MAX_HORNY_LEVEL) {
+		if (preggoMob.getHorny() < PregnancySystemHelper.MAX_HORNY_LEVEL) {
 	        if (preggoMob.getHornyTimer() >= totalTicksOfHorny) {
 	        	preggoMob.incrementHorny();
 	        	preggoMob.resetHornyTimer();
@@ -144,14 +153,14 @@ public abstract class PregnancySystemP4<E extends PreggoMob
 		
 		if (isInLabor()) {		
 			if (level instanceof ServerLevel serverLevel) {
-				evaluateBirth(serverLevel, PregnancySystemConstants.TOTAL_TICKS_PREBIRTH_P4, PregnancySystemConstants.TOTAL_TICKS_BIRTH_P4);
+				evaluateBirth(serverLevel, PregnancySystemHelper.TOTAL_TICKS_PREBIRTH_P4, PregnancySystemHelper.TOTAL_TICKS_BIRTH_P4);
 			}		
 			return;
 		}
 		
 		if (isMiscarriageActive()) {
 			if (level instanceof ServerLevel serverLevel) {
-				evaluateMiscarriage(serverLevel, preggoMob.getX(), preggoMob.getY(), preggoMob.getZ(), PregnancySystemConstants.TOTAL_TICKS_MISCARRIAGE);
+				evaluateMiscarriage(serverLevel, preggoMob.getX(), preggoMob.getY(), preggoMob.getZ(), PregnancySystemHelper.TOTAL_TICKS_MISCARRIAGE);
 			}		
 			return;
 		}
@@ -187,7 +196,7 @@ public abstract class PregnancySystemP4<E extends PreggoMob
 			evaluatePregnancySymptoms();
 		}
 			
-		evaluateAngry(level, preggoMob.getX(), preggoMob.getY(), preggoMob.getZ(), PregnancySystemConstants.MEDIUM_ANGER_PROBABILITY);		
+		evaluateAngry(level, preggoMob.getX(), preggoMob.getY(), preggoMob.getZ(), PregnancySystemHelper.MEDIUM_ANGER_PROBABILITY);		
 	}
 	
 	

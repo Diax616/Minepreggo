@@ -15,11 +15,14 @@ import java.util.EnumSet;
 
 import javax.annotation.Nullable;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
 import dev.dixmk.minepreggo.utils.TagHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -63,6 +66,11 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 	protected AbstractCreeperGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_) {
       super(p_21803_, p_21804_);
       this.reassessTameGoals();	    
+	}
+	
+	@Override
+	public @NonNull Species getSpecies() {
+		return Species.CREEPER;
 	}
 	
 	@Override

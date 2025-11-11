@@ -14,10 +14,10 @@ import dev.dixmk.minepreggo.world.entity.preggo.IPregnancyP1;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemP1;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnantPreggoMobSystem;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnantP1PreggoMobSystem;
 
 
-public class TamableCreeperGirlP1 extends AbstractTamablePregnantHumanoidCreeperGirl<PregnantPreggoMobSystem<TamableCreeperGirlP1>, PregnancySystemP1<TamableCreeperGirlP1>> implements IPregnancyP1<TamableCreeperGirlP1> {
+public class TamableCreeperGirlP1 extends AbstractTamablePregnantHumanoidCreeperGirl<PregnantP1PreggoMobSystem<TamableCreeperGirlP1>, PregnancySystemP1<TamableCreeperGirlP1>> implements IPregnancyP1<TamableCreeperGirlP1> {
 	
 	public TamableCreeperGirlP1(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P1.get(), world);
@@ -31,8 +31,8 @@ public class TamableCreeperGirlP1 extends AbstractTamablePregnantHumanoidCreeper
 	}
 	
 	@Override
-	protected PregnantPreggoMobSystem<TamableCreeperGirlP1> createPreggoMobSystem() {
-		return new PregnantPreggoMobSystem<>(this, MinepreggoModConfig.getTotalTicksOfHungryP1());
+	protected PregnantP1PreggoMobSystem<TamableCreeperGirlP1> createPreggoMobSystem() {
+		return new PregnantP1PreggoMobSystem<>(this, MinepreggoModConfig.getTotalTicksOfHungryP1());
 	}
 	
 	@Override
@@ -42,9 +42,7 @@ public class TamableCreeperGirlP1 extends AbstractTamablePregnantHumanoidCreeper
 			protected void advanceToNextPregnancyPhase() {
 				if (preggoMob.level() instanceof ServerLevel serverLevel) {
 					var creeperGirl = MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P2.get().spawn(serverLevel, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), MobSpawnType.CONVERSION);
-					PreggoMobHelper.transferPregnancyP1Data(preggoMob, creeperGirl);
-					PreggoMobHelper.transferInventary(preggoMob, creeperGirl);
-					PreggoMobHelper.transferAttackTarget(preggoMob, creeperGirl);
+					PreggoMobHelper.copyDataToAdvanceToNextPregnancyPhase(preggoMob, creeperGirl);
 				}
 			}
 			

@@ -5,13 +5,13 @@ import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.world.entity.preggo.IPregnancyP8;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemP8;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnantPreggoMobSystem;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnantP2PreggoMobSystem;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.PlayMessages;
 
-public class TamableCreeperGirlP8 extends AbstractTamablePregnantHumanoidCreeperGirl<PregnantPreggoMobSystem<TamableCreeperGirlP8>, PregnancySystemP8<TamableCreeperGirlP8>> implements IPregnancyP8<TamableCreeperGirlP8> {
+public class TamableCreeperGirlP8 extends AbstractTamablePregnantHumanoidCreeperGirl<PregnantP2PreggoMobSystem<TamableCreeperGirlP8>, PregnancySystemP8<TamableCreeperGirlP8>> implements IPregnancyP8<TamableCreeperGirlP8> {
 	
 	public TamableCreeperGirlP8(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P8.get(), world);
@@ -25,8 +25,8 @@ public class TamableCreeperGirlP8 extends AbstractTamablePregnantHumanoidCreeper
 	}
 	
 	@Override
-	protected PregnantPreggoMobSystem<TamableCreeperGirlP8> createPreggoMobSystem() {
-		return new PregnantPreggoMobSystem<>(this, MinepreggoModConfig.getTotalTicksOfHungryP8());
+	protected PregnantP2PreggoMobSystem<TamableCreeperGirlP8> createPreggoMobSystem() {
+		return new PregnantP2PreggoMobSystem<>(this, MinepreggoModConfig.getTotalTicksOfHungryP8());
 	}
 	
 	@Override

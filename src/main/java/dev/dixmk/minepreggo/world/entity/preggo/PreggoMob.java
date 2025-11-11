@@ -1,5 +1,7 @@
 package dev.dixmk.minepreggo.world.entity.preggo;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.InteractionHand;
@@ -30,6 +32,8 @@ public abstract class PreggoMob extends TamableAnimal {
 	public abstract boolean isFoodToTame(ItemStack stack);
 	
 	public abstract boolean hasCustomHeadAnimation();
+	
+	public abstract @NonNull Species getSpecies();
 	
     @Override
     public void handleEntityEvent(byte id) {

@@ -7,9 +7,12 @@ import java.util.UUID;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.event.entity.living.EnderGirlAngerEvent;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -97,6 +100,11 @@ public abstract class AbstractEnderGirl extends PreggoMob implements NeutralMob 
         this.setPathfindingMalus(BlockPathTypes.WATER, -1.0F);  
     }
 			
+	@Override
+	public @NonNull Species getSpecies() {
+		return Species.ENDER;
+	}
+    
 	@Override
 	public boolean removeWhenFarAway(double p_27598_) {
 		return !this.isTame();

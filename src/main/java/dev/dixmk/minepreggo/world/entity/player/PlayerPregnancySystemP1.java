@@ -5,17 +5,18 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
+import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.network.capability.PlayerDataImpl;
-import dev.dixmk.minepreggo.network.capability.PregnancyEffectsImpl;
+import dev.dixmk.minepreggo.network.capability.PlayerPregnancyEffectsImpl;
 import dev.dixmk.minepreggo.network.capability.PlayerPregnancySystemImpl;
-import dev.dixmk.minepreggo.world.entity.preggo.Craving;
 import dev.dixmk.minepreggo.world.entity.preggo.PostPregnancy;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPain;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancySymptom;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemConstants;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemHelper;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraftforge.common.capabilities.Capability;
 
 public class PlayerPregnancySystemP1 {
@@ -23,7 +24,10 @@ public class PlayerPregnancySystemP1 {
 	protected final ServerPlayer player;
 	protected PlayerDataImpl playerData;
 	protected PlayerPregnancySystemImpl pregnancySystem;
-	protected PregnancyEffectsImpl pregnancyEffects;
+	protected PlayerPregnancyEffectsImpl pregnancyEffects;
+	protected int pregnancyPainTicks = 0;
+	protected int pregnancysymptonsTicks = 0;
+	
 	protected boolean isValid;
 	
 	public PlayerPregnancySystemP1(@NonNull ServerPlayer player) {
@@ -37,6 +41,13 @@ public class PlayerPregnancySystemP1 {
 		this.isValid = checkCapability(MinepreggoCapabilities.PLAYER_DATA)
 				&& checkCapability(MinepreggoCapabilities.PLAYER_PREGNANCY_SYSTEM)
 				&& checkCapability(MinepreggoCapabilities.PLAYER_PREGNANCY_EFFECTS);
+	}
+	
+	public boolean isPlayerValid(ServerPlayer currentPlayer) {
+	    // Check if the stored player is the same instance and has a valid connection
+	    return this.player == currentPlayer && 
+	           this.player.connection != null && 
+	           this.player.connection.connection.isConnected();
 	}
 	
 	private boolean checkCapability(Capability<?> capability) {
@@ -53,10 +64,16 @@ public class PlayerPregnancySystemP1 {
 	}
 	
 	
-	public void onServerTick() {
-		if (player.level().isClientSide() || !isValid) {
+	public void onServerTick() {			
+		if (player.level().isClientSide) {
 			return;
 		}
+		
+		if (!isValid) {
+			MinepreggoMod.LOGGER.warn("PlayerPregnancySystemP1 is not valid for player: {}. Aborting onServerTick.",
+					player.getGameProfile().getName());
+			return;
+		}	
 		
 		if (isMiscarriageActive()) {
 			evaluateMiscarriageTimer();
@@ -71,20 +88,33 @@ public class PlayerPregnancySystemP1 {
 		}
 		
 		if (!hasPregnancyPain()) {
-			tryInitRandomPregnancyPain();	
+			if (pregnancyPainTicks > 40) {
+				tryInitRandomPregnancyPain();
+				pregnancyPainTicks = 0;
+			}
+			else {
+				++pregnancyPainTicks;
+			}
 		}
 		else {
 			evaluatePregnancyPains();
 		}
 		
 		if (!hasPregnancySymptom()) {
-			tryInitPregnancySymptom();
+			if (pregnancysymptonsTicks > 40) {
+				tryInitPregnancySymptom();
+				pregnancysymptonsTicks = 0;
+			}
+			else {
+				++pregnancysymptonsTicks;
+			}
 		}
 		else {
 			evaluatePregnancySymptoms();
 		}
 		
 		evaluateCravingTimer(MinepreggoModConfig.getTotalTicksOfCravingP1());
+
 	}
 	
 	protected void evaluatePregnancyTimer() {
@@ -98,10 +128,15 @@ public class PlayerPregnancySystemP1 {
 	}
 	
 	protected void evaluateCravingTimer(final int totalTicksOfCraving) {   				
-		if (pregnancyEffects.getCraving() < PregnancySystemConstants.MAX_CRAVING_LEVEL) {
+		if (pregnancyEffects.getCraving() < PregnancySystemHelper.MAX_CRAVING_LEVEL
+				&& pregnancySystem.getPregnancySymptom() != PregnancySymptom.CRAVING) {
 	        if (pregnancyEffects.getCravingTimer() >= totalTicksOfCraving) {
 	        	pregnancyEffects.incrementCraving();
 	        	pregnancyEffects.resetCravingTimer();
+	        	pregnancyEffects.sync(player);
+	        	
+	        	MinepreggoMod.LOGGER.debug("Player {} craving level increased to: {}", 
+	        			player.getGameProfile().getName(), pregnancyEffects.getCraving());
 	        }
 	        else {
 	        	pregnancyEffects.incrementCravingTimer();
@@ -110,27 +145,39 @@ public class PlayerPregnancySystemP1 {
 	}
 	
 	protected void evaluateMiscarriageTimer() {		
-		if (pregnancySystem.getPregnancyPainTimer() > PregnancySystemConstants.TOTAL_TICKS_MISCARRIAGE) {
+		if (pregnancySystem.getPregnancyPainTimer() > PregnancySystemHelper.TOTAL_TICKS_MISCARRIAGE) {
 			pregnancySystem.resetPregnancyPainTimer();
 			pregnancySystem.clearPregnancyPain();				
 			playerData.tryActivatePostPregnancyPhase(PostPregnancy.MISCARRIAGE);
+			pregnancySystem.sync(player);
+			playerData.sync(player);
 		} else {
 			pregnancySystem.incrementPregnancyPainTimer();
 		}
 	}
 	
 	protected void evaluatePregnancySymptoms() {	
-		if (pregnancySystem.getPregnancySymptom() == PregnancySymptom.CRAVING && pregnancyEffects.getCraving() <= PregnancySystemConstants.DESACTIVATE_CRAVING_SYMPTOM) {
+		if (pregnancySystem.getPregnancySymptom() == PregnancySymptom.CRAVING && pregnancyEffects.getCraving() <= PregnancySystemHelper.DESACTIVATE_CRAVING_SYMPTOM) {
 			pregnancySystem.clearPregnancySymptom();
-			pregnancyEffects.clearTypeOfCraving();
+			pregnancyEffects.clearTypeOfCravingBySpecies();
+			player.removeEffect(MinepreggoModMobEffects.CRAVING.get());
+			pregnancySystem.sync(player);
+			pregnancyEffects.sync(player);
+			
+			MinepreggoMod.LOGGER.debug("Player {} pregnancy symptom cleared: {}",
+					player.getGameProfile().getName(), PregnancySymptom.CRAVING.name());
 		}
 	}
 	
 	protected void evaluatePregnancyPains() {
 		if (pregnancySystem.getPregnancyPain() == PregnancyPain.MORNING_SICKNESS) {
-			if (pregnancySystem.getPregnancyPainTimer() >= PregnancySystemConstants.TOTAL_TICKS_MORNING_SICKNESS) {
+			if (pregnancySystem.getPregnancyPainTimer() >= PregnancySystemHelper.TOTAL_TICKS_MORNING_SICKNESS) {
 				pregnancySystem.clearPregnancyPain();
 				pregnancySystem.resetPregnancyPainTimer();
+				pregnancySystem.sync(player);
+				
+				MinepreggoMod.LOGGER.debug("Player {} pregnancy pain cleared: {}",
+						player.getGameProfile().getName(), PregnancyPain.MORNING_SICKNESS.name());
 			} else {
 				pregnancySystem.incrementPregnancyPainTimer();
 			}
@@ -169,24 +216,29 @@ public class PlayerPregnancySystemP1 {
 	
 
 	protected boolean tryInitRandomPregnancyPain() {
-		if (randomSource.nextFloat() < PregnancySystemConstants.LOW_MORNING_SICKNESS_PROBABILITY) {
+		if (randomSource.nextFloat() < PregnancySystemHelper.LOW_MORNING_SICKNESS_PROBABILITY) {
 			pregnancySystem.setPregnancyPain(PregnancyPain.MORNING_SICKNESS);
+			pregnancySystem.sync(player);
 			
 			MinepreggoMod.LOGGER.debug("Player {} has developed pregnancy pain: {}",
 					player.getGameProfile().getName(), PregnancyPain.MORNING_SICKNESS.name());
-			
+
 			return true;
 		}	
 		return false;
 	}
 	
 	protected boolean tryInitPregnancySymptom() {
-		if (pregnancyEffects.getCraving() >= PregnancySystemConstants.MAX_CRAVING_LEVEL) {
+		if (pregnancyEffects.getCraving() >= PregnancySystemHelper.MAX_CRAVING_LEVEL) {
 			pregnancySystem.setPregnancySymptom(PregnancySymptom.CRAVING);
-			pregnancyEffects.setTypeOfCraving(Craving.getRandomCraving(randomSource));
+			pregnancyEffects.setTypeOfCraving(PregnancySystemHelper.getRandomCraving(randomSource));
+			player.addEffect(new MobEffectInstance(MinepreggoModMobEffects.CRAVING.get(), -1, 0, true, true));
+			pregnancySystem.sync(player);
+			pregnancyEffects.sync(player);
 			
 			MinepreggoMod.LOGGER.debug("Player {} has developed pregnancy symptom: {}",
 					player.getGameProfile().getName(), PregnancySymptom.CRAVING.name());
+			return true;
 		}
 		return false;
 	}

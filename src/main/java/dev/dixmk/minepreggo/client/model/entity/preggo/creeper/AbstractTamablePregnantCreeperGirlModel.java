@@ -1,5 +1,6 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.creeper;
 
+import dev.dixmk.minepreggo.world.entity.preggo.PregnancySymptom;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantHumanoidCreeperGirl;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -23,5 +24,12 @@ public abstract class AbstractTamablePregnantCreeperGirlModel<E extends Abstract
 		else {
 			this.moveHeadWithHat(entity, netHeadYaw, headPitch);
 		}	
+		
+		if (entity.getPregnancySymptom() == PregnancySymptom.MILKING) {
+			this.boobs.y += 1.5F;
+			this.boobs.zScale = 1.2F;
+			this.boobs.xScale = 1.2F;
+			this.boobs.yScale = 1.1F;			
+		} 
 	}
 }

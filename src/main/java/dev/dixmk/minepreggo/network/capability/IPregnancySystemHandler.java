@@ -4,6 +4,7 @@ import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Nullable;
 
+import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.world.entity.preggo.Baby;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPain;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancyStage;
@@ -71,7 +72,15 @@ public interface IPregnancySystemHandler {
         // Remaining days before modifiers
         return baseTotalDays - h.getDaysPassed();
     }
+    
+    public static int calculateDaysByStage(PregnancyStage lastStage) {
+    	return MinepreggoModConfig.getTotalPregnancyDays() / lastStage.ordinal();
+    }
 
+    public static int calculateInitialDaysToGiveBirth(PregnancyStage lastStage) {
+    	return calculateDaysByStage(lastStage) * lastStage.ordinal();
+    }
+    
     public static int calculateTotalDaysPassedFromP1(@NonNull IPregnancySystemHandler h) {
         // Number of full stages completed since P1 (P1 -> 0, P2 -> 1, ...)
         int stagesSinceP1 = Math.max(0, h.getCurrentPregnancyStage().ordinal() - PregnancyStage.P1.ordinal());
@@ -79,3 +88,4 @@ public interface IPregnancySystemHandler {
         return h.getDaysByStage() * stagesSinceP1 + h.getDaysPassed();
     }
 }
+

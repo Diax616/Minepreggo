@@ -27,7 +27,7 @@ public abstract class PregnancySystemP3 <E extends PreggoMob
 	}
 	
 	protected void evaluateBellyRubsTimer(final int totalTicksOfBellyRubs) {
-		if (preggoMob.getBellyRubs() < PregnancySystemConstants.MAX_BELLY_RUBBING_LEVEL) {
+		if (preggoMob.getBellyRubs() < PregnancySystemHelper.MAX_BELLY_RUBBING_LEVEL) {
 	        if (preggoMob.getBellyRubsTimer() >= totalTicksOfBellyRubs) {
 	        	preggoMob.incrementBellyRubs();
 	        	preggoMob.resetBellyRubsTimer();
@@ -44,7 +44,7 @@ public abstract class PregnancySystemP3 <E extends PreggoMob
 		if (super.tryInitPregnancySymptom()) {
 			return true;
 		}
-		if (preggoMob.getBellyRubs() >= PregnancySystemConstants.ACTIVATE_BELLY_RUBS_SYMPTOM) {
+		if (preggoMob.getBellyRubs() >= PregnancySystemHelper.ACTIVATE_BELLY_RUBS_SYMPTOM) {
 	    	preggoMob.setPregnancySymptom(PregnancySymptom.BELLY_RUBS);
 	    	return true;		
 		}
@@ -53,12 +53,12 @@ public abstract class PregnancySystemP3 <E extends PreggoMob
 	
 	@Override
 	protected boolean tryInitRandomPregnancyPain() {
-	    if (randomSource.nextFloat() < PregnancySystemConstants.HIGH_MORNING_SICKNESS_PROBABILITY) {
+	    if (randomSource.nextFloat() < PregnancySystemHelper.HIGH_MORNING_SICKNESS_PROBABILITY) {
 	        preggoMob.setPregnancyPain(PregnancyPain.MORNING_SICKNESS);
 	        preggoMob.resetPregnancyPainTimer();
 	        return true;
 	    }
-		else if (randomSource.nextFloat() < PregnancySystemConstants.LOW_PREGNANCY_PAIN_PROBABILITY) {
+		else if (randomSource.nextFloat() < PregnancySystemHelper.LOW_PREGNANCY_PAIN_PROBABILITY) {
 			preggoMob.setPregnancyPain(PregnancyPain.KICKING);
 			preggoMob.resetPregnancyPainTimer();
 			PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(preggoMob, EquipmentSlot.CHEST);				
@@ -72,8 +72,8 @@ public abstract class PregnancySystemP3 <E extends PreggoMob
 	protected void evaluatePregnancyPains() {
 		final var pain = preggoMob.getPregnancyPain();
 	
-		if ((pain == PregnancyPain.MORNING_SICKNESS && preggoMob.getPregnancyPainTimer() >= PregnancySystemConstants.TOTAL_TICKS_MORNING_SICKNESS)
-				|| (pain == PregnancyPain.KICKING && preggoMob.getPregnancyPainTimer() >= PregnancySystemConstants.TOTAL_TICKS_KICKING_P3)) {
+		if ((pain == PregnancyPain.MORNING_SICKNESS && preggoMob.getPregnancyPainTimer() >= PregnancySystemHelper.TOTAL_TICKS_MORNING_SICKNESS)
+				|| (pain == PregnancyPain.KICKING && preggoMob.getPregnancyPainTimer() >= PregnancySystemHelper.TOTAL_TICKS_KICKING_P3)) {
 			preggoMob.clearPregnancyPain();
 			preggoMob.resetPregnancyPainTimer();
 		}
@@ -84,15 +84,10 @@ public abstract class PregnancySystemP3 <E extends PreggoMob
 	
 	@Override
 	public boolean canBeAngry() {
-		return super.canBeAngry() || preggoMob.getBellyRubs() >= PregnancySystemConstants.MAX_BELLY_RUBBING_LEVEL;
+		return super.canBeAngry() || preggoMob.getBellyRubs() >= PregnancySystemHelper.MAX_BELLY_RUBBING_LEVEL;
 	}
 	
-	public boolean canOwnerRubBelly(Player source) {
-		return source.isShiftKeyDown()
-				&& source.getMainHandItem().isEmpty() 
-				&& source.getDirection() == preggoMob.getDirection().getOpposite()
-				&& preggoMob.getItemBySlot(EquipmentSlot.CHEST).isEmpty();
-	}
+
 	
 	@Nullable
 	protected Result evaluateBellyRubs(Level level, Player source) {	
@@ -108,11 +103,11 @@ public abstract class PregnancySystemP3 <E extends PreggoMob
 		var currentBellyRubs = preggoMob.getBellyRubs();
 	
 		if (currentBellyRubs > 0) {					
-			currentBellyRubs = Math.max(0, currentBellyRubs - PregnancySystemConstants.BELLY_RUBBING_VALUE);			
+			currentBellyRubs = Math.max(0, currentBellyRubs - PregnancySystemHelper.BELLY_RUBBING_VALUE);			
 			preggoMob.setBellyRubs(currentBellyRubs);
 						
 			if (!level.isClientSide && preggoMob.getPregnancySymptom() == PregnancySymptom.BELLY_RUBS
-					&& currentBellyRubs <= PregnancySystemConstants.DESACTIVATE_FULL_BELLY_RUBS_STAGE) {									
+					&& currentBellyRubs <= PregnancySystemHelper.DESACTIVATE_FULL_BELLY_RUBS_STAGE) {									
 				preggoMob.clearPregnancySymptom();							
 			}	
 			
@@ -134,7 +129,7 @@ public abstract class PregnancySystemP3 <E extends PreggoMob
 	
 		if (isMiscarriageActive()) {
 			if (level instanceof ServerLevel serverLevel) {
-				evaluateMiscarriage(serverLevel, preggoMob.getX(), preggoMob.getY(), preggoMob.getZ(), PregnancySystemConstants.TOTAL_TICKS_MISCARRIAGE);
+				evaluateMiscarriage(serverLevel, preggoMob.getX(), preggoMob.getY(), preggoMob.getZ(), PregnancySystemHelper.TOTAL_TICKS_MISCARRIAGE);
 			}		
 			return;
 		}
@@ -164,7 +159,7 @@ public abstract class PregnancySystemP3 <E extends PreggoMob
 			evaluatePregnancySymptoms();
 		}
 			
-		evaluateAngry(level, preggoMob.getX(), preggoMob.getY(), preggoMob.getZ(), PregnancySystemConstants.LOW_ANGER_PROBABILITY);		
+		evaluateAngry(level, preggoMob.getX(), preggoMob.getY(), preggoMob.getZ(), PregnancySystemHelper.LOW_ANGER_PROBABILITY);		
 	}
 	
 	@Override

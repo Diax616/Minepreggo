@@ -7,11 +7,8 @@ import javax.annotation.Nonnull;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.jetbrains.annotations.Nullable;
 
-import com.google.common.collect.ImmutableMap;
-
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
-import dev.dixmk.minepreggo.init.MinepreggoModItems;
 import dev.dixmk.minepreggo.network.capability.IPregnancyEffectsHandler;
 import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.entity.ai.goal.PreggoMobAIHelper;
@@ -23,8 +20,9 @@ import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPain;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancySymptom;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemConstants;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemP1;
+import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -33,8 +31,12 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -60,18 +62,14 @@ public abstract class AbstractTamablePregnantCreeperGirl<S extends PreggoMobSyst
 	protected int pregnancyTimer = 0;
 	protected final P pregnancySystem;
 	protected final PregnancyStage currentPregnancyStage;
-	protected PregnancyStage lastPregnancyStage = PregnancyStage.P4;
-	
-	protected static final ImmutableMap<Craving, Item> CRAVING_ENUM_MAP = ImmutableMap.of(
-			Craving.SALTY, MinepreggoModItems.ACTIVATED_GUNPOWDER_WITH_SALT.get(), 
-			Craving.SWEET, MinepreggoModItems.ACTIVATED_GUNPOWDER_WITH_CHOCOLATE.get(), 
-			Craving.SOUR, MinepreggoModItems.SOUR_ACTIVATED_GUNPOWDER.get(),
-			Craving.SPICY, MinepreggoModItems.ACTIVATED_GUNPOWDER_WITH_HOT_SAUCE.get());	
+	protected PregnancyStage lastPregnancyStage;
 	
 	protected AbstractTamablePregnantCreeperGirl(EntityType<? extends AbstractTamableCreeperGirl<?>> p_21803_, Level p_21804_, PregnancyStage currentPregnancyStage) {
 		super(p_21803_, p_21804_);
 		this.pregnancySystem = createPregnancySystem();
 		this.currentPregnancyStage = currentPregnancyStage;
+		this.lastPregnancyStage = PregnancyStage.calculateMaxPregnancyStage(currentPregnancyStage);
+		PreggoMobHelper.initPregnancy(this, this.lastPregnancyStage);
 	}
 	
 	@Nonnull
@@ -224,6 +222,23 @@ public abstract class AbstractTamablePregnantCreeperGirl<S extends PreggoMobSyst
 	}
 	
 	@Override
+	public InteractionResult mobInteract(Player sourceentity, InteractionHand hand) {	
+		var retval1 = super.mobInteract(sourceentity, hand);
+		var retval2 = this.pregnancySystem.onRightClick(sourceentity);
+		return retval2.shouldAwardStats() ? retval2 : retval1;	
+	}
+	
+	
+	@Override
+	public boolean doHurtTarget(Entity target) {		
+		boolean result = super.doHurtTarget(target);	
+		if (result && !this.isSavage() && target instanceof Player owner && this.isOwnedBy(owner) && this.isAngry()) {
+			this.setTarget(null);		
+		}
+		return result;
+	}
+	
+	@Override
 	public int getDaysByStage() {
 		return this.entityData.get(DATA_DAYS_BY_STAGE);
 	}
@@ -240,7 +255,7 @@ public abstract class AbstractTamablePregnantCreeperGirl<S extends PreggoMobSyst
 	
 	@Override
 	public void setPregnancyHealth(int health) {
-		this.entityData.set(DATA_PREGNANCY_HEALTH, Mth.clamp(health, 0, PregnancySystemConstants.MAX_PREGNANCY_HEALTH));
+		this.entityData.set(DATA_PREGNANCY_HEALTH, Mth.clamp(health, 0, PregnancySystemHelper.MAX_PREGNANCY_HEALTH));
 	}
 	
 	@Override
@@ -364,7 +379,7 @@ public abstract class AbstractTamablePregnantCreeperGirl<S extends PreggoMobSyst
 
 	@Override
 	public void setMilking(@NonNegative int milking) {
-		this.entityData.set(DATA_MILKING, Mth.clamp(milking, 0, PregnancySystemConstants.MAX_MILKING_LEVEL));
+		this.entityData.set(DATA_MILKING, Mth.clamp(milking, 0, PregnancySystemHelper.MAX_MILKING_LEVEL));
 	}
 
 	@Override
@@ -404,7 +419,7 @@ public abstract class AbstractTamablePregnantCreeperGirl<S extends PreggoMobSyst
 
 	@Override
 	public void setBellyRubs(@NonNegative int bellyRubs) {
-		this.entityData.set(DATA_BELLY_RUBS, Mth.clamp(bellyRubs, 0, PregnancySystemConstants.MAX_BELLY_RUBBING_LEVEL));
+		this.entityData.set(DATA_BELLY_RUBS, Mth.clamp(bellyRubs, 0, PregnancySystemHelper.MAX_BELLY_RUBBING_LEVEL));
 	}
 
 	@Override
@@ -444,7 +459,7 @@ public abstract class AbstractTamablePregnantCreeperGirl<S extends PreggoMobSyst
 
 	@Override
 	public void setHorny(@NonNegative int horny) {
-		this.entityData.set(DATA_HORNY, Mth.clamp(horny, 0, PregnancySystemConstants.MAX_HORNY_LEVEL));	
+		this.entityData.set(DATA_HORNY, Mth.clamp(horny, 0, PregnancySystemHelper.MAX_HORNY_LEVEL));	
 	}
 
 	@Override
@@ -492,10 +507,19 @@ public abstract class AbstractTamablePregnantCreeperGirl<S extends PreggoMobSyst
 	@Override
 	public boolean isValidCraving(Item itemCraving) {	
 		var craving = this.getTypeOfCraving();
-		if (craving != null) {
-			var food = CRAVING_ENUM_MAP.get(craving);
-			return food != null && food == itemCraving;
+		if (craving == null) return false;
+			
+		final var items = PregnancySystemHelper.getCravingItems(Species.CREEPER, craving);
+		
+		if (items == null) return false;
+		
+		for (final var item : items) {
+			MinepreggoMod.LOGGER.debug("Checking craving item: {} against item: {}", item, itemCraving);
+			if (item == itemCraving) {
+				return true;
+			}
 		}
+		
 		return false;
 	}
 
@@ -506,7 +530,7 @@ public abstract class AbstractTamablePregnantCreeperGirl<S extends PreggoMobSyst
 
 	@Override
 	public void setCraving(int craving) {
-		this.entityData.set(DATA_CRAVING, Mth.clamp(craving, 0, PregnancySystemConstants.MAX_CRAVING_LEVEL));
+		this.entityData.set(DATA_CRAVING, Mth.clamp(craving, 0, PregnancySystemHelper.MAX_CRAVING_LEVEL));
 	}
 
 	@Override

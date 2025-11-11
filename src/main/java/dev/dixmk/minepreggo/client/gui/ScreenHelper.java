@@ -3,6 +3,8 @@ package dev.dixmk.minepreggo.client.gui;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
+import dev.dixmk.minepreggo.client.gui.preggo.creeper.AbstractCreeperGirlMainScreen;
+import dev.dixmk.minepreggo.client.gui.preggo.zombie.AbstractZombieGirlMainScreen;
 import dev.dixmk.minepreggo.network.capability.IPregnancyEffectsHandler;
 import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.entity.preggo.IBreedable;
@@ -20,89 +22,9 @@ import net.minecraft.resources.ResourceLocation;
 public class ScreenHelper {
 
 	private ScreenHelper() {}
-	
-	public static final ResourceLocation CREEPER_GIRL_SWEET_CRAVING = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/activated_gunpowder_with_chocolate.png");
-	public static final ResourceLocation CREEPER_GIRL_SALTY_CRAVING = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/activated_gunpowder_with_salt.png");
-	public static final ResourceLocation CREEPER_GIRL_SOUR_CRAVING = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/sour_activated_gunpowder.png");
-	public static final ResourceLocation CREEPER_GIRL_SPICY_CRAVING = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/activated_gunpowder_with_hot_sauce.png");
-
-	public static final ResourceLocation ZOMBIE_GIRL_SWEET_CRAVING = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/brain_with_chocolate.png");
-	public static final ResourceLocation ZOMBIE_GIRL_SALTY_CRAVING = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/brain_with_salt.png");
-	public static final ResourceLocation ZOMBIE_GIRL_SOUR_CRAVING = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/sour_brain.png");
-	public static final ResourceLocation ZOMBIE_GIRL_SPICY_CRAVING = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/brain_with_hot_sauce.png");
-	
-	public static final ResourceLocation CREEPER_GIRL_INVENTARY_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/creeper_girl_inventory.png");	
-	public static final ResourceLocation ZOMBIE_GIRL_INVENTARY_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/zombie_girl_inventory.png");
-	
-	public static final ResourceLocation DEFAULT_P0_MAIN_GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/default_preggo_mob_p0_main_gui.png");
-	public static final ResourceLocation DEFAULT_P1_MAIN_GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/default_preggo_mob_p1_main_gui.png");
-	public static final ResourceLocation DEFAULT_P2_MAIN_GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/default_preggo_mob_p2_main_gui.png");
-	public static final ResourceLocation DEFAULT_P3_MAIN_GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/default_preggo_mob_p3_main_gui.png");
-	public static final ResourceLocation DEFAULT_P4_MAIN_GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/default_preggo_mob_p4_main_gui.png");
-	
-	public static final ResourceLocation DEFAULT_ICON_CREEPER_GIRL_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/creeper_girl_p0.png");
-	public static final ResourceLocation DEFAULT_ICON_ZOMBIE_GIRL_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/zombie_girl_p0.png");
-	public static final ResourceLocation DEFAULT_ICON_HUMAN_TEXTURE = ResourceLocation.withDefaultNamespace("textures/entity/player/wide/alex.png");
-
+		
 	public static final ResourceLocation MINECRAFT_ICONS_TEXTURE = ResourceLocation.withDefaultNamespace("textures/gui/icons.png");
-
-	public static final ResourceLocation PICKLE_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/salty_pickle.png");
-	public static final ResourceLocation LEMON_POPSICLES_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/lemon_ice_popsicles.png");
-	public static final ResourceLocation LEMON_ICECREAM_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/lemon_ice_cream.png");
-	public static final ResourceLocation HOT_CHICKEN_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/spicy_chicken.png");
-	public static final ResourceLocation CHOCOLATE_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/chocolate_bar.png");
-
-	public static final ResourceLocation ICONS_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/icons.png");
-	
-
-
-	
-	private static<E extends AbstractTamablePregnantZombieGirl<?,?>> void renderZombieGirlCravingMainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, E zombieGirl) {
-		switch (zombieGirl.getTypeOfCraving()) {
-		case SWEET: {
-			guiGraphics.blit(ZOMBIE_GIRL_SWEET_CRAVING, leftPos + 113, topPos + 43, 0, 0, 24, 24, 24, 24);
-			return;
-		}
-		case SALTY: {
-			guiGraphics.blit(ZOMBIE_GIRL_SALTY_CRAVING, leftPos + 113, topPos + 43, 0, 0, 24, 24, 24, 24);
-			return;
-		}
-		case SOUR: {
-			guiGraphics.blit(ZOMBIE_GIRL_SOUR_CRAVING, leftPos + 113, topPos + 43, 0, 0, 24, 24, 24, 24);
-			return;
-		}
-		case SPICY: {
-			guiGraphics.blit(ZOMBIE_GIRL_SPICY_CRAVING, leftPos + 113, topPos + 43, 0, 0, 24, 24, 24, 24);
-			return;
-		}
-		default:
-			return;
-		}	
-	}
-	
-	
-	private static<E extends AbstractTamablePregnantCreeperGirl<?,?>> void renderCreeperGirlCravingMainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, E creeperGirl) {
-		switch (creeperGirl.getTypeOfCraving()) {
-		case SWEET: {
-			guiGraphics.blit(CREEPER_GIRL_SWEET_CRAVING, leftPos + 113, topPos + 43, 0, 0, 24, 24, 24, 24);
-			return;
-		}
-		case SALTY: {
-			guiGraphics.blit(CREEPER_GIRL_SALTY_CRAVING, leftPos + 113, topPos + 43, 0, 0, 24, 24, 24, 24);
-			return;
-		}
-		case SOUR: {
-			guiGraphics.blit(CREEPER_GIRL_SOUR_CRAVING, leftPos + 113, topPos + 43, 0, 0, 24, 24, 24, 24);
-			return;
-		}
-		case SPICY: {
-			guiGraphics.blit(CREEPER_GIRL_SPICY_CRAVING, leftPos + 113, topPos + 43, 0, 0, 24, 24, 24, 24);
-			return;
-		}
-		default:
-			return;
-		}	
-	}
+	public static final ResourceLocation MINEPREGGO_ICONS_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/icons.png");
 	
 	public static void renderZombieGirlMainScreen(GuiGraphics guiGraphics, int leftPos, int topPos, @NonNull AbstractTamableZombieGirl<?> zombieGirl) {
 		renderDefaultPreggoP0MainGUI(guiGraphics, leftPos, topPos, zombieGirl.getHealth(), zombieGirl, 3);
@@ -152,15 +74,15 @@ public class ScreenHelper {
 	
 	private static void renderDefaultPreggoP1MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, IPregnancyEffectsHandler p1) {	
 		for (int i = 0, pos = 74; i < 10; i++, pos += 10) {
-			guiGraphics.blit(ICONS_TEXTURE, leftPos + pos, topPos + 98, 9, 9, 0, 35, 19, 19, 256, 256);		
+			guiGraphics.blit(MINEPREGGO_ICONS_TEXTURE, leftPos + pos, topPos + 98, 9, 9, 0, 35, 19, 19, 256, 256);		
 		}	
 	
 		for (int i = 0, pos = 74, oddValue = 1, evenValue = 2; i < 10; ++i, pos += 10, oddValue += 2, evenValue += 2) {		
 
 			if (p1.getCraving() >= evenValue) {
-				guiGraphics.blit(ICONS_TEXTURE, leftPos + pos, topPos + 98, 9, 9, 38, 35, 19, 19, 256, 256);
+				guiGraphics.blit(MINEPREGGO_ICONS_TEXTURE, leftPos + pos, topPos + 98, 9, 9, 38, 35, 19, 19, 256, 256);
 			} else if (p1.getCraving() >= oddValue) {
-				guiGraphics.blit(ICONS_TEXTURE, leftPos + pos, topPos + 98, 9, 9, 19, 35, 19, 19, 256, 256);
+				guiGraphics.blit(MINEPREGGO_ICONS_TEXTURE, leftPos + pos, topPos + 98, 9, 9, 19, 35, 19, 19, 256, 256);
 			}					
 		}
 	}
@@ -170,12 +92,12 @@ public class ScreenHelper {
 		final int milking = p2.getMilking();
 
 		for (int i = 0, pos = 74, oddValue = 1, evenValue = 2; i < 10; ++i, pos += 10, oddValue += 2, evenValue += 2) {		
-			gui.blit(ICONS_TEXTURE, leftPos + pos, topPos + 103, 0, 24, 9, 9, 256, 256);		
+			gui.blit(MINEPREGGO_ICONS_TEXTURE, leftPos + pos, topPos + 103, 0, 24, 9, 9, 256, 256);		
 
 			if (milking >= evenValue) {
-				gui.blit(ICONS_TEXTURE, leftPos + pos, topPos + 103, 18, 24, 9, 9, 256, 256);
+				gui.blit(MINEPREGGO_ICONS_TEXTURE, leftPos + pos, topPos + 103, 18, 24, 9, 9, 256, 256);
 			} else if (milking >= oddValue) {
-				gui.blit(ICONS_TEXTURE, leftPos + pos, topPos + 103, 9, 24, 9, 9, 256, 256);
+				gui.blit(MINEPREGGO_ICONS_TEXTURE, leftPos + pos, topPos + 103, 9, 24, 9, 9, 256, 256);
 			}			
 		}	
 	}
@@ -185,11 +107,11 @@ public class ScreenHelper {
 		final int bellyRubs = p3.getBellyRubs();
 
 		for (int i = 0, pos = 74, oddValue = 1, evenValue = 2; i < 10; ++i, pos += 10, oddValue += 2, evenValue += 2) {		
-			gui.blit(ICONS_TEXTURE, leftPos + pos, topPos + 114, 0, 0, 9, 9, 256, 256);		
+			gui.blit(MINEPREGGO_ICONS_TEXTURE, leftPos + pos, topPos + 114, 0, 0, 9, 9, 256, 256);		
 			if (bellyRubs >= evenValue) {
-				gui.blit(ICONS_TEXTURE, leftPos + pos, topPos + 114, 18, 0, 9, 9, 256, 256);
+				gui.blit(MINEPREGGO_ICONS_TEXTURE, leftPos + pos, topPos + 114, 18, 0, 9, 9, 256, 256);
 			} else if (bellyRubs >= oddValue) {
-				gui.blit(ICONS_TEXTURE, leftPos + pos, topPos + 114, 9, 0, 9, 9, 256, 256);
+				gui.blit(MINEPREGGO_ICONS_TEXTURE, leftPos + pos, topPos + 114, 9, 0, 9, 9, 256, 256);
 			}	
 		}	
 	}
@@ -199,11 +121,11 @@ public class ScreenHelper {
 		final int horny = p4.getHorny();
 
 		for (int i = 0, pos = 74, oddValue = 1, evenValue = 2; i < 10; ++i, pos += 10, oddValue += 2, evenValue += 2) {		
-			gui.blit(ICONS_TEXTURE, leftPos + pos, topPos + 128, 9, 9, 0, 11, 16, 11, 256, 256);	
+			gui.blit(MINEPREGGO_ICONS_TEXTURE, leftPos + pos, topPos + 128, 9, 9, 0, 11, 16, 11, 256, 256);	
 			if (horny >= evenValue) {
-				gui.blit(ICONS_TEXTURE, leftPos + pos, topPos + 128, 9, 9, 32, 11, 16, 11, 256, 256);
+				gui.blit(MINEPREGGO_ICONS_TEXTURE, leftPos + pos, topPos + 128, 9, 9, 32, 11, 16, 11, 256, 256);
 			} else if (horny >= oddValue) {
-				gui.blit(ICONS_TEXTURE, leftPos + pos, topPos + 128, 9, 9, 16, 11, 16, 11, 256, 256);
+				gui.blit(MINEPREGGO_ICONS_TEXTURE, leftPos + pos, topPos + 128, 9, 9, 16, 11, 16, 11, 256, 256);
 			}	
 		}		
 	}
@@ -226,11 +148,11 @@ public class ScreenHelper {
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_pregnant"), 107, 22, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_phase"), 75, 37, -12829636, false);
 		guiGraphics.drawString(font, p1.getCurrentPregnancyStage().toString(), 107, 37, -12829636, false);
-		
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_craving"), 75, 51, -12829636, false);
+		
 		if (p1.getTypeOfCraving() == null) {
 			guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_none"), 118, 51, -12829636, false);
-		}   	
+		} 
 	}
 	
 	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler & IPregnancyEffectsHandler> void renderP2LabelMainGUI(GuiGraphics guiGraphics, Font font, E p2) {
@@ -274,65 +196,82 @@ public class ScreenHelper {
 		} 
 	}
 	
-	
-	public static<E extends AbstractTamablePregnantCreeperGirl<?,?>> void renderCreeperGirlP1MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, E creeperGirl) {		
-		renderCreeperGirlMainScreen(guiGraphics, leftPos, topPos, creeperGirl);	
-		renderCreeperGirlCravingMainGUI(guiGraphics, leftPos, topPos, creeperGirl);	
-		renderDefaultPreggoP1MainGUI(guiGraphics, leftPos, topPos, creeperGirl);				
+	public static void renderCravingIcon(GuiGraphics guiGraphics, int leftPos, int topPos, @NonNull ResourceLocation icon) {
+		guiGraphics.blit(icon, leftPos + 116, topPos + 45, 0, 0, 16, 16, 16, 16);
+	}
+
+	public static void tryRenderCravingIcon(GuiGraphics guiGraphics, int leftPos, int topPos, AbstractTamablePregnantCreeperGirl<?,?> creeperGirl) {
+		final var icon = AbstractCreeperGirlMainScreen.getCravingIcon(creeperGirl.getTypeOfCraving());
+		if (icon != null) {
+			renderCravingIcon(guiGraphics, leftPos, topPos, icon);
+		}
 	}
 	
-	public static<E extends AbstractTamablePregnantCreeperGirl<?,?>> void renderCreeperGirlP2MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, E p2) {
-		renderCreeperGirlMainScreen(guiGraphics, leftPos, topPos + 10, p2);
-		renderCreeperGirlCravingMainGUI(guiGraphics, leftPos, topPos, p2);	
-		renderDefaultPreggoP1MainGUI(guiGraphics, leftPos, topPos, p2);	
-		renderDefaultPreggoP2MainGUI(guiGraphics, leftPos, topPos + 5, p2);		
+	public static void tryRenderCravingIcon(GuiGraphics guiGraphics, int leftPos, int topPos, AbstractTamablePregnantZombieGirl<?,?> zombieGirl) {
+		final var icon = AbstractZombieGirlMainScreen.getCravingIcon(zombieGirl.getTypeOfCraving());
+		if (icon != null) {
+			renderCravingIcon(guiGraphics, leftPos, topPos, icon);
+		}
+	}	
+	
+	public static void renderCreeperGirlP1MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, AbstractTamablePregnantCreeperGirl<?,?> creeperGirl) {		
+		renderCreeperGirlMainScreen(guiGraphics, leftPos, topPos + 10, creeperGirl);		
+		renderDefaultPreggoP1MainGUI(guiGraphics, leftPos, topPos, creeperGirl);	
+		tryRenderCravingIcon(guiGraphics, leftPos, topPos, creeperGirl);
 	}
 	
-	public static<E extends AbstractTamablePregnantCreeperGirl<?,?>> void renderCreeperGirlP3MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, E p3) {
-		renderCreeperGirlMainScreen(guiGraphics, leftPos, topPos + 10, p3);
-		renderCreeperGirlCravingMainGUI(guiGraphics, leftPos, topPos, p3);	
-		renderDefaultPreggoP1MainGUI(guiGraphics, leftPos, topPos, p3);		
-		renderDefaultPreggoP2MainGUI(guiGraphics, leftPos, topPos + 5, p3);		
-		renderDefaultPreggoP3MainGUI(guiGraphics, leftPos, topPos + 4, p3);		
+	public static void renderCreeperGirlP2MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, AbstractTamablePregnantCreeperGirl<?,?> creeperGirl) {
+		renderCreeperGirlMainScreen(guiGraphics, leftPos, topPos + 10, creeperGirl);	
+		renderDefaultPreggoP1MainGUI(guiGraphics, leftPos, topPos, creeperGirl);	
+		renderDefaultPreggoP2MainGUI(guiGraphics, leftPos, topPos + 5, creeperGirl);	
+		tryRenderCravingIcon(guiGraphics, leftPos, topPos, creeperGirl);
 	}
 	
-	public static<E extends AbstractTamablePregnantCreeperGirl<?,?>> void renderCreeperGirlP4MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, E p4) {
-		renderCreeperGirlMainScreen(guiGraphics, leftPos, topPos + 10, p4);
-		renderCreeperGirlCravingMainGUI(guiGraphics, leftPos, topPos, p4);	
-		renderDefaultPreggoP1MainGUI(guiGraphics, leftPos, topPos, p4);		
-		renderDefaultPreggoP2MainGUI(guiGraphics, leftPos, topPos + 5, p4);		
-		renderDefaultPreggoP3MainGUI(guiGraphics, leftPos, topPos + 4, p4);	
-		renderDefaultPreggoP4MainGUI(guiGraphics, leftPos, topPos, p4);			
+	public static void renderCreeperGirlP3MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, AbstractTamablePregnantCreeperGirl<?,?> creeperGirl) {
+		renderCreeperGirlMainScreen(guiGraphics, leftPos, topPos + 10, creeperGirl);
+		renderDefaultPreggoP1MainGUI(guiGraphics, leftPos, topPos, creeperGirl);		
+		renderDefaultPreggoP2MainGUI(guiGraphics, leftPos, topPos + 5, creeperGirl);		
+		renderDefaultPreggoP3MainGUI(guiGraphics, leftPos, topPos + 4, creeperGirl);		
+		tryRenderCravingIcon(guiGraphics, leftPos, topPos, creeperGirl);
+	}
+	
+	public static void renderCreeperGirlP4MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, AbstractTamablePregnantCreeperGirl<?,?> creeperGirl) {
+		renderCreeperGirlMainScreen(guiGraphics, leftPos, topPos + 10, creeperGirl);	
+		renderDefaultPreggoP1MainGUI(guiGraphics, leftPos, topPos, creeperGirl);		
+		renderDefaultPreggoP2MainGUI(guiGraphics, leftPos, topPos + 5, creeperGirl);		
+		renderDefaultPreggoP3MainGUI(guiGraphics, leftPos, topPos + 4, creeperGirl);	
+		renderDefaultPreggoP4MainGUI(guiGraphics, leftPos, topPos, creeperGirl);		
+		tryRenderCravingIcon(guiGraphics, leftPos, topPos, creeperGirl);
 	}
 	
 
-	public static<E extends AbstractTamablePregnantZombieGirl<?,?>> void renderZombieGirlP1MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, E zombieGirl) {
+	public static void renderZombieGirlP1MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, AbstractTamablePregnantZombieGirl<?,?> zombieGirl) {
+		renderZombieGirlMainScreen(guiGraphics, leftPos, topPos + 10, zombieGirl);	
+		renderDefaultPreggoP1MainGUI(guiGraphics, leftPos, topPos, zombieGirl);		
+		tryRenderCravingIcon(guiGraphics, leftPos, topPos, zombieGirl);
+	}
+	
+	public static void renderZombieGirlP2MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, AbstractTamablePregnantZombieGirl<?,?> zombieGirl) {
+		renderZombieGirlMainScreen(guiGraphics, leftPos, topPos + 10, zombieGirl);	
+		renderDefaultPreggoP1MainGUI(guiGraphics, leftPos, topPos, zombieGirl);	
+		renderDefaultPreggoP2MainGUI(guiGraphics, leftPos, topPos + 5, zombieGirl);	
+		tryRenderCravingIcon(guiGraphics, leftPos, topPos, zombieGirl);
+	}
+	
+	public static void renderZombieGirlP3MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, AbstractTamablePregnantZombieGirl<?,?> zombieGirl) {
 		renderZombieGirlMainScreen(guiGraphics, leftPos, topPos + 10, zombieGirl);
-		renderZombieGirlCravingMainGUI(guiGraphics, leftPos, topPos, zombieGirl);	
-		renderDefaultPreggoP1MainGUI(guiGraphics, leftPos, topPos, zombieGirl);				
+		renderDefaultPreggoP1MainGUI(guiGraphics, leftPos, topPos, zombieGirl);		
+		renderDefaultPreggoP2MainGUI(guiGraphics, leftPos, topPos + 5, zombieGirl);		
+		renderDefaultPreggoP3MainGUI(guiGraphics, leftPos, topPos + 4, zombieGirl);		
+		tryRenderCravingIcon(guiGraphics, leftPos, topPos, zombieGirl);
 	}
 	
-	public static<E extends AbstractTamablePregnantZombieGirl<?,?>> void renderZombieGirlP2MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, E p2) {
-		renderZombieGirlMainScreen(guiGraphics, leftPos, topPos + 10, p2);
-		renderZombieGirlCravingMainGUI(guiGraphics, leftPos, topPos, p2);	
-		renderDefaultPreggoP1MainGUI(guiGraphics, leftPos, topPos, p2);	
-		renderDefaultPreggoP2MainGUI(guiGraphics, leftPos, topPos + 5, p2);		
-	}
-	
-	public static<E extends AbstractTamablePregnantZombieGirl<?,?>> void renderZombieGirlP3MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, E p3) {
-		renderZombieGirlMainScreen(guiGraphics, leftPos, topPos + 10, p3);
-		renderZombieGirlCravingMainGUI(guiGraphics, leftPos, topPos, p3);	
-		renderDefaultPreggoP1MainGUI(guiGraphics, leftPos, topPos, p3);		
-		renderDefaultPreggoP2MainGUI(guiGraphics, leftPos, topPos + 5, p3);		
-		renderDefaultPreggoP3MainGUI(guiGraphics, leftPos, topPos + 4, p3);		
-	}
-	
-	public static<E extends AbstractTamablePregnantZombieGirl<?,?>> void renderZombieGirlP4MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, E p4) {
-		renderZombieGirlMainScreen(guiGraphics, leftPos, topPos + 10, p4);
-		renderZombieGirlCravingMainGUI(guiGraphics, leftPos, topPos, p4);	
-		renderDefaultPreggoP1MainGUI(guiGraphics, leftPos, topPos, p4);		
-		renderDefaultPreggoP2MainGUI(guiGraphics, leftPos, topPos + 5, p4);		
-		renderDefaultPreggoP3MainGUI(guiGraphics, leftPos, topPos + 4, p4);	
-		renderDefaultPreggoP4MainGUI(guiGraphics, leftPos, topPos, p4);		
+	public static void renderZombieGirlP4MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, AbstractTamablePregnantZombieGirl<?,?> zombieGirl) {
+		renderZombieGirlMainScreen(guiGraphics, leftPos, topPos + 10, zombieGirl);
+		renderDefaultPreggoP1MainGUI(guiGraphics, leftPos, topPos, zombieGirl);		
+		renderDefaultPreggoP2MainGUI(guiGraphics, leftPos, topPos + 5, zombieGirl);		
+		renderDefaultPreggoP3MainGUI(guiGraphics, leftPos, topPos + 4, zombieGirl);	
+		renderDefaultPreggoP4MainGUI(guiGraphics, leftPos, topPos, zombieGirl);		
+		tryRenderCravingIcon(guiGraphics, leftPos, topPos, zombieGirl);
 	}
 }

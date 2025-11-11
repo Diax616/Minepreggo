@@ -228,19 +228,15 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 	
 	@Override
 	public InteractionResult mobInteract(Player sourceentity, InteractionHand hand) {				
-		var retval = super.mobInteract(sourceentity, hand);	
-		
+		var retval = super.mobInteract(sourceentity, hand);		
 		if (retval == InteractionResult.SUCCESS || retval == InteractionResult.CONSUME) {
 			return retval;
-		}
-		
-		if (preggoMobSystem.canOwnerAccessGUI(sourceentity)) {		
-			
-			if (!this.level().isClientSide() && sourceentity instanceof ServerPlayer serverPlayer) {
+		}		
+		if (preggoMobSystem.canOwnerAccessGUI(sourceentity)) {			
+			if (!this.level().isClientSide && sourceentity instanceof ServerPlayer serverPlayer) {
 				CreeperGirlMenuHelper.showMainMenu(serverPlayer, this);
-			}
-		
-			return InteractionResult.SUCCESS;
+			}	
+			return InteractionResult.sidedSuccess(this.level().isClientSide);
 		}
 		else {			
 			return preggoMobSystem.onRightClick(sourceentity);
@@ -326,7 +322,7 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 	}
 	
 	@Override
-	public void increaseFullness(int amount) {
+	public void incrementFullness(int amount) {
 		this.setFullness(Math.min(this.getFullness() + amount, ITamablePreggoMob.MAX_FULLNESS));
 	}
 
@@ -338,7 +334,7 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 	}
 
 	@Override
-	public void increaseHungryTimer() {
+	public void incrementHungryTimer() {
 		++this.hungryTimer;
 	}
 

@@ -13,8 +13,7 @@ public interface IPregnancyEffectsHandler {
 	void setTypeOfCraving(@Nullable Craving craving);
 	boolean isValidCraving(Item itemCraving);
 	void clearTypeOfCraving();
-	
-	
+		
 	int getCraving();
 	void setCraving(@NonNegative int craving);
 	void incrementCraving();
@@ -24,7 +23,6 @@ public interface IPregnancyEffectsHandler {
 	void setCravingTimer(@NonNegative int timer);
 	void incrementCravingTimer();
 	void resetCravingTimer();
-	
 	
 	public int getMilking();	
 	public void setMilking(@NonNegative int milking);

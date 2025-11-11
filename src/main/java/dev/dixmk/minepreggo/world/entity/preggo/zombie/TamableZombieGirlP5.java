@@ -6,7 +6,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.IPregnancyP5;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemP5;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnantPreggoMobSystem;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnantP1PreggoMobSystem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
@@ -15,7 +15,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.PlayMessages;
 
-public class TamableZombieGirlP5 extends AbstractTamablePregnantZombieGirl<PregnantPreggoMobSystem<TamableZombieGirlP5>, PregnancySystemP5<TamableZombieGirlP5>> implements IPregnancyP5<TamableZombieGirlP5> {
+public class TamableZombieGirlP5 extends AbstractTamablePregnantZombieGirl<PregnantP1PreggoMobSystem<TamableZombieGirlP5>, PregnancySystemP5<TamableZombieGirlP5>> implements IPregnancyP5<TamableZombieGirlP5> {
 		
 	public TamableZombieGirlP5(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P5.get(), world);
@@ -29,8 +29,8 @@ public class TamableZombieGirlP5 extends AbstractTamablePregnantZombieGirl<Pregn
 	}
 
 	@Override
-	protected PregnantPreggoMobSystem<TamableZombieGirlP5> createPreggoMobSystem() {
-		return new PregnantPreggoMobSystem<>(this, MinepreggoModConfig.getTotalTicksOfHungryP5());
+	protected PregnantP1PreggoMobSystem<TamableZombieGirlP5> createPreggoMobSystem() {
+		return new PregnantP1PreggoMobSystem<>(this, MinepreggoModConfig.getTotalTicksOfHungryP5());
 	}
 	
 	@Override
@@ -40,9 +40,7 @@ public class TamableZombieGirlP5 extends AbstractTamablePregnantZombieGirl<Pregn
 			protected void advanceToNextPregnancyPhase() {
 				if (preggoMob.level() instanceof ServerLevel serverLevel) {
 					var zombieGirl = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P6.get().spawn(serverLevel, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), MobSpawnType.CONVERSION);		
-					PreggoMobHelper.transferPregnancyP4Data(preggoMob, zombieGirl);			
-					PreggoMobHelper.transferInventary(preggoMob, zombieGirl);
-					PreggoMobHelper.transferAttackTarget(preggoMob, zombieGirl);
+					PreggoMobHelper.copyDataToAdvanceToNextPregnancyPhase(preggoMob, zombieGirl);
 				}
 			}
 			

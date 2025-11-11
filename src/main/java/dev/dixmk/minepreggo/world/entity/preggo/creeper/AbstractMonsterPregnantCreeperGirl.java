@@ -6,7 +6,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.ISimplePregnancy;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancyStage;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemConstants;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -36,13 +36,15 @@ public abstract class AbstractMonsterPregnantCreeperGirl extends AbstractMonster
 	private final PregnancyStage currentPregnanctStage;
 	private final PregnancyStage maxPregnanctStage;
 	private final int totalDaysPassed;
+	private final float pregnancyPainProbability;
 		
-	protected AbstractMonsterPregnantCreeperGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_, PregnancyStage currentPregnancyStage, PregnancyStage maxPregnancyStage) {
+	protected AbstractMonsterPregnantCreeperGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_, PregnancyStage currentPregnancyStage) {
 		super(p_21803_, p_21804_);
 		this.currentPregnanctStage = currentPregnancyStage;
-		this.maxPregnanctStage = maxPregnancyStage;
-		this.totalDaysPassed = ISimplePregnancy.getRandomTotalDaysPassed(currentPregnancyStage, maxPregnancyStage, this.getRandom());
+		this.maxPregnanctStage = PregnancyStage.getRandomStageFrom(currentPregnancyStage);
+		this.totalDaysPassed = ISimplePregnancy.getRandomTotalDaysPassed(currentPregnancyStage, this.maxPregnanctStage, this.getRandom());
 		this.setExplosionByCurrentPregnancyStage();
+		this.pregnancyPainProbability = MathHelper.sigmoid(0.1F, 0.4F, 0.1F, Mth.clamp(this.getTotalDaysPassed() /(float) PregnancySystemHelper.TOTAL_PREGNANCY_DAYS , 0, 1), 0.6F);
 	}
 
 	@Override
@@ -82,12 +84,13 @@ public abstract class AbstractMonsterPregnantCreeperGirl extends AbstractMonster
 			++this.explosionRadius;
 		}
 		else if (currentPregnancyStage == PregnancyStage.P4
-				|| currentPregnancyStage == PregnancyStage.P5) {
+				|| currentPregnancyStage == PregnancyStage.P5
+				|| currentPregnancyStage == PregnancyStage.P6) {
 			++this.explosionItensity;
 			++this.explosionRadius;
 		}
-		else if (currentPregnancyStage == PregnancyStage.P6
-				|| currentPregnancyStage == PregnancyStage.P7) {
+		else if (currentPregnancyStage == PregnancyStage.P7
+				|| currentPregnancyStage == PregnancyStage.P8) {
 			this.explosionItensity += 2;
 			this.explosionRadius += 2;
 		}
@@ -96,8 +99,8 @@ public abstract class AbstractMonsterPregnantCreeperGirl extends AbstractMonster
 	@Override
 	public boolean hurt(DamageSource damagesource, float amount) {	
 		if (super.hurt(damagesource, amount) && !this.hasPregnancyPain() && !this.level().isClientSide()) {		
-			final var p = MathHelper.sigmoid(0.1F, 0.4F, 0.1F, Mth.clamp(this.getTotalDaysPassed() /(float) PregnancySystemConstants.TOTAL_PREGNANCY_DAYS , 0, 1), 0.6F);		
-			if (this.getRandom().nextFloat() < p) {
+					
+			if (this.getRandom().nextFloat() < pregnancyPainProbability) {
 				this.setPregnancyPain(true);
 			}			
 			return true;

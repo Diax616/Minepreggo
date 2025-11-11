@@ -10,6 +10,7 @@ import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.client.gui.component.ToggleableCheckbox;
 import dev.dixmk.minepreggo.network.capability.Gender;
 import dev.dixmk.minepreggo.network.packet.UpdatePlayerDataC2SPacket;
+import dev.dixmk.minepreggo.network.packet.UpdateShowPlayerMainMenuC2SPacket;
 import dev.dixmk.minepreggo.world.inventory.preggo.PlayerJoinsWorldMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -96,10 +97,12 @@ public class PlayerJoinsWorldScreen extends AbstractContainerScreen<PlayerJoinsW
 		var button = Button.builder(Component.literal("Ok"), e -> {						
 			if ((female.selected())) {						
 				MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdatePlayerDataC2SPacket(player.getUUID(), Gender.FEMALE, customSkin.selected()));
+				MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdateShowPlayerMainMenuC2SPacket(player.getUUID(), false));		
 				player.closeContainer();		
 			}		
 			else if (male.selected()) {		
 				MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdatePlayerDataC2SPacket(player.getUUID(), Gender.MALE, false));
+				MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdateShowPlayerMainMenuC2SPacket(player.getUUID(), false));		
 				player.closeContainer();	
 			}	
 		}).bounds(this.leftPos + 67, this.topPos + 140, 35, 20).build();
