@@ -71,10 +71,8 @@ public class ScreenEventHandler {
 			if (pregnancySystem.get().getPregnancySymptom() == PregnancySymptom.CRAVING) {
 				renderCravingChoosenScreen(gui, w, player.getSkinTextureLocation(), pregnancyEffects.get());
 			}		
-			renderMilkingScreen(gui, 8, 4, 11, pregnancyEffects.get());
+			renderMilkingScreen(gui, 14, 4, 11, pregnancyEffects.get());
 		}
-		
-		
 		
 		RenderSystem.depthMask(true);
 		RenderSystem.defaultBlendFunc();
@@ -144,12 +142,12 @@ public class ScreenEventHandler {
 		final int milking = pregnancyEffects.getMilking();	
 		for (int i = 0, oddValue = 1, evenValue = 2 ; i < 10; i++, oddValue +=2, evenValue += 2) {
 			pos = init + (i * diff);
-			gui.blit(ScreenHelper.MINECRAFT_ICONS_TEXTURE, pos, top, 0, 24, 9, 9, 256, 256);
+			gui.blit(ScreenHelper.MINEPREGGO_ICONS_TEXTURE, pos, top, 0, 24, 9, 9, 256, 256);
 			
 			if (milking >= evenValue) 
-				gui.blit(ScreenHelper.MINECRAFT_ICONS_TEXTURE, pos, top, 18, 24, 9, 9, 256, 256);
+				gui.blit(ScreenHelper.MINEPREGGO_ICONS_TEXTURE, pos, top, 18, 24, 9, 9, 256, 256);
 			else if (milking >= oddValue)	
-				gui.blit(ScreenHelper.MINECRAFT_ICONS_TEXTURE, pos, top, 9, 24, 9, 9, 256, 256);	
+				gui.blit(ScreenHelper.MINEPREGGO_ICONS_TEXTURE, pos, top, 9, 24, 9, 9, 256, 256);	
 		}
 	}
 	
@@ -158,11 +156,11 @@ public class ScreenEventHandler {
 		final int bellyRubs = pregnancyEffects.getBellyRubs();	
 		for (int i = 0, oddValue = 1, evenValue = 2 ; i < 10; i++, oddValue +=2, evenValue += 2) {
 			pos = init + (i * diff);
-			gui.blit(ScreenHelper.MINECRAFT_ICONS_TEXTURE, pos, top, 0, 24, 9, 9, 256, 256);		
+			gui.blit(ScreenHelper.MINEPREGGO_ICONS_TEXTURE, pos, top, 0, 24, 9, 9, 256, 256);		
 			if (bellyRubs >= evenValue) 
-				gui.blit(ScreenHelper.MINECRAFT_ICONS_TEXTURE, pos, top, 18, 24, 9, 9, 256, 256);
+				gui.blit(ScreenHelper.MINEPREGGO_ICONS_TEXTURE, pos, top, 18, 24, 9, 9, 256, 256);
 			else if (bellyRubs >= oddValue)	
-				gui.blit(ScreenHelper.MINECRAFT_ICONS_TEXTURE, pos, top, 9, 24, 9, 9, 256, 256);	
+				gui.blit(ScreenHelper.MINEPREGGO_ICONS_TEXTURE, pos, top, 9, 24, 9, 9, 256, 256);	
 		}
 	}
 	
@@ -171,11 +169,11 @@ public class ScreenEventHandler {
 		final int horny = pregnancyEffects.getHorny();
 		for (int i = 0, oddValue = 1, evenValue = 2 ; i < 10; i++, oddValue +=2, evenValue += 2) {
 			pos = init + (i * diff);		
-			gui.blit(ScreenHelper.MINECRAFT_ICONS_TEXTURE, pos, top, 9, 9, 0, 11, 16, 11, 256, 256);					
+			gui.blit(ScreenHelper.MINEPREGGO_ICONS_TEXTURE, pos, top, 9, 9, 0, 11, 16, 11, 256, 256);					
 			if (horny >= evenValue) 
-				gui.blit(ScreenHelper.MINECRAFT_ICONS_TEXTURE, pos, top, 9, 9, 32, 11, 16, 11, 256, 256);
+				gui.blit(ScreenHelper.MINEPREGGO_ICONS_TEXTURE, pos, top, 9, 9, 32, 11, 16, 11, 256, 256);
 			else if (horny >= oddValue)	
-				gui.blit(ScreenHelper.MINECRAFT_ICONS_TEXTURE, pos, top, 9, 9, 16, 11,  16, 11, 256, 256);	
+				gui.blit(ScreenHelper.MINEPREGGO_ICONS_TEXTURE, pos, top, 9, 9, 16, 11,  16, 11, 256, 256);	
 		}	
 	}
 	

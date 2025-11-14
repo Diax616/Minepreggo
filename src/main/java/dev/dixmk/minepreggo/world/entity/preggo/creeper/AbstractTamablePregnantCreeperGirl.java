@@ -21,7 +21,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPain;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancySymptom;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemP1;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobPregnancySystemP1;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -41,7 +41,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public abstract class AbstractTamablePregnantCreeperGirl<S extends PreggoMobSystem<?>, P extends PregnancySystemP1<?>> extends AbstractTamableCreeperGirl<S> implements IPregnancySystemHandler, IPregnancyEffectsHandler {
+public abstract class AbstractTamablePregnantCreeperGirl<S extends PreggoMobSystem<?>, P extends PreggoMobPregnancySystemP1<?>> extends AbstractTamableCreeperGirl<S> implements IPregnancySystemHandler, IPregnancyEffectsHandler {
 	protected static final EntityDataAccessor<Integer> DATA_PREGNANCY_HEALTH = SynchedEntityData.defineId(AbstractTamablePregnantCreeperGirl.class, EntityDataSerializers.INT);
 	protected static final EntityDataAccessor<Integer> DATA_DAYS_PASSED = SynchedEntityData.defineId(AbstractTamablePregnantCreeperGirl.class, EntityDataSerializers.INT);
 	protected static final EntityDataAccessor<Integer> DATA_DAYS_BY_STAGE = SynchedEntityData.defineId(AbstractTamablePregnantCreeperGirl.class, EntityDataSerializers.INT);
@@ -222,10 +222,14 @@ public abstract class AbstractTamablePregnantCreeperGirl<S extends PreggoMobSyst
 	}
 	
 	@Override
-	public InteractionResult mobInteract(Player sourceentity, InteractionHand hand) {	
-		var retval1 = super.mobInteract(sourceentity, hand);
-		var retval2 = this.pregnancySystem.onRightClick(sourceentity);
-		return retval2.shouldAwardStats() ? retval2 : retval1;	
+	public InteractionResult mobInteract(Player sourceentity, InteractionHand hand) {
+		var retval = this.pregnancySystem.onRightClick(sourceentity);
+		if (retval.shouldAwardStats()) {
+			return retval;
+		}
+		else {
+			return super.mobInteract(sourceentity, hand);
+		}
 	}
 	
 	

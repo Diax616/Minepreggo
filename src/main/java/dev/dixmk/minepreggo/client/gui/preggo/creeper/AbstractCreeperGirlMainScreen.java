@@ -11,7 +11,7 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.client.gui.component.ToggleableCheckbox;
 import dev.dixmk.minepreggo.client.gui.preggo.AbstractPreggoMobMainScreen;
-import dev.dixmk.minepreggo.network.packet.UpdateCreeperGirlCombatModePacket;
+import dev.dixmk.minepreggo.network.packet.UpdateCreeperGirlCombatModeC2SPacket;
 import dev.dixmk.minepreggo.world.entity.preggo.Craving;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractCreeperGirl.CombatMode;
@@ -48,17 +48,17 @@ public abstract class AbstractCreeperGirlMainScreen
 						
 			var explodeCheckBox = ToggleableCheckbox.builder(this.leftPos + 190, this.topPos, 20, 20, Component.translatable("gui.minepreggo.creeper_girl_main.checkbox_explode"), currentCombatMode == CombatMode.EXPLODE)
 					.group(combatModes)
-					.onSelect(() -> MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdateCreeperGirlCombatModePacket(x, y, z, CombatMode.EXPLODE, creeperGirlId)))
+					.onSelect(() -> MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdateCreeperGirlCombatModeC2SPacket(x, y, z, CombatMode.EXPLODE, creeperGirlId)))
 					.build();
 		
 			var dontExplodeCheckBox = ToggleableCheckbox.builder(this.leftPos + 190, this.topPos + 36, 20, 20, Component.translatable("gui.minepreggo.creeper_girl_main.checkbox_dont_explode"), currentCombatMode == CombatMode.DONT_EXPLODE)
 					.group(combatModes)
-					.onSelect(() -> MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdateCreeperGirlCombatModePacket(x, y, z, CombatMode.DONT_EXPLODE, creeperGirlId)))
+					.onSelect(() -> MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdateCreeperGirlCombatModeC2SPacket(x, y, z, CombatMode.DONT_EXPLODE, creeperGirlId)))
 					.build();
 			
 			var fightAndExplodeCheckBox = ToggleableCheckbox.builder(this.leftPos + 190, this.topPos + 72, 20, 20, Component.translatable("gui.minepreggo.creeper_girl_main.checkbox_fight_and_explode"), currentCombatMode == CombatMode.FIGHT_AND_EXPLODE)
 					.group(combatModes)
-					.onSelect(() -> MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdateCreeperGirlCombatModePacket(x, y, z, CombatMode.FIGHT_AND_EXPLODE, creeperGirlId)))
+					.onSelect(() -> MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdateCreeperGirlCombatModeC2SPacket(x, y, z, CombatMode.FIGHT_AND_EXPLODE, creeperGirlId)))
 					.build();
 				
 			this.addRenderableWidget(explodeCheckBox);

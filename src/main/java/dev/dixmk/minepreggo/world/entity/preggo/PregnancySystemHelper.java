@@ -7,7 +7,11 @@ import javax.annotation.CheckForNull;
 import com.google.common.collect.ImmutableMap;
 
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
+import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
+import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 
 public class PregnancySystemHelper {
@@ -177,5 +181,10 @@ public class PregnancySystemHelper {
 			return null;
 		}	
 		return ALIVE_BABIES.get(babyType);
+	}
+	
+	public static boolean isPregnantEntityValid(LivingEntity entity) {
+		return (entity instanceof ServerPlayer serverPlayer && PlayerHelper.isFemaleAndPregnant(serverPlayer))
+		|| (entity instanceof PreggoMob p && p instanceof IPregnancySystemHandler);
 	}
 }

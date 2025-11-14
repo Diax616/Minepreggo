@@ -53,7 +53,7 @@ public class MinepreggoModPotions {
 	public static final RegistryObject<Potion> PREGNANCY_RESISTANCE = REGISTRY.register("pregnancy_resistance_0", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.PREGNANCY_RESISTANCE.get(), 9600, 0, false, true)));
 	public static final RegistryObject<Potion> PREGNANCY_HEALING = REGISTRY.register("pregnancy_healing_0", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.PREGNANCY_HEALING.get(), 20, 0, false, true)));	
 
-	public static final RegistryObject<Potion> FERTILITY = REGISTRY.register("fertility_0", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.ZOMBIE_IMPREGNATION.get(), 200, 0, false, true)));
+	public static final RegistryObject<Potion> FERTILITY = REGISTRY.register("fertility", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.ZOMBIE_IMPREGNATION.get(), 200, 0, false, true)));
 
 
 

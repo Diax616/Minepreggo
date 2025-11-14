@@ -85,6 +85,9 @@ public class PregnantBodyRenderLayer extends RenderLayer<AbstractClientPlayer, P
         if (player.hasEffect(MinepreggoModMobEffects.PREGNANCY_P1.get())) {
         	pregnantBody.accept(pregnantBodyP1Model);
         }
+        else if (player.hasEffect(MinepreggoModMobEffects.PREGNANCY_P2.get())) {
+        	pregnantBody.accept(pregnantBodyP2Model);
+        }
         else {
             this.boobsModel.body.copyFrom(playerModel.body);
             this.boobsModel.setupAnim(player, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);

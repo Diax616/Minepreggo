@@ -6,14 +6,13 @@ plugins {
     id 'org.spongepowered.mixin' version '0.7.+'
 }
 
-
-/*
 mixin {
 	add sourceSets.main, 'mixins.minepreggo.refmap.json'
 	config 'mixins.minepreggo.json'
-} 
-*/
 
+    debug.verbose = true
+    debug.export = true
+} 
 
 version = mod_version
 
@@ -181,9 +180,9 @@ dependencies {
 	//implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${minecraft_version}:${geckolib_version}")
 	//implementation("com.eliotlash.mclib:mclib:20")
 	
-	// implementation "org.spongepowered:mixin:0.8.5"
+	implementation "org.spongepowered:mixin:0.8.5"
 	
-	// annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

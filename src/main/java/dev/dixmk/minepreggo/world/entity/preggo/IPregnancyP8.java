@@ -6,6 +6,6 @@ import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
 public interface IPregnancyP8
 	<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler & IPregnancyEffectsHandler> {
 
-	PregnancySystemP8<E> getPregnancySystemP8();
+	PreggoMobPregnancySystemP8<E> getPregnancySystemP8();
 }
 

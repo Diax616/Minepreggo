@@ -27,6 +27,7 @@ import dev.dixmk.minepreggo.world.effect.PregnancyDelay;
 import dev.dixmk.minepreggo.world.effect.PregnancyHealing;
 import dev.dixmk.minepreggo.world.effect.PregnancyP1;
 import dev.dixmk.minepreggo.world.effect.PregnancyP2;
+import dev.dixmk.minepreggo.world.effect.PregnancyP3;
 import dev.dixmk.minepreggo.world.effect.PregnancyResistance;
 import dev.dixmk.minepreggo.world.effect.ZombieImpregnation;
 import net.minecraft.world.effect.MobEffect;
@@ -56,6 +57,7 @@ public class MinepreggoModMobEffects {
 
 	public static final RegistryObject<MobEffect> PREGNANCY_P1 = REGISTRY.register("pregnancy_p1", PregnancyP1::new);
 	public static final RegistryObject<MobEffect> PREGNANCY_P2 = REGISTRY.register("pregnancy_p2", PregnancyP2::new);
+	public static final RegistryObject<MobEffect> PREGNANCY_P3 = REGISTRY.register("pregnancy_p3", PregnancyP3::new);
 
 	public static final RegistryObject<MobEffect> BELLY_RUBS = REGISTRY.register("belly_rubs", BellyRubs::new);
 	public static final RegistryObject<MobEffect> BIRTH = REGISTRY.register("birth", Birth::new);

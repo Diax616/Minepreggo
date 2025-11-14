@@ -4,11 +4,7 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.world.entity.player.PlayerPregnancySystemP1;
 import net.minecraft.server.level.ServerPlayer;
 
-public class PregnancyP1 extends AbstractPregnancy<PlayerPregnancySystemP1> {
-
-	public PregnancyP1() {
-		super();
-	}
+public class PregnancyP1 extends AbstractPlayerPregnancy<PlayerPregnancySystemP1> {
 
 	@Override
     protected void ensurePregnancySystemInitialized(ServerPlayer serverPlayer) {

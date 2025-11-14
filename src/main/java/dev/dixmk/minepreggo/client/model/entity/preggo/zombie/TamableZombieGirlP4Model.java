@@ -1,7 +1,7 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.zombie;
 
-import dev.dixmk.minepreggo.client.entity.animation.preggo.HumanoidGirlAnimation;
-import dev.dixmk.minepreggo.client.entity.animation.preggo.zombie.ZombieGirlAnimation;
+import dev.dixmk.minepreggo.client.animation.preggo.HumanoidGirlAnimation;
+import dev.dixmk.minepreggo.client.animation.preggo.ZombieGirlAnimation;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP4;
 import net.minecraft.client.model.HierarchicalModel;

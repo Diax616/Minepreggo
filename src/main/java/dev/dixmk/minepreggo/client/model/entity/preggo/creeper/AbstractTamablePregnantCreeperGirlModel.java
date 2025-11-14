@@ -10,6 +10,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public abstract class AbstractTamablePregnantCreeperGirlModel<E extends AbstractTamablePregnantHumanoidCreeperGirl<?,?>> extends AbstractHumanoidCreeperGirlModel<E> {
 
+	protected float milkingBoobsXScale = 1.25F;
+	protected float milkingBoobsYScale = 1.1F;
+	protected float milkingBoobsZScale = 1.2F;
+	protected float milkingBoobsYPos = -0.375F;
+	
 	protected AbstractTamablePregnantCreeperGirlModel(ModelPart root, HierarchicalModel<E> animator) {
 		super(root, animator);
 		this.belly.visible = true;
@@ -26,10 +31,10 @@ public abstract class AbstractTamablePregnantCreeperGirlModel<E extends Abstract
 		}	
 		
 		if (entity.getPregnancySymptom() == PregnancySymptom.MILKING) {
-			this.boobs.y += 1.5F;
-			this.boobs.zScale = 1.2F;
-			this.boobs.xScale = 1.2F;
-			this.boobs.yScale = 1.1F;			
+			this.boobs.y += milkingBoobsYPos;
+			this.boobs.xScale = milkingBoobsXScale;
+			this.boobs.zScale = milkingBoobsYScale;
+			this.boobs.yScale = milkingBoobsZScale;			
 		} 
 	}
 }

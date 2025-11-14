@@ -98,6 +98,7 @@ import dev.dixmk.minepreggo.client.renderer.preggo.zombie.TamableZombieGirlP5Ren
 import dev.dixmk.minepreggo.client.renderer.preggo.zombie.TamableZombieGirlP6Renderer;
 import dev.dixmk.minepreggo.client.renderer.preggo.zombie.TamableZombieGirlP7Renderer;
 import dev.dixmk.minepreggo.client.renderer.preggo.zombie.TamableZombieGirlP8Renderer;
+import dev.dixmk.minepreggo.common.animation.PlayerAnimationRegistry;
 import dev.dixmk.minepreggo.init.MinepreggoModBlocks;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
@@ -153,6 +154,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.world.entity.SpawnPlacements;
@@ -191,8 +193,9 @@ public class MinepreggoMod {
 		modEventBus.addListener(this::clientLoad);
 		modEventBus.addListener(this::registerEntityRenderers);
 		modEventBus.addListener(this::registerCapabilities);
+        modEventBus.addListener(this::commonSetup);
 		
-		context.registerConfig(ModConfig.Type.CLIENT, MinepreggoModConfig.CLIENT_SPEC);
+        context.registerConfig(ModConfig.Type.CLIENT, MinepreggoModConfig.CLIENT_SPEC);
 		context.registerConfig(ModConfig.Type.COMMON, MinepreggoModConfig.COMMON_SPEC);
 		context.registerConfig(ModConfig.Type.SERVER, MinepreggoModConfig.SERVER_SPEC);
 	}
@@ -468,4 +471,8 @@ public class MinepreggoMod {
 		event.register(PlayerDataImpl.class);
 		event.register(PlayerPregnancyEffectsImpl.class);
 	}
+	
+    private void commonSetup(final FMLCommonSetupEvent event) {
+        event.enqueueWork(() -> PlayerAnimationRegistry.getInstance().init());       
+    }
 }

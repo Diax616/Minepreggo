@@ -1,7 +1,7 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.creeper;
 
-import dev.dixmk.minepreggo.client.entity.animation.preggo.HumanoidGirlAnimation;
-import dev.dixmk.minepreggo.client.entity.animation.preggo.creeper.CreeperGirlAnimation;
+import dev.dixmk.minepreggo.client.animation.preggo.CreeperGirlAnimation;
+import dev.dixmk.minepreggo.client.animation.preggo.HumanoidGirlAnimation;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterPregnantCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterPregnantHumanoidCreeperGirl;
 import net.minecraft.client.model.HierarchicalModel;

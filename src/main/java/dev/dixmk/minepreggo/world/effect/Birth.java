@@ -14,13 +14,14 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
+import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 
-public class Birth extends AbstractPregnancyPain {
+public class Birth extends AbstractPlayerPregnancyPain {
 	private static final AttributeModifier ATTACK_SPEED_MODIFIER = new AttributeModifier(ATTACK_SPEED_MODIFIER_UUID, "birth attack speed nerf", -1D, AttributeModifier.Operation.MULTIPLY_TOTAL);
 	private static final AttributeModifier SPEED_MODIFIER = new AttributeModifier(SPEED_MODIFIER_UUID, "birth speed nerf", -1D, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
@@ -31,7 +32,7 @@ public class Birth extends AbstractPregnancyPain {
 	@Override
 	public void addAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {		
 
-		if (!(entity instanceof Player player)) return;
+		if (!PlayerHelper.isPlayerValid(entity)) return;
 		
 		if (!entity.level().isClientSide) {
 			entity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, -1, 3, false, false));	
@@ -47,16 +48,16 @@ public class Birth extends AbstractPregnancyPain {
 			}
 			
 			entity.level().playSound(null, BlockPos.containing(entity.getX(), entity.getY(), entity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "birth")), SoundSource.PLAYERS, 1, 1);
+			
+			MessageHelper.sendMessageToPlayer((Player) entity, Component.translatable("chat.minepreggo.player.birth.message.labor"));	
 		}	
-	
-		MessageHelper.sendMessageToPlayer(player, Component.translatable("chat.minepreggo.player.birth.message.labor"));	
 	}
 	
 	@Override
 	public void removeAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {
 		super.removeAttributeModifiers(entity, attributeMap, amplifier);	
 		
-		if (!(entity instanceof Player player)) return;
+		if (!PlayerHelper.isPlayerValid(entity)) return;
 		
 		entity.removeEffect(MobEffects.WEAKNESS);	
 		entity.removeEffect(MinepreggoModMobEffects.FULL_OF_CREEPERS.get());
@@ -74,13 +75,13 @@ public class Birth extends AbstractPregnancyPain {
 				attackSpeedAttr.removeModifier(ATTACK_SPEED_MODIFIER);
 			}
 			
-			player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 3600, 0));	
-			player.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 3600, 0));
-			player.addEffect(new MobEffectInstance(MobEffects.LUCK, 4800, 0));	
+			entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 3600, 0));	
+			entity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 3600, 0));
+			entity.addEffect(new MobEffectInstance(MobEffects.LUCK, 4800, 0));	
 		
 			if (entity instanceof ServerPlayer serverPlayer) {
 				serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_PREGNANCY_SYSTEM).ifPresent(cap -> 
-				MessageHelper.sendMessageToPlayer(player, Component.translatable("chat.minepreggo.player.birth.message.successful_birth", cap.getTotalNumOfBabies())));
+				MessageHelper.sendMessageToPlayer(serverPlayer, Component.translatable("chat.minepreggo.player.birth.message.successful_birth", cap.getTotalNumOfBabies())));
 			}
 		}
 	}

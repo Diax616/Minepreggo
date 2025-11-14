@@ -13,7 +13,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
-
+import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -22,7 +22,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.network.chat.Component;
 
-public class Miscarriage extends AbstractPregnancyPain {
+public class Miscarriage extends AbstractPlayerPregnancyPain {
 
 	private static final AttributeModifier ATTACK_SPEED_MODIFIER = new AttributeModifier(ATTACK_SPEED_MODIFIER_UUID, "miscarriage attack speed nerf", -0.5, AttributeModifier.Operation.MULTIPLY_TOTAL);
 	private static final AttributeModifier SPEED_MODIFIER = new AttributeModifier(SPEED_MODIFIER_UUID, "miscarriage speed nerf", -0.3D, AttributeModifier.Operation.MULTIPLY_TOTAL);
@@ -34,7 +34,7 @@ public class Miscarriage extends AbstractPregnancyPain {
 	@Override
 	public void addAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {		
 		
-		if (!(entity instanceof Player)) return;
+		if (!PlayerHelper.isPlayerValid(entity)) return;
 		
 
 		if (!entity.level().isClientSide) {
@@ -61,7 +61,7 @@ public class Miscarriage extends AbstractPregnancyPain {
 	public void removeAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {
 		super.removeAttributeModifiers(entity, attributeMap, amplifier);
 
-		if (!(entity instanceof Player player)) return;
+		if (!PlayerHelper.isPlayerValid(entity)) return;
 			
 		if (!entity.level().isClientSide) {		
 			entity.removeEffect(MobEffects.WEAKNESS);	
@@ -77,11 +77,11 @@ public class Miscarriage extends AbstractPregnancyPain {
 				attackSpeedAttr.removeModifier(ATTACK_SPEED_MODIFIER);
 			}
 			
-			player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 2400, 0));	
-			player.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 2400, 0));
-			player.addEffect(new MobEffectInstance(MobEffects.UNLUCK, 3600, 0));	
+			entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 2400, 0));	
+			entity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 2400, 0));
+			entity.addEffect(new MobEffectInstance(MobEffects.UNLUCK, 3600, 0));	
 		}	
 			
-		MessageHelper.sendMessageToPlayer(player, Component.translatable("chat.minepreggo.player.miscarriage.message.lost"));	
+		MessageHelper.sendMessageToPlayer((Player) entity, Component.translatable("chat.minepreggo.player.miscarriage.message.lost"));	
 	}
 }

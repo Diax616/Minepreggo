@@ -2,10 +2,7 @@ package dev.dixmk.minepreggo.world.effect;
 
 import java.util.UUID;
 
-import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
-import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
-import net.minecraft.server.level.ServerPlayer;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemHelper;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
@@ -29,7 +26,7 @@ public class PregnancyResistance extends MobEffect {
 			return;
 		}
 		
-		if (canApplyEffect(entity)) {
+		if (PregnancySystemHelper.isPregnantEntityValid(entity)) {
 			AttributeInstance armorAttr = entity.getAttribute(Attributes.ARMOR);
 			if (armorAttr != null && armorAttr.getModifier(ARMOR_MODIFIER_UUID) == null) {
 				armorAttr.addPermanentModifier(ARMOR_MODIFIER);
@@ -43,16 +40,11 @@ public class PregnancyResistance extends MobEffect {
 			return;
 		}
 		
-		if (canApplyEffect(entity)) {
+		if (PregnancySystemHelper.isPregnantEntityValid(entity)) {
 			AttributeInstance armorAttr = entity.getAttribute(Attributes.ARMOR);
 			if (armorAttr != null && armorAttr.getModifier(ARMOR_MODIFIER_UUID) != null) {
 				armorAttr.removeModifier(ARMOR_MODIFIER);
 			}
 		}	
-	}
-	
-	private boolean canApplyEffect(LivingEntity entity) {
-		return (entity instanceof ServerPlayer serverPlayer && PlayerHelper.isFemaleAndPregnant(serverPlayer))
-		|| (entity instanceof PreggoMob p && p instanceof IPregnancySystemHandler);
 	}
 }

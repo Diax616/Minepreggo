@@ -6,7 +6,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
-public class Depression extends AbstractPostPregnancy {
+public class Depression extends AbstractPlayerPostPregnancy {
 	private static final AttributeModifier SPEED_MODIFIER = new AttributeModifier(SPEED_MODIFIER_UUID, "depression speed nerf", -0.1, AttributeModifier.Operation.MULTIPLY_BASE);
 	private static final AttributeModifier ATTACK_SPEED_MODIFIER = new AttributeModifier(ATTACK_SPEED_MODIFIER_UUID, "depression attack speed nerf", -0.25, AttributeModifier.Operation.MULTIPLY_BASE);
 

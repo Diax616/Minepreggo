@@ -1,30 +1,40 @@
 package dev.dixmk.minepreggo.world.effect;
 
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
+import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 
-public class Lactation extends AbstractPregnancySymptom {
-
+public class Lactation extends AbstractPlayerPregnancySymptom {
+	private static final AttributeModifier SPEED_MODIFIER = new AttributeModifier(SPEED_MODIFIER_UUID, "lactation speed nerf", -0.1, AttributeModifier.Operation.MULTIPLY_BASE);
+		
 	public Lactation() {
 		super(-1);
 	}
 
 	@Override
 	public void addAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {	
-		if (!(entity instanceof Player)) return;
+		if (!PlayerHelper.isPlayerValid(entity)) return;
 		
 		if (!entity.level().isClientSide) {
-			entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, -1, 0, false, false));
+			AttributeInstance speedAttr = entity.getAttribute(Attributes.MOVEMENT_SPEED);
+			if (speedAttr != null && speedAttr.getModifier(SPEED_MODIFIER_UUID) == null) {
+			    speedAttr.addPermanentModifier(SPEED_MODIFIER);
+			}
 		}
 	}
 	
 	@Override
 	public void removeAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {
-		if (entity.level().isClientSide) {
-			entity.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);
+		if (!PlayerHelper.isPlayerValid(entity)) return;
+		
+		if (!entity.level().isClientSide) {		
+			AttributeInstance speedAttr = entity.getAttribute(Attributes.MOVEMENT_SPEED);
+			if (speedAttr != null && speedAttr.getModifier(SPEED_MODIFIER_UUID) != null) {
+				speedAttr.removeModifier(SPEED_MODIFIER);
+			}
 		}
 	}
 }

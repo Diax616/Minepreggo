@@ -5,8 +5,8 @@ import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.world.entity.preggo.IPregnancyP4;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancyStage;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemP4;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnantP1PreggoMobSystem;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobPregnancySystemP4;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnantPreggoMobSystemP1;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
@@ -15,7 +15,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.PlayMessages;
 
-public class TamableZombieGirlP4 extends AbstractTamablePregnantZombieGirl<PregnantP1PreggoMobSystem<TamableZombieGirlP4>, PregnancySystemP4<TamableZombieGirlP4>> implements IPregnancyP4<TamableZombieGirlP4> {
+public class TamableZombieGirlP4 extends AbstractTamablePregnantZombieGirl<PregnantPreggoMobSystemP1<TamableZombieGirlP4>, PreggoMobPregnancySystemP4<TamableZombieGirlP4>> implements IPregnancyP4<TamableZombieGirlP4> {
 		
 	public TamableZombieGirlP4(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P4.get(), world);
@@ -29,29 +29,29 @@ public class TamableZombieGirlP4 extends AbstractTamablePregnantZombieGirl<Pregn
 	}
 
 	@Override
-	protected PregnantP1PreggoMobSystem<TamableZombieGirlP4> createPreggoMobSystem() {
-		return new PregnantP1PreggoMobSystem<>(this, MinepreggoModConfig.getTotalTicksOfHungryP4());
+	protected PregnantPreggoMobSystemP1<TamableZombieGirlP4> createPreggoMobSystem() {
+		return new PregnantPreggoMobSystemP1<>(this, MinepreggoModConfig.getTotalTicksOfHungryP4());
 	}
 	
 	@Override
-	protected PregnancySystemP4<TamableZombieGirlP4> createPregnancySystem() {
-		return new PregnancySystemP4<>(this) {
+	protected PreggoMobPregnancySystemP4<TamableZombieGirlP4> createPregnancySystem() {
+		return new PreggoMobPregnancySystemP4<>(this) {
 			@Override
 			protected void advanceToNextPregnancyPhase() {
-				if (preggoMob.level() instanceof ServerLevel serverLevel) {
-					var zombieGirl = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P5.get().spawn(serverLevel, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), MobSpawnType.CONVERSION);		
-					PreggoMobHelper.copyDataToAdvanceToNextPregnancyPhase(preggoMob, zombieGirl);			
+				if (pregnantEntity.level() instanceof ServerLevel serverLevel) {
+					var zombieGirl = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P5.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);		
+					PreggoMobHelper.copyDataToAdvanceToNextPregnancyPhase(pregnantEntity, zombieGirl);			
 				}
 			}
 			
 			@Override
 			protected void initPostMiscarriage() {
-				TamableZombieGirlP0.onPostMiscarriage(preggoMob);
+				TamableZombieGirlP0.onPostMiscarriage(pregnantEntity);
 			}
 
 			@Override
-			protected void initPostBirth() {
-				TamableZombieGirlP0.onPostPartum(preggoMob);
+			protected void initPostPartum() {
+				TamableZombieGirlP0.onPostPartum(pregnantEntity);
 			}
 		};
 	}
@@ -61,7 +61,7 @@ public class TamableZombieGirlP4 extends AbstractTamablePregnantZombieGirl<Pregn
 	}
 
 	@Override
-	public PregnancySystemP4<TamableZombieGirlP4> getPregnancySystemP4() {
+	public PreggoMobPregnancySystemP4<TamableZombieGirlP4> getPregnancySystemP4() {
 		return pregnancySystem;
 	}
 }

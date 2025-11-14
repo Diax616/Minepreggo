@@ -22,6 +22,16 @@ public abstract class AbstractPregnantBodyModel extends EntityModel<AbstractClie
 	protected final JigglePhysics boobsJiggleData;
 	protected final JigglePhysics bellyJiggleData;
 
+	protected float milkingBoobsXScale = 1.3F;
+	protected float milkingBoobsYScale = 1.15F;
+	protected float milkingBoobsZScale = 1.2F;
+	protected float milkingBoobsYPos = -0.42F;
+	
+	protected float additionalJiggleBoobYPos = 2F;
+	protected float additionalJiggleBellyYPos = 6F;
+	
+	protected boolean milkingFlag = false;
+	
 	protected AbstractPregnantBodyModel(ModelPart root, JigglePhysics boobsJiggleData, JigglePhysics bellyJiggleData) {
 		this.body = root.getChild("body");
 		this.boobs = this.body.getChild("boobs");
@@ -35,23 +45,31 @@ public abstract class AbstractPregnantBodyModel extends EntityModel<AbstractClie
 	@Override
 	public void setupAnim(AbstractClientPlayer entity, float p_102619_, float p_102620_, float p_102621_, float p_102622_, float p_102623_) {
 		updateBelly((float)entity.getY());
-		updateBoobs((float)entity.getY());
-		
+		updateBoobs((float)entity.getY());		
 		if (entity.hasEffect(MinepreggoModMobEffects.LACTATION.get())) {
-			this.boobs.zScale = 1.2F;
-			this.boobs.xScale = 1.2F;
-			this.boobs.yScale = 1.1F;			
-		} 
+			this.boobs.y += milkingBoobsYPos;			
+			if (!milkingFlag) {
+				this.boobs.xScale = milkingBoobsXScale;
+				this.boobs.yScale = milkingBoobsYScale;
+				this.boobs.zScale = milkingBoobsZScale;	
+				milkingFlag = true;
+			}
+		} else if (milkingFlag) {
+			this.boobs.xScale = ModelPart.DEFAULT_SCALE;
+			this.boobs.yScale = ModelPart.DEFAULT_SCALE;
+			this.boobs.zScale = ModelPart.DEFAULT_SCALE;
+			milkingFlag = false;
+		}	
 	}
 	
 	protected void updateBoobs(float yPos) {
         boobsJiggleData.update(yPos, 0.05f);
-        boobs.y = 2F + boobsJiggleData.getOffset();	
+        boobs.y = additionalJiggleBoobYPos + boobsJiggleData.getOffset();	
 	}
-	
+		
 	protected void updateBelly(float yPos) {
         bellyJiggleData.update(yPos,  0.05f);
-        belly.y = 6F + bellyJiggleData.getOffset();	
+        belly.y = additionalJiggleBellyYPos + bellyJiggleData.getOffset();	
 	}
 	
 	@Override

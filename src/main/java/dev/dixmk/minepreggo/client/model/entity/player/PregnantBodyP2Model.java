@@ -21,6 +21,7 @@ public class PregnantBodyP2Model extends AbstractPregnantBodyModel {
 	
 	public PregnantBodyP2Model(ModelPart root) {
 		super(root, JigglePhysics.builder().build(), JigglePhysics.builder().build());
+		this.additionalJiggleBellyYPos = 5.5F;
 	}
 	
 	public static LayerDefinition createBodyLayer() {

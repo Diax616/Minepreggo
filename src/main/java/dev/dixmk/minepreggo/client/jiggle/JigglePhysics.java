@@ -1,7 +1,5 @@
 package dev.dixmk.minepreggo.client.jiggle;
 
-import org.checkerframework.checker.index.qual.NonNegative;
-
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -28,12 +26,12 @@ public class JigglePhysics {
 		return new JigglePhysics.Builder();
 	}
 	
-	public static JigglePhysics copy(JigglePhysics source) {
+	public JigglePhysics copy() {
 		return builder()
-				.springStrength(source.springStrength)
-				.damping(source.damping)
-				.gravity(source.gravity)
-				.maxDisplacement(source.maxDisplacement)
+				.springStrength(this.springStrength)
+				.damping(this.damping)
+				.gravity(this.gravity)
+				.maxDisplacement(this.maxDisplacement)
 				.build();
 	}
 	
@@ -71,7 +69,7 @@ public class JigglePhysics {
     	float springStrength = 0.15f;
     	float damping = 0.85f;
     	float gravity = 0.02f;
-    	@NonNegative float maxDisplacement = 0.3f;
+    	float maxDisplacement = 0.3f;
     	
     	public Builder springStrength(float springStrength) {
     		this.springStrength = springStrength;
@@ -88,7 +86,7 @@ public class JigglePhysics {
     		return this;
     	}
     	
-    	public Builder maxDisplacement(@NonNegative float maxDisplacement) {
+    	public Builder maxDisplacement(float maxDisplacement) {
     		this.maxDisplacement = maxDisplacement;
     		return this;
     	}

@@ -4,14 +4,14 @@ import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.world.entity.preggo.IPregnancyP8;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancyStage;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemP8;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnantP2PreggoMobSystem;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobPregnancySystemP8;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnantPreggoMobSystemP2;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.PlayMessages;
 
-public class TamableCreeperGirlP8 extends AbstractTamablePregnantHumanoidCreeperGirl<PregnantP2PreggoMobSystem<TamableCreeperGirlP8>, PregnancySystemP8<TamableCreeperGirlP8>> implements IPregnancyP8<TamableCreeperGirlP8> {
+public class TamableCreeperGirlP8 extends AbstractTamablePregnantHumanoidCreeperGirl<PregnantPreggoMobSystemP2<TamableCreeperGirlP8>, PreggoMobPregnancySystemP8<TamableCreeperGirlP8>> implements IPregnancyP8<TamableCreeperGirlP8> {
 	
 	public TamableCreeperGirlP8(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P8.get(), world);
@@ -25,13 +25,13 @@ public class TamableCreeperGirlP8 extends AbstractTamablePregnantHumanoidCreeper
 	}
 	
 	@Override
-	protected PregnantP2PreggoMobSystem<TamableCreeperGirlP8> createPreggoMobSystem() {
-		return new PregnantP2PreggoMobSystem<>(this, MinepreggoModConfig.getTotalTicksOfHungryP8());
+	protected PregnantPreggoMobSystemP2<TamableCreeperGirlP8> createPreggoMobSystem() {
+		return new PregnantPreggoMobSystemP2<>(this, MinepreggoModConfig.getTotalTicksOfHungryP8());
 	}
 	
 	@Override
-	protected PregnancySystemP8<TamableCreeperGirlP8> createPregnancySystem() {
-		return new PregnancySystemP8<>(this) {	
+	protected PreggoMobPregnancySystemP8<TamableCreeperGirlP8> createPregnancySystem() {
+		return new PreggoMobPregnancySystemP8<>(this) {	
 			
 			@Override
 			protected void advanceToNextPregnancyPhase() {
@@ -40,12 +40,12 @@ public class TamableCreeperGirlP8 extends AbstractTamablePregnantHumanoidCreeper
 			
 			@Override
 			protected void initPostMiscarriage() {
-				TamableCreeperGirlP0.onPostMiscarriage(preggoMob);
+				TamableCreeperGirlP0.onPostMiscarriage(pregnantEntity);
 			}
 			
 			@Override
-			protected void initPostBirth() {
-				TamableCreeperGirlP0.onPostPartum(preggoMob);
+			protected void initPostPartum() {
+				TamableCreeperGirlP0.onPostPartum(pregnantEntity);
 			}
 		};
 	}
@@ -55,7 +55,7 @@ public class TamableCreeperGirlP8 extends AbstractTamablePregnantHumanoidCreeper
 	}
 
 	@Override
-	public PregnancySystemP8<TamableCreeperGirlP8> getPregnancySystemP8() {
+	public PreggoMobPregnancySystemP8<TamableCreeperGirlP8> getPregnancySystemP8() {
 		return pregnancySystem;
 	}
 }

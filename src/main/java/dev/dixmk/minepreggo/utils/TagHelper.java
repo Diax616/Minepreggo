@@ -4,6 +4,7 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.Item;
 
 public class TagHelper {
@@ -18,20 +19,13 @@ public class TagHelper {
 	        TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "creeper_girl_food"));
 	
 
-	/*
-	public static final TagKey<MobEffect> PREGNANCY_STAGES_EFFECTS =
-	        TagKey.create(Registries.MOB_EFFECT, ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "pregnancy_stage_effects"));
+	public static final TagKey<MobEffect> PREGNANCY_PHASE_EFFECTS =
+	        TagKey.create(Registries.MOB_EFFECT, ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "pregnancy_phase_effects"));
 	
 
 	public static final TagKey<MobEffect> LABOR_EFFECTS =
 	        TagKey.create(Registries.MOB_EFFECT, ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "labor_effects"));
 	
-	
-	public static final TagKey<Item> ALL_CRAVINGS =
-	        TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "all_craving"));
-	*/
-	
-
 	public static final TagKey<Item> KNEE_BRACE =
 	        TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "knee_brace"));
 	

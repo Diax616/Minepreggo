@@ -21,7 +21,6 @@ import net.minecraftforge.network.NetworkEvent;
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public record SyncPregnancyEffectsS2CPacket(UUID targetId, int craving, int milking, int bellyRubs, int horny, @Nullable Pair<Craving, Species> typeOfCravingBySpecies) {		
 	public static SyncPregnancyEffectsS2CPacket decode(FriendlyByteBuf buffer) {		
-		MinepreggoMod.LOGGER.info("=== DECODE CALLED ON CLIENT ===");
 		UUID targetId = buffer.readUUID();
 		int craving = buffer.readInt();
 		int milking = buffer.readInt();	
@@ -50,8 +49,6 @@ public record SyncPregnancyEffectsS2CPacket(UUID targetId, int craving, int milk
 	}
 	
 	public static void handler(SyncPregnancyEffectsS2CPacket message, Supplier<NetworkEvent.Context> contextSupplier) {
-	    MinepreggoMod.LOGGER.info("=== HANDLER CALLED === targetId={}", message.targetId);
-
 		NetworkEvent.Context context = contextSupplier.get();
 		context.enqueueWork(() -> {			
 			if (context.getDirection().getReceptionSide().isClient()) {							

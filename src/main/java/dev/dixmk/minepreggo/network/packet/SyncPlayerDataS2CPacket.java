@@ -33,14 +33,11 @@ public record SyncPlayerDataS2CPacket(UUID source, Gender gender, boolean custom
 		NetworkEvent.Context context = contextSupplier.get();
 		context.enqueueWork(() -> {		
             if (context.getDirection().getReceptionSide().isClient()) {    	
-            	if (Minecraft.getInstance().player == null) return;
-
             	var target = Minecraft.getInstance().player.level().players().stream()
             			.filter(p -> p.getUUID().equals(message.source))
             			.findFirst();
-            	
-            	
-            	target.ifPresent(t -> {
+            	            	
+            	target.ifPresentOrElse(t -> {
                     t.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(c -> {
                         c.setGender(message.gender);
                         c.setCustomSkin(message.customSKin);
@@ -48,7 +45,7 @@ public record SyncPlayerDataS2CPacket(UUID source, Gender gender, boolean custom
                     
                     MinepreggoMod.LOGGER.debug("Synchronized player data for {} from {}", 
                     		Minecraft.getInstance().player.getName().getString(), t.getDisplayName().getString());
-            	});      	
+            	}, () -> MinepreggoMod.LOGGER.warn("SyncPlayerDataS2CPacket: Packet target UUID {} does not match local player or player is null", message.source));     	
             }
 		});
 		context.setPacketHandled(true);

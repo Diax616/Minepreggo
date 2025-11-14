@@ -17,6 +17,8 @@ import dev.dixmk.minepreggo.world.entity.preggo.PregnancyStage;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 
 public class PlayerHelper {
 
@@ -55,7 +57,7 @@ public class PlayerHelper {
 			pregnancySystem.setDaysToGiveBirth(daysByStage * (lastPregnancyStage.ordinal() + 1));
 			
 			pregnancySystem.addBaby(typeOfBaby, numOfbabies);		
-			player.addEffect(new MobEffectInstance(MinepreggoModMobEffects.PREGNANCY_P1.get(), -1, 0, false, false));				
+			player.addEffect(new MobEffectInstance(MinepreggoModMobEffects.PREGNANCY_P2.get(), -1, 0, false, false));				
 			
 			MinepreggoMod.LOGGER.debug("Player {} has become pregnant with {} x {}, lastPregnancyStage={}, daysByStage={}",
 					player.getName().getString(), numOfbabies, typeOfBaby.name(), lastPregnancyStage, daysByStage);
@@ -89,5 +91,9 @@ public class PlayerHelper {
 			return null;
 		}
 		return CRAVING_ICONS.get(craving);	
+	}
+	
+	public static boolean isPlayerValid(LivingEntity entity) {
+		return entity instanceof Player;
 	}
 }

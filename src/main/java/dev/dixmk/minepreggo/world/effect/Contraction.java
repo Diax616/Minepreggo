@@ -1,13 +1,13 @@
 package dev.dixmk.minepreggo.world.effect;
 
+import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.player.Player;
 
-public class Contraction extends AbstractPregnancyPain {
+public class Contraction extends AbstractPlayerPregnancyPain {
 	private static final AttributeModifier SPEED_MODIFIER = new AttributeModifier(SPEED_MODIFIER_UUID, "contraction speed nerf", -0.3, AttributeModifier.Operation.MULTIPLY_BASE);
 	private static final AttributeModifier ATTACK_SPEED_MODIFIER = new AttributeModifier(ATTACK_SPEED_MODIFIER_UUID, "contraction movement attack nerf", -0.2, AttributeModifier.Operation.MULTIPLY_BASE);
 
@@ -17,9 +17,9 @@ public class Contraction extends AbstractPregnancyPain {
 
 	@Override
 	public void addAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {
-		if (!(entity instanceof Player player)) return;
+		if (!PlayerHelper.isPlayerValid(entity)) return;
 		
-		if (!player.level().isClientSide) {			
+		if (!entity.level().isClientSide) {			
 			AttributeInstance speedAttr = entity.getAttribute(Attributes.MOVEMENT_SPEED);
 			AttributeInstance attackSpeedAttr = entity.getAttribute(Attributes.ATTACK_SPEED);
 
@@ -34,9 +34,9 @@ public class Contraction extends AbstractPregnancyPain {
 	
 	@Override
 	public void removeAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {
-		if (!(entity instanceof Player player)) return;
+		if (!PlayerHelper.isPlayerValid(entity)) return;
 		
-		if (!player.level().isClientSide) {
+		if (!entity.level().isClientSide) {
 			AttributeInstance speedAttr = entity.getAttribute(Attributes.MOVEMENT_SPEED);
 			AttributeInstance attackSpeedAttr = entity.getAttribute(Attributes.ATTACK_SPEED);
 

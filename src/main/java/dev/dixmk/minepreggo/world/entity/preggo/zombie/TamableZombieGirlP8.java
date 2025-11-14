@@ -4,14 +4,14 @@ import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.world.entity.preggo.IPregnancyP8;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancyStage;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemP8;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnantP1PreggoMobSystem;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobPregnancySystemP8;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnantPreggoMobSystemP1;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.PlayMessages;
 
-public class TamableZombieGirlP8 extends AbstractTamablePregnantZombieGirl<PregnantP1PreggoMobSystem<TamableZombieGirlP8>, PregnancySystemP8<TamableZombieGirlP8>> implements IPregnancyP8<TamableZombieGirlP8> {
+public class TamableZombieGirlP8 extends AbstractTamablePregnantZombieGirl<PregnantPreggoMobSystemP1<TamableZombieGirlP8>, PreggoMobPregnancySystemP8<TamableZombieGirlP8>> implements IPregnancyP8<TamableZombieGirlP8> {
 	
 	public TamableZombieGirlP8(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P8.get(), world);
@@ -25,13 +25,13 @@ public class TamableZombieGirlP8 extends AbstractTamablePregnantZombieGirl<Pregn
 	}
 	
 	@Override
-	protected PregnantP1PreggoMobSystem<TamableZombieGirlP8> createPreggoMobSystem() {
-		return new PregnantP1PreggoMobSystem<>(this, MinepreggoModConfig.getTotalTicksOfHungryP8());
+	protected PregnantPreggoMobSystemP1<TamableZombieGirlP8> createPreggoMobSystem() {
+		return new PregnantPreggoMobSystemP1<>(this, MinepreggoModConfig.getTotalTicksOfHungryP8());
 	}
 	
 	@Override
-	protected PregnancySystemP8<TamableZombieGirlP8> createPregnancySystem() {
-		return new PregnancySystemP8<>(this) {
+	protected PreggoMobPregnancySystemP8<TamableZombieGirlP8> createPregnancySystem() {
+		return new PreggoMobPregnancySystemP8<>(this) {
 			
 			@Override
 			protected void advanceToNextPregnancyPhase() {
@@ -40,12 +40,12 @@ public class TamableZombieGirlP8 extends AbstractTamablePregnantZombieGirl<Pregn
 			
 			@Override
 			protected void initPostMiscarriage() {
-				TamableZombieGirlP0.onPostMiscarriage(preggoMob);
+				TamableZombieGirlP0.onPostMiscarriage(pregnantEntity);
 			}
 			
 			@Override
-			protected void initPostBirth() {
-				TamableZombieGirlP0.onPostPartum(preggoMob);
+			protected void initPostPartum() {
+				TamableZombieGirlP0.onPostPartum(pregnantEntity);
 			}		
 		};
 	}
@@ -55,7 +55,7 @@ public class TamableZombieGirlP8 extends AbstractTamablePregnantZombieGirl<Pregn
 	}
 
 	@Override
-	public PregnancySystemP8<TamableZombieGirlP8> getPregnancySystemP8() {
+	public PreggoMobPregnancySystemP8<TamableZombieGirlP8> getPregnancySystemP8() {
 		return pregnancySystem;
 	}
 }

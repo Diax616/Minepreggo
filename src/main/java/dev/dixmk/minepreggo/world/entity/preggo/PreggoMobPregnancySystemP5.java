@@ -1,0 +1,22 @@
+package dev.dixmk.minepreggo.world.entity.preggo;
+
+import javax.annotation.Nonnull;
+
+import dev.dixmk.minepreggo.MinepreggoModConfig;
+import dev.dixmk.minepreggo.network.capability.IPregnancyEffectsHandler;
+import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
+
+public abstract class PreggoMobPregnancySystemP5<E extends PreggoMob
+	& ITamablePreggoMob & IPregnancySystemHandler & IPregnancyEffectsHandler> extends PreggoMobPregnancySystemP4<E> {
+
+	protected PreggoMobPregnancySystemP5(@Nonnull E preggoMob) {
+		super(preggoMob);
+		totalTicksOfCraving = MinepreggoModConfig.getTotalTicksOfCravingP5();
+		totalTicksOfMilking = MinepreggoModConfig.getTotalTicksOfMilkingP5();
+		totalTicksOfBellyRubs = MinepreggoModConfig.getTotalTicksOfBellyRubsP5();
+		totalTicksOfHorny = MinepreggoModConfig.getTotalTicksOfHornyP5();
+		totalTicksOfPreBirth = PregnancySystemHelper.TOTAL_TICKS_PREBIRTH_P5;
+		totalTicksOfBirth = PregnancySystemHelper.TOTAL_TICKS_BIRTH_P5;
+	}
+
+}

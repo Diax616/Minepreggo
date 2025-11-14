@@ -1,6 +1,6 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.creeper.quadruped;
 
-import dev.dixmk.minepreggo.client.entity.animation.preggo.creeper.QuadrupedCreeperGirlAnimation;
+import dev.dixmk.minepreggo.client.animation.preggo.QuadrupedCreeperGirlAnimation;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterQuadrupedCreeperGirl;
 import net.minecraft.client.model.geom.ModelPart;
 

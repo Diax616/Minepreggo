@@ -20,7 +20,7 @@ public abstract class AbstractHeavyPregnantBodyModel extends AbstractPregnantBod
 		this.leftbutt = leftLeg.getChild("left_butt");
 		this.rightbutt = rightLeg.getChild("right_butt");	
 		this.leftButtJiggle = buttJiggle;
-		this.rightButtJiggle = JigglePhysics.copy(buttJiggle);	
+		this.rightButtJiggle = this.leftButtJiggle.copy();	
 	}
 	
 	protected void updateButt(float yPos) {

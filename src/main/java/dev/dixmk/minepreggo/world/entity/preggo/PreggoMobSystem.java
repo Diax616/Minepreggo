@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
-import dev.dixmk.minepreggo.network.packet.SexCinematicControlPacket;
+import dev.dixmk.minepreggo.network.packet.SexCinematicControlS2CPacket;
 import dev.dixmk.minepreggo.server.ServerSexCinematicManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
@@ -56,8 +56,6 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob> {
 		return false;
 	}
 
-	
-	
 	protected void evaluateSavage(Level level) {		
 		if (preggoMob.getTarget() == null && preggoMob.isTame()) {
 	        final Vec3 center = new Vec3(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ());      
@@ -149,7 +147,7 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob> {
 		});
 	}
 	
-	public void onServerTick() {
+	public final void onServerTick() {
 		final var level = preggoMob.level();
 		
 		if (level.isClientSide()) {
@@ -272,7 +270,7 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob> {
             preggoMob.setState(PreggoMobState.IDLE);
             MinepreggoModPacketHandler.INSTANCE.send(
                 PacketDistributor.PLAYER.with(() -> cinematicOwner),
-                new SexCinematicControlPacket(false, preggoMob.getId())
+                new SexCinematicControlS2CPacket(false, preggoMob.getId())
             );
         }
         cinematicOwner = null;

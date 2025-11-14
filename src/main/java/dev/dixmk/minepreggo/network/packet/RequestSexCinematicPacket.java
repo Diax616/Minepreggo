@@ -46,11 +46,11 @@ public record RequestSexCinematicPacket(int mobId) {
                                
                         MinepreggoModPacketHandler.INSTANCE.send(
                             PacketDistributor.PLAYER.with(() -> player),
-                            new SexCinematicControlPacket(true, message.mobId)
+                            new SexCinematicControlS2CPacket(true, message.mobId)
                         );	               
     					MinepreggoModPacketHandler.INSTANCE.send(
     						PacketDistributor.PLAYER.with(() -> player),
-    						new RenderSexOverlayPacket(true));           		
+    						new RenderSexOverlayS2CPacket(true));           		
                 } 
             }			
 		});

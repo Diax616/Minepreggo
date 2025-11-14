@@ -1,6 +1,6 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.ender;
 
-import dev.dixmk.minepreggo.client.entity.animation.preggo.ender.EnderGirlAnimation;
+import dev.dixmk.minepreggo.client.animation.preggo.EnderGirlAnimation;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractMonsterEnderGirl;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;

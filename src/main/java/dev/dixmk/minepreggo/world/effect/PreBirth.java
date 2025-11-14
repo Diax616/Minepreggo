@@ -12,12 +12,13 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
+import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 
-public class PreBirth extends AbstractPregnancyPain {
+public class PreBirth extends AbstractPlayerPregnancyPain {
 	private static final AttributeModifier ATTACK_SPEED_MODIFIER = new AttributeModifier(ATTACK_SPEED_MODIFIER_UUID, "prebirth attack speed nerf", -0.5, AttributeModifier.Operation.MULTIPLY_TOTAL);
 	private static final AttributeModifier SPEED_MODIFIER = new AttributeModifier(SPEED_MODIFIER_UUID, "prebirth speed nerf", -0.3D, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
@@ -28,7 +29,7 @@ public class PreBirth extends AbstractPregnancyPain {
 	@Override
 	public void addAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {		
 
-		if (!(entity instanceof Player player)) return;
+		if (!PlayerHelper.isPlayerValid(entity)) return;
  		
 		if (!entity.level().isClientSide) {
 			
@@ -45,15 +46,14 @@ public class PreBirth extends AbstractPregnancyPain {
 			}
 			
 			entity.level().playSound(null, BlockPos.containing(entity.getX(), entity.getY(), entity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "contraction1")), SoundSource.PLAYERS, 1, 1);
+			MessageHelper.sendMessageToPlayer((Player) entity, Component.translatable("chat.minepreggo.player.birth.message.water_breaking"));	
 		}
-		
-		MessageHelper.sendMessageToPlayer(player, Component.translatable("chat.minepreggo.player.birth.message.water_breaking"));	
 	}
 	
 	@Override
 	public void removeAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {
-		super.removeAttributeModifiers(entity, attributeMap, amplifier);
-			
+		if (!PlayerHelper.isPlayerValid(entity)) return;
+
 		if (!entity.level().isClientSide) {
 			entity.removeEffect(MobEffects.WEAKNESS);
 			AttributeInstance speedAttr = entity.getAttribute(Attributes.MOVEMENT_SPEED);
