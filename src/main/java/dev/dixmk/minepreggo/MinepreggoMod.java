@@ -5,7 +5,11 @@ import org.apache.logging.log4j.Logger;
 import dev.dixmk.minepreggo.client.gui.preggo.PlayerJoinsWorldScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.PlayerMedicalCheckUpScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.PreggoMobMedicalCheckUpScreen;
+import dev.dixmk.minepreggo.client.gui.preggo.RequestSexM2PScreen;
+import dev.dixmk.minepreggo.client.gui.preggo.RequestSexP2PScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.SelectPregnantEntityForMedicalCheckUpScreen;
+import dev.dixmk.minepreggo.client.gui.preggo.creeper.CreeperGirlInventaryScreen;
+import dev.dixmk.minepreggo.client.gui.preggo.creeper.CreeperGirlMainScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.creeper.CreeperGirlP0InventaryScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.creeper.CreeperGirlP0MainScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.creeper.CreeperGirlP1InventaryScreen;
@@ -24,6 +28,8 @@ import dev.dixmk.minepreggo.client.gui.preggo.creeper.CreeperGirlP7InventaryScre
 import dev.dixmk.minepreggo.client.gui.preggo.creeper.CreeperGirlP7MainScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.creeper.CreeperGirlP8InventaryScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.creeper.CreeperGirlP8MainScreen;
+import dev.dixmk.minepreggo.client.gui.preggo.zombie.ZombieGirlInventaryScreen;
+import dev.dixmk.minepreggo.client.gui.preggo.zombie.ZombieGirlMainScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.zombie.ZombieGirlP0InventaryScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.zombie.ZombieGirlP0MainScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.zombie.ZombieGirlP1InventaryScreen;
@@ -52,15 +58,28 @@ import dev.dixmk.minepreggo.client.model.armor.MaternityChestPlateP2Model;
 import dev.dixmk.minepreggo.client.model.armor.MaternityChestPlateP3Model;
 import dev.dixmk.minepreggo.client.model.armor.MaternityChestPlateP4Model;
 import dev.dixmk.minepreggo.client.model.armor.KneeBraceModel;
-import dev.dixmk.minepreggo.client.model.entity.player.BoobsModel;
-import dev.dixmk.minepreggo.client.model.entity.player.PregnantBodyP1Model;
-import dev.dixmk.minepreggo.client.model.entity.player.PregnantBodyP2Model;
-import dev.dixmk.minepreggo.client.model.entity.player.PregnantBodyP3Model;
-import dev.dixmk.minepreggo.client.model.entity.player.PregnantBodyP4Model;
-import dev.dixmk.minepreggo.client.model.entity.player.PregnantBodyP5Model;
-import dev.dixmk.minepreggo.client.model.entity.player.PregnantBodyP6Model;
-import dev.dixmk.minepreggo.client.model.entity.player.PregnantBodyP7Model;
-import dev.dixmk.minepreggo.client.model.entity.player.PregnantBodyP8Model;
+import dev.dixmk.minepreggo.client.model.entity.player.CustomBoobsModel;
+import dev.dixmk.minepreggo.client.model.entity.player.CustomPregnantBodyP0Model;
+import dev.dixmk.minepreggo.client.model.entity.player.CustomPregnantBodyP1Model;
+import dev.dixmk.minepreggo.client.model.entity.player.CustomPregnantBodyP2Model;
+import dev.dixmk.minepreggo.client.model.entity.player.CustomPregnantBodyP3Model;
+import dev.dixmk.minepreggo.client.model.entity.player.CustomPregnantBodyP4Model;
+import dev.dixmk.minepreggo.client.model.entity.player.CustomPregnantBodyP5Model;
+import dev.dixmk.minepreggo.client.model.entity.player.CustomPregnantBodyP6Model;
+import dev.dixmk.minepreggo.client.model.entity.player.CustomPregnantBodyP7Model;
+import dev.dixmk.minepreggo.client.model.entity.player.CustomPregnantBodyP8Model;
+import dev.dixmk.minepreggo.client.model.entity.player.PredefinedBoobsModel;
+import dev.dixmk.minepreggo.client.model.entity.player.PredefinedPregnantBodyP0Model;
+import dev.dixmk.minepreggo.client.model.entity.player.PredefinedPregnantBodyP1Model;
+import dev.dixmk.minepreggo.client.model.entity.player.PredefinedPregnantBodyP2Model;
+import dev.dixmk.minepreggo.client.model.entity.player.PredefinedPregnantBodyP3Model;
+import dev.dixmk.minepreggo.client.model.entity.player.PredefinedPregnantBodyP4Model;
+import dev.dixmk.minepreggo.client.model.entity.player.PredefinedPregnantBodyP5Model;
+import dev.dixmk.minepreggo.client.model.entity.player.PredefinedPregnantBodyP6Model;
+import dev.dixmk.minepreggo.client.model.entity.player.PredefinedPregnantBodyP7Model;
+import dev.dixmk.minepreggo.client.model.entity.player.PredefinedPregnantBodyP8Model;
+import dev.dixmk.minepreggo.client.model.entity.player.cinematic.CinematicMalePlayerModel;
+import dev.dixmk.minepreggo.client.model.entity.player.cinematic.CinematicPredefinedPlayerModelP6;
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractHumanoidCreeperGirlModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.quadruped.AbstractQueadrupedCreeperGirlModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.ender.AbstractEnderGirlModel;
@@ -80,6 +99,7 @@ import dev.dixmk.minepreggo.client.renderer.preggo.creeper.TamableCreeperGirlP5R
 import dev.dixmk.minepreggo.client.renderer.preggo.creeper.TamableCreeperGirlP6Renderer;
 import dev.dixmk.minepreggo.client.renderer.preggo.creeper.TamableCreeperGirlP7Renderer;
 import dev.dixmk.minepreggo.client.renderer.preggo.creeper.TamableCreeperGirlP8Renderer;
+import dev.dixmk.minepreggo.client.renderer.preggo.creeper.TamableCreeperGirlRenderer;
 import dev.dixmk.minepreggo.client.renderer.preggo.creeper.quadruped.IllQuadrupedCreeperGirlRenderer;
 import dev.dixmk.minepreggo.client.renderer.preggo.creeper.quadruped.MonsterQuadrupedCreeperGirlP0Renderer;
 import dev.dixmk.minepreggo.client.renderer.preggo.ender.IllEnderGirlRenderer;
@@ -98,6 +118,8 @@ import dev.dixmk.minepreggo.client.renderer.preggo.zombie.TamableZombieGirlP5Ren
 import dev.dixmk.minepreggo.client.renderer.preggo.zombie.TamableZombieGirlP6Renderer;
 import dev.dixmk.minepreggo.client.renderer.preggo.zombie.TamableZombieGirlP7Renderer;
 import dev.dixmk.minepreggo.client.renderer.preggo.zombie.TamableZombieGirlP8Renderer;
+import dev.dixmk.minepreggo.client.renderer.preggo.zombie.TamableZombieGirlRenderer;
+import dev.dixmk.minepreggo.common.animation.ArmAnimationRegistry;
 import dev.dixmk.minepreggo.common.animation.PlayerAnimationRegistry;
 import dev.dixmk.minepreggo.init.MinepreggoModBlocks;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
@@ -110,8 +132,6 @@ import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.init.MinepreggoModTabs;
 import dev.dixmk.minepreggo.init.MinepreggoModVillagerProfessions;
 import dev.dixmk.minepreggo.network.capability.PlayerDataImpl;
-import dev.dixmk.minepreggo.network.capability.PlayerPregnancyEffectsImpl;
-import dev.dixmk.minepreggo.network.capability.PlayerPregnancySystemImpl;
 import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterQuadrupedCreeperGirl;
@@ -121,6 +141,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.creeper.MonsterCreeperGirlP0;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.MonsterCreeperGirlP3;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.MonsterCreeperGirlP5;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.MonsterCreeperGirlP7;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirlP0;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirlP1;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirlP2;
@@ -138,6 +159,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.zombie.MonsterZombieGirlP0;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.MonsterZombieGirlP3;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.MonsterZombieGirlP5;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.MonsterZombieGirlP7;
+import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP0;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP1;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP2;
@@ -268,6 +290,7 @@ public class MinepreggoMod {
 		event.put(MinepreggoModEntities.MONSTER_ZOMBIE_GIRL_P3.get(), MonsterZombieGirlP3.createAttributes().build());
 		event.put(MinepreggoModEntities.MONSTER_ZOMBIE_GIRL_P5.get(), MonsterZombieGirlP5.createAttributes().build());
 		event.put(MinepreggoModEntities.MONSTER_ZOMBIE_GIRL_P7.get(), MonsterZombieGirlP7.createAttributes().build());
+		event.put(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL.get(), TamableZombieGirl.createAttributes().build());
 		event.put(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P0.get(), TamableZombieGirlP0.createAttributes().build());
 		event.put(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P1.get(), TamableZombieGirlP1.createAttributes().build());
 		event.put(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P2.get(), TamableZombieGirlP2.createAttributes().build());
@@ -283,6 +306,7 @@ public class MinepreggoMod {
 		event.put(MinepreggoModEntities.MONSTER_CREEPER_GIRL_P3.get(), MonsterCreeperGirlP3.createAttributes().build());
 		event.put(MinepreggoModEntities.MONSTER_CREEPER_GIRL_P5.get(), MonsterCreeperGirlP5.createAttributes().build());
 		event.put(MinepreggoModEntities.MONSTER_CREEPER_GIRL_P7.get(), MonsterCreeperGirlP7.createAttributes().build());	
+		event.put(MinepreggoModEntities.TAMABLE_CREEPER_GIRL.get(), TamableCreeperGirl.createAttributes().build());
 		event.put(MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P0.get(), TamableCreeperGirlP0.createAttributes().build());
 		event.put(MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P1.get(), TamableCreeperGirlP1.createAttributes().build());
 		event.put(MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P2.get(), TamableCreeperGirlP2.createAttributes().build());
@@ -307,6 +331,7 @@ public class MinepreggoMod {
 	private void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
 		
 		/*Zombie Girl*/
+		event.registerLayerDefinition(AbstractZombieGirlModel.LAYER_LOCATION, AbstractZombieGirlModel::createBodyLayer);
 		event.registerLayerDefinition(AbstractZombieGirlModel.LAYER_LOCATION_P0, AbstractZombieGirlModel::createP0BodyLayer);
 		event.registerLayerDefinition(AbstractZombieGirlModel.LAYER_LOCATION_P1, AbstractZombieGirlModel::createP1BodyLayer);
 		event.registerLayerDefinition(AbstractZombieGirlModel.LAYER_LOCATION_P2, AbstractZombieGirlModel::createP2BodyLayer);
@@ -320,6 +345,7 @@ public class MinepreggoMod {
 		event.registerLayerDefinition(AbstractZombieGirlModel.LAYER_OUTER_ARMOR_LOCATION, AbstractZombieGirlModel::createOuterLayer);
 		
 		/*Creeper Girl*/
+		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_LOCATION, AbstractHumanoidCreeperGirlModel::createBodyLayer);
 		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_LOCATION_P0, AbstractHumanoidCreeperGirlModel::createP0BodyLayer);
 		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_LOCATION_P1, AbstractHumanoidCreeperGirlModel::createP1BodyLayer);
 		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_LOCATION_P2, AbstractHumanoidCreeperGirlModel::createP2BodyLayer);
@@ -331,6 +357,7 @@ public class MinepreggoMod {
 		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_LOCATION_P8, AbstractHumanoidCreeperGirlModel::createP8BodyLayer);
 		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractHumanoidCreeperGirlModel::createInnerLayer);
 		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_OUTER_ARMOR_LOCATION, AbstractHumanoidCreeperGirlModel::createOuterLayer);
+		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_ENERGY_ARMOR_LOCATION, AbstractHumanoidCreeperGirlModel::createBodyLayer);
 		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_ENERGY_ARMOR_P0_LOCATION, AbstractHumanoidCreeperGirlModel::createP0BodyLayer);
 		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_ENERGY_ARMOR_P1_LOCATION, AbstractHumanoidCreeperGirlModel::createP1BodyLayer);
 		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_ENERGY_ARMOR_P2_LOCATION, AbstractHumanoidCreeperGirlModel::createP2BodyLayer);
@@ -364,20 +391,41 @@ public class MinepreggoMod {
 		event.registerLayerDefinition(KneeBraceModel.LAYER_LOCATION, KneeBraceModel::createBodyLayer);
 	
 		// Boobs
-		event.registerLayerDefinition(BoobsModel.LAYER_LOCATION, BoobsModel::createBodyLayer);
-		event.registerLayerDefinition(PregnantBodyP1Model.LAYER_LOCATION, PregnantBodyP1Model::createBodyLayer);
-		event.registerLayerDefinition(PregnantBodyP2Model.LAYER_LOCATION, PregnantBodyP2Model::createBodyLayer);
-		event.registerLayerDefinition(PregnantBodyP3Model.LAYER_LOCATION, PregnantBodyP3Model::createBodyLayer);
-		event.registerLayerDefinition(PregnantBodyP4Model.LAYER_LOCATION, PregnantBodyP4Model::createBodyLayer);
-		event.registerLayerDefinition(PregnantBodyP5Model.LAYER_LOCATION, PregnantBodyP5Model::createBodyLayer);
-		event.registerLayerDefinition(PregnantBodyP6Model.LAYER_LOCATION, PregnantBodyP6Model::createBodyLayer);
-		event.registerLayerDefinition(PregnantBodyP7Model.LAYER_LOCATION, PregnantBodyP7Model::createBodyLayer);
-		event.registerLayerDefinition(PregnantBodyP8Model.LAYER_LOCATION, PregnantBodyP8Model::createBodyLayer);
+		event.registerLayerDefinition(CustomBoobsModel.LAYER_LOCATION, CustomBoobsModel::createBodyLayer);
+		event.registerLayerDefinition(PredefinedBoobsModel.LAYER_LOCATION, PredefinedBoobsModel::createBodyLayer);
+
+		// Pregnant Body
+		event.registerLayerDefinition(CustomPregnantBodyP0Model.LAYER_LOCATION, CustomPregnantBodyP0Model::createBodyLayer);
+		event.registerLayerDefinition(CustomPregnantBodyP1Model.LAYER_LOCATION, CustomPregnantBodyP1Model::createBodyLayer);
+		event.registerLayerDefinition(CustomPregnantBodyP2Model.LAYER_LOCATION, CustomPregnantBodyP2Model::createBodyLayer);
+		event.registerLayerDefinition(CustomPregnantBodyP3Model.LAYER_LOCATION, CustomPregnantBodyP3Model::createBodyLayer);
+		event.registerLayerDefinition(CustomPregnantBodyP4Model.LAYER_LOCATION, CustomPregnantBodyP4Model::createBodyLayer);
+		event.registerLayerDefinition(CustomPregnantBodyP5Model.LAYER_LOCATION, CustomPregnantBodyP5Model::createBodyLayer);
+		event.registerLayerDefinition(CustomPregnantBodyP6Model.LAYER_LOCATION, CustomPregnantBodyP6Model::createBodyLayer);
+		event.registerLayerDefinition(CustomPregnantBodyP7Model.LAYER_LOCATION, CustomPregnantBodyP7Model::createBodyLayer);
+		event.registerLayerDefinition(CustomPregnantBodyP8Model.LAYER_LOCATION, CustomPregnantBodyP8Model::createBodyLayer);
+	
+		event.registerLayerDefinition(PredefinedPregnantBodyP0Model.LAYER_LOCATION, PredefinedPregnantBodyP0Model::createBodyLayer);
+		event.registerLayerDefinition(PredefinedPregnantBodyP1Model.LAYER_LOCATION, PredefinedPregnantBodyP1Model::createBodyLayer);
+		event.registerLayerDefinition(PredefinedPregnantBodyP2Model.LAYER_LOCATION, PredefinedPregnantBodyP2Model::createBodyLayer);
+		event.registerLayerDefinition(PredefinedPregnantBodyP3Model.LAYER_LOCATION, PredefinedPregnantBodyP3Model::createBodyLayer);
+		event.registerLayerDefinition(PredefinedPregnantBodyP4Model.LAYER_LOCATION, PredefinedPregnantBodyP4Model::createBodyLayer);
+		event.registerLayerDefinition(PredefinedPregnantBodyP5Model.LAYER_LOCATION, PredefinedPregnantBodyP5Model::createBodyLayer);
+		event.registerLayerDefinition(PredefinedPregnantBodyP6Model.LAYER_LOCATION, PredefinedPregnantBodyP6Model::createBodyLayer);
+		event.registerLayerDefinition(PredefinedPregnantBodyP7Model.LAYER_LOCATION, PredefinedPregnantBodyP7Model::createBodyLayer);
+		event.registerLayerDefinition(PredefinedPregnantBodyP8Model.LAYER_LOCATION, PredefinedPregnantBodyP8Model::createBodyLayer);
+	
+	
+		//Cinematic
+		event.registerLayerDefinition(CinematicPredefinedPlayerModelP6.LAYER_LOCATION, CinematicPredefinedPlayerModelP6::createBodyLayer);
+		event.registerLayerDefinition(CinematicMalePlayerModel.LAYER_LOCATION, CinematicMalePlayerModel::createBodyLayer);
 	}
 	
 	private void clientLoad(FMLClientSetupEvent event) {
 		event.enqueueWork(() -> {
 			/*Zombie Girl*/
+			MenuScreens.register(MinepreggoModMenus.ZOMBIE_GIRL_MAIN_MENU.get(), ZombieGirlMainScreen::new);
+			MenuScreens.register(MinepreggoModMenus.ZOMBIE_GIRL_INVENTORY_MENU.get(), ZombieGirlInventaryScreen::new);
 			MenuScreens.register(MinepreggoModMenus.ZOMBIE_GIRL_P0_MAIN_MENU.get(), ZombieGirlP0MainScreen::new);
 			MenuScreens.register(MinepreggoModMenus.ZOMBIE_GIRL_P0_INVENTORY_MENU.get(), ZombieGirlP0InventaryScreen::new);
 			MenuScreens.register(MinepreggoModMenus.ZOMBIE_GIRL_P1_MAIN_MENU.get(), ZombieGirlP1MainScreen::new);
@@ -398,6 +446,8 @@ public class MinepreggoMod {
 			MenuScreens.register(MinepreggoModMenus.ZOMBIE_GIRL_P8_INVENTORY_MENU.get(), ZombieGirlP8InventaryScreen::new);
 			
 			/*Creeper Girl*/
+			MenuScreens.register(MinepreggoModMenus.CREEPER_GIRL_MAIN_MENU.get(), CreeperGirlMainScreen::new);
+			MenuScreens.register(MinepreggoModMenus.CREEPER_GIRL_INVENTORY_MENU.get(), CreeperGirlInventaryScreen::new);
 			MenuScreens.register(MinepreggoModMenus.CREEPER_GIRL_P0_MAIN_MENU.get(), CreeperGirlP0MainScreen::new);
 			MenuScreens.register(MinepreggoModMenus.CREEPER_GIRL_P0_INVENTORY_MENU.get(), CreeperGirlP0InventaryScreen::new);
 			MenuScreens.register(MinepreggoModMenus.CREEPER_GIRL_P1_MAIN_MENUI.get(), CreeperGirlP1MainScreen::new);
@@ -424,6 +474,9 @@ public class MinepreggoMod {
 			MenuScreens.register(MinepreggoModMenus.PLAYER_MEDICAL_CHECKUP_BY_VILLAGER_MENU.get(), PlayerMedicalCheckUpScreen.DoctorVillager::new);
 
 			MenuScreens.register(MinepreggoModMenus.PLAYER_JOINS_WORLD_MENU.get(), PlayerJoinsWorldScreen::new);
+		
+			MenuScreens.register(MinepreggoModMenus.REQUEST_SEX_M2P_MENU.get(), RequestSexM2PScreen::new);
+			MenuScreens.register(MinepreggoModMenus.REQUEST_SEX_P2P_MENU.get(), RequestSexP2PScreen::new);
 		});
 	}
 	
@@ -432,6 +485,7 @@ public class MinepreggoMod {
 		event.registerEntityRenderer(MinepreggoModEntities.MONSTER_ZOMBIE_GIRL_P3.get(), MonsterZombieGirlP3Renderer::new);
 		event.registerEntityRenderer(MinepreggoModEntities.MONSTER_ZOMBIE_GIRL_P5.get(), MonsterZombieGirlP5Renderer::new);
 		event.registerEntityRenderer(MinepreggoModEntities.MONSTER_ZOMBIE_GIRL_P7.get(), MonsterZombieGirlP7Renderer::new);	
+		event.registerEntityRenderer(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL.get(), TamableZombieGirlRenderer::new);
 		event.registerEntityRenderer(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P0.get(), TamableZombieGirlP0Renderer::new);
 		event.registerEntityRenderer(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P1.get(), TamableZombieGirlP1Renderer::new);
 		event.registerEntityRenderer(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P2.get(), TamableZombieGirlP2Renderer::new);
@@ -446,6 +500,7 @@ public class MinepreggoMod {
 		event.registerEntityRenderer(MinepreggoModEntities.MONSTER_CREEPER_GIRL_P3.get(), MonsterCreeperGirlP3Renderer::new);
 		event.registerEntityRenderer(MinepreggoModEntities.MONSTER_CREEPER_GIRL_P5.get(), MonsterCreeperGirlP5Renderer::new);
 		event.registerEntityRenderer(MinepreggoModEntities.MONSTER_CREEPER_GIRL_P7.get(), MonsterCreeperGirlP7Renderer::new);
+		event.registerEntityRenderer(MinepreggoModEntities.TAMABLE_CREEPER_GIRL.get(), TamableCreeperGirlRenderer::new);
 		event.registerEntityRenderer(MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P0.get(), TamableCreeperGirlP0Renderer::new);
 		event.registerEntityRenderer(MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P1.get(), TamableCreeperGirlP1Renderer::new);
 		event.registerEntityRenderer(MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P2.get(), TamableCreeperGirlP2Renderer::new);
@@ -467,12 +522,11 @@ public class MinepreggoMod {
 	}
 	
 	private void registerCapabilities(RegisterCapabilitiesEvent event) {
-		event.register(PlayerPregnancySystemImpl.class);
 		event.register(PlayerDataImpl.class);
-		event.register(PlayerPregnancyEffectsImpl.class);
 	}
 	
     private void commonSetup(final FMLCommonSetupEvent event) {
-        event.enqueueWork(() -> PlayerAnimationRegistry.getInstance().init());       
+        event.enqueueWork(() -> PlayerAnimationRegistry.getInstance().init());     
+        event.enqueueWork(() -> ArmAnimationRegistry.getInstance().init());     
     }
 }

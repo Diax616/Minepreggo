@@ -10,7 +10,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class TamableZombieGirlP0Renderer extends AbstractTamableZombieGirlRenderer<TamableZombieGirlP0, TamableZombieGirlP0Model> {
+public class TamableZombieGirlP0Renderer extends AbstractTamablePregnantZombieGirlRenderer<TamableZombieGirlP0, TamableZombieGirlP0Model> {
 
 	public TamableZombieGirlP0Renderer(EntityRendererProvider.Context context) {
 		this(context, AbstractZombieGirlModel.LAYER_LOCATION_P0, AbstractZombieGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractZombieGirlModel.LAYER_OUTER_ARMOR_LOCATION);

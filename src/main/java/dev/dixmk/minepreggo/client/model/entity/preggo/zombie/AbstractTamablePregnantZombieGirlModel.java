@@ -4,7 +4,10 @@ import dev.dixmk.minepreggo.world.entity.preggo.PregnancySymptom;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public abstract class AbstractTamablePregnantZombieGirlModel<E extends AbstractTamablePregnantZombieGirl<?,?>> extends AbstractTamableZombieGirlModel<E> {
 
 	protected float extraBoobsXScale = 1.2F;

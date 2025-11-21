@@ -5,7 +5,6 @@ import javax.annotation.Nullable;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
-import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
@@ -32,16 +31,20 @@ public class PregnancyAcceleration extends MobEffect {
 			p.setDaysPassed(Math.min(p.getDaysByStage(), p.getDaysPassed() + days));
 		
 		}
-		else if (p_19464_ instanceof ServerPlayer serverPlayer && PlayerHelper.isFemaleAndPregnant(serverPlayer)) {	
-			serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_PREGNANCY_SYSTEM).ifPresent(cap -> {							
-				final var daysPassed = cap.getDaysPassed();
-				final var daysByStage = cap.getDaysByStage();
-				final var daysBirth = Mth.clamp(daysByStage - daysPassed, 0, days);
-				final var newDaysPassed = Math.min(daysByStage, daysPassed + days);					
-				cap.setDaysPassed(newDaysPassed);
-				cap.setDaysToGiveBirth(cap.getDaysToGiveBirth() - daysBirth);
-			});
-		
+		else if (p_19464_ instanceof ServerPlayer serverPlayer) {	
+			serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 										
+				cap.getFemaleData().ifPresent(femaleData -> {
+					if (femaleData.isPregnant()) {
+						final var pregnancySystem = femaleData.getPregnancySystem();
+						final var daysPassed = pregnancySystem.getDaysPassed();
+						final var daysByStage = pregnancySystem.getDaysByStage();
+						final var daysBirth = Mth.clamp(daysByStage - daysPassed, 0, days);
+						final var newDaysPassed = Math.min(daysByStage, daysPassed + days);					
+						pregnancySystem.setDaysPassed(newDaysPassed);
+						pregnancySystem.setDaysToGiveBirth(pregnancySystem.getDaysToGiveBirth() - daysBirth);
+					}
+				})
+			);		
 		}
 	}
 	

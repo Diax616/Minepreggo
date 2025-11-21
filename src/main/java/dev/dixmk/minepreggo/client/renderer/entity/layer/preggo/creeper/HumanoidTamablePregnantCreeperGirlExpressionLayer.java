@@ -27,7 +27,7 @@ public class HumanoidTamablePregnantCreeperGirlExpressionLayer
 			case MORNING_SICKNESS: {		
 				return Optional.of(PAIN4);
 			}
-			case KICKING: {		
+			case FETAL_MOVEMENT: {		
 				return Optional.of(PAIN1);
 			}
 			case CONTRACTION: {		

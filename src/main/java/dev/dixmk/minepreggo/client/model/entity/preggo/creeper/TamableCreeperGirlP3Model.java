@@ -1,7 +1,7 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.creeper;
 
 import dev.dixmk.minepreggo.client.animation.preggo.CreeperGirlAnimation;
-import dev.dixmk.minepreggo.client.animation.preggo.HumanoidGirlAnimation;
+import dev.dixmk.minepreggo.client.animation.preggo.HumanoidFemaleAnimation;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirlP3;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -25,7 +25,7 @@ public class TamableCreeperGirlP3Model extends AbstractTamablePregnantCreeperGir
 				this.root().getAllParts().forEach(ModelPart::resetPose);
 					
 			    if (creeperGirl.getItemBySlot(EquipmentSlot.CHEST).isEmpty()) {
-			    	this.animate(creeperGirl.loopAnimationState, HumanoidGirlAnimation.MEDIUM_BELLY_INFLATION, ageInTicks, 1f);
+			    	this.animate(creeperGirl.loopAnimationState, HumanoidFemaleAnimation.MEDIUM_BELLY_INFLATION, ageInTicks, 1f);
 			    }
 				
 			    if (creeperGirl.isAttacking()) {
@@ -51,7 +51,7 @@ public class TamableCreeperGirlP3Model extends AbstractTamablePregnantCreeperGir
 						this.animate(creeperGirl.loopAnimationState, CreeperGirlAnimation.MISCARRIAGE, ageInTicks, 1f);						
 						break;
 					}
-					case KICKING: {
+					case FETAL_MOVEMENT: {
 						this.animate(creeperGirl.loopAnimationState, CreeperGirlAnimation.KICKING1, ageInTicks, 1f);						
 						break;
 					}

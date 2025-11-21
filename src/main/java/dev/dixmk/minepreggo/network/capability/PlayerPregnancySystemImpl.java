@@ -9,23 +9,22 @@ import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Nullable;
 
+import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.network.packet.SyncPregnancySystemS2CPacket;
 import dev.dixmk.minepreggo.world.entity.preggo.Baby;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPain;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancyStage;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPhase;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancySymptom;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemHelper;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraftforge.network.PacketDistributor;
 
 public class PlayerPregnancySystemImpl implements IPlayerPregnancySystemHandler {	
-	// Server Data
-	private int daysByStage = 0;
 	private int daysToGiveBirth = 0;
 	private int daysPassed = 0;
 	private int pregnancyHealth = 0;
@@ -33,25 +32,51 @@ public class PlayerPregnancySystemImpl implements IPlayerPregnancySystemHandler 
 	private int pregnancyPainTimer = 0;
 	private int numOfJumps = 0;
 	private int sprintingTimer = 0;
-	private PregnancyStage currentPregnancyStage = PregnancyStage.P0;
-	private PregnancyStage lastPregnancyStage = PregnancyStage.P4;
-	private EnumMap<Baby, @NonNull Integer> babies = new EnumMap<>(Baby.class);
+	
+	private Optional<PregnancyPhase> currentPregnancyPhase = Optional.empty();
+	private Optional<PregnancyPhase> lastPregnancyPhase = Optional.empty();
+		
+	private EnumMap<Baby, @NonNull Integer> babiesInsideWomb = new EnumMap<>(Baby.class);
 
-	// Client Data
 	private Optional<PregnancySymptom> currentPregnancySymptom = Optional.empty();
 	private Optional<PregnancyPain> currentPregnancyPain = Optional.empty();
 	
+	private Map<PregnancyPhase, @NonNull Integer> daysByPregnancyPhase = new EnumMap<>(PregnancyPhase.class);
+
 
 	@Override
-	public int getDaysByStage() {
-		return this.daysByStage;
+	public int getDaysByStage() {	
+		if (currentPregnancyPhase.isPresent() && daysByPregnancyPhase.containsKey(currentPregnancyPhase.get())) {
+			return daysByPregnancyPhase.get(currentPregnancyPhase.get());
+		}
+		MinepreggoMod.LOGGER.error("Could not get total days by pregnancy phase, current pregnancy phase: {}, map: {}", 
+				currentPregnancyPhase.isPresent(), daysByPregnancyPhase.isEmpty());
+		return -1;
 	}
 
 	@Override
-	public void setDaysByStage(int days) {
-		this.daysByStage = Math.max(days, 0);
+	public boolean setDaysByStage(int days, PregnancyPhase phase) {
+		if (!this.daysByPregnancyPhase.isEmpty()) {	
+			daysByPregnancyPhase.put(phase, days);	
+			return true;
+		}
+		return false;
 	}
-
+	
+	@Override
+	public boolean setDaysByStage(Map<PregnancyPhase, Integer> map) {
+		if (this.daysByPregnancyPhase.isEmpty()) {
+			this.daysByPregnancyPhase = map;
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public Map<PregnancyPhase, Integer> getDaysByStageMapping() {
+		return this.daysByPregnancyPhase;
+	}
+	
 	@Override
 	public int getPregnancyHealth() {
 		return this.pregnancyHealth;
@@ -84,12 +109,12 @@ public class PlayerPregnancySystemImpl implements IPlayerPregnancySystemHandler 
 
 	@Override
 	public void incrementDaysPassed() {
-		this.daysByStage++;
+		this.daysPassed++;
 	}
 
 	@Override
 	public void reduceDaysToGiveBirth() {
-		setDaysToGiveBirth(daysByStage - 1);
+		setDaysToGiveBirth(daysToGiveBirth - 1);
 	}
 	
 	@Override
@@ -108,32 +133,29 @@ public class PlayerPregnancySystemImpl implements IPlayerPregnancySystemHandler 
 	}
 	
 	@Override
-	public PregnancyStage getLastPregnancyStage() {
-		return this.lastPregnancyStage;
+	public @Nullable PregnancyPhase getLastPregnancyStage() {
+		return this.lastPregnancyPhase.orElse(null);
 	}
 
 	@Override
-	public void setLastPregnancyStage(PregnancyStage stage) {
-		this.lastPregnancyStage = stage;
+	public void setLastPregnancyStage(@Nullable PregnancyPhase stage) {
+		this.lastPregnancyPhase = Optional.ofNullable(stage);
 	}
 
 	@Override
-	public PregnancyStage getCurrentPregnancyStage() {
-		return this.currentPregnancyStage;
+	public @Nullable PregnancyPhase getCurrentPregnancyStage() {
+		return this.currentPregnancyPhase.orElse(null);
 	}
 
 	@Override
-	public void setCurrentPregnancyStage(PregnancyStage stage) {
-		this.currentPregnancyStage = stage;
+	public void setCurrentPregnancyStage(@Nullable PregnancyPhase stage) {
+		this.currentPregnancyPhase = Optional.ofNullable(stage);
 	}
 
 	@Override
 	@Nullable
 	public PregnancySymptom getPregnancySymptom() {
-		if (this.currentPregnancySymptom.isPresent()) {
-			return this.currentPregnancySymptom.get();
-		}
-		return null;
+		return this.currentPregnancySymptom.orElse(null);
 	}
 
 	@Override
@@ -144,10 +166,7 @@ public class PlayerPregnancySystemImpl implements IPlayerPregnancySystemHandler 
 	@Override
 	@Nullable
 	public PregnancyPain getPregnancyPain() {
-		if (this.currentPregnancyPain.isPresent()) {
-			return this.currentPregnancyPain.get();
-		}
-		return null;
+		return this.currentPregnancyPain.orElse(null);
 	}
 
 	@Override
@@ -217,101 +236,96 @@ public class PlayerPregnancySystemImpl implements IPlayerPregnancySystemHandler 
 	
 	@Override
 	public Set<Baby> getTypesOfBabies() {
-		return this.babies.keySet();
+		return this.babiesInsideWomb.keySet();
 	}
 
 	@Override
 	public int getNumOfBabiesByType(Baby babyType) {
-		return this.babies.get(babyType);
+		return this.babiesInsideWomb.get(babyType);
 	}
 
 	@Override
 	public int getTotalNumOfBabies() {	
-		return this.babies.values().stream().mapToInt(Integer::intValue).sum();
+		return this.babiesInsideWomb.values().stream().mapToInt(Integer::intValue).sum();
 	}
 
 	@Override
 	public void addBaby(Baby babyType, int count) {	
-		this.babies.compute(babyType, (k, v) -> (v == null) ? count : v + count);	
+		this.babiesInsideWomb.compute(babyType, (k, v) -> (v == null) ? count : v + count);	
 	}
 	
 	
 	
 	@NonNull
-	public Tag serializeNBT() {
-		CompoundTag nbt = new CompoundTag();
-		nbt.putInt("DataDaysByStage", daysByStage);
+	public Tag serializeNBT(@NonNull Tag tag) {
+		CompoundTag nbt = (CompoundTag) tag;
 		nbt.putInt("DataDaysToGiveBirth", daysToGiveBirth);
 		nbt.putInt("DataDaysPassed", daysPassed);
 		nbt.putInt("DataPregnancyHealth", pregnancyHealth);
 		nbt.putInt("DataPregnancyTimer", pregnancyTimer);
-		nbt.putInt("DataCurrentPregnancyStage", currentPregnancyStage.ordinal());
-		nbt.putInt("DataLastPregnancyStage", lastPregnancyStage.ordinal());
-			
+		
+		currentPregnancyPhase.ifPresent(phase -> nbt.putString(PregnancyPhase.CURRENT_PHASE_NBT_KEY, phase.name()));	
+		lastPregnancyPhase.ifPresent(phase -> nbt.putString(PregnancyPhase.LAST_PHASE_NBT_KEY, phase.name()));
+
 		currentPregnancySymptom.ifPresent(symptom -> nbt.putString(PregnancySymptom.NBT_KEY, symptom.name()));
 		currentPregnancyPain.ifPresent(pain -> nbt.putString(PregnancyPain.NBT_KEY, pain.name()));
 	
-		ListTag list = new ListTag();
-		this.babies.forEach((key, value) -> {		
-			CompoundTag pair = new CompoundTag();
-		    pair.putInt("key", key.ordinal());
-		    pair.putInt("value", value);
-			list.add(pair);
-		});
-		nbt.put("DataBabies", list);
+		if(!babiesInsideWomb.isEmpty()) {
+			nbt.put("DataBabies", PregnancySystemHelper.serializeBabyMap(this.babiesInsideWomb));
+		}
 		
+		if (!daysByPregnancyPhase.isEmpty()) {
+			nbt.put("DaysByPhase", PregnancySystemHelper.serializePregnancyPhaseMap(this.daysByPregnancyPhase));
+		}
+
 		return nbt;
 	}
-	
+
 	public void deserializeNBT(@NonNull Tag tag) {
 		CompoundTag nbt = (CompoundTag) tag;
-		daysByStage = nbt.getInt("DataDaysByStage");
 		daysToGiveBirth = nbt.getInt("DataDaysToGiveBirth");
 		daysPassed = nbt.getInt("DataDaysPassed");
 		pregnancyHealth = nbt.getInt("DataPregnancyHealth");
 		pregnancyTimer = nbt.getInt("DataPregnancyTimer");
-		currentPregnancyStage = PregnancyStage.values()[nbt.getInt("DataCurrentPregnancyStage")];
-		lastPregnancyStage = PregnancyStage.values()[nbt.getInt("DataLastPregnancyStage")];
-		
+			
+	    if (nbt.contains(PregnancyPhase.CURRENT_PHASE_NBT_KEY, Tag.TAG_STRING)) {
+	        String name = nbt.getString(PregnancyPhase.CURRENT_PHASE_NBT_KEY);
+	        setCurrentPregnancyStage(PregnancyPhase.valueOf(name));
+	    }
+	    if (nbt.contains(PregnancyPhase.LAST_PHASE_NBT_KEY, Tag.TAG_STRING)) {
+	        String name = nbt.getString(PregnancyPhase.LAST_PHASE_NBT_KEY);
+	        setLastPregnancyStage(PregnancyPhase.valueOf(name));
+	    }
 	    if (nbt.contains(PregnancyPain.NBT_KEY, Tag.TAG_STRING)) {
 	        String name = nbt.getString(PregnancyPain.NBT_KEY);
 	        PregnancyPain pain = PregnancyPain.valueOf(name);
 	        setPregnancyPain(pain);
-	    } else {
-	    	setPregnancyPain(null);
 	    }    
 	    if (nbt.contains(PregnancySymptom.NBT_KEY, Tag.TAG_STRING)) {
 	        String name = nbt.getString(PregnancySymptom.NBT_KEY);
 			PregnancySymptom symptom = PregnancySymptom.valueOf(name);
 			setPregnancySymptom(symptom);
-	    } else {
-	        setPregnancySymptom(null);
-	    } 
-		
-		
-		EnumMap<@NonNull Baby, @NonNull Integer> b = new EnumMap<>(Baby.class);
-		
-		ListTag list = nbt.getList("DataBabies", Tag.TAG_COMPOUND);
-		
-	    for (var t : list) {
-	        CompoundTag pair = (CompoundTag) t;
-	        Baby key = Baby.values()[pair.getInt("key")];
-	        int value = pair.getInt("value");
-	        b.put(key, value);
-	    }
-		
-		babies = b;
+	    } 	  
+	    if (nbt.contains("DataBabies")) {
+	    	PregnancySystemHelper.deserializeBabyMap(nbt.getList("DataBabies", Tag.TAG_COMPOUND), babiesInsideWomb);
+	    }  	
+	    
+	    if (nbt.contains("DaysByPhase")) {
+	    	PregnancySystemHelper.deserializePregnancyPhaseMap(nbt.getList("DaysByPhase", Tag.TAG_COMPOUND), daysByPregnancyPhase);
+	    }  
 	}
-	
-	public void copyFrom(@NonNull PlayerPregnancySystemImpl newData) {
-		this.babies = newData.babies;
-		this.currentPregnancyPain = newData.currentPregnancyPain;
-		this.currentPregnancyStage = newData.currentPregnancyStage;
-		this.currentPregnancySymptom = newData.currentPregnancySymptom;
-		this.daysByStage = newData.daysByStage;
-		this.daysPassed = newData.daysByStage;
+
+	public void copyFrom(@NonNull PlayerPregnancySystemImpl newData) {		
+		// this is not a COPY, it is a transference
+		this.babiesInsideWomb = newData.babiesInsideWomb;
+		this.daysByPregnancyPhase = newData.daysByPregnancyPhase;
+		
+		this.currentPregnancyPain = Optional.ofNullable(newData.currentPregnancyPain.orElse(null));
+		this.currentPregnancyPhase = Optional.ofNullable(newData.currentPregnancyPhase.orElse(null));
+		this.currentPregnancySymptom = Optional.ofNullable(newData.currentPregnancySymptom.orElse(null));
+		this.lastPregnancyPhase = Optional.ofNullable(newData.lastPregnancyPhase.orElse(null));
+		this.daysPassed = newData.daysPassed;
 		this.daysToGiveBirth = newData.daysToGiveBirth;
-		this.lastPregnancyStage = newData.lastPregnancyStage;
 		this.numOfJumps = newData.numOfJumps;
 		this.pregnancyHealth = newData.pregnancyHealth;
 		this.pregnancyPainTimer = newData.pregnancyPainTimer;
@@ -319,76 +333,99 @@ public class PlayerPregnancySystemImpl implements IPlayerPregnancySystemHandler 
 		this.sprintingTimer = newData.sprintingTimer;
 	}
 	
-	public void sync(ServerPlayer serverPlayer) {
-		MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> serverPlayer), 
-				new SyncPregnancySystemS2CPacket(serverPlayer.getUUID(), getPregnancySymptom(), getPregnancyPain()));
+	@NonNull
+	public ScreenData createScreenData() {
+		return new ScreenData(
+				this.currentPregnancyPhase.orElse(PregnancyPhase.P0),
+				this.lastPregnancyPhase.orElse(PregnancyPhase.P4),
+				this.daysToGiveBirth,
+				this.daysPassed,
+				getDaysByStage(),
+				this.pregnancyHealth,
+				this.babiesInsideWomb);
 	}
 	
 	@NonNull
-	public DataGUI createDataGUI() {
-		return new DataGUI(this);
+	public ClientData createClientData() {
+		return new ClientData(
+				this.currentPregnancyPhase.orElse(null),
+				this.currentPregnancyPain.orElse(null),
+				this.currentPregnancySymptom.orElse(null));
 	}
 	
-	public static class DataGUI {
-		public final int daysByStage;
-		public final int daysToGiveBirth;
-		public final int daysPassed;
-		public final int pregnancyHealth;
-		public final PregnancyStage currentPregnancyStage;
-		public final PregnancyStage lastPregnancyStage;
-		public final Map<Baby, @NonNull Integer> babies;
 	
-		public DataGUI(@NonNull PlayerPregnancySystemImpl source) {
-			this.daysByStage = source.daysByStage;
-			this.daysToGiveBirth = source.daysToGiveBirth;
-			this.daysPassed = source.daysPassed;
-			this.pregnancyHealth = source.pregnancyHealth;
-			this.currentPregnancyStage = source.currentPregnancyStage;
-			this.lastPregnancyStage = source.lastPregnancyStage;
-			this.babies = source.babies;
-		}
+	public void sync(ServerPlayer serverPlayer) {
+		MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> serverPlayer), 
+				new SyncPregnancySystemS2CPacket(serverPlayer.getUUID(), createClientData()));
+	}
+	
+	public static record ClientData(@Nullable PregnancyPhase currentPregnancyPhase, @Nullable PregnancyPain pregnancyPain, @Nullable PregnancySymptom pregnancySymptom) {
+		public void encode(FriendlyByteBuf buffer) {
+			buffer.writeBoolean(currentPregnancyPhase != null);
+			if (currentPregnancyPhase != null) {
+				buffer.writeEnum(currentPregnancyPhase);
+			}	
+			buffer.writeBoolean(pregnancyPain != null);
+			if (pregnancyPain != null) {
+				buffer.writeEnum(pregnancyPain);
+			}	
+			buffer.writeBoolean(pregnancySymptom != null);
+			if (pregnancySymptom != null) {
+				buffer.writeEnum(pregnancySymptom);
+			}
+		}	
 		
-		public DataGUI(@NonNull CompoundTag nbt) {
-			daysByStage = nbt.getInt("guidaysByStage");
-			daysToGiveBirth = nbt.getInt("guidaysToGiveBirth");
-			daysPassed = nbt.getInt("guidaysPassed");
-			pregnancyHealth = nbt.getInt("guipregnancyHealth");
-			currentPregnancyStage = PregnancyStage.values()[nbt.getInt("guiCurrentPregnancyStage")];
-			lastPregnancyStage = PregnancyStage.values()[nbt.getInt("guiLastPregnancyStage")];		
-			EnumMap<@NonNull Baby, @NonNull Integer> b = new EnumMap<>(Baby.class);
-			
-			ListTag list = nbt.getList("guiBabies", Tag.TAG_COMPOUND);
-			
-		    for (var t : list) {
-		        CompoundTag pair = (CompoundTag) t;
-		        Baby key = Baby.values()[pair.getInt("key")];
-		        int value = pair.getInt("value");
-		        b.put(key, value);
-		    }
-			
-			babies = b;
+		public static ClientData decode(FriendlyByteBuf buffer) {
+			PregnancySymptom pregnancySymptom = null;
+			PregnancyPain pregnancyPain = null;
+			PregnancyPhase currentPregnancyPhase = null;		
+			if (buffer.readBoolean()) {
+				currentPregnancyPhase = buffer.readEnum(PregnancyPhase.class);
+			}
+			if (buffer.readBoolean()) {
+				pregnancyPain = buffer.readEnum(PregnancyPain.class);
+			}	
+			if (buffer.readBoolean()) {
+				pregnancySymptom = buffer.readEnum(PregnancySymptom.class);
+			}
+			return new ClientData(currentPregnancyPhase, pregnancyPain, pregnancySymptom);
 		}
+	}
+	
+	
+	public static record ScreenData(
+			PregnancyPhase currentPregnancyPhase,
+			PregnancyPhase lastPregnancyPhase,
+			int daysToGiveBirth,
+			int daysPassed,
+			int daysByCurrentPhase,
+			int pregnancyHealth,
+			Map<Baby, @NonNull Integer> babiesInsideWomb) {	
 		
-		@NonNull
-		public Tag serializeNBT() {
-			CompoundTag nbt = new CompoundTag();
-			nbt.putInt("guidaysByStage", daysByStage);
-			nbt.putInt("guidaysToGiveBirth", daysToGiveBirth);
-			nbt.putInt("guidaysPassed", daysPassed);
-			nbt.putInt("guipregnancyHealth", pregnancyHealth);
-			nbt.putInt("guicurrentPregnancyStage", currentPregnancyStage.ordinal());
-			nbt.putInt("guilastPregnancyStage", lastPregnancyStage.ordinal());
+		public void encode(FriendlyByteBuf buffer) {
+			buffer.writeEnum(this.currentPregnancyPhase);
+			buffer.writeEnum(this.lastPregnancyPhase);
+			buffer.writeInt(this.daysToGiveBirth);
+			buffer.writeInt(this.daysPassed);
+			buffer.writeInt(this.daysByCurrentPhase);
+			buffer.writeInt(this.pregnancyHealth);
+			var nbt = new CompoundTag();
+			nbt.put("babiesInsideBelly", PregnancySystemHelper.serializeBabyMap(this.babiesInsideWomb));		
+			buffer.writeNbt(nbt);
+		}
 			
-			ListTag list = new ListTag();
-			this.babies.forEach((key, value) -> {		
-				CompoundTag pair = new CompoundTag();
-			    pair.putInt("key", key.ordinal());
-			    pair.putInt("value", value);
-				list.add(pair);
-			});
-			nbt.put("guibabies", list);
-			
-			return nbt;
+		public static ScreenData decode(FriendlyByteBuf buffer) {
+			PregnancyPhase currentPregnancyPhase = buffer.readEnum(PregnancyPhase.class);
+			PregnancyPhase lastPregnancyPhase = buffer.readEnum(PregnancyPhase.class);
+			int daysToGiveBirth = buffer.readInt();
+			int daysPassed = buffer.readInt();
+			int daysByCurrentStage = buffer.readInt();
+			int pregnancyHealth = buffer.readInt();
+			Map<Baby, @NonNull Integer> babiesInsideBelly = new EnumMap<>(Baby.class); 				
+			CompoundTag nbt = buffer.readNbt(); 
+			var list = nbt.getList("babiesInsideBelly", Tag.TAG_COMPOUND);
+			PregnancySystemHelper.deserializeBabyMap(list, babiesInsideBelly);		
+			return new ScreenData(currentPregnancyPhase, lastPregnancyPhase, daysToGiveBirth, daysPassed, daysByCurrentStage, pregnancyHealth, babiesInsideBelly);
 		}
 	}
 }

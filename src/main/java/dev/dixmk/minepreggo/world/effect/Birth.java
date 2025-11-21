@@ -11,14 +11,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 
 public class Birth extends AbstractPlayerPregnancyPain {
@@ -31,7 +29,6 @@ public class Birth extends AbstractPlayerPregnancyPain {
 	
 	@Override
 	public void addAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {		
-
 		if (!PlayerHelper.isPlayerValid(entity)) return;
 		
 		if (!entity.level().isClientSide) {
@@ -54,16 +51,9 @@ public class Birth extends AbstractPlayerPregnancyPain {
 	}
 	
 	@Override
-	public void removeAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {
-		super.removeAttributeModifiers(entity, attributeMap, amplifier);	
-		
+	public void removeAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {	
 		if (!PlayerHelper.isPlayerValid(entity)) return;
-		
-		entity.removeEffect(MobEffects.WEAKNESS);	
-		entity.removeEffect(MinepreggoModMobEffects.FULL_OF_CREEPERS.get());
-		entity.removeEffect(MinepreggoModMobEffects.FULL_OF_ZOMBIES.get());
-		entity.refreshDimensions();
-		
+	
 		if (!entity.level().isClientSide) {	
 			AttributeInstance speedAttr = entity.getAttribute(Attributes.MOVEMENT_SPEED);
 			AttributeInstance attackSpeedAttr = entity.getAttribute(Attributes.ATTACK_SPEED);
@@ -75,14 +65,21 @@ public class Birth extends AbstractPlayerPregnancyPain {
 				attackSpeedAttr.removeModifier(ATTACK_SPEED_MODIFIER);
 			}
 			
+			entity.removeEffect(MobEffects.WEAKNESS);	
+			entity.removeEffect(MinepreggoModMobEffects.FULL_OF_CREEPERS.get());
+			entity.removeEffect(MinepreggoModMobEffects.FULL_OF_ZOMBIES.get());
+			entity.refreshDimensions();
+			
 			entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 3600, 0));	
 			entity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 3600, 0));
 			entity.addEffect(new MobEffectInstance(MobEffects.LUCK, 4800, 0));	
 		
+			/*
 			if (entity instanceof ServerPlayer serverPlayer) {
-				serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_PREGNANCY_SYSTEM).ifPresent(cap -> 
-				MessageHelper.sendMessageToPlayer(serverPlayer, Component.translatable("chat.minepreggo.player.birth.message.successful_birth", cap.getTotalNumOfBabies())));
+				serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
+				MessageHelper.sendMessageToPlayer(serverPlayer, Component.translatable("chat.minepreggo.player.birth.message.successful_birth", cap.getFemalePlayerData().getTotalNumOfBabies())));
 			}
+			*/
 		}
 	}
 }

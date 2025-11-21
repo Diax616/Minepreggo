@@ -6,7 +6,7 @@ import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Baby;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.MonsterZombieGirlP0;
-import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP0;
+import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP1;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
@@ -26,7 +26,7 @@ public class ZombieImpregnation extends Impregnantion {
 	@Override
 	public void removeAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {
 		if (entity instanceof ServerPlayer serverPlayer) {			
-			if (PlayerHelper.tryToStartPregnancy(serverPlayer, Baby.ZOMBIE, amplifier)) {
+			if (PlayerHelper.tryStartPregnancyByPotion(serverPlayer, Baby.ZOMBIE, amplifier)) {
 				MinepreggoMod.LOGGER.info("Player {} has become pregnant.", serverPlayer.getName().getString());
 			}
 			else {
@@ -42,7 +42,7 @@ public class ZombieImpregnation extends Impregnantion {
 				TamableZombieGirlP1 nextStage = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P1.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
 				initPregnancy(zombieGirl, nextStage, amplifier);
 			}
-			else if (entity instanceof TamableZombieGirlP0 zombieGirl) {
+			else if (entity instanceof TamableZombieGirl zombieGirl) {
 				TamableZombieGirlP1 nextStage = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P1.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
 				initPregnancy(zombieGirl, nextStage, amplifier);
 				PreggoMobHelper.copyOwner(zombieGirl, nextStage);

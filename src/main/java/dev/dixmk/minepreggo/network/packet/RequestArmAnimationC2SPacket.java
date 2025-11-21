@@ -12,27 +12,25 @@ import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-public record RequestArmAnimationC2SPacket(int animationType) {
+public record RequestArmAnimationC2SPacket(String animationName) {
     
     public static RequestArmAnimationC2SPacket decode(FriendlyByteBuf buf) {
-    	return new RequestArmAnimationC2SPacket(buf.readInt());
+    	return new RequestArmAnimationC2SPacket(buf.readUtf());
     }
     
 	public static void encode(RequestArmAnimationC2SPacket message, FriendlyByteBuf buf) {
-        buf.writeInt(message.animationType);
+        buf.writeUtf(message.animationName);
     }
     
     public static void handler(RequestArmAnimationC2SPacket msg, Supplier<NetworkEvent.Context> ctx) {
 		NetworkEvent.Context context = ctx.get();
 		context.enqueueWork(() -> {
-            if (context.getDirection().getReceptionSide().isServer()) {    
-       
-            	MinepreggoMod.LOGGER.debug("Received ArmAnimationPacket on server with animationType: {}", msg.animationType());           	
+            if (context.getDirection().getReceptionSide().isServer()) {        
+            	MinepreggoMod.LOGGER.debug("Received ArmAnimationPacket on server with animationType: {}", msg.animationName);           	
                 var sender = context.getSender();     
             	MinepreggoModPacketHandler.INSTANCE.send(
             			PacketDistributor.PLAYER.with(() -> sender),
-            			new UpdateArmAnimationS2CPacket(sender.getUUID(), msg.animationType())
-            			);                            
+            			new UpdateArmAnimationS2CPacket(sender.getUUID(), msg.animationName));                            
             }
         });
 		context.setPacketHandled(true);

@@ -1,6 +1,8 @@
 package dev.dixmk.minepreggo.client.renderer.entity;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -13,6 +15,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
 
+@OnlyIn(Dist.CLIENT)
 public class ScientificIllagerRenderer extends IllagerRenderer<ScientificIllager> {
 	
 	private static final ResourceLocation SCIENTIFIC_ILLAGER = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/illager/scientific_illager.png");

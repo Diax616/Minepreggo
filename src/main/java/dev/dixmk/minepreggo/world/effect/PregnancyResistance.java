@@ -26,6 +26,8 @@ public class PregnancyResistance extends MobEffect {
 			return;
 		}
 		
+		
+		
 		if (PregnancySystemHelper.isPregnantEntityValid(entity)) {
 			AttributeInstance armorAttr = entity.getAttribute(Attributes.ARMOR);
 			if (armorAttr != null && armorAttr.getModifier(ARMOR_MODIFIER_UUID) == null) {

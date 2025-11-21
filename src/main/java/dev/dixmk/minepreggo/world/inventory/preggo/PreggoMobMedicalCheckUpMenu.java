@@ -11,7 +11,7 @@ import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
 import dev.dixmk.minepreggo.world.entity.preggo.Baby;
 import dev.dixmk.minepreggo.world.entity.preggo.IBreedable;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancyStage;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPhase;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -20,6 +20,8 @@ import net.minecraft.world.entity.player.Inventory;
 public class PreggoMobMedicalCheckUpMenu extends AbstractMedicalCheckUpMenu<PreggoMob, ScientificIllager> {
 
 	private final boolean valid;
+	protected int totalNumOfBabies = -1;
+	protected int daysToPassedNextPhase = -1;
 	private final Optional<IPregnancySystemHandler> pregnancySystem;
 	
 	public PreggoMobMedicalCheckUpMenu(int id, Inventory inv, FriendlyByteBuf extraData) {
@@ -40,7 +42,7 @@ public class PreggoMobMedicalCheckUpMenu extends AbstractMedicalCheckUpMenu<Preg
 					ps = pregSystem;
 				}		
 			}	
-			
+				
 			if (level.getEntity(extraData.readVarInt()) instanceof ScientificIllager scientificIllager) {
 				t = scientificIllager;
 			}
@@ -53,10 +55,14 @@ public class PreggoMobMedicalCheckUpMenu extends AbstractMedicalCheckUpMenu<Preg
 		this.numOfEmerald = 30;
 		
 		this.valid = this.source.isPresent() && this.pregnancySystem.isPresent() && this.target.isPresent();	
-	
+		
 		if (!isValid()) {
 			MinepreggoMod.LOGGER.error("Target={} or Source={} or PregnancySystem={} was null",
 					this.source.isPresent(), this.target.isPresent(), this.pregnancySystem.isPresent());
+		}
+		else {
+			totalNumOfBabies = IBreedable.getOffspringsByMaxPregnancyStage(this.pregnancySystem.get().getLastPregnancyStage());
+			daysToPassedNextPhase = this.pregnancySystem.get().getDaysByStage() - this.pregnancySystem.get().getDaysPassed();
 		}
 	}
 	
@@ -76,26 +82,31 @@ public class PreggoMobMedicalCheckUpMenu extends AbstractMedicalCheckUpMenu<Preg
 
 	@Override
 	public String getName() {		
-		return this.valid ? this.source.get().getSimpleName() : null;
+		return this.valid ? this.source.get().getSimpleName() : "null";
 	}
 
 	@Override
-	public PregnancyStage getCurrentStage() {
-		return this.valid ? this.pregnancySystem.get().getCurrentPregnancyStage() : null;
+	public PregnancyPhase getCurrentPregnancyPhase() {
+		return this.valid ? this.pregnancySystem.get().getCurrentPregnancyStage() :  PregnancyPhase.P0;
 	}
 
+	@Override
+	public PregnancyPhase getLastPregnancyPhase() {
+		return this.isValid() ? this.pregnancySystem.get().getLastPregnancyStage() : PregnancyPhase.P0;
+	}
+	
 	@Override
 	public int getPregnancyHealth() {
 		return this.valid ? this.pregnancySystem.get().getPregnancyHealth() : -1;
 	}
 
 	@Override
-	public int getNumberOfChildren() {
-		return this.valid ? IBreedable.getOffspringsByMaxPregnancyStage(this.pregnancySystem.get().getLastPregnancyStage()) : -1;
+	public int getTotalNumOfBabies() {
+		return totalNumOfBabies;
 	}
 
 	@Override
-	public Baby getBabyType() {
+	public Baby getTypeOfBaby() {
 		return this.valid ? this.pregnancySystem.get().getDefaultTypeOfBaby() : null;
 	}
 
@@ -110,8 +121,8 @@ public class PreggoMobMedicalCheckUpMenu extends AbstractMedicalCheckUpMenu<Preg
 	}
 
 	@Override
-	public int getDaysToNextStage() {
-		return this.valid ? this.pregnancySystem.get().getDaysByStage() - this.pregnancySystem.get().getDaysPassed(): -1;
+	public int getDaysToAdvanceNextPhase() {
+		return daysToPassedNextPhase;
 	}
 
 	@Override

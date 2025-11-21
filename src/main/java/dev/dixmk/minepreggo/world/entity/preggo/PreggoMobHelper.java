@@ -10,6 +10,7 @@ import javax.annotation.Nonnull;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
+import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
 import dev.dixmk.minepreggo.network.capability.IPregnancyEffectsHandler;
@@ -93,7 +94,9 @@ public class PreggoMobHelper {
 		
 		target.resetDaysPassed();
 		target.resetPregnancyTimer();
-		target.setDaysByStage(source.getDaysByStage());
+		
+		target.setDaysByStage(source.getDaysByStageMapping());
+		
 		target.setDaysToGiveBirth(source.getDaysToGiveBirth());
 		target.setPregnancyHealth(source.getPregnancyHealth());
 		target.setPregnancyPain(source.getPregnancyPain());
@@ -247,26 +250,27 @@ public class PreggoMobHelper {
 		}
 	}
 
-	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler> void initPregnancy(@NonNull E preggoMob, PregnancyStage maxPregnancyStage) {		
-		final int daysByStage = IPregnancySystemHandler.calculateDaysByStage(maxPregnancyStage);
-		final int daysToBirth = IPregnancySystemHandler.calculateInitialDaysToGiveBirth(maxPregnancyStage);	
+	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler> void initPregnancy(@NonNull E preggoMob, PregnancyPhase maxPregnancyStage) {		
+		final int totalDays = MinepreggoModConfig.getTotalPregnancyDays();
+		final var map = PregnancySystemHelper.createDaysByPregnancyPhase(totalDays, maxPregnancyStage);
 		preggoMob.resetDaysPassed();
 		preggoMob.setLastPregnancyStage(maxPregnancyStage);	
-		preggoMob.setDaysByStage(daysByStage);
-		preggoMob.setDaysToGiveBirth(daysToBirth);
+		preggoMob.setDaysByStage(map);
+		preggoMob.setDaysToGiveBirth(totalDays);
 		preggoMob.setPregnancyHealth(PregnancySystemHelper.MAX_PREGNANCY_HEALTH);	
-		MinepreggoMod.LOGGER.debug("START PREGNANCY: id={}, class={}, currentPregnancyStage={}, maxPregnancyStage={}, daysByStage={}, daysToBirth={}",
-				preggoMob.getId(), preggoMob.getClass().getSimpleName(),preggoMob.getCurrentPregnancyStage(), maxPregnancyStage, daysByStage, daysToBirth);
+		
+		MinepreggoMod.LOGGER.debug("START PREGNANCY: class={}, currentPregnancyStage={}, maxPregnancyStage={}, daysByStage={}, daysToBirth={}",
+				preggoMob.getClass().getSimpleName(),preggoMob.getCurrentPregnancyStage(), maxPregnancyStage, map, totalDays);
 	}
 		
 	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler> void initPregnancy(@NonNull E preggoMob) {		
-		initPregnancy(preggoMob, PregnancyStage.getRandomStageFrom(preggoMob.getCurrentPregnancyStage()));
+		initPregnancy(preggoMob, PregnancyPhase.getRandomStageFrom(preggoMob.getCurrentPregnancyStage()));
 	}
 	
 	
 	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler> void initPregnancyByPotion(@NonNull E preggoMob, int amplifier) {	
 		final int numOfBabies = IBreedable.calculateNumOfOffspringByPotion(amplifier);
-		final PregnancyStage lastPregnancyStage = IBreedable.getMaxPregnancyStageByOffsprings(numOfBabies);
+		final PregnancyPhase lastPregnancyStage = IBreedable.getMaxPregnancyPhaseByOffsprings(numOfBabies);
 	
 		initPregnancy(preggoMob, lastPregnancyStage);
 			
@@ -424,7 +428,7 @@ public class PreggoMobHelper {
 		
 		final var currentPregnancyStage = creeperGirl.getCurrentPregnancyStage();
 		
-		if (currentPregnancyStage == PregnancyStage.getNonPregnancyStage()) {
+		if (currentPregnancyStage == PregnancyPhase.getNonPregnancyStage()) {
 			return;
 		}
 			
@@ -450,7 +454,7 @@ public class PreggoMobHelper {
 		
 		final var currentPregnancyStage = zombie.getCurrentPregnancyStage();
 		
-		if (currentPregnancyStage == PregnancyStage.getNonPregnancyStage()) {
+		if (currentPregnancyStage == PregnancyPhase.getNonPregnancyStage()) {
 			return;
 		}
 		
@@ -620,7 +624,7 @@ public class PreggoMobHelper {
 	    return false;
 	}
 	
-	public static boolean canUseChestplate(ItemStack armor, PregnancyStage stage) {
+	public static boolean canUseChestplate(ItemStack armor, PregnancyPhase stage) {
 		switch (stage) {
 		case P0: {
 			return armor.is(TagHelper.MIN_P0_ARMOR);
@@ -654,8 +658,8 @@ public class PreggoMobHelper {
 		}	
 	}
 	
-	public static boolean canUseLegging(ItemStack armor, PregnancyStage stage) {	
-		if (stage == PregnancyStage.P0) {
+	public static boolean canUseLegging(ItemStack armor, PregnancyPhase stage) {	
+		if (stage == PregnancyPhase.P0) {
 			return true;
 		}
 		else {

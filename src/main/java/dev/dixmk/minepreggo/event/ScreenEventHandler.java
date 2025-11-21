@@ -19,7 +19,6 @@ import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancySymptom;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
-import dev.dixmk.minepreggo.network.capability.Gender;
 import dev.dixmk.minepreggo.network.capability.PlayerPregnancyEffectsImpl;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -40,45 +39,69 @@ public class ScreenEventHandler {
 		var player = Minecraft.getInstance().player;
 			
 		final var playerData = player.getCapability(MinepreggoCapabilities.PLAYER_DATA).resolve();
-		final var pregnancyEffects = player.getCapability(MinepreggoCapabilities.PLAYER_PREGNANCY_EFFECTS).resolve();
-		final var pregnancySystem = player.getCapability(MinepreggoCapabilities.PLAYER_PREGNANCY_SYSTEM).resolve();
 
-		
-		if (playerData.isEmpty() || pregnancyEffects.isEmpty() || pregnancySystem.isEmpty()) {
-			MinepreggoMod.LOGGER.error("Failed to get player capabilities for pregnancy simptons rendering.");	
+		if (playerData.isEmpty()) {
+			MinepreggoMod.LOGGER.error("Failed to get player capabilities for pregnancy symptons rendering.");	
 			return;
 		}
-		
-		if (playerData.get().getGender() != Gender.FEMALE && !playerData.get().isPregnant()) return;
-		
-		RenderSystem.disableDepthTest();
-		RenderSystem.depthMask(false);
-		RenderSystem.enableBlend();
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-		RenderSystem.setShaderColor(1, 1, 1, 1);
-		final int w = event.getWindow().getGuiScaledWidth();
-		final var gui = event.getGuiGraphics();
-		
-		if (player.hasEffect(MinepreggoModMobEffects.PREGNANCY_P1.get())) {	
-			renderCravingScreen(gui, 4, 4, 11, pregnancyEffects.get());		
-			if (pregnancySystem.get().getPregnancySymptom() == PregnancySymptom.CRAVING ) {
-				renderCravingChoosenScreen(gui, w, player.getSkinTextureLocation(), pregnancyEffects.get());
-			}
-		}	
-		else if (player.hasEffect(MinepreggoModMobEffects.PREGNANCY_P2.get())) {	
-			renderCravingScreen(gui, 4, 4, 11, pregnancyEffects.get());		
-			if (pregnancySystem.get().getPregnancySymptom() == PregnancySymptom.CRAVING) {
-				renderCravingChoosenScreen(gui, w, player.getSkinTextureLocation(), pregnancyEffects.get());
-			}		
-			renderMilkingScreen(gui, 14, 4, 11, pregnancyEffects.get());
-		}
-		
-		RenderSystem.depthMask(true);
-		RenderSystem.defaultBlendFunc();
-		RenderSystem.enableDepthTest();
-		RenderSystem.disableBlend();
-		RenderSystem.setShaderColor(1, 1, 1, 1);
+			
+		playerData.ifPresent(cap -> 			
+			cap.getFemaleData().ifPresent(femaleData -> {
+				
+				if (!femaleData.isPregnant()) return;			
+				
+				RenderSystem.disableDepthTest();
+				RenderSystem.depthMask(false);
+				RenderSystem.enableBlend();
+				RenderSystem.setShader(GameRenderer::getPositionTexShader);
+				RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+				RenderSystem.setShaderColor(1, 1, 1, 1);
+				final int w = event.getWindow().getGuiScaledWidth();
+				final var gui = event.getGuiGraphics();
+				
+				final var pregnancySystem = femaleData.getPregnancySystem();
+				final var pregnancyEffects = femaleData.getPregnancyEffects();
+				
+				Runnable cravingOverlay = () -> {
+					if (pregnancySystem.getPregnancySymptom() == PregnancySymptom.CRAVING ) {
+						renderCravingChoosenScreen(gui, w, player.getSkinTextureLocation(), pregnancyEffects);
+					}
+				};
+								
+				if (player.hasEffect(MinepreggoModMobEffects.PREGNANCY_P1.get())) {				
+					renderCravingScreen(gui, 4, 4, 11, pregnancyEffects);	
+					cravingOverlay.run();
+				}	
+				else if (player.hasEffect(MinepreggoModMobEffects.PREGNANCY_P2.get())) {	
+					renderCravingScreen(gui, 4, 4, 11, pregnancyEffects);		
+					cravingOverlay.run();	
+					renderMilkingScreen(gui, 14, 4, 11, pregnancyEffects);
+				}
+				else if (player.hasEffect(MinepreggoModMobEffects.PREGNANCY_P3.get())) {	
+					renderCravingScreen(gui, 4, 4, 11, pregnancyEffects);		
+					cravingOverlay.run();	
+					renderMilkingScreen(gui, 14, 4, 11, pregnancyEffects);
+					renderBellyRubsScreen(gui, 24, 4, 11, pregnancyEffects);
+				}
+				else if (player.hasEffect(MinepreggoModMobEffects.PREGNANCY_P4.get())
+						|| player.hasEffect(MinepreggoModMobEffects.PREGNANCY_P5.get())
+						|| player.hasEffect(MinepreggoModMobEffects.PREGNANCY_P6.get())
+						|| player.hasEffect(MinepreggoModMobEffects.PREGNANCY_P7.get())
+						|| player.hasEffect(MinepreggoModMobEffects.PREGNANCY_P8.get())) {	
+					renderCravingScreen(gui, 4, 4, 11, pregnancyEffects);		
+					cravingOverlay.run();		
+					renderMilkingScreen(gui, 14, 4, 11, pregnancyEffects);
+					renderBellyRubsScreen(gui, 24, 4, 11, pregnancyEffects);
+					renderHornyScreen(gui, 34, 4, 11, pregnancyEffects);
+				}
+					
+				RenderSystem.depthMask(true);
+				RenderSystem.defaultBlendFunc();
+				RenderSystem.enableDepthTest();
+				RenderSystem.disableBlend();
+				RenderSystem.setShaderColor(1, 1, 1, 1);	
+			})
+		);
 	}
 	
 	private static void renderCravingScreen(GuiGraphics gui, int top, int init, int diff, @NonNull PlayerPregnancyEffectsImpl pregnancyEffects) {
@@ -99,6 +122,7 @@ public class ScreenEventHandler {
 		if (pair == null) {
 			return;
 		}		
+			
 		final var craving = pair.getKey();
 		final var species = pair.getValue();	
 		gui.blit(playerIcon, w - 60, 2, 16, 16, 8, 8, 8, 8, 64, 64);	
@@ -111,7 +135,7 @@ public class ScreenEventHandler {
 				if (list.size() > 1) {
 					if (ticks <= 0) {
 						cravingIcon = list.get(Minecraft.getInstance().player.getRandom().nextInt(0, list.size()));
-						ticks = 200;
+						ticks = 100;
 					}
 					else {
 						--ticks;			
@@ -133,7 +157,7 @@ public class ScreenEventHandler {
 		}
 			
 		if (cravingIcon != null) {
-			gui.blit(cravingIcon, w - 22, 1, 16, 16, 0F, 0F, 32, 32, 32, 32);
+			gui.blit(cravingIcon, w - 24, -1, 24, 24, 0F, 0F, 16, 16, 16, 16);
 		}
 	}
 	
@@ -156,11 +180,11 @@ public class ScreenEventHandler {
 		final int bellyRubs = pregnancyEffects.getBellyRubs();	
 		for (int i = 0, oddValue = 1, evenValue = 2 ; i < 10; i++, oddValue +=2, evenValue += 2) {
 			pos = init + (i * diff);
-			gui.blit(ScreenHelper.MINEPREGGO_ICONS_TEXTURE, pos, top, 0, 24, 9, 9, 256, 256);		
+			gui.blit(ScreenHelper.MINEPREGGO_ICONS_TEXTURE, pos, top, 0, 0, 9, 9, 256, 256);		
 			if (bellyRubs >= evenValue) 
-				gui.blit(ScreenHelper.MINEPREGGO_ICONS_TEXTURE, pos, top, 18, 24, 9, 9, 256, 256);
+				gui.blit(ScreenHelper.MINEPREGGO_ICONS_TEXTURE, pos, top, 18, 0, 9, 9, 256, 256);
 			else if (bellyRubs >= oddValue)	
-				gui.blit(ScreenHelper.MINEPREGGO_ICONS_TEXTURE, pos, top, 9, 24, 9, 9, 256, 256);	
+				gui.blit(ScreenHelper.MINEPREGGO_ICONS_TEXTURE, pos, top, 9, 0, 9, 9, 256, 256);	
 		}
 	}
 	
@@ -173,9 +197,7 @@ public class ScreenEventHandler {
 			if (horny >= evenValue) 
 				gui.blit(ScreenHelper.MINEPREGGO_ICONS_TEXTURE, pos, top, 9, 9, 32, 11, 16, 11, 256, 256);
 			else if (horny >= oddValue)	
-				gui.blit(ScreenHelper.MINEPREGGO_ICONS_TEXTURE, pos, top, 9, 9, 16, 11,  16, 11, 256, 256);	
+				gui.blit(ScreenHelper.MINEPREGGO_ICONS_TEXTURE, pos, top, 9, 9, 16, 11, 16, 11, 256, 256);	
 		}	
 	}
-	
-
 }

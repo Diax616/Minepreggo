@@ -7,7 +7,7 @@ import com.google.common.collect.ImmutableMap;
 import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancyStage;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPhase;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.network.chat.Component;
@@ -42,11 +42,11 @@ public class MessageHelper {
 	));
 	
 	
-	public static Component getPlayerArmorChestMessage(PregnancyStage stage) {
+	public static Component getPlayerArmorChestMessage(PregnancyPhase stage) {
 		return Component.translatable(PLAYER_ARMOR_MESSAGES.get(stage.ordinal()));
 	}
 	
-	public static Component getPreggoMobArmorChestMessage(PregnancyStage stage, String name) {
+	public static Component getPreggoMobArmorChestMessage(PregnancyPhase stage, String name) {
 		return Component.translatable(PREGGO_MOB_ARMOR_MESSAGES.get(stage.ordinal()), name);
 	}
 

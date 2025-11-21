@@ -8,7 +8,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class TamableZombieGirlP0Model extends AbstractTamableZombieGirlModel<TamableZombieGirlP0> {
+public class TamableZombieGirlP0Model extends AbstractTamablePregnantZombieGirlModel<TamableZombieGirlP0> {
 	
 	public TamableZombieGirlP0Model(ModelPart root) {
 		super(root, new HierarchicalModel<TamableZombieGirlP0>() {
@@ -21,7 +21,7 @@ public class TamableZombieGirlP0Model extends AbstractTamableZombieGirlModel<Tam
 			@Override
 			public void setupAnim(TamableZombieGirlP0 zombieGirl, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 				this.root().getAllParts().forEach(ModelPart::resetPose);
-					
+									
 			    if (zombieGirl.isAttacking()) {
 				    this.animate(zombieGirl.attackAnimationState, ZombieGirlAnimation.ATTACK, ageInTicks, 1f);	
 			    }
@@ -34,8 +34,7 @@ public class TamableZombieGirlP0Model extends AbstractTamableZombieGirlModel<Tam
 						this.animateWalk(ZombieGirlAnimation.WALK, limbSwing, limbSwingAmount * 4.5F, 1f, 1f);
 					}
 				}
-					
-			
+				
 				if (zombieGirl.isPanic()) {
 					this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.IDLE, ageInTicks, 1f);						
 					return;
@@ -49,8 +48,9 @@ public class TamableZombieGirlP0Model extends AbstractTamableZombieGirlModel<Tam
 				}
 				else {
 					this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.IDLE, ageInTicks, 1f);						
-				}		
+				}	
 			}	
 		});
 	}
 }
+

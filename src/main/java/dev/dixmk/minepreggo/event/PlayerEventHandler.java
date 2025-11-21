@@ -4,14 +4,14 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
-import dev.dixmk.minepreggo.network.capability.Gender;
 import dev.dixmk.minepreggo.network.capability.PlayerDataProvider;
-import dev.dixmk.minepreggo.network.capability.PlayerPregnancyEffectsProvider;
-import dev.dixmk.minepreggo.network.capability.PlayerPregnancySystemProvider;
+import dev.dixmk.minepreggo.network.packet.ForceSexAnimP2PC2SPacket;
+import dev.dixmk.minepreggo.network.packet.RequestSexP2PC2SPacket;
+import dev.dixmk.minepreggo.network.packet.SyncFemalePlayerDataS2CPacket;
+import dev.dixmk.minepreggo.network.packet.SyncMobEffectPacket;
 import dev.dixmk.minepreggo.network.packet.SyncPlayerDataS2CPacket;
+import dev.dixmk.minepreggo.network.packet.SyncPregnancySystemS2CPacket;
 import dev.dixmk.minepreggo.server.ServerSexCinematicManager;
-import dev.dixmk.minepreggo.utils.DebugHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemHelper;
 import dev.dixmk.minepreggo.world.inventory.preggo.PlayerJoinsWorldMenu;
 import dev.dixmk.minepreggo.world.item.IItemCraving;
@@ -23,6 +23,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
@@ -53,9 +55,7 @@ public class PlayerEventHandler {
 	@SubscribeEvent
 	public static void onAttachCapabilities(AttachCapabilitiesEvent<Entity> event) {
 		if (event.getObject() instanceof Player && !(event.getObject() instanceof FakePlayer)) {
-			event.addCapability(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "player_pregnancy_system"), new PlayerPregnancySystemProvider());
-			event.addCapability(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "player_data"), new PlayerDataProvider());
-			event.addCapability(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "player_pregnancy_effects"), new PlayerPregnancyEffectsProvider());
+			event.addCapability(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "minepreggo_player_data"), new PlayerDataProvider());
 		}
 	}
 	
@@ -63,24 +63,23 @@ public class PlayerEventHandler {
 	public static void onPlayerLoggedInSync(PlayerEvent.PlayerLoggedInEvent event) {
 		if (event.getEntity() instanceof ServerPlayer serverPlayer && !serverPlayer.level().isClientSide) {	
 			serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(c -> {			
-				c.sync(serverPlayer);
-				
+				c.syncAllClientData(serverPlayer);
 				if (c.canShowMainMenu()) {
 					showPlayerMainMenu(serverPlayer);
 				}
-			});
-			
-			serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_PREGNANCY_EFFECTS).ifPresent(c -> c.sync(serverPlayer));
-			serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_PREGNANCY_SYSTEM).ifPresent(c -> c.sync(serverPlayer));
+			});		
 		}
 	}
 	
 	@SubscribeEvent
 	public static void onPlayerJoinWorld(EntityJoinLevelEvent event) {	
 		if (event.getEntity() instanceof ServerPlayer serverPlayer && !serverPlayer.level().isClientSide) {	
-			serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(c -> c.sync(serverPlayer));	
-			serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_PREGNANCY_EFFECTS).ifPresent(c -> c.sync(serverPlayer));
-			serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_PREGNANCY_SYSTEM).ifPresent(c -> c.sync(serverPlayer));
+			serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(c -> {
+				c.syncAllClientData(serverPlayer);
+				if (c.canShowMainMenu()) {
+					showPlayerMainMenu(serverPlayer);
+				}
+			});	
 		}
 	}
 
@@ -88,23 +87,23 @@ public class PlayerEventHandler {
 	public static void onPlayerRespawnedSync(PlayerEvent.PlayerRespawnEvent event) {
 		if (event.getEntity() instanceof ServerPlayer serverPlayer && !serverPlayer.level().isClientSide) {	
 			serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(c -> {
-				c.sync(serverPlayer);
-				
+				c.syncAllClientData(serverPlayer);			
 				if (c.canShowMainMenu()) {
 					showPlayerMainMenu(serverPlayer);
 				}
 			});
-			serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_PREGNANCY_EFFECTS).ifPresent(c -> c.sync(serverPlayer));
-			serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_PREGNANCY_SYSTEM).ifPresent(c -> c.sync(serverPlayer));
 		}
 	}
 
 	@SubscribeEvent
 	public static void onPlayerChangedDimensionSync(PlayerEvent.PlayerChangedDimensionEvent event) {
 		if (event.getEntity() instanceof ServerPlayer serverPlayer && !serverPlayer.level().isClientSide) {	
-			serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(c -> c.sync(serverPlayer));
-			serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_PREGNANCY_EFFECTS).ifPresent(c -> c.sync(serverPlayer));
-			serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_PREGNANCY_SYSTEM).ifPresent(c -> c.sync(serverPlayer));
+			serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(c -> {
+				c.syncAllClientData(serverPlayer);			
+				if (c.canShowMainMenu()) {
+					showPlayerMainMenu(serverPlayer);
+				}
+			});
 		}
 	}
 	
@@ -112,39 +111,74 @@ public class PlayerEventHandler {
 	public static void clonePlayer(PlayerEvent.Clone event) {
         final var originalPlayer = event.getOriginal();
         originalPlayer.revive();
-        
-        
+ 
         final var newPlayer = event.getEntity();
         
-        var origialPlayerDataCap = originalPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA);
-        var newPlayerDataCap = newPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA);
-		
-        var origialPregnancySystemCap = originalPlayer.getCapability(MinepreggoCapabilities.PLAYER_PREGNANCY_SYSTEM);
-        var newPregnancySystemCap = newPlayer.getCapability(MinepreggoCapabilities.PLAYER_PREGNANCY_SYSTEM);
-      
-        var origialPregnancyEffectsCap = originalPlayer.getCapability(MinepreggoCapabilities.PLAYER_PREGNANCY_EFFECTS);
-        var newPregnancyEffectsCap = newPlayer.getCapability(MinepreggoCapabilities.PLAYER_PREGNANCY_EFFECTS);
+        var origialPlayerData = originalPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).resolve();
+        var newPlayerData = newPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).resolve();
         
-        if (!event.isWasDeath()) {       
-        	origialPlayerDataCap.ifPresent(oriCap -> newPlayerDataCap.ifPresent(newCap -> newCap.copyFrom(oriCap)));       
-        	origialPregnancySystemCap.ifPresent(oriCap -> newPregnancySystemCap.ifPresent(newCap -> newCap.copyFrom(oriCap)));       
-        	origialPregnancyEffectsCap.ifPresent(oriCap -> newPregnancyEffectsCap.ifPresent(newCap -> newCap.copyFrom(oriCap))); 
+        if (origialPlayerData.isEmpty() || newPlayerData.isEmpty()) return;
+        
+        
+        if (!event.isWasDeath()) {    	
+        	newPlayerData.get().setGender(origialPlayerData.get().getGender());
+        	newPlayerData.get().setCustomSkin(origialPlayerData.get().isUsingCustomSkin());
+        	newPlayerData.get().setShowMainMenu(origialPlayerData.get().canShowMainMenu());
+        	       	
+        	origialPlayerData.get().getFemaleData().ifPresent(oriFemaleData -> 
+        		newPlayerData.get().getFemaleData().ifPresent(newFemaleData -> {      				
+        			if (oriFemaleData != null && newFemaleData != null) {
+        				newFemaleData.copyFrom(oriFemaleData);
+        			}  		
+            	})
+        	);
+        	
+        	origialPlayerData.get().getMaleData().ifPresent(oriMaleData -> 
+        		newPlayerData.get().getMaleData().ifPresent(newMaleData -> {      				
+        			if (oriMaleData != null && newMaleData != null) {
+        				newMaleData.copyFrom(oriMaleData);
+        			} 		
+            	})
+        	); 	
         } 
 
+        
         if (newPlayer instanceof ServerPlayer serverPlayer && !serverPlayer.level().isClientSide) {
-        	newPlayerDataCap.ifPresent(c -> c.sync(serverPlayer));
-            newPregnancyEffectsCap.ifPresent(c -> c.sync(serverPlayer));
-            newPregnancySystemCap.ifPresent(c -> c.sync(serverPlayer));
+        	newPlayerData.ifPresent(c -> {
+				c.syncAllClientData(serverPlayer);			
+				if (c.canShowMainMenu()) {
+					showPlayerMainMenu(serverPlayer);
+				}
+        	});
         }     
 	}
 	
 	@SubscribeEvent
 	public static void onPlayerTracking(PlayerEvent.StartTracking event) {
-	    if (event.getTarget() instanceof ServerPlayer serverPlayer && !serverPlayer.level().isClientSide) {
-	    	serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
-	            MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> serverPlayer),
-	                new SyncPlayerDataS2CPacket(serverPlayer.getUUID(), cap.getGender(), cap.isUsingCustomSkin()))
-	        );
+	    if (event.getTarget() instanceof ServerPlayer trackedPlayer
+	    		&& event.getEntity() instanceof ServerPlayer trackerPlayer) {    	
+	    	
+	    	trackedPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> {	    		
+	            MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> trackerPlayer),
+		                new SyncPlayerDataS2CPacket(trackedPlayer.getUUID(), cap.getGender(), cap.isUsingCustomSkin()));
+	           
+	            cap.getFemaleData().ifPresent(femaleData -> {
+		            MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> trackerPlayer),
+			                new SyncFemalePlayerDataS2CPacket(trackedPlayer.getUUID(), femaleData.createClientData()));
+              
+			        MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> trackerPlayer),
+			        		new SyncPregnancySystemS2CPacket(trackedPlayer.getUUID(), femaleData.getPregnancySystem().createClientData()));
+	            });
+	            
+	            final var effects = trackedPlayer.getActiveEffects().stream()
+	            		.filter(effect -> PregnancySystemHelper.isPregnancyEffect(effect.getEffect()))
+	            		.toList();
+	            
+	            effects.forEach(effect -> 
+	            	MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> trackerPlayer),
+	            			new SyncMobEffectPacket(trackedPlayer.getId(), effect))
+	            );
+	    	});
 	    }
 	}
 	
@@ -166,39 +200,49 @@ public class PlayerEventHandler {
 			return;
 		}
 				
-		player.getCapability(MinepreggoCapabilities.PLAYER_PREGNANCY_EFFECTS).ifPresent(cap -> {
-			if (cap.isValidCraving(mainHandItem)) {		
-				MinepreggoMod.LOGGER.debug("Player {} satisfied craving with item: {} by {}", player.getName().getString(), mainHandItem, itemCraving.getGratification());
-				cap.decrementCraving(itemCraving.getGratification());
-				cap.sync(player);
-			}
+		player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> {		
+			cap.getFemaleData().ifPresent(femaleData -> {			
+				if (femaleData.getPregnancyEffects().isValidCraving(mainHandItem)) {
+					MinepreggoMod.LOGGER.debug("Player {} satisfied craving with item: {} by {}", player.getName().getString(), mainHandItem, itemCraving.getGratification());
+					femaleData.getPregnancyEffects().decrementCraving(itemCraving.getGratification());
+					femaleData.getPregnancyEffects().sync(player);
+				}
+			});		
 		});		
 	}
 
 	// Milking handling
 	@SubscribeEvent
 	public static void onRightClickItem(PlayerInteractEvent.RightClickItem event) {
-		if (!(event.getEntity() instanceof ServerPlayer serverPlayer) || event.getItemStack().getItem() != Items.GLASS_BOTTLE) return;
-
-		final var playerData = serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).resolve();
-		
-		if (playerData.isEmpty() || playerData.get().getGender() != Gender.FEMALE || serverPlayer.level().isClientSide) {
+		if (!(event.getEntity() instanceof ServerPlayer serverPlayer)
+				|| serverPlayer.level().isClientSide
+				|| event.getItemStack().getItem() != Items.GLASS_BOTTLE)
 			return;
-		}
-		
-		serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_PREGNANCY_EFFECTS).ifPresent(cap -> {
-			if (cap.getMilking() >= PregnancySystemHelper.MILKING_VALUE) {	
-				var itemStack = serverPlayer.getMainHandItem();			
-				if (!itemStack.isEmpty()) {
-					cap.decrementMilking(PregnancySystemHelper.MILKING_VALUE);
-					itemStack.setCount(itemStack.getCount() - 1);
-					ItemHandlerHelper.giveItemToPlayer(serverPlayer, new ItemStack(MinepreggoModItems.HUMAN_BREAST_MILK_BOTTLE.get()));				
-					serverPlayer.level().playSound(null, serverPlayer.getX(), serverPlayer.getY(), serverPlayer.getZ(), SoundEvents.COW_MILK, SoundSource.PLAYERS, 1F, 1F);
-					cap.sync(serverPlayer);				
-					MinepreggoMod.LOGGER.debug("Player {} milked. Current milking value: {}", serverPlayer.getName().getString(), cap.getMilking());
-				}					
-			}
-		});
+
+		serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
+			cap.getFemaleData().ifPresent(femaleData -> {
+				if (femaleData.getPregnancyEffects().getMilking() >= PregnancySystemHelper.MILKING_VALUE) {	
+					var mainHandItem = serverPlayer.getMainHandItem();			
+					if (!mainHandItem.isEmpty()) {
+						femaleData.getPregnancyEffects().decrementMilking(PregnancySystemHelper.MILKING_VALUE);
+						
+						mainHandItem.setCount(mainHandItem.getCount() - 1);
+						
+			            if (mainHandItem.isEmpty()) {
+			            	serverPlayer.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+			            }        
+			            serverPlayer.getInventory().setChanged();
+											
+						ItemHandlerHelper.giveItemToPlayer(serverPlayer, new ItemStack(MinepreggoModItems.HUMAN_BREAST_MILK_BOTTLE.get()));				
+						serverPlayer.level().playSound(null, serverPlayer.getX(), serverPlayer.getY(), serverPlayer.getZ(), SoundEvents.COW_MILK, SoundSource.PLAYERS, 1F, 1F);
+					
+						femaleData.getPregnancyEffects().sync(serverPlayer);
+						
+						MinepreggoMod.LOGGER.debug("Player {} milked. Current milking value: {}", serverPlayer.getName().getString(), femaleData.getPregnancyEffects().getMilking());
+					}					
+				}
+			})
+		);
 	}
 	
 	private static void showPlayerMainMenu(ServerPlayer serverPlayer) {
@@ -219,11 +263,37 @@ public class PlayerEventHandler {
 	
 	
 	
-	
 	@SubscribeEvent
 	public static void onRightClickEntity(PlayerInteractEvent.EntityInteract event) {	
+		/*
 		if (event.getTarget() instanceof PreggoMob t) {
 			DebugHelper.check(t);
+			return;		
+		}
+		*/
+		
+		if (event.getEntity() instanceof ServerPlayer sourcePlayer && event.getTarget() instanceof ServerPlayer targetPlayer) {
+			
+			if (event.getHand() != InteractionHand.MAIN_HAND) return;
+			
+			if (PregnancySystemHelper.hasEnoughBedsForBreeding(targetPlayer, 1, 12)) {
+	        	MinepreggoModPacketHandler.INSTANCE.sendToServer(new RequestSexP2PC2SPacket(sourcePlayer.getId(), targetPlayer.getId()));	
+	        	MinepreggoMod.LOGGER.debug("Sent RequestSexP2PC2SPacket from {} to {} for breeding", sourcePlayer.getName().getString(), targetPlayer.getName().getString());    	
+		        event.setCancellationResult(InteractionResult.SUCCESS);
+		        sourcePlayer.swing(InteractionHand.MAIN_HAND);
+		        event.setCanceled(true);
+			}
+			else if (PregnancySystemHelper.tryRubBelly(sourcePlayer, targetPlayer, event.getLevel())) {
+				MinepreggoMod.LOGGER.debug("Player {} slapped the pregnant belly of player {}", sourcePlayer.getName().getString(), targetPlayer.getName().getString());
+		        event.setCancellationResult(InteractionResult.SUCCESS);
+		        sourcePlayer.swing(InteractionHand.MAIN_HAND);
+		        event.setCanceled(true);
+			}
+			/*
+			else {
+				MinepreggoModPacketHandler.INSTANCE.sendToServer(new ForceSexAnimP2PC2SPacket(targetPlayer.getUUID()));
+			}
+			*/
 		}
 	}
 		

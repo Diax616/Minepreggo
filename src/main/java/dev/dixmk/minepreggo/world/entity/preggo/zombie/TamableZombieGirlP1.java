@@ -4,7 +4,7 @@ import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.world.entity.preggo.IPregnancyP1;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancyStage;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPhase;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobPregnancySystemP1;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnantPreggoMobSystemP1;
 import net.minecraft.core.BlockPos;
@@ -22,7 +22,7 @@ public class TamableZombieGirlP1 extends AbstractTamablePregnantZombieGirl<Pregn
 	}
 
 	public TamableZombieGirlP1(EntityType<TamableZombieGirlP1> type, Level world) {
-		super(type, world, PregnancyStage.P1);
+		super(type, world, PregnancyPhase.P1);
 		xpReward = 10;
 		setNoAi(false);
 		setMaxUpStep(0.6f);
@@ -46,7 +46,7 @@ public class TamableZombieGirlP1 extends AbstractTamablePregnantZombieGirl<Pregn
 			
 			@Override
 			protected void initPostMiscarriage() {
-				TamableZombieGirlP0.onPostMiscarriage(pregnantEntity);
+				TamableZombieGirl.onPostMiscarriage(pregnantEntity);
 			}
 		};
 	}

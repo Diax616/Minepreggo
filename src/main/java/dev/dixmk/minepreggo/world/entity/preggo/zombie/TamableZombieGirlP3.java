@@ -4,9 +4,9 @@ import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.world.entity.preggo.IPregnancyP3;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancyStage;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPhase;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobPregnancySystemP3;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnantPreggoMobSystemP1;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnantPreggoMobSystemP2;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
@@ -15,22 +15,22 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.PlayMessages;
 
-public class TamableZombieGirlP3 extends AbstractTamablePregnantZombieGirl<PregnantPreggoMobSystemP1<TamableZombieGirlP3>, PreggoMobPregnancySystemP3<TamableZombieGirlP3>> implements IPregnancyP3<TamableZombieGirlP3> {
+public class TamableZombieGirlP3 extends AbstractTamablePregnantZombieGirl<PregnantPreggoMobSystemP2<TamableZombieGirlP3>, PreggoMobPregnancySystemP3<TamableZombieGirlP3>> implements IPregnancyP3<TamableZombieGirlP3> {
 	
 	public TamableZombieGirlP3(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P3.get(), world);
 	}
 
 	public TamableZombieGirlP3(EntityType<TamableZombieGirlP3> type, Level world) {
-		super(type, world, PregnancyStage.P3);
+		super(type, world, PregnancyPhase.P3);
 		xpReward = 10;
 		setNoAi(false);
 		setMaxUpStep(0.6f);
 	}
 
 	@Override
-	protected PregnantPreggoMobSystemP1<TamableZombieGirlP3> createPreggoMobSystem() {
-		return new PregnantPreggoMobSystemP1<>(this, MinepreggoModConfig.getTotalTicksOfHungryP3());
+	protected PregnantPreggoMobSystemP2<TamableZombieGirlP3> createPreggoMobSystem() {
+		return new PregnantPreggoMobSystemP2<>(this, MinepreggoModConfig.getTotalTicksOfHungryP3());
 	}
 	
 	@Override
@@ -46,7 +46,7 @@ public class TamableZombieGirlP3 extends AbstractTamablePregnantZombieGirl<Pregn
 			
 			@Override
 			protected void initPostMiscarriage() {
-				TamableZombieGirlP0.onPostMiscarriage(pregnantEntity);
+				TamableZombieGirl.onPostMiscarriage(pregnantEntity);
 			}
 		};
 	}

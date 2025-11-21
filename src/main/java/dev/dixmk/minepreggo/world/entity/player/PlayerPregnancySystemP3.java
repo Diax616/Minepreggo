@@ -24,8 +24,8 @@ public class PlayerPregnancySystemP3 extends PlayerPregnancySystemP2 {
 	}
 
 	@Override
-	protected void evaluatePregnancyEffects() {	
-		super.evaluatePregnancyEffects();
+	protected void evaluatePregnancyNeeds() {	
+		super.evaluatePregnancyNeeds();
 		evaluateBellyRubsTimer();
 	}
 	
@@ -83,7 +83,7 @@ public class PlayerPregnancySystemP3 extends PlayerPregnancySystemP2 {
 			flag = true;
 		}	
 		else if (randomSource.nextFloat() < PregnancySystemHelper.LOW_PREGNANCY_PAIN_PROBABILITY) {
-			pregnancySystem.setPregnancyPain(PregnancyPain.KICKING);
+			pregnancySystem.setPregnancyPain(PregnancyPain.FETAL_MOVEMENT);
 			pregnancySystem.sync(pregnantEntity);
 			flag = true;
 		}	

@@ -7,7 +7,10 @@ import javax.annotation.Nullable;
 
 import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.network.chat.Component;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class ToggleableCheckbox extends Checkbox {
 	
 	private final Optional<List<ToggleableCheckbox>> group;

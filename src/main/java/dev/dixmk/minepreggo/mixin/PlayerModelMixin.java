@@ -1,5 +1,6 @@
 package dev.dixmk.minepreggo.mixin;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -19,12 +20,12 @@ import net.minecraft.world.entity.LivingEntity;
 @Mixin(PlayerModel.class)
 public class PlayerModelMixin<T extends LivingEntity> extends HumanoidModel<T> {
 
-	@Shadow public ModelPart leftSleeve;
-	@Shadow public ModelPart rightSleeve;
-	@Shadow public ModelPart leftPants;
-	@Shadow public ModelPart rightPants;
-	@Shadow public ModelPart jacket;
-    
+	@Shadow @Final public ModelPart leftSleeve;
+	@Shadow @Final public ModelPart rightSleeve;
+	@Shadow @Final public ModelPart leftPants;
+	@Shadow @Final public ModelPart rightPants;
+	@Shadow @Final public ModelPart jacket;
+	
     public PlayerModelMixin(ModelPart p_170677_) {
 		super(p_170677_);
 	}
@@ -70,19 +71,19 @@ public class PlayerModelMixin<T extends LivingEntity> extends HumanoidModel<T> {
     }
     
     private void register(PlayerAnimationCache cache) {
-		cache.registerModelPart("head", this.head);
-		cache.registerModelPart("body", this.body);
-		cache.registerModelPart("right_arm", this.rightArm);
-		cache.registerModelPart("left_arm", this.leftArm);
-		cache.registerModelPart("right_leg", this.rightLeg);
-		cache.registerModelPart("left_leg", this.leftLeg);
+		cache.registerModelPart("head", head);
+		cache.registerModelPart("body", body);
+		cache.registerModelPart("right_arm", rightArm);
+		cache.registerModelPart("left_arm", leftArm);
+		cache.registerModelPart("right_leg", rightLeg);
+		cache.registerModelPart("left_leg", leftLeg);
         			
-		cache.registerModelPart("hat", this.head);
-		cache.registerModelPart("jacket", this.body);
-		cache.registerModelPart("rightSleeve", this.rightArm);
-        cache.registerModelPart("leftSleeve", this.leftArm);
-        cache.registerModelPart("rightPants", this.rightLeg);
-        cache.registerModelPart("leftPants", this.leftLeg);
+		cache.registerModelPart("hat", head);
+		cache.registerModelPart("jacket", body);
+		cache.registerModelPart("rightSleeve", rightArm);
+        cache.registerModelPart("leftSleeve", leftArm);
+        cache.registerModelPart("rightPants", rightLeg);
+        cache.registerModelPart("leftPants", leftLeg);
     }
     
     private void applyAnimation(PlayerAnimationCache cache) {
@@ -92,11 +93,11 @@ public class PlayerModelMixin<T extends LivingEntity> extends HumanoidModel<T> {
     }
     
     private void copy() {
-        copyTransform(this.head, this.hat);
-        copyTransform(this.body, this.jacket);
-        copyTransform(this.rightArm, this.rightSleeve);
-        copyTransform(this.leftArm, this.leftSleeve);
-        copyTransform(this.rightLeg, this.rightPants);
-        copyTransform(this.leftLeg, this.leftPants);	
+        copyTransform(head, hat);
+        copyTransform(body, jacket);
+        copyTransform(rightArm, rightSleeve);
+        copyTransform(leftArm, leftSleeve);
+        copyTransform(rightLeg, rightPants);
+        copyTransform(leftLeg, leftPants);	
     }
 }

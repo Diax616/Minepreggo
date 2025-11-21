@@ -12,9 +12,7 @@ import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem.Result;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -32,37 +30,9 @@ public abstract class PreggoMobPregnancySystemP3 <E extends PreggoMob
 	}
 	
 	@Override
-	protected void evaluatePregnancyEffects() {	
-		super.evaluatePregnancyEffects();
+	protected void evaluatePregnancyNeeds() {	
+		super.evaluatePregnancyNeeds();
 		evaluateBellyRubsTimer();
-	}
-	
-	@Override
-	public InteractionResult onRightClick(Player source) {		
-		if (!pregnantEntity.isOwnedBy(source) || pregnantEntity.isIncapacitated()) {
-			return InteractionResult.FAIL;
-		}				
-		var level = pregnantEntity.level();
-
-		Result result = evaluateCraving(level, source);
-		
-		if (result == null) {			
-			result =  evaluateMilking(level, source);
-		}
-		
-		if (result == null) {
-			result =  evaluateBellyRubs(level, source);
-		}
-		
-		if (result == null) {
-			return InteractionResult.PASS;
-		}
-		
-	
-		if (level instanceof ServerLevel serverLevel) {
-			PreggoMobSystem.spawnParticles(pregnantEntity, serverLevel, result);
-		}
-		return InteractionResult.sidedSuccess(level.isClientSide);		
 	}
 	
 	protected void evaluateBellyRubsTimer() {
@@ -97,7 +67,7 @@ public abstract class PreggoMobPregnancySystemP3 <E extends PreggoMob
 	        return true;
 	    }
 		else if (randomSource.nextFloat() < PregnancySystemHelper.LOW_PREGNANCY_PAIN_PROBABILITY) {
-			pregnantEntity.setPregnancyPain(PregnancyPain.KICKING);
+			pregnantEntity.setPregnancyPain(PregnancyPain.FETAL_MOVEMENT);
 			pregnantEntity.resetPregnancyPainTimer();
 			PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.CHEST);				
 			return true;
@@ -110,7 +80,7 @@ public abstract class PreggoMobPregnancySystemP3 <E extends PreggoMob
 		final var pain = pregnantEntity.getPregnancyPain();
 	
 		if ((pain == PregnancyPain.MORNING_SICKNESS && pregnantEntity.getPregnancyPainTimer() >= PregnancySystemHelper.TOTAL_TICKS_MORNING_SICKNESS)
-				|| (pain == PregnancyPain.KICKING && pregnantEntity.getPregnancyPainTimer() >= PregnancySystemHelper.TOTAL_TICKS_KICKING_P3)) {
+				|| (pain == PregnancyPain.FETAL_MOVEMENT && pregnantEntity.getPregnancyPainTimer() >= PregnancySystemHelper.TOTAL_TICKS_KICKING_P3)) {
 			pregnantEntity.clearPregnancyPain();
 			pregnantEntity.resetPregnancyPainTimer();
 		}
@@ -127,11 +97,6 @@ public abstract class PreggoMobPregnancySystemP3 <E extends PreggoMob
 	@Nullable
 	@Override
 	protected Result evaluateBellyRubs(Level level, Player source) {	
-	
-		if (!canOwnerRubBelly(source)) {
-			return null;
-		}
-			
 		if (!level.isClientSide) {
 			level.playSound(null, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "belly_touch")), SoundSource.NEUTRAL, 0.75F, 1);
 		}

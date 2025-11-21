@@ -1,6 +1,7 @@
 package dev.dixmk.minepreggo.world.effect;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
+import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.player.PlayerPregnancySystemP3;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -10,7 +11,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.player.Player;
 
 public class PregnancyP3 extends AbstractPlayerPregnancy<PlayerPregnancySystemP3> {
 	private static final AttributeModifier SPEED_MODIFIER = new AttributeModifier(SPEED_MODIFIER_UUID, "pregnancy speed nerf", -0.15, AttributeModifier.Operation.MULTIPLY_BASE);
@@ -31,7 +31,7 @@ public class PregnancyP3 extends AbstractPlayerPregnancy<PlayerPregnancySystemP3
 	@Override
 	public void addAttributeModifiers(LivingEntity entity, AttributeMap p_19479_, int p_19480_) {
 		super.addAttributeModifiers(entity, p_19479_, p_19480_);
-		if (!(entity instanceof Player)) return;
+		if (!PlayerHelper.isPlayerValid(entity)) return;
 		
 		if (!entity.level().isClientSide) {
 			entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, -1, 0, false, false));			
@@ -52,7 +52,7 @@ public class PregnancyP3 extends AbstractPlayerPregnancy<PlayerPregnancySystemP3
     @Override
     public void removeAttributeModifiers(LivingEntity entity, AttributeMap p_19470_, int p_19471_) {
     	super.removeAttributeModifiers(entity, p_19470_, p_19471_);
-		if (!(entity instanceof Player)) return;
+		if (!PlayerHelper.isPlayerValid(entity)) return;
 		
 		if (!entity.level().isClientSide) {
 			entity.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);

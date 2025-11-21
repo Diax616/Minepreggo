@@ -6,13 +6,13 @@ import org.jetbrains.annotations.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
+import dev.dixmk.minepreggo.common.utils.ParticleHelper;
 import dev.dixmk.minepreggo.network.packet.SexCinematicControlS2CPacket;
 import dev.dixmk.minepreggo.server.ServerSexCinematicManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
@@ -181,9 +181,8 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob> {
 			return InteractionResult.PASS;
 		}
 				
-		if (level instanceof ServerLevel serverLevel) {
-			spawnParticles(preggoMob, serverLevel, result);
-		}	
+		spawnParticles(preggoMob, result);
+		
 		return InteractionResult.sidedSuccess(level.isClientSide);
 	}
 	
@@ -230,7 +229,7 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob> {
 	    return null;		
 	}
 	
-	public static<E extends TamableAnimal & ITamablePreggoMob> void spawnParticles(E preggoMob, ServerLevel serverLevel, Result result) {
+	public static<E extends TamableAnimal & ITamablePreggoMob> void spawnParticles(E preggoMob, Result result) {
 
 		ParticleOptions particleoptions;
 			
@@ -243,12 +242,7 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob> {
 		else 
 			return;
 					
-		for (ServerPlayer player : serverLevel.getServer().getPlayerList().getPlayers()) {
-		    if (player.distanceToSqr(preggoMob) <= 512.0) {
-				serverLevel.sendParticles(player, particleoptions, true, preggoMob.getRandomX(1.0), preggoMob.getRandomY() + 1, preggoMob.getRandomZ(1.0),
-						7, serverLevel.random.nextGaussian() * 0.3, serverLevel.random.nextGaussian() * 0.5, serverLevel.random.nextGaussian() * 0.3, 0.02);
-		    }
-		}
+		ParticleHelper.spawnRandomlyFromServer(preggoMob, particleoptions);
 	}
 	
     public void setCinematicOwner(ServerPlayer player) { 

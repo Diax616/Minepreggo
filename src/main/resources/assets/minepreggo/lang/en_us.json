@@ -15,12 +15,15 @@
 
 	"gui.minepreggo.scientific_illager.tooltip_make_medical_checkup": "Make Medical CheckUp",
 
+	"gui.minepreggo.player_main_menu.label.title": "Minepreggo",
+	"gui.minepreggo.player_main_menu.checkbox.custom_skin": "Custom",
+	"gui.minepreggo.player_main_menu.button.ok": "OK",
+	"gui.minepreggo.player_main_menu.label.gender": "Gender",
+	"gui.minepreggo.player_main_menu.label.skin": "Skin",
+	"gui.minepreggo.player_main_menu.checkbox.female": "Female",
+	"gui.minepreggo.player_main_menu.checkbox.male": "Male",
 	
-	"gui.minepreggo.player_main_gui.isCustomSkinCheckBox": "Custom",
-	"gui.minepreggo.player_main_gui.button_ok": "OK",
-	"gui.minepreggo.player_main_gui.label_gender": "Gender",
-	"gui.minepreggo.player_main_gui.label_skin": "Skin",
-	"gui.minepreggo.player_main_gui.isFemaleCheckbox": "Female",
+	
 	
 	"gui.minepreggo.medical_checkup.label.pregnancy_check": "Pregnancy Check",
 	"gui.minepreggo.medical_checkup.label.days_category": "Days",
@@ -44,8 +47,10 @@
 	"gui.minepreggo.preggo_mob_main.checkbox_break": "Break",
 	"gui.minepreggo.preggo_mob_main.checkbox_pickup": "PickUp",
 	
-	
-	
+	"gui.minepreggo.sex_request.button.yeah": "Yeah",
+	"gui.minepreggo.sex_request.button.nope": "Nope",
+	"gui.minepreggo.sex_request.label.message": "Wanna have fun?",
+	"gui.minepreggo.sex_request.label.requestor": "From: %s",
 	
 	
 	
@@ -53,6 +58,7 @@
 	"entity.minepreggo.monster_zombie_girl_p3": "Monster Zombie Girl (P3)",
 	"entity.minepreggo.monster_zombie_girl_p5": "Monster Zombie Girl (P5)",
 	"entity.minepreggo.monster_zombie_girl_p7": "Monster Zombie Girl (P7)",
+	"entity.minepreggo.tamable_zombie_girl": "Zombie Girl",
 	"entity.minepreggo.tamable_zombie_girl_p0": "Zombie Girl (P0)",
 	"entity.minepreggo.tamable_zombie_girl_p1": "Zombie Girl (P1)",
 	"entity.minepreggo.tamable_zombie_girl_p2": "Zombie Girl (P2)",
@@ -66,6 +72,7 @@
 	"entity.minepreggo.monster_creeper_girl_p3": "Monster Creeper Girl (P3)",
 	"entity.minepreggo.monster_creeper_girl_p5": "Monster Creeper Girl (P5)",
 	"entity.minepreggo.monster_creeper_girl_p7": "Monster Creeper Girl (P7)",
+	"entity.minepreggo.tamable_creeper_girl": "Creeper Girl",
 	"entity.minepreggo.tamable_creeper_girl_p0": "Creeper Girl (P0)",
 	"entity.minepreggo.tamable_creeper_girl_p1": "Creeper Girl (P1)",
 	"entity.minepreggo.tamable_creeper_girl_p2": "Creeper Girl (P2)",
@@ -89,6 +96,7 @@
 	"item.minepreggo.monster_zombie_girl_p3_spawn_egg": "Monster Zombie Girl (P3) Spawn Egg",
 	"item.minepreggo.monster_zombie_girl_p5_spawn_egg": "Monster Zombie Girl (P5) Spawn Egg",
 	"item.minepreggo.monster_zombie_girl_p7_spawn_egg": "Monster Zombie Girl (P7) Spawn Egg",
+	"item.minepreggo.tamable_zombie_girl_spawn_egg": "Zombie Girl Spawn Egg",
 	"item.minepreggo.tamable_zombie_girl_p0_spawn_egg": "Zombie Girl (P0) Spawn Egg",
 	"item.minepreggo.tamable_zombie_girl_p1_spawn_egg": "Zombie Girl (P1) Spawn Egg",
 	"item.minepreggo.tamable_zombie_girl_p2_spawn_egg": "Zombie Girl (P2) Spawn Egg",
@@ -102,6 +110,7 @@
 	"item.minepreggo.monster_creeper_girl_p3_spawn_egg": "Monster Creeper Girl (P3) Spawn Egg",
 	"item.minepreggo.monster_creeper_girl_p5_spawn_egg": "Monster Creeper Girl (P5) Spawn Egg",
 	"item.minepreggo.monster_creeper_girl_p7_spawn_egg": "Monster Creeper Girl (P7) Spawn Egg",
+	"item.minepreggo.tamable_creeper_girl_spawn_egg": "Creeper Girl Spawn Egg",
 	"item.minepreggo.tamable_creeper_girl_p0_spawn_egg": "Creeper Girl (P0) Spawn Egg",
 	"item.minepreggo.tamable_creeper_girl_p1_spawn_egg": "Creeper Girl (P1) Spawn Egg",
 	"item.minepreggo.tamable_creeper_girl_p2_spawn_egg": "Creeper Girl (P2) Spawn Egg",
@@ -149,6 +158,7 @@
 	"effect.minepreggo.pregnancy_healing": "Pregnancy Healing",
 	"effect.minepreggo.craving": "Craving",
 	
+	
 	"item.minecraft.tipped_arrow.effect.pregnancy_delay_2": "Arrow of Pregnancy Delay",
 	"item.minecraft.tipped_arrow.effect.pregnancy_delay_1": "Arrow of Pregnancy Delay",
 	"item.minecraft.tipped_arrow.effect.pregnancy_delay_0": "Arrow of Pregnancy Delay",
@@ -191,6 +201,7 @@
 	"item.minecraft.potion.effect.impregnation_potion_2": "Potion of Impregnation",
 	"item.minecraft.potion.effect.impregnation_potion_3": "Potion of Impregnation",
 	"item.minecraft.potion.effect.impregnation_potion_1": "Potion of Impregnation",
+	"item.minecraft.potion.effect.impregnation_potion_4": "Potion of Impregnation",
 	"item.minecraft.potion.effect.humanoid_creeper_impregnation": "Potion of Humanoid Creeper Impregnation",
 	"item.minecraft.potion.effect.impregnation_potion": "Potion of Impregnation",
 	"item.minecraft.potion.effect.humanoid_creeper_impregnation_3": "Potion of Humanoid Creeper Impregnation",

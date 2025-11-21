@@ -5,7 +5,7 @@ import dev.dixmk.minepreggo.utils.MathHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.ISimplePregnancy;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancyStage;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPhase;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -33,15 +33,15 @@ import net.minecraftforge.registries.ForgeRegistries;
 public abstract class AbstractMonsterPregnantCreeperGirl extends AbstractMonsterCreeperGirl implements ISimplePregnancy {
 	private static final EntityDataAccessor<Boolean> DATA_HAS_PREGNANCY_PAIN = SynchedEntityData.defineId(AbstractMonsterPregnantCreeperGirl.class, EntityDataSerializers.BOOLEAN);
 	private int pregnancyPainTimer = 0;
-	private final PregnancyStage currentPregnanctStage;
-	private final PregnancyStage maxPregnanctStage;
+	private final PregnancyPhase currentPregnanctStage;
+	private final PregnancyPhase maxPregnanctStage;
 	private final int totalDaysPassed;
 	private final float pregnancyPainProbability;
 		
-	protected AbstractMonsterPregnantCreeperGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_, PregnancyStage currentPregnancyStage) {
+	protected AbstractMonsterPregnantCreeperGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_, PregnancyPhase currentPregnancyStage) {
 		super(p_21803_, p_21804_);
 		this.currentPregnanctStage = currentPregnancyStage;
-		this.maxPregnanctStage = PregnancyStage.getRandomStageFrom(currentPregnancyStage);
+		this.maxPregnanctStage = PregnancyPhase.getRandomStageFrom(currentPregnancyStage);
 		this.totalDaysPassed = ISimplePregnancy.getRandomTotalDaysPassed(currentPregnancyStage, this.maxPregnanctStage, this.getRandom());
 		this.setExplosionByCurrentPregnancyStage();
 		this.pregnancyPainProbability = MathHelper.sigmoid(0.1F, 0.4F, 0.1F, Mth.clamp(this.getTotalDaysPassed() /(float) PregnancySystemHelper.TOTAL_PREGNANCY_DAYS , 0, 1), 0.6F);
@@ -79,18 +79,18 @@ public abstract class AbstractMonsterPregnantCreeperGirl extends AbstractMonster
 	protected void setExplosionByCurrentPregnancyStage() {	
 		final var currentPregnancyStage = this.getCurrentPregnancyStage();
 		
-		if (currentPregnancyStage == PregnancyStage.P2
-				|| currentPregnancyStage == PregnancyStage.P3) {
+		if (currentPregnancyStage == PregnancyPhase.P2
+				|| currentPregnancyStage == PregnancyPhase.P3) {
 			++this.explosionRadius;
 		}
-		else if (currentPregnancyStage == PregnancyStage.P4
-				|| currentPregnancyStage == PregnancyStage.P5
-				|| currentPregnancyStage == PregnancyStage.P6) {
+		else if (currentPregnancyStage == PregnancyPhase.P4
+				|| currentPregnancyStage == PregnancyPhase.P5
+				|| currentPregnancyStage == PregnancyPhase.P6) {
 			++this.explosionItensity;
 			++this.explosionRadius;
 		}
-		else if (currentPregnancyStage == PregnancyStage.P7
-				|| currentPregnancyStage == PregnancyStage.P8) {
+		else if (currentPregnancyStage == PregnancyPhase.P7
+				|| currentPregnancyStage == PregnancyPhase.P8) {
 			this.explosionItensity += 2;
 			this.explosionRadius += 2;
 		}
@@ -252,12 +252,12 @@ public abstract class AbstractMonsterPregnantCreeperGirl extends AbstractMonster
 	}
 	
 	@Override
-	public PregnancyStage getCurrentPregnancyStage() {
+	public PregnancyPhase getCurrentPregnancyStage() {
 		return currentPregnanctStage;
 	}
 
 	@Override
-	public PregnancyStage getLastPregnancyStage() {
+	public PregnancyPhase getLastPregnancyStage() {
 		return maxPregnanctStage;
 	}
 

@@ -5,9 +5,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.gui.preggo.creeper.AbstractCreeperGirlMainScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.zombie.AbstractZombieGirlMainScreen;
+import dev.dixmk.minepreggo.network.capability.IFemaleEntity;
 import dev.dixmk.minepreggo.network.capability.IPregnancyEffectsHandler;
 import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
-import dev.dixmk.minepreggo.world.entity.preggo.IBreedable;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGirl;
@@ -130,7 +130,7 @@ public class ScreenHelper {
 		}		
 	}
 	
-	public static<E extends PreggoMob & ITamablePreggoMob & IBreedable> void renderDefaultPreggoP0LabelMainGUI(GuiGraphics guiGraphics, Font font, E p0) {	
+	public static<E extends PreggoMob & ITamablePreggoMob & IFemaleEntity> void renderDefaultPreggoP0LabelMainGUI(GuiGraphics guiGraphics, Font font, E p0) {	
 		guiGraphics.drawString(font, p0.getSimpleName(), 90, 4, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_state"), 78, 21, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_phase"), 75, 34, -12829636, false);

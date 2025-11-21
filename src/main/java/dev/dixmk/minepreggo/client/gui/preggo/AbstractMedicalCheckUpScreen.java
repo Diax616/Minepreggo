@@ -89,10 +89,10 @@ public abstract class AbstractMedicalCheckUpScreen
 		guiGraphics.drawString(this.font, this.menu.getName(), 282, 7, -12829636, false);	
 
 		if (this.menu.hasPreggoMobChecked()) {		
-			guiGraphics.drawString(this.font, this.menu.getCurrentStage().toString(), 40, 25, -12829636, false);
+			guiGraphics.drawString(this.font, this.menu.getCurrentPregnancyPhase().toString(), 40, 25, -12829636, false);
 			guiGraphics.drawString(this.font, Integer.toString(this.menu.getPregnancyHealth()), 45, 43, -12829636, false);			
-			guiGraphics.drawString(this.font, Integer.toString(this.menu.getNumberOfChildren()), 74, 61, -12829636, false);			
-			guiGraphics.drawString(this.font, this.menu.getBabyType().toString(), 34, 79, -12829636, false);	
+			guiGraphics.drawString(this.font, Integer.toString(this.menu.getTotalNumOfBabies()), 74, 61, -12829636, false);			
+			guiGraphics.drawString(this.font, this.menu.getTypeOfBaby().toString(), 34, 79, -12829636, false);	
 			
 			guiGraphics.drawString(this.font, this.menu.getDaysToGiveBirth() == Integer.MAX_VALUE ? "INF" : Integer.toString(this.menu.getDaysToGiveBirth()), 39, 115, -12829636, false);
 			guiGraphics.drawString(this.font, this.menu.getDaysPassed() < 0 ? "?" : Integer.toString(this.menu.getDaysPassed()), 48, 135, -12829636, false);	

@@ -19,8 +19,8 @@ public class TagHelper {
 	        TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "creeper_girl_food"));
 	
 
-	public static final TagKey<MobEffect> PREGNANCY_PHASE_EFFECTS =
-	        TagKey.create(Registries.MOB_EFFECT, ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "pregnancy_phase_effects"));
+	public static final TagKey<MobEffect> PREGNANCY_EFFECTS =
+	        TagKey.create(Registries.MOB_EFFECT, ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "pregnancy_effects"));
 	
 
 	public static final TagKey<MobEffect> LABOR_EFFECTS =

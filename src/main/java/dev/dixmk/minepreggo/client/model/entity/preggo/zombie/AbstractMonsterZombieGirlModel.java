@@ -4,7 +4,10 @@ import dev.dixmk.minepreggo.client.animation.preggo.ZombieGirlAnimation;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractMonsterZombieGirl;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public abstract class AbstractMonsterZombieGirlModel<E extends AbstractMonsterZombieGirl> extends AbstractZombieGirlModel<E> {
 
 	protected AbstractMonsterZombieGirlModel(ModelPart root, HierarchicalModel<E> animator) {

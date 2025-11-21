@@ -3,6 +3,7 @@ package dev.dixmk.minepreggo.world.inventory.preggo.zombie;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamableZombieGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP0;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP1;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP2;
@@ -43,7 +44,10 @@ public class ZombieGirlMenuHelper {
                 packetBuffer.writeBlockPos(bPos);
                 packetBuffer.writeVarInt(zombieGirlId);
                 
-                if (zombieGirlClass == TamableZombieGirlP0.class) {
+                if (zombieGirlClass == TamableZombieGirl.class) {
+                	return new ZombieGirlMainMenu(id, inventory, packetBuffer);
+                }
+                else if (zombieGirlClass == TamableZombieGirlP0.class) {
                 	return new ZombieGirlP0MainMenu(id, inventory, packetBuffer);
                 }
                 else if (zombieGirlClass == TamableZombieGirlP1.class) {
@@ -71,7 +75,7 @@ public class ZombieGirlMenuHelper {
                 	return new ZombieGirlP8MainMenu(id, inventory, packetBuffer);
                 }
                 else {
-                    throw new IllegalArgumentException("Unsupported ZombieGirl GUI phase");
+                    throw new IllegalArgumentException("Unsupported zombie girl menu: " + zombieGirlClass.getSimpleName());
                 }       
             }
         }, buf -> {    
@@ -97,7 +101,10 @@ public class ZombieGirlMenuHelper {
                 packetBuffer.writeBlockPos(bPos);
                 packetBuffer.writeVarInt(zombieGirlId);
 
-                if (zombieGirlClass == TamableZombieGirlP0.class) {
+                if (zombieGirlClass == TamableZombieGirl.class) {
+                	return new ZombieGirlInventoryMenu(id, inventory, packetBuffer);
+                }
+                else if (zombieGirlClass == TamableZombieGirlP0.class) {
                 	return new ZombieGirlP0InventoryMenu(id, inventory, packetBuffer);
                 }
                 else if (zombieGirlClass == TamableZombieGirlP1.class) {
@@ -125,7 +132,7 @@ public class ZombieGirlMenuHelper {
                 	return new ZombieGirlP8InventoryMenu(id, inventory, packetBuffer);
                 }
                 else {
-                    throw new IllegalArgumentException("Unsupported ZombieGirl GUI phase");
+                    throw new IllegalArgumentException("Unsupported zombie girl menu: " + zombieGirlClass.getSimpleName());
                 }    
             }
         }, buf -> {

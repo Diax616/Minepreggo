@@ -3,7 +3,6 @@ package dev.dixmk.minepreggo.world.effect;
 import javax.annotation.Nullable;
 
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
-import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.IBreedable;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import net.minecraft.server.level.ServerPlayer;
@@ -25,10 +24,14 @@ public class Fertility extends MobEffect {
 			t.heal(1F);
 		}
 		
-		else if (p_19464_ instanceof ServerPlayer player && PlayerHelper.isFemale(player)) {										
-			player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> {
-				cap.incrementFertilityRate(0.1F);
-				player.heal(1F);
+		else if (p_19464_ instanceof ServerPlayer player) {										
+			player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> {			
+				if (cap.isFemale()) {	
+					cap.getFemaleData().ifPresent(femaleData -> femaleData.incrementFertilityRate(0.25F));	
+				}
+				else if (cap.isMale()) {
+					cap.getMaleData().ifPresent(maleData -> maleData.incrementFertilityRate(0.5F));	
+				}	
 			});			
 		}
 	}

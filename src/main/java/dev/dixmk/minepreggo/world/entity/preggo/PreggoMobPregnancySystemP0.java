@@ -1,0 +1,226 @@
+package dev.dixmk.minepreggo.world.entity.preggo;
+
+import org.jetbrains.annotations.Nullable;
+
+import dev.dixmk.minepreggo.MinepreggoModConfig;
+import dev.dixmk.minepreggo.network.capability.IPregnancyEffectsHandler;
+import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem.Result;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+
+public abstract class PreggoMobPregnancySystemP0
+	<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler & IPregnancyEffectsHandler> extends AbstractPregnancySystem<E> {
+
+	private int angryTicks = 0;
+	
+	protected PreggoMobPregnancySystemP0(E pregnantEntity) {
+		super(pregnantEntity);
+	}
+
+	// It has to be executed on server side
+	protected void evaluatePregnancySystem() {	
+		this.evaluatePregnancyTimer();
+		if (canAdvanceNextPregnancyPhase()) {
+			advanceToNextPregnancyPhase();
+			pregnantEntity.discard();
+			return;
+		}
+		
+		evaluateAngry(pregnantEntity.level(), pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ(), PregnancySystemHelper.LOW_ANGER_PROBABILITY);		
+	}
+	
+	protected void evaluatePregnancyPains() {	
+		// This pregnancy phase does not support pregnancy pains yet
+	}
+	
+	protected void evaluatePregnancySymptoms() {
+		// This pregnancy phase does not support pregnancy symptoms yet	
+	}
+	
+	protected void evaluatePregnancyNeeds() {
+		// This pregnancy phase does not support pregnancy needs yet
+	}
+	
+	public final void onServerTick() {
+		if (pregnantEntity.level().isClientSide) {			
+			return;
+		}	
+		
+		evaluatePregnancySystem();
+	}
+
+	
+	protected void evaluatePregnancyTimer() {
+        if (pregnantEntity.getPregnancyTimer() >= MinepreggoModConfig.getTotalTicksByPregnancyDay()) {
+        	pregnantEntity.resetPregnancyTimer();
+        	pregnantEntity.incrementDaysPassed();
+        	pregnantEntity.reduceDaysToGiveBirth();
+        } else {
+        	pregnantEntity.incrementPregnancyTimer();
+        }
+	}
+
+	public boolean isMiscarriageActive() {
+	    return false;
+	}
+	
+	public boolean canAdvanceNextPregnancyPhase() {
+	    return pregnantEntity.getDaysPassed() >= pregnantEntity.getDaysByStage();
+	}
+	
+	public boolean hasPregnancyPain() {
+	    return false;
+	}
+	
+	public boolean hasPregnancySymptom() {
+	    return false;
+	}
+	
+	@Override
+	protected void evaluateMiscarriage(ServerLevel serverLevel) {
+		// This pregnancy phase does not support water breaking yet
+		
+	}
+	
+	@Override
+	protected void initPostMiscarriage() {
+		// This pregnancy phase does not support miscarriage yet		
+	}
+
+	@Override
+	protected boolean tryInitRandomPregnancyPain() {
+		return false;
+	}
+
+	@Override
+	protected boolean tryInitPregnancySymptom() {
+		return false;
+	}
+
+	public boolean canBeAngry() {
+		return pregnantEntity.getFullness() <= 4;
+	}
+
+	protected void evaluateAngry(Level level, double x, double y, double z, final float angerProbability) {
+	   final var angry = pregnantEntity.isAngry();
+		
+		if (!angry && this.canBeAngry()) {
+	    	pregnantEntity.setAngry(true);
+	    	return;
+	    } 
+
+		
+		if (!canBeAngry()) {
+			pregnantEntity.setAngry(false);
+			return;
+		}		
+		
+		if (angryTicks > 100) {
+			angryTicks = 0;
+		}
+		else {
+			++angryTicks;
+			return;
+		}
+			
+        if (!PreggoMobHelper.hasValidTarget(pregnantEntity) && randomSource.nextFloat() < angerProbability) {
+            final Vec3 center = new Vec3(x, y, z);      
+            var players = level.getEntitiesOfClass(Player.class, new AABB(center, center).inflate(12), pregnantEntity::isOwnedBy);
+                  
+            if (!players.isEmpty()) {
+            	var owner = players.get(0);
+	            if (!PreggoMobHelper.isPlayerInCreativeOrSpectator(owner)) {
+	            	pregnantEntity.setTarget(owner);
+	            } 
+            }
+        }
+	}
+	
+	// RIGHT CLICK	
+	public InteractionResult onRightClick(Player source) {	
+		if (!isRightClickValid(source)) {
+			return InteractionResult.FAIL;
+		}				
+		var level = pregnantEntity.level();
+
+		// Belly rubs has priority over other right click actions
+		if (PregnancySystemHelper.canTouchBelly(source, pregnantEntity)) {		
+			if (level instanceof ServerLevel serverLevel) {		
+				Result result = evaluateBellyRubs(serverLevel, source);
+				
+				if (!serverLevel.isClientSide) {
+					PreggoMobSystem.spawnParticles(pregnantEntity, result);
+				}
+			}	
+			
+			return InteractionResult.sidedSuccess(level.isClientSide);
+		}
+		
+		return InteractionResult.PASS;
+	}
+	
+	public boolean isRightClickValid(Player source) {
+		return pregnantEntity.isOwnedBy(source);
+	}
+	
+	// ON HURT	
+	public void evaluateOnSuccessfulHurt(DamageSource damagesource) {	
+		
+	}
+	
+	
+	
+	
+	// BIRTH
+	@Nullable
+	protected Result evaluateBellyRubs(Level level, Player source) {
+		// In this pregnancy phase, the belly is not large enough to do some action
+		return Result.FAIL;
+	}
+	
+	@Override
+	protected boolean hasToGiveBirth() {
+		return false;
+	}
+	
+	@Override
+	protected boolean isInLabor() {
+		return false;
+ 	}
+	
+	@Override
+	protected boolean isWaterBroken() {
+		return false;
+ 	}
+	
+	@Override
+	protected void evaluateWaterBreaking(ServerLevel serverLevel) {
+		// This pregnancy phase does not support water breaking yet
+	}
+	
+	@Override
+	protected void breakWater() {
+		// This pregnancy phase does not support water breaking yet
+	}
+	
+	@Override
+	protected void evaluateBirth(ServerLevel serverLevel) {	
+		// This pregnancy phase does not support birth yet
+	}
+	
+	@Override
+	protected void startLabor() {
+		// This pregnancy phase does not support birth yet
+	}
+	
+	@Override
+	protected void initPostPartum() {
+		// This pregnancy phase does not support birth yet
+	}
+}

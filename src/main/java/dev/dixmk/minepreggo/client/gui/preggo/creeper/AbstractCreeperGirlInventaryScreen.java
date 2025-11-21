@@ -7,7 +7,10 @@ import dev.dixmk.minepreggo.world.inventory.preggo.creeper.AbstractCreeperGirlIn
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public abstract class AbstractCreeperGirlInventaryScreen<E extends AbstractTamableCreeperGirl<?>,
 	C extends AbstractCreeperGirlInventoryMenu<E>> extends AbstractPreggoMobInventaryScreen<E, C> {
 

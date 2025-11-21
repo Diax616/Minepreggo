@@ -1,7 +1,7 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.creeper;
 
 import dev.dixmk.minepreggo.client.animation.preggo.CreeperGirlAnimation;
-import dev.dixmk.minepreggo.client.animation.preggo.HumanoidGirlAnimation;
+import dev.dixmk.minepreggo.client.animation.preggo.HumanoidFemaleAnimation;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterPregnantCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterPregnantHumanoidCreeperGirl;
 import net.minecraft.client.model.HierarchicalModel;
@@ -46,7 +46,7 @@ public abstract class AbstractMonsterPregnantCreeperGirlModel<E extends Abstract
 				this.root().getAllParts().forEach(ModelPart::resetPose);
 					
 			    if (creeperGirl.getItemBySlot(EquipmentSlot.CHEST).isEmpty()) {
-			    	this.animate(creeperGirl.loopAnimationState, HumanoidGirlAnimation.MEDIUM_BELLY_INFLATION, ageInTicks, 1f);
+			    	this.animate(creeperGirl.loopAnimationState, HumanoidFemaleAnimation.MEDIUM_BELLY_INFLATION, ageInTicks, 1f);
 			    }
 								
 			    if (creeperGirl.isAttacking()) {

@@ -13,8 +13,10 @@ import dev.dixmk.minepreggo.world.inventory.preggo.zombie.AbstractZombieGirlMain
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-
+@OnlyIn(Dist.CLIENT)
 public abstract class AbstractZombieGirlMainScreen
 	<E extends AbstractTamableZombieGirl<?>, G extends AbstractZombieGirlMainMenu<E>> extends AbstractPreggoMobMainScreen<E, G> {
 	

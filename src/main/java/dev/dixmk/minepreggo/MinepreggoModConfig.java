@@ -69,6 +69,7 @@ public class MinepreggoModConfig {
 
     private static boolean enablePreggoMobsMoans;  
     private static boolean enablePlayerMoans;
+    private static boolean enableBellySounds;
     
     public static int getTotalPregnancyDays() {
     	return totalPregnancyDays;
@@ -238,6 +239,10 @@ public class MinepreggoModConfig {
     	return enablePreggoMobsMoans;
     }
     
+    public static boolean isBellySoundsEnable() {
+		return enableBellySounds;
+	}
+    
     static {
     	Pair<Client, ForgeConfigSpec> client = 
                 new ForgeConfigSpec.Builder().configure(Client::new);     
@@ -279,6 +284,7 @@ public class MinepreggoModConfig {
         else if (event.getConfig().getSpec() == CLIENT_SPEC) {
         	enablePlayerMoans = CLIENT.enablePlayerMoans.get();
         	enablePreggoMobsMoans = CLIENT.enablePreggoMobsMoans.get();
+        	enableBellySounds = CLIENT.enableBellySounds.get();
         }
         else if (event.getConfig().getSpec() == SERVER_SPEC) {
         	babyCreeperGirlProbability = (float) SERVER.babyCreeperGirlProbability.get().doubleValue();
@@ -300,35 +306,35 @@ public class MinepreggoModConfig {
             builder.push("Common"); // category name
 
             totalPregnancyDays = builder
-                    .comment("Maximum number of entities allowed.")
-                    .defineInRange("totalPregnancyDays", 70, 8, Integer.MAX_VALUE);
+                    .comment("Total number of pregnancy days.")
+                    .defineInRange("totalPregnancyDays", 70, 20, Integer.MAX_VALUE);
             
             totalTickByPregnancyDays = builder
-                    .comment("Maximum number of entities allowed.")
+                    .comment("Total ticks per pregnancy day.")
                     .defineInRange("totalTickByDays", 24000, 100, 24000);
 
             ticksToStartPregnancy = builder
-                    .comment("Maximum number of entities allowed.")
+                    .comment("Ticks to start pregnancy after mating.")
                     .defineInRange("ticksToStartPregnancy", 6000, 100, 24000);
             
             totalTicksOfHungry = builder
-                    .comment("Maximum number of entities allowed.")
+                    .comment("Total ticks of hungry for preggo mobs.")
                     .defineInRange("totalTicksOfHungry", 6000, 100, 24000);
             
             totalTicksOfCraving = builder
-                    .comment("Maximum number of entities allowed.")
+                    .comment("Total ticks of craving for pregnant entities.")
                     .defineInRange("totalTicksOfCraving", 7200, 100, 24000);
             
             totalTicksOfMilking = builder
-                    .comment("Maximum number of entities allowed.")
+                    .comment("total ticks of milking for pregnant entities.")
                     .defineInRange("totalTicksOfMilking", 7200, 100, 24000);
             
             totalTicksOfBellyRubs = builder
-                    .comment("Maximum number of entities allowed.")
+                    .comment("total ticks of belly rubs for pregnant entities.")
                     .defineInRange("totalTicksOfBellyRubs", 7200, 100, 24000);
             
             totalTicksOfHorny = builder
-                    .comment("Maximum number of entities allowed.")
+                    .comment("total ticks of horny for pregnant entities.")
                     .defineInRange("totalTicksOfHorny", 7200, 100, 24000);
                   
    
@@ -339,18 +345,22 @@ public class MinepreggoModConfig {
     static class Client {
         final ForgeConfigSpec.BooleanValue enablePlayerMoans;
         final ForgeConfigSpec.BooleanValue enablePreggoMobsMoans;
+        final ForgeConfigSpec.BooleanValue enableBellySounds;
 
         Client(ForgeConfigSpec.Builder builder) {
             builder.push("Client"); // category name
 
             enablePlayerMoans = builder
-                    .comment("Should the special feature be enabled?")
+                    .comment("Enable or disable player moans.")
                     .define("enablePlayerMoans", true);
 
             enablePreggoMobsMoans = builder
-                    .comment("Maximum number of entities allowed.")
+                    .comment("Enable or disable pregnant mobs moans.")
                     .define("enablePreggoMobsMoans", true);
 
+            enableBellySounds = builder
+                    .comment("Enable or disable belly sounds.")
+                    .define("enableBellySounds", true);
             
             builder.pop();
         }
@@ -364,11 +374,11 @@ public class MinepreggoModConfig {
             builder.push("Server");
             
             babyCreeperGirlProbability = builder
-                    .comment("Maximum number of entities allowed.")
+                    .comment("probability of spawning a girl baby creeper.")
                     .defineInRange("babyCreeperGirlProbability", 0.2, 0.0, 1.0);
 
             babyZombieGirlProbability = builder
-                    .comment("Maximum number of entities allowed.")
+                    .comment("probability of spawning a girl baby zombie.")
                     .defineInRange("babyZombieGirlProbability", 0.3, 0.0, 1.0);
             
             builder.pop();

@@ -1,7 +1,7 @@
 package dev.dixmk.minepreggo.client.renderer.preggo.ender;
 
 import dev.dixmk.minepreggo.client.model.entity.preggo.ender.AbstractEnderGirlModel;
-import dev.dixmk.minepreggo.client.model.entity.preggo.ender.MonsterEnderGirlP0Model;
+import dev.dixmk.minepreggo.client.model.entity.preggo.ender.MonsterEnderGirlModel;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.MonsterEnderGirlP0;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -10,10 +10,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MonsterlEnderGirlP0Renderer extends AbstractMonsterEnderGirlRenderer<MonsterEnderGirlP0, MonsterEnderGirlP0Model> {
+public class MonsterlEnderGirlP0Renderer extends AbstractMonsterEnderGirlRenderer<MonsterEnderGirlP0, MonsterEnderGirlModel> {
 
 	public MonsterlEnderGirlP0Renderer(EntityRendererProvider.Context context, ModelLayerLocation main) {
-		super(context, new MonsterEnderGirlP0Model(context.bakeLayer(main)));
+		super(context, new MonsterEnderGirlModel(context.bakeLayer(main)));
 	}
 	
 	public MonsterlEnderGirlP0Renderer(EntityRendererProvider.Context context) {

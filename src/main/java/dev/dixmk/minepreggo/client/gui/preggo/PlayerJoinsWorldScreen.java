@@ -58,11 +58,11 @@ public class PlayerJoinsWorldScreen extends AbstractContainerScreen<PlayerJoinsW
 
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-		guiGraphics.drawString(this.font, Component.translatable("gui.minepreggo.player_main_gui.label_minepreggo"), 59, 3, -12829636, false);
-		guiGraphics.drawString(this.font, Component.translatable("gui.minepreggo.player_main_gui.label_gender"), 69, 16, -12829636, false);	
+		guiGraphics.drawString(this.font, Component.translatable("gui.minepreggo.player_main_menu.label.title"), 59, 3, -12829636, false);
+		guiGraphics.drawString(this.font, Component.translatable("gui.minepreggo.player_main_menu.label.gender"), 69, 16, -12829636, false);	
 		
 		if (!male.selected()) {
-			guiGraphics.drawString(this.font, Component.translatable("gui.minepreggo.player_main_gui.label_skin"), 73, 80, -12829636, false);
+			guiGraphics.drawString(this.font, Component.translatable("gui.minepreggo.player_main_menu.label.skin"), 73, 80, -12829636, false);
 		}
 	}
 
@@ -70,15 +70,15 @@ public class PlayerJoinsWorldScreen extends AbstractContainerScreen<PlayerJoinsW
 	public void init() {
 		super.init();
 		
-		female = ToggleableCheckbox.builder(this.leftPos + 15, this.topPos + 43, 20, 20, Component.translatable("gui.minepreggo.player_main_gui.isFemaleCheckbox"), true)
+		female = ToggleableCheckbox.builder(this.leftPos + 15, this.topPos + 43, 20, 20, Component.translatable("gui.minepreggo.player_main_menu.checkbox.female"), true)
 				.group(gender)
 				.build();		
 					
-		male = ToggleableCheckbox.builder(this.leftPos + 96, this.topPos + 43, 20, 20, Component.translatable("gui.minepreggo.player_main_gui.isMasculineCheckbox"), false)
+		male = ToggleableCheckbox.builder(this.leftPos + 96, this.topPos + 43, 20, 20, Component.translatable("gui.minepreggo.player_main_menu.checkbox.male"), false)
 				.group(gender)
 				.build();	
 			
-		var customSkin = new Checkbox(this.leftPos + 15, this.topPos + 97, 20, 20,Component.translatable("gui.minepreggo.player_main_gui.isCustomSkinCheckBox"), false) {		
+		var customSkin = new Checkbox(this.leftPos + 15, this.topPos + 97, 20, 20,Component.translatable("gui.minepreggo.player_main_menu.checkbox.custom_skin"), false) {		
 			@Override
 			public void onPress() {
 				if (!male.selected()) {

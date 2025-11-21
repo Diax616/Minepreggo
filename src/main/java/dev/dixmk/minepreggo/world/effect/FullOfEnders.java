@@ -1,7 +1,7 @@
 package dev.dixmk.minepreggo.world.effect;
 
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancyStage;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPhase;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -22,11 +22,17 @@ public class FullOfEnders extends MobEffect {
 	@Override
 	public void applyEffectTick(LivingEntity entity, int amplifier) {	
 		if (entity instanceof ServerPlayer serverPlayer) {		
-			serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_PREGNANCY_SYSTEM).ifPresent(cap -> {
-				final float p = cap.getCurrentPregnancyStage().ordinal() / (float) PregnancyStage.values().length;				
-				if (serverPlayer.getRandom().nextFloat() < p) {
-					randomTeleport(entity);
-				}	
+			serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> {			
+				cap.getFemaleData().ifPresent(femaleData -> {
+					if (!femaleData.isPregnant()) {
+						return;
+					}
+				
+					final float p = femaleData.getPregnancySystem().getCurrentPregnancyStage().ordinal() / (float) PregnancyPhase.values().length;				
+					if (serverPlayer.getRandom().nextFloat() < p) {
+						randomTeleport(entity);
+					}	
+				});
 			});
 		}
 	}

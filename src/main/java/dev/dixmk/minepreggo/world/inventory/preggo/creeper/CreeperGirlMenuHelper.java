@@ -3,6 +3,7 @@ package dev.dixmk.minepreggo.world.inventory.preggo.creeper;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirlP0;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirlP1;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirlP2;
@@ -43,7 +44,10 @@ public class CreeperGirlMenuHelper {
                 packetBuffer.writeBlockPos(blockPos);
                 packetBuffer.writeVarInt(creeperGirlId);
                 
-                if (creeperGirlClass == TamableCreeperGirlP0.class) {
+                if (creeperGirlClass == TamableCreeperGirl.class) {
+                	return new CreeperGirlInventoryMenu(id, inventory, packetBuffer);
+                }
+                else if (creeperGirlClass == TamableCreeperGirlP0.class) {
                 	return new CreeperGirlP0InventoryMenu(id, inventory, packetBuffer);
                 }
                 else if (creeperGirlClass == TamableCreeperGirlP1.class) {
@@ -71,7 +75,7 @@ public class CreeperGirlMenuHelper {
                 	return new CreeperGirlP8InventoryMenu(id, inventory, packetBuffer);
                 }
                 else {
-                    throw new IllegalArgumentException("Unsupported CreeperGirl GUI phase");
+                    throw new IllegalArgumentException("Unsupported creeper girl menu: " + creeperGirlClass.getSimpleName());
                 } 
             }
 		}, buf -> {
@@ -98,7 +102,10 @@ public class CreeperGirlMenuHelper {
                 packetBuffer.writeBlockPos(blockPos);
                 packetBuffer.writeVarInt(creeperGirlId);
                 
-                if (creeperGirlClass == TamableCreeperGirlP0.class) {
+                if (creeperGirlClass == TamableCreeperGirl.class) {
+                	return new CreeperGirlMainMenu(id, inventory, packetBuffer);
+                }
+                else if (creeperGirlClass == TamableCreeperGirlP0.class) {
                 	return new CreeperGirlP0MainMenu(id, inventory, packetBuffer);
                 }
                 else if (creeperGirlClass == TamableCreeperGirlP1.class) {
@@ -126,7 +133,7 @@ public class CreeperGirlMenuHelper {
                 	return new CreeperGirlP8MainMenu(id, inventory, packetBuffer);
                 }
                 else {
-                    throw new IllegalArgumentException("Unsupported CreeperGirl GUI phase");
+                    throw new IllegalArgumentException("Unsupported creeper girl menu: " + creeperGirlClass.getSimpleName());
                 } 
             }
         } , buf -> {		  	

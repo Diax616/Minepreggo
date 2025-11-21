@@ -1,6 +1,8 @@
 package dev.dixmk.minepreggo.client.gui.preggo.zombie;
 
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraft.network.chat.Component;
 import net.minecraft.client.gui.GuiGraphics;
 
@@ -10,6 +12,7 @@ import dev.dixmk.minepreggo.client.gui.ScreenHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP1;
 import dev.dixmk.minepreggo.world.inventory.preggo.zombie.ZombieGirlP1MainMenu;
 
+@OnlyIn(Dist.CLIENT)
 public class ZombieGirlP1MainScreen extends AbstractZombieGirlMainScreen<TamableZombieGirlP1, ZombieGirlP1MainMenu> {
 
 	public ZombieGirlP1MainScreen(ZombieGirlP1MainMenu container, Inventory inventory, Component text) {

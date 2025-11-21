@@ -8,7 +8,10 @@ import dev.dixmk.minepreggo.world.inventory.preggo.zombie.ZombieGirlP8MainMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class ZombieGirlP8MainScreen extends AbstractZombieGirlMainScreen<TamableZombieGirlP8, ZombieGirlP8MainMenu> {
 
 	public ZombieGirlP8MainScreen(ZombieGirlP8MainMenu container, Inventory inventory, Component text) {

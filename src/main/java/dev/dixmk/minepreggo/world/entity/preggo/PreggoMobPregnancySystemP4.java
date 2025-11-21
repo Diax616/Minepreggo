@@ -7,9 +7,7 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.network.capability.IPregnancyEffectsHandler;
 import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 
@@ -28,11 +26,10 @@ public abstract class PreggoMobPregnancySystemP4<E extends PreggoMob
 	}
 	
 	@Override
-	protected void evaluatePregnancyEffects() {	
-		super.evaluatePregnancyEffects();
+	protected void evaluatePregnancyNeeds() {	
+		super.evaluatePregnancyNeeds();
 		evaluateHornyTimer();
 	}
-	
 	
 	@Override
 	protected void evaluatePregnancySystem() {
@@ -43,14 +40,20 @@ public abstract class PreggoMobPregnancySystemP4<E extends PreggoMob
 			return;
 		}	
 		
+		if (isWaterBroken()) {
+			if (pregnantEntity.level() instanceof ServerLevel serverLevel) {
+				evaluateWaterBreaking(serverLevel);
+			}
+			return;
+		}
+		
 		if (canAdvanceNextPregnancyPhase() && hasToGiveBirth()) {
-			startLabor();
+			breakWater();
 			return;
 		}
 		
 		super.evaluatePregnancySystem();
 	}
-	
 	
 	@Override
 	protected void evaluateBirth(ServerLevel serverLevel) {		
@@ -68,12 +71,7 @@ public abstract class PreggoMobPregnancySystemP4<E extends PreggoMob
 			}	
 			else {
 	    		pregnantEntity.incrementPregnancyTimer();
-	    		for (ServerPlayer player : serverLevel.getServer().getPlayerList().getPlayers()) {
-	    		    if (player.distanceToSqr(pregnantEntity) <= 512.0) { // 32 blocks
-	    				serverLevel.sendParticles(player, ParticleTypes.FALLING_DRIPSTONE_WATER, true, pregnantEntity.getX(), (pregnantEntity.getY() + pregnantEntity.getBbHeight() * 0.35), pregnantEntity.getZ(),
-	    						1, 0, 1, 0, 0.02);
-	    		    }
-	    		}
+	    		AbstractPregnancySystem.spawnParticulesForWaterBreaking(serverLevel, pregnantEntity);
 			}
 		}
 		else if (pain == PregnancyPain.BIRTH) {
@@ -106,9 +104,43 @@ public abstract class PreggoMobPregnancySystemP4<E extends PreggoMob
 	}
 	
 	@Override
+	protected void evaluateWaterBreaking(ServerLevel serverLevel) {
+		if (pregnantEntity.getPregnancyPainTimer() >= PregnancySystemHelper.TOTAL_TICKS_WATER_BREAKING) {
+			startLabor();
+		}
+		else {
+			pregnantEntity.incrementPregnancyPainTimer();
+    		AbstractPregnancySystem.spawnParticulesForWaterBreaking(serverLevel, pregnantEntity);
+		}
+	}
+	
+	@Override
+	protected void breakWater() {
+		pregnantEntity.resetPregnancyPainTimer();
+		pregnantEntity.setPregnancyPain(PregnancyPain.WATER_BREAKING);
+	}
+	
+	@Override
 	public boolean canBeAngry() {
 		return super.canBeAngry() || pregnantEntity.getHorny() >= 20;	
 	}
+	
+	@Override
+	protected boolean hasToGiveBirth() {
+		return pregnantEntity.getLastPregnancyStage() == pregnantEntity.getCurrentPregnancyStage();
+	}
+	
+	@Override
+	protected boolean isInLabor() {
+		final var pain = pregnantEntity.getPregnancyPain();
+		return pain == PregnancyPain.PREBIRTH || pain == PregnancyPain.BIRTH;
+ 	}
+	
+	@Override
+	protected boolean isWaterBroken() {
+		return pregnantEntity.getPregnancyPain() == PregnancyPain.WATER_BREAKING;
+ 	}
+	
 	
 	@Override
 	protected boolean tryInitPregnancySymptom() {
@@ -135,7 +167,7 @@ public abstract class PreggoMobPregnancySystemP4<E extends PreggoMob
 				pregnantEntity.setPregnancyPain(PregnancyPain.CONTRACTION);
 			}		
 			else {
-				pregnantEntity.setPregnancyPain(PregnancyPain.KICKING);
+				pregnantEntity.setPregnancyPain(PregnancyPain.FETAL_MOVEMENT);
 			}
 
 			pregnantEntity.resetPregnancyPainTimer();
@@ -150,7 +182,7 @@ public abstract class PreggoMobPregnancySystemP4<E extends PreggoMob
 		final var pain = pregnantEntity.getPregnancyPain();
 	
 		if ((pain == PregnancyPain.MORNING_SICKNESS && pregnantEntity.getPregnancyPainTimer() >= PregnancySystemHelper.TOTAL_TICKS_MORNING_SICKNESS)
-				|| (pain == PregnancyPain.KICKING && pregnantEntity.getPregnancyPainTimer() >= PregnancySystemHelper.TOTAL_TICKS_KICKING_P4)
+				|| (pain == PregnancyPain.FETAL_MOVEMENT && pregnantEntity.getPregnancyPainTimer() >= PregnancySystemHelper.TOTAL_TICKS_KICKING_P4)
 				|| (pain == PregnancyPain.CONTRACTION && pregnantEntity.getPregnancyPainTimer() >= PregnancySystemHelper.TOTAL_TICKS_CONTRACTION_P4)) {
 			pregnantEntity.clearPregnancyPain();
 			pregnantEntity.resetPregnancyPainTimer();

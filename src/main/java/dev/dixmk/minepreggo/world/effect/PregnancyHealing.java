@@ -4,7 +4,6 @@ import javax.annotation.Nullable;
 
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
-import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemHelper;
 import net.minecraft.server.level.ServerPlayer;
@@ -26,11 +25,16 @@ public class PregnancyHealing extends MobEffect {
 			t.heal(2F);
 		}
 		
-		else if (p_19464_ instanceof ServerPlayer player && PlayerHelper.isFemaleAndPregnant(player)) {										
-			player.getCapability(MinepreggoCapabilities.PLAYER_PREGNANCY_SYSTEM).ifPresent(cap -> {
-				cap.setPregnancyHealth(PregnancySystemHelper.MAX_PREGNANCY_HEALTH);
-				player.heal(2F);
-			});			
+		else if (p_19464_ instanceof ServerPlayer player) {										
+			player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 			
+				cap.getFemaleData().ifPresent(femaleData -> {
+					if (!femaleData.isPregnant()) {
+						return;
+					}	
+					femaleData.getPregnancySystem().setPregnancyHealth(PregnancySystemHelper.MAX_PREGNANCY_HEALTH);
+					player.heal(2F);
+				})
+			);			
 		}
 	}
 	

@@ -19,6 +19,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
@@ -26,12 +27,10 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public abstract class PreggoMobPregnancySystemP1<
-	E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler & IPregnancyEffectsHandler> extends AbstractPregnancySystem<E> {
+	E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler & IPregnancyEffectsHandler> extends PreggoMobPregnancySystemP0<E> {
 
 	private int pregnancyPainTicks = 0;
 	private int pregnancysymptonsTicks = 0;
@@ -43,18 +42,12 @@ public abstract class PreggoMobPregnancySystemP1<
 	}
 	
 	// It has to be executed on server side
+	@Override
 	protected void evaluatePregnancySystem() {
 		if (isMiscarriageActive()) {
 			if (pregnantEntity.level() instanceof ServerLevel serverLevel) {
 				evaluateMiscarriage(serverLevel);
 			}		
-			return;
-		}
-		
-		this.evaluatePregnancyTimer();
-		if (canAdvanceNextPregnancyPhase()) {
-			advanceToNextPregnancyPhase();
-			pregnantEntity.discard();
 			return;
 		}
 		
@@ -84,42 +77,29 @@ public abstract class PreggoMobPregnancySystemP1<
 			evaluatePregnancySymptoms();
 		}	
 		
-		evaluatePregnancyEffects();
+		evaluatePregnancyNeeds();
 		
-		evaluateAngry(pregnantEntity.level(), pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ(), PregnancySystemHelper.LOW_ANGER_PROBABILITY);		
+		super.evaluatePregnancySystem();
 	}
 	
-	protected void evaluatePregnancyEffects() {	
+	@Override
+	protected void evaluatePregnancyNeeds() {	
 		evaluateCravingTimer();	
 	}
 	
-	public final void onServerTick() {
-	
-		if (pregnantEntity.level().isClientSide) {			
-			return;
-		}		
-		
-		evaluatePregnancySystem();
-	}
-	
+	@Override
 	public InteractionResult onRightClick(Player source) {		
-		if (!pregnantEntity.isOwnedBy(source) || pregnantEntity.isIncapacitated()) {
-			return InteractionResult.FAIL;
-		}				
-		var level = pregnantEntity.level();
-
-		// Belly rubs has priority over other right click actions
-		if (canOwnerRubBelly(source)) {		
-			if (!level.isClientSide && level instanceof ServerLevel serverLevel) {		
-				PreggoMobSystem.spawnParticles(pregnantEntity, serverLevel, evaluateBellyRubs(serverLevel, source));
-			}			
-			return InteractionResult.sidedSuccess(level.isClientSide);
-		}
+		var retval = super.onRightClick(source);	
+		if (retval != InteractionResult.PASS) {
+			return retval;
+		}	
 					
-		Result result = evaluateCraving(level, source);	
-		if (result != null) {			
-			if (!level.isClientSide && level instanceof ServerLevel serverLevel) {
-				PreggoMobSystem.spawnParticles(pregnantEntity, serverLevel, result);
+		var level = pregnantEntity.level();
+					
+		final Result result;	
+		if (!source.getMainHandItem().isEmpty() && (result = evaluateCraving(level, source)) != null) {			
+			if (!level.isClientSide) {
+				PreggoMobSystem.spawnParticles(pregnantEntity, result);
 			}
 			return InteractionResult.sidedSuccess(level.isClientSide);
 		}
@@ -127,23 +107,13 @@ public abstract class PreggoMobPregnancySystemP1<
 		return InteractionResult.PASS;
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	protected void evaluatePregnancyTimer() {
-        if (pregnantEntity.getPregnancyTimer() >= MinepreggoModConfig.getTotalTicksByPregnancyDay()) {
-        	pregnantEntity.resetPregnancyTimer();
-        	pregnantEntity.incrementDaysPassed();
-        	pregnantEntity.reduceDaysToGiveBirth();
-        } else {
-        	pregnantEntity.incrementPregnancyTimer();
-        }
+	@Override
+	public boolean isRightClickValid(Player source) {
+		return super.isRightClickValid(source) && !pregnantEntity.isIncapacitated();
 	}
+
 	
+	@Override
 	protected void evaluateMiscarriage(ServerLevel serverLevel) {	    
         if (pregnantEntity.getPregnancyPainTimer() < PregnancySystemHelper.TOTAL_TICKS_MISCARRIAGE) {
         	pregnantEntity.setPregnancyPainTimer(pregnantEntity.getPregnancyPainTimer() + 1);	        		        	
@@ -181,25 +151,9 @@ public abstract class PreggoMobPregnancySystemP1<
 	        }
 		}	
 	}
-	
-	protected void evaluateAngry(Level level, double x, double y, double z, final float angerProbability) {
-	    if (!pregnantEntity.isAngry() && this.canBeAngry()) {
-	    	pregnantEntity.setAngry(true);
-	    } else {
-	        if (!PreggoMobHelper.hasValidTarget(pregnantEntity) && randomSource.nextFloat() < angerProbability) {
-	            final Vec3 center = new Vec3(x, y, z);      
-	            var players = level.getEntitiesOfClass(Player.class, new AABB(center, center).inflate(12), pregnantEntity::isOwnedBy);
-	                  
-	            if (!players.isEmpty()) {
-	            	var owner = players.get(0);
-		            if (!PreggoMobHelper.isPlayerInCreativeOrSpectator(owner)) {
-		            	pregnantEntity.setTarget(owner);
-		            } 
-	            }
-	        }
-	    }
-	}
 
+
+	@Override
 	protected void evaluatePregnancyPains() {
 		if (pregnantEntity.getPregnancyPain() == PregnancyPain.MORNING_SICKNESS) {
 			if (pregnantEntity.getPregnancyPainTimer() >= PregnancySystemHelper.TOTAL_TICKS_MORNING_SICKNESS) {
@@ -211,6 +165,7 @@ public abstract class PreggoMobPregnancySystemP1<
 		}
 	}
 	
+	@Override
 	protected void evaluatePregnancySymptoms() {	
 		if (pregnantEntity.getPregnancySymptom() == PregnancySymptom.CRAVING && pregnantEntity.getCraving() <= PregnancySystemHelper.DESACTIVATE_CRAVING_SYMPTOM) {
 			pregnantEntity.clearPregnancySymptom();
@@ -218,6 +173,7 @@ public abstract class PreggoMobPregnancySystemP1<
 		}
 	}
 	
+	@Override
 	public void evaluateOnSuccessfulHurt(DamageSource damagesource) {	
 		if ((pregnantEntity.hasEffect(MinepreggoModMobEffects.PREGNANCY_RESISTANCE.get()) && randomSource.nextFloat() < 0.9F)
 				|| (!damagesource.is(DamageTypes.FALL) && !pregnantEntity.getItemBySlot(EquipmentSlot.CHEST).isEmpty() && randomSource.nextFloat() < 0.5)) {
@@ -251,26 +207,22 @@ public abstract class PreggoMobPregnancySystemP1<
 		}
 	}
 	
-	public boolean isMiscarriageActive() {
-	    return pregnantEntity.getPregnancyPain() == PregnancyPain.MISCARRIAGE;
-	}
-	
-	public boolean canAdvanceNextPregnancyPhase() {
-	    return pregnantEntity.getDaysPassed() >= pregnantEntity.getDaysByStage();
-	}
-	
-	public boolean canTriggerMiscarriage() {
-	    return pregnantEntity.getPregnancyHealth() <= 0;
-	}
-	
+	@Override
 	public boolean hasPregnancyPain() {
 	    return pregnantEntity.getPregnancyPain() != null;
 	}
 	
+	@Override
 	public boolean hasPregnancySymptom() {
 	    return pregnantEntity.getPregnancySymptom() != null;
 	}
 	
+	@Override
+	public boolean isMiscarriageActive() {
+	    return pregnantEntity.getPregnancyPain() == PregnancyPain.MISCARRIAGE;
+	}
+	
+	@Override
 	protected boolean tryInitRandomPregnancyPain() {
 	    if (randomSource.nextFloat() < PregnancySystemHelper.LOW_MORNING_SICKNESS_PROBABILITY) {
 	        pregnantEntity.setPregnancyPain(PregnancyPain.MORNING_SICKNESS);
@@ -280,6 +232,7 @@ public abstract class PreggoMobPregnancySystemP1<
 	    return false;
 	}
 	
+	@Override
 	protected boolean tryInitPregnancySymptom() {
 		if (pregnantEntity.getCraving() >= PregnancySystemHelper.ACTIVATE_CRAVING_SYMPTOM) {
 	    	pregnantEntity.setPregnancySymptom(PregnancySymptom.CRAVING);
@@ -295,69 +248,29 @@ public abstract class PreggoMobPregnancySystemP1<
 			return null;
 		}
 		
-	    var mainHandItem = source.getMainHandItem().getItem();
+	    var mainHandItem = source.getMainHandItem();
 	    var currentCraving = pregnantEntity.getCraving();
 	    
-	    if (currentCraving > PregnancySystemHelper.DESACTIVATE_CRAVING_SYMPTOM) {    	
-	    	if (!pregnantEntity.isValidCraving(mainHandItem) || !(mainHandItem instanceof IItemCraving)) {
+	    if (currentCraving > PregnancySystemHelper.DESACTIVATE_CRAVING_SYMPTOM && pregnantEntity.isFood(mainHandItem)) {    	
+	    	
+	    	if (!pregnantEntity.isValidCraving(mainHandItem.getItem()) || !(mainHandItem.getItem() instanceof IItemCraving)) {
 	    		return Result.ANGRY;
 	    	}
 	    	    	
-    		source.getInventory().clearOrCountMatchingItems(p -> mainHandItem == p.getItem(), 1, source.inventoryMenu.getCraftSlots());         
-            pregnantEntity.setCraving(currentCraving - ((IItemCraving)mainHandItem).getGratification());    
-
-            if (!level.isClientSide) {
+	    	if (!level.isClientSide) {
+				mainHandItem.setCount(mainHandItem.getCount() - 1);
+	            if (mainHandItem.isEmpty()) {
+	            	source.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+	            }        
+	            source.getInventory().setChanged();
+	    		  		
+	    		pregnantEntity.setCraving(currentCraving - ((IItemCraving)mainHandItem.getItem()).getGratification());    
             	level.playSound(null, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.generic.eat")), SoundSource.NEUTRAL, 0.75f, 1);	          
-            }
+	    	}
             
             return Result.SUCCESS; 
 	    }
 	    
 	    return null;
-	}
-	
-	public boolean canBeAngry() {
-		return pregnantEntity.getCraving() >= 20 || pregnantEntity.getFullness() <= 2;
-	}
-
-	
-	public boolean canOwnerRubBelly(Player source) {
-		return source.isShiftKeyDown()
-				&& source.getMainHandItem().isEmpty() 
-				&& source.getDirection() == pregnantEntity.getDirection().getOpposite()
-				&& pregnantEntity.getItemBySlot(EquipmentSlot.CHEST).isEmpty();
-	}
-	
-	
-	@Nullable
-	protected Result evaluateBellyRubs(Level level, Player source) {
-		// In this pregnancy phase, the belly is not large enough to do some action
-		return Result.FAIL;
-	}
-	
-	@Override
-	protected final boolean hasToGiveBirth() {
-		return pregnantEntity.getLastPregnancyStage() == pregnantEntity.getCurrentPregnancyStage();
-	}
-	
-	@Override
-	protected boolean isInLabor() {
-		final var pain = pregnantEntity.getPregnancyPain();
-		return pain == PregnancyPain.PREBIRTH || pain == PregnancyPain.BIRTH;
- 	}
-	
-	@Override
-	protected void evaluateBirth(ServerLevel serverLevel) {	
-		// This pregnancy phase does not support birth yet
-	}
-	
-	@Override
-	protected void startLabor() {
-		// This pregnancy phase does not support birth yet
-	}
-	
-	@Override
-	protected void initPostPartum() {
-		// This pregnancy phase does not support birth yet
 	}
 }

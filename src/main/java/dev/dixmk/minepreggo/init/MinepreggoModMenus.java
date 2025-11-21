@@ -4,7 +4,11 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.world.inventory.preggo.PlayerJoinsWorldMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.PlayerMedicalCheckUpMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.PreggoMobMedicalCheckUpMenu;
+import dev.dixmk.minepreggo.world.inventory.preggo.RequestSexM2PMenu;
+import dev.dixmk.minepreggo.world.inventory.preggo.RequestSexP2PMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.SelectPregnantEntityForMedicalCheckUpMenu;
+import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlInventoryMenu;
+import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlMainMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlP0InventoryMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlP0MainMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlP1InventoryMenu;
@@ -23,6 +27,8 @@ import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlP7Inventor
 import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlP7MainMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlP8InventoryMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlP8MainMenu;
+import dev.dixmk.minepreggo.world.inventory.preggo.zombie.ZombieGirlInventoryMenu;
+import dev.dixmk.minepreggo.world.inventory.preggo.zombie.ZombieGirlMainMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.zombie.ZombieGirlP0InventoryMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.zombie.ZombieGirlP0MainMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.zombie.ZombieGirlP1InventoryMenu;
@@ -53,7 +59,9 @@ public class MinepreggoModMenus {
 	
 
 	public static final DeferredRegister<MenuType<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.MENU_TYPES, MinepreggoMod.MODID);
-
+	
+	public static final RegistryObject<MenuType<ZombieGirlMainMenu>> ZOMBIE_GIRL_MAIN_MENU = REGISTRY.register("zombie_girl_main_menu", () -> IForgeMenuType.create(ZombieGirlMainMenu::new));
+	public static final RegistryObject<MenuType<ZombieGirlInventoryMenu>> ZOMBIE_GIRL_INVENTORY_MENU = REGISTRY.register("zombie_girl_inventary_menu", () -> IForgeMenuType.create(ZombieGirlInventoryMenu::new));
 	public static final RegistryObject<MenuType<ZombieGirlP0MainMenu>> ZOMBIE_GIRL_P0_MAIN_MENU = REGISTRY.register("zombie_girl_p0_main_menu", () -> IForgeMenuType.create(ZombieGirlP0MainMenu::new));
 	public static final RegistryObject<MenuType<ZombieGirlP0InventoryMenu>> ZOMBIE_GIRL_P0_INVENTORY_MENU = REGISTRY.register("zombie_girl_p0_inventary_menu", () -> IForgeMenuType.create(ZombieGirlP0InventoryMenu::new));
 	public static final RegistryObject<MenuType<ZombieGirlP1MainMenu>> ZOMBIE_GIRL_P1_MAIN_MENU = REGISTRY.register("zombie_girl_p1_main_menu", () -> IForgeMenuType.create(ZombieGirlP1MainMenu::new));
@@ -73,6 +81,8 @@ public class MinepreggoModMenus {
 	public static final RegistryObject<MenuType<ZombieGirlP8MainMenu>> ZOMBIE_GIRL_P8_MAIN_MENU = REGISTRY.register("zombie_girl_p8_main_menu", () -> IForgeMenuType.create(ZombieGirlP8MainMenu::new));
 	public static final RegistryObject<MenuType<ZombieGirlP8InventoryMenu>> ZOMBIE_GIRL_P8_INVENTORY_MENU = REGISTRY.register("zombie_girl_p8_inventary_menu", () -> IForgeMenuType.create(ZombieGirlP8InventoryMenu::new));
 	
+	public static final RegistryObject<MenuType<CreeperGirlMainMenu>> CREEPER_GIRL_MAIN_MENU = REGISTRY.register("creeper_girl_main_menu", () -> IForgeMenuType.create(CreeperGirlMainMenu::new));
+	public static final RegistryObject<MenuType<CreeperGirlInventoryMenu>> CREEPER_GIRL_INVENTORY_MENU = REGISTRY.register("creeper_girl_inventary_menu", () -> IForgeMenuType.create(CreeperGirlInventoryMenu::new));
 	public static final RegistryObject<MenuType<CreeperGirlP0MainMenu>> CREEPER_GIRL_P0_MAIN_MENU = REGISTRY.register("creeper_girl_p0_main_menu", () -> IForgeMenuType.create(CreeperGirlP0MainMenu::new));
 	public static final RegistryObject<MenuType<CreeperGirlP0InventoryMenu>> CREEPER_GIRL_P0_INVENTORY_MENU = REGISTRY.register("creeper_girl_p0_inventary_menu", () -> IForgeMenuType.create(CreeperGirlP0InventoryMenu::new));
 	public static final RegistryObject<MenuType<CreeperGirlP1MainMenu>> CREEPER_GIRL_P1_MAIN_MENUI = REGISTRY.register("creeper_girl_p1_main_menu", () -> IForgeMenuType.create(CreeperGirlP1MainMenu::new));
@@ -100,4 +110,7 @@ public class MinepreggoModMenus {
 	public static final RegistryObject<MenuType<PlayerJoinsWorldMenu>> PLAYER_JOINS_WORLD_MENU = REGISTRY.register("player_joins_world_menu", () -> IForgeMenuType.create(PlayerJoinsWorldMenu::new));
 
 	
+	public static final RegistryObject<MenuType<RequestSexM2PMenu>> REQUEST_SEX_M2P_MENU = REGISTRY.register("request_sex_m2p_menu", () -> IForgeMenuType.create(RequestSexM2PMenu::new));
+	public static final RegistryObject<MenuType<RequestSexP2PMenu>> REQUEST_SEX_P2P_MENU = REGISTRY.register("request_sex_p2p_menu", () -> IForgeMenuType.create(RequestSexP2PMenu::new));
+
 }

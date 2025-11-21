@@ -23,8 +23,8 @@ public class PlayerPregnancySystemP2 extends PlayerPregnancySystemP1 {
 	}
 
 	@Override
-	protected void evaluatePregnancyEffects() {	
-		super.evaluatePregnancyEffects();
+	protected void evaluatePregnancyNeeds() {	
+		super.evaluatePregnancyNeeds();
 		evaluateMilkingTimer();
 	}
 	

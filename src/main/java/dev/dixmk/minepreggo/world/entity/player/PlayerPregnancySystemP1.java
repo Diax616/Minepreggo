@@ -6,64 +6,24 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
-import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
-import dev.dixmk.minepreggo.network.capability.PlayerDataImpl;
-import dev.dixmk.minepreggo.network.capability.PlayerPregnancyEffectsImpl;
-import dev.dixmk.minepreggo.network.capability.PlayerPregnancySystemImpl;
-import dev.dixmk.minepreggo.world.entity.preggo.AbstractPregnancySystem;
 import dev.dixmk.minepreggo.world.entity.preggo.PostPregnancy;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPain;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancySymptom;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemHelper;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraftforge.common.capabilities.Capability;
 
-public class PlayerPregnancySystemP1 extends AbstractPregnancySystem<ServerPlayer> {
-	protected PlayerDataImpl playerData;
-	protected PlayerPregnancySystemImpl pregnancySystem;
-	protected PlayerPregnancyEffectsImpl pregnancyEffects;
+public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
 	private int pregnancyPainTicks = 0;
 	private int pregnancysymptonsTicks = 0;
 	
 	protected @Nonnegative int totalTicksOfCraving = MinepreggoModConfig.getTotalTicksOfCravingP1();
-
-	private final boolean isValid;
 	
 	public PlayerPregnancySystemP1(@NonNull ServerPlayer player) {
 		super(player);
-		
-		player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> this.playerData = cap);	
-		player.getCapability(MinepreggoCapabilities.PLAYER_PREGNANCY_SYSTEM).ifPresent(cap -> this.pregnancySystem = cap);
-		player.getCapability(MinepreggoCapabilities.PLAYER_PREGNANCY_EFFECTS).ifPresent(cap -> this.pregnancyEffects = cap);
-	
-		this.isValid = checkCapability(MinepreggoCapabilities.PLAYER_DATA)
-				&& checkCapability(MinepreggoCapabilities.PLAYER_PREGNANCY_SYSTEM)
-				&& checkCapability(MinepreggoCapabilities.PLAYER_PREGNANCY_EFFECTS);
-	}
-	
-	public boolean isPlayerValid(ServerPlayer currentPlayer) {
-	    // Check if the stored player is the same instance and has a valid connection
-	    return this.pregnantEntity == currentPlayer && 
-	           this.pregnantEntity.connection != null && 
-	           this.pregnantEntity.connection.connection.isConnected();
-	}
-	
-	private boolean checkCapability(Capability<?> capability) {
-		if (this.pregnantEntity.getCapability(capability).isPresent()) {
-			MinepreggoMod.LOGGER.debug("Capability {} initialized for player: {}",
-					capability.getName(), this.pregnantEntity.getGameProfile().getName());
-			return true;
-		}
-		else {
-			MinepreggoMod.LOGGER.error("Failed to initialize capability {} for player: {}",
-					capability.getName(), this.pregnantEntity.getGameProfile().getName());
-			return false;
-		}
 	}
 	
 	// It has to be executed on server side
@@ -73,13 +33,6 @@ public class PlayerPregnancySystemP1 extends AbstractPregnancySystem<ServerPlaye
 			if (pregnantEntity.level() instanceof ServerLevel serverLevel) {
 				evaluateMiscarriage(serverLevel);
 			}		
-			return;
-		}
-		
-		evaluatePregnancyTimer();
-		
-		if (canAdvanceNextPregnancyPhase()) {
-			advanceToNextPregnancyPhase();
 			return;
 		}
 		
@@ -109,38 +62,14 @@ public class PlayerPregnancySystemP1 extends AbstractPregnancySystem<ServerPlaye
 			evaluatePregnancySymptoms();
 		}
 		
-		evaluatePregnancyEffects();
-	}
-	
-	@Override
-	protected void evaluatePregnancyEffects() {	
-		evaluateCravingTimer();
-	}
-	
-	@Override
-	public final void onServerTick() {			
-		if (pregnantEntity.level().isClientSide) {
-			return;
-		}
+		evaluatePregnancyNeeds();
 		
-		if (!isValid) {
-			MinepreggoMod.LOGGER.warn("PlayerPregnancySystemP1 is not valid for player: {}. Aborting onServerTick.",
-					pregnantEntity.getGameProfile().getName());
-			return;
-		}	
-
-		evaluatePregnancySystem();
+		super.evaluatePregnancySystem();
 	}
 	
 	@Override
-	protected void evaluatePregnancyTimer() {
-		if (pregnancySystem.getPregnancyTimer() > MinepreggoModConfig.getTotalTicksByPregnancyDay()) {
-			pregnancySystem.resetPregnancyTimer();
-			pregnancySystem.incrementDaysPassed();
-			pregnancySystem.reduceDaysToGiveBirth();
-		} else {
-			pregnancySystem.incrementPregnancyTimer();
-		}
+	protected void evaluatePregnancyNeeds() {	
+		evaluateCravingTimer();
 	}
 	
 	protected void evaluateCravingTimer() {   				
@@ -164,9 +93,11 @@ public class PlayerPregnancySystemP1 extends AbstractPregnancySystem<ServerPlaye
 	protected void evaluateMiscarriage(ServerLevel serverLevel) {		
 		if (pregnancySystem.getPregnancyPainTimer() > PregnancySystemHelper.TOTAL_TICKS_MISCARRIAGE) {
 			pregnancySystem.resetPregnancyPainTimer();
-			pregnancySystem.clearPregnancyPain();				
-			playerData.tryActivatePostPregnancyPhase(PostPregnancy.MISCARRIAGE);
-					
+			pregnancySystem.clearPregnancyPain();	
+			
+			femaleData.tryActivatePostPregnancyPhase(PostPregnancy.MISCARRIAGE);
+				
+			femaleData.sync(pregnantEntity);
 			pregnancySystem.sync(pregnantEntity);
 			playerData.sync(pregnantEntity);
 		} else {
@@ -218,11 +149,6 @@ public class PlayerPregnancySystemP1 extends AbstractPregnancySystem<ServerPlaye
 	}
 	
 	@Override
-	public boolean canAdvanceNextPregnancyPhase() {
-		return pregnancySystem.getDaysPassed() >= pregnancySystem.getDaysByStage();
-	}
-	
-	@Override
 	public boolean hasPregnancyPain() {
 		return pregnancySystem.getPregnancyPain() != null;
 	}
@@ -230,17 +156,6 @@ public class PlayerPregnancySystemP1 extends AbstractPregnancySystem<ServerPlaye
 	@Override
 	public boolean hasPregnancySymptom() {
 		return pregnancySystem.getPregnancySymptom() != null;
-	}
-	
-	@Override
-	protected void advanceToNextPregnancyPhase() {	
-		var currentStage = pregnancySystem.getCurrentPregnancyStage();		
-		pregnancySystem.setCurrentPregnancyStage(PregnancyStage.values()[Math.max(currentStage.ordinal() + 1, PregnancyStage.values().length - 1)]);
-		pregnancySystem.resetPregnancyTimer();
-		pregnancySystem.resetDaysPassed();
-		
-		MinepreggoMod.LOGGER.debug("Player {} advanced to next pregnancy phase: {}",
-				pregnantEntity.getGameProfile().getName(), pregnancySystem.getCurrentPregnancyStage().name());	
 	}
 	
 	@Override
@@ -271,36 +186,5 @@ public class PlayerPregnancySystemP1 extends AbstractPregnancySystem<ServerPlaye
 			return true;
 		}
 		return false;
-	}
-
-	@Override
-	protected void initPostMiscarriage() {
-		
-	}
-
-	@Override
-	protected void initPostPartum() {
-		// This pregnancy phase does not support birth yet
-	}
-	
-	@Override
-	protected boolean hasToGiveBirth() {
-		return pregnancySystem.getLastPregnancyStage() == pregnancySystem.getCurrentPregnancyStage();
-	}
-	
-	@Override
-	protected boolean isInLabor() {
-		final var pain = pregnancySystem.getPregnancyPain();
-		return pain == PregnancyPain.PREBIRTH || pain == PregnancyPain.BIRTH;
- 	}
-	
-	@Override
-	protected void startLabor() {
-		// This pregnancy phase does not support birth yet
-	}
-	
-	@Override
-	protected void evaluateBirth(ServerLevel serverLevel) {		
-		// This pregnancy phase does not support birth yet
 	}
 }

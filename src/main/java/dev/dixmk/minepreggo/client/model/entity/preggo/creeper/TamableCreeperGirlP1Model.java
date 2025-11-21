@@ -1,7 +1,7 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.creeper;
 
 import dev.dixmk.minepreggo.client.animation.preggo.CreeperGirlAnimation;
-import dev.dixmk.minepreggo.client.animation.preggo.HumanoidGirlAnimation;
+import dev.dixmk.minepreggo.client.animation.preggo.HumanoidFemaleAnimation;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirlP1;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -23,7 +23,7 @@ public class TamableCreeperGirlP1Model extends AbstractTamablePregnantCreeperGir
 			public void setupAnim(TamableCreeperGirlP1 creeperGirl, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 				this.root().getAllParts().forEach(ModelPart::resetPose);
 					
-			    this.animate(creeperGirl.loopAnimationState, HumanoidGirlAnimation.LOW_BELLY_INFLATION, ageInTicks, 1f);	
+			    this.animate(creeperGirl.loopAnimationState, HumanoidFemaleAnimation.LOW_BELLY_INFLATION, ageInTicks, 1f);	
 				
 			    if (creeperGirl.isAttacking()) {
 				    this.animate(creeperGirl.attackAnimationState, CreeperGirlAnimation.ATTACK, ageInTicks, 1f);	

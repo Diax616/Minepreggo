@@ -1,279 +1,57 @@
 package dev.dixmk.minepreggo.world.entity.preggo.creeper;
 
-import net.minecraftforge.network.PlayMessages;
-import net.minecraftforge.network.NetworkHooks;
-
-import net.minecraft.world.level.Level;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.Mth;
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.network.protocol.Packet;
-
-import java.util.Optional;
-import java.util.UUID;
-
-import javax.annotation.Nonnull;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.jetbrains.annotations.Nullable;
-
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
-import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
-import dev.dixmk.minepreggo.world.entity.preggo.FertilitySystem;
-import dev.dixmk.minepreggo.world.entity.preggo.IBreedable;
-import dev.dixmk.minepreggo.world.entity.preggo.PostPregnancy;
+import dev.dixmk.minepreggo.world.entity.preggo.IPregnancyP0;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobPregnancySystemP0;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPhase;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnantPreggoMobSystemP0;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.network.PlayMessages;
 
-public class TamableCreeperGirlP0 extends AbstractTamableHumanoidCreeperGirl<PreggoMobSystem<TamableCreeperGirlP0>> implements IBreedable {
-	
-	private static final UUID SPEED_MODIFIER_TIRENESS_UUID = UUID.fromString("fa6a4626-c325-4835-8259-69577a99c9c8");
-	private static final AttributeModifier SPEED_MODIFIER_TIRENESS = new AttributeModifier(SPEED_MODIFIER_TIRENESS_UUID, "Tireness speed boost", -0.1D, AttributeModifier.Operation.MULTIPLY_BASE);
-	private static final UUID MAX_HEALTH_MODIFIER_TIRENESS_UUID = UUID.fromString("94d78c8b-0983-4ae4-af65-8e477ee52f2e");
-	private static final AttributeModifier MAX_HEALTH_MODIFIER_TIRENESS = new AttributeModifier(MAX_HEALTH_MODIFIER_TIRENESS_UUID, "Tireness max health", -0.3D, AttributeModifier.Operation.MULTIPLY_BASE);
-	
-	private static final EntityDataAccessor<Optional<PostPregnancy>> DATA_POST_PREGNANCY = SynchedEntityData.defineId(TamableCreeperGirlP0.class, MinepreggoModEntityDataSerializers.OPTIONAL_POST_PREGNANCY);
-	protected static final EntityDataAccessor<Boolean> DATA_PREGNANT = SynchedEntityData.defineId(TamableCreeperGirlP0.class, EntityDataSerializers.BOOLEAN);
-
-	private int postPregnancyTimer = 0;
-	private int pregnancyInitializerTimer = 0;
-	private float fertilityRate = 0;
-	private int fertilityRateTimer = 0;
-	private int numOfOffSpring = 0; 
-	
-	private final FertilitySystem<TamableCreeperGirlP0> fertilitySystem;
+public class TamableCreeperGirlP0 extends AbstractTamablePregnantHumanoidCreeperGirl<PregnantPreggoMobSystemP0<TamableCreeperGirlP0>, PreggoMobPregnancySystemP0<TamableCreeperGirlP0>> implements IPregnancyP0<TamableCreeperGirlP0> {
 	
 	public TamableCreeperGirlP0(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P0.get(), world);
 	}
 
 	public TamableCreeperGirlP0(EntityType<TamableCreeperGirlP0> type, Level world) {
-		super(type, world);
+		super(type, world, PregnancyPhase.P0);
 		xpReward = 10;
 		setNoAi(false);
 		setMaxUpStep(0.6f);
-		fertilitySystem = new FertilitySystem<>(this) {
+	}
+	
+	@Override
+	protected PregnantPreggoMobSystemP0<TamableCreeperGirlP0> createPreggoMobSystem() {
+		return new PregnantPreggoMobSystemP0<>(this, MinepreggoModConfig.getTotalTicksOfHungryP1());
+	}
+	
+	@Override
+	protected PreggoMobPregnancySystemP0<TamableCreeperGirlP0> createPregnancySystem() {
+		return new PreggoMobPregnancySystemP0<TamableCreeperGirlP0>(this) {
 			@Override
-			protected void startPregnancy() {		
-				if (preggoMob.level() instanceof ServerLevel serverLevel) {
-					var creeperGirl = MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P1.get().spawn(serverLevel, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), MobSpawnType.CONVERSION);		
-					PreggoMobHelper.copyTamableData(preggoMob, creeperGirl);			
-					PreggoMobHelper.transferInventary(preggoMob, creeperGirl);					
-					PreggoMobHelper.transferAttackTarget(preggoMob, creeperGirl);
-				}			
+			protected void advanceToNextPregnancyPhase() {
+				if (pregnantEntity.level() instanceof ServerLevel serverLevel) {
+					var creeperGirl = MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P1.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);
+					PreggoMobHelper.copyDataToAdvanceToNextPregnancyPhase(pregnantEntity, creeperGirl);
+				}
 			}
 		};
 	}
-	
-	@Override
-	@Nonnull
-	protected PreggoMobSystem<TamableCreeperGirlP0> createPreggoMobSystem() {
-		return new PreggoMobSystem<>(this, MinepreggoModConfig.getTotalTicksOfHungryP0());
-	}
-	
-	@Override
-	protected void defineSynchedData() {
-		super.defineSynchedData();
-		this.entityData.define(DATA_POST_PREGNANCY, Optional.empty());
-		this.entityData.define(DATA_PREGNANT, false);
-	}
-	
-	@Override
-	public void addAdditionalSaveData(CompoundTag compound) {
-		super.addAdditionalSaveData(compound);
-		compound.putBoolean("DataPregnant", this.entityData.get(DATA_PREGNANT));
-		compound.putFloat("DataFertilityRate", fertilityRate);
-		compound.putInt("DataPostPregnancyTimer", postPregnancyTimer);
-		compound.putInt("DataPregnancyInitializerTimer", pregnancyInitializerTimer);
-		compound.putInt("DataFertilityRateTimer", fertilityRateTimer);
-		compound.putInt("DataNumOfOffSpring", numOfOffSpring);
-		
-		var postPregnancy = getPostPregnancyPhase();
-		if (postPregnancy != null) {
-			compound.putString(PostPregnancy.NBT_KEY, postPregnancy.name());
-		}
-	}
-	
-	@Override
-	public void readAdditionalSaveData(CompoundTag compound) {
-		super.readAdditionalSaveData(compound);
-		this.entityData.set(DATA_PREGNANT, compound.getBoolean("DataPregnant"));
-		fertilityRate = compound.getFloat("DataFertilityRate");
-		postPregnancyTimer = compound.getInt("DataPostPregnancyTimer");
-		pregnancyInitializerTimer = compound.getInt("DataPregnancyInitializerTimer");
-		fertilityRateTimer = compound.getInt("DataFertilityRateTimer");
-		numOfOffSpring = compound.getInt("DataNumOfOffSpring");
-		
-	    if (compound.contains(PostPregnancy.NBT_KEY, Tag.TAG_STRING)) {
-	        String name = compound.getString(PostPregnancy.NBT_KEY);
-	        this.entityData.set(DATA_POST_PREGNANCY, Optional.of(PostPregnancy.valueOf(name)));
-	    } else {
-	    	this.entityData.set(DATA_POST_PREGNANCY, Optional.empty());
-	    }
-	}
-	
-	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
-	}
-	
-	@Override
-   	public void aiStep() {
-      super.aiStep();
-      
-      if (this.level().isClientSide()) {
-    	  return;
-      }
-      
-      fertilitySystem.onServerTick();
-      
-      if (getPostPregnancyPhase() != null) {	  
-    	  if (postPregnancyTimer > 7000) {
-    		  postPregnancyTimer = 0;
-    		  this.entityData.set(DATA_POST_PREGNANCY, Optional.empty());
-    		  removePostPregnancyAttibutes(this);
-    	  }
-    	  else {
-    		  ++postPregnancyTimer;
-    	  }   	  
-      } 
-	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return getBasicAttributes(0.24);
-	}
-	
-	@Override
-	public int getPregnancyInitializerTimer() {
-		return this.pregnancyInitializerTimer;
+		return AbstractTamableHumanoidCreeperGirl.getBasicAttributes(0.24);
 	}
 
 	@Override
-	public void setPregnancyInitializerTimer(int ticks) {
-		this.pregnancyInitializerTimer = Math.max(0, ticks);		
-	}
-	
-	@Override
-	public boolean isPregnant() {
-	    return this.entityData.get(DATA_PREGNANT);
-	}
-	
-	@Override
-	public void impregnate() {
-		this.entityData.set(DATA_PREGNANT, true);		
-	}
-	
-	@Override
-	public boolean canGetPregnant() {
-		return getPostPregnancyPhase() == null;
-	}
-	
-	@Override
-	public void incrementPregnancyInitializerTimer() {
-		++this.pregnancyInitializerTimer;
-	}
-
-	@Override
-	public int getFertilityRateTimer() {
-		return this.fertilityRateTimer;
-	}
-
-	@Override
-	public void setFertilityRateTimer(int ticks) {
-		this.fertilityRateTimer = Math.max(0, ticks);	
-	}
-
-	@Override
-	public void incrementFertilityRateTimer() {
-		++this.fertilityRateTimer;	
-	}
-
-	@Override
-	public float getFertilityRate() {
-		return this.fertilityRate;
-	}
-
-	@Override
-	public void setFertilityRate(float rate) {
-		this.fertilityRate = Mth.clamp(rate, 0, 1F);
-	}
-
-	@Override
-	public void incrementFertilityRate(float rate) {
-		this.fertilityRate = Mth.clamp(this.fertilityRate + rate, 0F, 1F);
-	}
-	
-	@Override
-	public @Nullable PostPregnancy getPostPregnancyPhase() {
-		final var data = this.entityData.get(DATA_POST_PREGNANCY);
-		return data.isPresent() ? data.get() : null;
-	}
-
-	@Override
-	public boolean tryActivatePostPregnancyPhase(@NonNull PostPregnancy postPregnancy) {
-		if (getSpawnType() == MobSpawnType.CONVERSION) {
-			this.entityData.set(DATA_POST_PREGNANCY, Optional.of(postPregnancy));
-			return true;
-		}
-		return false;	
-	}
-	
-	public static TamableCreeperGirlP0 spawnPostMiscarriage(ServerLevel serverLevel, double x, double y, double z) {
-		var creeperGirl = MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
-		creeperGirl.tryActivatePostPregnancyPhase(PostPregnancy.MISCARRIAGE);
-		addPostPregnancyAttibutes(creeperGirl);
-		return creeperGirl;
-	}
-	
-	public static TamableCreeperGirlP0 spawnPostPartum(ServerLevel serverLevel, double x, double y, double z) {
-		var creeperGirl = MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P0	.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
-		creeperGirl.tryActivatePostPregnancyPhase(PostPregnancy.PARTUM);
-		addPostPregnancyAttibutes(creeperGirl);
-		return creeperGirl;
-	}
-	
-	public static<E extends AbstractTamablePregnantCreeperGirl<?,?>> void onPostPartum(E source) {
-		if (source.level() instanceof ServerLevel serverLevel) {
-			var creeperGirl = TamableCreeperGirlP0.spawnPostPartum(serverLevel, source.getX(), source.getY(), source.getZ());
-			PreggoMobHelper.copyTamableData(source, creeperGirl);
-			PreggoMobHelper.transferInventary(source, creeperGirl);
-			PreggoMobHelper.transferAttackTarget(source, creeperGirl);
-		}
-	}
-	
-	public static<E extends AbstractTamablePregnantCreeperGirl<?,?>> void onPostMiscarriage(E source) {
-		if (source.level() instanceof ServerLevel serverLevel) {
-			var creeperGirl = TamableCreeperGirlP0.spawnPostMiscarriage(serverLevel, source.getX(), source.getY(), source.getZ());
-			PreggoMobHelper.copyTamableData(source, creeperGirl);
-			PreggoMobHelper.transferInventary(source, creeperGirl);
-			PreggoMobHelper.transferAttackTarget(source, creeperGirl);
-		}
-	}
-	
-	private static void addPostPregnancyAttibutes(TamableCreeperGirlP0 creeperGirl) {
-		AttributeInstance speed = creeperGirl.getAttribute(Attributes.MOVEMENT_SPEED);
-		AttributeInstance maxHealth = creeperGirl.getAttribute(Attributes.MAX_HEALTH);	
-		speed.addTransientModifier(TamableCreeperGirlP0.SPEED_MODIFIER_TIRENESS);	
-		maxHealth.addTransientModifier(TamableCreeperGirlP0.MAX_HEALTH_MODIFIER_TIRENESS);	
-	}
-	
-	private void removePostPregnancyAttibutes(TamableCreeperGirlP0 creeperGirl) {
-		AttributeInstance speed = creeperGirl.getAttribute(Attributes.MOVEMENT_SPEED);
-		AttributeInstance maxHealth = creeperGirl.getAttribute(Attributes.MAX_HEALTH);	
-		speed.removeModifier(TamableCreeperGirlP0.SPEED_MODIFIER_TIRENESS);	
-		maxHealth.removeModifier(TamableCreeperGirlP0.MAX_HEALTH_MODIFIER_TIRENESS);	
+	public PreggoMobPregnancySystemP0<TamableCreeperGirlP0> getPregnancySystemP0() {
+		return this.pregnancySystem;
 	}
 }

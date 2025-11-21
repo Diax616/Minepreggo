@@ -2,7 +2,7 @@ package dev.dixmk.minepreggo.client.renderer.preggo.creeper.quadruped;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.quadruped.AbstractQueadrupedCreeperGirlModel;
-import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.quadruped.IllQuadrupedCreeperGirlP0Model;
+import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.quadruped.IllQuadrupedCreeperGirlModel;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.IllQuadrupedCreeperGirl;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -11,7 +11,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class IllQuadrupedCreeperGirlRenderer extends AbstractQuadrupedCreeperGirlRenderer<IllQuadrupedCreeperGirl, IllQuadrupedCreeperGirlP0Model> {
+public class IllQuadrupedCreeperGirlRenderer extends AbstractQuadrupedCreeperGirlRenderer<IllQuadrupedCreeperGirl, IllQuadrupedCreeperGirlModel> {
 
 	protected static final ResourceLocation ILL_QUADRUPED_CREEPER_GIRL = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/ill_quadruped_creeper_girl_p0.png");
 	
@@ -20,7 +20,7 @@ public class IllQuadrupedCreeperGirlRenderer extends AbstractQuadrupedCreeperGir
 	}
 	
 	public IllQuadrupedCreeperGirlRenderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation armor) {
-		super(context, new IllQuadrupedCreeperGirlP0Model(context.bakeLayer(main)), new IllQuadrupedCreeperGirlP0Model(context.bakeLayer(armor)));
+		super(context, new IllQuadrupedCreeperGirlModel(context.bakeLayer(main)), new IllQuadrupedCreeperGirlModel(context.bakeLayer(armor)));
 	}
 	
 	@Override

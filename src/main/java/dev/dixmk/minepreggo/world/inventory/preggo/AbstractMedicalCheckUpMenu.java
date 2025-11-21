@@ -5,13 +5,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import javax.annotation.Nullable;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.joml.Vector3i;
 
 import dev.dixmk.minepreggo.world.entity.preggo.Baby;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancyStage;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPhase;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -95,24 +93,23 @@ public abstract class AbstractMedicalCheckUpMenu
 	
 	protected abstract void onFailure();
 	
-	@Nullable
 	public abstract String getName();
 
-	@Nullable
-	public abstract PregnancyStage getCurrentStage();
+	public abstract PregnancyPhase getCurrentPregnancyPhase();
+	
+	public abstract PregnancyPhase getLastPregnancyPhase();
 	
 	public abstract int getPregnancyHealth();
 	
-	public abstract int getNumberOfChildren();
+	public abstract int getTotalNumOfBabies();
 
-	@Nullable
-	public abstract Baby getBabyType();
+	public abstract Baby getTypeOfBaby();
 	
 	public abstract int getDaysToGiveBirth();
 	
 	public abstract int getDaysPassed();
 	
-	public abstract int getDaysToNextStage();
+	public abstract int getDaysToAdvanceNextPhase();
 	
 	
 	@Override

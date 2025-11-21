@@ -8,7 +8,10 @@ import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlP7MainMenu
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class CreeperGirlP7MainScreen extends AbstractCreeperGirlMainScreen<TamableCreeperGirlP7, CreeperGirlP7MainMenu> {
 
 	public CreeperGirlP7MainScreen(CreeperGirlP7MainMenu container, Inventory inventory, Component text) {

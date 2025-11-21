@@ -6,7 +6,7 @@ import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Baby;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.MonsterCreeperGirlP0;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirlP0;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirlP1;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
@@ -27,7 +27,7 @@ public class HumanoidCreeperImpregnation extends Impregnantion {
 	@Override
 	public void removeAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {
 		if (entity instanceof ServerPlayer serverPlayer) {			
-			if (PlayerHelper.tryToStartPregnancy(serverPlayer, Baby.HUMANOID_CREEPER, amplifier)) {
+			if (PlayerHelper.tryStartPregnancyByPotion(serverPlayer, Baby.HUMANOID_CREEPER, amplifier)) {
 				MinepreggoMod.LOGGER.info("Player {} has become pregnant.", serverPlayer.getName().getString());
 			}
 			else {
@@ -42,7 +42,7 @@ public class HumanoidCreeperImpregnation extends Impregnantion {
 				TamableCreeperGirlP1 nextStage = MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P1.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
 				initPregnancy(creeperGirl, nextStage, amplifier);
 			}		
-			else if (entity instanceof TamableCreeperGirlP0 creeperGirl) {
+			else if (entity instanceof TamableCreeperGirl creeperGirl) {
 				TamableCreeperGirlP1 nextStage = MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P1.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
 				initPregnancy(creeperGirl, nextStage, amplifier);
 				PreggoMobHelper.copyOwner(creeperGirl, nextStage);

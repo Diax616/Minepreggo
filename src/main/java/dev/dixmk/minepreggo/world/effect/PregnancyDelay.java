@@ -5,7 +5,6 @@ import javax.annotation.Nullable;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
-import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
@@ -34,14 +33,15 @@ public class PregnancyDelay extends MobEffect {
 		
 		switch (p_19465_) {
 		case 0: {
+			extraDays = 2;
 			break;
 		}
 		case 1: {
-			extraDays *= 2; 
+			extraDays *= 3; 
 			break;
 		}
 		case 2: {
-			extraDays *= 3; 
+			extraDays *= 4; 
 			break;
 		}
 		default:
@@ -57,38 +57,46 @@ public class PregnancyDelay extends MobEffect {
 				final var newDaysByStage = oldDaysByStage + f;
 				final var totalDaysPassed = Math.max(0, s.getCurrentPregnancyStage().ordinal() - 1) * oldDaysByStage + s.getDaysPassed();
 				final var newTotalDays = s.getLastPregnancyStage().ordinal() * newDaysByStage;			
-				s.setDaysByStage(newDaysByStage);
+				
+				s.setDaysByStage(newDaysByStage, s.getCurrentPregnancyStage());
 				s.setDaysToGiveBirth(newTotalDays - totalDaysPassed);		
 			}
 			else {
-				s.setDaysByStage(f);
+				s.setDaysByStage(f, s.getCurrentPregnancyStage());
 				s.setDaysToGiveBirth(f);			
 				p_19464_.addEffect(new MobEffectInstance(MinepreggoModMobEffects.ETERNAL_PREGNANCY.get(), -1, 0));
 			}				
  		}
-		else if (p_19464_ instanceof ServerPlayer serverPlayer && PlayerHelper.isFemaleAndPregnant(serverPlayer)) {													
+		else if (p_19464_ instanceof ServerPlayer serverPlayer) {													
 
-			serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_PREGNANCY_SYSTEM).ifPresent(cap -> {
-				if (f != Integer.MAX_VALUE) {
-					final var lastStage = cap.getLastPregnancyStage().ordinal();
-					final var currentStage = cap.getCurrentPregnancyStage().ordinal();
-					final var oldDaysByStage = cap.getDaysByStage();
-					final var newDaysByStage = oldDaysByStage + f;
+			serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 		
+				cap.getFemaleData().ifPresent(femaleData -> {
+					if (!femaleData.isPregnant()) {
+						return;
+					}		
+					final var pregnancySystem = femaleData.getPregnancySystem();
 					
-					final var daysPassed = cap.getDaysPassed();
-					final var newTotalDays = lastStage * newDaysByStage;
-					final var totalDaysPassed = Math.max(0, currentStage - 1) * oldDaysByStage + daysPassed;
+					if (f != Integer.MAX_VALUE) {
+						final var lastStage = pregnancySystem.getLastPregnancyStage().ordinal();
+						final var currentStage = pregnancySystem.getCurrentPregnancyStage().ordinal();
+						final var oldDaysByStage = pregnancySystem.getDaysByStage();
+						final var newDaysByStage = oldDaysByStage + f;
+						
+						final var daysPassed = pregnancySystem.getDaysPassed();
+						final var newTotalDays = lastStage * newDaysByStage;
+						final var totalDaysPassed = Math.max(0, currentStage - 1) * oldDaysByStage + daysPassed;
 
-					cap.setDaysByStage(newTotalDays);
-					cap.setDaysToGiveBirth(newTotalDays - totalDaysPassed);
-				}
-			
-				else {
-					cap.setDaysByStage(f);
-					cap.setDaysToGiveBirth(f);
-					serverPlayer.addEffect(new MobEffectInstance(MinepreggoModMobEffects.ETERNAL_PREGNANCY.get(), -1, 0));
-				}
-			});			
+						pregnancySystem.setDaysByStage(newDaysByStage, pregnancySystem.getCurrentPregnancyStage());
+						pregnancySystem.setDaysToGiveBirth(newTotalDays - totalDaysPassed);
+					}
+				
+					else {
+						pregnancySystem.setDaysByStage(f, pregnancySystem.getCurrentPregnancyStage());
+						pregnancySystem.setDaysToGiveBirth(f);
+						serverPlayer.addEffect(new MobEffectInstance(MinepreggoModMobEffects.ETERNAL_PREGNANCY.get(), -1, 0));
+					}
+				})
+			);			
 		}
 	}
 }

@@ -11,7 +11,10 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public abstract class AbstractZombieGirlExpressionFacialLayer 
 	<E extends AbstractZombieGirl, M extends AbstractZombieGirlModel<E>> extends RenderLayer<E, M> {
 

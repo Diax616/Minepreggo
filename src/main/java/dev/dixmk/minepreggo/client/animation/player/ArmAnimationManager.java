@@ -6,7 +6,8 @@ import java.util.UUID;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
+import dev.dixmk.minepreggo.common.animation.ArmAnimation;
+import dev.dixmk.minepreggo.common.animation.ArmAnimationRegistry;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -24,10 +25,15 @@ public class ArmAnimationManager {
         return Holder.INSTANCE;
     }
 	    
-	private final Map<UUID, ArmAnimation> activeAnimations = new HashMap<>();
+	private final Map<UUID, ArmAnimationCache> activeAnimations = new HashMap<>();
     
-	public void startAnimation(UUID playerUUID, ArmAnimationType type) {
-		activeAnimations.put(playerUUID, new ArmAnimation(type, System.currentTimeMillis()));
+	public void startAnimation(UUID playerUUID, String animationName) {
+		var anim = ArmAnimationRegistry.getInstance().getAnimation(animationName);
+		
+		if (anim != null) {
+			activeAnimations.put(playerUUID, new ArmAnimationCache(anim, System.currentTimeMillis()));
+
+		}	
 	}
 	    
 	public void stopAnimation(UUID playerUUID) {
@@ -35,7 +41,7 @@ public class ArmAnimationManager {
 	}
 	    
 	public boolean isAnimating(UUID playerUUID) {
-		ArmAnimation anim = activeAnimations.get(playerUUID);
+		var anim = activeAnimations.get(playerUUID);
 		if (anim != null && anim.isExpired()) {
 			activeAnimations.remove(playerUUID);
 			return false;
@@ -44,74 +50,37 @@ public class ArmAnimationManager {
 	}
 	    
 	public void applyAnimation(UUID playerUUID, HumanoidArm arm, PoseStack poseStack, float partialTicks) {
-		ArmAnimation anim = activeAnimations.get(playerUUID);
+		var anim = activeAnimations.get(playerUUID);
 		if (anim != null) {
 			if (anim.isExpired()) {
 				activeAnimations.remove(playerUUID);
 				return;
 			}
-			float progress = anim.getProgress();
-			anim.apply(poseStack, arm, partialTicks);
-			MinepreggoMod.LOGGER.debug("Applied arm animation for player {}: type={}, progress={}", playerUUID, anim.type.name(), progress);
+			anim.animation.apply(poseStack, arm, anim.getProgress(partialTicks));
 		}
 	}
 	    
 	public void tick() {
 		activeAnimations.entrySet().removeIf(entry -> entry.getValue().isExpired());
 	}
-  
-    
-    public static class ArmAnimation {
-        private final ArmAnimationType type;
-        private final long startTime;
-        private final long duration;
+	
+	public static class ArmAnimationCache {
+		final long startTime;
+		final ArmAnimation animation;
+		
+		ArmAnimationCache(ArmAnimation animation, long startTime) {
+			this.animation = animation;
+			this.startTime = startTime;
+		}
+		
+	    public boolean isExpired() {
+	        return System.currentTimeMillis() - startTime > animation.getDuration();
+	    }
         
-        public ArmAnimation(ArmAnimationType type, long startTime) {
-            this.type = type;
-            this.startTime = startTime;
-            this.duration = type.getDuration();
-        }
-        
-        public boolean isExpired() {
-            return System.currentTimeMillis() - startTime > duration;
-        }
-        
-        public float getProgress() {
-            return Math.min(1.0f, (System.currentTimeMillis() - startTime) / (float) duration);
-        }
-        
-        public void apply(PoseStack poseStack, HumanoidArm arm, float partialTicks) {
-            float progress = getProgress();
-            type.apply(poseStack, arm, progress);
-        }
-    }
-    
-    public enum ArmAnimationType {
-        WAVE(2000) {
-            @Override
-            public void apply(PoseStack poseStack, HumanoidArm arm, float progress) {
-                float wave = (float) Math.sin(progress * Math.PI * 4);
-                
-                // Translate the hand position for more visible movement
-                poseStack.translate(0, wave * 0.3, 0);
-                
-                // Rotate around X axis (up/down motion)
-                poseStack.mulPose(com.mojang.math.Axis.XP.rotationDegrees(-30 + wave * 30));
-                // Slight Z rotation for tilt
-                poseStack.mulPose(com.mojang.math.Axis.ZP.rotationDegrees(wave * 20));
-            }
-        };
-    
-        private final long duration;
-        
-        ArmAnimationType(long duration) {
-            this.duration = duration;
-        }
-        
-        public long getDuration() {
-            return duration;
-        }
-        
-        public abstract void apply(PoseStack poseStack, HumanoidArm arm, float progress);
-    }
+	    public float getProgress(float partialTicks) {
+            long currentTime = System.currentTimeMillis();
+            float elapsedMillis = (currentTime - startTime) + (partialTicks * 50); // 50ms per tick (20 TPS)
+            return Math.min(1.0f, elapsedMillis / animation.getDuration());	    
+	    }
+	}
 }

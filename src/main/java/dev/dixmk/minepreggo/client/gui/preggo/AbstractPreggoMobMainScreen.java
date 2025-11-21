@@ -26,7 +26,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public abstract class AbstractPreggoMobMainScreen
 	<E extends PreggoMob & ITamablePreggoMob, M extends AbstractPreggoMobMainMenu<E>> extends AbstractContainerScreen<M> {
 	

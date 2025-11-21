@@ -6,7 +6,9 @@
    "refmap": "mixins.minepreggo.refmap.json",
    "mixins": [],
    "client": [
-     "PlayerRendererMixin",
-	 "PlayerModelMixin"
+	 "PlayerModelMixin",
+	 "AbstractClientPlayerMixin",
+	 "PlayerRendererMixin",
+	 "PlayerMixin"
    ]
 }

@@ -16,7 +16,7 @@ public class EnderImpregnation extends Impregnantion {
 	@Override
 	public void removeAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {
 		if (entity instanceof ServerPlayer serverPlayer) {			
-			if (PlayerHelper.tryToStartPregnancy(serverPlayer, Baby.ENDER, amplifier)) {
+			if (PlayerHelper.tryStartPregnancyByPotion(serverPlayer, Baby.ENDER, amplifier)) {
 				MinepreggoMod.LOGGER.info("Player {} has become pregnant.", serverPlayer.getName().getString());
 			}
 			else {

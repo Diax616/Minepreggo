@@ -25,9 +25,15 @@ import dev.dixmk.minepreggo.world.effect.PreBirth;
 import dev.dixmk.minepreggo.world.effect.PregnancyAcceleration;
 import dev.dixmk.minepreggo.world.effect.PregnancyDelay;
 import dev.dixmk.minepreggo.world.effect.PregnancyHealing;
+import dev.dixmk.minepreggo.world.effect.PregnancyP0;
 import dev.dixmk.minepreggo.world.effect.PregnancyP1;
 import dev.dixmk.minepreggo.world.effect.PregnancyP2;
 import dev.dixmk.minepreggo.world.effect.PregnancyP3;
+import dev.dixmk.minepreggo.world.effect.PregnancyP4;
+import dev.dixmk.minepreggo.world.effect.PregnancyP5;
+import dev.dixmk.minepreggo.world.effect.PregnancyP6;
+import dev.dixmk.minepreggo.world.effect.PregnancyP7;
+import dev.dixmk.minepreggo.world.effect.PregnancyP8;
 import dev.dixmk.minepreggo.world.effect.PregnancyResistance;
 import dev.dixmk.minepreggo.world.effect.ZombieImpregnation;
 import net.minecraft.world.effect.MobEffect;
@@ -55,10 +61,17 @@ public class MinepreggoModMobEffects {
 	public static final RegistryObject<MobEffect> FULL_OF_CREEPERS = REGISTRY.register("full_of_creepers", FullOfCreepers::new);
 	public static final RegistryObject<MobEffect> FULL_OF_ENDERS = REGISTRY.register("full_of_enders", FullOfEnders::new);
 
+	public static final RegistryObject<MobEffect> PREGNANCY_P0 = REGISTRY.register("pregnancy_p0", PregnancyP0::new);
 	public static final RegistryObject<MobEffect> PREGNANCY_P1 = REGISTRY.register("pregnancy_p1", PregnancyP1::new);
 	public static final RegistryObject<MobEffect> PREGNANCY_P2 = REGISTRY.register("pregnancy_p2", PregnancyP2::new);
 	public static final RegistryObject<MobEffect> PREGNANCY_P3 = REGISTRY.register("pregnancy_p3", PregnancyP3::new);
-
+	public static final RegistryObject<MobEffect> PREGNANCY_P4 = REGISTRY.register("pregnancy_p4", PregnancyP4::new);
+	public static final RegistryObject<MobEffect> PREGNANCY_P5 = REGISTRY.register("pregnancy_p5", PregnancyP5::new);
+	public static final RegistryObject<MobEffect> PREGNANCY_P6 = REGISTRY.register("pregnancy_p6", PregnancyP6::new);
+	public static final RegistryObject<MobEffect> PREGNANCY_P7 = REGISTRY.register("pregnancy_p7", PregnancyP7::new);
+	public static final RegistryObject<MobEffect> PREGNANCY_P8 = REGISTRY.register("pregnancy_p8", PregnancyP8::new);
+	
+	
 	public static final RegistryObject<MobEffect> BELLY_RUBS = REGISTRY.register("belly_rubs", BellyRubs::new);
 	public static final RegistryObject<MobEffect> BIRTH = REGISTRY.register("birth", Birth::new);
 	public static final RegistryObject<MobEffect> CONTRACTION = REGISTRY.register("contraction", Contraction::new);

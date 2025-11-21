@@ -13,11 +13,13 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.util.thread.SidedThreadGroups;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 
+@Mod.EventBusSubscriber
 public class MinepreggoModPacketHandler {
 
 	private MinepreggoModPacketHandler() {}
@@ -31,24 +33,29 @@ public class MinepreggoModPacketHandler {
 		messageID++;
 	}
 
-	private static final Collection<AbstractMap.SimpleEntry<Runnable, Integer>> workQueue = new ConcurrentLinkedQueue<>();
+	private static final Collection<AbstractMap.SimpleEntry<Runnable, Integer>> WORK_QUEUE = new ConcurrentLinkedQueue<>();
 
 	public static void queueServerWork(int tick, Runnable action) {
-		if (Thread.currentThread().getThreadGroup() == SidedThreadGroups.SERVER)
-			workQueue.add(new AbstractMap.SimpleEntry<>(action, tick));
+		if (Thread.currentThread().getThreadGroup() == SidedThreadGroups.SERVER) {
+			final boolean result = WORK_QUEUE.add(new AbstractMap.SimpleEntry<>(action, tick));
+			MinepreggoMod.LOGGER.debug("ADD JOB, {}", result);
+		}
 	}
 
 	@SubscribeEvent
-	public void tick(TickEvent.ServerTickEvent event) {
+	public static void onServerTick(TickEvent.ServerTickEvent event) {
 		if (event.phase == TickEvent.Phase.END) {
 			List<AbstractMap.SimpleEntry<Runnable, Integer>> actions = new ArrayList<>();
-			workQueue.forEach(work -> {
+					
+			WORK_QUEUE.forEach(work -> {
 				work.setValue(work.getValue() - 1);
 				if (work.getValue() == 0)
 					actions.add(work);
 			});
+			
 			actions.forEach(e -> e.getKey().run());
-			workQueue.removeAll(actions);
+			WORK_QUEUE.removeAll(actions);
 		}
 	}
+
 }

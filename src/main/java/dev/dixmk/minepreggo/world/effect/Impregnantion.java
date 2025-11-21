@@ -12,10 +12,10 @@ import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.MonsterCreeperGirlP0;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirlP0;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirlP1;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.MonsterZombieGirlP0;
-import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP0;
+import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP1;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
@@ -43,8 +43,12 @@ public class Impregnantion extends MobEffect {
 	
 	@Override
 	public void removeAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {	
+		if (entity.level().isClientSide) {
+			return;
+		}
+		
 		if (entity instanceof ServerPlayer serverPlayer) {			
-			if (PlayerHelper.tryToStartPregnancy(serverPlayer, Baby.HUMAN, amplifier)) {
+			if (PlayerHelper.tryStartPregnancyByPotion(serverPlayer, Baby.HUMAN, amplifier)) {
 				MinepreggoMod.LOGGER.info("Player {} has become pregnant.", serverPlayer.getName().getString());
 			}
 			else {
@@ -64,12 +68,12 @@ public class Impregnantion extends MobEffect {
 				TamableZombieGirlP1 nextStage = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P1.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
 				initPregnancy(zombieGirl, nextStage, amplifier);
 			}
-			else if (entity instanceof TamableCreeperGirlP0 creeperGirl) {
+			else if (entity instanceof TamableCreeperGirl creeperGirl) {
 				TamableCreeperGirlP1 nextStage = MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P1.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
 				initPregnancy(creeperGirl, nextStage, amplifier);
 				PreggoMobHelper.copyOwner(creeperGirl, nextStage);
 			}
-			else if (entity instanceof TamableZombieGirlP0 zombieGirl) {
+			else if (entity instanceof TamableZombieGirl zombieGirl) {
 				TamableZombieGirlP1 nextStage = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P1.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
 				initPregnancy(zombieGirl, nextStage, amplifier);
 				PreggoMobHelper.copyOwner(zombieGirl, nextStage);

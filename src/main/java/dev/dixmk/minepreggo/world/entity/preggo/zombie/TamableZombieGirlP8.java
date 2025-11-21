@@ -3,30 +3,30 @@ package dev.dixmk.minepreggo.world.entity.preggo.zombie;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.world.entity.preggo.IPregnancyP8;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancyStage;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPhase;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobPregnancySystemP8;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnantPreggoMobSystemP1;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnantPreggoMobSystemP2;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.PlayMessages;
 
-public class TamableZombieGirlP8 extends AbstractTamablePregnantZombieGirl<PregnantPreggoMobSystemP1<TamableZombieGirlP8>, PreggoMobPregnancySystemP8<TamableZombieGirlP8>> implements IPregnancyP8<TamableZombieGirlP8> {
+public class TamableZombieGirlP8 extends AbstractTamablePregnantZombieGirl<PregnantPreggoMobSystemP2<TamableZombieGirlP8>, PreggoMobPregnancySystemP8<TamableZombieGirlP8>> implements IPregnancyP8<TamableZombieGirlP8> {
 	
 	public TamableZombieGirlP8(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P8.get(), world);
 	}
 	
 	public TamableZombieGirlP8(EntityType<TamableZombieGirlP8> type, Level world) {
-		super(type, world, PregnancyStage.P8);
+		super(type, world, PregnancyPhase.P8);
 		xpReward = 10;
 		setNoAi(false);
 		setMaxUpStep(0.6f);
 	}
 	
 	@Override
-	protected PregnantPreggoMobSystemP1<TamableZombieGirlP8> createPreggoMobSystem() {
-		return new PregnantPreggoMobSystemP1<>(this, MinepreggoModConfig.getTotalTicksOfHungryP8());
+	protected PregnantPreggoMobSystemP2<TamableZombieGirlP8> createPreggoMobSystem() {
+		return new PregnantPreggoMobSystemP2<>(this, MinepreggoModConfig.getTotalTicksOfHungryP8());
 	}
 	
 	@Override
@@ -40,12 +40,12 @@ public class TamableZombieGirlP8 extends AbstractTamablePregnantZombieGirl<Pregn
 			
 			@Override
 			protected void initPostMiscarriage() {
-				TamableZombieGirlP0.onPostMiscarriage(pregnantEntity);
+				TamableZombieGirl.onPostMiscarriage(pregnantEntity);
 			}
 			
 			@Override
 			protected void initPostPartum() {
-				TamableZombieGirlP0.onPostPartum(pregnantEntity);
+				TamableZombieGirl.onPostPartum(pregnantEntity);
 			}		
 		};
 	}

@@ -5,7 +5,7 @@ import dev.dixmk.minepreggo.utils.MathHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.ISimplePregnancy;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancyStage;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPhase;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -36,15 +36,15 @@ public abstract class AbstractMonsterPregnantZombieGirl extends AbstractMonsterZ
 
 	private static final EntityDataAccessor<Boolean> DATA_HAS_PREGNANCY_PAIN = SynchedEntityData.defineId(AbstractMonsterPregnantZombieGirl.class, EntityDataSerializers.BOOLEAN);
 	private int pregnancyPainTimer = 0;
-	private final PregnancyStage currentPregnanctStage;
-	private final PregnancyStage maxPregnanctStage;
+	private final PregnancyPhase currentPregnanctStage;
+	private final PregnancyPhase maxPregnanctStage;
 	private int totalDaysPassed;
 	private final float pregnancyPainProbability;
 	
-	protected AbstractMonsterPregnantZombieGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_, PregnancyStage currentPregnancyStage) {
+	protected AbstractMonsterPregnantZombieGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_, PregnancyPhase currentPregnancyStage) {
 		super(p_21803_, p_21804_);
 		this.currentPregnanctStage = currentPregnancyStage;
-		this.maxPregnanctStage = PregnancyStage.getRandomStageFrom(currentPregnancyStage);
+		this.maxPregnanctStage = PregnancyPhase.getRandomStageFrom(currentPregnancyStage);
 		this.totalDaysPassed = ISimplePregnancy.getRandomTotalDaysPassed(currentPregnancyStage, this.maxPregnanctStage, this.getRandom());
 		this.pregnancyPainProbability = MathHelper.sigmoid(0.1F, 0.4F, 0.1F, Mth.clamp(this.getTotalDaysPassed() /(float) PregnancySystemHelper.TOTAL_PREGNANCY_DAYS , 0, 1), 0.6F);
 	}
@@ -262,12 +262,12 @@ public abstract class AbstractMonsterPregnantZombieGirl extends AbstractMonsterZ
 	}
 	
 	@Override
-	public PregnancyStage getCurrentPregnancyStage() {
+	public PregnancyPhase getCurrentPregnancyStage() {
 		return currentPregnanctStage;
 	}
 
 	@Override
-	public PregnancyStage getLastPregnancyStage() {
+	public PregnancyPhase getLastPregnancyStage() {
 		return maxPregnanctStage;
 	}
 

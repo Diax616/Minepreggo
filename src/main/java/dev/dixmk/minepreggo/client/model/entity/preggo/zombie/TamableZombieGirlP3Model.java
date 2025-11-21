@@ -1,6 +1,6 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.zombie;
 
-import dev.dixmk.minepreggo.client.animation.preggo.HumanoidGirlAnimation;
+import dev.dixmk.minepreggo.client.animation.preggo.HumanoidFemaleAnimation;
 import dev.dixmk.minepreggo.client.animation.preggo.ZombieGirlAnimation;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP3;
 import net.minecraft.client.model.HierarchicalModel;
@@ -25,7 +25,7 @@ public class TamableZombieGirlP3Model extends AbstractTamablePregnantZombieGirlM
 				this.root().getAllParts().forEach(ModelPart::resetPose);
 					
 			    if (zombieGirl.getItemBySlot(EquipmentSlot.CHEST).isEmpty()) {
-			    	this.animate(zombieGirl.loopAnimationState, HumanoidGirlAnimation.MEDIUM_BELLY_INFLATION, ageInTicks, 1f);
+			    	this.animate(zombieGirl.loopAnimationState, HumanoidFemaleAnimation.MEDIUM_BELLY_INFLATION, ageInTicks, 1f);
 			    }
 				
 			    if (zombieGirl.isAttacking()) {
@@ -51,7 +51,7 @@ public class TamableZombieGirlP3Model extends AbstractTamablePregnantZombieGirlM
 						this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.MISCARRIAGE, ageInTicks, 1f);						
 						break;
 					}
-					case KICKING: {
+					case FETAL_MOVEMENT: {
 						this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.KICKING1, ageInTicks, 1f);						
 						break;
 					}

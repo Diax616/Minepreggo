@@ -209,11 +209,13 @@ public class ScientificIllager extends AbstractIllager implements Merchant {
     					.map(e -> e.getId())
     					.collect(Collectors.toCollection(ArrayList::new));
 			
-    		serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> {   			  		 		 		   		    		
-        		if (cap.isPregnant()) {
-            		list.add(serverPlayer.getId());		
-        		}	
-    		});
+    		serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 			  		 		 		   		    		
+    			cap.getFemaleData().ifPresent(femaleData -> {
+            		if (femaleData.isPregnant()) {
+                		list.add(serverPlayer.getId());		
+            		}
+    			}) 		
+    		);
     		
     		if (!list.isEmpty()) {
     			this.setTradingPlayer(player);

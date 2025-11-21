@@ -1,7 +1,9 @@
 package dev.dixmk.minepreggo.event;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.client.renderer.entity.layer.player.PregnantBodyRenderLayer;
+import dev.dixmk.minepreggo.client.renderer.entity.layer.player.CustomPregnantBodyLayer;
+import dev.dixmk.minepreggo.client.renderer.entity.layer.player.PredefinedPregnantBodyLayer;
+
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
 
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -23,7 +25,6 @@ public class ClientSetup {
 	
     @SubscribeEvent
     public static void onRegisterRenderers(EntityRenderersEvent.AddLayers event) {
-        // Add layer to all player renderer types
         addBoobsLayerToSkin(event, "default");
         addBoobsLayerToSkin(event, "slim");
     }
@@ -43,7 +44,8 @@ public class ClientSetup {
 	private static void addBoobsLayerToSkin(EntityRenderersEvent.AddLayers event, String skinName) {
         EntityRenderer<? extends Player> renderer = event.getPlayerSkin(skinName);
         if (renderer instanceof PlayerRenderer playerRenderer) {
-            playerRenderer.addLayer(new PregnantBodyRenderLayer(playerRenderer, event.getEntityModels()));
+            playerRenderer.addLayer(new CustomPregnantBodyLayer(playerRenderer, event.getEntityModels()));
+            playerRenderer.addLayer(new PredefinedPregnantBodyLayer(playerRenderer, event.getEntityModels()));
         }
     }
 }

@@ -12,8 +12,8 @@ import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem.Result;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -33,8 +33,8 @@ public abstract class PreggoMobPregnancySystemP2<E extends PreggoMob
 	}
 	
 	@Override
-	protected void evaluatePregnancyEffects() {	
-		super.evaluatePregnancyEffects();
+	protected void evaluatePregnancyNeeds() {	
+		super.evaluatePregnancyNeeds();
 		evaluateMilkingTimer();
 	}
 	
@@ -46,11 +46,11 @@ public abstract class PreggoMobPregnancySystemP2<E extends PreggoMob
 		}			
 		
 		var level = pregnantEntity.level();	
-		final Result result = evaluateMilking(level, source);
+		final Result result;
 		
-		if (result != null) {			
-			if (!level.isClientSide && level instanceof ServerLevel serverLevel) {
-				PreggoMobSystem.spawnParticles(pregnantEntity, serverLevel, result);
+		if (!source.getMainHandItem().isEmpty() && (result = evaluateMilking(level, source)) != null) {			
+			if (!level.isClientSide) {
+				PreggoMobSystem.spawnParticles(pregnantEntity, result);
 			}
 			return InteractionResult.sidedSuccess(level.isClientSide);	
 		}
@@ -100,13 +100,18 @@ public abstract class PreggoMobPregnancySystemP2<E extends PreggoMob
 	@Nullable
 	public Result evaluateMilking(Level level, Player source) {
 			
-	    var mainHandItem = source.getMainHandItem().getItem();
+	    var mainHandItem = source.getMainHandItem();
 	    var currentMilking = pregnantEntity.getMilking();
 		
-	    if (currentMilking >= PregnancySystemHelper.MILKING_VALUE
-	    		&& mainHandItem == Items.GLASS_BOTTLE) {    	
-
-            source.getInventory().clearOrCountMatchingItems(p -> mainHandItem == p.getItem(), 1, source.inventoryMenu.getCraftSlots());
+	    if (currentMilking < PregnancySystemHelper.MILKING_VALUE || mainHandItem.isEmpty() || mainHandItem.getItem() != Items.GLASS_BOTTLE) {   
+	    	return null;
+	    }
+	       
+        if (!level.isClientSide) {    	
+        	MinepreggoMod.LOGGER.debug("{} {}", mainHandItem, mainHandItem.getCount());
+        	
+        	level.playSound(null, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.cow.milk")), SoundSource.NEUTRAL, 0.75f, 1);	
+     
             currentMilking = Math.max(0, currentMilking - PregnancySystemHelper.MILKING_VALUE);
             pregnantEntity.setMilking(currentMilking);               
             var milkItem = PregnancySystemHelper.getMilkItem(pregnantEntity.getSpecies());
@@ -116,19 +121,22 @@ public abstract class PreggoMobPregnancySystemP2<E extends PreggoMob
 			} else {
 				MinepreggoMod.LOGGER.warn("Milk item is null for species: {}", pregnantEntity.getSpecies());
 			}
+        	
+            mainHandItem.setCount(mainHandItem.getCount() - 1);        
+            if (mainHandItem.isEmpty()) {
+                source.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+            }        
+            source.getInventory().setChanged();
             
-            if (!level.isClientSide) {
-            	level.playSound(null, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.cow.milk")), SoundSource.NEUTRAL, 0.75f, 1);	
-         
-                if (pregnantEntity.getPregnancySymptom() == PregnancySymptom.MILKING
-                		&& currentMilking <= PregnancySystemHelper.DESACTIVATE_MILKING_SYMPTOM) {
-        	    	pregnantEntity.clearPregnancySymptom();
-                } 
-            }
-         
-            return Result.SUCCESS;   
-	    }
-		
-	    return null;
+	    	
+            if (pregnantEntity.getPregnancySymptom() == PregnancySymptom.MILKING
+            		&& currentMilking <= PregnancySystemHelper.DESACTIVATE_MILKING_SYMPTOM) {
+    	    	pregnantEntity.clearPregnancySymptom();
+            } 
+            
+        	MinepreggoMod.LOGGER.debug("{} {}", mainHandItem, mainHandItem.getCount());
+        }
+     
+        return Result.SUCCESS;   
 	}
 }

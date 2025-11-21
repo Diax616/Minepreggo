@@ -1,49 +1,56 @@
 package dev.dixmk.minepreggo.network.capability;
 
-import org.checkerframework.checker.index.qual.NonNegative;
+import java.util.Map;
+
+import javax.annotation.Nonnegative;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.world.entity.preggo.Baby;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPain;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancyStage;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPhase;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancySymptom;
 
 public interface IPregnancySystemHandler {
 
 	int getDaysByStage();
-	void setDaysByStage(@NonNegative int days);
+	boolean setDaysByStage(@Nonnegative int days, PregnancyPhase phase);
+	boolean setDaysByStage(Map<PregnancyPhase, Integer> map);
+	Map<PregnancyPhase, Integer> getDaysByStageMapping();
+	
+	
 	
 	int getPregnancyHealth();
-	void setPregnancyHealth(@NonNegative int health);
+	void setPregnancyHealth(@Nonnegative int health);
 	void reducePregnancyHealth(int amount);
 	void resetPregnancyHealth();
 	
 	int getDaysPassed();
-	void setDaysPassed(@NonNegative int days);
+	void setDaysPassed(@Nonnegative int days);
 	void incrementDaysPassed();
 	void resetDaysPassed();
 	
 	int getDaysToGiveBirth();
-	void setDaysToGiveBirth(@NonNegative int days);
+	void setDaysToGiveBirth(@Nonnegative int days);
 	void reduceDaysToGiveBirth();
 	
     int getPregnancyTimer();
-    void setPregnancyTimer(@NonNegative int ticks);
+    void setPregnancyTimer(@Nonnegative int ticks);
     void incrementPregnancyTimer();
 	void resetPregnancyTimer();
     
     int getPregnancyPainTimer();
-    void setPregnancyPainTimer(@NonNegative int ticks);
+    void setPregnancyPainTimer(@Nonnegative int ticks);
     void incrementPregnancyPainTimer();
     void resetPregnancyPainTimer();
     
-	PregnancyStage getLastPregnancyStage();
-	void setLastPregnancyStage(PregnancyStage stage);
+	PregnancyPhase getLastPregnancyStage();
+	void setLastPregnancyStage(PregnancyPhase stage);
 
-	PregnancyStage getCurrentPregnancyStage();
-	void setCurrentPregnancyStage(PregnancyStage stage);
+	PregnancyPhase getCurrentPregnancyStage();
+	void setCurrentPregnancyStage(PregnancyPhase stage);
     
 	@Nullable
 	PregnancySymptom getPregnancySymptom();
@@ -61,8 +68,8 @@ public interface IPregnancySystemHandler {
 	boolean isIncapacitated();
 	
     public static int calculateDaysToGiveBirth(@NonNull IPregnancySystemHandler h) {
-        PregnancyStage currentStage = h.getCurrentPregnancyStage();
-        PregnancyStage lastStage = h.getLastPregnancyStage();
+        PregnancyPhase currentStage = h.getCurrentPregnancyStage();
+        PregnancyPhase lastStage = h.getLastPregnancyStage();
         
         int stagesRemaining = Math.max(1, lastStage.ordinal() - currentStage.ordinal() + 1);
 
@@ -73,17 +80,17 @@ public interface IPregnancySystemHandler {
         return baseTotalDays - h.getDaysPassed();
     }
     
-    public static int calculateDaysByStage(PregnancyStage lastStage) {
+    public static int calculateDaysByStage(PregnancyPhase lastStage) {
     	return MinepreggoModConfig.getTotalPregnancyDays() / lastStage.ordinal();
     }
 
-    public static int calculateInitialDaysToGiveBirth(PregnancyStage lastStage) {
+    public static int calculateInitialDaysToGiveBirth(PregnancyPhase lastStage) {
     	return calculateDaysByStage(lastStage) * lastStage.ordinal();
     }
     
     public static int calculateTotalDaysPassedFromP1(@NonNull IPregnancySystemHandler h) {
         // Number of full stages completed since P1 (P1 -> 0, P2 -> 1, ...)
-        int stagesSinceP1 = Math.max(0, h.getCurrentPregnancyStage().ordinal() - PregnancyStage.P1.ordinal());
+        int stagesSinceP1 = Math.max(0, h.getCurrentPregnancyStage().ordinal() - PregnancyPhase.P1.ordinal());
 
         return h.getDaysByStage() * stagesSinceP1 + h.getDaysPassed();
     }

@@ -1,7 +1,7 @@
 package dev.dixmk.minepreggo.world.entity.preggo.creeper;
 
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancyStage;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPhase;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.level.Level;
@@ -14,7 +14,7 @@ public class MonsterCreeperGirlP5 extends AbstractMonsterPregnantHumanoidCreeper
 	}
 
 	public MonsterCreeperGirlP5(EntityType<MonsterCreeperGirlP5> type, Level world) {
-		super(type, world, PregnancyStage.P5);
+		super(type, world, PregnancyPhase.P5);
 		xpReward = 10;
 		setNoAi(false);
 		setMaxUpStep(0.6f);	

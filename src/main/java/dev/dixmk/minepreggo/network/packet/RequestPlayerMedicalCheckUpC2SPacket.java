@@ -31,18 +31,20 @@ public record RequestPlayerMedicalCheckUpC2SPacket(int targetId) {
 		context.enqueueWork(() -> {
             if (context.getDirection().getReceptionSide().isServer()) {
     			var serverPlayer = context.getSender();		
-    			serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_PREGNANCY_SYSTEM).ifPresent(cap -> {
-        			final var data = cap.createDataGUI();   	 
-        			
-        			var target = serverPlayer.level().getEntity(message.targetId);
-        			
-        			if (target instanceof ScientificIllager scientificIllager) {  				
-        				PlayerMedicalCheckUpMenu.Illager.showMedicalCheckUpMenu(serverPlayer, scientificIllager, data);
-        			}
-        			else if (target instanceof Villager villager && villager.getVillagerData().getProfession() == MinepreggoModVillagerProfessions.VILLAGER_DOCTOR.get()) {
-        				PlayerMedicalCheckUpMenu.DoctorVillager.showMedicalCheckUpMenu(serverPlayer, villager, data);
-        			}   			
-    			});       	
+    			serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
+    				cap.getFemaleData().ifPresent(femaleData -> {
+        				final var data = femaleData.getPregnancySystem().createScreenData();   	 
+            			
+            			var target = serverPlayer.level().getEntity(message.targetId);
+            			
+            			if (target instanceof ScientificIllager scientificIllager) {  				
+            				PlayerMedicalCheckUpMenu.Illager.showMedicalCheckUpMenu(serverPlayer, scientificIllager, data);
+            			}
+            			else if (target instanceof Villager villager && villager.getVillagerData().getProfession() == MinepreggoModVillagerProfessions.VILLAGER_DOCTOR.get()) {
+            				PlayerMedicalCheckUpMenu.DoctorVillager.showMedicalCheckUpMenu(serverPlayer, villager, data);
+            			}  
+    				})
+    			);       	
             }		
 		});
 		

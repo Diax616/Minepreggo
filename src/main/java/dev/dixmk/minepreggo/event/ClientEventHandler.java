@@ -6,8 +6,6 @@ import dev.dixmk.minepreggo.client.SexCinematicManager;
 import dev.dixmk.minepreggo.client.animation.player.ArmAnimationManager;
 import dev.dixmk.minepreggo.client.animation.player.PlayerAnimationManager;
 import dev.dixmk.minepreggo.client.screens.effect.SexOverlayManager;
-import dev.dixmk.minepreggo.init.MinepreggoModKeyMappings;
-import dev.dixmk.minepreggo.network.packet.RequestArmAnimationC2SPacket;
 import dev.dixmk.minepreggo.network.packet.SexCinematicAbortC2SPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
@@ -20,38 +18,29 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = MinepreggoMod.MODID, value = Dist.CLIENT)
 public class ClientEventHandler {
 	
-	 private static int armAnimationIndex = 0;
-	
 	private ClientEventHandler() {}
 
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         Minecraft mc = Minecraft.getInstance();        
-        var player = mc.player;        
-        if (player == null) return;
+        var player = mc.player;  
+        var level = mc.level;
+        if (player == null || level == null) return;
     	
     	if (event.phase == TickEvent.Phase.END) {
-        	SexOverlayManager.getInstance().tick();
-        	       
+        	SexOverlayManager.getInstance().tick();      	       
             ArmAnimationManager.getInstance().tick();
-       
-            // Handle key press
-            if (MinepreggoModKeyMappings.ANIMATION_KEY.consumeClick() && mc.player != null) {
-                MinepreggoModPacketHandler.INSTANCE.sendToServer(new RequestArmAnimationC2SPacket(armAnimationIndex));          
-            }
-            
-            if (mc.level != null) {
-                for (Player ply : mc.level.players()) {
-                    PlayerAnimationManager.getInstance().get(ply).tick();
-                }
+
+            for (Player ply : mc.level.players()) {
+                PlayerAnimationManager.getInstance().get(ply).tick();
             }
         }
         
         else if (event.phase == TickEvent.Phase.START) {                    
-            if (SexCinematicManager.isInCinematic()) {
-                Entity mob = mc.level.getEntity(SexCinematicManager.getActiveMobId());
+            if (SexCinematicManager.getInstance().isInCinematic()) {
+                Entity mob = mc.level.getEntity(SexCinematicManager.getInstance().getActiveMobId());
                 if (mob == null || mob.isRemoved() || player.distanceToSqr(mob) > 25.0) {
-                    SexCinematicManager.endCinematic();
+                    SexCinematicManager.getInstance().endCinematic();
                     MinepreggoModPacketHandler.INSTANCE.sendToServer(new SexCinematicAbortC2SPacket(-1));
                     return;
                 }
@@ -61,10 +50,10 @@ public class ClientEventHandler {
                 player.input.jumping = false;
                 player.input.shiftKeyDown = false;
 
-                player.setYRot(SexCinematicManager.getStoredYaw());
-                player.setXRot(SexCinematicManager.getStoredPitch());
-                player.yRotO = SexCinematicManager.getStoredYaw();
-                player.xRotO = SexCinematicManager.getStoredPitch(); 
+                player.setYRot(SexCinematicManager.getInstance().getStoredYaw());
+                player.setXRot(SexCinematicManager.getInstance().getStoredPitch());
+                player.yRotO = SexCinematicManager.getInstance().getStoredYaw();
+                player.xRotO = SexCinematicManager.getInstance().getStoredPitch(); 
             }                  
         }
     } 

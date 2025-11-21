@@ -2,9 +2,10 @@ package dev.dixmk.minepreggo.world.entity.preggo;
 
 public enum PregnancyPain {
 	MORNING_SICKNESS,
-	KICKING,
+	FETAL_MOVEMENT,
 	CONTRACTION,
 	MISCARRIAGE,
+	WATER_BREAKING,
 	BIRTH,
 	PREBIRTH;
 	

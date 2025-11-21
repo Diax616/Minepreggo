@@ -3,7 +3,7 @@ package dev.dixmk.minepreggo.world.entity.preggo.creeper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancyStage;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPhase;
 import dev.dixmk.minepreggo.world.item.ItemHelper;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -34,7 +34,7 @@ public abstract class AbstractMonsterHumanoidCreeperGirl extends AbstractMonster
 	
 	@Override
 	protected boolean canReplaceArmorBasedInPregnancyStage(ItemStack armor) {
-		return (ItemHelper.isChest(armor) && PreggoMobHelper.canUseChestplate(armor, PregnancyStage.getNonPregnancyStage()))
-				|| (ItemHelper.isLegging(armor) && PreggoMobHelper.canUseLegging(armor, PregnancyStage.getNonPregnancyStage()));
+		return (ItemHelper.isChest(armor) && PreggoMobHelper.canUseChestplate(armor, PregnancyPhase.getNonPregnancyStage()))
+				|| (ItemHelper.isLegging(armor) && PreggoMobHelper.canUseLegging(armor, PregnancyPhase.getNonPregnancyStage()));
 	}
 }

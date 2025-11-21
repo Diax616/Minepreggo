@@ -15,6 +15,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
@@ -22,13 +23,11 @@ import net.minecraft.world.item.Item;
 import net.minecraftforge.network.PacketDistributor;
 
 public class PlayerPregnancyEffectsImpl implements IPlayerPregnancyEffectsHandler {
-	// Server Data
 	private int cravingTimer = 0;
 	private int milkingTimer = 0;
 	private int bellyRubsTimer = 0;
 	private int hornyTimer = 0;
 	
-	// Client Data
 	private int craving = 0;
 	private int milking = 0;
 	private int bellyRubs = 0;
@@ -45,14 +44,6 @@ public class PlayerPregnancyEffectsImpl implements IPlayerPregnancyEffectsHandle
 		return null;
 	}
 
-	@Override
-	public @Nullable Species getTypeOfSpecies() {
-		if (typeOfCraving.isPresent()) {
-			return typeOfCraving.get().getValue();
-		}			
-		return null;
-	}
-	
 	@Override
 	public void setTypeOfCraving(@Nullable Craving craving) {	
 		if (craving != null) {
@@ -250,10 +241,7 @@ public class PlayerPregnancyEffectsImpl implements IPlayerPregnancyEffectsHandle
 	
 	@Override
 	public @Nullable Pair<Craving, Species> getTypeOfCravingBySpecies() {
-		if (this.typeOfCraving.isPresent()) {
-			return this.typeOfCraving.get();
-		}
-		return null;
+		return this.typeOfCraving.orElse(null);
 	}
 
 	@Override
@@ -268,8 +256,8 @@ public class PlayerPregnancyEffectsImpl implements IPlayerPregnancyEffectsHandle
 	}
 	
 	@NonNull
-	public Tag serializeNBT() {
-		CompoundTag nbt = new CompoundTag();
+	public Tag serializeNBT(@NonNull Tag tag) {
+		CompoundTag nbt = (CompoundTag) tag;
 		nbt.putInt("DataCraving", craving);
 		nbt.putInt("DataCravingTimer", cravingTimer);
 		nbt.putInt("DataMilking", milking);
@@ -321,12 +309,49 @@ public class PlayerPregnancyEffectsImpl implements IPlayerPregnancyEffectsHandle
 		this.typeOfCraving = newData.typeOfCraving;
 	}
 	
+	public @NonNull ClientData createClientData() {
+		return new ClientData(
+				this.craving,
+				this.milking,
+				this.bellyRubs,
+				this.horny,
+				this.getTypeOfCravingBySpecies());
+	}
+	
+	
 	public void sync(ServerPlayer serverPlayer) {
 	    serverPlayer.getServer().execute(() -> {
 	        MinepreggoModPacketHandler.INSTANCE.send(
 	            PacketDistributor.PLAYER.with(() -> serverPlayer), 
-	            new SyncPregnancyEffectsS2CPacket(serverPlayer.getUUID(), this.craving, this.milking, this.bellyRubs, this.horny, getTypeOfCravingBySpecies()));
+	            new SyncPregnancyEffectsS2CPacket(serverPlayer.getUUID(), createClientData()));
 	    });
 	}
 
+	public static record ClientData(int craving, int milking, int bellyRubs, int horny, @Nullable Pair<Craving, Species> typeOfCravingBySpecies) {	
+		public static ClientData decode(FriendlyByteBuf buffer) {		
+			int craving = buffer.readInt();
+			int milking = buffer.readInt();	
+			int bellyRubs = buffer.readInt();
+			int horny = buffer.readInt();
+			Craving typeOfCraving = null;
+			Species typeOfSpecies = null;		
+			if (buffer.readBoolean()) {
+				typeOfCraving = buffer.readEnum(Craving.class);
+				typeOfSpecies = buffer.readEnum(Species.class);
+			}		
+			return new ClientData(craving, milking, bellyRubs, horny, Pair.of(typeOfCraving, typeOfSpecies));
+		}
+		
+		public void encode(FriendlyByteBuf buffer) {	
+			buffer.writeInt(this.craving);
+			buffer.writeInt(this.milking);
+			buffer.writeInt(this.bellyRubs);
+			buffer.writeInt(this.horny);	
+			buffer.writeBoolean(this.typeOfCravingBySpecies != null);	
+			if (this.typeOfCravingBySpecies != null) {
+				buffer.writeEnum(this.typeOfCravingBySpecies.getLeft());
+				buffer.writeEnum(this.typeOfCravingBySpecies.getRight());
+			}		
+		}
+	}
 }

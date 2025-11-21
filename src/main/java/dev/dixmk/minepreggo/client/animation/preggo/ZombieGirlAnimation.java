@@ -1,11 +1,13 @@
 package dev.dixmk.minepreggo.client.animation.preggo;
 
 import net.minecraft.client.animation.KeyframeAnimations;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraft.client.animation.Keyframe;
 import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.client.animation.AnimationChannel;
 
-
+@OnlyIn(Dist.CLIENT)
 public class ZombieGirlAnimation {
 	
 	private ZombieGirlAnimation() {}	

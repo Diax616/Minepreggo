@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 @OnlyIn(Dist.CLIENT)
 public abstract class AbstractZombieGirlRenderer<E extends AbstractZombieGirl, M extends AbstractZombieGirlModel<E>> extends HumanoidMobRenderer<E, M> {
 	
+	protected static final ResourceLocation  ZOMBIE_GIRL_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/zombie_girl.png");
 	protected static final ResourceLocation  ZOMBIE_GIRL_P0_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/zombie_girl_p0.png");
 	protected static final ResourceLocation  ZOMBIE_GIRL_P1_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/zombie_girl_p1.png");
 	protected static final ResourceLocation  ZOMBIE_GIRL_P2_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/zombie_girl_p2.png");

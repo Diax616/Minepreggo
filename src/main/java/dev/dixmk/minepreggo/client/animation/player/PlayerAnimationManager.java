@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.jetbrains.annotations.Nullable;
 
+import dev.dixmk.minepreggo.common.animation.PlayerAnimation;
 import dev.dixmk.minepreggo.common.animation.PlayerAnimationRegistry;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.player.Player;
@@ -45,7 +46,7 @@ public class PlayerAnimationManager {
     	    
     	private @Nullable PlayerAnimation currentAnimation;
     	private int animationTick = 0;
-        private int continuousAnimationTick = 0; // Tick since animation started playing (doesn't reset on loop)
+        private int continuousAnimationTick = 0; // Tick since animation started playing (does not reset on loop)
     	private boolean isPlaying = false;
     	private @Nullable String lastAnimationName = null;
     	

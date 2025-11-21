@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import dev.dixmk.minepreggo.client.animation.player.PlayerAnimation;
 import dev.dixmk.minepreggo.utils.MathHelper;
 
 public class PlayerAnimationRegistry {
@@ -47,32 +46,32 @@ public class PlayerAnimationRegistry {
 		PlayerAnimation birth = new PlayerAnimation("birth", 360, true);
 		
 		birth.addPartAnimation("body", (part, continuousAnimationTick, progress) -> 
-			part.yRot = MathHelper.animateBetweenAnglesMth(-5, 5, continuousAnimationTick, 0.005F)
+			part.yRot = MathHelper.animateBetweenAnglesMth(-5, 5, continuousAnimationTick, 0.075F)
 		);
 		
 		birth.addPartAnimation("head", (part, continuousAnimationTick, progress) -> 
-			part.xRot = MathHelper.animateBetweenAnglesMth(7.5F, -7.5F, continuousAnimationTick, 0.02F)
+			part.xRot = MathHelper.animateBetweenAnglesMth(7.5F, -7.5F, continuousAnimationTick, 0.92F)
 		);
 		
 		birth.addPartAnimation("right_arm", (part, continuousAnimationTick, progress) -> {		
-			part.zRot = MathHelper.animateBetweenAnglesMth(35, 45, continuousAnimationTick, 0.01F);
-			part.yRot = MathHelper.animateBetweenAnglesMth(7.5F, 10, continuousAnimationTick, 0.01F);
+			part.zRot = MathHelper.animateBetweenAnglesMth(35, 45, continuousAnimationTick, 0.085F);
+			part.yRot = MathHelper.animateBetweenAnglesMth(7.5F, 10, continuousAnimationTick, 0.085F);
 		});
 		
 		birth.addPartAnimation("left_arm", (part, continuousAnimationTick, progress) -> {			
-			part.zRot = MathHelper.animateBetweenAnglesMth(-35, -45, continuousAnimationTick, 0.0075F);
-			part.yRot = MathHelper.animateBetweenAnglesMth(-7.5F, -10, continuousAnimationTick, 0.0075F);
+			part.zRot = MathHelper.animateBetweenAnglesMth(-35, -45, continuousAnimationTick, 0.075F);
+			part.yRot = MathHelper.animateBetweenAnglesMth(-7.5F, -10, continuousAnimationTick, 0.075F);
 		});
 	
 		birth.addPartAnimation("right_leg", (part, continuousAnimationTick, progress) -> {
-			part.zRot = MathHelper.animateBetweenAnglesMth(40, 50, continuousAnimationTick, 0.0075F);
-			part.yRot = MathHelper.animateBetweenAnglesMth(25, 30, continuousAnimationTick, 0.0075F);
+			part.zRot = MathHelper.animateBetweenAnglesMth(40, 50, continuousAnimationTick, 0.075F);
+			part.yRot = MathHelper.animateBetweenAnglesMth(25, 30, continuousAnimationTick, 0.075F);
 
 		});
 		
 		birth.addPartAnimation("left_leg", (part, continuousAnimationTick, progress) -> {
-			part.zRot = MathHelper.animateBetweenAnglesMth(-40, -50, continuousAnimationTick, 0.0075F);
-			part.yRot = MathHelper.animateBetweenAnglesMth(-25, -30, continuousAnimationTick, 0.0075F);
+			part.zRot = MathHelper.animateBetweenAnglesMth(-40, -50, continuousAnimationTick, 0.075F);
+			part.yRot = MathHelper.animateBetweenAnglesMth(-25, -30, continuousAnimationTick, 0.075F);
 
 		});
 		
@@ -83,32 +82,32 @@ public class PlayerAnimationRegistry {
 		PlayerAnimation miscarriage = new PlayerAnimation("miscarriage", 240, true);
 		
 		miscarriage.addPartAnimation("body", (part, continuousAnimationTick, progress) -> 
-			part.yRot = MathHelper.animateBetweenAnglesMth(-2.5F, 2.5F, continuousAnimationTick, 0.01F)
+			part.yRot = MathHelper.animateBetweenAnglesMth(-2.5F, 2.5F, continuousAnimationTick, 0.085F)
 		);
 		
 		miscarriage.addPartAnimation("head", (part, continuousAnimationTick, progress) -> 
-			part.xRot = MathHelper.animateBetweenAnglesMth(17.5F, 20, continuousAnimationTick, 0.01F)
+			part.xRot = MathHelper.animateBetweenAnglesMth(17.5F, 20, continuousAnimationTick, 0.085F)
 		);
 		
 		miscarriage.addPartAnimation("right_arm", (part, continuousAnimationTick, progress) -> {		
-			part.zRot = MathHelper.animateBetweenAnglesMth(17.5F, 20, continuousAnimationTick, 0.02F);
-			part.yRot = MathHelper.animateBetweenAnglesMth(15, 17.5F, continuousAnimationTick, 0.02F);
+			part.zRot = MathHelper.animateBetweenAnglesMth(17.5F, 20, continuousAnimationTick, 0.092F);
+			part.yRot = MathHelper.animateBetweenAnglesMth(15, 17.5F, continuousAnimationTick, 0.092F);
 		});
 		
 		miscarriage.addPartAnimation("left_arm", (part, continuousAnimationTick, progress) -> {			
-			part.zRot = MathHelper.animateBetweenAnglesMth(-17.5F, -20, continuousAnimationTick, 0.02F);
-			part.yRot = MathHelper.animateBetweenAnglesMth(-15, -17.5F, continuousAnimationTick, 0.02F);
+			part.zRot = MathHelper.animateBetweenAnglesMth(-17.5F, -20, continuousAnimationTick, 0.092F);
+			part.yRot = MathHelper.animateBetweenAnglesMth(-15, -17.5F, continuousAnimationTick, 0.092F);
 		});
 	
 		miscarriage.addPartAnimation("right_leg", (part, continuousAnimationTick, progress) -> {
-			part.zRot = MathHelper.animateBetweenAnglesMth(15, 17.5F, continuousAnimationTick, 0.01F);
-			part.yRot = MathHelper.animateBetweenAnglesMth(30, 32.5F, continuousAnimationTick, 0.01F);
+			part.zRot = MathHelper.animateBetweenAnglesMth(15, 17.5F, continuousAnimationTick, 0.085F);
+			part.yRot = MathHelper.animateBetweenAnglesMth(30, 32.5F, continuousAnimationTick, 0.085F);
 	
 		});
 		
 		miscarriage.addPartAnimation("left_leg", (part, continuousAnimationTick, progress) -> {
-			part.zRot = MathHelper.animateBetweenAnglesMth(-15, -17.5F, continuousAnimationTick, 0.01F);
-			part.yRot = MathHelper.animateBetweenAnglesMth(-30, -32.5F, continuousAnimationTick, 0.01F);
+			part.zRot = MathHelper.animateBetweenAnglesMth(-15, -17.5F, continuousAnimationTick, 0.085F);
+			part.yRot = MathHelper.animateBetweenAnglesMth(-30, -32.5F, continuousAnimationTick, 0.085F);
 	
 		});
 				
@@ -120,34 +119,34 @@ public class PlayerAnimationRegistry {
 		
 		waterBreaking.addPartAnimation("body", (part, continuousAnimationTick, progress) -> {
 			part.z = -3;
-			part.xRot += MathHelper.animateBetweenAnglesMth(15, 16.5F, continuousAnimationTick, 0.01F);
+			part.xRot += MathHelper.animateBetweenAnglesMth(15, 16.5F, continuousAnimationTick, 0.085F);
 		});
 		
-		waterBreaking.addPartAnimation("head", (part, continuousAnimationTick, progress) -> {
-			part.z = -3;
-		});
+		waterBreaking.addPartAnimation("head", (part, continuousAnimationTick, progress) -> 
+			part.z = -3
+		);
 		
 		waterBreaking.addPartAnimation("right_arm", (part, continuousAnimationTick, progress) -> {		
 			part.z = -3;
-			part.zRot += MathHelper.animateBetweenAnglesMth(17.5F, 20, continuousAnimationTick, 0.02F);
-			part.yRot += MathHelper.animateBetweenAnglesMth(15, 17.5F, continuousAnimationTick, 0.02F);
+			part.zRot += MathHelper.animateBetweenAnglesMth(17.5F, 20, continuousAnimationTick, 0.092F);
+			part.yRot += MathHelper.animateBetweenAnglesMth(15, 17.5F, continuousAnimationTick, 0.092F);
 		});
 		
 		waterBreaking.addPartAnimation("left_arm", (part, continuousAnimationTick, progress) -> {			
 			part.z = -3;
-			part.zRot += MathHelper.animateBetweenAnglesMth(-17.5F, -20, continuousAnimationTick, 0.02F);
-			part.yRot += MathHelper.animateBetweenAnglesMth(-15, -17.5F, continuousAnimationTick, 0.02F);
+			part.zRot += MathHelper.animateBetweenAnglesMth(-17.5F, -20, continuousAnimationTick, 0.092F);
+			part.yRot += MathHelper.animateBetweenAnglesMth(-15, -17.5F, continuousAnimationTick, 0.092F);
 		});
 		
 		waterBreaking.addPartAnimation("right_leg", (part, continuousAnimationTick, progress) -> {
-			part.zRot += MathHelper.animateBetweenAnglesMth(5, 6.5F, continuousAnimationTick, 0.01F);
-			part.yRot += MathHelper.animateBetweenAnglesMth(10, 12.5F, continuousAnimationTick, 0.01F);
+			part.zRot += MathHelper.animateBetweenAnglesMth(5, 6.5F, continuousAnimationTick, 0.085F);
+			part.yRot += MathHelper.animateBetweenAnglesMth(10, 12.5F, continuousAnimationTick, 0.085F);
 	
 		});
 		
 		waterBreaking.addPartAnimation("left_leg", (part, continuousAnimationTick, progress) -> {
-			part.zRot += MathHelper.animateBetweenAnglesMth(-5, -6.5F, continuousAnimationTick, 0.01F);
-			part.yRot += MathHelper.animateBetweenAnglesMth(-10, -12.5F, continuousAnimationTick, 0.01F);
+			part.zRot += MathHelper.animateBetweenAnglesMth(-5, -6.5F, continuousAnimationTick, 0.085F);
+			part.yRot += MathHelper.animateBetweenAnglesMth(-10, -12.5F, continuousAnimationTick, 0.085F);
 	
 		});
 		register(waterBreaking);	
@@ -158,12 +157,12 @@ public class PlayerAnimationRegistry {
 		
 		preBirth.addPartAnimation("body", (part, continuousAnimationTick, progress) -> {
 			part.z = -3;
-			part.xRot = MathHelper.animateBetweenAnglesMth(15, 16.5F, continuousAnimationTick, 0.01F);
+			part.xRot = MathHelper.animateBetweenAnglesMth(15, 16.5F, continuousAnimationTick, 0.085F);
 		});
 		
 		preBirth.addPartAnimation("head", (part, continuousAnimationTick, progress) -> {
 			part.z = -3;
-			part.xRot = MathHelper.animateBetweenAnglesMth(-27.5F, 29, continuousAnimationTick, 0.01F);
+			part.xRot = MathHelper.animateBetweenAnglesMth(-27.5F, 29, continuousAnimationTick, 0.085F);
 		});
 		
 		preBirth.addPartAnimation("right_arm", (part, continuousAnimationTick, progress) -> {		
@@ -179,14 +178,14 @@ public class PlayerAnimationRegistry {
 		});
 	
 		preBirth.addPartAnimation("right_leg", (part, continuousAnimationTick, progress) -> {
-			part.zRot = MathHelper.animateBetweenAnglesMth(15, 17.5F, continuousAnimationTick, 0.01F);
-			part.yRot = MathHelper.animateBetweenAnglesMth(30, 32.5F, continuousAnimationTick, 0.01F);
+			part.zRot = MathHelper.animateBetweenAnglesMth(15, 17.5F, continuousAnimationTick, 0.085F);
+			part.yRot = MathHelper.animateBetweenAnglesMth(30, 32.5F, continuousAnimationTick, 0.085F);
 	
 		});
 		
 		preBirth.addPartAnimation("left_leg", (part, continuousAnimationTick, progress) -> {
-			part.zRot = MathHelper.animateBetweenAnglesMth(-15, -17.5F, continuousAnimationTick, 0.01F);
-			part.yRot = MathHelper.animateBetweenAnglesMth(-30, -32.5F, continuousAnimationTick, 0.01F);
+			part.zRot = MathHelper.animateBetweenAnglesMth(-15, -17.5F, continuousAnimationTick, 0.085F);
+			part.yRot = MathHelper.animateBetweenAnglesMth(-30, -32.5F, continuousAnimationTick, 0.085F);
 	
 		});
 	
@@ -198,9 +197,9 @@ public class PlayerAnimationRegistry {
 		PlayerAnimation rubbingBellyP1 = new PlayerAnimation("rubbing_belly_p1", 240, true);
 		
 		rubbingBellyP1.addPartAnimation("right_arm", (part, continuousAnimationTick, progress) -> {		
-			part.xRot = MathHelper.animateBetweenAnglesMth(-30.9360F, -33.2482F, continuousAnimationTick, 0.01F);
-			part.yRot = MathHelper.animateBetweenAnglesMth(12.8595F, 13.8965F, continuousAnimationTick, 0.01F);
-			part.zRot = MathHelper.animateBetweenAnglesMth(-18.6430F, -31.4254F, continuousAnimationTick, 0.01F);
+			part.xRot = MathHelper.animateBetweenAnglesMth(-30.9360F, -33.2482F, continuousAnimationTick, 0.085F);
+			part.yRot = MathHelper.animateBetweenAnglesMth(12.8595F, 13.8965F, continuousAnimationTick, 0.085F);
+			part.zRot = MathHelper.animateBetweenAnglesMth(-18.6430F, -31.4254F, continuousAnimationTick, 0.085F);
 		});
 			
 		register(rubbingBellyP1);
@@ -208,15 +207,15 @@ public class PlayerAnimationRegistry {
 		PlayerAnimation rubbingBellyP2 = new PlayerAnimation("rubbing_belly_p2", 240, true);
 		
 		rubbingBellyP2.addPartAnimation("right_arm", (part, continuousAnimationTick, progress) -> {		
-			part.xRot = MathHelper.animateBetweenAnglesMth(-72.1763F, -76.0995F, continuousAnimationTick, 0.01F);
-			part.yRot = MathHelper.animateBetweenAnglesMth(30.2325F, 41.8932F, continuousAnimationTick, 0.01F);
-			part.zRot = MathHelper.animateBetweenAnglesMth(-65.6523F, -71.1692F, continuousAnimationTick, 0.01F);
+			part.xRot = MathHelper.animateBetweenAnglesMth(-72.1763F, -76.0995F, continuousAnimationTick, 0.085F);
+			part.yRot = MathHelper.animateBetweenAnglesMth(30.2325F, 41.8932F, continuousAnimationTick, 0.085F);
+			part.zRot = MathHelper.animateBetweenAnglesMth(-65.6523F, -71.1692F, continuousAnimationTick, 0.085F);
 		});
 		
 		rubbingBellyP2.addPartAnimation("left_arm", (part, continuousAnimationTick, progress) -> {			
-			part.xRot = MathHelper.animateBetweenAnglesMth(-60.3841F, -69.4102F, continuousAnimationTick, 0.01F);
-			part.yRot = MathHelper.animateBetweenAnglesMth(-46.077F, -32.2461F, continuousAnimationTick, 0.01F);
-			part.zRot = MathHelper.animateBetweenAnglesMth(56.3194F, 71.6639F, continuousAnimationTick, 0.01F);
+			part.xRot = MathHelper.animateBetweenAnglesMth(-60.3841F, -69.4102F, continuousAnimationTick, 0.085F);
+			part.yRot = MathHelper.animateBetweenAnglesMth(-46.077F, -32.2461F, continuousAnimationTick, 0.085F);
+			part.zRot = MathHelper.animateBetweenAnglesMth(56.3194F, 71.6639F, continuousAnimationTick, 0.085F);
 		});
 		
 		register(rubbingBellyP2);
@@ -224,15 +223,15 @@ public class PlayerAnimationRegistry {
 		PlayerAnimation rubbingBellyP3 = new PlayerAnimation("rubbing_belly_p3", 240, true);
 		
 		rubbingBellyP3.addPartAnimation("right_arm", (part, continuousAnimationTick, progress) -> {		
-			part.xRot = MathHelper.animateBetweenAnglesMth(-39.6041F, -60.8900F, continuousAnimationTick, 0.01F);
-			part.yRot = MathHelper.animateBetweenAnglesMth(-9.5874F, 0.7699F, continuousAnimationTick, 0.01F);
-			part.zRot = MathHelper.animateBetweenAnglesMth(9.2054F, 0.5902F, continuousAnimationTick, 0.01F);
+			part.xRot = MathHelper.animateBetweenAnglesMth(-39.6041F, -60.8900F, continuousAnimationTick, 0.085F);
+			part.yRot = MathHelper.animateBetweenAnglesMth(-9.5874F, 0.7699F, continuousAnimationTick, 0.085F);
+			part.zRot = MathHelper.animateBetweenAnglesMth(9.2054F, 0.5902F, continuousAnimationTick, 0.085F);
 		});
 		
 		rubbingBellyP3.addPartAnimation("left_arm", (part, continuousAnimationTick, progress) -> {			
-			part.xRot = MathHelper.animateBetweenAnglesMth(-60.9562F, -45.1742F, continuousAnimationTick, 0.01F);
-			part.yRot = MathHelper.animateBetweenAnglesMth(9.1256F, 2.1333F, continuousAnimationTick, 0.01F);
-			part.zRot = MathHelper.animateBetweenAnglesMth(-14.6035F, -3.8908F, continuousAnimationTick, 0.01F);
+			part.xRot = MathHelper.animateBetweenAnglesMth(-60.9562F, -45.1742F, continuousAnimationTick, 0.085F);
+			part.yRot = MathHelper.animateBetweenAnglesMth(9.1256F, 2.1333F, continuousAnimationTick, 0.085F);
+			part.zRot = MathHelper.animateBetweenAnglesMth(-14.6035F, -3.8908F, continuousAnimationTick, 0.085F);
 		});
 		
 		register(rubbingBellyP3);	
@@ -240,15 +239,15 @@ public class PlayerAnimationRegistry {
 		PlayerAnimation rubbingBellyP4 = new PlayerAnimation("rubbing_belly_p4", 240, true);
 		
 		rubbingBellyP4.addPartAnimation("right_arm", (part, continuousAnimationTick, progress) -> {		
-			part.xRot = MathHelper.animateBetweenAnglesMth(-39.6041F, -60.8900F, continuousAnimationTick, 0.01F);
-			part.yRot = MathHelper.animateBetweenAnglesMth(-9.5874F, 0.7699F, continuousAnimationTick, 0.01F);
-			part.zRot = MathHelper.animateBetweenAnglesMth(12.5054F, 5.5902F, continuousAnimationTick, 0.01F);
+			part.xRot = MathHelper.animateBetweenAnglesMth(-39.6041F, -60.8900F, continuousAnimationTick, 0.085F);
+			part.yRot = MathHelper.animateBetweenAnglesMth(-9.5874F, 0.7699F, continuousAnimationTick, 0.085F);
+			part.zRot = MathHelper.animateBetweenAnglesMth(12.5054F, 5.5902F, continuousAnimationTick, 0.085F);
 		});
 		
 		rubbingBellyP4.addPartAnimation("left_arm", (part, continuousAnimationTick, progress) -> {			
-			part.xRot = MathHelper.animateBetweenAnglesMth(-60.9562F, -45.1742F, continuousAnimationTick, 0.01F);
-			part.yRot = MathHelper.animateBetweenAnglesMth(9.1256F, 2.1333F, continuousAnimationTick, 0.01F);
-			part.zRot = MathHelper.animateBetweenAnglesMth(-17.6035F, -7.8908F, continuousAnimationTick, 0.01F);
+			part.xRot = MathHelper.animateBetweenAnglesMth(-60.9562F, -45.1742F, continuousAnimationTick, 0.085F);
+			part.yRot = MathHelper.animateBetweenAnglesMth(9.1256F, 2.1333F, continuousAnimationTick, 0.085F);
+			part.zRot = MathHelper.animateBetweenAnglesMth(-17.6035F, -7.8908F, continuousAnimationTick, 0.085F);
 		});
 		
 		register(rubbingBellyP4);	
@@ -256,15 +255,15 @@ public class PlayerAnimationRegistry {
 		PlayerAnimation rubbingBellyP5 = new PlayerAnimation("rubbing_belly_p5", 240, true);
 		
 		rubbingBellyP5.addPartAnimation("right_arm", (part, continuousAnimationTick, progress) -> {		
-			part.xRot = MathHelper.animateBetweenAnglesMth(-40.1427F, -60.7642F, continuousAnimationTick, 0.01F);
-			part.yRot = MathHelper.animateBetweenAnglesMth(-6.3807F, 5.1363F, continuousAnimationTick, 0.01F);
-			part.zRot = MathHelper.animateBetweenAnglesMth(16.3743F, 7.4398F, continuousAnimationTick, 0.01F);
+			part.xRot = MathHelper.animateBetweenAnglesMth(-40.1427F, -60.7642F, continuousAnimationTick, 0.085F);
+			part.yRot = MathHelper.animateBetweenAnglesMth(-6.3807F, 5.1363F, continuousAnimationTick, 0.085F);
+			part.zRot = MathHelper.animateBetweenAnglesMth(16.3743F, 7.4398F, continuousAnimationTick, 0.085F);
 		});
 		
 		rubbingBellyP5.addPartAnimation("left_arm", (part, continuousAnimationTick, progress) -> {			
-			part.xRot = MathHelper.animateBetweenAnglesMth(-61.2504F, -45.1963F, continuousAnimationTick, 0.01F);
-			part.yRot = MathHelper.animateBetweenAnglesMth(4.7474F, -1.4147F, continuousAnimationTick, 0.01F);
-			part.zRot = MathHelper.animateBetweenAnglesMth(-20.0369F, -11.4144F, continuousAnimationTick, 0.01F);
+			part.xRot = MathHelper.animateBetweenAnglesMth(-61.2504F, -45.1963F, continuousAnimationTick, 0.085F);
+			part.yRot = MathHelper.animateBetweenAnglesMth(4.7474F, -1.4147F, continuousAnimationTick, 0.085F);
+			part.zRot = MathHelper.animateBetweenAnglesMth(-20.0369F, -11.4144F, continuousAnimationTick, 0.085F);
 		});
 		
 		register(rubbingBellyP5);
@@ -273,15 +272,15 @@ public class PlayerAnimationRegistry {
 		PlayerAnimation rubbingBellyP6 = new PlayerAnimation("rubbing_belly_p6", 240, true);
 		
 		rubbingBellyP6.addPartAnimation("right_arm", (part, continuousAnimationTick, progress) -> {		
-			part.xRot = MathHelper.animateBetweenAnglesMth(-40.1427F, -60.7642F, continuousAnimationTick, 0.01F);
-			part.yRot = MathHelper.animateBetweenAnglesMth(-6.3807F, 5.1363F, continuousAnimationTick, 0.01F);
-			part.zRot = MathHelper.animateBetweenAnglesMth(21.3743F, 12.4398F, continuousAnimationTick, 0.01F);
+			part.xRot = MathHelper.animateBetweenAnglesMth(-40.1427F, -60.7642F, continuousAnimationTick, 0.085F);
+			part.yRot = MathHelper.animateBetweenAnglesMth(-6.3807F, 5.1363F, continuousAnimationTick, 0.085F);
+			part.zRot = MathHelper.animateBetweenAnglesMth(21.3743F, 12.4398F, continuousAnimationTick, 0.085F);
 		});
 		
 		rubbingBellyP6.addPartAnimation("left_arm", (part, continuousAnimationTick, progress) -> {			
-			part.xRot = MathHelper.animateBetweenAnglesMth(-61.2504F, -45.1963F, continuousAnimationTick, 0.01F);
-			part.yRot = MathHelper.animateBetweenAnglesMth(4.7474F, -1.4147F, continuousAnimationTick, 0.01F);
-			part.zRot = MathHelper.animateBetweenAnglesMth(-25.0369F, -17.4144F, continuousAnimationTick, 0.01F);
+			part.xRot = MathHelper.animateBetweenAnglesMth(-61.2504F, -45.1963F, continuousAnimationTick, 0.085F);
+			part.yRot = MathHelper.animateBetweenAnglesMth(4.7474F, -1.4147F, continuousAnimationTick, 0.085F);
+			part.zRot = MathHelper.animateBetweenAnglesMth(-25.0369F, -17.4144F, continuousAnimationTick, 0.085F);
 		});
 		
 		register(rubbingBellyP6);
@@ -290,15 +289,15 @@ public class PlayerAnimationRegistry {
 		PlayerAnimation rubbingBellyP7 = new PlayerAnimation("rubbing_belly_p7", 240, true);
 		
 		rubbingBellyP7.addPartAnimation("right_arm", (part, continuousAnimationTick, progress) -> {		
-			part.xRot = MathHelper.animateBetweenAnglesMth(-40.4606F, -60.4489F, continuousAnimationTick, 0.01F);
-			part.yRot = MathHelper.animateBetweenAnglesMth(-3.1454F, 9.4933F, continuousAnimationTick, 0.01F);
-			part.zRot = MathHelper.animateBetweenAnglesMth(29.2003F, 9.9134F, continuousAnimationTick, 0.01F);
+			part.xRot = MathHelper.animateBetweenAnglesMth(-40.4606F, -60.4489F, continuousAnimationTick, 0.085F);
+			part.yRot = MathHelper.animateBetweenAnglesMth(-3.1454F, 9.4933F, continuousAnimationTick, 0.085F);
+			part.zRot = MathHelper.animateBetweenAnglesMth(29.2003F, 9.9134F, continuousAnimationTick, 0.085F);
 		});
 		
 		rubbingBellyP7.addPartAnimation("left_arm", (part, continuousAnimationTick, progress) -> {			
-			part.xRot = MathHelper.animateBetweenAnglesMth(-61.3575F, -44.9997F, continuousAnimationTick, 0.01F);
-			part.yRot = MathHelper.animateBetweenAnglesMth(0.3609F, -4.9574F, continuousAnimationTick, 0.01F);
-			part.zRot = MathHelper.animateBetweenAnglesMth(-27.4395F, -15.9488F, continuousAnimationTick, 0.01F);
+			part.xRot = MathHelper.animateBetweenAnglesMth(-61.3575F, -44.9997F, continuousAnimationTick, 0.085F);
+			part.yRot = MathHelper.animateBetweenAnglesMth(0.3609F, -4.9574F, continuousAnimationTick, 0.085F);
+			part.zRot = MathHelper.animateBetweenAnglesMth(-27.4395F, -15.9488F, continuousAnimationTick, 0.085F);
 		});
 		
 		register(rubbingBellyP7);
@@ -307,15 +306,15 @@ public class PlayerAnimationRegistry {
 		PlayerAnimation rubbingBellyP8 = new PlayerAnimation("rubbing_belly_p8", 240, true);
 		
 		rubbingBellyP8.addPartAnimation("right_arm", (part, continuousAnimationTick, progress) -> {		
-			part.xRot = MathHelper.animateBetweenAnglesMth(-40.4606F, -60.4489F, continuousAnimationTick, 0.01F);
-			part.yRot = MathHelper.animateBetweenAnglesMth(-3.1454F, 9.4933F, continuousAnimationTick, 0.01F);
-			part.zRot = MathHelper.animateBetweenAnglesMth(33.2003F, 13.9134F, continuousAnimationTick, 0.01F);
+			part.xRot = MathHelper.animateBetweenAnglesMth(-40.4606F, -60.4489F, continuousAnimationTick, 0.085F);
+			part.yRot = MathHelper.animateBetweenAnglesMth(-3.1454F, 9.4933F, continuousAnimationTick, 0.085F);
+			part.zRot = MathHelper.animateBetweenAnglesMth(33.2003F, 13.9134F, continuousAnimationTick, 0.085F);
 		});
 		
 		rubbingBellyP8.addPartAnimation("left_arm", (part, continuousAnimationTick, progress) -> {			
-			part.xRot = MathHelper.animateBetweenAnglesMth(-61.3575F, -44.9997F, continuousAnimationTick, 0.01F);
-			part.yRot = MathHelper.animateBetweenAnglesMth(0.3609F, -4.9574F, continuousAnimationTick, 0.01F);
-			part.zRot = MathHelper.animateBetweenAnglesMth(-32.4395F, -20.9488F, continuousAnimationTick, 0.01F);
+			part.xRot = MathHelper.animateBetweenAnglesMth(-61.3575F, -44.9997F, continuousAnimationTick, 0.085F);
+			part.yRot = MathHelper.animateBetweenAnglesMth(0.3609F, -4.9574F, continuousAnimationTick, 0.085F);
+			part.zRot = MathHelper.animateBetweenAnglesMth(-32.4395F, -20.9488F, continuousAnimationTick, 0.085F);
 		});
 		
 		register(rubbingBellyP8);

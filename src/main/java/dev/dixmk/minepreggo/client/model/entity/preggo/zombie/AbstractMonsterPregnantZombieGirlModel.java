@@ -1,12 +1,15 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.zombie;
 
-import dev.dixmk.minepreggo.client.animation.preggo.HumanoidGirlAnimation;
+import dev.dixmk.minepreggo.client.animation.preggo.HumanoidFemaleAnimation;
 import dev.dixmk.minepreggo.client.animation.preggo.ZombieGirlAnimation;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractMonsterPregnantZombieGirl;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public abstract class AbstractMonsterPregnantZombieGirlModel<E extends AbstractMonsterPregnantZombieGirl> extends AbstractMonsterZombieGirlModel<E> {
 
 	protected AbstractMonsterPregnantZombieGirlModel(ModelPart root) {
@@ -41,7 +44,7 @@ public abstract class AbstractMonsterPregnantZombieGirlModel<E extends AbstractM
 				this.root().getAllParts().forEach(ModelPart::resetPose);	
 				
 			    if (zombieGirl.getItemBySlot(EquipmentSlot.CHEST).isEmpty()) {
-			    	this.animate(zombieGirl.loopAnimationState, HumanoidGirlAnimation.MEDIUM_BELLY_INFLATION, ageInTicks, 1f);
+			    	this.animate(zombieGirl.loopAnimationState, HumanoidFemaleAnimation.MEDIUM_BELLY_INFLATION, ageInTicks, 1f);
 			    }
 			    		    
 			    if (zombieGirl.isAttacking()) {

@@ -4,9 +4,9 @@ import net.minecraft.util.RandomSource;
 
 public interface ISimplePregnancy {
 
-	PregnancyStage getCurrentPregnancyStage();
+	PregnancyPhase getCurrentPregnancyStage();
 	
-	PregnancyStage getLastPregnancyStage();
+	PregnancyPhase getLastPregnancyStage();
 	
 	int getTotalDaysPassed();
 	
@@ -16,18 +16,18 @@ public interface ISimplePregnancy {
 	int getPregnancyPainTimer();
 	void setPregnancyPainTimer(int tick);
 	
-	static int getRandomTotalDaysPassed(PregnancyStage currentPregnancyStage, PregnancyStage maxPregnancyStage, RandomSource randomSource) {	
+	static int getRandomTotalDaysPassed(PregnancyPhase currentPregnancyStage, PregnancyPhase maxPregnancyStage, RandomSource randomSource) {	
 		int max = maxPregnancyStage.ordinal();
 		int current = currentPregnancyStage.ordinal();
 		
-		if (max < PregnancyStage.P4.ordinal()) {
-			max = PregnancyStage.P4.ordinal();
+		if (max < PregnancyPhase.P4.ordinal()) {
+			max = PregnancyPhase.P4.ordinal();
 		} 
 		
 		if (current > max) {
 			current = max;
-		} else if (current == PregnancyStage.P0.ordinal()) {
-			current = PregnancyStage.P1.ordinal();
+		} else if (current == PregnancyPhase.P0.ordinal()) {
+			current = PregnancyPhase.P1.ordinal();
 		}
 		
 		final int daysByStage = PregnancySystemHelper.TOTAL_PREGNANCY_DAYS / max;	

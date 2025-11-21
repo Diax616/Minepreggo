@@ -7,8 +7,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.world.entity.preggo.AbstractPregnancySystem;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPain;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancySymptom;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemHelper;
 import net.minecraft.server.level.ServerLevel;
@@ -29,8 +29,8 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 	}
 	
 	@Override
-	protected void evaluatePregnancyEffects() {	
-		super.evaluatePregnancyEffects();
+	protected void evaluatePregnancyNeeds() {	
+		super.evaluatePregnancyNeeds();
 		evaluateHornyTimer();
 	}
 	
@@ -43,8 +43,15 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 			return;
 		}
 		
+		if (isWaterBroken()) {
+			if (pregnantEntity.level() instanceof ServerLevel serverLevel) {
+				evaluateWaterBreaking(serverLevel);
+			}
+			return;
+		}
+		
 		if (canAdvanceNextPregnancyPhase() && hasToGiveBirth()) {
-			startLabor();
+			breakWater();
 			return;
 		}
 		
@@ -76,7 +83,7 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 				pregnancySystem.setPregnancyPain(PregnancyPain.CONTRACTION);
 			}
 			else {
-				pregnancySystem.setPregnancyPain(PregnancyPain.KICKING);
+				pregnancySystem.setPregnancyPain(PregnancyPain.FETAL_MOVEMENT);
 			}						
 			flag = true;
 		}
@@ -134,13 +141,36 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 	}
 	
 	@Override
-	protected void advanceToNextPregnancyPhase() {	
-		var currentStage = pregnancySystem.getCurrentPregnancyStage();		
-		pregnancySystem.setCurrentPregnancyStage(PregnancyStage.values()[Math.max(currentStage.ordinal() + 1, PregnancyStage.values().length - 1)]);
-		pregnancySystem.resetPregnancyTimer();
-		pregnancySystem.resetDaysPassed();
-		
-		MinepreggoMod.LOGGER.debug("Player {} advanced to next pregnancy phase: {}",
-				pregnantEntity.getGameProfile().getName(), pregnancySystem.getCurrentPregnancyStage().name());	
+	protected void evaluateWaterBreaking(ServerLevel serverLevel) {
+		if (pregnancySystem.getPregnancyPainTimer() >= PregnancySystemHelper.TOTAL_TICKS_WATER_BREAKING) {
+			startLabor();
+		}
+		else {
+			pregnancySystem.incrementPregnancyPainTimer();
+    		AbstractPregnancySystem.spawnParticulesForWaterBreaking(serverLevel, pregnantEntity);
+		}
 	}
+	
+	@Override
+	protected void breakWater() {
+		pregnancySystem.resetPregnancyPainTimer();
+		pregnancySystem.setPregnancyPain(PregnancyPain.WATER_BREAKING);
+		pregnancySystem.sync(pregnantEntity);
+	}
+	
+	@Override
+	protected boolean hasToGiveBirth() {
+		return pregnancySystem.getLastPregnancyStage() == pregnancySystem.getCurrentPregnancyStage();
+	}
+	
+	@Override
+	protected boolean isInLabor() {
+		final var pain = pregnancySystem.getPregnancyPain();
+		return pain == PregnancyPain.PREBIRTH || pain == PregnancyPain.BIRTH;
+ 	}
+	
+	@Override
+	protected boolean isWaterBroken() {
+		return pregnancySystem.getPregnancyPain() == PregnancyPain.WATER_BREAKING;
+ 	}
 }

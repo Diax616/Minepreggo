@@ -4,7 +4,7 @@ import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.utils.TagHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancyStage;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPhase;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamableZombieGirl;
 import dev.dixmk.minepreggo.world.inventory.preggo.AbstractPreggoMobInventaryMenu;
@@ -38,7 +38,7 @@ public abstract class AbstractZombieGirlInventoryMenu<E extends AbstractTamableZ
 					if (!ItemHelper.isChest(itemstack)) {
 						return false;
 					}					
-					var stage = PregnancyStage.getNonPregnancyStage();		
+					var stage = PregnancyPhase.getNonPregnancyStage();		
 					if (zombieGirl instanceof AbstractTamablePregnantZombieGirl<?,?> pregZombieGirl) {
 						stage = pregZombieGirl.getCurrentPregnancyStage();		
 					}			
@@ -55,7 +55,7 @@ public abstract class AbstractZombieGirlInventoryMenu<E extends AbstractTamableZ
 					if (!ItemHelper.isLegging(itemstack)) {
 						return false;
 					}
-					var stage = PregnancyStage.getNonPregnancyStage();
+					var stage = PregnancyPhase.getNonPregnancyStage();
 					if (zombieGirl instanceof AbstractTamablePregnantZombieGirl<?,?> pregZombieGirl) {
 						stage = pregZombieGirl.getCurrentPregnancyStage();			
 					}

@@ -16,6 +16,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class AbstractHumanoidCreeperGirlRenderer<E extends AbstractCreeperGirl, M extends AbstractHumanoidCreeperGirlModel<E>> extends HumanoidMobRenderer<E, M> {
+	protected static final ResourceLocation  CREEPER_GIRL_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/creeper_girl.png");
 	protected static final ResourceLocation  CREEPER_GIRL_P0_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/creeper_girl_p0.png");
 	protected static final ResourceLocation  CREEPER_GIRL_P1_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/creeper_girl_p1.png");
 	protected static final ResourceLocation  CREEPER_GIRL_P2_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/creeper_girl_p2.png");

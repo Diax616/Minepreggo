@@ -1,7 +1,5 @@
 package dev.dixmk.minepreggo.event;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.animation.player.ArmAnimationManager;
 import dev.dixmk.minepreggo.client.screens.effect.SexOverlayManager;
@@ -48,27 +46,18 @@ public class RenderEventHandler {
              
         // Check if player has active animation
         if (ArmAnimationManager.getInstance().isAnimating(player.getUUID())) {
-            
+           
             MinepreggoMod.LOGGER.debug("Applying arm animation for hand: {}", event.getHand());
-            
-            PoseStack poseStack = event.getPoseStack();
             
             // DON'T use pushPose/popPose - the transformations have to be persist
             if (event.getHand() == InteractionHand.MAIN_HAND) {
             	ArmAnimationManager.getInstance().applyAnimation(
                     player.getUUID(),
                     player.getMainArm(),
-                    poseStack,
+                    event.getPoseStack(),
                     event.getPartialTick()
                 );
-            } else if (event.getHand() == InteractionHand.OFF_HAND) {
-            	ArmAnimationManager.getInstance().applyAnimation(
-                    player.getUUID(),
-                    player.getMainArm().getOpposite(),
-                    poseStack,
-                    event.getPartialTick()
-                );
-            }
+            } 
         }
     }
 }

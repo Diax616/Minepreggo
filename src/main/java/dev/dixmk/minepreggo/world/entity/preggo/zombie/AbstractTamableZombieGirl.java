@@ -6,17 +6,25 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 
+import java.util.UUID;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
+import dev.dixmk.minepreggo.network.capability.FemaleEntityImpl;
+import dev.dixmk.minepreggo.network.capability.Gender;
+import dev.dixmk.minepreggo.network.capability.IFemaleEntity;
 import dev.dixmk.minepreggo.world.entity.ai.goal.PreggoMobAIHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.PostPregnancy;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobState;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancyStage;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPhase;
 import dev.dixmk.minepreggo.world.inventory.preggo.zombie.ZombieGirlMenuHelper;
 import dev.dixmk.minepreggo.world.item.ItemHelper;
 import net.minecraft.core.Direction;
@@ -55,7 +63,15 @@ import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import net.minecraftforge.items.wrapper.EntityArmorInvWrapper;
 import net.minecraftforge.items.wrapper.EntityHandsInvWrapper;
 
-public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> extends AbstractZombieGirl implements ITamablePreggoMob {
+public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> extends AbstractZombieGirl implements ITamablePreggoMob, IFemaleEntity {
+	
+	/* TODO A lot of EntityDataAccessor can be normal fields, only kept as EntityDataAccessor for syncing purposes. 
+	 * Consider refactoring those that don't need to be synced.
+	 * DATA_BREAK_BLOCKS - can be normal field
+	 * DATA_PICKUP_ITEMS - can be normal field
+	 * DATA_ANGRY - can be normal field
+	 * DATA_PANIC - can be normal field
+	 */
 	protected static final EntityDataAccessor<Integer> DATA_HUNGRY = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.INT);
 	protected static final EntityDataAccessor<Boolean> DATA_SAVAGE = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Boolean> DATA_ANGRY = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
@@ -68,10 +84,11 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 	protected final ItemStackHandler inventory = new ItemStackHandler(INVENTORY_SIZE);
 	protected final CombinedInvWrapper combined = new CombinedInvWrapper(inventory, new EntityHandsInvWrapper(this), new EntityArmorInvWrapper(this));
 	public static final int INVENTORY_SIZE = 15;
-	
+
 	private int hungryTimer = 0;
-	
 	protected final P preggoMobSystem;
+	
+	protected final FemaleEntityImpl defaultFemaleEntityImpl = new FemaleEntityImpl();
 	
 	protected AbstractTamableZombieGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_) {
 	      super(p_21803_, p_21804_);
@@ -85,7 +102,7 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 	@Override
 	protected void defineSynchedData() {
 		super.defineSynchedData();
-		this.entityData.define(DATA_HUNGRY, 4);		
+		this.entityData.define(DATA_HUNGRY, 10);		
 		this.entityData.define(DATA_SAVAGE, true);
 		this.entityData.define(DATA_ANGRY, false);
 		this.entityData.define(DATA_WAITING, false);
@@ -108,6 +125,7 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 		compound.putBoolean("DataBreakBlocks", this.entityData.get(DATA_BREAK_BLOCKS));
 		compound.putBoolean("DataPickUpItems", this.entityData.get(DATA_PICKUP_ITEMS));
 		compound.putInt("DataState", this.entityData.get(DATA_STATE).ordinal());
+		this.defaultFemaleEntityImpl.serializeNBT(compound);
 	}
 	
 	@Override
@@ -124,7 +142,8 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 		this.entityData.set(DATA_PANIC, compound.getBoolean("DataPanic"));	
 		this.entityData.set(DATA_BREAK_BLOCKS, compound.getBoolean("DataBreakBlocks"));	
 		this.entityData.set(DATA_PICKUP_ITEMS, compound.getBoolean("DataPickUpItems"));
-		this.entityData.set(DATA_STATE, PreggoMobState.values()[compound.getInt("DataState")]);
+		this.entityData.set(DATA_STATE, PreggoMobState.values()[compound.getInt("DataState")]);	
+		this.defaultFemaleEntityImpl.deserializeNBT(compound);
 	}
 
 	@Override
@@ -261,8 +280,8 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 	
 	@Override
 	protected boolean canReplaceCurrentItem(ItemStack p_21428_, ItemStack p_21429_) {	
-		if ((ItemHelper.isChest(p_21428_) && !PreggoMobHelper.canUseChestplate(p_21428_, PregnancyStage.P0))
-					|| (ItemHelper.isLegging(p_21428_) && !PreggoMobHelper.canUseLegging(p_21428_, PregnancyStage.P0))) {
+		if ((ItemHelper.isChest(p_21428_) && !PreggoMobHelper.canUseChestplate(p_21428_, PregnancyPhase.P0))
+					|| (ItemHelper.isLegging(p_21428_) && !PreggoMobHelper.canUseLegging(p_21428_, PregnancyPhase.P0))) {
 			return false;
 		}	
 		return super.canReplaceCurrentItem(p_21428_, p_21429_);
@@ -285,6 +304,13 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 		}
 	}
 	
+	@Override
+	public AgeableMob getBreedOffspring(ServerLevel p_146743_, AgeableMob p_146744_) {
+		return null;
+	}
+	
+	
+	// ITamablePreggomob START
 	@Override
 	public int getFullness() {
 	    return this.entityData.get(DATA_HUNGRY);
@@ -405,9 +431,156 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 	public void setBreakBlocks(boolean value) {
 		this.entityData.set(DATA_BREAK_BLOCKS, value);
 	}
+
+	// ITamablePreggomob END
+	
+	
+	// IFemaleEntity START
 	
 	@Override
-	public AgeableMob getBreedOffspring(ServerLevel p_146743_, AgeableMob p_146744_) {
-		return null;
+	public int getPregnancyInitializerTimer() {
+		return this.defaultFemaleEntityImpl.getPregnancyInitializerTimer();
 	}
+
+	@Override
+	public void setPregnancyInitializerTimer(int ticks) {
+		this.defaultFemaleEntityImpl.setPregnancyInitializerTimer(ticks);
+	}
+
+	@Override
+	public void incrementPregnancyInitializerTimer() {
+		this.defaultFemaleEntityImpl.incrementPregnancyInitializerTimer();
+	}
+
+	@Override
+	public boolean isPregnant() {
+		return this.defaultFemaleEntityImpl.isPregnant();
+	}
+
+	@Override
+	public boolean canGetPregnant() {
+		return this.defaultFemaleEntityImpl.canGetPregnant();
+	}
+
+	@Override
+	public boolean tryImpregnate(@Nullable UUID father) {
+		return this.defaultFemaleEntityImpl.tryImpregnate(father);
+	}
+
+	@Override
+	public boolean tryCancelPregnancy() {
+		return this.defaultFemaleEntityImpl.tryCancelPregnancy();
+	}
+
+	@Override
+	public @Nullable UUID getFather() {
+		return this.defaultFemaleEntityImpl.getFather();
+	}
+
+	@Override
+	public boolean hasNaturalPregnancy() {
+		return this.defaultFemaleEntityImpl.hasNaturalPregnancy();
+	}
+
+	@Override
+	public @Nullable PostPregnancy getPostPregnancyPhase() {
+		return this.defaultFemaleEntityImpl.getPostPregnancyPhase();
+	}
+
+	@Override
+	public boolean tryActivatePostPregnancyPhase(@NonNull PostPregnancy postPregnancy) {
+		return this.defaultFemaleEntityImpl.tryActivatePostPregnancyPhase(postPregnancy);
+	}
+	
+	@Override
+	public int getPostPregnancyTimer() {
+		return this.defaultFemaleEntityImpl.getPostPregnancyTimer();
+	}
+
+	@Override
+	public void setPostPregnancyTimer(int ticks) {
+		this.defaultFemaleEntityImpl.setPostPregnancyTimer(ticks);
+	}
+
+	@Override
+	public void incrementPostPregnancyTimer() {
+		this.defaultFemaleEntityImpl.incrementPostPregnancyTimer();	
+	}
+
+	@Override
+	public int getFertilityRateTimer() {
+		return this.defaultFemaleEntityImpl.getFertilityRateTimer();
+	}
+
+	@Override
+	public void setFertilityRateTimer(int ticks) {
+		this.defaultFemaleEntityImpl.setFertilityRateTimer(ticks);
+	}
+
+	@Override
+	public void incrementFertilityRateTimer() {
+		this.defaultFemaleEntityImpl.incrementFertilityRateTimer();
+	}
+
+	@Override
+	public float getFertilityRate() {
+		return this.defaultFemaleEntityImpl.getFertilityRate();
+	}
+
+	@Override
+	public void setFertilityRate(float rate) {
+		this.defaultFemaleEntityImpl.setFertilityRate(rate);
+	}
+
+	@Override
+	public void incrementFertilityRate(float rate) {
+		this.defaultFemaleEntityImpl.incrementFertilityRate(rate);
+	}
+
+	@Override
+	public int getSexualAppetite() {
+		return this.defaultFemaleEntityImpl.getSexualAppetite();
+	}
+
+	@Override
+	public void setSexualAppetite(int sexualAppetite) {
+		this.defaultFemaleEntityImpl.setSexualAppetite(sexualAppetite);
+	}
+
+	@Override
+	public void reduceSexualAppetite(int amount) {
+		this.defaultFemaleEntityImpl.reduceSexualAppetite(amount);
+	}
+
+	@Override
+	public void incrementSexualAppetite(int amount) {
+		this.defaultFemaleEntityImpl.incrementSexualAppetite(amount);
+	}
+
+	@Override
+	public int getSexualAppetiteTimer() {
+		return this.defaultFemaleEntityImpl.getSexualAppetiteTimer();
+	}
+
+	@Override
+	public void setSexualAppetiteTimer(int timer) {
+		this.defaultFemaleEntityImpl.setSexualAppetiteTimer(timer);
+	}
+
+	@Override
+	public void incrementSexualAppetiteTimer() {
+		this.defaultFemaleEntityImpl.incrementSexualAppetiteTimer();
+	}
+
+	@Override
+	public Gender getGender() {
+		return this.defaultFemaleEntityImpl.getGender();
+	}
+
+	@Override
+	public boolean canFuck() {
+		return this.defaultFemaleEntityImpl.canFuck();
+	}
+	
+	// IFemaleEntity END
 }

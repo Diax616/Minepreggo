@@ -10,7 +10,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class TamableCreeperGirlP0Renderer extends AbstractTamableCreeperGirlRenderer<TamableCreeperGirlP0, TamableCreeperGirlP0Model> {
+public class TamableCreeperGirlP0Renderer extends AbstractTamablePregnantCreeperGirlRenderer<TamableCreeperGirlP0, TamableCreeperGirlP0Model> {
 	
 	public TamableCreeperGirlP0Renderer(EntityRendererProvider.Context context) {
 		this(context, AbstractHumanoidCreeperGirlModel.LAYER_LOCATION_P0, AbstractHumanoidCreeperGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractHumanoidCreeperGirlModel.LAYER_OUTER_ARMOR_LOCATION, AbstractHumanoidCreeperGirlModel.LAYER_ENERGY_ARMOR_P0_LOCATION);

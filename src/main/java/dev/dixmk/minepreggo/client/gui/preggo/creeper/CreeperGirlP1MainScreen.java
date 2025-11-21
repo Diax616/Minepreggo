@@ -1,6 +1,8 @@
 package dev.dixmk.minepreggo.client.gui.preggo.creeper;
 
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraft.network.chat.Component;
 import net.minecraft.client.gui.GuiGraphics;
 
@@ -10,7 +12,7 @@ import dev.dixmk.minepreggo.client.gui.ScreenHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirlP1;
 import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlP1MainMenu;
 
-
+@OnlyIn(Dist.CLIENT)
 public class CreeperGirlP1MainScreen extends AbstractCreeperGirlMainScreen<TamableCreeperGirlP1, CreeperGirlP1MainMenu> {
 
 	public CreeperGirlP1MainScreen(CreeperGirlP1MainMenu container, Inventory inventory, Component text) {

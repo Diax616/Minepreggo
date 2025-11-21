@@ -33,9 +33,9 @@ public record SexCinematicControlS2CPacket(boolean start, int mobEntityId) {
                 Minecraft mc = Minecraft.getInstance();
                 if (mc.player != null) {
                     if (message.start) {
-                    	SexCinematicManager.startCinematic(mc.player, message.mobEntityId);                   	
+                    	SexCinematicManager.getInstance().startCinematic(mc.player, message.mobEntityId);                   	
                     } else {
-                    	SexCinematicManager.endCinematic();
+                    	SexCinematicManager.getInstance().endCinematic();
                     }                 
                     MinepreggoMod.LOGGER.debug("SEX CINEMATIC CONTROL: player={}, id={}, mobId={}, start={}",
                     		mc.player.getName().getString(), mc.player.getId(), message.mobEntityId, message.start);
