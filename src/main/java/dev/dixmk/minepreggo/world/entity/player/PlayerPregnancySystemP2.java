@@ -18,10 +18,15 @@ public class PlayerPregnancySystemP2 extends PlayerPregnancySystemP1 {
 	protected @Nonnegative int totalTicksOfMilking = MinepreggoModConfig.getTotalTicksOfMilkingP2();
 	
 	public PlayerPregnancySystemP2(@NonNull ServerPlayer player) {
-		super(player);
-		this.totalTicksOfCraving = MinepreggoModConfig.getTotalTicksOfCravingP2();
+		super(player);		
+		addNewValidPregnancySymptoms(PregnancySymptom.MILKING);
 	}
 
+	@Override
+	protected void initPregnancySymptomsTimers() {
+		totalTicksOfCraving = MinepreggoModConfig.getTotalTicksOfCravingP2();
+	}
+	
 	@Override
 	protected void evaluatePregnancyNeeds() {	
 		super.evaluatePregnancyNeeds();
@@ -30,26 +35,26 @@ public class PlayerPregnancySystemP2 extends PlayerPregnancySystemP1 {
 	
 	@Override
 	protected void evaluatePregnancySymptoms() {
-		final var pregnancySymptom = pregnancySystem.getPregnancySymptom();			
-		
-		if ((pregnancySymptom == PregnancySymptom.CRAVING && pregnancyEffects.getCraving() <= PregnancySystemHelper.DESACTIVATE_CRAVING_SYMPTOM)
-				|| (pregnancySymptom == PregnancySymptom.MILKING && pregnancyEffects.getMilking() <= PregnancySystemHelper.DESACTIVATE_MILKING_SYMPTOM)) {		
-			pregnancySystem.clearPregnancySymptom();	
-		
-			if (pregnancySymptom == PregnancySymptom.CRAVING) {
+		pregnancySystem.getPregnancySymptoms().forEach(symptom -> {					
+			boolean flag = false;		
+			if (symptom == PregnancySymptom.CRAVING && pregnancyEffects.getCraving() <= PregnancySystemHelper.DESACTIVATE_CRAVING_SYMPTOM) {
 				pregnancyEffects.clearTypeOfCravingBySpecies();
 				pregnantEntity.removeEffect(MinepreggoModMobEffects.CRAVING.get());
-
+				flag = true;
 			}
-			else {
+			else if (symptom == PregnancySymptom.MILKING && pregnancyEffects.getMilking() <= PregnancySystemHelper.DESACTIVATE_MILKING_SYMPTOM) {
 				pregnantEntity.removeEffect(MinepreggoModMobEffects.LACTATION.get());
+				flag = true;
 			}
-			
-			pregnancySystem.sync(pregnantEntity);
-			pregnancyEffects.sync(pregnantEntity);
-			MinepreggoMod.LOGGER.debug("Player {} pregnancy symptom cleared: {}",
-					pregnantEntity.getGameProfile().getName(), pregnancySymptom.name());
-		}
+						
+			if (flag) {
+				pregnancySystem.removePregnancySymptom(symptom);
+				pregnancySystem.sync(pregnantEntity);
+				pregnancyEffects.sync(pregnantEntity);
+				MinepreggoMod.LOGGER.debug("Player {} pregnancy symptom cleared: {}",
+						pregnantEntity.getGameProfile().getName(), symptom);
+			}
+		});			
 	}
 	
 	protected void evaluateMilkingTimer() {   				
@@ -88,13 +93,14 @@ public class PlayerPregnancySystemP2 extends PlayerPregnancySystemP1 {
 		if (super.tryInitPregnancySymptom()) {
 			return true;
 		} 	
-		if (pregnancyEffects.getMilking() >= PregnancySystemHelper.MAX_MILKING_LEVEL) {
-			pregnancySystem.setPregnancySymptom(PregnancySymptom.MILKING);
+		if (pregnancyEffects.getMilking() >= PregnancySystemHelper.MAX_MILKING_LEVEL
+				&& !pregnancySystem.getPregnancySymptoms().contains(PregnancySymptom.MILKING)) {
+			pregnancySystem.addPregnancySymptom(PregnancySymptom.MILKING);
 			pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.LACTATION.get(), -1, 0, true, true));
 			pregnancySystem.sync(pregnantEntity);
 			pregnancyEffects.sync(pregnantEntity);	
-			MinepreggoMod.LOGGER.debug("Player {} has developed pregnancy symptom: {}",
-					pregnantEntity.getGameProfile().getName(), PregnancySymptom.CRAVING.name());
+			MinepreggoMod.LOGGER.debug("Player {} has developed pregnancy symptom: {}, all pregnancy symptoms: {}",
+					pregnantEntity.getGameProfile().getName(), PregnancySymptom.MILKING, pregnancySystem.getPregnancySymptoms());
 			return true;
 		}
 

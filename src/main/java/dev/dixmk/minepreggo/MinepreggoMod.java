@@ -3,8 +3,8 @@ package dev.dixmk.minepreggo;
 import org.apache.logging.log4j.Logger;
 
 import dev.dixmk.minepreggo.client.gui.preggo.PlayerJoinsWorldScreen;
-import dev.dixmk.minepreggo.client.gui.preggo.PlayerMedicalCheckUpScreen;
-import dev.dixmk.minepreggo.client.gui.preggo.PreggoMobMedicalCheckUpScreen;
+import dev.dixmk.minepreggo.client.gui.preggo.PlayerPrenatalCheckUpScreen;
+import dev.dixmk.minepreggo.client.gui.preggo.PreggoMobPrenatalCheckUpScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.RequestSexM2PScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.RequestSexP2PScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.SelectPregnantEntityForMedicalCheckUpScreen;
@@ -467,11 +467,11 @@ public class MinepreggoMod {
 			MenuScreens.register(MinepreggoModMenus.CREEPER_GIRL_P8_MAIN_MENU.get(), CreeperGirlP8MainScreen::new);
 			MenuScreens.register(MinepreggoModMenus.CREEPER_GIRL_P8_INVENTORY_MENU.get(), CreeperGirlP8InventaryScreen::new);
 		
-			MenuScreens.register(MinepreggoModMenus.PREGGO_MOB_MEDICAL_CHECKUP_MENU.get(), PreggoMobMedicalCheckUpScreen::new);
-			MenuScreens.register(MinepreggoModMenus.SELECT_PREGNANT_ENTITY_FOR_MEDICAL_CHECKUP_MENU.get(), SelectPregnantEntityForMedicalCheckUpScreen::new);
-		
-			MenuScreens.register(MinepreggoModMenus.PLAYER_MEDICAL_CHECKUP_BY_ILLAGER_MENU.get(), PlayerMedicalCheckUpScreen.Illager::new);
-			MenuScreens.register(MinepreggoModMenus.PLAYER_MEDICAL_CHECKUP_BY_VILLAGER_MENU.get(), PlayerMedicalCheckUpScreen.DoctorVillager::new);
+			MenuScreens.register(MinepreggoModMenus.SELECT_PREGNANT_ENTITY_FOR_PRENATAL_CHECKUP_MENU.get(), SelectPregnantEntityForMedicalCheckUpScreen::new);
+			
+			MenuScreens.register(MinepreggoModMenus.PREGGO_MOB_PRENATAL_CHECKUP_MENU.get(), PreggoMobPrenatalCheckUpScreen::new);
+			MenuScreens.register(MinepreggoModMenus.PLAYER_PRENATAL_CHECKUP_BY_ILLAGER_MENU.get(), PlayerPrenatalCheckUpScreen.IllagerScreen::new);
+			MenuScreens.register(MinepreggoModMenus.PLAYER_PRENATAL_CHECKUP_BY_VILLAGER_MENU.get(), PlayerPrenatalCheckUpScreen.VillagerScreen::new);
 
 			MenuScreens.register(MinepreggoModMenus.PLAYER_JOINS_WORLD_MENU.get(), PlayerJoinsWorldScreen::new);
 		

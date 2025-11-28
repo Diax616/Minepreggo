@@ -3,6 +3,7 @@ package dev.dixmk.minepreggo.world.entity.preggo.zombie;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 
@@ -16,9 +17,7 @@ import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
 import dev.dixmk.minepreggo.network.capability.IPregnancyEffectsHandler;
 import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.entity.ai.goal.PreggoMobAIHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.Baby;
 import dev.dixmk.minepreggo.world.entity.preggo.Craving;
-import dev.dixmk.minepreggo.world.entity.preggo.IBreedable;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobPregnancySystemP0;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem;
@@ -27,7 +26,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPhase;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancySymptom;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
-import dev.dixmk.minepreggo.world.item.ItemHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.Womb;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -57,7 +56,8 @@ public abstract class AbstractTamablePregnantZombieGirl<S extends PreggoMobSyste
 	protected static final EntityDataAccessor<Integer> DATA_MILKING = SynchedEntityData.defineId(AbstractTamablePregnantZombieGirl.class, EntityDataSerializers.INT);
 	protected static final EntityDataAccessor<Integer> DATA_BELLY_RUBS = SynchedEntityData.defineId(AbstractTamablePregnantZombieGirl.class, EntityDataSerializers.INT);
 	protected static final EntityDataAccessor<Integer> DATA_HORNY = SynchedEntityData.defineId(AbstractTamablePregnantZombieGirl.class, EntityDataSerializers.INT);
-	protected static final EntityDataAccessor<Optional<PregnancySymptom>> DATA_PREGNANCY_SYMPTOM = SynchedEntityData.defineId(AbstractTamablePregnantZombieGirl.class, MinepreggoModEntityDataSerializers.OPTIONAL_PREGNANCY_SYMPTOM);
+	
+	protected static final EntityDataAccessor<Byte> DATA_PREGNANCY_SYMPTOM = SynchedEntityData.defineId(AbstractTamablePregnantZombieGirl.class, EntityDataSerializers.BYTE);
 	protected static final EntityDataAccessor<Optional<PregnancyPain>> DATA_PREGNANCY_PAIN = SynchedEntityData.defineId(AbstractTamablePregnantZombieGirl.class, MinepreggoModEntityDataSerializers.OPTIONAL_PREGNANCY_PAIN);
 	protected static final EntityDataAccessor<Optional<Craving>> DATA_CRAVING_CHOSEN = SynchedEntityData.defineId(AbstractTamablePregnantZombieGirl.class, MinepreggoModEntityDataSerializers.OPTIONAL_CRAVING);
 	
@@ -74,15 +74,17 @@ public abstract class AbstractTamablePregnantZombieGirl<S extends PreggoMobSyste
 	protected final P pregnancySystem;
 	
 	private Map<PregnancyPhase, @NonNull Integer> daysByPregnancyPhase = new EnumMap<>(PregnancyPhase.class);
+	private Womb babiesInsideWomb = Womb.empty();
 
 	
+	private Set<PregnancySymptom> cachePregnancySymptoms = null;
 	
 	protected AbstractTamablePregnantZombieGirl(EntityType<? extends AbstractTamablePregnantZombieGirl<?, ?>> p_21803_, Level p_21804_, PregnancyPhase currentPregnancyStage) {
 		super(p_21803_, p_21804_);
 		this.pregnancySystem = createPregnancySystem();
 		this.currentPregnancyPhase = currentPregnancyStage;
-		this.lastPregnancyPhase = PregnancyPhase.calculateMaxPregnancyStage(currentPregnancyStage);	
-		PreggoMobHelper.initPregnancy(this, this.lastPregnancyPhase);
+		this.lastPregnancyPhase = PregnancySystemHelper.calculateMinPhaseToGiveBirth(currentPregnancyStage);	
+		PreggoMobHelper.initDefaultPregnancy(this);
 	}
 		
 	@Nonnull
@@ -99,11 +101,9 @@ public abstract class AbstractTamablePregnantZombieGirl<S extends PreggoMobSyste
 	        PregnancyPain pain = PregnancyPain.valueOf(name);
 	        setPregnancyPain(pain);
 	    }   
-	    if (compoundTag.contains(PregnancySymptom.NBT_KEY, Tag.TAG_STRING)) {
-	        String name = compoundTag.getString(PregnancySymptom.NBT_KEY);
-			PregnancySymptom symptom = PregnancySymptom.valueOf(name);
-			setPregnancySymptom(symptom);
-	    }   
+	    if (compoundTag.contains(PregnancySymptom.NBT_KEY, Tag.TAG_BYTE)) {
+			this.entityData.set(DATA_PREGNANCY_SYMPTOM, compoundTag.getByte(PregnancySymptom.NBT_KEY));
+	    }    
 	}
 	
 	private void tryWriteOptional(CompoundTag compoundTag) {
@@ -111,10 +111,11 @@ public abstract class AbstractTamablePregnantZombieGirl<S extends PreggoMobSyste
 		if (craving != null) {
 			compoundTag.putString(Craving.NBT_KEY, craving.name());
 		}
-		var symptom = getPregnancySymptom();
-		if (symptom != null) {
-			compoundTag.putString(PregnancySymptom.NBT_KEY, symptom.name());
+		
+		if (this.entityData.get(DATA_PREGNANCY_SYMPTOM) != (byte) 0) {
+			compoundTag.putByte(PregnancySymptom.NBT_KEY, this.entityData.get(DATA_PREGNANCY_SYMPTOM));
 		}
+		
 		var pain = getPregnancyPain();
 		if (pain != null) {
 			compoundTag.putString(PregnancyPain.NBT_KEY, pain.name());
@@ -131,7 +132,7 @@ public abstract class AbstractTamablePregnantZombieGirl<S extends PreggoMobSyste
 		this.entityData.define(DATA_MILKING, 0);
 		this.entityData.define(DATA_BELLY_RUBS, 0);
 		this.entityData.define(DATA_HORNY, 0);
-		this.entityData.define(DATA_PREGNANCY_SYMPTOM, Optional.empty());
+		this.entityData.define(DATA_PREGNANCY_SYMPTOM, (byte) 0);
 		this.entityData.define(DATA_PREGNANCY_PAIN, Optional.empty());
 		this.entityData.define(DATA_CRAVING_CHOSEN, Optional.empty());	
 	}
@@ -158,6 +159,10 @@ public abstract class AbstractTamablePregnantZombieGirl<S extends PreggoMobSyste
 		if (!daysByPregnancyPhase.isEmpty()) {
 			compoundTag.put("DaysByPhase", PregnancySystemHelper.serializePregnancyPhaseMap(this.daysByPregnancyPhase));
 		}
+		
+		if (!babiesInsideWomb.isEmpty()) {
+			compoundTag.put("babiesInsideWomb", Womb.serializeNBT(babiesInsideWomb));
+		}
 	}
 	
 	@Override
@@ -179,9 +184,13 @@ public abstract class AbstractTamablePregnantZombieGirl<S extends PreggoMobSyste
 		this.lastPregnancyPhase = PregnancyPhase.values()[compoundTag.getInt("DataLastPregnancyPhase")];
 		tryReadOptional(compoundTag);
 
-	    if (compoundTag.contains("DaysByPhase")) {
+	    if (compoundTag.contains("DaysByPhase", Tag.TAG_LIST)) {
 	    	PregnancySystemHelper.deserializePregnancyPhaseMap(compoundTag.getList("DaysByPhase", Tag.TAG_COMPOUND), daysByPregnancyPhase);
 	    } 
+	    
+	    if (compoundTag.contains("babiesInsideWomb", Tag.TAG_LIST)) {
+	    	Womb.deserializeNBT(compoundTag.getList("babiesInsideWomb", Tag.TAG_COMPOUND), babiesInsideWomb);
+	    }
 	}
 	
 	@Override
@@ -233,8 +242,8 @@ public abstract class AbstractTamablePregnantZombieGirl<S extends PreggoMobSyste
 	
 	@Override
 	protected boolean canReplaceCurrentItem(ItemStack p_21428_, ItemStack p_21429_) {	
-		if ((ItemHelper.isChest(p_21428_) && !PreggoMobHelper.canUseChestplate(p_21428_, this.getCurrentPregnancyStage()))
-					|| (ItemHelper.isLegging(p_21428_) && !PreggoMobHelper.canUseLegging(p_21428_, this.getCurrentPregnancyStage()))) {
+		if (!PregnancySystemHelper.canUseChestplate(this, p_21428_.getItem(), this.getCurrentPregnancyStage())
+					|| !PregnancySystemHelper.canUseLegging(p_21428_.getItem(), this.getCurrentPregnancyStage())) {
 			return false;
 		}	
 		return super.canReplaceCurrentItem(p_21428_, p_21429_);
@@ -261,7 +270,7 @@ public abstract class AbstractTamablePregnantZombieGirl<S extends PreggoMobSyste
 	}
 	
 	@Override
-	public int getDaysByStage() {
+	public int getDaysByCurrentStage() {
 		if (daysByPregnancyPhase.containsKey(currentPregnancyPhase)) {
 			return daysByPregnancyPhase.get(currentPregnancyPhase);
 		}
@@ -285,12 +294,15 @@ public abstract class AbstractTamablePregnantZombieGirl<S extends PreggoMobSyste
 	}
 	
 	@Override
-	public boolean setDaysByStage(Map<PregnancyPhase, Integer> map) {
-		if (this.daysByPregnancyPhase.isEmpty()) {
-			this.daysByPregnancyPhase = map;
-			return true;
-		}
-		return false;
+	public void setDaysByStage(Map<PregnancyPhase, Integer> map) {
+		this.daysByPregnancyPhase = map;
+	}
+	
+	@Override
+	public int getTotalDaysOfPregnancy() {
+		return daysByPregnancyPhase.values().stream()
+				.mapToInt(Integer::intValue)
+				.sum();
 	}
 	
 	@Override
@@ -321,18 +333,6 @@ public abstract class AbstractTamablePregnantZombieGirl<S extends PreggoMobSyste
 	@Override
 	public void setDaysToGiveBirth(int days) {
 		this.entityData.set(DATA_DAYS_TO_GIVE_BIRTH, Math.max(0, days));
-	}
-	
-	@Override
-	@Nullable
-	public PregnancySymptom getPregnancySymptom() {
-		var symptom = this.entityData.get(DATA_PREGNANCY_SYMPTOM);
-		return symptom.isPresent() ? symptom.get() : null;
-	}
-	
-	@Override
-	public void setPregnancySymptom(@Nullable PregnancySymptom symptom) {
-		this.entityData.set(DATA_PREGNANCY_SYMPTOM, Optional.ofNullable(symptom));
 	}
 	
 	@Override
@@ -378,11 +378,6 @@ public abstract class AbstractTamablePregnantZombieGirl<S extends PreggoMobSyste
 	}
 	
 	@Override
-	public Baby getDefaultTypeOfBaby() {
-		return Baby.ZOMBIE;
-	}
-	
-	@Override
 	public boolean isIncapacitated() {	
 		return this.getPregnancyPain() != null;
 	}
@@ -413,10 +408,15 @@ public abstract class AbstractTamablePregnantZombieGirl<S extends PreggoMobSyste
 	}
 
 	@Override
-	public int getTotalNumOfBabies() {
-		return IBreedable.getOffspringsByMaxPregnancyStage(lastPregnancyPhase);
+	public void setBabiesInsideWomb(@NonNull Womb babiesInsideWomb) {
+		this.babiesInsideWomb = babiesInsideWomb;
 	}
-
+	
+	@Override
+	public Womb getBabiesInsideWomb() {
+		return this.babiesInsideWomb;
+	}
+	
 	@Override
 	public int getMilking() {
 		return this.entityData.get(DATA_MILKING);
@@ -634,11 +634,6 @@ public abstract class AbstractTamablePregnantZombieGirl<S extends PreggoMobSyste
 	}
 
 	@Override
-	public void clearPregnancySymptom() {
-		setPregnancySymptom(null);
-	}
-
-	@Override
 	public void clearPregnancyPain() {
 		setPregnancyPain(null);
 	}
@@ -647,4 +642,55 @@ public abstract class AbstractTamablePregnantZombieGirl<S extends PreggoMobSyste
 	public void resetCravingTimer() {
 		setCravingTimer(0);	
 	}
+	
+	@Override
+	public Set<PregnancySymptom> getPregnancySymptoms() {
+		if (cachePregnancySymptoms == null) {
+			cachePregnancySymptoms = PregnancySymptom.fromBitMask(this.entityData.get(DATA_PREGNANCY_SYMPTOM));
+		}	
+		return cachePregnancySymptoms;
+	}
+
+	@Override
+	public boolean addPregnancySymptom(PregnancySymptom symptom) {	
+		if (!this.level().isClientSide && (this.entityData.get(DATA_PREGNANCY_SYMPTOM) & symptom.flag) == 0) {
+			this.entityData.set(DATA_PREGNANCY_SYMPTOM, (byte)(this.entityData.get(DATA_PREGNANCY_SYMPTOM) | symptom.flag));
+			return true;
+		}
+		
+		return false;
+	}
+
+	@Override
+	public void setPregnancySymptoms(Set<PregnancySymptom> symptoms) {
+		if (!this.level().isClientSide()) {
+			this.entityData.set(DATA_PREGNANCY_SYMPTOM, PregnancySymptom.toBitMask(symptoms));
+		}
+	}
+
+	@Override
+	public boolean removePregnancySymptom(PregnancySymptom symptom) {	
+		if (!this.level().isClientSide && (this.entityData.get(DATA_PREGNANCY_SYMPTOM) & symptom.flag) != 0) {
+			this.entityData.set(DATA_PREGNANCY_SYMPTOM, (byte)(this.entityData.get(DATA_PREGNANCY_SYMPTOM) & ~symptom.flag));
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public void clearPregnancySymptoms() {
+		if (!this.level().isClientSide) {
+			this.entityData.set(DATA_PREGNANCY_SYMPTOM, (byte) 0);
+		}
+	}
+	
+	@Override
+	public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
+	    if (key.equals(DATA_PREGNANCY_SYMPTOM)) {
+	        this.cachePregnancySymptoms = null; // invalidate
+	    }
+	    super.onSyncedDataUpdated(key);
+	}
+	
+	
 }

@@ -29,6 +29,7 @@ import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.animal.Turtle;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -44,7 +45,7 @@ public abstract class AbstractMonsterPregnantZombieGirl extends AbstractMonsterZ
 	protected AbstractMonsterPregnantZombieGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_, PregnancyPhase currentPregnancyStage) {
 		super(p_21803_, p_21804_);
 		this.currentPregnanctStage = currentPregnancyStage;
-		this.maxPregnanctStage = PregnancyPhase.getRandomStageFrom(currentPregnancyStage);
+		this.maxPregnanctStage = PregnancySystemHelper.calculateRandomMinPhaseToGiveBirthFrom(currentPregnancyStage, random);
 		this.totalDaysPassed = ISimplePregnancy.getRandomTotalDaysPassed(currentPregnancyStage, this.maxPregnanctStage, this.getRandom());
 		this.pregnancyPainProbability = MathHelper.sigmoid(0.1F, 0.4F, 0.1F, Mth.clamp(this.getTotalDaysPassed() /(float) PregnancySystemHelper.TOTAL_PREGNANCY_DAYS , 0, 1), 0.6F);
 	}
@@ -113,6 +114,15 @@ public abstract class AbstractMonsterPregnantZombieGirl extends AbstractMonsterZ
 			return true;
 		}
 		return false;
+	}
+	
+	@Override
+	protected boolean canReplaceCurrentItem(ItemStack p_21428_, ItemStack p_21429_) {	
+		if (!PregnancySystemHelper.canUseChestplate(p_21428_.getItem(), this.getCurrentPregnancyStage())
+					|| !PregnancySystemHelper.canUseLegging(p_21428_.getItem(), this.getCurrentPregnancyStage())) {
+			return false;
+		}	
+		return super.canReplaceCurrentItem(p_21428_, p_21429_);
 	}
 	
 	@Override

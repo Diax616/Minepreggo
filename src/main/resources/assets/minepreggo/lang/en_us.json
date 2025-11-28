@@ -24,18 +24,12 @@
 	"gui.minepreggo.player_main_menu.checkbox.male": "Male",
 	
 	
+	"gui.minepreggo.medical_checkup.label.prenatal_checkups": "Prenatal Checkups",
+	"gui.minepreggo.medical_checkup.tooltip.ultrasound_scan": "Ultrasound Scan",
+	"gui.minepreggo.medical_checkup.tooltip.regular": "Regular CheckUp",
+	"gui.minepreggo.medical_checkup.tooltip.paternity_test testing": "Paternity Test",
 	
-	"gui.minepreggo.medical_checkup.label.pregnancy_check": "Pregnancy Check",
-	"gui.minepreggo.medical_checkup.label.days_category": "Days",
-	"gui.minepreggo.medical_checkup.label.days_to_give_birth": "Birth:",
-	"gui.minepreggo.medical_checkup.label.days_passed": "Passed:",
-	"gui.minepreggo.medical_checkup.label.days_until_next_phase": "NextPhase:",
-	"gui.minepreggo.medical_checkup.label.pregnancy_category": "Pregnancy",
-	"gui.minepreggo.medical_checkup.label.pregnancy_health": "Health:",
-	"gui.minepreggo.medical_checkup.label.pregnancy_phase": "Phase:",
-	"gui.minepreggo.medical_checkup.label.type_of_baby": "Baby:",
-	"gui.minepreggo.medical_checkup.label.num_of_babies": "NumOfBabies",
-	"gui.minepreggo.medical_checkup.label.make_checkup": "Make CheckUp",
+	
 	"gui.minepreggo.medical_checkup.label.inventory": "Inventory",
 	
 	"gui.minepreggo.preggo_mob_inventory.tooltip_sex": "Wanna Have Fun?",
@@ -376,6 +370,50 @@
 	"chat.minepreggo.player.miscarriage.message.lost": "You just lost your babies...",
 
 	
-	"chat.minepreggo.scientific_illager.no_pregnant_entities": "There are no pregnant entities to checkup"
+	"chat.minepreggo.scientific_illager.no_pregnant_entities": "There are no pregnant entities to checkup",
 
+	
+	
+	
+	"book.minepreggo.prenatal_checkup.regular.template.title": "Regular Prenatal Checkup Results",
+	"book.minepreggo.prenatal_checkup.regular.template.page.1.intro": "       Result\n  Regular Checkup\n\n",
+	
+	"book.minepreggo.prenatal_checkup.default.template.page.1.mother": "Mother: %s\n\n",
+	"book.minepreggo.prenatal_checkup.default.template.page.1.price": "Price: %s\n\n",
+	"book.minepreggo.prenatal_checkup.default.template.page.1.date": "Date: %s\n\n",
+	
+	"book.minepreggo.prenatal_checkup.regular.template.page.2.intro": " Pregnancy State\n\n",
+	"book.minepreggo.prenatal_checkup.regular.template.page.2.current_phase": "Current Phase: %s\n\n",
+	"book.minepreggo.prenatal_checkup.regular.template.page.2.last_phase": "Last Phase: %s\n\n",
+	"book.minepreggo.prenatal_checkup.regular.template.page.2.health": "Health: %s\n\n",
+	"book.minepreggo.prenatal_checkup.regular.template.page.2.num_of_babies": "Num Of Babies: %s\n\n",
+	"book.minepreggo.prenatal_checkup.regular.template.page.3.intro": "    Dates (days)\n\n",
+	"book.minepreggo.prenatal_checkup.regular.template.page.3.days_elapsed": "Elapsed: %s\n\n",
+	"book.minepreggo.prenatal_checkup.regular.template.page.3.days_next_phase": "Next Phase: %s\n\n",
+	"book.minepreggo.prenatal_checkup.regular.template.page.3.days_birth": "Birth: %s",
+	
+	
+	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.title": "Prenatal Ultrasound Scan Results",
+	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.1.intro": "       Result\n  Ultrasound Scan\n\n",
+	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.1.babies_inside_belly": "Babies Inside Belly: %s",
+
+	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.default.title": "     Baby State\n\n",
+	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.gender": "Gender: %s\n\n",
+	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.type_of_species": "Species: %s\n\n",
+	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.type_of_creature": "Creature: %s",
+
+	
+	"book.minepreggo.prenatal_checkup.paternity_test.template.title": "Prenatal Paternity Test Results",
+	"book.minepreggo.prenatal_checkup.paternity_test.template.page.1.intro": "       Result\n   Paternity Test\n\n",
+	"book.minepreggo.prenatal_checkup.paternity_test.template.page.1.number_of_target": "Num Of Targets: %s\n\n",
+	"book.minepreggo.prenatal_checkup.paternity_test.template.page.1.result": "Result: %s\n\n",
+	"book.minepreggo.prenatal_checkup.paternity_test.template.page.1.result.known": "Known",
+	"book.minepreggo.prenatal_checkup.paternity_test.template.page.1.result.unknown": "Unknown",
+	
+	"book.minepreggo.prenatal_checkup.paternity_test.template.page.default.intro": "    Local Target\n\n",
+	"book.minepreggo.prenatal_checkup.paternity_test.template.page.default.id": "Id: %s\n\n",
+	"book.minepreggo.prenatal_checkup.paternity_test.template.page.default.name": "Name: %s\n\n",
+	"book.minepreggo.prenatal_checkup.paternity_test.template.page.default.result": "Result: %s",
+	"book.minepreggo.prenatal_checkup.paternity_test.template.page.default.result.positive": "He IS the father!",
+	"book.minepreggo.prenatal_checkup.paternity_test.template.page.default.result.negative": "He IS NOT the father!"
 }

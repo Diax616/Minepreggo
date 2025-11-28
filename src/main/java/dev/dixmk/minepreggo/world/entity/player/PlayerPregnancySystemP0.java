@@ -128,6 +128,8 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 			pregnancySystem.resetPregnancyTimer();
 			pregnancySystem.incrementDaysPassed();
 			pregnancySystem.reduceDaysToGiveBirth();
+			MinepreggoMod.LOGGER.debug("Pregnancy day advanced to {} for player {}", 
+					pregnancySystem.getDaysPassed(), pregnantEntity.getGameProfile().getName());
 		} else {
 			pregnancySystem.incrementPregnancyTimer();
 		}	
@@ -150,25 +152,26 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 
 	@Override
 	public boolean canAdvanceNextPregnancyPhase() {
-		return pregnancySystem.getDaysPassed() >= pregnancySystem.getDaysByStage();
+		return pregnancySystem.getDaysPassed() >= pregnancySystem.getDaysByCurrentStage();
 	}
 
 	@Override
-	public boolean hasPregnancySymptom() {
+	public boolean hasAllPregnancySymptoms() {
 		return false;
 	}
 
 	@Override
-	protected void advanceToNextPregnancyPhase() {	
-		// Current pregnancy Phase should not be null here
-		var currentStage = pregnancySystem.getCurrentPregnancyStage();	
+	protected void advanceToNextPregnancyPhase() {		
+		final var previousStage = pregnancySystem.getCurrentPregnancyStage();
+		final var phases = PregnancyPhase.values();	
+		final var next = phases[Math.min(previousStage.ordinal() + 1, phases.length - 1)];
 		
-		pregnancySystem.setCurrentPregnancyStage(PregnancyPhase.values()[Math.min(currentStage.ordinal() + 1, PregnancyPhase.values().length - 1)]);
+		pregnancySystem.setCurrentPregnancyStage(next);
 		pregnancySystem.resetPregnancyTimer();
 		pregnancySystem.resetDaysPassed();
 		
 		MinepreggoMod.LOGGER.debug("Player {} advanced to next pregnancy phase: {}",
-				pregnantEntity.getGameProfile().getName(), pregnancySystem.getCurrentPregnancyStage().name());	
+				pregnantEntity.getGameProfile().getName(), next);	
 	}
 
 	@Override

@@ -1,17 +1,23 @@
 package dev.dixmk.minepreggo.event;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
+import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
+import dev.dixmk.minepreggo.network.capability.FemalePlayerImpl;
+import dev.dixmk.minepreggo.network.capability.MalePlayerImpl;
 import dev.dixmk.minepreggo.network.capability.PlayerDataProvider;
-import dev.dixmk.minepreggo.network.packet.ForceSexAnimP2PC2SPacket;
 import dev.dixmk.minepreggo.network.packet.RequestSexP2PC2SPacket;
 import dev.dixmk.minepreggo.network.packet.SyncFemalePlayerDataS2CPacket;
 import dev.dixmk.minepreggo.network.packet.SyncMobEffectPacket;
 import dev.dixmk.minepreggo.network.packet.SyncPlayerDataS2CPacket;
 import dev.dixmk.minepreggo.network.packet.SyncPregnancySystemS2CPacket;
 import dev.dixmk.minepreggo.server.ServerSexCinematicManager;
+import dev.dixmk.minepreggo.utils.DebugHelper;
+import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.IBreedable;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemHelper;
 import dev.dixmk.minepreggo.world.inventory.preggo.PlayerJoinsWorldMenu;
 import dev.dixmk.minepreggo.world.item.IItemCraving;
@@ -34,6 +40,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -188,6 +195,59 @@ public class PlayerEventHandler {
 	
 	// PREGNANCY EFFECTS IN PLAYER HANDLING START
 
+	@SubscribeEvent
+	public static void onPlayerTick(TickEvent.PlayerTickEvent event) {		
+		if (event.phase != TickEvent.Phase.END || !(event.player instanceof ServerPlayer serverPlayer) || serverPlayer.level().isClientSide) return;
+					
+		serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> {		
+			if (cap.isFemale()) {
+				cap.getFemaleData().ifPresent(femaleData -> evalualeFemalePlayerOnTick(serverPlayer, femaleData)) ;				
+			}
+			else {
+				cap.getMaleData().ifPresent(maleData -> evalualeMalePlayerOnTick(serverPlayer, maleData));				
+			}	
+		});		
+	}
+	
+	private static void evalualeMalePlayerOnTick(ServerPlayer serverPlayer, MalePlayerImpl maleData) {
+		if (maleData.getFertilityRate() < IBreedable.MAX_FERTILITY_RATE) {						
+			if (maleData.getFertilityRateTimer() > PregnancySystemHelper.TOTAL_TICKS_FERTILITY_RATE) {
+				maleData.incrementFertilityRate(0.15F);
+				maleData.resetFertilityRateTimer();
+			}					
+			else {
+				maleData.incrementFertilityRateTimer();
+			}
+		}
+	}
+
+	private static void evalualeFemalePlayerOnTick(ServerPlayer serverPlayer, FemalePlayerImpl femaleData) {
+		if (femaleData.isPregnant()) {					
+			if (femaleData.getPregnancySystem().getCurrentPregnancyStage() == null) {
+				if (femaleData.getPregnancyInitializerTimer() > MinepreggoModConfig.getTicksToStartPregnancy()) {
+					PlayerHelper.tryToStartPregnancy(serverPlayer);
+					femaleData.setPregnancyInitializerTimer(0);
+				}					
+				else {
+					femaleData.incrementPregnancyInitializerTimer();
+				}
+			}				
+		}
+		else {
+			if (femaleData.getFertilityRate() < IBreedable.MAX_FERTILITY_RATE) {						
+				if (femaleData.getFertilityRateTimer() > PregnancySystemHelper.TOTAL_TICKS_FERTILITY_RATE) {
+					femaleData.incrementFertilityRate(0.1F);
+					femaleData.resetFertilityRateTimer();
+				}					
+				else {
+					femaleData.incrementFertilityRateTimer();
+				}
+			}
+		}
+	}
+	
+	
+	
 	// Craving gratification handling
 	@SubscribeEvent
 	public static void onUseItemFinish(LivingEntityUseItemEvent.Finish event) {	
@@ -226,7 +286,7 @@ public class PlayerEventHandler {
 					if (!mainHandItem.isEmpty()) {
 						femaleData.getPregnancyEffects().decrementMilking(PregnancySystemHelper.MILKING_VALUE);
 						
-						mainHandItem.setCount(mainHandItem.getCount() - 1);
+						mainHandItem.shrink(1);
 						
 			            if (mainHandItem.isEmpty()) {
 			            	serverPlayer.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
@@ -245,32 +305,14 @@ public class PlayerEventHandler {
 		);
 	}
 	
-	private static void showPlayerMainMenu(ServerPlayer serverPlayer) {
-		BlockPos bpos = BlockPos.containing(serverPlayer.getX(), serverPlayer.getY(), serverPlayer.getZ());	
-		NetworkHooks.openScreen(serverPlayer, new MenuProvider() {
-			@Override
-			public Component getDisplayName() {
-				return Component.literal("PlayerMainGUI");
-			}
-			@Override
-			public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-				return new PlayerJoinsWorldMenu(id, inventory, new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(bpos));
-			}
-		}, bpos);
-	}
-	
 	// PREGNANCY EFFECTS IN PLAYER HANDLING END
-	
-	
 	
 	@SubscribeEvent
 	public static void onRightClickEntity(PlayerInteractEvent.EntityInteract event) {	
-		/*
 		if (event.getTarget() instanceof PreggoMob t) {
 			DebugHelper.check(t);
 			return;		
 		}
-		*/
 		
 		if (event.getEntity() instanceof ServerPlayer sourcePlayer && event.getTarget() instanceof ServerPlayer targetPlayer) {
 			
@@ -289,11 +331,6 @@ public class PlayerEventHandler {
 		        sourcePlayer.swing(InteractionHand.MAIN_HAND);
 		        event.setCanceled(true);
 			}
-			/*
-			else {
-				MinepreggoModPacketHandler.INSTANCE.sendToServer(new ForceSexAnimP2PC2SPacket(targetPlayer.getUUID()));
-			}
-			*/
 		}
 	}
 		
@@ -302,5 +339,20 @@ public class PlayerEventHandler {
 	    if (event.getEntity() instanceof ServerPlayer player) {
 	        ServerSexCinematicManager.end(player);
 	    }
+	}
+	
+	
+	private static void showPlayerMainMenu(ServerPlayer serverPlayer) {
+		BlockPos bpos = BlockPos.containing(serverPlayer.getX(), serverPlayer.getY(), serverPlayer.getZ());	
+		NetworkHooks.openScreen(serverPlayer, new MenuProvider() {
+			@Override
+			public Component getDisplayName() {
+				return Component.literal("PlayerMainGUI");
+			}
+			@Override
+			public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
+				return new PlayerJoinsWorldMenu(id, inventory, new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(bpos));
+			}
+		}, bpos);
 	}
 }

@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
-import dev.dixmk.minepreggo.common.utils.ParticleHelper;
+import dev.dixmk.minepreggo.client.particle.ParticleHelper;
 import dev.dixmk.minepreggo.network.packet.SexCinematicControlS2CPacket;
 import dev.dixmk.minepreggo.server.ServerSexCinematicManager;
 import net.minecraft.core.BlockPos;

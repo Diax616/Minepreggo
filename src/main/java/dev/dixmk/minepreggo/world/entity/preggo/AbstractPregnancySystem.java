@@ -36,7 +36,7 @@ public abstract class AbstractPregnancySystem<E extends LivingEntity> {
 	
 	public abstract boolean canAdvanceNextPregnancyPhase();
 	
-	public abstract boolean hasPregnancySymptom();
+	public abstract boolean hasAllPregnancySymptoms();
 	
 	protected abstract void advanceToNextPregnancyPhase();
 	

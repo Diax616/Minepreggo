@@ -30,7 +30,7 @@ public abstract class AbstractTamablePregnantCreeperGirlModel<E extends Abstract
 			this.moveHeadWithHat(entity, netHeadYaw, headPitch);
 		}	
 		
-		if (entity.getPregnancySymptom() == PregnancySymptom.MILKING) {
+		if (entity.getPregnancySymptoms().contains(PregnancySymptom.MILKING)) {
 			this.boobs.y += milkingBoobsYPos;
 			this.boobs.xScale = milkingBoobsXScale;
 			this.boobs.zScale = milkingBoobsYScale;

@@ -63,7 +63,7 @@ public class ScreenEventHandler {
 				final var pregnancyEffects = femaleData.getPregnancyEffects();
 				
 				Runnable cravingOverlay = () -> {
-					if (pregnancySystem.getPregnancySymptom() == PregnancySymptom.CRAVING ) {
+					if (pregnancySystem.getPregnancySymptoms().contains(PregnancySymptom.CRAVING)) {
 						renderCravingChoosenScreen(gui, w, player.getSkinTextureLocation(), pregnancyEffects);
 					}
 				};

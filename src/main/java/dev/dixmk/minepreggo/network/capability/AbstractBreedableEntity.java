@@ -38,9 +38,14 @@ public abstract class AbstractBreedableEntity implements IBreedable {
 
 	@Override
 	public void incrementFertilityRate(float amount) {
-		this.fertility = Mth.clamp(this.fertility + amount, 0, 1F);
+		this.fertility = Mth.clamp(this.fertility + amount, 0, MAX_FERTILITY_RATE);
 	}
 
+	@Override
+	public void resetFertilityRate() {
+		this.fertility = 0F;
+	}
+	
 	@Override
 	public int getFertilityRateTimer() {
 		return this.fertilityRateTimer;
@@ -52,6 +57,11 @@ public abstract class AbstractBreedableEntity implements IBreedable {
 		
 	}
 	
+	@Override
+	public void resetFertilityRateTimer() {
+		this.fertilityRateTimer = 0;
+	}
+
 	@Override
 	public void incrementFertilityRateTimer() {
 		++this.fertilityRateTimer;

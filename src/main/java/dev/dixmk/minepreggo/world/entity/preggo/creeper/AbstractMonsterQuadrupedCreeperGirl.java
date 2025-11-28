@@ -14,9 +14,8 @@ import net.minecraft.world.level.Level;
 public abstract class AbstractMonsterQuadrupedCreeperGirl extends AbstractMonsterCreeperGirl {
 
 	protected AbstractMonsterQuadrupedCreeperGirl(EntityType<? extends AbstractMonsterCreeperGirl> p_21803_, Level p_21804_) {
-		super(p_21803_, p_21804_);
+		super(p_21803_, p_21804_, Creature.MONSTER);
 		this.setCanPickUpLoot(false);
-		this.typeOfCreature = Creature.MONSTER;
 	}
 
 	protected static AttributeSupplier.Builder getBasicAttributes(double movementSpeed) {
@@ -47,7 +46,7 @@ public abstract class AbstractMonsterQuadrupedCreeperGirl extends AbstractMonste
 	}
 	
 	@Override
-	protected boolean canReplaceArmorBasedInPregnancyStage(ItemStack armor) {
+	protected boolean canReplaceArmorBasedInPregnancyPhase(ItemStack armor) {
 		return false;
 	}
 }

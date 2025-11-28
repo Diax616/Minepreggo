@@ -1,12 +1,15 @@
 package dev.dixmk.minepreggo.world.entity.player;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.annotation.CheckForNull;
+import javax.annotation.Nonnegative;
 
+import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Pair;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -14,17 +17,21 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
-import dev.dixmk.minepreggo.world.entity.preggo.Baby;
 import dev.dixmk.minepreggo.world.entity.preggo.Craving;
+import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.IBreedable;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPhase;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
+import dev.dixmk.minepreggo.world.entity.preggo.Womb;
+import dev.dixmk.minepreggo.world.item.IFemaleArmor;
+import dev.dixmk.minepreggo.world.item.ItemHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 
 public class PlayerHelper {
 
@@ -69,8 +76,57 @@ public class PlayerHelper {
 		return PREDEFINED_SKINS.get(name);
 	}
 	
+	public static boolean tryToStartPregnancy(ServerPlayer player) {
+		var playerDataCap = player.getCapability(MinepreggoCapabilities.PLAYER_DATA).resolve();		
+
+		if (playerDataCap.isEmpty()) {
+			return false;
+		}
+
+		final var femaleDataOpt = playerDataCap.get().getFemaleData().resolve();
+		boolean result = femaleDataOpt.isPresent() && femaleDataOpt.get().isPregnant() && femaleDataOpt.get().getPrePregnancyData().isPresent();
+
+		femaleDataOpt.ifPresent(femaleData -> {				
+			if (!femaleData.isPregnant()) return;
+			
+			femaleData.getPrePregnancyData().ifPresent(prePregnancyData -> {
+				final var lastPregnancyStage = IBreedable.calculateMaxPregnancyPhaseByTotalNumOfBabies(prePregnancyData.fertilizedEggs());
+				final var totalDays = MinepreggoModConfig.getTotalPregnancyDays();
+				final var daysByStage = PregnancySystemHelper.createDaysByPregnancyPhase(totalDays, lastPregnancyStage);
+				
+				femaleData.getPregnancySystem().setDaysByStage(daysByStage);
+				femaleData.getPregnancySystem().setPregnancyHealth(PregnancySystemHelper.MAX_PREGNANCY_HEALTH);
+				femaleData.getPregnancySystem().setLastPregnancyStage(lastPregnancyStage);
+				femaleData.getPregnancySystem().setDaysToGiveBirth(totalDays);			
+				
+				final var womb = Womb.create(
+						ImmutableTriple.of(player.getUUID(), Species.HUMAN, Creature.HUMANOID),
+						ImmutableTriple.of(Optional.ofNullable(prePregnancyData.fatherId()), prePregnancyData.typeOfSpeciesOfFather(), prePregnancyData.typeOfCreatureOfFather()),
+						player.getRandom(),
+						totalDays);
+				
+				femaleData.getPregnancySystem().setBabiesInsideWomb(womb);	
+								
+				femaleData.sync(player);
+				femaleData.getPregnancySystem().sync(player);
+		
+				femaleData.getPregnancySystem().setCurrentPregnancyStage(PregnancyPhase.P0);
+				player.addEffect(new MobEffectInstance(MinepreggoModMobEffects.PREGNANCY_P0.get(), -1, 0, false, false, true));				
+				femaleData.getPregnancySystem().sync(player);
+						
+				MinepreggoMod.LOGGER.debug("Player {} has become pregnant with {} babies, total days to give birth: {}, pregnancy phases days: {}, womb: {}", 
+						player.getName().getString(), 
+						prePregnancyData.fertilizedEggs(), 
+						totalDays,
+						daysByStage,
+						womb);
+			});
+		});
+		
+		return result;
+	}
 	
-	private static boolean tryToStartPregnancy(ServerPlayer player, Baby typeOfBaby, int numOfBabies, @Nullable UUID fatherId) {
+	private static boolean tryToStartPrePregnancy(ServerPlayer player, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father, @Nonnegative int numOfBabies) {
 		var playerDataCap = player.getCapability(MinepreggoCapabilities.PLAYER_DATA).resolve();		
 
 		if (playerDataCap.isEmpty()) {
@@ -80,32 +136,8 @@ public class PlayerHelper {
 
 		final var femaleData = playerDataCap.get().getFemaleData().resolve();
 	
-		if (femaleData.isPresent() && !femaleData.get().isPregnant()) {
-			
-			final var femalePlayerData = femaleData.get();
-			
-			femalePlayerData.tryImpregnate(fatherId);
-			
-			femalePlayerData.getPregnancySystem().resetDaysPassed();
-						
-			final var lastPregnancyStage = PregnancyPhase.P8; //IBreedable.getMaxPregnancyPhaseByOffsprings(numOfBabies);
-			final var totalDays = MinepreggoModConfig.getTotalPregnancyDays();
-			final var daysByStage = PregnancySystemHelper.createDaysByPregnancyPhase(totalDays, lastPregnancyStage);
-			
-			femalePlayerData.getPregnancySystem().setDaysByStage(daysByStage);
-			femalePlayerData.getPregnancySystem().setCurrentPregnancyStage(PregnancyPhase.P8);
-			femalePlayerData.getPregnancySystem().setLastPregnancyStage(lastPregnancyStage);
-			femalePlayerData.getPregnancySystem().setDaysToGiveBirth(totalDays);	
-			femalePlayerData.getPregnancySystem().addBaby(typeOfBaby, numOfBabies);		
-			player.addEffect(new MobEffectInstance(MinepreggoModMobEffects.PREGNANCY_P8.get(), -1, 0, false, false, true));				
-				
-			femalePlayerData.sync(player);
-			femalePlayerData.getPregnancySystem().sync(player);
-				
-			MinepreggoMod.LOGGER.debug("Player {} has become pregnant with {} x{}, lastPregnancyStage={}, daysByStage={}",
-					player.getName().getString(), numOfBabies, typeOfBaby.name(), lastPregnancyStage, daysByStage);
-			
-			return true;
+		if (femaleData.isPresent() && !femaleData.get().isPregnant()) {			
+			return femaleData.get().tryImpregnate(numOfBabies, father);
 		}
 		
 		return false;
@@ -126,19 +158,23 @@ public class PlayerHelper {
 			return false;
 		}
 		
-		final var numOfBabies = IBreedable.calculateNumOfOffspringByFertility(malePlayerData.get().getFertilityRate(), femalePlayerData.get().getFertilityRate());
+		final var numOfBabies = IBreedable.calculateNumOfBabiesByFertility(malePlayerData.get().getFertilityRate(), femalePlayerData.get().getFertilityRate());
 		
 		if (numOfBabies == 0) {
 			return false;
 		}
 			
-		return tryToStartPregnancy(female, Baby.HUMAN, numOfBabies, male.getUUID());
+		return tryToStartPrePregnancy(female, ImmutableTriple.of(Optional.of(male.getUUID()), Species.HUMAN, Creature.HUMANOID), numOfBabies);
 	}
 	
-	public static boolean tryStartPregnancyByPotion(ServerPlayer player, Baby typeOfBaby, int amplifier) {			
-		final var numOfbabies = IBreedable.calculateNumOfOffspringByPotion(amplifier);
-		return tryToStartPregnancy(player, typeOfBaby, numOfbabies, null);
+	public static boolean tryStartPregnancyByPotion(ServerPlayer player, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father, int amplifier) {			
+		final var numOfbabies = IBreedable.calculateNumOfBabiesByPotion(amplifier);
+		if (tryToStartPrePregnancy(player, father, numOfbabies)) {
+			return tryToStartPregnancy(player);
+		}
+		return false;
 	}
+	
 	
 	public static boolean tryStartPregnancyByMobAttack(ServerPlayer female, Species species) {
 		return false;
@@ -154,5 +190,12 @@ public class PlayerHelper {
 	
 	public static boolean isPlayerValid(LivingEntity entity) {
 		return entity instanceof Player;
+	}
+	
+	public static boolean canUseChestplate(Item armor) {
+		if (!ItemHelper.isChest(armor)) {
+			return false;
+		}		
+		return armor instanceof IFemaleArmor;
 	}
 }

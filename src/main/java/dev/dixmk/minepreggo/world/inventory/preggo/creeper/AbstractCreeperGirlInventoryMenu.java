@@ -1,12 +1,12 @@
 package dev.dixmk.minepreggo.world.inventory.preggo.creeper;
 
+import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.utils.TagHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPhase;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGirl;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
 import dev.dixmk.minepreggo.world.inventory.preggo.AbstractPreggoMobInventaryMenu;
 import dev.dixmk.minepreggo.world.item.ItemHelper;
 import net.minecraft.network.FriendlyByteBuf;
@@ -26,68 +26,72 @@ public abstract class AbstractCreeperGirlInventoryMenu<E extends AbstractTamable
 	@Override
 	protected void createInventory(Inventory inv) {
 		this.preggoMob.ifPresent(creeperGirl -> {
-			this.customSlots.put(ITamablePreggoMob.HEAD_INVENTORY_SLOT, this.addSlot(new SlotItemHandler(internal, 4, 8, 8) {
+			
+			this.addSlot(new SlotItemHandler(internal, ITamablePreggoMob.HEAD_INVENTORY_SLOT, 8, 8) {
 				@Override
 				public boolean mayPlace(ItemStack itemstack) {
 					return ItemHelper.isHelmet(itemstack);
 				}
-			}));
-			this.customSlots.put(ITamablePreggoMob.CHEST_INVENTORY_SLOT, this.addSlot(new SlotItemHandler(internal, 3, 8, 26) {
+			});
+			
+			this.addSlot(new SlotItemHandler(internal, ITamablePreggoMob.CHEST_INVENTORY_SLOT, 8, 26) {
 				@Override
-				public boolean mayPlace(ItemStack itemstack) {						
-					if (!ItemHelper.isChest(itemstack)) {
-						return false;
-					}
-					var stage = PregnancyPhase.getNonPregnancyStage();
-					if (creeperGirl instanceof AbstractTamablePregnantCreeperGirl<?,?> pregnantCreeperGirl) {
-						stage = pregnantCreeperGirl.getCurrentPregnancyStage();		
-					}
-					if (!PreggoMobHelper.canUseChestplate(itemstack, stage) && !player.level().isClientSide()) {                                               
-		                player.displayClientMessage(MessageHelper.getPreggoMobArmorChestMessage(stage, creeperGirl.getSimpleName()), true);        
-		                return false;
-					}				
-					return true;			
+				public boolean mayPlace(ItemStack itemstack) {	
+					boolean flag = true;
+					if (creeperGirl instanceof IPregnancySystemHandler pregnancySystem) {
+						final var pregnancyPhase = pregnancySystem.getCurrentPregnancyStage();					
+						if (!PregnancySystemHelper.canUseChestplate(itemstack.getItem(), pregnancyPhase)) {
+			                player.displayClientMessage(MessageHelper.getPreggoMobArmorChestMessage(pregnancyPhase, creeperGirl.getSimpleName()), true);        
+			                flag = false;
+						}			
+					}					
+					else {                      
+						flag = PreggoMobHelper.canUseChestplate(itemstack.getItem());
+					}	
+			
+					return flag;			
 				}
-			}));
-			this.customSlots.put(ITamablePreggoMob.LEGS_INVENTORY_SLOT, this.addSlot(new SlotItemHandler(internal, 2, 8, 44) {
+			});
+			
+			this.addSlot(new SlotItemHandler(internal, ITamablePreggoMob.LEGS_INVENTORY_SLOT, 8, 44) {
 				@Override
 				public boolean mayPlace(ItemStack itemstack) {
-					if (!ItemHelper.isLegging(itemstack)) {
-						return false;
-					}		
-					var stage = PregnancyPhase.getNonPregnancyStage();
-					if (creeperGirl instanceof AbstractTamablePregnantCreeperGirl<?,?> pregnantCreeperGirl) {
-						stage = pregnantCreeperGirl.getCurrentPregnancyStage();
-					}
-					if (!PreggoMobHelper.canUseLegging(itemstack, stage) && !player.level().isClientSide()) {            	
-		                player.displayClientMessage(MessageHelper.getPreggoMobArmorLeggingsMessage(creeperGirl.getSimpleName()), true);           
-		                return false;
-					}			
+					if (creeperGirl instanceof IPregnancySystemHandler pregnancySystem) {
+						final var pregnancyPhase = pregnancySystem.getCurrentPregnancyStage();					
+						if (!PregnancySystemHelper.canUseLegging(itemstack.getItem(), pregnancyPhase)) {
+			                player.displayClientMessage(MessageHelper.getPreggoMobArmorLeggingsMessage(creeperGirl.getSimpleName()), true);           
+			                return false;
+						}			
+					}												
 					return true;			
 				}
-			}));
-			this.customSlots.put(ITamablePreggoMob.FEET_INVENTORY_SLOT, this.addSlot(new SlotItemHandler(internal, 1, 8, 62) {
+			});
+
+			this.addSlot(new SlotItemHandler(internal, ITamablePreggoMob.FEET_INVENTORY_SLOT, 8, 62) {
 				@Override
 				public boolean mayPlace(ItemStack itemstack) {
 					return ItemHelper.isBoot(itemstack);
 				}
-			}));
-			this.customSlots.put(ITamablePreggoMob.MAINHAND_INVENTORY_SLOT, this.addSlot(new SlotItemHandler(internal, 0, 77, 62)));
-			this.customSlots.put(ITamablePreggoMob.OFFHAND_INVENTORY_SLOT, this.addSlot(new SlotItemHandler(internal, 5, 95, 62)));
-			this.customSlots.put(ITamablePreggoMob.FOOD_INVENTORY_SLOT, this.addSlot(new SlotItemHandler(internal, 6, 113, 62) {
+			});
+			
+			this.addSlot(new SlotItemHandler(internal, ITamablePreggoMob.MAINHAND_INVENTORY_SLOT, 77, 62));
+					
+			this.addSlot(new SlotItemHandler(internal, ITamablePreggoMob.OFFHAND_INVENTORY_SLOT, 95, 62));
+			
+			this.addSlot(new SlotItemHandler(internal, ITamablePreggoMob.FOOD_INVENTORY_SLOT, 113, 62) {
 				@Override
 				public boolean mayPlace(ItemStack itemstack) {
 					return itemstack.is(TagHelper.CREEPER_GIRL_FOOD);
 				}
-			}));
+			});
 			
+			this.addSlot(new SlotItemHandler(internal, 7, 134, 8));
+			this.addSlot(new SlotItemHandler(internal, 8, 152, 8));
+			this.addSlot(new SlotItemHandler(internal, 9, 134, 26));
+			this.addSlot(new SlotItemHandler(internal, 10, 152, 26));
+			this.addSlot(new SlotItemHandler(internal, 11, 134, 44));
+			this.addSlot(new SlotItemHandler(internal, 12, 152, 44));
 			
-			this.customSlots.put(7, this.addSlot(new SlotItemHandler(internal, 7, 134, 8)));
-			this.customSlots.put(8, this.addSlot(new SlotItemHandler(internal, 8, 152, 8)));
-			this.customSlots.put(9, this.addSlot(new SlotItemHandler(internal, 9, 134, 26)));
-			this.customSlots.put(10, this.addSlot(new SlotItemHandler(internal, 10, 152, 26)));
-			this.customSlots.put(11, this.addSlot(new SlotItemHandler(internal, 11, 134, 44)));
-			this.customSlots.put(12, this.addSlot(new SlotItemHandler(internal, 12, 152, 44)));
 			
 			for (int si = 0; si < 3; ++si)
 				for (int sj = 0; sj < 9; ++sj)

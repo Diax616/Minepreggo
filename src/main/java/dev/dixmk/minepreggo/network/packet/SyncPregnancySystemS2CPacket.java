@@ -6,7 +6,7 @@ import java.util.function.Supplier;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.network.capability.PlayerPregnancySystemImpl;
-
+import dev.dixmk.minepreggo.world.entity.preggo.PregnancySymptom;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -36,7 +36,7 @@ public record SyncPregnancySystemS2CPacket(UUID targetId, PlayerPregnancySystemI
 				if (target != null) {
 					target.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
 						cap.getFemaleData().ifPresent(femaleData -> {
-							femaleData.getPregnancySystem().setPregnancySymptom(message.data.pregnancySymptom());
+							femaleData.getPregnancySystem().setPregnancySymptoms(PregnancySymptom.fromBitMask(message.data.pregnancySymptoms()));
 							femaleData.getPregnancySystem().setPregnancyPain(message.data.pregnancyPain());
 							femaleData.getPregnancySystem().setCurrentPregnancyStage(message.data.currentPregnancyPhase());											
 						})

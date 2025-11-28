@@ -1,12 +1,13 @@
 package dev.dixmk.minepreggo.world.entity.preggo.creeper;
 
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
-import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobPregnancySystemP0;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPhase;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnantPreggoMobSystemP0;
-import dev.dixmk.minepreggo.world.item.ItemHelper;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
@@ -14,13 +15,18 @@ public abstract class AbstractTamablePregnantHumanoidCreeperGirl<S extends Pregn
 
 	protected AbstractTamablePregnantHumanoidCreeperGirl(EntityType<? extends AbstractTamableCreeperGirl<?>> p_21803_,
 			Level p_21804_, PregnancyPhase pStage) {
-		super(p_21803_, p_21804_, pStage);
-		this.typeOfCreature = Creature.HUMANOID;
+		super(p_21803_, p_21804_, Creature.HUMANOID, pStage);
 	}
 	
 	@Override
-	protected boolean canReplaceArmorBasedInPregnancyStage(ItemStack armor) {
-		return (ItemHelper.isChest(armor) && PreggoMobHelper.canUseChestplate(armor, this.getCurrentPregnancyStage()))
-				|| (ItemHelper.isLegging(armor) && PreggoMobHelper.canUseLegging(armor, this.getCurrentPregnancyStage()));
+	protected boolean canReplaceArmorBasedInPregnancyPhase(ItemStack armor) {	
+		final var slot = LivingEntity.getEquipmentSlotForItem(armor);				
+		if (slot == EquipmentSlot.CHEST) {
+			return PregnancySystemHelper.canUseChestplate(this, armor.getItem(), this.getCurrentPregnancyStage());
+		}
+		else if (slot == EquipmentSlot.LEGS) {
+			return PregnancySystemHelper.canUseLegging(armor.getItem(), this.getCurrentPregnancyStage());
+		}
+		return true;
 	}
 }

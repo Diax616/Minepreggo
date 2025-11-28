@@ -20,6 +20,11 @@ public abstract class PreggoMobPregnancySystemP4<E extends PreggoMob
 	
 	protected PreggoMobPregnancySystemP4(@Nonnull E preggoMob) {
 		super(preggoMob);
+		addNewValidPregnancySymptom(PregnancySymptom.HORNY);
+	}
+	
+	@Override
+	protected void initPregnancySymptomsTimers() {
 		totalTicksOfCraving = MinepreggoModConfig.getTotalTicksOfCravingP4();
 		totalTicksOfMilking = MinepreggoModConfig.getTotalTicksOfMilkingP4();
 		totalTicksOfBellyRubs = MinepreggoModConfig.getTotalTicksOfBellyRubsP4();
@@ -77,10 +82,10 @@ public abstract class PreggoMobPregnancySystemP4<E extends PreggoMob
 		else if (pain == PregnancyPain.BIRTH) {
 			if (pregnantEntity.getPregnancyPainTimer() >= totalTicksOfBirth) {
 				
-				final var babyItem = PregnancySystemHelper.getAliveBabyItem(pregnantEntity.getDefaultTypeOfBaby());
+				final var babyItem = PregnancySystemHelper.getAliveBabyItem(pregnantEntity.getTypeOfSpecies(), pregnantEntity.getTypeOfCreature());
 				
 				if (babyItem != null) {
-					PreggoMobHelper.setItemstackOnOffHand(pregnantEntity, new ItemStack(babyItem, IBreedable.getOffspringsByMaxPregnancyStage(pregnantEntity.getLastPregnancyStage())));
+					PreggoMobHelper.setItemstackOnOffHand(pregnantEntity, new ItemStack(babyItem, IBreedable.calculateNumOfBabiesByMaxPregnancyStage(pregnantEntity.getLastPregnancyStage())));
 				} else {
 					MinepreggoMod.LOGGER.error("Failed to get baby item for pregnancy system {} birth.", pregnantEntity.getCurrentPregnancyStage());
 				}
@@ -148,7 +153,7 @@ public abstract class PreggoMobPregnancySystemP4<E extends PreggoMob
 			return true;
 		}
 		if (pregnantEntity.getHorny() >= PregnancySystemHelper.ACTIVATE_HORNY_SYMPTOM) {
-	    	pregnantEntity.setPregnancySymptom(PregnancySymptom.HORNY);
+	    	pregnantEntity.addPregnancySymptom(PregnancySymptom.HORNY);
 	    	return true;		
 		}
 		return false;

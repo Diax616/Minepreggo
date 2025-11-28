@@ -18,7 +18,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public abstract class AbstractRequestSexScreen 
 	<S extends LivingEntity, T extends LivingEntity, M extends AbstractRequestSexMenu<S, T>> extends AbstractContainerScreen<M> {
 	

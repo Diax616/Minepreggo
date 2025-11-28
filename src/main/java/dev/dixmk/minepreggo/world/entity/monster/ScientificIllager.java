@@ -6,7 +6,6 @@ import net.minecraftforge.network.PlayMessages;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.entity.monster.AbstractIllager;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.npc.AbstractVillager;
@@ -55,6 +54,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
@@ -76,22 +76,27 @@ import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.world.entity.npc.Trades;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.IllCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.IllQuadrupedCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.IllZombieGirl;
 import dev.dixmk.minepreggo.world.inventory.preggo.SelectPregnantEntityForMedicalCheckUpMenu;
+import dev.dixmk.minepreggo.world.item.checkup.PrenatalCheckups.PrenatalCheckup;
 import io.netty.buffer.Unpooled;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.IllEnderGirl;
 
 public class ScientificIllager extends AbstractIllager implements Merchant {
     private MerchantOffers offers;
     private Player tradingPlayer;
+    
     private boolean spawnIllEnderGirl = true;
     private boolean spawnIllZombieGirl = true;
     private boolean spawnIllQuadrupedCreeperGirl = true;
     private boolean spawnIllCreeperGirl = true;
-  
+    
     private final Map<String, UUID> petsId = new HashMap<>();
+    private Map<PrenatalCheckup, Integer> prenatalCheckUpCosts = null;
+    
     
 	public ScientificIllager(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.SCIENTIFIC_ILLAGER.get(), world);
@@ -111,7 +116,6 @@ public class ScientificIllager extends AbstractIllager implements Merchant {
 		}
     }
 	
-    
 	@Override
 	public boolean canJoinRaid() {
 		return false;
@@ -147,6 +151,14 @@ public class ScientificIllager extends AbstractIllager implements Merchant {
          return this.offers;
     }
 
+    public Map<PrenatalCheckup, Integer> getPrenatalCheckUpCosts() {
+    	if (this.prenatalCheckUpCosts == null) {
+    		this.prenatalCheckUpCosts = PregnancySystemHelper.createPrenatalCheckUpCosts(random, 5, 10);
+    	}
+    	return this.prenatalCheckUpCosts;
+    }
+    
+    
     @Override
     public void overrideOffers(MerchantOffers offers) {
         this.offers = offers;
@@ -201,55 +213,63 @@ public class ScientificIllager extends AbstractIllager implements Merchant {
     	}
 	
 		if (player instanceof ServerPlayer serverPlayer) {  			
-    		final var blockPos = serverPlayer.blockPosition();
-    		final var scientificIllagerId = this.getId();   		
-			final Vec3 center = new Vec3(serverPlayer.getX(), serverPlayer.getY(), serverPlayer.getZ());	
-    		final List<Integer> list = serverPlayer.level().getEntitiesOfClass(PreggoMob.class, new AABB(center, center).inflate(16D), e -> e.isOwnedBy(serverPlayer) && e instanceof IPregnancySystemHandler)
-    					.stream()
-    					.map(e -> e.getId())
-    					.collect(Collectors.toCollection(ArrayList::new));
-			
-    		serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 			  		 		 		   		    		
-    			cap.getFemaleData().ifPresent(femaleData -> {
-            		if (femaleData.isPregnant()) {
-                		list.add(serverPlayer.getId());		
-            		}
-    			}) 		
-    		);
-    		
-    		if (!list.isEmpty()) {
-    			this.setTradingPlayer(player);
-    			NetworkHooks.openScreen(serverPlayer, new MenuProvider() {
-    	            @Override
-    	            public Component getDisplayName() {
-    	                return Component.literal("CreeperGirlInventoryGUI");
-    	            }
-    	            
-    	            @Override
-    	            public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-    	                FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
-    	                packetBuffer.writeBlockPos(blockPos);
-    	                packetBuffer.writeVarInt(scientificIllagerId);
-    	                packetBuffer.writeCollection(list, FriendlyByteBuf::writeVarInt);              
-    	                return new SelectPregnantEntityForMedicalCheckUpMenu(id, inventory, packetBuffer);
-    	            }
-    			}
-    						
-    			,buf -> {
-    				buf.writeBlockPos(blockPos);
-    			    buf.writeVarInt(scientificIllagerId);
-    			    buf.writeCollection(list, FriendlyByteBuf::writeVarInt); 
-    			});        			
-    		}
-    		else {
-    			MessageHelper.sendMessageToPlayer(serverPlayer, Component.translatable("chat.minepreggo.scientific_illager.no_pregnant_entities"));
-    		}
+			tryOpenPrenatalCheckUpMenu(serverPlayer);
 		}  	
 		     
         return InteractionResult.sidedSuccess(this.level().isClientSide);
     }
   
-	
+    
+    private boolean tryOpenPrenatalCheckUpMenu(ServerPlayer serverPlayer) {   	
+    	if (serverPlayer.level().isClientSide) {
+    		return false;
+    	}	
+    	
+		final var blockPos = serverPlayer.blockPosition();
+		final var scientificIllagerId = this.getId();   		
+		final List<Integer> list = serverPlayer.level().getEntitiesOfClass(PreggoMob.class, new AABB(blockPos).inflate(16D), e -> e.isOwnedBy(serverPlayer) && e instanceof IPregnancySystemHandler)
+					.stream()
+					.map(e -> e.getId())
+					.collect(Collectors.toCollection(ArrayList::new));
+		
+		serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 			  		 		 		   		    		
+			cap.getFemaleData().ifPresent(femaleData -> {
+        		if (femaleData.isPregnant() && femaleData.getPregnancySystem().getCurrentPregnancyStage() != null) {
+            		list.add(serverPlayer.getId());		
+        		}
+			}) 		
+		);
+		
+		if (list.isEmpty()) {
+			MessageHelper.sendMessageToPlayer(serverPlayer, Component.translatable("chat.minepreggo.scientific_illager.no_pregnant_entities"));
+			return false;
+		}
+		
+		NetworkHooks.openScreen(serverPlayer, new MenuProvider() {
+            @Override
+            public Component getDisplayName() {
+                return Component.literal("CreeperGirlInventoryGUI");
+            }
+            
+            @Override
+            public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
+                FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
+                packetBuffer.writeBlockPos(blockPos);
+                packetBuffer.writeVarInt(scientificIllagerId);
+                packetBuffer.writeCollection(list, FriendlyByteBuf::writeVarInt);              
+                return new SelectPregnantEntityForMedicalCheckUpMenu(id, inventory, packetBuffer);
+            }
+		}
+					
+		,buf -> {
+			buf.writeBlockPos(blockPos);
+		    buf.writeVarInt(scientificIllagerId);
+		    buf.writeCollection(list, FriendlyByteBuf::writeVarInt); 
+		});  
+		
+		return true;
+    }
+    
 	@Override
 	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);				
@@ -265,12 +285,18 @@ public class ScientificIllager extends AbstractIllager implements Merchant {
 	    for (final var entry : this.petsId.entrySet()) {  	
 	    	compound.putUUID(entry.getKey(), entry.getValue());
 	    }
+	    
+	    if (this.prenatalCheckUpCosts != null && !this.prenatalCheckUpCosts.isEmpty()) {
+	    	compound.put("prenatalCheckUps", PregnancySystemHelper.serializePrenatalCheckupMap(prenatalCheckUpCosts));
+	    }
 	}
-		
 	@Override
 	public void readAdditionalSaveData(CompoundTag compound) {
-		super.readAdditionalSaveData(compound);	
-		this.offers = new MerchantOffers(compound.getCompound("Offers"));
+		super.readAdditionalSaveData(compound);			
+		if (compound.contains("Offers")) {
+			this.offers = new MerchantOffers(compound.getCompound("Offers"));
+		}
+		
 		this.spawnIllEnderGirl = compound.getBoolean("SpawnIllEnderGirl");
 		this.spawnIllZombieGirl = compound.getBoolean("SpawnIllZombieGirl");
 		this.spawnIllCreeperGirl = compound.getBoolean("SpawnIllCreeperGirl");
@@ -279,6 +305,10 @@ public class ScientificIllager extends AbstractIllager implements Merchant {
 		this.tryReadPetId("DataIllCreeperId", compound);
 		this.tryReadPetId("DataIllQuadrupedCreeperId", compound);
 		this.tryReadPetId("DataIllEnderId", compound);	
+		
+		if (compound.contains("prenatalCheckUps", Tag.TAG_LIST)) {
+			prenatalCheckUpCosts = PregnancySystemHelper.deserializePrenatalCheckupMap(compound.getList("prenatalCheckUps", Tag.TAG_COMPOUND));
+		}
 	}
 	
 	@Override

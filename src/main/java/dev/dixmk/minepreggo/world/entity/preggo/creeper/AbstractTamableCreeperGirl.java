@@ -1,16 +1,20 @@
 package dev.dixmk.minepreggo.world.entity.preggo.creeper;
 
+import java.util.Optional;
 import java.util.UUID;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
 import dev.dixmk.minepreggo.network.capability.FemaleEntityImpl;
 import dev.dixmk.minepreggo.network.capability.Gender;
 import dev.dixmk.minepreggo.network.capability.IFemaleEntity;
+import dev.dixmk.minepreggo.network.capability.PrePregnancyData;
 import dev.dixmk.minepreggo.world.entity.ai.goal.PreggoMobAIHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
@@ -19,6 +23,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobState;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem;
+import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlMenuHelper;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -57,16 +62,6 @@ import net.minecraftforge.items.wrapper.EntityHandsInvWrapper;
 
 public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> extends AbstractCreeperGirl implements ITamablePreggoMob, IFemaleEntity {
 	
-	/* TODO A lot of EntityDataAccessor can be normal fields, only kept as EntityDataAccessor for syncing purposes. 
-	 * Consider refactoring those that don't need to be synced.
-	 * DATA_HUNGRY - can be normal field
-	 * DATA_COMBAT_MODE - can be normal field
-	 * DATA_BREAK_BLOCKS - can be normal field
-	 * DATA_PICKUP_ITEMS - can be normal field
-	 * DATA_ANGRY - can be normal field
-	 * DATA_PANIC - can be normal field
-	 */
-	 
 	protected static final EntityDataAccessor<Integer> DATA_HUNGRY = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.INT);
 	protected static final EntityDataAccessor<Boolean> DATA_SAVAGE = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Boolean> DATA_ANGRY = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
@@ -86,8 +81,8 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 	
 	protected final FemaleEntityImpl defaultFemaleEntityImpl = new FemaleEntityImpl();
 
-	protected AbstractTamableCreeperGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_) {
-	      super(p_21803_, p_21804_);
+	protected AbstractTamableCreeperGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_, Creature typeOfCreature) {
+	      super(p_21803_, p_21804_, typeOfCreature);
 	      this.reassessTameGoals();	   
 	      this.preggoMobSystem = createPreggoMobSystem();
 	}
@@ -302,7 +297,7 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 	
 	@Override
 	protected void pickUpItem(ItemEntity p_21471_) {	
-		if (this.typeOfCreature != Creature.HUMANOID) return;
+		if (this.getTypeOfCreature() != Creature.HUMANOID) return;
 		
 		ItemStack itemstack = p_21471_.getItem();
 		ItemStack itemstack1 = this.equipItemIfPossible(itemstack.copy());			
@@ -483,8 +478,13 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 	}
 
 	@Override
-	public boolean tryImpregnate(@Nullable UUID father) {
-		return this.defaultFemaleEntityImpl.tryImpregnate(father);
+	public boolean tryImpregnate(@Nonnegative int fertilizedEggs, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father) {
+		return this.defaultFemaleEntityImpl.tryImpregnate(fertilizedEggs, father);
+	}
+	
+	@Override
+	public Optional<PrePregnancyData> getPrePregnancyData() {
+		return this.defaultFemaleEntityImpl.getPrePregnancyData();
 	}
 
 	@Override
@@ -602,5 +602,15 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 		return this.defaultFemaleEntityImpl.canFuck();
 	}
 
+	@Override
+	public void resetFertilityRateTimer() {
+		this.defaultFemaleEntityImpl.resetFertilityRateTimer();	
+	}
+
+	@Override
+	public void resetFertilityRate() {
+		this.defaultFemaleEntityImpl.resetFertilityRate();	
+	}
+	
 	// IFemaleEntity END
 }

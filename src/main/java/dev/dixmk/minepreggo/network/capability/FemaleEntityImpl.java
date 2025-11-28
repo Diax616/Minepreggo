@@ -3,10 +3,15 @@ package dev.dixmk.minepreggo.network.capability;
 import java.util.Optional;
 import java.util.UUID;
 
+import javax.annotation.Nonnegative;
+
+import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Nullable;
 
+import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.PostPregnancy;
+import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 
@@ -21,7 +26,8 @@ public class FemaleEntityImpl extends AbstractBreedableEntity implements IFemale
 	protected int postPregnancyTimer = 0;
 	protected boolean pregnant = false;
 	Optional<PostPregnancy> postPregnancy = Optional.empty();
-	Optional<UUID> father = Optional.empty();
+	Optional<PrePregnancyData> prePregnancyData = Optional.empty(); 
+	
 	
 	@Override
 	public boolean canGetPregnant() {
@@ -51,15 +57,10 @@ public class FemaleEntityImpl extends AbstractBreedableEntity implements IFemale
 	}
 	
 	@Override
-	public void incrementFertilityRateTimer() {
-		++this.pregnancyInitializerTimer;
-	}
-	
-	@Override
-	public boolean tryImpregnate(@Nullable UUID father) {
+	public boolean tryImpregnate(@Nonnegative int fertilizedEggs, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father) {
 		if (!this.pregnant) {
 			this.pregnant = true;
-			this.father = Optional.ofNullable(father);
+			this.prePregnancyData = Optional.of(new PrePregnancyData(fertilizedEggs, father.getMiddle(), father.getRight(), father.getLeft().orElse(null)));
 			return true;
 		}
 		return false;
@@ -109,15 +110,20 @@ public class FemaleEntityImpl extends AbstractBreedableEntity implements IFemale
 
 	@Override
 	public @Nullable UUID getFather() {
-		if (this.father.isPresent()) {
-			return this.father.get();
+		if (this.prePregnancyData.isPresent()) {
+			return this.prePregnancyData.get().fatherId();
 		}
 		return null;
+	}
+	
+	@Override
+	public Optional<PrePregnancyData> getPrePregnancyData() {
+		return this.prePregnancyData;
 	}
 
 	@Override
 	public boolean hasNaturalPregnancy() {
-		return this.father.isPresent();
+		return this.getFather() != null;
 	}
 	
 	@Override
@@ -127,12 +133,8 @@ public class FemaleEntityImpl extends AbstractBreedableEntity implements IFemale
 		nbt.putInt("DataPregnancyInitializerTimer", pregnancyInitializerTimer);
 		nbt.putInt("DataPostPregnancyTimer", postPregnancyTimer);
 		nbt.putBoolean("DataPregnant", pregnant);
-		
-		if (father.isPresent()) {
-			nbt.putUUID("DataFather", father.get());
-		}
-	
 		postPregnancy.ifPresent(post -> nbt.putString(PostPregnancy.NBT_KEY, post.name()));
+		prePregnancyData.ifPresent(pre -> pre.serializeNBT(tag, PrePregnancyData.NBT_KEY));
 	}
 	
 	@Override
@@ -147,8 +149,7 @@ public class FemaleEntityImpl extends AbstractBreedableEntity implements IFemale
 	        String name = nbt.getString(PostPregnancy.NBT_KEY);
 	        postPregnancy = Optional.of(PostPregnancy.valueOf(name));
 	    }
-	    if (nbt.contains("DataFather")) {
-	    	father = Optional.of(nbt.getUUID("DataFather"));
-	    }
+	    
+	    prePregnancyData = Optional.ofNullable(PrePregnancyData.deserializeNBT(tag, PrePregnancyData.NBT_KEY));
 	}
 }

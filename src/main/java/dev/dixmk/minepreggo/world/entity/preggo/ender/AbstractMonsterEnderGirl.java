@@ -1,5 +1,6 @@
 package dev.dixmk.minepreggo.world.entity.preggo.ender;
 
+import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
@@ -21,7 +22,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 public abstract class AbstractMonsterEnderGirl extends AbstractEnderGirl {
 
 	protected AbstractMonsterEnderGirl(EntityType<? extends AbstractEnderGirl> p_32485_, Level p_32486_) {
-		super(p_32485_, p_32486_);
+		super(p_32485_, p_32486_, Creature.MONSTER);
 	}
 
     public static AttributeSupplier.Builder createDefaultAttributes() {

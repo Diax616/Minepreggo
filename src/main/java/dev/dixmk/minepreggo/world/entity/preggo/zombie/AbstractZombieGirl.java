@@ -14,6 +14,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
 import dev.dixmk.minepreggo.utils.TagHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import net.minecraft.core.BlockPos;
@@ -41,8 +42,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public abstract class AbstractZombieGirl extends PreggoMob implements Enemy {
 	
-	protected AbstractZombieGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_) {
-	      super(p_21803_, p_21804_);
+	protected AbstractZombieGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_, Creature typeOfCreature) {
+	      super(p_21803_, p_21804_, Species.ZOMBIE, typeOfCreature);
 	      this.reassessTameGoals();	     
 		}
 	
@@ -52,7 +53,7 @@ public abstract class AbstractZombieGirl extends PreggoMob implements Enemy {
 	}
 		
 	@Override
-	public @NonNull Species getSpecies() {
+	public @NonNull Species getTypeOfSpecies() {
 		return Species.ZOMBIE;
 	}
 	

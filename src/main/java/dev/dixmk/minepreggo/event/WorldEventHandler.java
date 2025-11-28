@@ -36,12 +36,12 @@ public class WorldEventHandler {
                                   
                 entities.forEach(preggoMob -> {
                 	final var tickResult = preggoMob.getPregnancyTimer() + (int) (24000L - currentDay);
-    				final var numOfDays = Math.min(tickResult / MinepreggoModConfig.getTotalTicksByPregnancyDay(), preggoMob.getDaysByStage() - preggoMob.getDaysPassed());
+    				final var numOfDays = Math.min(tickResult / MinepreggoModConfig.getTotalTicksByPregnancyDay(), preggoMob.getDaysByCurrentStage() - preggoMob.getDaysPassed());
     				final var remainingTicks = tickResult % MinepreggoModConfig.getTotalTicksByPregnancyDay();
                    				
     				if (numOfDays > 0) {
     					preggoMob.setPregnancyTimer(remainingTicks);
-    					preggoMob.setDaysPassed(Math.min(preggoMob.getDaysByStage(), preggoMob.getDaysPassed() + numOfDays));
+    					preggoMob.setDaysPassed(Math.min(preggoMob.getDaysByCurrentStage(), preggoMob.getDaysPassed() + numOfDays));
     					preggoMob.setDaysToGiveBirth(Math.max(0, preggoMob.getDaysToGiveBirth() - numOfDays));
     				} else {
     					preggoMob.setPregnancyTimer(tickResult);

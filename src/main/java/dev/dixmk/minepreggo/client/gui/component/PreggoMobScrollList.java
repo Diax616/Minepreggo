@@ -11,7 +11,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class PreggoMobScrollList extends ObjectSelectionList<PreggoMobScrollList.PreggoMobEntry> {
 	
     public PreggoMobScrollList(Minecraft mc, int width, int height, int top, int bottom, int itemHeight) {
@@ -28,6 +31,7 @@ public class PreggoMobScrollList extends ObjectSelectionList<PreggoMobScrollList
         this.addEntry(new PreggoMobEntry(entityName, icon, textureWidth, textureHeight, onClick));
     } 
     
+    @OnlyIn(Dist.CLIENT)
     class PreggoMobEntry extends ObjectSelectionList.Entry<PreggoMobEntry> {
         private final String entityName;    
         private final Optional<Runnable> onClick;   

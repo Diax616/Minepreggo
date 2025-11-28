@@ -62,7 +62,7 @@ public class TamablePregnantZombieGirlExpressionLayer
 			}
 		}
 		
-		if (zombieGirl.getPregnancySymptom() != null) {
+		if (!zombieGirl.getPregnancySymptoms().isEmpty()) {
 			return Optional.of(SAD1);
 		}
 		else if (zombieGirl.getState() == PreggoMobState.BLUSHED) {

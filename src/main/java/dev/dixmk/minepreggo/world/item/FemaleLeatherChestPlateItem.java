@@ -3,6 +3,7 @@ package dev.dixmk.minepreggo.world.item;
 import java.util.function.Consumer;
 
 import dev.dixmk.minepreggo.client.model.armor.ArmorModelHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPhase;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -16,10 +17,25 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 
-public abstract class FemaleLeatherChestPlateItem extends DyeableArmorItem {
+public abstract class FemaleLeatherChestPlateItem extends DyeableArmorItem implements IFemaleArmor {
 	protected FemaleLeatherChestPlateItem() {
 		super(ArmorMaterials.LEATHER, ArmorItem.Type.CHESTPLATE, new Item.Properties());	
 	}
+	
+
+	public abstract static class MaternityFemaleLeatherChestPlateItem extends FemaleLeatherChestPlateItem implements IMaternityArmor{
+		final PregnancyPhase maxPregnancyPhase;
+			
+		protected MaternityFemaleLeatherChestPlateItem(PregnancyPhase maxPregnancyPhase) {
+			this.maxPregnancyPhase = maxPregnancyPhase;
+		}
+		
+		@Override
+		public PregnancyPhase getMinPregnancyPhaseAllowed() {
+			return maxPregnancyPhase;
+		}
+	}
+	
 	
 	public static class ChestplateP0 extends FemaleLeatherChestPlateItem {		
 		@Override
@@ -42,7 +58,11 @@ public abstract class FemaleLeatherChestPlateItem extends DyeableArmorItem {
 		}
 	}	
 	
-	public static class MaternityChestplateP1 extends FemaleLeatherChestPlateItem {		
+	public static class MaternityChestplateP1 extends MaternityFemaleLeatherChestPlateItem {		
+		public MaternityChestplateP1() {
+			super(PregnancyPhase.P1);
+		}
+
 		@Override
 		public void initializeClient(Consumer<IClientItemExtensions> consumer) {
 			consumer.accept(new IClientItemExtensions() {
@@ -63,7 +83,11 @@ public abstract class FemaleLeatherChestPlateItem extends DyeableArmorItem {
 		}	
 	}
 	
-	public static class MaternityChestplateP2 extends FemaleLeatherChestPlateItem {		
+	public static class MaternityChestplateP2 extends MaternityFemaleLeatherChestPlateItem {		
+		public MaternityChestplateP2() {
+			super(PregnancyPhase.P2);
+		}
+		
 		@Override
 		public void initializeClient(Consumer<IClientItemExtensions> consumer) {
 			consumer.accept(new IClientItemExtensions() {
@@ -84,7 +108,11 @@ public abstract class FemaleLeatherChestPlateItem extends DyeableArmorItem {
 		}	
 	}
 	
-	public static class MaternityChestplateP3 extends FemaleLeatherChestPlateItem {		
+	public static class MaternityChestplateP3 extends MaternityFemaleLeatherChestPlateItem {		
+		public MaternityChestplateP3() {
+			super(PregnancyPhase.P3);
+		}
+		
 		@Override
 		public void initializeClient(Consumer<IClientItemExtensions> consumer) {
 			consumer.accept(new IClientItemExtensions() {
@@ -105,7 +133,11 @@ public abstract class FemaleLeatherChestPlateItem extends DyeableArmorItem {
 		}	
 	}
 	
-	public static class MaternityChestplateP4 extends FemaleLeatherChestPlateItem {		
+	public static class MaternityChestplateP4 extends MaternityFemaleLeatherChestPlateItem {		
+		public MaternityChestplateP4() {
+			super(PregnancyPhase.P4);
+		}
+		
 		@Override
 		public void initializeClient(Consumer<IClientItemExtensions> consumer) {
 			consumer.accept(new IClientItemExtensions() {

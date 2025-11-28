@@ -17,12 +17,26 @@ import net.minecraft.client.model.HumanoidModel;
 import java.util.function.Consumer;
 
 import dev.dixmk.minepreggo.client.model.armor.ArmorModelHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPhase;
 
-public abstract class FemaleChainmailChestPlateItem extends ArmorItem {
+public abstract class FemaleChainmailChestPlateItem extends ArmorItem implements IFemaleArmor {
 	protected FemaleChainmailChestPlateItem() {
 		super(ArmorMaterials.CHAIN, ArmorItem.Type.CHESTPLATE, new Item.Properties());
 	}
 
+	public abstract static class MaternityFemaleChainmailChestPlateItem extends FemaleChainmailChestPlateItem implements IMaternityArmor{
+		final PregnancyPhase maxPregnancyPhase;
+			
+		protected MaternityFemaleChainmailChestPlateItem(PregnancyPhase maxPregnancyPhase) {
+			this.maxPregnancyPhase = maxPregnancyPhase;
+		}
+		
+		@Override
+		public PregnancyPhase getMinPregnancyPhaseAllowed() {
+			return maxPregnancyPhase;
+		}
+	}
+		
 	public static class ChestplateP0 extends FemaleChainmailChestPlateItem {	
 		@Override
 		public void initializeClient(Consumer<IClientItemExtensions> consumer) {
@@ -41,7 +55,11 @@ public abstract class FemaleChainmailChestPlateItem extends ArmorItem {
 		}
 	}
 	
-	public static class MaternityChestplateP1 extends FemaleChainmailChestPlateItem {
+	public static class MaternityChestplateP1 extends MaternityFemaleChainmailChestPlateItem {
+		public MaternityChestplateP1() {
+			super(PregnancyPhase.P1);
+		}
+
 		@Override
 		public void initializeClient(Consumer<IClientItemExtensions> consumer) {
 			consumer.accept(new IClientItemExtensions() {
@@ -59,7 +77,11 @@ public abstract class FemaleChainmailChestPlateItem extends ArmorItem {
 		}
 	}
 	
-	public static class MaternityChestplateP2 extends FemaleChainmailChestPlateItem {
+	public static class MaternityChestplateP2 extends MaternityFemaleChainmailChestPlateItem {
+		public MaternityChestplateP2() {
+			super(PregnancyPhase.P2);
+		}
+		
 		@Override
 		public void initializeClient(Consumer<IClientItemExtensions> consumer) {
 			consumer.accept(new IClientItemExtensions() {
@@ -77,7 +99,11 @@ public abstract class FemaleChainmailChestPlateItem extends ArmorItem {
 		}
 	}
 	
-	public static class MaternityChestplateP3 extends FemaleChainmailChestPlateItem {
+	public static class MaternityChestplateP3 extends MaternityFemaleChainmailChestPlateItem {
+		public MaternityChestplateP3() {
+			super(PregnancyPhase.P3);
+		}
+		
 		@Override
 		public void initializeClient(Consumer<IClientItemExtensions> consumer) {
 			consumer.accept(new IClientItemExtensions() {
@@ -95,7 +121,11 @@ public abstract class FemaleChainmailChestPlateItem extends ArmorItem {
 		}
 	}
 	
-	public static class MaternityChestplateP4 extends FemaleChainmailChestPlateItem {
+	public static class MaternityChestplateP4 extends MaternityFemaleChainmailChestPlateItem {
+		public MaternityChestplateP4() {
+			super(PregnancyPhase.P4);
+		}
+		
 		@Override
 		public void initializeClient(Consumer<IClientItemExtensions> consumer) {
 			consumer.accept(new IClientItemExtensions() {

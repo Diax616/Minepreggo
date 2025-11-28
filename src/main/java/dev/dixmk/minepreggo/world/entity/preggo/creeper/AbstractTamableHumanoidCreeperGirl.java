@@ -4,9 +4,9 @@ import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPhase;
-import dev.dixmk.minepreggo.world.item.ItemHelper;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -16,8 +16,7 @@ import net.minecraft.world.level.Level;
 public abstract class AbstractTamableHumanoidCreeperGirl<S extends PreggoMobSystem<?>> extends AbstractTamableCreeperGirl<S> {
 
 	protected AbstractTamableHumanoidCreeperGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_) {
-		super(p_21803_, p_21804_);
-		this.typeOfCreature = Creature.HUMANOID;
+		super(p_21803_, p_21804_, Creature.HUMANOID);
 	}
 
 	public static AttributeSupplier.Builder getBasicAttributes(double movementSpeed) {
@@ -29,8 +28,10 @@ public abstract class AbstractTamableHumanoidCreeperGirl<S extends PreggoMobSyst
 	}
 	
 	@Override
-	protected boolean canReplaceArmorBasedInPregnancyStage(ItemStack armor) {
-		return (ItemHelper.isChest(armor) && PreggoMobHelper.canUseChestplate(armor, PregnancyPhase.getNonPregnancyStage()))
-				|| (ItemHelper.isLegging(armor) && PreggoMobHelper.canUseLegging(armor, PregnancyPhase.getNonPregnancyStage()));
+	protected boolean canReplaceArmorBasedInPregnancyPhase(ItemStack armor) {	
+		if (LivingEntity.getEquipmentSlotForItem(armor) == EquipmentSlot.CHEST) {
+			return PreggoMobHelper.canUseChestplate(armor.getItem());
+		}			
+		return true;
 	}
 }

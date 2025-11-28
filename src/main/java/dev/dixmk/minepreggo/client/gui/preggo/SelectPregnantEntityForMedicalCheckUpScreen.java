@@ -2,6 +2,8 @@ package dev.dixmk.minepreggo.client.gui.preggo;
 
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -24,13 +26,13 @@ import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractZombieGirl;
 import dev.dixmk.minepreggo.world.inventory.preggo.SelectPregnantEntityForMedicalCheckUpMenu;
 
+@OnlyIn(Dist.CLIENT)
 public class SelectPregnantEntityForMedicalCheckUpScreen extends AbstractContainerScreen<SelectPregnantEntityForMedicalCheckUpMenu> {
 	
 	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/select_preggo_mob_for_medical_check_up_gui.png");
 
 	private static final ResourceLocation DEFAULT_ICON_CREEPER_GIRL_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/creeper_girl_p0.png");
 	private static final ResourceLocation DEFAULT_ICON_ZOMBIE_GIRL_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/zombie_girl_p0.png");
-	// private static final ResourceLocation DEFAULT_ICON_HUMAN_TEXTURE = ResourceLocation.withDefaultNamespace("textures/entity/player/wide/alex.png");
 
 	private final Optional<ScientificIllager> scientificIllager;
 	private final List<? extends LivingEntity> pregnantEntities;
@@ -105,7 +107,7 @@ public class SelectPregnantEntityForMedicalCheckUpScreen extends AbstractContain
 	private Optional<Runnable> createRequestMedicalCheckUpPacket() {	
 		Runnable onClick = null;			
 		if (this.scientificIllager.isPresent()) {
-			onClick = () -> MinepreggoModPacketHandler.INSTANCE.sendToServer(new RequestPlayerMedicalCheckUpC2SPacket(this.scientificIllager.get().getId()));
+			onClick = () -> MinepreggoModPacketHandler.INSTANCE.sendToServer(new RequestPlayerMedicalCheckUpC2SPacket(this.scientificIllager.get().getId()));			
 		}	
 		return Optional.ofNullable(onClick);
 	}

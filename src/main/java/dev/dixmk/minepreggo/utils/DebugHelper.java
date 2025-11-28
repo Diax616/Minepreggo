@@ -37,9 +37,9 @@ public class DebugHelper {
 	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler> void showPregnancyInfo(E preggoMob) {
 		MinepreggoMod.LOGGER.debug("BASIC PREGNANCY INFO: pregnancyTimer={}, daysByStage={}, daysByStage={}, daysToGiveBirth={}, pregnancyPain={}, "
 				+ "pregnancyPainTimer={}, pregnanctSymptom={}, isIncapacitated={}",
-				preggoMob.getPregnancyTimer(), preggoMob.getDaysByStage(), preggoMob.getDaysByStage(),
+				preggoMob.getPregnancyTimer(), preggoMob.getDaysByCurrentStage(), preggoMob.getDaysByCurrentStage(),
 				preggoMob.getDaysToGiveBirth(), preggoMob.getPregnancyPain(), preggoMob.getPregnancyPainTimer(),
-				preggoMob.getPregnancySymptom(), preggoMob.isIncapacitated());
+				preggoMob.getPregnancySymptoms(), preggoMob.isIncapacitated());
 	}
 	
 	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancyEffectsHandler> void showPregnancyP1Info(E preggoMob) {

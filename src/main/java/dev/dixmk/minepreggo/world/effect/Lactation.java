@@ -1,6 +1,6 @@
 package dev.dixmk.minepreggo.world.effect;
 
-import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemHelper;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
@@ -16,7 +16,7 @@ public class Lactation extends AbstractPlayerPregnancySymptom {
 
 	@Override
 	public void addAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {	
-		if (!PlayerHelper.isPlayerValid(entity)) return;
+		if (!PregnancySystemHelper.isPregnantEntityValid(entity)) return;
 		
 		if (!entity.level().isClientSide) {
 			AttributeInstance speedAttr = entity.getAttribute(Attributes.MOVEMENT_SPEED);
@@ -28,7 +28,7 @@ public class Lactation extends AbstractPlayerPregnancySymptom {
 	
 	@Override
 	public void removeAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {
-		if (!PlayerHelper.isPlayerValid(entity)) return;
+		if (!PregnancySystemHelper.isPregnantEntityValid(entity)) return;
 		
 		if (!entity.level().isClientSide) {		
 			AttributeInstance speedAttr = entity.getAttribute(Attributes.MOVEMENT_SPEED);

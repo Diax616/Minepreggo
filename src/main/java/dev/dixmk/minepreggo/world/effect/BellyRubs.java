@@ -1,11 +1,11 @@
 package dev.dixmk.minepreggo.world.effect;
 
+import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.player.Player;
 
 public class BellyRubs extends AbstractPlayerPregnancySymptom {
 	private static final AttributeModifier LUCK_MODIFIER = new AttributeModifier(LUCK_MODIFIER_UUID, "lactation luck nerf", -100, AttributeModifier.Operation.ADDITION);
@@ -16,7 +16,7 @@ public class BellyRubs extends AbstractPlayerPregnancySymptom {
 
 	@Override
 	public void addAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {	
-		if (!(entity instanceof Player)) return;
+		if (!PlayerHelper.isPlayerValid(entity)) return;
 		
 		if (!entity.level().isClientSide) {
 			AttributeInstance luckAttr = entity.getAttribute(Attributes.LUCK);
@@ -28,7 +28,7 @@ public class BellyRubs extends AbstractPlayerPregnancySymptom {
 	
 	@Override
 	public void removeAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {
-		if (!(entity instanceof Player)) return;
+		if (!PlayerHelper.isPlayerValid(entity)) return;
 		
 		if (!entity.level().isClientSide) {		
 			AttributeInstance luckAttr = entity.getAttribute(Attributes.LUCK);

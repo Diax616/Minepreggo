@@ -1,12 +1,18 @@
 package dev.dixmk.minepreggo.network.capability;
 
+import java.util.Optional;
 import java.util.UUID;
 
+import javax.annotation.Nonnegative;
+
+import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Nullable;
 
+import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.IBreedable;
 import dev.dixmk.minepreggo.world.entity.preggo.PostPregnancy;
+import dev.dixmk.minepreggo.world.entity.preggo.Species;
 
 public interface IFemaleEntity extends IBreedable {
 
@@ -16,11 +22,13 @@ public interface IFemaleEntity extends IBreedable {
     
     boolean isPregnant();
     boolean canGetPregnant();
-    boolean tryImpregnate(@Nullable UUID father);
+    boolean tryImpregnate(@Nonnegative int fertilizedEggs, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father);
      
     boolean tryCancelPregnancy();
     
     @Nullable UUID getFather();
+    
+    Optional<PrePregnancyData> getPrePregnancyData();
     
     boolean hasNaturalPregnancy();
     

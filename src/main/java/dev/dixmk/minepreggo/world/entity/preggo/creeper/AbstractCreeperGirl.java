@@ -3,7 +3,6 @@ package dev.dixmk.minepreggo.world.entity.preggo.creeper;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -14,8 +13,6 @@ import java.util.Collection;
 import java.util.EnumSet;
 
 import javax.annotation.Nullable;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
@@ -53,7 +50,6 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 	private static final EntityDataAccessor<Integer> DATA_SWELL_DIR = SynchedEntityData.defineId(AbstractCreeperGirl.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Boolean> DATA_IS_POWERED = SynchedEntityData.defineId(AbstractCreeperGirl.class, EntityDataSerializers.BOOLEAN);
 	private static final EntityDataAccessor<Boolean> DATA_IS_IGNITED = SynchedEntityData.defineId(AbstractCreeperGirl.class, EntityDataSerializers.BOOLEAN);
-	
 	private int oldSwell;
 	private int swell;
 	private int droppedSkulls;
@@ -61,16 +57,10 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 	protected int explosionRadius = 3;
 	protected int explosionItensity = 1;
 	protected double maxDistance = 9D;
-	protected Creature typeOfCreature;
 	
-	protected AbstractCreeperGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_) {
-      super(p_21803_, p_21804_);
+	protected AbstractCreeperGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_, Creature typeOfCreature) {
+      super(p_21803_, p_21804_, Species.CREEPER, typeOfCreature);
       this.reassessTameGoals();	    
-	}
-	
-	@Override
-	public @NonNull Species getSpecies() {
-		return Species.CREEPER;
 	}
 	
 	@Override
@@ -134,18 +124,18 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 	
 	@Override
 	protected boolean canReplaceCurrentItem(ItemStack p_21428_, ItemStack p_21429_) {
-		if (this.typeOfCreature != Creature.HUMANOID) return false;
+		if (this.getTypeOfCreature() != Creature.HUMANOID) return false;
 			
-		if (p_21428_.getItem() instanceof ArmorItem && !canReplaceArmorBasedInPregnancyStage(p_21428_)) return false;
+		if (!canReplaceArmorBasedInPregnancyPhase(p_21428_)) return false;
 	
 		return super.canReplaceCurrentItem(p_21428_, p_21429_);
 	}
 	
-	protected abstract boolean canReplaceArmorBasedInPregnancyStage(ItemStack armor);
+	protected abstract boolean canReplaceArmorBasedInPregnancyPhase(ItemStack armor);
 	
 	@Override
 	protected void populateDefaultEquipmentSlots(RandomSource p_219165_, DifficultyInstance p_219166_) {					
-		if (this.typeOfCreature != Creature.HUMANOID) return;
+		if (this.getTypeOfCreature() != Creature.HUMANOID) return;
 			
 		this.populateDefaultEquipmentSlots(p_219165_, p_219166_);
 		if (p_219165_.nextFloat() < (this.level().getDifficulty() == Difficulty.HARD ? 0.075F : 0.025F)) {

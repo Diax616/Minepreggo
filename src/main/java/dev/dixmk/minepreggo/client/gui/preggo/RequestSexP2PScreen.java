@@ -12,7 +12,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class RequestSexP2PScreen extends AbstractRequestSexScreen<Player, Player, RequestSexP2PMenu> {
 	private int xSexSprite = 0; 
 	private int ySexSprite = 0;

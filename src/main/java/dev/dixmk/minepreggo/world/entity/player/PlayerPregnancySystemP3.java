@@ -19,10 +19,15 @@ public class PlayerPregnancySystemP3 extends PlayerPregnancySystemP2 {
 	
 	public PlayerPregnancySystemP3(@NonNull ServerPlayer player) {
 		super(player);
+		addNewValidPregnancySymptoms(PregnancySymptom.BELLY_RUBS);
+	}
+
+	@Override
+	protected void initPregnancySymptomsTimers() {
 		totalTicksOfCraving = MinepreggoModConfig.getTotalTicksOfCravingP3();
 		totalTicksOfMilking = MinepreggoModConfig.getTotalTicksOfMilkingP3();
 	}
-
+	
 	@Override
 	protected void evaluatePregnancyNeeds() {	
 		super.evaluatePregnancyNeeds();
@@ -30,31 +35,31 @@ public class PlayerPregnancySystemP3 extends PlayerPregnancySystemP2 {
 	}
 	
 	@Override
-	protected void evaluatePregnancySymptoms() {
-		final var pregnancySymptom = pregnancySystem.getPregnancySymptom();			
-		
-		if ((pregnancySymptom == PregnancySymptom.CRAVING && pregnancyEffects.getCraving() <= PregnancySystemHelper.DESACTIVATE_CRAVING_SYMPTOM)
-				|| (pregnancySymptom == PregnancySymptom.MILKING && pregnancyEffects.getMilking() <= PregnancySystemHelper.DESACTIVATE_MILKING_SYMPTOM)
-				|| (pregnancySymptom == PregnancySymptom.BELLY_RUBS && pregnancyEffects.getBellyRubs() <= PregnancySystemHelper.DESACTIVATE_FULL_BELLY_RUBS_STAGE)) {		
-	
-			if (pregnancySymptom == PregnancySymptom.CRAVING) {
+	protected void evaluatePregnancySymptoms() {	
+		pregnancySystem.getPregnancySymptoms().forEach(symptom -> {					
+			boolean flag = false;		
+			if (symptom == PregnancySymptom.CRAVING && pregnancyEffects.getCraving() <= PregnancySystemHelper.DESACTIVATE_CRAVING_SYMPTOM) {
 				pregnancyEffects.clearTypeOfCravingBySpecies();
 				pregnantEntity.removeEffect(MinepreggoModMobEffects.CRAVING.get());
-
+				flag = true;
 			}
-			else if (pregnancySymptom == PregnancySymptom.MILKING) {
+			else if (symptom == PregnancySymptom.MILKING && pregnancyEffects.getMilking() <= PregnancySystemHelper.DESACTIVATE_MILKING_SYMPTOM) {
 				pregnantEntity.removeEffect(MinepreggoModMobEffects.LACTATION.get());
+				flag = true;
 			}
-			else {
+			else if (symptom == PregnancySymptom.BELLY_RUBS && pregnancyEffects.getBellyRubs() <= PregnancySystemHelper.DESACTIVATEL_BELLY_RUBS_SYMPTOM) {
 				pregnantEntity.removeEffect(MinepreggoModMobEffects.BELLY_RUBS.get());
+				flag = true;
 			}
-			
-			pregnancySystem.clearPregnancySymptom();	
-			pregnancySystem.sync(pregnantEntity);
-			pregnancyEffects.sync(pregnantEntity);
-			MinepreggoMod.LOGGER.debug("Player {} pregnancy symptom cleared: {}",
-					pregnantEntity.getGameProfile().getName(), pregnancySymptom);
-		}
+					
+			if (flag) {
+				pregnancySystem.removePregnancySymptom(symptom);
+				pregnancySystem.sync(pregnantEntity);
+				pregnancyEffects.sync(pregnantEntity);
+				MinepreggoMod.LOGGER.debug("Player {} pregnancy symptom cleared: {}",
+						pregnantEntity.getGameProfile().getName(), symptom);
+			}
+		});	
 	}
 	
 	protected void evaluateBellyRubsTimer() {   				
@@ -101,13 +106,14 @@ public class PlayerPregnancySystemP3 extends PlayerPregnancySystemP2 {
 		if (super.tryInitPregnancySymptom()) {
 			return true;
 		} 	
-		if (pregnancyEffects.getBellyRubs() >= PregnancySystemHelper.MAX_BELLY_RUBBING_LEVEL) {
-			pregnancySystem.setPregnancySymptom(PregnancySymptom.BELLY_RUBS);
+		if (pregnancyEffects.getBellyRubs() >= PregnancySystemHelper.MAX_BELLY_RUBBING_LEVEL
+				&& !pregnancySystem.getPregnancySymptoms().contains(PregnancySymptom.BELLY_RUBS)) {
+			pregnancySystem.addPregnancySymptom(PregnancySymptom.BELLY_RUBS);
 			pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.BELLY_RUBS.get(), -1, 0, true, true));
 			pregnancySystem.sync(pregnantEntity);
 			pregnancyEffects.sync(pregnantEntity);	
-			MinepreggoMod.LOGGER.debug("Player {} has developed pregnancy symptom: {}",
-					pregnantEntity.getGameProfile().getName(), PregnancySymptom.BELLY_RUBS);
+			MinepreggoMod.LOGGER.debug("Player {} has developed pregnancy symptom: {}, all pregnancy symptom: {}",
+					pregnantEntity.getGameProfile().getName(), PregnancySymptom.BELLY_RUBS, pregnancySystem.getPregnancySymptoms());
 			return true;
 		}
 

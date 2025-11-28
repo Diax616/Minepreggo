@@ -11,6 +11,10 @@ public abstract class PreggoMobPregnancySystemP8<E extends PreggoMob
 
 	protected PreggoMobPregnancySystemP8(@Nonnull E preggoMob) {
 		super(preggoMob);
+	}
+	
+	@Override
+	protected void initPregnancySymptomsTimers() {
 		totalTicksOfCraving = MinepreggoModConfig.getTotalTicksOfCravingP8();
 		totalTicksOfMilking = MinepreggoModConfig.getTotalTicksOfMilkingP8();
 		totalTicksOfBellyRubs = MinepreggoModConfig.getTotalTicksOfBellyRubsP8();

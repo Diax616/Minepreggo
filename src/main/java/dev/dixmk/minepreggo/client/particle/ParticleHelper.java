@@ -1,4 +1,4 @@
-package dev.dixmk.minepreggo.common.utils;
+package dev.dixmk.minepreggo.client.particle;
 
 import javax.annotation.Nonnegative;
 

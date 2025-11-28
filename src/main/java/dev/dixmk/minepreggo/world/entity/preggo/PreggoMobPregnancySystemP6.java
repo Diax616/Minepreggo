@@ -11,6 +11,10 @@ public abstract class PreggoMobPregnancySystemP6<E extends PreggoMob
 
 	protected PreggoMobPregnancySystemP6(@Nonnull E preggoMob) {
 		super(preggoMob);
+	}
+	
+	@Override
+	protected void initPregnancySymptomsTimers() {
 		totalTicksOfCraving = MinepreggoModConfig.getTotalTicksOfCravingP6();
 		totalTicksOfMilking = MinepreggoModConfig.getTotalTicksOfMilkingP6();
 		totalTicksOfBellyRubs = MinepreggoModConfig.getTotalTicksOfBellyRubsP6();
@@ -18,5 +22,4 @@ public abstract class PreggoMobPregnancySystemP6<E extends PreggoMob
 		totalTicksOfPreBirth = PregnancySystemHelper.TOTAL_TICKS_PREBIRTH_P6;
 		totalTicksOfBirth = PregnancySystemHelper.TOTAL_TICKS_BIRTH_P6;
 	}
-	
 }

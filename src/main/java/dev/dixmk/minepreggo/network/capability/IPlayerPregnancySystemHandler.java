@@ -2,15 +2,11 @@ package dev.dixmk.minepreggo.network.capability;
 
 import java.util.Set;
 
-import javax.annotation.Nonnegative;
-
-import dev.dixmk.minepreggo.world.entity.preggo.Baby;
+import dev.dixmk.minepreggo.world.entity.preggo.Species;
 
 public interface IPlayerPregnancySystemHandler extends IPregnancySystemHandler {
 
-	Set<Baby> getTypesOfBabies();
-	int getNumOfBabiesByType(Baby babyType);
-	void addBaby(Baby babyType, @Nonnegative int num);
-	
+	Set<Species> getTypesOfBabies();
+	int getNumOfBabiesByType(Species babyType);
 }
 

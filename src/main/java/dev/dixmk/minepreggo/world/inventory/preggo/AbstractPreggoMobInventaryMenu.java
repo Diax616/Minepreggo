@@ -1,9 +1,6 @@
 package dev.dixmk.minepreggo.world.inventory.preggo;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import org.joml.Vector3i;
 
@@ -12,7 +9,6 @@ import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -28,14 +24,13 @@ import net.minecraftforge.items.IItemHandler;
 
 @Mod.EventBusSubscriber
 public abstract class AbstractPreggoMobInventaryMenu
-	<E extends PreggoMob & ITamablePreggoMob> extends AbstractContainerMenu implements Supplier<Map<Integer, Slot>> {
+	<E extends PreggoMob & ITamablePreggoMob> extends AbstractContainerMenu {
 
 	public final Level level;
 	public final Player player;
 	public final Class<E> preggoMobClass;
 	protected Optional<Vector3i> pos;
 	protected IItemHandler internal;
-	protected Map<Integer, Slot> customSlots = new HashMap<>();
 	protected final Optional<E> preggoMob;
 	protected final int invetorySize;
 	
@@ -48,9 +43,8 @@ public abstract class AbstractPreggoMobInventaryMenu
 		this.preggoMob = this.readBuffer(extraData);
 		
 		this.preggoMob.ifPresentOrElse(mob -> 
-			mob.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(capability -> {
-				this.internal = capability;
-			}), () -> MinepreggoMod.LOGGER.error("PREGGO MOB IS NULL"));
+			mob.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(capability -> this.internal = capability),
+			() -> MinepreggoMod.LOGGER.error("PREGGO MOB IS NULL"));
 			
 		
 		this.createInventory(inv);	
@@ -87,23 +81,7 @@ public abstract class AbstractPreggoMobInventaryMenu
 	public boolean stillValid(Player player) {	
 		return this.preggoMob.isPresent() && this.preggoMob.get().isAlive();
 	}
-	
-	@Override
-	public void removed(Player playerIn) {
-		super.removed(playerIn);
-		if (this.preggoMob.isEmpty() && playerIn instanceof ServerPlayer serverPlayer) {
-			if (!serverPlayer.isAlive() || serverPlayer.hasDisconnected()) {
-				for (int j = 0; j < internal.getSlots(); ++j) {
-					playerIn.drop(internal.extractItem(j, internal.getStackInSlot(j).getCount(), false), false);
-				}
-			} else {
-				for (int i = 0; i < internal.getSlots(); ++i) {
-					playerIn.getInventory().placeItemBackInInventory(internal.extractItem(i, internal.getStackInSlot(i).getCount(), false));
-				}
-			}
-		}
-	}
-	
+
 	@Override
 	protected boolean moveItemStackTo(ItemStack p_38904_, int p_38905_, int p_38906_, boolean p_38907_) {
 		boolean flag = false;
@@ -210,10 +188,6 @@ public abstract class AbstractPreggoMobInventaryMenu
 			slot.onTake(playerIn, itemstack1);
 		}
 		return itemstack;
-	}
-	
-	public Map<Integer, Slot> get() {
-		return customSlots;
 	}
 	
 	@SubscribeEvent

@@ -40,6 +40,7 @@ public class ToggleableCheckbox extends Checkbox {
 		return new ToggleableCheckbox.Builder(x, y, width, height, label, checked);
 	}
     
+	@OnlyIn(Dist.CLIENT)
     public static class Builder {
     	@Nullable List<ToggleableCheckbox> group;
     	@Nullable Runnable onSelect;

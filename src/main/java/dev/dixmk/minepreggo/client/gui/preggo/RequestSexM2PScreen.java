@@ -14,7 +14,10 @@ import net.minecraft.client.gui.components.Button.OnPress;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class RequestSexM2PScreen extends AbstractRequestSexScreen<PreggoMob, Player, RequestSexM2PMenu> {
 	
 	private int xSexSprite = 0; 

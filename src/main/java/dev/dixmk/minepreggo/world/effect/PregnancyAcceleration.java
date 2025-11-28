@@ -26,9 +26,9 @@ public class PregnancyAcceleration extends MobEffect {
 		final var days = 6;
 				
 		if (p_19464_ instanceof IPregnancySystemHandler p) {	
-			final var daysBirth = Mth.clamp(p.getDaysByStage() - p.getDaysPassed(), 0, days);		
+			final var daysBirth = Mth.clamp(p.getDaysByCurrentStage() - p.getDaysPassed(), 0, days);		
 			p.setDaysToGiveBirth(p.getDaysToGiveBirth() - daysBirth);	
-			p.setDaysPassed(Math.min(p.getDaysByStage(), p.getDaysPassed() + days));
+			p.setDaysPassed(Math.min(p.getDaysByCurrentStage(), p.getDaysPassed() + days));
 		
 		}
 		else if (p_19464_ instanceof ServerPlayer serverPlayer) {	
@@ -37,7 +37,7 @@ public class PregnancyAcceleration extends MobEffect {
 					if (femaleData.isPregnant()) {
 						final var pregnancySystem = femaleData.getPregnancySystem();
 						final var daysPassed = pregnancySystem.getDaysPassed();
-						final var daysByStage = pregnancySystem.getDaysByStage();
+						final var daysByStage = pregnancySystem.getDaysByCurrentStage();
 						final var daysBirth = Mth.clamp(daysByStage - daysPassed, 0, days);
 						final var newDaysPassed = Math.min(daysByStage, daysPassed + days);					
 						pregnancySystem.setDaysPassed(newDaysPassed);

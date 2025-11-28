@@ -53,7 +53,7 @@ public class PregnancyDelay extends MobEffect {
 		if (p_19464_ instanceof PreggoMob p && p instanceof IPregnancySystemHandler s) {		
 		
 			if (f != Integer.MAX_VALUE ) {
-				final var oldDaysByStage = s.getDaysByStage();
+				final var oldDaysByStage = s.getDaysByCurrentStage();
 				final var newDaysByStage = oldDaysByStage + f;
 				final var totalDaysPassed = Math.max(0, s.getCurrentPregnancyStage().ordinal() - 1) * oldDaysByStage + s.getDaysPassed();
 				final var newTotalDays = s.getLastPregnancyStage().ordinal() * newDaysByStage;			
@@ -79,7 +79,7 @@ public class PregnancyDelay extends MobEffect {
 					if (f != Integer.MAX_VALUE) {
 						final var lastStage = pregnancySystem.getLastPregnancyStage().ordinal();
 						final var currentStage = pregnancySystem.getCurrentPregnancyStage().ordinal();
-						final var oldDaysByStage = pregnancySystem.getDaysByStage();
+						final var oldDaysByStage = pregnancySystem.getDaysByCurrentStage();
 						final var newDaysByStage = oldDaysByStage + f;
 						
 						final var daysPassed = pregnancySystem.getDaysPassed();

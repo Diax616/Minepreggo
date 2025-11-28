@@ -23,6 +23,11 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 
 	public PlayerPregnancySystemP4(@NonNull ServerPlayer player) {
 		super(player);
+		addNewValidPregnancySymptoms(PregnancySymptom.HORNY);
+	}
+	
+	@Override
+	protected void initPregnancySymptomsTimers() {
 		totalTicksOfCraving = MinepreggoModConfig.getTotalTicksOfCravingP4();
 		totalTicksOfMilking = MinepreggoModConfig.getTotalTicksOfMilkingP4();
 		totalTicksOfBellyRubs = MinepreggoModConfig.getTotalTicksOfBellyRubsP4();
@@ -106,8 +111,9 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 		if (super.tryInitPregnancySymptom()) {
 			return true;
 		} 	
-		if (pregnancyEffects.getHorny() >= PregnancySystemHelper.MAX_HORNY_LEVEL) {
-			pregnancySystem.setPregnancySymptom(PregnancySymptom.HORNY);
+		if (pregnancyEffects.getHorny() >= PregnancySystemHelper.MAX_HORNY_LEVEL
+				&& !pregnancySystem.getPregnancySymptoms().contains(PregnancySymptom.HORNY)) {
+			pregnancySystem.addPregnancySymptom(PregnancySymptom.HORNY);
 			pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.HORNY.get(), -1, 0, true, true));
 			pregnancySystem.sync(pregnantEntity);
 			pregnancyEffects.sync(pregnantEntity);	

@@ -12,6 +12,8 @@ public abstract class FertilitySystem<E extends PreggoMob & ITamablePreggoMob & 
 
 	protected final RandomSource randomSource;	
 	protected final E preggoMob;
+	protected int discomfortTick = 0;
+	
 	
 	protected FertilitySystem(@Nonnull E preggoMob) {
 		this.preggoMob = preggoMob;	
@@ -23,8 +25,7 @@ public abstract class FertilitySystem<E extends PreggoMob & ITamablePreggoMob & 
         	startPregnancy();
         	preggoMob.discard();
         } else {
-        	preggoMob.setPregnancyInitializerTimer(preggoMob.getPregnancyInitializerTimer() + 1);
-    
+        	preggoMob.incrementPregnancyInitializerTimer();
         } 
 	}
 
@@ -41,16 +42,22 @@ public abstract class FertilitySystem<E extends PreggoMob & ITamablePreggoMob & 
 	}
 	
 	public void onServerTick() {		
-		if (preggoMob.level().isClientSide()) {
+		if (preggoMob.level().isClientSide) {
 			return;
 		}
 		
-		if (preggoMob.isPregnant()) {
-			evaluatePregnancyInitializerTimer();
+		if (preggoMob.isPregnant()) {			
+			if (!isExperiencingDiscomfort()) {			
+				if (discomfortTick > 40) {
+					tryStartRandomDiscomfort();
+					discomfortTick = 0;
+				}
+				else {
+					++discomfortTick;
+				}
+			}	
 			
-			if (!isExperiencingDiscomfort()) {
-				tryStartRandomDiscomfort();
-			}		
+			evaluatePregnancyInitializerTimer();
 		}
 	}
 	

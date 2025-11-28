@@ -10,6 +10,10 @@ public class PlayerPregnancySystemP5 extends PlayerPregnancySystemP4 {
 
 	public PlayerPregnancySystemP5(@NonNull ServerPlayer player) {
 		super(player);
+	}
+	
+	@Override
+	protected void initPregnancySymptomsTimers() {
 		totalTicksOfCraving = MinepreggoModConfig.getTotalTicksOfCravingP5();
 		totalTicksOfMilking = MinepreggoModConfig.getTotalTicksOfMilkingP5();
 		totalTicksOfBellyRubs = MinepreggoModConfig.getTotalTicksOfBellyRubsP5();

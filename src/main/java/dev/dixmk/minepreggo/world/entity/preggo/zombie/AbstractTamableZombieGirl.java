@@ -6,27 +6,31 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 
+import java.util.Optional;
 import java.util.UUID;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
 import dev.dixmk.minepreggo.network.capability.FemaleEntityImpl;
 import dev.dixmk.minepreggo.network.capability.Gender;
 import dev.dixmk.minepreggo.network.capability.IFemaleEntity;
+import dev.dixmk.minepreggo.network.capability.PrePregnancyData;
 import dev.dixmk.minepreggo.world.entity.ai.goal.PreggoMobAIHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PostPregnancy;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobState;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPhase;
+import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.inventory.preggo.zombie.ZombieGirlMenuHelper;
-import dev.dixmk.minepreggo.world.item.ItemHelper;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -91,7 +95,7 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 	protected final FemaleEntityImpl defaultFemaleEntityImpl = new FemaleEntityImpl();
 	
 	protected AbstractTamableZombieGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_) {
-	      super(p_21803_, p_21804_);
+	      super(p_21803_, p_21804_, Creature.HUMANOID);
 	      this.reassessTameGoals();	     
 	      this.preggoMobSystem = createPreggoMobSystem();
 	}
@@ -280,8 +284,7 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 	
 	@Override
 	protected boolean canReplaceCurrentItem(ItemStack p_21428_, ItemStack p_21429_) {	
-		if ((ItemHelper.isChest(p_21428_) && !PreggoMobHelper.canUseChestplate(p_21428_, PregnancyPhase.P0))
-					|| (ItemHelper.isLegging(p_21428_) && !PreggoMobHelper.canUseLegging(p_21428_, PregnancyPhase.P0))) {
+		if (!PreggoMobHelper.canUseChestplate(p_21428_.getItem())) {
 			return false;
 		}	
 		return super.canReplaceCurrentItem(p_21428_, p_21429_);
@@ -463,8 +466,13 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 	}
 
 	@Override
-	public boolean tryImpregnate(@Nullable UUID father) {
-		return this.defaultFemaleEntityImpl.tryImpregnate(father);
+	public boolean tryImpregnate(@Nonnegative int fertilizedEggs, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father) {
+		return this.defaultFemaleEntityImpl.tryImpregnate(fertilizedEggs, father);
+	}
+	
+	@Override
+	public Optional<PrePregnancyData> getPrePregnancyData() {
+		return this.defaultFemaleEntityImpl.getPrePregnancyData();
 	}
 
 	@Override
@@ -582,5 +590,15 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 		return this.defaultFemaleEntityImpl.canFuck();
 	}
 	
+	@Override
+	public void resetFertilityRateTimer() {
+		this.defaultFemaleEntityImpl.resetFertilityRateTimer();	
+	}
+
+	@Override
+	public void resetFertilityRate() {
+		this.defaultFemaleEntityImpl.resetFertilityRate();	
+	}	
+
 	// IFemaleEntity END
 }

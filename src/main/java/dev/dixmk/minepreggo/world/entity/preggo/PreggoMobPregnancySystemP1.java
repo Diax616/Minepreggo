@@ -1,5 +1,8 @@
 package dev.dixmk.minepreggo.world.entity.preggo;
 
+import java.util.EnumSet;
+import java.util.Set;
+
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
@@ -35,10 +38,22 @@ public abstract class PreggoMobPregnancySystemP1<
 	private int pregnancyPainTicks = 0;
 	private int pregnancysymptonsTicks = 0;
 	
+	private final Set<PregnancySymptom> validPregnancySymptoms = EnumSet.noneOf(PregnancySymptom.class);
+
 	protected @Nonnegative int totalTicksOfCraving = MinepreggoModConfig.getTotalTicksOfCravingP1();
 	
 	protected PreggoMobPregnancySystemP1(@Nonnull E preggoMob) {
 		super(preggoMob);
+		initPregnancySymptomsTimers();
+		addNewValidPregnancySymptom(PregnancySymptom.CRAVING);
+	}
+	
+	protected void initPregnancySymptomsTimers() {
+
+	}
+	
+	protected void addNewValidPregnancySymptom(PregnancySymptom newPregnancySymptom) {
+		this.validPregnancySymptoms.add(newPregnancySymptom);
 	}
 	
 	// It has to be executed on server side
@@ -64,7 +79,7 @@ public abstract class PreggoMobPregnancySystemP1<
 			evaluatePregnancyPains();
 		}
 		
-		if (!hasPregnancySymptom()) {
+		if (!hasAllPregnancySymptoms()) {
 			if (pregnancysymptonsTicks > 40) {
 				tryInitPregnancySymptom();
 				pregnancysymptonsTicks = 0;
@@ -73,9 +88,9 @@ public abstract class PreggoMobPregnancySystemP1<
 				++pregnancysymptonsTicks;
 			}
 		}
-		else {
+		if (!pregnantEntity.getPregnancySymptoms().isEmpty()) {
 			evaluatePregnancySymptoms();
-		}	
+		}
 		
 		evaluatePregnancyNeeds();
 		
@@ -125,12 +140,12 @@ public abstract class PreggoMobPregnancySystemP1<
     		}
     		MinepreggoMod.LOGGER.debug("Miscarriage in progress: class={}, timer={}", pregnantEntity.getClass().getSimpleName(), pregnantEntity.getPregnancyPainTimer());
         } else {  
-        	final var babyItem = PregnancySystemHelper.getDeadBabyItem(pregnantEntity.getDefaultTypeOfBaby());
+        	final var babyItem = PregnancySystemHelper.getDeadBabyItem(pregnantEntity.getTypeOfSpecies(), pregnantEntity.getTypeOfCreature());
         	if (babyItem == null) {
 				MinepreggoMod.LOGGER.error("Failed to get dead baby item for miscarriage event. mobId={}, mobClass={}",
 						pregnantEntity.getId(), pregnantEntity.getClass().getSimpleName());
 			} else {
-				ItemStack droppedItem = new ItemStack(babyItem, IBreedable.getOffspringsByMaxPregnancyStage(pregnantEntity.getLastPregnancyStage()));
+				ItemStack droppedItem = new ItemStack(babyItem, IBreedable.calculateNumOfBabiesByMaxPregnancyStage(pregnantEntity.getLastPregnancyStage()));
 				PreggoMobHelper.setItemstackOnOffHand(pregnantEntity, droppedItem);
 			}      	
         	initPostMiscarriage();	 
@@ -140,8 +155,7 @@ public abstract class PreggoMobPregnancySystemP1<
 	}
 	
 	protected void evaluateCravingTimer() {   				
-		if (pregnantEntity.getCraving() < PregnancySystemHelper.MAX_CRAVING_LEVEL
-				&& pregnantEntity.getPregnancySymptom() != PregnancySymptom.CRAVING) {
+		if (pregnantEntity.getCraving() < PregnancySystemHelper.MAX_CRAVING_LEVEL) {
 	        if (pregnantEntity.getCravingTimer() >= totalTicksOfCraving) {
 	        	pregnantEntity.incrementCraving();
 	        	pregnantEntity.resetCravingTimer();
@@ -167,8 +181,8 @@ public abstract class PreggoMobPregnancySystemP1<
 	
 	@Override
 	protected void evaluatePregnancySymptoms() {	
-		if (pregnantEntity.getPregnancySymptom() == PregnancySymptom.CRAVING && pregnantEntity.getCraving() <= PregnancySystemHelper.DESACTIVATE_CRAVING_SYMPTOM) {
-			pregnantEntity.clearPregnancySymptom();
+		if (pregnantEntity.getPregnancySymptoms().contains(PregnancySymptom.CRAVING) && pregnantEntity.getCraving() <= PregnancySystemHelper.DESACTIVATE_CRAVING_SYMPTOM) {
+			pregnantEntity.removePregnancySymptom(PregnancySymptom.CRAVING);
 			pregnantEntity.clearTypeOfCraving();
 		}
 	}
@@ -213,8 +227,8 @@ public abstract class PreggoMobPregnancySystemP1<
 	}
 	
 	@Override
-	public boolean hasPregnancySymptom() {
-	    return pregnantEntity.getPregnancySymptom() != null;
+	public boolean hasAllPregnancySymptoms() {
+		return pregnantEntity.getPregnancySymptoms().containsAll(validPregnancySymptoms);
 	}
 	
 	@Override
@@ -234,9 +248,13 @@ public abstract class PreggoMobPregnancySystemP1<
 	
 	@Override
 	protected boolean tryInitPregnancySymptom() {
-		if (pregnantEntity.getCraving() >= PregnancySystemHelper.ACTIVATE_CRAVING_SYMPTOM) {
-	    	pregnantEntity.setPregnancySymptom(PregnancySymptom.CRAVING);
+		if (pregnantEntity.getCraving() >= PregnancySystemHelper.ACTIVATE_CRAVING_SYMPTOM
+				&& !pregnantEntity.getPregnancySymptoms().contains(PregnancySymptom.CRAVING)) {
+	    	pregnantEntity.addPregnancySymptom(PregnancySymptom.CRAVING);
 	    	pregnantEntity.setTypeOfCraving(PregnancySystemHelper.getRandomCraving(randomSource));
+	    	
+			MinepreggoMod.LOGGER.debug("Player {} has developed pregnancy symptom: {}, all pregnancy symptoms: {}",
+					pregnantEntity.getSimpleName(), PregnancySymptom.CRAVING.name(), pregnantEntity.getPregnancySymptoms());
 	    	return true;		
 		}
 	    return false;
@@ -244,7 +262,7 @@ public abstract class PreggoMobPregnancySystemP1<
 	
 	@Nullable
 	protected Result evaluateCraving(Level level, Player source) {
-		if (pregnantEntity.getPregnancySymptom() != PregnancySymptom.CRAVING) {
+		if (!pregnantEntity.getPregnancySymptoms().contains(PregnancySymptom.CRAVING)) {
 			return null;
 		}
 		
@@ -258,7 +276,7 @@ public abstract class PreggoMobPregnancySystemP1<
 	    	}
 	    	    	
 	    	if (!level.isClientSide) {
-				mainHandItem.setCount(mainHandItem.getCount() - 1);
+				mainHandItem.shrink(1);
 	            if (mainHandItem.isEmpty()) {
 	            	source.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
 	            }        

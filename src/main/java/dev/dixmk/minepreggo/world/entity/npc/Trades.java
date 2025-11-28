@@ -13,7 +13,7 @@ import com.google.common.collect.Maps;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
 import dev.dixmk.minepreggo.init.MinepreggoModPotions;
 import dev.dixmk.minepreggo.init.MinepreggoModVillagerProfessions;
-import dev.dixmk.minepreggo.world.entity.preggo.Baby;
+import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.item.alchemy.PotionItemFactory;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -118,10 +118,10 @@ public class Trades {
 						new ItemsForItems(MinepreggoModItems.BABY_ZOMBIE.get(), 1, Items.GOLD_INGOT, 48, 15),
 						new ItemsForItems(MinepreggoModItems.BABY_ZOMBIE.get(), 1, Items.IRON_BLOCK, 9, 15),
 						new ItemsForItems(MinepreggoModItems.BABY_QUADRUPED_CREEPER.get(), 1, Items.DIAMOND, 8, 10),
-						new EnchantBookForBaby(Baby.HUMANOID_CREEPER),
-						new EnchantBookForBaby(Baby.CREEPER),
-						new EnchantBookForBaby(Baby.ZOMBIE),
-						new EnchantBookForBaby(Baby.HUMAN),
+						new EnchantBookForBaby(Species.HUMAN),
+						new EnchantBookForBaby(Species.CREEPER),
+						new EnchantBookForBaby(Species.ZOMBIE),
+						new EnchantBookForBaby(Species.ENDER),
 						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.PREGNANCY_ACCELERATION.get()), 25, 1, 10, 0),
 						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.IMPREGNATION_POTION_0.get()), 20, 1, 10, 0),
 						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.IMPREGNATION_POTION_1.get()), 30, 1, 10, 0),
@@ -147,10 +147,10 @@ public class Trades {
 						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.CREEPER_IMPREGNATION_0.get()), 35, 1, 10, 0),
 						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.PREGNANCY_ACCELERATION.get()), 27, 1, 10, 0),
 						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.PREGNANCY_HEALING.get()), 27, 1, 10, 0),
-						new EnchantBookForBaby(Baby.HUMANOID_CREEPER),
-						new EnchantBookForBaby(Baby.HUMAN),
-						new EnchantBookForBaby(Baby.CREEPER),
-						new EnchantBookForBaby(Baby.ZOMBIE),
+						new EnchantBookForBaby(Species.HUMAN),
+						new EnchantBookForBaby(Species.CREEPER),
+						new EnchantBookForBaby(Species.ZOMBIE),
+						new EnchantBookForBaby(Species.ENDER),
 						new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.VILLAGER_BRAIN.get(), 12, 24, 10, 0),
 						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_HUMAN_FETUS.get(), 2, 30, 10),
 						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_ZOMBIE_FETUS.get(), 3, 30, 10),
@@ -169,10 +169,10 @@ public class Trades {
 						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.IMPREGNATION_POTION_2.get()), 36, 1, 15, 0),
 						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.PREGNANCY_ACCELERATION.get()), 27, 1, 20, 0),
 						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.PREGNANCY_RESISTANCE.get()), 27, 1, 25, 0),
-						new EnchantBookForBaby(Baby.HUMANOID_CREEPER),
-						new EnchantBookForBaby(Baby.CREEPER),
-						new EnchantBookForBaby(Baby.ZOMBIE),
-						new EnchantBookForBaby(Baby.HUMAN),
+						new EnchantBookForBaby(Species.HUMAN),
+						new EnchantBookForBaby(Species.CREEPER),
+						new EnchantBookForBaby(Species.ZOMBIE),
+						new EnchantBookForBaby(Species.ENDER),
 						new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.VILLAGER_BRAIN.get(), 12, 24, 10, 0),
 						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_HUMAN_FETUS.get(), 2, 30, 10),
 						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_ZOMBIE_FETUS.get(), 3, 30, 10),
@@ -241,15 +241,15 @@ public class Trades {
 		private Enchantment.Rarity rarity;
 		private float enchantmentMaxLevelProbability;
 		
-		public EnchantBookForBaby(Baby babyType) {		    	
-			switch (babyType) {	
+		public EnchantBookForBaby(Species species) {		    	
+			switch (species) {	
 			case CREEPER: {
 				babyItem = MinepreggoModItems.BABY_QUADRUPED_CREEPER.get();
 				rarity = Rarity.VERY_RARE;
 				enchantmentMaxLevelProbability = 0.8F;
 				break;
 			}
-			case HUMANOID_CREEPER: {
+			case ENDER: {
 				babyItem = MinepreggoModItems.BABY_HUMANOID_CREEPER.get();
 				rarity = Rarity.VERY_RARE;
 				enchantmentMaxLevelProbability = 0.95F;

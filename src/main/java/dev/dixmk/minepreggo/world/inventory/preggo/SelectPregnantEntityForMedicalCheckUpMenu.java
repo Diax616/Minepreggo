@@ -27,7 +27,7 @@ public class SelectPregnantEntityForMedicalCheckUpMenu extends AbstractContainer
 	private List<LivingEntity> pregnantLivingEntities = new ArrayList<>();
 	
 	public SelectPregnantEntityForMedicalCheckUpMenu(int id, Inventory inv, FriendlyByteBuf extraData) {
-		super(MinepreggoModMenus.SELECT_PREGNANT_ENTITY_FOR_MEDICAL_CHECKUP_MENU.get(), id);	
+		super(MinepreggoModMenus.SELECT_PREGNANT_ENTITY_FOR_PRENATAL_CHECKUP_MENU.get(), id);	
 		this.player = inv.player;
 		this.level = inv.player.level();
 

@@ -54,4 +54,5 @@ public class TamableCreeperGirlP0 extends AbstractTamablePregnantHumanoidCreeper
 	public PreggoMobPregnancySystemP0<TamableCreeperGirlP0> getPregnancySystemP0() {
 		return this.pregnancySystem;
 	}
+
 }

@@ -24,7 +24,7 @@ public abstract class AbstractTamablePregnantZombieGirlModel<E extends AbstractT
 	public void setupAnim(E entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 		
-		if (entity.getPregnancySymptom() == PregnancySymptom.MILKING) {
+		if (entity.getPregnancySymptoms().contains(PregnancySymptom.MILKING)) {
 			this.boobs.y += extraBoobsYPos;
 			this.boobs.xScale = extraBoobsXScale;
 			this.boobs.zScale = extraBoobsZScale;

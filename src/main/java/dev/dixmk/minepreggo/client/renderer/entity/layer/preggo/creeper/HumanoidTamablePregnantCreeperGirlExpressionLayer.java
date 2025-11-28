@@ -47,7 +47,7 @@ public class HumanoidTamablePregnantCreeperGirlExpressionLayer
 			}
 		}
 	
-		if (creeperGirl.getPregnancySymptom() != null) {
+		if (!creeperGirl.getPregnancySymptoms().isEmpty()) {
 			return Optional.of(SAD1);
 		}
 		else if (creeperGirl.getState() == PreggoMobState.BLUSHED) {

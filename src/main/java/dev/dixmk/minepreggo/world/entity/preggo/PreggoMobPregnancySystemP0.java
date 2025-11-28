@@ -2,6 +2,7 @@ package dev.dixmk.minepreggo.world.entity.preggo;
 
 import org.jetbrains.annotations.Nullable;
 
+import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.network.capability.IPregnancyEffectsHandler;
 import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
@@ -12,7 +13,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 
 public abstract class PreggoMobPregnancySystemP0
 	<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler & IPregnancyEffectsHandler> extends AbstractPregnancySystem<E> {
@@ -29,10 +29,11 @@ public abstract class PreggoMobPregnancySystemP0
 		if (canAdvanceNextPregnancyPhase()) {
 			advanceToNextPregnancyPhase();
 			pregnantEntity.discard();
+			MinepreggoMod.LOGGER.debug("Pregnancy phase advanced to P1 for entity {}", pregnantEntity.getSimpleName());
 			return;
 		}
 		
-		evaluateAngry(pregnantEntity.level(), pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ(), PregnancySystemHelper.LOW_ANGER_PROBABILITY);		
+		evaluateAngry(PregnancySystemHelper.LOW_ANGER_PROBABILITY);		
 	}
 	
 	protected void evaluatePregnancyPains() {	
@@ -61,6 +62,7 @@ public abstract class PreggoMobPregnancySystemP0
         	pregnantEntity.resetPregnancyTimer();
         	pregnantEntity.incrementDaysPassed();
         	pregnantEntity.reduceDaysToGiveBirth();
+        	MinepreggoMod.LOGGER.debug("Pregnancy day advanced to {} for entity {}", pregnantEntity.getDaysPassed(), pregnantEntity.getSimpleName());
         } else {
         	pregnantEntity.incrementPregnancyTimer();
         }
@@ -71,14 +73,14 @@ public abstract class PreggoMobPregnancySystemP0
 	}
 	
 	public boolean canAdvanceNextPregnancyPhase() {
-	    return pregnantEntity.getDaysPassed() >= pregnantEntity.getDaysByStage();
+	    return pregnantEntity.getDaysPassed() >= pregnantEntity.getDaysByCurrentStage();
 	}
 	
 	public boolean hasPregnancyPain() {
 	    return false;
 	}
 	
-	public boolean hasPregnancySymptom() {
+	public boolean hasAllPregnancySymptoms() {
 	    return false;
 	}
 	
@@ -107,7 +109,7 @@ public abstract class PreggoMobPregnancySystemP0
 		return pregnantEntity.getFullness() <= 4;
 	}
 
-	protected void evaluateAngry(Level level, double x, double y, double z, final float angerProbability) {
+	protected void evaluateAngry(final float angerProbability) {
 	   final var angry = pregnantEntity.isAngry();
 		
 		if (!angry && this.canBeAngry()) {
@@ -129,9 +131,8 @@ public abstract class PreggoMobPregnancySystemP0
 			return;
 		}
 			
-        if (!PreggoMobHelper.hasValidTarget(pregnantEntity) && randomSource.nextFloat() < angerProbability) {
-            final Vec3 center = new Vec3(x, y, z);      
-            var players = level.getEntitiesOfClass(Player.class, new AABB(center, center).inflate(12), pregnantEntity::isOwnedBy);
+        if (!PreggoMobHelper.hasValidTarget(pregnantEntity) && randomSource.nextFloat() < angerProbability) {     
+            var players = pregnantEntity.level().getEntitiesOfClass(Player.class, new AABB(pregnantEntity.blockPosition()).inflate(12), pregnantEntity::isOwnedBy);
                   
             if (!players.isEmpty()) {
             	var owner = players.get(0);

@@ -2,11 +2,13 @@ package dev.dixmk.minepreggo.network.packet;
 
 import java.util.function.Supplier;
 
+import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModVillagerProfessions;
 import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
-import dev.dixmk.minepreggo.world.inventory.preggo.PlayerMedicalCheckUpMenu;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemHelper;
+import dev.dixmk.minepreggo.world.inventory.preggo.PlayerPrenatalCheckUpMenu;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -32,17 +34,18 @@ public record RequestPlayerMedicalCheckUpC2SPacket(int targetId) {
             if (context.getDirection().getReceptionSide().isServer()) {
     			var serverPlayer = context.getSender();		
     			serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
-    				cap.getFemaleData().ifPresent(femaleData -> {
-        				final var data = femaleData.getPregnancySystem().createScreenData();   	 
-            			
+    				   cap.getFemaleData().ifPresent(femaleData -> {  	
             			var target = serverPlayer.level().getEntity(message.targetId);
             			
-            			if (target instanceof ScientificIllager scientificIllager) {  				
-            				PlayerMedicalCheckUpMenu.Illager.showMedicalCheckUpMenu(serverPlayer, scientificIllager, data);
+            			if (target instanceof ScientificIllager scientificIllager) { 
+            				PlayerPrenatalCheckUpMenu.IllagerMenu.showPrenatalCheckUpMenu(serverPlayer, scientificIllager, scientificIllager.getPrenatalCheckUpCosts());
             			}
             			else if (target instanceof Villager villager && villager.getVillagerData().getProfession() == MinepreggoModVillagerProfessions.VILLAGER_DOCTOR.get()) {
-            				PlayerMedicalCheckUpMenu.DoctorVillager.showMedicalCheckUpMenu(serverPlayer, villager, data);
+            				PlayerPrenatalCheckUpMenu.VillagerMenu.showPrenatalCheckUpMenu(serverPlayer, villager, PregnancySystemHelper.createPrenatalCheckUpCosts(villager.getRandom(), 3, 6));
             			}  
+            			else {
+							MinepreggoMod.LOGGER.warn("Player {} attempted to request a prenatal check-up with invalid target entity ID {}", serverPlayer.getName().getString(), message.targetId);
+						}
     				})
     			);       	
             }		

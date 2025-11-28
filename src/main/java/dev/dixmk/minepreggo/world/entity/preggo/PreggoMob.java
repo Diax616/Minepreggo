@@ -21,8 +21,13 @@ public abstract class PreggoMob extends TamableAnimal {
 	public final AnimationState loopAnimationState = new AnimationState();
 	public final AnimationState attackAnimationState = new AnimationState();
 	
-	protected PreggoMob(EntityType<? extends TamableAnimal> p_21803_, Level p_21804_) {
+	private final Species typeOfSpecies;
+	private final Creature typeOfCreature;
+	
+	protected PreggoMob(EntityType<? extends TamableAnimal> p_21803_, Level p_21804_, Species typeOfSpecies, Creature typeOfCreature) {
 		super(p_21803_, p_21804_);
+		this.typeOfSpecies = typeOfSpecies;
+		this.typeOfCreature = typeOfCreature;
 	}
 
 	public abstract String getSimpleName();
@@ -33,7 +38,13 @@ public abstract class PreggoMob extends TamableAnimal {
 	
 	public abstract boolean hasCustomHeadAnimation();
 	
-	public abstract @NonNull Species getSpecies();
+	public @NonNull Species getTypeOfSpecies() {
+		return this.typeOfSpecies;
+	}
+	
+	public @NonNull Creature getTypeOfCreature() {
+		return this.typeOfCreature;
+	}
 	
     @Override
     public void handleEntityEvent(byte id) {

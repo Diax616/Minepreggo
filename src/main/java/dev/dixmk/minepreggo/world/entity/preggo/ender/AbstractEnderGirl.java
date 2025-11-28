@@ -11,6 +11,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.event.entity.living.EnderGirlAngerEvent;
+import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import net.minecraft.core.BlockPos;
@@ -94,14 +95,14 @@ public abstract class AbstractEnderGirl extends PreggoMob implements NeutralMob 
     @Nullable
     private UUID persistentAngerTarget;
 
-    protected AbstractEnderGirl(EntityType< ? extends TamableAnimal> p_32485_, Level p_32486_) {
-        super(p_32485_, p_32486_);
+    protected AbstractEnderGirl(EntityType< ? extends TamableAnimal> p_32485_, Level p_32486_, Creature typeOfCreature) {
+        super(p_32485_, p_32486_, Species.ENDER, typeOfCreature);
         this.setMaxUpStep(1.0F);
         this.setPathfindingMalus(BlockPathTypes.WATER, -1.0F);  
     }
 			
 	@Override
-	public @NonNull Species getSpecies() {
+	public @NonNull Species getTypeOfSpecies() {
 		return Species.ENDER;
 	}
     

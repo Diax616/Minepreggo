@@ -2,27 +2,27 @@ package dev.dixmk.minepreggo.world.entity.preggo;
 
 import javax.annotation.Nonnegative;
 
-import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.network.capability.Gender;
+import net.minecraft.util.Mth;
 
 public interface IBreedable {
 
-	public static final int MAX_NUMBER_OF_OFFSPRING = 5;
+	public static final int MAX_NUMBER_OF_BABIES = 5;
 	public static final float MAX_FERTILITY_RATE = 1.0f;
 	public static final int MAX_SEXUAL_APPETIVE = 20;
-	
 	
     int getFertilityRateTimer();
     void setFertilityRateTimer(int ticks);
     void incrementFertilityRateTimer();
+    void resetFertilityRateTimer();
     
     float getFertilityRate();
     void setFertilityRate(float rate);
     void incrementFertilityRate(float rate);
-   
+    void resetFertilityRate();
+  
     int getSexualAppetite();
     void setSexualAppetite(@Nonnegative int sexualAppetite);
     void reduceSexualAppetite(@Nonnegative int amount);
@@ -36,13 +36,8 @@ public interface IBreedable {
     
     boolean canFuck();
 	
-    @NonNegative
-	public static int calculateDaysByStage(PregnancyPhase lastPregnancyStage) {
-		return MinepreggoModConfig.getTotalPregnancyDays() / lastPregnancyStage.ordinal();
-	}
-     
-    public static int calculateNumOfOffspringByPotion(@NonNegative int amplifier) {
-    	switch (amplifier) {
+    public static int calculateNumOfBabiesByPotion(@Nonnegative int amplifier) {
+    	switch (Math.abs(amplifier)) {
 		case 0:
 			return 1;
 		case 1:
@@ -52,24 +47,24 @@ public interface IBreedable {
 		case 3:
 			return 4;
 		default:
-			return MAX_NUMBER_OF_OFFSPRING;		
+			return MAX_NUMBER_OF_BABIES;		
     	}
     }
     
-    public static int calculateNumOfOffspringByFertility(float maleFertility, float femaleFertility) {
+    public static int calculateNumOfBabiesByFertility(@Nonnegative float maleFertility, @Nonnegative float femaleFertility) {
     	float averageFertility = (maleFertility + femaleFertility) / 2.0f;
-    	int numOfOffspring = Math.round(averageFertility / MAX_FERTILITY_RATE * MAX_NUMBER_OF_OFFSPRING);
-    	if (numOfOffspring < 1) {
+    	int numOfBabies = Math.round(averageFertility / MAX_FERTILITY_RATE * MAX_NUMBER_OF_BABIES);
+    	if (numOfBabies < 1) {
 			return 0;
 		}
-		else if (numOfOffspring > MAX_NUMBER_OF_OFFSPRING) {
-			numOfOffspring = MAX_NUMBER_OF_OFFSPRING;
+		else if (numOfBabies > MAX_NUMBER_OF_BABIES) {
+			numOfBabies = MAX_NUMBER_OF_BABIES;
 		}
-    	return numOfOffspring;
+    	return numOfBabies;
     }
     
-    public static PregnancyPhase getMaxPregnancyPhaseByOffsprings(@NonNegative int numOfOffsprings) {	
-    	switch (numOfOffsprings) {
+    public static PregnancyPhase calculateMaxPregnancyPhaseByTotalNumOfBabies(@Nonnegative int numOfBabies) {	
+    	switch (Mth.clamp(numOfBabies, 1, MAX_NUMBER_OF_BABIES)) {
     		case 1:
     			return PregnancyPhase.P4;
     		case 2:
@@ -83,8 +78,8 @@ public interface IBreedable {
     	}
 	}
     
-    public static int getOffspringsByMaxPregnancyStage(@NonNull PregnancyPhase currenPregnancyStage) {	
-    	switch (currenPregnancyStage) {
+    public static int calculateNumOfBabiesByMaxPregnancyStage(@NonNull PregnancyPhase lastPregnancyPhase) {	
+    	switch (lastPregnancyPhase) {
     		case P4:
     			return 1;
     		case P5:
@@ -94,7 +89,7 @@ public interface IBreedable {
     		case P7:
     			return 4;
     		case P8:
-    			return MAX_NUMBER_OF_OFFSPRING;
+    			return MAX_NUMBER_OF_BABIES;
     		default:
     			return 1;		
     	}

@@ -3,6 +3,7 @@ package dev.dixmk.minepreggo.world.item;
 import java.util.function.Consumer;
 
 import dev.dixmk.minepreggo.client.model.armor.ArmorModelHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPhase;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -19,8 +20,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public abstract class BellyShieldChestPlateItem extends ArmorItem {
-	protected BellyShieldChestPlateItem() {
+public abstract class BellyShieldChestPlateItem extends ArmorItem implements IMaternityArmor {
+	final PregnancyPhase maxPregnancyPhase;
+	
+	protected BellyShieldChestPlateItem(PregnancyPhase maxPregnancyPhase) {
 		super(new ArmorMaterial() {
 			@Override
 			public int getDurabilityForType(ArmorItem.Type type) {
@@ -62,9 +65,20 @@ public abstract class BellyShieldChestPlateItem extends ArmorItem {
 				return 0.05f;
 			}
 		}, ArmorItem.Type.CHESTPLATE, new Item.Properties());
+		
+		this.maxPregnancyPhase = maxPregnancyPhase;
 	}
 
+	@Override
+	public PregnancyPhase getMinPregnancyPhaseAllowed() {
+		return maxPregnancyPhase;
+	}
+	
 	public static class MaternityChestplateP5 extends BellyShieldChestPlateItem {
+		public MaternityChestplateP5() {
+			super(PregnancyPhase.P5);
+		}
+
 		@Override
 		public void initializeClient(Consumer<IClientItemExtensions> consumer) {
 			consumer.accept(new IClientItemExtensions() {
@@ -83,6 +97,10 @@ public abstract class BellyShieldChestPlateItem extends ArmorItem {
 	}
 	
 	public static class MaternityChestplateP6 extends BellyShieldChestPlateItem {
+		public MaternityChestplateP6() {
+			super(PregnancyPhase.P6);
+		}
+		
 		@Override
 		public void initializeClient(Consumer<IClientItemExtensions> consumer) {
 			consumer.accept(new IClientItemExtensions() {
@@ -101,6 +119,10 @@ public abstract class BellyShieldChestPlateItem extends ArmorItem {
 	}
 	
 	public static class MaternityChestplateP7 extends BellyShieldChestPlateItem {
+		public MaternityChestplateP7() {
+			super(PregnancyPhase.P7);
+		}
+		
 		@Override
 		public void initializeClient(Consumer<IClientItemExtensions> consumer) {
 			consumer.accept(new IClientItemExtensions() {
@@ -119,6 +141,10 @@ public abstract class BellyShieldChestPlateItem extends ArmorItem {
 	}
 	
 	public static class MaternityChestplateP8 extends BellyShieldChestPlateItem {
+		public MaternityChestplateP8() {
+			super(PregnancyPhase.P8);
+		}
+		
 		@Override
 		public void initializeClient(Consumer<IClientItemExtensions> consumer) {
 			consumer.accept(new IClientItemExtensions() {
