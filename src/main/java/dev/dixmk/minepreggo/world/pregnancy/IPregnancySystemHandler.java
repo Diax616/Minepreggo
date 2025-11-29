@@ -1,6 +1,5 @@
-package dev.dixmk.minepreggo.network.capability;
+package dev.dixmk.minepreggo.world.pregnancy;
 
-import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nonnegative;
@@ -8,17 +7,12 @@ import javax.annotation.Nonnegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Nullable;
 
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPain;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPhase;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancySymptom;
-import dev.dixmk.minepreggo.world.entity.preggo.Womb;
-
 public interface IPregnancySystemHandler {
 
 	int getDaysByCurrentStage();
 	boolean setDaysByStage(@Nonnegative int days, PregnancyPhase phase);
-	void setDaysByStage(Map<PregnancyPhase, Integer> map);
-	Map<PregnancyPhase, Integer> getDaysByStageMapping();
+	void setDaysByStage(MapPregnancyPhase map);
+	MapPregnancyPhase getDaysByStageMapping();
 	
 	int getTotalDaysOfPregnancy();
 	

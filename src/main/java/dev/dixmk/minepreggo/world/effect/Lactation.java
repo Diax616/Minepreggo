@@ -1,6 +1,6 @@
 package dev.dixmk.minepreggo.world.effect;
 
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemHelper;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;

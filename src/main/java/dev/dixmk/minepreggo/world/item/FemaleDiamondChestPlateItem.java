@@ -17,7 +17,7 @@ import net.minecraft.client.model.HumanoidModel;
 import java.util.function.Consumer;
 
 import dev.dixmk.minepreggo.client.model.armor.ArmorModelHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPhase;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 
 public abstract class FemaleDiamondChestPlateItem extends ArmorItem implements IFemaleArmor {
 	protected FemaleDiamondChestPlateItem() {

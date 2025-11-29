@@ -2,7 +2,7 @@ package dev.dixmk.minepreggo.world.effect;
 
 import java.util.UUID;
 
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemHelper;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;

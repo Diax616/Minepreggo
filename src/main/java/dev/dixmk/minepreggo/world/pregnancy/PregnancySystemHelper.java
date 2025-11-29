@@ -1,13 +1,11 @@
-package dev.dixmk.minepreggo.world.entity.preggo;
+package dev.dixmk.minepreggo.world.pregnancy;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.StreamSupport;
@@ -16,7 +14,6 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nullable;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import com.google.common.collect.ImmutableMap;
@@ -29,15 +26,16 @@ import dev.dixmk.minepreggo.client.particle.ParticleHelper;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
-import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.network.packet.RemoveMobEffectPacket;
 import dev.dixmk.minepreggo.network.packet.SyncMobEffectPacket;
 import dev.dixmk.minepreggo.utils.TagHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.Creature;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.item.IFemaleArmor;
 import dev.dixmk.minepreggo.world.item.IMaternityArmor;
 import dev.dixmk.minepreggo.world.item.ItemHelper;
 import dev.dixmk.minepreggo.world.item.KneeBraceItem;
-import dev.dixmk.minepreggo.world.item.checkup.PrenatalCheckups.PrenatalCheckup;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -145,6 +143,8 @@ public class PregnancySystemHelper {
 	
 	static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 	
+	public static final RandomSource RANDOM_SOURCE = RandomSource.create();
+	
 	protected static final ImmutableMap<Species, Item> MILK_ITEM = ImmutableMap.of(
 			Species.CREEPER, MinepreggoModItems.CREEPER_BREAST_MILK_BOTTLE.get(),
 			Species.ZOMBIE, MinepreggoModItems.ZOMBIE_BREAST_MILK_BOTTLE.get(),
@@ -183,50 +183,7 @@ public class PregnancySystemHelper {
 			.put(Species.CREEPER, Creature.HUMANOID, MinepreggoModItems.DEAD_HUMANOID_CREEPER_FETUS.get())
 			.put(Species.CREEPER, Creature.MONSTER, MinepreggoModItems.DEAD_QUADRUPED_CREEPER_FETUS.get())
 			.build();
-	
-	protected static final ImmutableMap<PregnancyPhase, List<Pair<PregnancyPhase, Float>>> PREGNANCY_PHASES_WEIGHTS = ImmutableMap.of(
-			PregnancyPhase.P4, List.of(
-					Pair.of(PregnancyPhase.P0, 0.05F),
-					Pair.of(PregnancyPhase.P1, 0.2F),
-					Pair.of(PregnancyPhase.P2, 0.2F),
-					Pair.of(PregnancyPhase.P3, 0.25F),
-					Pair.of(PregnancyPhase.P4, 0.3F)),		
-			PregnancyPhase.P5, List.of(
-					Pair.of(PregnancyPhase.P0, 0.05F),
-					Pair.of(PregnancyPhase.P1, 0.1F),
-					Pair.of(PregnancyPhase.P2, 0.2F),
-					Pair.of(PregnancyPhase.P3, 0.2F),
-					Pair.of(PregnancyPhase.P4, 0.2F),
-					Pair.of(PregnancyPhase.P5, 0.25F)),	
-			PregnancyPhase.P6, List.of(
-					Pair.of(PregnancyPhase.P0, 0.05F),
-					Pair.of(PregnancyPhase.P1, 0.1F),
-					Pair.of(PregnancyPhase.P2, 0.1F),
-					Pair.of(PregnancyPhase.P3, 0.1F),
-					Pair.of(PregnancyPhase.P4, 0.2F),
-					Pair.of(PregnancyPhase.P5, 0.2F),
-					Pair.of(PregnancyPhase.P6, 0.25F)),	
-			PregnancyPhase.P7, List.of(
-					Pair.of(PregnancyPhase.P0, 0.05F),
-					Pair.of(PregnancyPhase.P1, 0.1F),
-					Pair.of(PregnancyPhase.P2, 0.1F),
-					Pair.of(PregnancyPhase.P3, 0.1F),
-					Pair.of(PregnancyPhase.P4, 0.15F),
-					Pair.of(PregnancyPhase.P5, 0.15F),
-					Pair.of(PregnancyPhase.P6, 0.15F),
-					Pair.of(PregnancyPhase.P7, 0.2F)),
-			PregnancyPhase.P8, List.of(
-					Pair.of(PregnancyPhase.P0, 0.05F),
-					Pair.of(PregnancyPhase.P1, 0.1F),
-					Pair.of(PregnancyPhase.P2, 0.1F),
-					Pair.of(PregnancyPhase.P3, 0.1F),
-					Pair.of(PregnancyPhase.P4, 0.1F),
-					Pair.of(PregnancyPhase.P5, 0.1F),
-					Pair.of(PregnancyPhase.P6, 0.15F),
-					Pair.of(PregnancyPhase.P7, 0.15F),
-					Pair.of(PregnancyPhase.P8, 0.15F))
-			);
-	
+
 	protected static final ImmutableMap<Craving, Float> CRAVING_WEIGHTS = ImmutableMap.of(		
 			Craving.SWEET, 0.1F,
 			Craving.SOUR, 0.25F,
@@ -290,33 +247,6 @@ public class PregnancySystemHelper {
 
 		return flag || entity instanceof PreggoMob p && p instanceof IPregnancySystemHandler;
 	}
-	
-	public static Map<PregnancyPhase, @NonNull Integer> createDaysByPregnancyPhase(@Nonnegative int totalDays, PregnancyPhase lastPregnancyPhase) {
-	
-		PregnancyPhase last = lastPregnancyPhase;
-		
-		if (last.ordinal() < 4) {
-			last = PregnancyPhase.P4;
-		}
-		
-		final var weights = PREGNANCY_PHASES_WEIGHTS.get(last);
-		
-		Map<PregnancyPhase, @NonNull Integer> daysByPregnancyPhase = new EnumMap<>(PregnancyPhase.class);
-		int total = 0;
-		for (final var pair : weights) {		
-			int floor = Math.round(totalDays * pair.getRight());		
-			daysByPregnancyPhase.put(pair.getLeft(), floor);
-			total += floor;
-		}
-		final int rest = totalDays - total;
-				
-		if (rest > 0) {
-			daysByPregnancyPhase.computeIfPresent(last, (key, value) -> value + rest);
-		}
-		
-		return daysByPregnancyPhase;
-	}
-	
 	
 	public static boolean hasEnoughBedsForBreeding(LivingEntity source, @Nonnegative int minBedsRequired, @Nonnegative int range) {
 	    Level level = source.level();
@@ -413,52 +343,6 @@ public class PregnancySystemHelper {
 		MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity),
 				new RemoveMobEffectPacket(entity.getId(), effect));
 	}
-	
-	public static ListTag serializePregnancyPhaseMap(Map<PregnancyPhase, Integer> map) {
-		ListTag list = new ListTag();
-		map.forEach((key, value) -> {		
-			CompoundTag pair = new CompoundTag();
-		    pair.putString("pregnancyPhase", key.name());
-		    pair.putInt("days", value);
-			list.add(pair);
-		});
-		return list;
-	}
-	
-	public static void deserializePregnancyPhaseMap(ListTag list, Map<PregnancyPhase, Integer> map) {
-	    for (var t : list) {
-	        CompoundTag pair = (CompoundTag) t;
-	        PregnancyPhase key = PregnancyPhase.valueOf(pair.getString("pregnancyPhase"));
-	        int value = pair.getInt("days");
-	        map.put(key, value);
-	    }
-	}
-	
-	public static ListTag serializePrenatalCheckupMap(Map<PrenatalCheckup, Integer> map) {
-		ListTag list = new ListTag();
-		map.forEach((key, value) -> {		
-			CompoundTag pair = new CompoundTag();
-		    pair.putString(PrenatalCheckup.NBT_KEY, key.name());
-		    pair.putInt("cost", value);
-			list.add(pair);
-		});
-		return list;
-	}
-	
-	public static Map<PrenatalCheckup, Integer> deserializePrenatalCheckupMap(ListTag list) {
-		Map<PrenatalCheckup, Integer> map = new EnumMap<>(PrenatalCheckup.class);
-		
-		for (var t : list) {
-	        CompoundTag pair = (CompoundTag) t;
-	        PrenatalCheckup key = PrenatalCheckup.valueOf(pair.getString(PrenatalCheckup.NBT_KEY));
-	        int value = pair.getInt("cost");
-	        map.put(key, value);
-	    }
-		
-		return map;
-	}
-	
-	
 	
 	public static boolean canUseChestplate(Item armor, PregnancyPhase pregnancyPhase) {
 		return canUseChestplate(armor, pregnancyPhase, true);
@@ -654,14 +538,14 @@ public class PregnancySystemHelper {
     }
     
     public static int calculateTotalDaysPassedFromPhaseP0(@NonNull IPregnancySystemHandler h) {   	
-    	final Map<PregnancyPhase, Integer> map = h.getDaysByStageMapping();
+    	var map = h.getDaysByStageMapping();
     	final PregnancyPhase currentPhase = h.getCurrentPregnancyStage();
     	
     	final var totalDaysPassed = StreamSupport.stream(Arrays.spliterator(PregnancyPhase.values()), false)
     			.filter(phase -> phase.compareTo(currentPhase) <= -1)
     			.mapToInt(phase -> {
-    				final var days = map.get(phase);
-    				if (days == null) {
+    				final var days = map.getDaysByPregnancyPhase(phase);
+    				if (days == 0) {
     					MinepreggoMod.LOGGER.warn("PregnancySystemHelper.calculateTotalDaysPassedFromPhaseP0: Missing days for pregnancy phase {}", phase.name());
     					return 0;
     				}	
@@ -678,16 +562,6 @@ public class PregnancySystemHelper {
    
 	// Pregnancy Calculates	END	
     
-    
-    
-    public static @NonNull Map<PrenatalCheckup, Integer> createPrenatalCheckUpCosts(RandomSource random, @Nonnegative int min, @Nonnegative int max) {
-    	Map<PrenatalCheckup, Integer> map = new EnumMap<>(PrenatalCheckup.class); 	
-    	for (final var prenatalCheckup : PrenatalCheckup.values()) {
-    		map.put(prenatalCheckup, random.nextInt(prenatalCheckup.defaultEmeraldCount - Math.abs(min), prenatalCheckup.defaultEmeraldCount + Math.abs(max)));
-    	}	
-    	return map;
-    }
-      
-    
+
     
 }

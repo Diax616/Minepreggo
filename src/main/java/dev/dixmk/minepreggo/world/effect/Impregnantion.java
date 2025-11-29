@@ -8,8 +8,6 @@ import org.apache.commons.lang3.tuple.ImmutableTriple;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
-import dev.dixmk.minepreggo.network.capability.IFemaleEntity;
-import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
@@ -20,6 +18,8 @@ import dev.dixmk.minepreggo.world.entity.preggo.creeper.MonsterCreeperGirlP0;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.MonsterZombieGirlP0;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirl;
+import dev.dixmk.minepreggo.world.pregnancy.IFemaleEntity;
+import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;

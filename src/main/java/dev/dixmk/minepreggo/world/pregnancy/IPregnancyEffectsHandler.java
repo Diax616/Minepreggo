@@ -1,9 +1,8 @@
-package dev.dixmk.minepreggo.network.capability;
+package dev.dixmk.minepreggo.world.pregnancy;
 
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.jetbrains.annotations.Nullable;
 
-import dev.dixmk.minepreggo.world.entity.preggo.Craving;
 import net.minecraft.world.item.Item;
 
 public interface IPregnancyEffectsHandler {

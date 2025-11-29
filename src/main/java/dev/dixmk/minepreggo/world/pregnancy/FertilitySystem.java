@@ -1,9 +1,10 @@
-package dev.dixmk.minepreggo.world.entity.preggo;
+package dev.dixmk.minepreggo.world.pregnancy;
 
 import javax.annotation.Nonnull;
 
 import dev.dixmk.minepreggo.MinepreggoModConfig;
-import dev.dixmk.minepreggo.network.capability.IFemaleEntity;
+import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;

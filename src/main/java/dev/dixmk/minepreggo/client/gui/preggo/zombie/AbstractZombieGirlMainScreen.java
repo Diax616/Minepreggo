@@ -6,10 +6,9 @@ import com.google.common.collect.ImmutableMap;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.gui.preggo.AbstractPreggoMobMainScreen;
-import dev.dixmk.minepreggo.world.entity.preggo.Craving;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamableZombieGirl;
 import dev.dixmk.minepreggo.world.inventory.preggo.zombie.AbstractZombieGirlMainMenu;
-
+import dev.dixmk.minepreggo.world.pregnancy.Craving;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;

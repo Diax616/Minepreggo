@@ -7,8 +7,8 @@ import dev.dixmk.minepreggo.network.capability.FemalePlayerImpl;
 import dev.dixmk.minepreggo.network.capability.PlayerDataImpl;
 import dev.dixmk.minepreggo.network.capability.PlayerPregnancyEffectsImpl;
 import dev.dixmk.minepreggo.network.capability.PlayerPregnancySystemImpl;
-import dev.dixmk.minepreggo.world.entity.preggo.AbstractPregnancySystem;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPhase;
+import dev.dixmk.minepreggo.world.pregnancy.AbstractPregnancySystem;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 

@@ -2,9 +2,9 @@ package dev.dixmk.minepreggo.world.entity.preggo.creeper;
 
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobPregnancySystemP0;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPhase;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnantPreggoMobSystemP0;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;

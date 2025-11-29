@@ -6,7 +6,7 @@ import java.util.stream.StreamSupport;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
-import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
+import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;

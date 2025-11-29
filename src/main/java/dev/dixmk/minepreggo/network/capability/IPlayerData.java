@@ -1,5 +1,6 @@
 package dev.dixmk.minepreggo.network.capability;
 
+import dev.dixmk.minepreggo.world.pregnancy.Gender;
 import net.minecraftforge.common.util.LazyOptional;
 
 public interface IPlayerData {

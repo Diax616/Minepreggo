@@ -1,7 +1,7 @@
 package dev.dixmk.minepreggo.world.effect;
 
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemHelper;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;

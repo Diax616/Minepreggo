@@ -1,8 +1,6 @@
 package dev.dixmk.minepreggo.utils;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.network.capability.IPregnancyEffectsHandler;
-import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGirl;
@@ -23,6 +21,8 @@ import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP4;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP5;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP6;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP7;
+import dev.dixmk.minepreggo.world.pregnancy.IPregnancyEffectsHandler;
+import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 
 public class DebugHelper {
 

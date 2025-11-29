@@ -10,9 +10,9 @@ import org.jetbrains.annotations.Nullable;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.network.packet.SyncPregnancyEffectsS2CPacket;
-import dev.dixmk.minepreggo.world.entity.preggo.Craving;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
+import dev.dixmk.minepreggo.world.pregnancy.Craving;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -23,6 +23,9 @@ import net.minecraft.world.item.Item;
 import net.minecraftforge.network.PacketDistributor;
 
 public class PlayerPregnancyEffectsImpl implements IPlayerPregnancyEffectsHandler {
+	
+	public static final String NBT_KEY = "DataPlayerPregnancyEffectsImpl";
+	
 	private int cravingTimer = 0;
 	private int milkingTimer = 0;
 	private int bellyRubsTimer = 0;
@@ -255,9 +258,10 @@ public class PlayerPregnancyEffectsImpl implements IPlayerPregnancyEffectsHandle
 		this.typeOfCraving = Optional.empty();	
 	}
 	
-	@NonNull
-	public Tag serializeNBT(@NonNull Tag tag) {
-		CompoundTag nbt = (CompoundTag) tag;
+	public CompoundTag serializeNBT() {
+		CompoundTag wrapper = new CompoundTag();
+		CompoundTag nbt = new CompoundTag();
+		
 		nbt.putInt("DataCraving", craving);
 		nbt.putInt("DataCravingTimer", cravingTimer);
 		nbt.putInt("DataMilking", milking);
@@ -270,13 +274,20 @@ public class PlayerPregnancyEffectsImpl implements IPlayerPregnancyEffectsHandle
 		if (typeOfCraving.isPresent()) {
 			nbt.putString(Craving.NBT_KEY, typeOfCraving.get().getLeft().name());
 			nbt.putString(Species.NBT_KEY, typeOfCraving.get().getRight().name());
-		}
-	 
-		return nbt;
+		}	
+		
+		wrapper.put(NBT_KEY, nbt);	
+		return wrapper;
 	}
 	
 	public void deserializeNBT(@NonNull Tag tag) {
-		CompoundTag nbt = (CompoundTag) tag;
+		CompoundTag wrapper = (CompoundTag) tag;	
+		if (!wrapper.contains(NBT_KEY, Tag.TAG_COMPOUND)) {
+			return;
+		}
+		
+		CompoundTag nbt = wrapper.getCompound(NBT_KEY);
+		
 		craving = nbt.getInt("DataCraving");
 		cravingTimer = nbt.getInt("DataCravingTimer");
 		milking = nbt.getInt("DataMilking");

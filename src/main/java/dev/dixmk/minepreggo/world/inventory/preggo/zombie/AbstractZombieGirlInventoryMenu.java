@@ -1,14 +1,14 @@
 package dev.dixmk.minepreggo.world.inventory.preggo.zombie;
 
-import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.utils.TagHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamableZombieGirl;
 import dev.dixmk.minepreggo.world.inventory.preggo.AbstractPreggoMobInventaryMenu;
 import dev.dixmk.minepreggo.world.item.ItemHelper;
+import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;

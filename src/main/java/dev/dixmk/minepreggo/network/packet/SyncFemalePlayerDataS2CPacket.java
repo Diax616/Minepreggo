@@ -6,7 +6,7 @@ import java.util.function.Supplier;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.network.capability.FemalePlayerImpl;
-import dev.dixmk.minepreggo.world.entity.preggo.PostPregnancy;
+import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;

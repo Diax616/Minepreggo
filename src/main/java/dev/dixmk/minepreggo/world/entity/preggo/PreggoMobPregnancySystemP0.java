@@ -4,9 +4,11 @@ import org.jetbrains.annotations.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
-import dev.dixmk.minepreggo.network.capability.IPregnancyEffectsHandler;
-import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem.Result;
+import dev.dixmk.minepreggo.world.pregnancy.AbstractPregnancySystem;
+import dev.dixmk.minepreggo.world.pregnancy.IPregnancyEffectsHandler;
+import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;

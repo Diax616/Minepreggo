@@ -17,8 +17,8 @@ import dev.dixmk.minepreggo.client.gui.preggo.zombie.AbstractZombieGirlMainScree
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancySymptom;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.network.capability.PlayerPregnancyEffectsImpl;
 
 import org.checkerframework.checker.nullness.qual.NonNull;

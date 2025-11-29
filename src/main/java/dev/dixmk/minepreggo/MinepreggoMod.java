@@ -132,6 +132,7 @@ import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.init.MinepreggoModTabs;
 import dev.dixmk.minepreggo.init.MinepreggoModVillagerProfessions;
 import dev.dixmk.minepreggo.network.capability.PlayerDataImpl;
+import dev.dixmk.minepreggo.network.capability.VillagerDataImpl;
 import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterQuadrupedCreeperGirl;
@@ -523,6 +524,7 @@ public class MinepreggoMod {
 	
 	private void registerCapabilities(RegisterCapabilitiesEvent event) {
 		event.register(PlayerDataImpl.class);
+		event.register(VillagerDataImpl.class);
 	}
 	
     private void commonSetup(final FMLCommonSetupEvent event) {

@@ -6,7 +6,7 @@ import java.util.function.Supplier;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.network.capability.PlayerPregnancySystemImpl;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancySymptom;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

@@ -1,7 +1,6 @@
 package dev.dixmk.minepreggo.world.inventory.preggo;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -13,10 +12,11 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModMenus;
 import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemHelper;
 import dev.dixmk.minepreggo.world.item.checkup.PrenatalCheckups;
 import dev.dixmk.minepreggo.world.item.checkup.PrenatalCheckups.PrenatalCheckup;
 import dev.dixmk.minepreggo.world.item.checkup.PrenatalCheckups.PrenatalCheckupData;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
+import dev.dixmk.minepreggo.world.pregnancy.PrenatalCheckupCostHolder.PrenatalCheckupCost;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -154,15 +154,13 @@ public abstract class PlayerPrenatalCheckUpMenu<T extends Mob> extends AbstractP
 			});
 		}
 		
-		public static void showPrenatalCheckUpMenu(@NonNull ServerPlayer serverPlayer, @NonNull Villager villager, @NonNull Map<PrenatalCheckup, Integer> costs) {						
-			if (costs.size() != PrenatalCheckup.values().length) {
-				return;
-			}
-			
+		public static void showPrenatalCheckUpMenu(@NonNull ServerPlayer serverPlayer, @NonNull Villager villager) {						
 			final var pos = serverPlayer.blockPosition();
 			final var playerId = serverPlayer.getId();
 			final var villagerId = villager.getId();
-			
+			final var cap = villager.getCapability(MinepreggoCapabilities.VILLAGER_DATA).resolve();
+			PrenatalCheckupCost costs = cap.isPresent() ? cap.get().getPrenatalCheckupCosts() : new PrenatalCheckupCost(3, 6);
+	
 			NetworkHooks.openScreen(serverPlayer,new MenuProvider() {
 	            @Override
 	            public Component getDisplayName() {
@@ -175,18 +173,18 @@ public abstract class PlayerPrenatalCheckUpMenu<T extends Mob> extends AbstractP
 	                packetBuffer.writeBlockPos(pos);
 	                packetBuffer.writeVarInt(playerId);
 	                packetBuffer.writeVarInt(villagerId);
-	                packetBuffer.writeInt(costs.getOrDefault(PrenatalCheckup.REGULAR, 1));
-	                packetBuffer.writeInt(costs.getOrDefault(PrenatalCheckup.ULTRASOUND_SCAN, 1));
-	                packetBuffer.writeInt(costs.getOrDefault(PrenatalCheckup.PATERNITY_TEST, 1));	
+	                packetBuffer.writeInt(costs.getCost(PrenatalCheckup.REGULAR));
+	                packetBuffer.writeInt(costs.getCost(PrenatalCheckup.ULTRASOUND_SCAN));
+	                packetBuffer.writeInt(costs.getCost(PrenatalCheckup.PATERNITY_TEST));	
 	                return new VillagerMenu(id, inventory, packetBuffer);
 	            }
 	        }, buf -> {
 	        	buf.writeBlockPos(pos);
 				buf.writeVarInt(playerId);
 				buf.writeVarInt(villagerId);
-				buf.writeInt(costs.getOrDefault(PrenatalCheckup.REGULAR, 1));
-				buf.writeInt(costs.getOrDefault(PrenatalCheckup.ULTRASOUND_SCAN, 1));
-				buf.writeInt(costs.getOrDefault(PrenatalCheckup.PATERNITY_TEST, 1));
+				buf.writeInt(costs.getCost(PrenatalCheckup.REGULAR));
+				buf.writeInt(costs.getCost(PrenatalCheckup.ULTRASOUND_SCAN));
+				buf.writeInt(costs.getCost(PrenatalCheckup.PATERNITY_TEST));
 			});	  				
 		}
 
@@ -239,14 +237,11 @@ public abstract class PlayerPrenatalCheckUpMenu<T extends Mob> extends AbstractP
 			});
 		}
 		
-		public static void showPrenatalCheckUpMenu(@NonNull ServerPlayer serverPlayer, @NonNull ScientificIllager scientificIllager, @NonNull Map<PrenatalCheckup, Integer> costs) {						
-			if (costs.size() != PrenatalCheckup.values().length) {
-				return;
-			}
-			
+		public static void showPrenatalCheckUpMenu(@NonNull ServerPlayer serverPlayer, @NonNull ScientificIllager scientificIllager) {						
 			final var pos = serverPlayer.blockPosition();
 			final var playerId = serverPlayer.getId();
 			final var scientificIllagerId = scientificIllager.getId();
+			PrenatalCheckupCost costs = scientificIllager.getPrenatalCheckupCosts();
 			
 			NetworkHooks.openScreen(serverPlayer, new MenuProvider() {
 	            @Override
@@ -260,18 +255,18 @@ public abstract class PlayerPrenatalCheckUpMenu<T extends Mob> extends AbstractP
 	                packetBuffer.writeBlockPos(pos);
 	                packetBuffer.writeVarInt(playerId);
 	                packetBuffer.writeVarInt(scientificIllagerId);
-	                packetBuffer.writeInt(costs.getOrDefault(PrenatalCheckup.REGULAR, 1));
-	                packetBuffer.writeInt(costs.getOrDefault(PrenatalCheckup.ULTRASOUND_SCAN, 1));
-	                packetBuffer.writeInt(costs.getOrDefault(PrenatalCheckup.PATERNITY_TEST, 1));	                	                
+	                packetBuffer.writeInt(costs.getCost(PrenatalCheckup.REGULAR));
+	                packetBuffer.writeInt(costs.getCost(PrenatalCheckup.ULTRASOUND_SCAN));
+	                packetBuffer.writeInt(costs.getCost(PrenatalCheckup.PATERNITY_TEST));	                	                
 	                return new IllagerMenu(id, inventory, packetBuffer);
 	            }
 	        }, buf -> {
 	        	buf.writeBlockPos(pos);
 				buf.writeVarInt(playerId);
 				buf.writeVarInt(scientificIllagerId);
-				buf.writeInt(costs.getOrDefault(PrenatalCheckup.REGULAR, 1));
-				buf.writeInt(costs.getOrDefault(PrenatalCheckup.ULTRASOUND_SCAN, 1));
-				buf.writeInt(costs.getOrDefault(PrenatalCheckup.PATERNITY_TEST, 1));
+				buf.writeInt(costs.getCost(PrenatalCheckup.REGULAR));
+				buf.writeInt(costs.getCost(PrenatalCheckup.ULTRASOUND_SCAN));
+				buf.writeInt(costs.getCost(PrenatalCheckup.PATERNITY_TEST));
 			});	  				
 		}
 	}

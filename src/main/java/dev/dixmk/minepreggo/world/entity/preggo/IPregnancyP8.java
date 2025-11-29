@@ -1,7 +1,7 @@
 package dev.dixmk.minepreggo.world.entity.preggo;
 
-import dev.dixmk.minepreggo.network.capability.IPregnancyEffectsHandler;
-import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
+import dev.dixmk.minepreggo.world.pregnancy.IPregnancyEffectsHandler;
+import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 
 public interface IPregnancyP8
 	<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler & IPregnancyEffectsHandler> {

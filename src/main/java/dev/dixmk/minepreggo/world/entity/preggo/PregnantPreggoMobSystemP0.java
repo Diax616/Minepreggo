@@ -1,6 +1,6 @@
 package dev.dixmk.minepreggo.world.entity.preggo;
 
-import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
+import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import net.minecraft.world.entity.player.Player;
 
 public class PregnantPreggoMobSystemP0 

@@ -2,7 +2,7 @@ package dev.dixmk.minepreggo.world.item;
 
 import org.checkerframework.checker.index.qual.NonNegative;
 
-import dev.dixmk.minepreggo.world.entity.preggo.Craving;
+import dev.dixmk.minepreggo.world.pregnancy.Craving;
 
 public interface IItemCraving {
 

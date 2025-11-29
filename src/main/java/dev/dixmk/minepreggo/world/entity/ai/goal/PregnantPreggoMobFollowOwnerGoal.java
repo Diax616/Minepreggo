@@ -1,8 +1,8 @@
 package dev.dixmk.minepreggo.world.entity.ai.goal;
 
-import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
+import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 
 public class PregnantPreggoMobFollowOwnerGoal<T extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler> extends PreggoMobFollowOwnerGoal<T> {
 	

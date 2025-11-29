@@ -72,20 +72,21 @@ import com.google.common.collect.Maps;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
-import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.world.entity.npc.Trades;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.IllCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.IllQuadrupedCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.IllZombieGirl;
 import dev.dixmk.minepreggo.world.inventory.preggo.SelectPregnantEntityForMedicalCheckUpMenu;
-import dev.dixmk.minepreggo.world.item.checkup.PrenatalCheckups.PrenatalCheckup;
+import dev.dixmk.minepreggo.world.pregnancy.IObstetrician;
+import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
+import dev.dixmk.minepreggo.world.pregnancy.PrenatalCheckupCostHolder;
+import dev.dixmk.minepreggo.world.pregnancy.PrenatalCheckupCostHolder.PrenatalCheckupCost;
 import io.netty.buffer.Unpooled;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.IllEnderGirl;
 
-public class ScientificIllager extends AbstractIllager implements Merchant {
+public class ScientificIllager extends AbstractIllager implements Merchant, IObstetrician {
     private MerchantOffers offers;
     private Player tradingPlayer;
     
@@ -95,9 +96,8 @@ public class ScientificIllager extends AbstractIllager implements Merchant {
     private boolean spawnIllCreeperGirl = true;
     
     private final Map<String, UUID> petsId = new HashMap<>();
-    private Map<PrenatalCheckup, Integer> prenatalCheckUpCosts = null;
-    
-    
+    private PrenatalCheckupCostHolder prenatalCheckUpCosts = new PrenatalCheckupCostHolder(3, 10);    
+
 	public ScientificIllager(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.SCIENTIFIC_ILLAGER.get(), world);
 	}
@@ -150,14 +150,11 @@ public class ScientificIllager extends AbstractIllager implements Merchant {
          }
          return this.offers;
     }
-
-    public Map<PrenatalCheckup, Integer> getPrenatalCheckUpCosts() {
-    	if (this.prenatalCheckUpCosts == null) {
-    		this.prenatalCheckUpCosts = PregnancySystemHelper.createPrenatalCheckUpCosts(random, 5, 10);
-    	}
-    	return this.prenatalCheckUpCosts;
-    }
     
+    @Override
+    public PrenatalCheckupCost getPrenatalCheckupCosts() {
+    	return this.prenatalCheckUpCosts.getValue();
+    }
     
     @Override
     public void overrideOffers(MerchantOffers offers) {
@@ -286,8 +283,9 @@ public class ScientificIllager extends AbstractIllager implements Merchant {
 	    	compound.putUUID(entry.getKey(), entry.getValue());
 	    }
 	    
-	    if (this.prenatalCheckUpCosts != null && !this.prenatalCheckUpCosts.isEmpty()) {
-	    	compound.put("prenatalCheckUps", PregnancySystemHelper.serializePrenatalCheckupMap(prenatalCheckUpCosts));
+	    if (prenatalCheckUpCosts.isInitialized()) {
+	    	MinepreggoMod.LOGGER.debug("SAVING PRENATAL CHECKUP COSTS FOR SCIENTIFIC ILLAGER, id={}", this.getId());
+	    	compound.put("prenatalCheckUpCosts", prenatalCheckUpCosts.serializeNBT());
 	    }
 	}
 	@Override
@@ -306,8 +304,9 @@ public class ScientificIllager extends AbstractIllager implements Merchant {
 		this.tryReadPetId("DataIllQuadrupedCreeperId", compound);
 		this.tryReadPetId("DataIllEnderId", compound);	
 		
-		if (compound.contains("prenatalCheckUps", Tag.TAG_LIST)) {
-			prenatalCheckUpCosts = PregnancySystemHelper.deserializePrenatalCheckupMap(compound.getList("prenatalCheckUps", Tag.TAG_COMPOUND));
+		if (compound.contains("prenatalCheckUpCosts", Tag.TAG_COMPOUND)) {
+			MinepreggoMod.LOGGER.debug("LOADING PRENATAL CHECKUP COSTS FOR SCIENTIFIC ILLAGER, id={}", this.getId());
+			prenatalCheckUpCosts.deserializeNBT(compound.getCompound("prenatalCheckUpCosts"));
 		}
 	}
 	

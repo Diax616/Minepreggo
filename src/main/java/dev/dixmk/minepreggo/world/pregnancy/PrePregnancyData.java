@@ -1,4 +1,4 @@
-package dev.dixmk.minepreggo.network.capability;
+package dev.dixmk.minepreggo.world.pregnancy;
 
 import java.util.UUID;
 

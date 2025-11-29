@@ -11,7 +11,7 @@ import net.minecraft.world.entity.player.Player;
 
 import org.checkerframework.checker.index.qual.NonNegative;
 
-import dev.dixmk.minepreggo.world.entity.preggo.Craving;
+import dev.dixmk.minepreggo.world.pregnancy.Craving;
 import net.minecraft.world.entity.LivingEntity;
 
 public class LemonIcePopsiclesItem extends Item implements IItemCraving {

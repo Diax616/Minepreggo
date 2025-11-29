@@ -7,7 +7,8 @@ import org.jetbrains.annotations.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.network.packet.SyncFemalePlayerDataS2CPacket;
-import dev.dixmk.minepreggo.world.entity.preggo.PostPregnancy;
+import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
+import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
@@ -17,30 +18,39 @@ import net.minecraftforge.network.PacketDistributor;
 
 public class FemalePlayerImpl extends FemaleEntityImpl {
 
-	private final PlayerPregnancySystemImpl pregnancySystem = new PlayerPregnancySystemImpl();
-	private final PlayerPregnancyEffectsImpl pregnancyEffects = new PlayerPregnancyEffectsImpl();
+	private final PlayerPregnancySystemHolder pregnancySystemHolder = new PlayerPregnancySystemHolder();
+	private final PlayerPregnancyEffectsHolder pregnancyEffectsHolder = new PlayerPregnancyEffectsHolder();
 	
 	public PlayerPregnancySystemImpl getPregnancySystem() {
-		return pregnancySystem;
+		return pregnancySystemHolder.getValue();
 	}
 	
 	public PlayerPregnancyEffectsImpl getPregnancyEffects() {
-		return pregnancyEffects;
+		return pregnancyEffectsHolder.getValue();
 	}
 	
 	@Override
 	public void serializeNBT(@NonNull Tag tag) {
 		super.serializeNBT(tag);
-		CompoundTag nbt = (CompoundTag) tag;
-		pregnancySystem.serializeNBT(nbt);
-		pregnancyEffects.serializeNBT(nbt);
+		CompoundTag nbt = (CompoundTag) tag;	
+		if (pregnancySystemHolder.isInitialized()) {
+			nbt.put("PlayerPregnancySystem", pregnancySystemHolder.serializeNBT());
+		}	
+		if (pregnancyEffectsHolder.isInitialized()) {
+			nbt.put("PlayerPregnancyEffects", pregnancyEffectsHolder.serializeNBT());
+		}
 	}
 	
 	@Override
 	public void deserializeNBT(@NonNull Tag tag) {
 		super.deserializeNBT(tag);
-		pregnancySystem.deserializeNBT(tag);
-		pregnancyEffects.deserializeNBT(tag);
+		CompoundTag nbt = (CompoundTag) tag;		
+		if (nbt.contains("PlayerPregnancySystem", Tag.TAG_COMPOUND)) {
+			pregnancySystemHolder.deserializeNBT(nbt.getCompound("PlayerPregnancySystem"));
+		}	
+		if (nbt.contains("PlayerPregnancyEffects", Tag.TAG_COMPOUND)) {
+			pregnancyEffectsHolder.deserializeNBT(nbt.getCompound("PlayerPregnancyEffects"));
+		}
 	}
 	
 	public void copyFrom(@NonNull FemalePlayerImpl target) {

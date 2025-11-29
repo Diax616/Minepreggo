@@ -1,4 +1,4 @@
-package dev.dixmk.minepreggo.network.capability;
+package dev.dixmk.minepreggo.world.pregnancy;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -10,7 +10,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Nullable;
 
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
-import dev.dixmk.minepreggo.world.entity.preggo.PostPregnancy;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -25,8 +24,8 @@ public class FemaleEntityImpl extends AbstractBreedableEntity implements IFemale
 	protected int pregnancyInitializerTimer = 0;
 	protected int postPregnancyTimer = 0;
 	protected boolean pregnant = false;
-	Optional<PostPregnancy> postPregnancy = Optional.empty();
-	Optional<PrePregnancyData> prePregnancyData = Optional.empty(); 
+	protected Optional<PostPregnancy> postPregnancy = Optional.empty();
+	protected Optional<PrePregnancyData> prePregnancyData = Optional.empty(); 
 	
 	
 	@Override

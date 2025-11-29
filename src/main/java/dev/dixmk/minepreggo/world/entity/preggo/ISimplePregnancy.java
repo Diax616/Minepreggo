@@ -1,5 +1,7 @@
 package dev.dixmk.minepreggo.world.entity.preggo;
 
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.util.RandomSource;
 
 public interface ISimplePregnancy {

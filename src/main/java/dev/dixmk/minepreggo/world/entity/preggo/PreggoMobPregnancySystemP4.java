@@ -5,8 +5,13 @@ import javax.annotation.Nonnull;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
-import dev.dixmk.minepreggo.network.capability.IPregnancyEffectsHandler;
-import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
+import dev.dixmk.minepreggo.world.pregnancy.AbstractPregnancySystem;
+import dev.dixmk.minepreggo.world.pregnancy.IBreedable;
+import dev.dixmk.minepreggo.world.pregnancy.IPregnancyEffectsHandler;
+import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;

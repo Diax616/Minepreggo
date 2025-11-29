@@ -3,7 +3,7 @@ package dev.dixmk.minepreggo.world.entity.player;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import dev.dixmk.minepreggo.MinepreggoModConfig;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemHelper;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.server.level.ServerPlayer;
 
 public class PlayerPregnancySystemP6 extends PlayerPregnancySystemP5 {

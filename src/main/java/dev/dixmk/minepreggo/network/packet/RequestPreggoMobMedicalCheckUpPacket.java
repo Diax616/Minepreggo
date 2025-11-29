@@ -3,10 +3,10 @@ package dev.dixmk.minepreggo.network.packet;
 import java.util.function.Supplier;
 
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
-import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.inventory.preggo.PreggoMobPrenatalCheckUpMenu;
+import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -35,12 +35,8 @@ public record RequestPreggoMobMedicalCheckUpPacket(int preggoMobId, int scientif
     			var serverPlayer = context.getSender();					
     			final PreggoMob preggoMob = serverPlayer.level().getEntity(message.preggoMobId) instanceof PreggoMob preg ? preg : null;
     			final ScientificIllager scientificIllager = serverPlayer.level().getEntity(message.scientificIllagerId) instanceof ScientificIllager sci ? sci : null;
-    			if (preggoMob != null && scientificIllager != null && preggoMob instanceof IPregnancySystemHandler) {
-        			
-    				// Index 0, 1, 2 are regular check-up, ultrasound scan, paternity test, they're safe to access here
-    				
-    				var costs = scientificIllager.getPrenatalCheckUpCosts();
-        			PreggoMobPrenatalCheckUpMenu.showPrenatalCheckUpMenu(serverPlayer, preggoMob, scientificIllager, costs.get(0), costs.get(1), costs.get(2));
+    			if (preggoMob != null && scientificIllager != null && preggoMob instanceof IPregnancySystemHandler) {  					
+        			PreggoMobPrenatalCheckUpMenu.showPrenatalCheckUpMenu(serverPlayer, preggoMob, scientificIllager);
     			}
             }	
 		});

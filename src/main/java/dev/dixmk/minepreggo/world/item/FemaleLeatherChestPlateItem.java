@@ -3,7 +3,7 @@ package dev.dixmk.minepreggo.world.item;
 import java.util.function.Consumer;
 
 import dev.dixmk.minepreggo.client.model.armor.ArmorModelHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPhase;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;

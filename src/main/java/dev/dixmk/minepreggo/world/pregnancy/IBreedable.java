@@ -1,10 +1,9 @@
-package dev.dixmk.minepreggo.world.entity.preggo;
+package dev.dixmk.minepreggo.world.pregnancy;
 
 import javax.annotation.Nonnegative;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import dev.dixmk.minepreggo.network.capability.Gender;
 import net.minecraft.util.Mth;
 
 public interface IBreedable {

@@ -1,7 +1,7 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.creeper;
 
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancySymptom;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantHumanoidCreeperGirl;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraftforge.api.distmarker.Dist;

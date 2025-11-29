@@ -7,7 +7,6 @@ import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModVillagerProfessions;
 import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemHelper;
 import dev.dixmk.minepreggo.world.inventory.preggo.PlayerPrenatalCheckUpMenu;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.npc.Villager;
@@ -38,10 +37,10 @@ public record RequestPlayerMedicalCheckUpC2SPacket(int targetId) {
             			var target = serverPlayer.level().getEntity(message.targetId);
             			
             			if (target instanceof ScientificIllager scientificIllager) { 
-            				PlayerPrenatalCheckUpMenu.IllagerMenu.showPrenatalCheckUpMenu(serverPlayer, scientificIllager, scientificIllager.getPrenatalCheckUpCosts());
+            				PlayerPrenatalCheckUpMenu.IllagerMenu.showPrenatalCheckUpMenu(serverPlayer, scientificIllager);
             			}
             			else if (target instanceof Villager villager && villager.getVillagerData().getProfession() == MinepreggoModVillagerProfessions.VILLAGER_DOCTOR.get()) {
-            				PlayerPrenatalCheckUpMenu.VillagerMenu.showPrenatalCheckUpMenu(serverPlayer, villager, PregnancySystemHelper.createPrenatalCheckUpCosts(villager.getRandom(), 3, 6));
+            				PlayerPrenatalCheckUpMenu.VillagerMenu.showPrenatalCheckUpMenu(serverPlayer, villager);
             			}  
             			else {
 							MinepreggoMod.LOGGER.warn("Player {} attempted to request a prenatal check-up with invalid target entity ID {}", serverPlayer.getName().getString(), message.targetId);

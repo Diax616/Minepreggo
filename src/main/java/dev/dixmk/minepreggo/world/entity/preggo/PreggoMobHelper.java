@@ -18,9 +18,6 @@ import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
-import dev.dixmk.minepreggo.network.capability.IFemaleEntity;
-import dev.dixmk.minepreggo.network.capability.IPregnancyEffectsHandler;
-import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.utils.MathHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterPregnantCreeperGirl;
@@ -30,6 +27,14 @@ import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZo
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractZombieGirl;
 import dev.dixmk.minepreggo.world.item.IFemaleArmor;
 import dev.dixmk.minepreggo.world.item.ItemHelper;
+import dev.dixmk.minepreggo.world.pregnancy.IBreedable;
+import dev.dixmk.minepreggo.world.pregnancy.IFemaleEntity;
+import dev.dixmk.minepreggo.world.pregnancy.IPregnancyEffectsHandler;
+import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
+import dev.dixmk.minepreggo.world.pregnancy.MapPregnancyPhase;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
+import dev.dixmk.minepreggo.world.pregnancy.Womb;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -267,7 +272,7 @@ public class PreggoMobHelper {
 			final var numOfBabies = prePregnancyData.fertilizedEggs();
 			final PregnancyPhase lastPregnancyStage = IBreedable.calculateMaxPregnancyPhaseByTotalNumOfBabies(numOfBabies);
 			final int totalDays = MinepreggoModConfig.getTotalPregnancyDays();
-			final var map = PregnancySystemHelper.createDaysByPregnancyPhase(totalDays, lastPregnancyStage);
+			final var map = new MapPregnancyPhase(totalDays, lastPregnancyStage);
 			
 			preggoMob.resetDaysPassed();
 			preggoMob.setLastPregnancyStage(lastPregnancyStage);	

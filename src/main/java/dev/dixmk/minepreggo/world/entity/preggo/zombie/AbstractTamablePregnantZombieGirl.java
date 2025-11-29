@@ -1,7 +1,5 @@
 package dev.dixmk.minepreggo.world.entity.preggo.zombie;
 
-import java.util.EnumMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -14,19 +12,20 @@ import org.jetbrains.annotations.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
-import dev.dixmk.minepreggo.network.capability.IPregnancyEffectsHandler;
-import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.entity.ai.goal.PreggoMobAIHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.Craving;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobPregnancySystemP0;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPain;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPhase;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancySymptom;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
-import dev.dixmk.minepreggo.world.entity.preggo.Womb;
+import dev.dixmk.minepreggo.world.pregnancy.Craving;
+import dev.dixmk.minepreggo.world.pregnancy.IPregnancyEffectsHandler;
+import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
+import dev.dixmk.minepreggo.world.pregnancy.MapPregnancyPhase;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
+import dev.dixmk.minepreggo.world.pregnancy.Womb;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -73,9 +72,8 @@ public abstract class AbstractTamablePregnantZombieGirl<S extends PreggoMobSyste
 	
 	protected final P pregnancySystem;
 	
-	private Map<PregnancyPhase, @NonNull Integer> daysByPregnancyPhase = new EnumMap<>(PregnancyPhase.class);
+	private MapPregnancyPhase daysByPregnancyPhase = new MapPregnancyPhase(70, PregnancyPhase.P4);
 	private Womb babiesInsideWomb = Womb.empty();
-
 	
 	private Set<PregnancySymptom> cachePregnancySymptoms = null;
 	
@@ -156,12 +154,11 @@ public abstract class AbstractTamablePregnantZombieGirl<S extends PreggoMobSyste
 		compoundTag.putInt("DataLastPregnancyPhase", this.lastPregnancyPhase.ordinal());
 		tryWriteOptional(compoundTag);
 
-		if (!daysByPregnancyPhase.isEmpty()) {
-			compoundTag.put("DaysByPhase", PregnancySystemHelper.serializePregnancyPhaseMap(this.daysByPregnancyPhase));
+		if(!babiesInsideWomb.isEmpty()) {
+			compoundTag.put("DataBabies", this.babiesInsideWomb.toNBT());
 		}
-		
-		if (!babiesInsideWomb.isEmpty()) {
-			compoundTag.put("babiesInsideWomb", Womb.serializeNBT(babiesInsideWomb));
+		if (!daysByPregnancyPhase.isEmpty()) {
+			compoundTag.put("DaysByPhase", this.daysByPregnancyPhase.toNBT());
 		}
 	}
 	
@@ -184,13 +181,13 @@ public abstract class AbstractTamablePregnantZombieGirl<S extends PreggoMobSyste
 		this.lastPregnancyPhase = PregnancyPhase.values()[compoundTag.getInt("DataLastPregnancyPhase")];
 		tryReadOptional(compoundTag);
 
-	    if (compoundTag.contains("DaysByPhase", Tag.TAG_LIST)) {
-	    	PregnancySystemHelper.deserializePregnancyPhaseMap(compoundTag.getList("DaysByPhase", Tag.TAG_COMPOUND), daysByPregnancyPhase);
-	    } 
+	    if (compoundTag.contains("DataBabies", Tag.TAG_COMPOUND)) {
+	    	this.babiesInsideWomb = Womb.fromNBT(compoundTag.getCompound("DataBabies"));
+	    }  	
 	    
-	    if (compoundTag.contains("babiesInsideWomb", Tag.TAG_LIST)) {
-	    	Womb.deserializeNBT(compoundTag.getList("babiesInsideWomb", Tag.TAG_COMPOUND), babiesInsideWomb);
-	    }
+	    if (compoundTag.contains("DaysByPhase", Tag.TAG_COMPOUND)) {
+	    	this.daysByPregnancyPhase = MapPregnancyPhase.fromNBT(compoundTag.getCompound("DaysByPhase"));
+	    } 
 	}
 	
 	@Override
@@ -270,37 +267,33 @@ public abstract class AbstractTamablePregnantZombieGirl<S extends PreggoMobSyste
 	}
 	
 	@Override
-	public int getDaysByCurrentStage() {
-		if (daysByPregnancyPhase.containsKey(currentPregnancyPhase)) {
-			return daysByPregnancyPhase.get(currentPregnancyPhase);
+	public int getDaysByCurrentStage() {	
+		if (daysByPregnancyPhase.containsPregnancyPhase(currentPregnancyPhase)) {
+			return daysByPregnancyPhase.getDaysByPregnancyPhase(currentPregnancyPhase);
 		}
 		MinepreggoMod.LOGGER.error("Could not get total days by pregnancy phase, current pregnancy phase: {}, map: {}", 
-				currentPregnancyPhase, daysByPregnancyPhase.isEmpty());
-		return -1;
+				currentPregnancyPhase, daysByPregnancyPhase.isEmpty());	
+		return 0;
 	}
 
 	@Override
-	public Map<PregnancyPhase, Integer> getDaysByStageMapping() {
+	public MapPregnancyPhase getDaysByStageMapping() {
 		return this.daysByPregnancyPhase;
 	}
 	
 	@Override
 	public boolean setDaysByStage(int days, PregnancyPhase phase) {
-		if (!this.daysByPregnancyPhase.isEmpty()) {	
-			daysByPregnancyPhase.put(phase, days);	
-			return true;
-		}
-		return false;
+		return daysByPregnancyPhase.modifyDaysByPregnancyPhase(phase, days);
 	}
 	
 	@Override
-	public void setDaysByStage(Map<PregnancyPhase, Integer> map) {
+	public void setDaysByStage(MapPregnancyPhase map) {
 		this.daysByPregnancyPhase = map;
 	}
 	
 	@Override
 	public int getTotalDaysOfPregnancy() {
-		return daysByPregnancyPhase.values().stream()
+		return daysByPregnancyPhase.getDaysValues().stream()
 				.mapToInt(Integer::intValue)
 				.sum();
 	}

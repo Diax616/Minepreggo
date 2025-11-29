@@ -2,13 +2,13 @@ package dev.dixmk.minepreggo.init;
 
 import java.util.Optional;
 
-import dev.dixmk.minepreggo.world.entity.preggo.Craving;
-import dev.dixmk.minepreggo.world.entity.preggo.PostPregnancy;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobState;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPain;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPhase;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancySymptom;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractCreeperGirl.CombatMode;
+import dev.dixmk.minepreggo.world.pregnancy.Craving;
+import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
 

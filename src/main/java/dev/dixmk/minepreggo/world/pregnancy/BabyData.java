@@ -1,4 +1,4 @@
-package dev.dixmk.minepreggo.world.entity.preggo;
+package dev.dixmk.minepreggo.world.pregnancy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,8 @@ import org.jetbrains.annotations.Nullable;
 import com.google.common.collect.ImmutableSetMultimap;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.network.capability.Gender;
+import dev.dixmk.minepreggo.world.entity.preggo.Creature;
+import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;

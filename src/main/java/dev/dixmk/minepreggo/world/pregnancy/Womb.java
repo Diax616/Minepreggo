@@ -1,4 +1,4 @@
-package dev.dixmk.minepreggo.world.entity.preggo;
+package dev.dixmk.minepreggo.world.pregnancy;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -12,12 +12,17 @@ import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import dev.dixmk.minepreggo.common.utils.FixedSizeList;
+import dev.dixmk.minepreggo.world.entity.preggo.Creature;
+import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.util.RandomSource;
 
 public class Womb {
 	FixedSizeList<BabyData> babies = new FixedSizeList<>(IBreedable.MAX_NUMBER_OF_BABIES);
+	
+	public static final String NBT_KEY = "DataWomb";
 	
 	private Womb() {}
 	
@@ -54,6 +59,18 @@ public class Womb {
 		return IBreedable.MAX_NUMBER_OF_BABIES;
 	}
  
+    public CompoundTag toNBT() {
+    	CompoundTag wrapper = new CompoundTag();
+		ListTag listTag = new ListTag();
+		babies.forEach(baby -> {
+			CompoundTag tag = new CompoundTag();
+			baby.serializeNBT(tag);
+			listTag.add(tag);
+		});	
+		wrapper.put(NBT_KEY, listTag);
+        return wrapper;
+    }
+	
     @Override
     public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -64,8 +81,7 @@ public class Womb {
 		sb.append("]}");
 		return sb.toString();
 	}
-    
-	
+   
 	public static Womb empty() {
 		return new Womb();
 	}
@@ -90,20 +106,13 @@ public class Womb {
     public static @NonNull Womb create(@NonNull ImmutableTriple<UUID, Species, Creature> mother, RandomSource random, @Nonnegative int count) {		
     	return create(mother, ImmutableTriple.of(Optional.empty(), mother.getMiddle(), mother.getRight()) , random, count);
     }
-    
-	public static ListTag serializeNBT(Womb womb) {
-		ListTag listTag = new ListTag();
-		womb.forEach(baby -> {
-			CompoundTag tag = new CompoundTag();
-			baby.serializeNBT(tag);
-			listTag.add(tag);
-		});	
-        return listTag;
-	}
 	
-	public static void deserializeNBT(ListTag list, Womb womb) {
+	public static Womb fromNBT(CompoundTag nbt) {
+		ListTag list = nbt.getList(NBT_KEY, Tag.TAG_COMPOUND);
+		Womb womb = new Womb();	
         for (var tag : list) {
         	womb.addBaby(BabyData.deserializeNBT(tag));
         }
+        return womb;
 	}
 }

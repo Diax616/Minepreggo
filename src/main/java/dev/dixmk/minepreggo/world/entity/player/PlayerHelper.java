@@ -17,15 +17,16 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
-import dev.dixmk.minepreggo.world.entity.preggo.Craving;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
-import dev.dixmk.minepreggo.world.entity.preggo.IBreedable;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancyPhase;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
-import dev.dixmk.minepreggo.world.entity.preggo.Womb;
 import dev.dixmk.minepreggo.world.item.IFemaleArmor;
 import dev.dixmk.minepreggo.world.item.ItemHelper;
+import dev.dixmk.minepreggo.world.pregnancy.Craving;
+import dev.dixmk.minepreggo.world.pregnancy.IBreedable;
+import dev.dixmk.minepreggo.world.pregnancy.MapPregnancyPhase;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
+import dev.dixmk.minepreggo.world.pregnancy.Womb;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -92,7 +93,7 @@ public class PlayerHelper {
 			femaleData.getPrePregnancyData().ifPresent(prePregnancyData -> {
 				final var lastPregnancyStage = IBreedable.calculateMaxPregnancyPhaseByTotalNumOfBabies(prePregnancyData.fertilizedEggs());
 				final var totalDays = MinepreggoModConfig.getTotalPregnancyDays();
-				final var daysByStage = PregnancySystemHelper.createDaysByPregnancyPhase(totalDays, lastPregnancyStage);
+				final var daysByStage = new MapPregnancyPhase(totalDays, lastPregnancyStage);
 				
 				femaleData.getPregnancySystem().setDaysByStage(daysByStage);
 				femaleData.getPregnancySystem().setPregnancyHealth(PregnancySystemHelper.MAX_PREGNANCY_HEALTH);

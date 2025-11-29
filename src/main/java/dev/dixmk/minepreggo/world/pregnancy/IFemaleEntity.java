@@ -1,4 +1,4 @@
-package dev.dixmk.minepreggo.network.capability;
+package dev.dixmk.minepreggo.world.pregnancy;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -10,8 +10,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Nullable;
 
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
-import dev.dixmk.minepreggo.world.entity.preggo.IBreedable;
-import dev.dixmk.minepreggo.world.entity.preggo.PostPregnancy;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 
 public interface IFemaleEntity extends IBreedable {

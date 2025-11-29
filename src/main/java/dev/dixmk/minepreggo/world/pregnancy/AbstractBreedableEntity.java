@@ -1,10 +1,9 @@
-package dev.dixmk.minepreggo.network.capability;
+package dev.dixmk.minepreggo.world.pregnancy;
 
 import javax.annotation.Nonnegative;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import dev.dixmk.minepreggo.world.entity.preggo.IBreedable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.util.Mth;

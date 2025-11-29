@@ -11,13 +11,14 @@ import org.joml.Vector3i;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModMenus;
-import dev.dixmk.minepreggo.network.capability.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnancySystemHelper;
 import dev.dixmk.minepreggo.world.item.checkup.PrenatalCheckups;
+import dev.dixmk.minepreggo.world.item.checkup.PrenatalCheckups.PrenatalCheckup;
 import dev.dixmk.minepreggo.world.item.checkup.PrenatalCheckups.PrenatalCheckupData;
+import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -132,10 +133,11 @@ public class PreggoMobPrenatalCheckUpMenu extends AbstractPrenatalCheckUpMenu<Pr
 		});
 	}
 	
-	public static void showPrenatalCheckUpMenu(@NonNull ServerPlayer serverPlayer, PreggoMob preggoMob, ScientificIllager scientificIllager, int regularCheckUpCost, int ultrasoundScanCost, int paternityTestCost) {						
+	public static void showPrenatalCheckUpMenu(@NonNull ServerPlayer serverPlayer, PreggoMob preggoMob, ScientificIllager scientificIllager) {						
 		final var pos = preggoMob.blockPosition();
 		final var preggoMobId = preggoMob.getId();
 		final var scientificIllagerId = scientificIllager.getId();
+		final var costs = scientificIllager.getPrenatalCheckupCosts();
 		
 		NetworkHooks.openScreen(serverPlayer,new MenuProvider() {
             @Override
@@ -149,18 +151,18 @@ public class PreggoMobPrenatalCheckUpMenu extends AbstractPrenatalCheckUpMenu<Pr
                 packetBuffer.writeBlockPos(pos);
                 packetBuffer.writeVarInt(preggoMobId);
                 packetBuffer.writeVarInt(scientificIllagerId);
-                packetBuffer.writeInt(regularCheckUpCost);
-                packetBuffer.writeInt(ultrasoundScanCost);
-                packetBuffer.writeInt(paternityTestCost);
+                packetBuffer.writeInt(costs.getCost(PrenatalCheckup.REGULAR));
+                packetBuffer.writeInt(costs.getCost(PrenatalCheckup.ULTRASOUND_SCAN));
+                packetBuffer.writeInt(costs.getCost(PrenatalCheckup.PATERNITY_TEST));	 
                 return new PreggoMobPrenatalCheckUpMenu(id, inventory, packetBuffer);
             }
         }, buf -> {
         	buf.writeBlockPos(pos);
 			buf.writeVarInt(preggoMobId);
 			buf.writeVarInt(scientificIllagerId);
-			buf.writeInt(regularCheckUpCost);
-			buf.writeInt(ultrasoundScanCost);
-			buf.writeInt(paternityTestCost);
+			buf.writeInt(costs.getCost(PrenatalCheckup.REGULAR));
+			buf.writeInt(costs.getCost(PrenatalCheckup.ULTRASOUND_SCAN));
+			buf.writeInt(costs.getCost(PrenatalCheckup.PATERNITY_TEST));
 		});	  				
 	}
 }

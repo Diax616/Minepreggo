@@ -1,9 +1,7 @@
-package dev.dixmk.minepreggo.network.capability;
+package dev.dixmk.minepreggo.world.pregnancy;
 
 import java.util.Set;
 import java.util.UUID;
-
-import dev.dixmk.minepreggo.world.entity.preggo.IBreedable;
 
 public interface IMaleEntity extends IBreedable {
 

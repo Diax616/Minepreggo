@@ -1,4 +1,4 @@
-package dev.dixmk.minepreggo.world.entity.preggo;
+package dev.dixmk.minepreggo.world.pregnancy;
 
 import javax.annotation.Nonnull;
 

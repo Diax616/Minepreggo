@@ -26,10 +26,10 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
-import dev.dixmk.minepreggo.world.entity.preggo.FertilitySystem;
-import dev.dixmk.minepreggo.world.entity.preggo.PostPregnancy;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem;
+import dev.dixmk.minepreggo.world.pregnancy.FertilitySystem;
+import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
 
 public class TamableZombieGirl extends AbstractTamableZombieGirl<PreggoMobSystem<TamableZombieGirl>> {
 

@@ -1,4 +1,4 @@
-package dev.dixmk.minepreggo.world.entity.preggo;
+package dev.dixmk.minepreggo.world.pregnancy;
 
 public enum PregnancyPain {
 	MORNING_SICKNESS,
