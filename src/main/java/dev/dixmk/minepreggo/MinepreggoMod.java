@@ -375,7 +375,7 @@ public class MinepreggoMod {
 		event.registerLayerDefinition(AbstractQueadrupedCreeperGirlModel.LAYER_ENERGY_ARMOR_P0_LOCATION, AbstractQueadrupedCreeperGirlModel::createP0BodyLayer);		
 		
 		/*Ender*/
-		event.registerLayerDefinition(AbstractEnderGirlModel.LAYER_LOCATION_P0, AbstractEnderGirlModel::createP0BodyLayer);
+		event.registerLayerDefinition(AbstractEnderGirlModel.LAYER_LOCATION, AbstractEnderGirlModel::createP0BodyLayer);
 		event.registerLayerDefinition(AbstractEnderGirlModel.LAYER_OUTER_ARMOR_LOCATION, AbstractEnderGirlModel::createOuterLayer);
 		event.registerLayerDefinition(AbstractEnderGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractEnderGirlModel::createInnerLayer);
 		

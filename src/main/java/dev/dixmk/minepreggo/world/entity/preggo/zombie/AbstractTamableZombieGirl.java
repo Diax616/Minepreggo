@@ -68,14 +68,6 @@ import net.minecraftforge.items.wrapper.EntityArmorInvWrapper;
 import net.minecraftforge.items.wrapper.EntityHandsInvWrapper;
 
 public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> extends AbstractZombieGirl implements ITamablePreggoMob, IFemaleEntity {
-	
-	/* TODO A lot of EntityDataAccessor can be normal fields, only kept as EntityDataAccessor for syncing purposes. 
-	 * Consider refactoring those that don't need to be synced.
-	 * DATA_BREAK_BLOCKS - can be normal field
-	 * DATA_PICKUP_ITEMS - can be normal field
-	 * DATA_ANGRY - can be normal field
-	 * DATA_PANIC - can be normal field
-	 */
 	protected static final EntityDataAccessor<Integer> DATA_HUNGRY = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.INT);
 	protected static final EntityDataAccessor<Boolean> DATA_SAVAGE = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Boolean> DATA_ANGRY = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);

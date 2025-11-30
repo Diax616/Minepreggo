@@ -80,26 +80,26 @@ public abstract class PreggoMobPregnancySystemP4<E extends PreggoMob
 				PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.OFFHAND);
 			}	
 			else {
-	    		pregnantEntity.incrementPregnancyTimer();
+	    		pregnantEntity.incrementPregnancyPainTimer();
 	    		AbstractPregnancySystem.spawnParticulesForWaterBreaking(serverLevel, pregnantEntity);
 			}
 		}
 		else if (pain == PregnancyPain.BIRTH) {
-			if (pregnantEntity.getPregnancyPainTimer() >= totalTicksOfBirth) {
-				
+			if (pregnantEntity.getPregnancyPainTimer() >= totalTicksOfBirth) {			
 				final var babyItem = PregnancySystemHelper.getAliveBabyItem(pregnantEntity.getTypeOfSpecies(), pregnantEntity.getTypeOfCreature());
 				
 				if (babyItem != null) {
 					PreggoMobHelper.setItemstackOnOffHand(pregnantEntity, new ItemStack(babyItem, IBreedable.calculateNumOfBabiesByMaxPregnancyStage(pregnantEntity.getLastPregnancyStage())));
 				} else {
 					MinepreggoMod.LOGGER.error("Failed to get baby item for pregnancy system {} birth.", pregnantEntity.getCurrentPregnancyStage());
-				}
-				
+				}		
 				initPostPartum();
-	        	pregnantEntity.discard();
+				
+				MinepreggoMod.LOGGER.debug("PreggoMob {} has given birth.", pregnantEntity.getDisplayName().getString());
+	        	pregnantEntity.discard();        	
 			}	
 			else {
-	    		pregnantEntity.incrementPregnancyTimer();
+	    		pregnantEntity.incrementPregnancyPainTimer();
 			}
 		}
 	}
@@ -128,6 +128,7 @@ public abstract class PreggoMobPregnancySystemP4<E extends PreggoMob
 	protected void breakWater() {
 		pregnantEntity.resetPregnancyPainTimer();
 		pregnantEntity.setPregnancyPain(PregnancyPain.WATER_BREAKING);
+		MinepreggoMod.LOGGER.debug("PreggoMob {} water has broken.", pregnantEntity.getDisplayName().getString());
 	}
 	
 	@Override

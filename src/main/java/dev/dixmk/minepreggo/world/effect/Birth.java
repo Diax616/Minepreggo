@@ -46,7 +46,7 @@ public class Birth extends AbstractPlayerPregnancyPain {
 			
 			entity.level().playSound(null, BlockPos.containing(entity.getX(), entity.getY(), entity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "birth")), SoundSource.PLAYERS, 1, 1);
 			
-			MessageHelper.sendMessageToPlayer((Player) entity, Component.translatable("chat.minepreggo.player.birth.message.labor"));	
+			MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) entity), Component.translatable("chat.minepreggo.player.birth.message.start"));
 		}	
 	}
 	
@@ -74,12 +74,7 @@ public class Birth extends AbstractPlayerPregnancyPain {
 			entity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 3600, 0));
 			entity.addEffect(new MobEffectInstance(MobEffects.LUCK, 4800, 0));	
 		
-			/*
-			if (entity instanceof ServerPlayer serverPlayer) {
-				serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
-				MessageHelper.sendMessageToPlayer(serverPlayer, Component.translatable("chat.minepreggo.player.birth.message.successful_birth", cap.getFemalePlayerData().getTotalNumOfBabies())));
-			}
-			*/
+			MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) entity), Component.translatable("chat.minepreggo.player.birth.message.post"));
 		}
 	}
 }

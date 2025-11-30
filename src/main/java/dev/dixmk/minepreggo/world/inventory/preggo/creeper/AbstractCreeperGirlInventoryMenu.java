@@ -10,7 +10,9 @@ import dev.dixmk.minepreggo.world.item.ItemHelper;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -41,14 +43,17 @@ public abstract class AbstractCreeperGirlInventoryMenu<E extends AbstractTamable
 					if (creeperGirl instanceof IPregnancySystemHandler pregnancySystem) {
 						final var pregnancyPhase = pregnancySystem.getCurrentPregnancyStage();					
 						if (!PregnancySystemHelper.canUseChestplate(itemstack.getItem(), pregnancyPhase)) {
-			                player.displayClientMessage(MessageHelper.getPreggoMobArmorChestMessage(pregnancyPhase, creeperGirl.getSimpleName()), true);        
+							MessageHelper.warnFittedArmor((Player) creeperGirl.getOwner(), creeperGirl, pregnancyPhase);
 			                flag = false;
 						}			
 					}					
 					else {                      
-						flag = PreggoMobHelper.canUseChestplate(itemstack.getItem());
-					}	
-			
+						flag = PreggoMobHelper.canUseChestplate(itemstack.getItem());					
+						if (!flag) {
+							MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) creeperGirl.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.armor.message.chestplate_does_not_fit.boobs", creeperGirl.getSimpleName()));
+						}
+					}
+					
 					return flag;			
 				}
 			});
@@ -59,7 +64,7 @@ public abstract class AbstractCreeperGirlInventoryMenu<E extends AbstractTamable
 					if (creeperGirl instanceof IPregnancySystemHandler pregnancySystem) {
 						final var pregnancyPhase = pregnancySystem.getCurrentPregnancyStage();					
 						if (!PregnancySystemHelper.canUseLegging(itemstack.getItem(), pregnancyPhase)) {
-			                player.displayClientMessage(MessageHelper.getPreggoMobArmorLeggingsMessage(creeperGirl.getSimpleName()), true);           
+							MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) creeperGirl.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.armor.message.leggings_does_not_fit.p3_to_p8", creeperGirl.getSimpleName()));
 			                return false;
 						}			
 					}												

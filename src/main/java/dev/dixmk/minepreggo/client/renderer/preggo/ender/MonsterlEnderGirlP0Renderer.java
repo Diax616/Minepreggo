@@ -17,11 +17,11 @@ public class MonsterlEnderGirlP0Renderer extends AbstractMonsterEnderGirlRendere
 	}
 	
 	public MonsterlEnderGirlP0Renderer(EntityRendererProvider.Context context) {
-		this(context, AbstractEnderGirlModel.LAYER_LOCATION_P0);
+		this(context, AbstractEnderGirlModel.LAYER_LOCATION);
 	}
 
 	@Override
 	public ResourceLocation getTextureLocation(MonsterEnderGirlP0 p_115812_) {
-		return ENDER_GIRL_P0_LOCATION;
+		return ENDER_GIRL_LOCATION;
 	}
 }

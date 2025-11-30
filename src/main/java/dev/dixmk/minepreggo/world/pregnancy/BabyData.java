@@ -169,7 +169,7 @@ public class BabyData {
     	return "Baby [ gender = " + gender + 
 				", species = " + typeOfSpecies + 
 				", creature = " + typeOfCreature + 
-				", motherId = " + motherId + 
-				", fatherId = " + fatherId.orElse(null) + " ]";
+				", motherId = " + Boolean.toString(motherId != null) + 
+				", fatherId = " + Boolean.toString(fatherId.isPresent()) + " ]";
     }
 }

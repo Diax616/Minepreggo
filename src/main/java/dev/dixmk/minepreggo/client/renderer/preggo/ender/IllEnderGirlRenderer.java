@@ -23,11 +23,11 @@ public class IllEnderGirlRenderer extends AbstractMonsterEnderGirlRenderer<IllEn
 	}
 	
 	public IllEnderGirlRenderer(EntityRendererProvider.Context context) {
-		this(context, AbstractEnderGirlModel.LAYER_LOCATION_P0, AbstractEnderGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractEnderGirlModel.LAYER_OUTER_ARMOR_LOCATION);
+		this(context, AbstractEnderGirlModel.LAYER_LOCATION, AbstractEnderGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractEnderGirlModel.LAYER_OUTER_ARMOR_LOCATION);
 	}
 
 	@Override
 	public ResourceLocation getTextureLocation(IllEnderGirl p_115812_) {
-		return ENDER_GIRL_P0_LOCATION;
+		return ENDER_GIRL_LOCATION;
 	}
 }

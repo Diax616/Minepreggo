@@ -20,7 +20,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public abstract class AbstractEnderGirlRenderer
 	<E extends AbstractEnderGirl, M extends AbstractEnderGirlModel<E>> extends HumanoidMobRenderer<E, M> {
 	
-	protected static final ResourceLocation ENDER_GIRL_P0_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/ender/ender_girl_p0.png");
+	protected static final ResourceLocation ENDER_GIRL_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/ender/ender_girl.png");
 	private final RandomSource random = RandomSource.create();
 	
 	protected AbstractEnderGirlRenderer(EntityRendererProvider.Context context, M main, RenderType enderEyes) {

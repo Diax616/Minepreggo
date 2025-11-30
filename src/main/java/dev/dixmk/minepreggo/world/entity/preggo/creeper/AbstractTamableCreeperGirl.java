@@ -93,7 +93,7 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 	@Override
 	protected void defineSynchedData() {
 		super.defineSynchedData();
-		this.entityData.define(DATA_HUNGRY, 4);		
+		this.entityData.define(DATA_HUNGRY, 10);		
 		this.entityData.define(DATA_SAVAGE, false);
 		this.entityData.define(DATA_ANGRY, false);
 		this.entityData.define(DATA_WAITING, false);

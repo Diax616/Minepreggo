@@ -21,6 +21,14 @@ public class FemalePlayerImpl extends FemaleEntityImpl {
 	private final PlayerPregnancySystemHolder pregnancySystemHolder = new PlayerPregnancySystemHolder();
 	private final PlayerPregnancyEffectsHolder pregnancyEffectsHolder = new PlayerPregnancyEffectsHolder();
 	
+	public boolean isPregnancySystemInitialized() {
+		return pregnancySystemHolder.isInitialized();
+	}
+	
+	public boolean isPregnancyEfectsInitialized() {
+		return pregnancyEffectsHolder.isInitialized();
+	}
+	
 	public PlayerPregnancySystemImpl getPregnancySystem() {
 		return pregnancySystemHolder.getValue();
 	}
@@ -51,12 +59,6 @@ public class FemalePlayerImpl extends FemaleEntityImpl {
 		if (nbt.contains("PlayerPregnancyEffects", Tag.TAG_COMPOUND)) {
 			pregnancyEffectsHolder.deserializeNBT(nbt.getCompound("PlayerPregnancyEffects"));
 		}
-	}
-	
-	public void copyFrom(@NonNull FemalePlayerImpl target) {
-	    CompoundTag nbt = new CompoundTag();
-	    target.serializeNBT(nbt);
-	    this.deserializeNBT(nbt);
 	}
 	
 	public ClientData createClientData() {

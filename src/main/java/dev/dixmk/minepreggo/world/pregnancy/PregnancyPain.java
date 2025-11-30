@@ -1,13 +1,19 @@
 package dev.dixmk.minepreggo.world.pregnancy;
 
 public enum PregnancyPain {
-	MORNING_SICKNESS,
-	FETAL_MOVEMENT,
-	CONTRACTION,
-	MISCARRIAGE,
-	WATER_BREAKING,
-	BIRTH,
-	PREBIRTH;
+	MORNING_SICKNESS(true),
+	FETAL_MOVEMENT(false),
+	CONTRACTION(true),
+	MISCARRIAGE(true),
+	WATER_BREAKING(false),
+	BIRTH(true),
+	PREBIRTH(true);
+	
+	public final boolean incapacitate;
+	
+	PregnancyPain(boolean incapacitate) {
+		this.incapacitate = incapacitate;
+	}
 	
 	public static final String NBT_KEY = "PregnancyPainType";
 }

@@ -4,11 +4,15 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterHumanoidCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.IllEnderGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractMonsterZombieGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractZombieGirl;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.IronGolem;
@@ -41,8 +45,14 @@ public class EntityEventHandler {
     @SubscribeEvent
     public static void onFinalizeSpawn(MobSpawnEvent.FinalizeSpawn event) {
         var mob = event.getEntity();
-       
-        if (mob instanceof AbstractMonsterHumanoidCreeperGirl) {  	
+           
+        if (mob instanceof AbstractTamablePregnantCreeperGirl<?,?> creeperGirl && event.getSpawnType() != MobSpawnType.CONVERSION) {  	
+        	PreggoMobHelper.initDefaultPregnancy(creeperGirl);
+        }
+        else if (mob instanceof AbstractTamablePregnantZombieGirl<?,?> zombieGirl && event.getSpawnType() != MobSpawnType.CONVERSION) {  	
+        	PreggoMobHelper.initDefaultPregnancy(zombieGirl);
+        }
+        else if (mob instanceof AbstractMonsterHumanoidCreeperGirl) {  	
         	mob.setCanPickUpLoot(mob.getRandom().nextFloat() < 0.35F * event.getDifficulty().getSpecialMultiplier());    
         	if (mob.getType() == MinepreggoModEntities.MONSTER_CREEPER_GIRL_P0.get()
         			&& mob.getRandom().nextFloat() < MinepreggoModConfig.getBabyCreeperGirlProbability()) {

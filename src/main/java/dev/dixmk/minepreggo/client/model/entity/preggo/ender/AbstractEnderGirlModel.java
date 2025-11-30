@@ -22,7 +22,7 @@ public abstract class AbstractEnderGirlModel<E extends AbstractEnderGirl> extend
 	public static final ModelLayerLocation LAYER_INNER_ARMOR_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "ender_girl_inner_model"), "inner");
 	public static final ModelLayerLocation LAYER_OUTER_ARMOR_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "ender_girl_outer_model"), "outer");	
 	
-	public static final ModelLayerLocation LAYER_LOCATION_P0 = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "ender_girl_p0_model"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "ender_girl_model"), "main");
 	protected final ModelPart root;
 	protected final HierarchicalModel<E> animator;
 	

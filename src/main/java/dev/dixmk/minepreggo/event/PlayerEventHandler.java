@@ -8,6 +8,7 @@ import dev.dixmk.minepreggo.init.MinepreggoModItems;
 import dev.dixmk.minepreggo.network.capability.FemalePlayerImpl;
 import dev.dixmk.minepreggo.network.capability.MalePlayerImpl;
 import dev.dixmk.minepreggo.network.capability.PlayerDataProvider;
+import dev.dixmk.minepreggo.network.capability.VillagerDataProvider;
 import dev.dixmk.minepreggo.network.packet.RequestSexP2PC2SPacket;
 import dev.dixmk.minepreggo.network.packet.SyncFemalePlayerDataS2CPacket;
 import dev.dixmk.minepreggo.network.packet.SyncMobEffectPacket;
@@ -33,6 +34,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -63,6 +65,9 @@ public class PlayerEventHandler {
 	public static void onAttachCapabilities(AttachCapabilitiesEvent<Entity> event) {
 		if (event.getObject() instanceof Player && !(event.getObject() instanceof FakePlayer)) {
 			event.addCapability(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "minepreggo_player_data"), new PlayerDataProvider());
+		}
+		else if(event.getObject() instanceof Villager) {
+			event.addCapability(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "minepreggo_villager_data"), new VillagerDataProvider());
 		}
 	}
 	
@@ -125,30 +130,11 @@ public class PlayerEventHandler {
         var newPlayerData = newPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).resolve();
         
         if (origialPlayerData.isEmpty() || newPlayerData.isEmpty()) return;
-        
-        
+               
         if (!event.isWasDeath()) {    	
-        	newPlayerData.get().setGender(origialPlayerData.get().getGender());
-        	newPlayerData.get().setCustomSkin(origialPlayerData.get().isUsingCustomSkin());
-        	newPlayerData.get().setShowMainMenu(origialPlayerData.get().canShowMainMenu());
-        	       	
-        	origialPlayerData.get().getFemaleData().ifPresent(oriFemaleData -> 
-        		newPlayerData.get().getFemaleData().ifPresent(newFemaleData -> {      				
-        			if (oriFemaleData != null && newFemaleData != null) {
-        				newFemaleData.copyFrom(oriFemaleData);
-        			}  		
-            	})
-        	);
-        	
-        	origialPlayerData.get().getMaleData().ifPresent(oriMaleData -> 
-        		newPlayerData.get().getMaleData().ifPresent(newMaleData -> {      				
-        			if (oriMaleData != null && newMaleData != null) {
-        				newMaleData.copyFrom(oriMaleData);
-        			} 		
-            	})
-        	); 	
+        	var nbt = origialPlayerData.get().serializeNBT();
+        	newPlayerData.get().deserializeNBT(nbt);
         } 
-
         
         if (newPlayer instanceof ServerPlayer serverPlayer && !serverPlayer.level().isClientSide) {
         	newPlayerData.ifPresent(c -> {
@@ -223,7 +209,7 @@ public class PlayerEventHandler {
 
 	private static void evalualeFemalePlayerOnTick(ServerPlayer serverPlayer, FemalePlayerImpl femaleData) {
 		if (femaleData.isPregnant()) {					
-			if (femaleData.getPregnancySystem().getCurrentPregnancyStage() == null) {
+			if (!femaleData.isPregnancySystemInitialized()) {
 				if (femaleData.getPregnancyInitializerTimer() > MinepreggoModConfig.getTicksToStartPregnancy()) {
 					PlayerHelper.tryToStartPregnancy(serverPlayer);
 					femaleData.setPregnancyInitializerTimer(0);

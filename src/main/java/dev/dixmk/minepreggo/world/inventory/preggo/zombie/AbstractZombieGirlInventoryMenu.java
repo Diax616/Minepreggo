@@ -10,7 +10,9 @@ import dev.dixmk.minepreggo.world.item.ItemHelper;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -40,12 +42,15 @@ public abstract class AbstractZombieGirlInventoryMenu<E extends AbstractTamableZ
 					if (zombieGirl instanceof IPregnancySystemHandler pregnancySystem) {
 						final var pregnancyPhase = pregnancySystem.getCurrentPregnancyStage();					
 						if (!PregnancySystemHelper.canUseChestplate(itemstack.getItem(), pregnancyPhase)) {
-			                player.displayClientMessage(MessageHelper.getPreggoMobArmorChestMessage(pregnancyPhase, zombieGirl.getSimpleName()), true);        
+							MessageHelper.warnFittedArmor((Player) zombieGirl.getOwner(), zombieGirl, pregnancyPhase);
 			                flag = false;
 						}			
 					}					
 					else {                      
 						flag = PreggoMobHelper.canUseChestplate(itemstack.getItem());
+						if (!flag) {
+							MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) zombieGirl.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.armor.message.chestplate_does_not_fit.boobs", zombieGirl.getSimpleName()));
+						}
 					}	
 			
 					return flag;			
@@ -58,7 +63,7 @@ public abstract class AbstractZombieGirlInventoryMenu<E extends AbstractTamableZ
 					if (zombieGirl instanceof IPregnancySystemHandler pregnancySystem) {
 						final var pregnancyPhase = pregnancySystem.getCurrentPregnancyStage();					
 						if (!PregnancySystemHelper.canUseLegging(itemstack.getItem(), pregnancyPhase)) {
-			                player.displayClientMessage(MessageHelper.getPreggoMobArmorLeggingsMessage(zombieGirl.getSimpleName()), true);           
+							MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) zombieGirl.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.armor.message.leggings_does_not_fit.p3_to_p8", zombieGirl.getSimpleName()));
 			                return false;
 						}			
 					}												

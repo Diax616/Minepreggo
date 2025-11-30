@@ -94,27 +94,25 @@ public class PlayerHelper {
 				final var lastPregnancyStage = IBreedable.calculateMaxPregnancyPhaseByTotalNumOfBabies(prePregnancyData.fertilizedEggs());
 				final var totalDays = MinepreggoModConfig.getTotalPregnancyDays();
 				final var daysByStage = new MapPregnancyPhase(totalDays, lastPregnancyStage);
+				final var womb = Womb.create(
+						ImmutableTriple.of(player.getUUID(), Species.HUMAN, Creature.HUMANOID),
+						ImmutableTriple.of(Optional.ofNullable(prePregnancyData.fatherId()), prePregnancyData.typeOfSpeciesOfFather(), prePregnancyData.typeOfCreatureOfFather()),
+						player.getRandom(),
+						prePregnancyData.fertilizedEggs());
+				
 				
 				femaleData.getPregnancySystem().setDaysByStage(daysByStage);
 				femaleData.getPregnancySystem().setPregnancyHealth(PregnancySystemHelper.MAX_PREGNANCY_HEALTH);
 				femaleData.getPregnancySystem().setLastPregnancyStage(lastPregnancyStage);
 				femaleData.getPregnancySystem().setDaysToGiveBirth(totalDays);			
-				
-				final var womb = Womb.create(
-						ImmutableTriple.of(player.getUUID(), Species.HUMAN, Creature.HUMANOID),
-						ImmutableTriple.of(Optional.ofNullable(prePregnancyData.fatherId()), prePregnancyData.typeOfSpeciesOfFather(), prePregnancyData.typeOfCreatureOfFather()),
-						player.getRandom(),
-						totalDays);
-				
 				femaleData.getPregnancySystem().setBabiesInsideWomb(womb);	
-								
+				femaleData.getPregnancySystem().setCurrentPregnancyStage(PregnancyPhase.P0);	
+				
 				femaleData.sync(player);
-				femaleData.getPregnancySystem().sync(player);
-		
-				femaleData.getPregnancySystem().setCurrentPregnancyStage(PregnancyPhase.P0);
+				femaleData.getPregnancySystem().sync(player);	
+			
 				player.addEffect(new MobEffectInstance(MinepreggoModMobEffects.PREGNANCY_P0.get(), -1, 0, false, false, true));				
-				femaleData.getPregnancySystem().sync(player);
-						
+					
 				MinepreggoMod.LOGGER.debug("Player {} has become pregnant with {} babies, total days to give birth: {}, pregnancy phases days: {}, womb: {}", 
 						player.getName().getString(), 
 						prePregnancyData.fertilizedEggs(), 

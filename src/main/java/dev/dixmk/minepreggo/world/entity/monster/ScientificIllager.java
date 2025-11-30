@@ -238,7 +238,7 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
 		);
 		
 		if (list.isEmpty()) {
-			MessageHelper.sendMessageToPlayer(serverPlayer, Component.translatable("chat.minepreggo.scientific_illager.no_pregnant_entities"));
+			MessageHelper.sendTo(serverPlayer, Component.translatable("chat.minepreggo.scientific_illager.no_pregnant_entities"));
 			return false;
 		}
 		

@@ -2,7 +2,7 @@ package dev.dixmk.minepreggo.network.capability;
 
 import java.util.Optional;
 
-import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Nullable;
@@ -36,7 +36,7 @@ public class PlayerPregnancyEffectsImpl implements IPlayerPregnancyEffectsHandle
 	private int bellyRubs = 0;
 	private int horny = 0;
 	
-	private Optional<Pair<Craving, Species>> typeOfCraving = Optional.empty();
+	private Optional<ImmutablePair<Craving, Species>> typeOfCraving = Optional.empty();
 	
 	@Override
 	@Nullable
@@ -50,7 +50,7 @@ public class PlayerPregnancyEffectsImpl implements IPlayerPregnancyEffectsHandle
 	@Override
 	public void setTypeOfCraving(@Nullable Craving craving) {	
 		if (craving != null) {
-			this.typeOfCraving = Optional.of(Pair.of(craving, Species.HUMAN));
+			this.typeOfCraving = Optional.of(ImmutablePair.of(craving, Species.HUMAN));
 		} else {
 			this.typeOfCraving = Optional.empty();
 		}
@@ -243,12 +243,12 @@ public class PlayerPregnancyEffectsImpl implements IPlayerPregnancyEffectsHandle
 	}
 	
 	@Override
-	public @Nullable Pair<Craving, Species> getTypeOfCravingBySpecies() {
+	public @Nullable ImmutablePair<Craving, Species> getTypeOfCravingBySpecies() {
 		return this.typeOfCraving.orElse(null);
 	}
 
 	@Override
-	public void setTypeOfCravingBySpecies(@Nullable Pair<Craving, Species> craving) {
+	public void setTypeOfCravingBySpecies(@Nullable ImmutablePair<Craving, Species> craving) {
 		this.typeOfCraving = Optional.ofNullable(craving);
 	}
 	
@@ -302,22 +302,10 @@ public class PlayerPregnancyEffectsImpl implements IPlayerPregnancyEffectsHandle
 	        String speciesName = nbt.getString(Species.NBT_KEY);        
         	Craving c = Craving.valueOf(cravingName);
         	Species e = Species.valueOf(speciesName);
-        	setTypeOfCravingBySpecies(Pair.of(c, e));
+        	setTypeOfCravingBySpecies(ImmutablePair.of(c, e));
 	    } else {
 	    	setTypeOfCravingBySpecies(null);
 	    }
-	}
-	
-	public void copyFrom(@NonNull PlayerPregnancyEffectsImpl newData) {
-		this.bellyRubs = newData.bellyRubs;
-		this.bellyRubsTimer = newData.bellyRubsTimer;
-		this.craving = newData.craving;
-		this.cravingTimer = newData.cravingTimer;
-		this.horny = newData.horny;
-		this.hornyTimer = newData.hornyTimer;
-		this.milking = newData.milking;
-		this.milkingTimer = newData.milkingTimer;
-		this.typeOfCraving = newData.typeOfCraving;
 	}
 	
 	public @NonNull ClientData createClientData() {
@@ -338,7 +326,7 @@ public class PlayerPregnancyEffectsImpl implements IPlayerPregnancyEffectsHandle
 	    });
 	}
 
-	public static record ClientData(int craving, int milking, int bellyRubs, int horny, @Nullable Pair<Craving, Species> typeOfCravingBySpecies) {	
+	public static record ClientData(int craving, int milking, int bellyRubs, int horny, @Nullable ImmutablePair<Craving, Species> typeOfCravingBySpecies) {	
 		public static ClientData decode(FriendlyByteBuf buffer) {		
 			int craving = buffer.readInt();
 			int milking = buffer.readInt();	
@@ -350,7 +338,7 @@ public class PlayerPregnancyEffectsImpl implements IPlayerPregnancyEffectsHandle
 				typeOfCraving = buffer.readEnum(Craving.class);
 				typeOfSpecies = buffer.readEnum(Species.class);
 			}		
-			return new ClientData(craving, milking, bellyRubs, horny, Pair.of(typeOfCraving, typeOfSpecies));
+			return new ClientData(craving, milking, bellyRubs, horny, ImmutablePair.of(typeOfCraving, typeOfSpecies));
 		}
 		
 		public void encode(FriendlyByteBuf buffer) {	

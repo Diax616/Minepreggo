@@ -87,7 +87,7 @@ public class ServerPlayerAnimationManager {
         		new UpdatePlayerAnimationS2CPacket(playerId, null, 0, false));
     }
     
-    private static class AnimationState {
+    private class AnimationState {
         private String animationName;
         private int tick;
         private boolean isPlaying;

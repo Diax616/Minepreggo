@@ -73,13 +73,13 @@ public class Impregnantion extends MobEffect {
 			}
 			else if (entity instanceof TamableCreeperGirl creeperGirl) {
 				var nextStage = MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
-				initPregnancy(creeperGirl, nextStage, amplifier);
 				PreggoMobHelper.copyOwner(creeperGirl, nextStage);
+				initPregnancy(creeperGirl, nextStage, amplifier);
 			}
 			else if (entity instanceof TamableZombieGirl zombieGirl) {
 				var nextStage = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
-				initPregnancy(zombieGirl, nextStage, amplifier);
 				PreggoMobHelper.copyOwner(zombieGirl, nextStage);
+				initPregnancy(zombieGirl, nextStage, amplifier);
 			}
 			else {
 				entity.hurt(new DamageSource(entity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.GENERIC)), 1);

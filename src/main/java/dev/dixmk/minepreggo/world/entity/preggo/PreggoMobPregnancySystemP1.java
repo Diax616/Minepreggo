@@ -22,6 +22,7 @@ import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -71,7 +72,7 @@ public abstract class PreggoMobPregnancySystemP1<
 		}
 		
 		if (!hasPregnancyPain()) {
-			if (pregnancyPainTicks > 40) {
+			if (pregnancyPainTicks > 20) {
 				tryInitRandomPregnancyPain();
 				pregnancyPainTicks = 0;
 			}
@@ -84,7 +85,7 @@ public abstract class PreggoMobPregnancySystemP1<
 		}
 		
 		if (!hasAllPregnancySymptoms()) {
-			if (pregnancysymptonsTicks > 40) {
+			if (pregnancysymptonsTicks > 20) {
 				tryInitPregnancySymptom();
 				pregnancysymptonsTicks = 0;
 			}
@@ -218,7 +219,7 @@ public abstract class PreggoMobPregnancySystemP1<
 		
 		if (damage > 0) {		
 			if (pregnantEntity.getPregnancyHealth() < 40) {
-				MessageHelper.warningOwnerPossibleMiscarriageEvent(pregnantEntity);
+				MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) pregnantEntity.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.miscarriage.message.warning", pregnantEntity.getSimpleName()));
 			}					
 			MinepreggoMod.LOGGER.debug("PREGNANCY HEALTH: id={}, class={}, pregnancyHealth={}, damage={}, damageSource={}",
 					pregnantEntity.getId(), pregnantEntity.getClass().getSimpleName(), currentPregnancyHealth, damage, damagesource);

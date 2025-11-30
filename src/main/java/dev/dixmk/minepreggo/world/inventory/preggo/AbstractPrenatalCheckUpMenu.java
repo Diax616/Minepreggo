@@ -4,11 +4,14 @@ import java.util.Optional;
 
 import org.joml.Vector3i;
 
+import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.world.item.checkup.PrenatalCheckups;
 import dev.dixmk.minepreggo.world.item.checkup.PrenatalCheckups.PrenatalCheckup;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -27,6 +30,7 @@ public abstract class AbstractPrenatalCheckUpMenu
 	
 	private static final int SIZE = 6;
 	
+	protected PregnancyPhase motherPregnancyPhase = PregnancyPhase.P0;
 	public final Level level;
 	public final Player player;
 	protected Optional<T> target;
@@ -36,7 +40,7 @@ public abstract class AbstractPrenatalCheckUpMenu
 	protected int emeraldForUltrasoundScan = 0;
 	protected int emeraldForPaternityTest = 0;
 	protected boolean valid = false; 
-    private PrenatalCheckups checkUps;
+    private PrenatalCheckups checkUps = null;
     
     
     private final SimpleContainer container = new SimpleContainer(SIZE); // 0-2: input, 3-5: output
@@ -272,8 +276,13 @@ public abstract class AbstractPrenatalCheckUpMenu
 	        }
 
 	        if (!input.isEmpty() && checkUps.get(prenatalCheckup).canTrade(input)) {
-	            // Only generate output if not already present
-	            if (currentOutput.isEmpty()) {
+	        	if (motherPregnancyPhase.compareTo(prenatalCheckup.minRequiredPhase) <= -1) {
+	        		MessageHelper.sendTo(MessageHelper.asServerPlayer(player), Component.translatable("chat.minepreggo.prenantal_checkup.message.warning", prenatalCheckup.minRequiredPhase.toString()));       		
+	        		return;
+	        	}
+	        	
+	        	// Only generate output if not already present        	
+	        	if (currentOutput.isEmpty()) {
 	                container.setItem(outputSlotIndex, checkUps.get(prenatalCheckup).createOutput());
 	            }
 	        } else {

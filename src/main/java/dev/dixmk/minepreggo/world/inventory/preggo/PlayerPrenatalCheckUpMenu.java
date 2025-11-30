@@ -15,6 +15,7 @@ import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
 import dev.dixmk.minepreggo.world.item.checkup.PrenatalCheckups;
 import dev.dixmk.minepreggo.world.item.checkup.PrenatalCheckups.PrenatalCheckup;
 import dev.dixmk.minepreggo.world.item.checkup.PrenatalCheckups.PrenatalCheckupData;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import dev.dixmk.minepreggo.world.pregnancy.PrenatalCheckupCostHolder.PrenatalCheckupCost;
 import io.netty.buffer.Unpooled;
@@ -36,10 +37,12 @@ import net.minecraftforge.network.NetworkHooks;
 
 public abstract class PlayerPrenatalCheckUpMenu<T extends Mob> extends AbstractPrenatalCheckUpMenu<Player, T> {
 	
+	protected PregnancyPhase motherPregnancyPhase = PregnancyPhase.P0;
+	
 	protected PlayerPrenatalCheckUpMenu(MenuType<?> menu, int id, Inventory inv, FriendlyByteBuf buffer) {
 		super(menu, id, inv, buffer);
 	}	
-
+	
 	@Override
 	protected void readBuffer(FriendlyByteBuf buffer) {
 		Vector3i p = null;
@@ -135,10 +138,17 @@ public abstract class PlayerPrenatalCheckUpMenu<T extends Mob> extends AbstractP
 			}
 					
 			this.target = Optional.ofNullable(t);
-			this.source = Optional.ofNullable(s);
-				
+			this.source = Optional.ofNullable(s);			
 			this.valid = this.source.isPresent() && this.target.isPresent();		
 			
+			this.source.ifPresent(p -> 
+				p.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
+					cap.getFemaleData().ifPresent(femaleData -> 
+						this.motherPregnancyPhase =	femaleData.getPregnancySystem().getCurrentPregnancyStage()
+					)
+				)
+			);
+					
 			if (!valid) {
 				MinepreggoMod.LOGGER.error("Target={} or Source={} was null",
 						this.source.isPresent(), this.target.isPresent());
@@ -187,7 +197,6 @@ public abstract class PlayerPrenatalCheckUpMenu<T extends Mob> extends AbstractP
 				buf.writeInt(costs.getCost(PrenatalCheckup.PATERNITY_TEST));
 			});	  				
 		}
-
 	}
 	
 	public static class IllagerMenu extends PlayerPrenatalCheckUpMenu<ScientificIllager> {

@@ -58,6 +58,7 @@ public class PreggoMobPrenatalCheckUpMenu extends AbstractPrenatalCheckUpMenu<Pr
 				s = preggoMob;		
 				if (preggoMob instanceof IPregnancySystemHandler pregSystem) {
 					ps = pregSystem;
+					this.motherPregnancyPhase = pregSystem.getCurrentPregnancyStage();
 				}	
 			}	
 				
@@ -76,6 +77,7 @@ public class PreggoMobPrenatalCheckUpMenu extends AbstractPrenatalCheckUpMenu<Pr
 		this.pregnancySystem = Optional.ofNullable(ps);
 		
 		this.valid = this.source.isPresent() && this.pregnancySystem.isPresent() && this.target.isPresent();	
+				
 		
 		if (!valid) {
 			MinepreggoMod.LOGGER.error("Target={} or Source={} or PregnancySystem={} was null",

@@ -100,7 +100,7 @@ public class PreggoMobHelper {
 		target.setSavage(source.isSavage());
 	}
 	
-	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler & IPregnancyEffectsHandler> void copyDataToAdvanceToNextPregnancyPhase(@NonNull E source, @NonNull E target) {
+	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler & IPregnancyEffectsHandler> void transferPregnancyData(@NonNull E source, @NonNull E target) {
 		copyTamableData(source, target);
 		transferInventary(source, target);
 		transferAttackTarget(source, target);
@@ -127,8 +127,6 @@ public class PreggoMobHelper {
 		target.setHorny(source.getHorny());
 		target.setHornyTimer(source.getHornyTimer());
 	}
-	
-	
 	
 	public static boolean hasValidTarget(Mob entity) {
 	    LivingEntity target = entity.getTarget();
@@ -263,7 +261,7 @@ public class PreggoMobHelper {
 		final boolean result = preggoMob.isPregnant() && preggoMob.getPrePregnancyData().isPresent();
 		
 		if (!result) {
-			MinepreggoMod.LOGGER.debug("CANNOT INIT PREGNANCY: class={}, isPregnant={}, hasPrePregnancyData={}",
+			MinepreggoMod.LOGGER.warn("CANNOT INIT PREGNANCY: class={}, isPregnant={}, hasPrePregnancyData={}",
 					preggoMob.getClass().getSimpleName(), preggoMob.isPregnant(), preggoMob.getPrePregnancyData().isPresent());
 			return result;
 		}
@@ -272,21 +270,18 @@ public class PreggoMobHelper {
 			final var numOfBabies = prePregnancyData.fertilizedEggs();
 			final PregnancyPhase lastPregnancyStage = IBreedable.calculateMaxPregnancyPhaseByTotalNumOfBabies(numOfBabies);
 			final int totalDays = MinepreggoModConfig.getTotalPregnancyDays();
-			final var map = new MapPregnancyPhase(totalDays, lastPregnancyStage);
-			
-			preggoMob.resetDaysPassed();
-			preggoMob.setLastPregnancyStage(lastPregnancyStage);	
-			preggoMob.setDaysByStage(map);
-			preggoMob.setPregnancyHealth(PregnancySystemHelper.MAX_PREGNANCY_HEALTH);	
-			
 			final var mother = ImmutableTriple.of(preggoMob.getUUID(), preggoMob.getTypeOfSpecies(), preggoMob.getTypeOfCreature());
 			final var father = ImmutableTriple.of(Optional.ofNullable(prePregnancyData.fatherId()), prePregnancyData.typeOfSpeciesOfFather(), prePregnancyData.typeOfCreatureOfFather());
-			
+			final var map = new MapPregnancyPhase(totalDays, lastPregnancyStage);
 			final var womb = Womb.create(mother, father, preggoMob.getRandom(), numOfBabies);
-			
-			preggoMob.setBabiesInsideWomb(womb);
 
+			preggoMob.setLastPregnancyStage(lastPregnancyStage);	
+			preggoMob.setDaysByStage(map);	
+			preggoMob.setPregnancyHealth(PregnancySystemHelper.MAX_PREGNANCY_HEALTH);		
+			preggoMob.setBabiesInsideWomb(womb);
 			preggoMob.setDaysToGiveBirth(PregnancySystemHelper.calculateDaysToGiveBirth(preggoMob));	
+			
+			preggoMob.resetDaysPassed();
 			
 			MinepreggoMod.LOGGER.debug("INIT PREGNANCY: class={}, lastPregnancyStage={}, totalDays={}, daysByStage={}, womb={}",
 					preggoMob.getClass().getSimpleName(), lastPregnancyStage, totalDays, map, womb);
@@ -302,17 +297,18 @@ public class PreggoMobHelper {
 	}
 	
 	public static<E extends PreggoMob & ITamablePreggoMob & IFemaleEntity> boolean initPrePregnancy(@NonNull E preggoMob, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father, @Nonnegative int fertilizedEggs) {	
-		var result = preggoMob.tryImpregnate(fertilizedEggs, father);
-		if (result) {
-			
-		}		
-		return result;
+		return preggoMob.tryImpregnate(fertilizedEggs, father);
 	}
 	
 	public static<E extends PreggoMob & ITamablePreggoMob & IFemaleEntity & IPregnancySystemHandler> void initPregnancyByPotion(@NonNull E preggoMob, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father, @Nonnegative int amplifier) {	
 		final int numOfBabies = IBreedable.calculateNumOfBabiesByPotion(amplifier);	
-		initPrePregnancy(preggoMob, father, numOfBabies);	
-		initPregnancy(preggoMob);
+		final var r1 = initPrePregnancy(preggoMob, father, numOfBabies);	
+		final var r2 = initPregnancy(preggoMob);
+		
+		if (!r1 || !r2) {
+			MinepreggoMod.LOGGER.warn("CANNOT INIT PREGNANCY BY POTION: class={}, fatherId={}, speciesOfFather={}, creatureOfFather={}, amplifier={}, numOfBabies={}, initPrePregnancyResult={}, initPregnancyResult={}",
+					preggoMob.getClass().getSimpleName(), father.getLeft().orElse(null), father.getMiddle(), father.getRight(), amplifier, numOfBabies, r1, r2);
+		}	
 	}
 	
 	public static<E extends PreggoMob & ITamablePreggoMob & IFemaleEntity> boolean initPregnancyBySex(@NonNull E preggoMob, @NonNull ServerPlayer serverPlayer) {	

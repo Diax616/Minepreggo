@@ -48,7 +48,7 @@
 	
 	
 	
-	"entity.minepreggo.monster_zombie_girl_p0": "Monster Zombie Girl (P0)",
+	"entity.minepreggo.monster_zombie_girl_p0": "Monster Zombie Girl",
 	"entity.minepreggo.monster_zombie_girl_p3": "Monster Zombie Girl (P3)",
 	"entity.minepreggo.monster_zombie_girl_p5": "Monster Zombie Girl (P5)",
 	"entity.minepreggo.monster_zombie_girl_p7": "Monster Zombie Girl (P7)",
@@ -62,7 +62,7 @@
 	"entity.minepreggo.tamable_zombie_girl_p6": "Zombie Girl (P6)",
 	"entity.minepreggo.tamable_zombie_girl_p7": "Zombie Girl (P7)",
 	"entity.minepreggo.tamable_zombie_girl_p8": "Zombie Girl (P8)",
-	"entity.minepreggo.monster_creeper_girl_p0": "Monster Creeper Girl (P0)",
+	"entity.minepreggo.monster_creeper_girl_p0": "Monster Creeper Girl",
 	"entity.minepreggo.monster_creeper_girl_p3": "Monster Creeper Girl (P3)",
 	"entity.minepreggo.monster_creeper_girl_p5": "Monster Creeper Girl (P5)",
 	"entity.minepreggo.monster_creeper_girl_p7": "Monster Creeper Girl (P7)",
@@ -77,7 +77,7 @@
 	"entity.minepreggo.tamable_creeper_girl_p7": "Creeper Girl (P7)",
 	"entity.minepreggo.tamable_creeper_girl_p8": "Creeper Girl (P8)",
 	
-	"entity.minepreggo.monster_ender_girl_p0": "Monster Ender Girl (P0)",
+	"entity.minepreggo.monster_ender_girl_p0": "Monster Ender Girl",
 	"entity.minepreggo.monster_quadruped_creeper_girl_p0": "Monster Quadruped Creeper Girl (P0)",
 	
 	"entity.minepreggo.scientific_illager": "Scientific Illager",
@@ -86,7 +86,7 @@
 	"entity.minepreggo.ill_creeper_girl": "Ill Creeper Girl",
 	"entity.minepreggo.ill_zombie_girl": "Ill Zombie Girl",
 	
-	"item.minepreggo.monster_zombie_girl_p0_spawn_egg": "Monster Zombie Girl (P0) Spawn Egg",
+	"item.minepreggo.monster_zombie_girl_p0_spawn_egg": "Monster Zombie Girl Spawn Egg",
 	"item.minepreggo.monster_zombie_girl_p3_spawn_egg": "Monster Zombie Girl (P3) Spawn Egg",
 	"item.minepreggo.monster_zombie_girl_p5_spawn_egg": "Monster Zombie Girl (P5) Spawn Egg",
 	"item.minepreggo.monster_zombie_girl_p7_spawn_egg": "Monster Zombie Girl (P7) Spawn Egg",
@@ -100,7 +100,7 @@
 	"item.minepreggo.tamable_zombie_girl_p6_spawn_egg": "Zombie Girl (P6) Spawn Egg",
 	"item.minepreggo.tamable_zombie_girl_p7_spawn_egg": "Zombie Girl (P7) Spawn Egg",
 	"item.minepreggo.tamable_zombie_girl_p8_spawn_egg": "Zombie Girl (P8) Spawn Egg",
-	"item.minepreggo.monster_creeper_girl_p0_spawn_egg": "Monster Creeper Girl (P0) Spawn Egg",
+	"item.minepreggo.monster_creeper_girl_p0_spawn_egg": "Monster Creeper Girl Spawn Egg",
 	"item.minepreggo.monster_creeper_girl_p3_spawn_egg": "Monster Creeper Girl (P3) Spawn Egg",
 	"item.minepreggo.monster_creeper_girl_p5_spawn_egg": "Monster Creeper Girl (P5) Spawn Egg",
 	"item.minepreggo.monster_creeper_girl_p7_spawn_egg": "Monster Creeper Girl (P7) Spawn Egg",
@@ -116,8 +116,8 @@
 	"item.minepreggo.tamable_creeper_girl_p8_spawn_egg": "Creeper Girl (P8) Spawn Egg",
 
 	"item.minepreggo.scientific_illager_spawn_egg": "Scientific Illager Spawn Egg",
-	"item.minepreggo.monster_quadruped_creeper_girl_p0_spawn_egg": "Monster Quadruped Creeper Girl (P0) Spawn Egg",
-	"item.minepreggo.monster_ender_girl_p0_spawn_egg": "Monster Ender Girl (P0) Spawn Egg",
+	"item.minepreggo.monster_quadruped_creeper_girl_p0_spawn_egg": "Monster Quadruped Creeper Girl Spawn Egg",
+	"item.minepreggo.monster_ender_girl_p0_spawn_egg": "Monster Ender Girl Spawn Egg",
 	
 	
 	"block.minepreggo.medical_table": "Medical Table",
@@ -333,48 +333,60 @@
 	"subtitles.pregnancy_pain2": "pregnancy pain",
 	"subtitles.kicking2": "kicking belly",
 	"subtitles.kicking1": "kicking belly",
+			
+	"chat.minepreggo.preggo_mob.armor.message.chestplate_does_not_fit.boobs": "%s's boobs don't fit in this armor!",
 	
+	"chat.minepreggo.preggo_mob.armor.message.chestplate_does_not_fit.p1": "%s's slightly swollen belly doesn't fit in this armor!",
+	"chat.minepreggo.preggo_mob.armor.message.chestplate_does_not_fit.p2": "%s's slightly swollen belly doesn't fit in this armor!",
+	"chat.minepreggo.preggo_mob.armor.message.chestplate_does_not_fit.p3": "%s's swollen belly couldn't fit in this armor...",
+	"chat.minepreggo.preggo_mob.armor.message.chestplate_does_not_fit.p4": "%s's belly is too big to wear this armor...",
+	"chat.minepreggo.preggo_mob.armor.message.chestplate_does_not_fit.p5": "%s's belly is too huge to wear this armor...",
+	"chat.minepreggo.preggo_mob.armor.message.chestplate_does_not_fit.p6": "%s's belly is too huge to wear this armor...",
+	"chat.minepreggo.preggo_mob.armor.message.chestplate_does_not_fit.p7": "%s's belly is too heavy to wear this armor...",
+	"chat.minepreggo.preggo_mob.armor.message.chestplate_does_not_fit.p8": "%s's belly is out of bounds...",
 	
-	
-	
-	"chat.minepreggo.preggo_mob.pregnancy.message.miscarriage_warning": "%s feels pain below her pregnant belly, something isn't right...",
-	"chat.minepreggo.preggo_mob.pregnancy.message.post_partum": "%s just gave birth your babies, congratulation %s!",
-	"chat.minepreggo.preggo_mob.pregnancy.message.post_miscarriage": "%s just lost the babies...",
-	
-	"chat.minepreggo.preggo_mob.armor.message.chestplate_p0_does_not_fit": "%s's boobs don't fit in this armor!",
-	"chat.minepreggo.preggo_mob.armor.message.chestplate_p1_does_not_fit": "%s's slightly swollen belly doesn't fit in this armor!",
-	"chat.minepreggo.preggo_mob.armor.message.chestplate_p2_does_not_fit": "%s's swollen belly couldn't fit in this armor...",
-	"chat.minepreggo.preggo_mob.armor.message.chestplate_p3_does_not_fit": "%s's belly is too big to wear this armor...",
-	"chat.minepreggo.preggo_mob.armor.message.chestplate_p4_does_not_fit": "%s's belly is too huge to wear this armor...",
-	"chat.minepreggo.preggo_mob.armor.message.chestplate_p5_does_not_fit": "%s's belly is too huge to wear this armor...",
-	"chat.minepreggo.preggo_mob.armor.message.chestplate_p6_does_not_fit": "%s's belly is too heavy to wear this armor...",
-	"chat.minepreggo.preggo_mob.armor.message.chestplate_p7_does_not_fit": "%s's belly is out of bounds...",
-	"chat.minepreggo.preggo_mob.armor.message.leggings_p1_does_not_fit": "%s's hips are too big to wear this armor...",
+	"chat.minepreggo.preggo_mob.armor.message.leggings_does_not_fit.p3_to_p8": "%s's hips are too big to wear this armor...",
 	"chat.minepreggo.preggo_mob.armor.message.lactating": "%s's lactating boobs don't fit in this armor",
 	
-	"chat.minepreggo.player.armor.message.chestplate_p0_does_not_fit": "Your boobs don't fit in this armor!",
-	"chat.minepreggo.player.armor.message.chestplate_p1_does_not_fit": "Your slightly swollen belly doesn't fit in this armor!",
-	"chat.minepreggo.player.armor.message.chestplate_p2_does_not_fit": "Your swollen belly can't fit in this armor...",
-	"chat.minepreggo.player.armor.message.chestplate_p3_does_not_fit": "Your belly is too big to wear this armor!",
-	"chat.minepreggo.player.armor.message.chestplate_p4_does_not_fit": "A belly that huge couldn't fit this armor!",
-	"chat.minepreggo.player.armor.message.chestplate_p5_does_not_fit": "Do you wanna kill your babies?",
-	"chat.minepreggo.player.armor.message.chestplate_p6_does_not_fit": "A belly that heavy couldn't fit this armor!",
-	"chat.minepreggo.player.armor.message.chestplate_p7_does_not_fit": "Do you really think this armor could fit this belly?",
-	"chat.minepreggo.player.armor.message.leggings_p1_does_not_fit": "Your butt and hips are too big to fit this armor",
+	"chat.minepreggo.preggo_mob.birth.message.pre": "%s's babies wanna come out, she can't stand up!",
+	"chat.minepreggo.preggo_mob.birth.message.init": "%s's water just broke, her babies are comming!",
+	"chat.minepreggo.preggo_mob.birth.message.post": "%s just gave birth your babies, congratulation %s!",
+	"chat.minepreggo.preggo_mob.birth.message.warning": "%s's babies wanna come out, she can't stand up!",
+	
+	"chat.minepreggo.preggo_mob.miscarriage.message.post": "%s just lost the babies...",
+	"chat.minepreggo.preggo_mob.miscarriage.message.init": "%s feels much pain below her pregnant belly, it's too late!",
+	"chat.minepreggo.preggo_mob.miscarriage.message.warning": "%s feels pain below her pregnant belly, something isn't right...",
+	
+	
+	"chat.minepreggo.player.armor.message.chestplate_does_not_fit.boobs": "Your boobs don't fit in this armor!",
+	
+	"chat.minepreggo.player.armor.message.chestplate_does_not_fit.p1": "Your slightly swollen belly doesn't fit in this armor!",
+	"chat.minepreggo.player.armor.message.chestplate_does_not_fit.p2": "Your slightly swollen belly doesn't fit in this armor!",
+	"chat.minepreggo.player.armor.message.chestplate_does_not_fit.p3": "Your swollen belly can't fit in this armor...",
+	"chat.minepreggo.player.armor.message.chestplate_does_not_fit.p4": "Your belly is too big to wear this armor!",
+	"chat.minepreggo.player.armor.message.chestplate_does_not_fit.p5": "A belly that huge couldn't fit this armor!",
+	"chat.minepreggo.player.armor.message.chestplate_does_not_fit.p6": "Do you wanna kill your babies?",
+	"chat.minepreggo.player.armor.message.chestplate_does_not_fit.p7": "A belly that heavy couldn't fit this armor!",
+	"chat.minepreggo.player.armor.message.chestplate_does_not_fit.p8": "Do you really think this armor could fit this belly?",
+	
+	"chat.minepreggo.player.armor.message.leggings_does_not_fit.p3_to_p8": "Your butt and hips are too big to fit this armor",
 	"chat.minepreggo.player.armor.message.lactating": "Your lactating boobs don't fit in this armor",
 
-	"chat.minepreggo.player.birth.message.labor": "Your babies wanna come out, You can't stand up!",
-	"chat.minepreggo.player.birth.message.water_breaking": "Your water just broke, the babies are comming!",
-	"chat.minepreggo.player.birth.message.successful_birth": "Congratulations, you gave birth to %s babies!",
+	"chat.minepreggo.player.birth.message.pre": "Your babies wanna come out now, You can't move!",
+	"chat.minepreggo.player.birth.message.breaking": "Your water just broke, the babies are comming!",
+	"chat.minepreggo.player.birth.message.start": "Your water just broke, the babies are comming!",
+	"chat.minepreggo.player.birth.message.post": "Congratulations, you gave birth to %s babies!",
+	"chat.minepreggo.player.birth.message.warning": "Congratulations, you gave birth to %s babies!",
 
-	"chat.minepreggo.player.miscarriage.message.lost": "You just lost your babies...",
+	"chat.minepreggo.player.miscarriage.message.post": "You just lost your babies...",
+	"chat.minepreggo.player.miscarriage.message.init": "You feel much pain below her pregnant belly, it's too late!",
+	"chat.minepreggo.player.miscarriage.message.warning": "You feel pain below her pregnant belly, something isn't right...",
 
 	
 	"chat.minepreggo.scientific_illager.no_pregnant_entities": "There are no pregnant entities to checkup",
 
-	
-	
-	
+	"chat.minepreggo.prenantal_checkup.message.warning": "It is necessary to be at least in the %s stage of pregnancy to perform this prenatal check-up",
+
 	"book.minepreggo.prenatal_checkup.regular.template.title": "Regular Prenatal Checkup Results",
 	"book.minepreggo.prenatal_checkup.regular.template.page.1.intro": "       Result\n  Regular Checkup\n\n",
 	

@@ -46,7 +46,7 @@ public class PreBirth extends AbstractPlayerPregnancyPain {
 			}
 			
 			entity.level().playSound(null, BlockPos.containing(entity.getX(), entity.getY(), entity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "contraction1")), SoundSource.PLAYERS, 1, 1);
-			MessageHelper.sendMessageToPlayer((Player) entity, Component.translatable("chat.minepreggo.player.birth.message.water_breaking"));	
+			MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) entity), Component.translatable("chat.minepreggo.player.birth.message.pre"));
 		}
 	}
 	

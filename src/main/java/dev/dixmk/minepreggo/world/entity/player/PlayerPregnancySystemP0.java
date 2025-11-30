@@ -107,7 +107,7 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 	protected void evaluatePregnancySystem() {
 		evaluatePregnancyTimer();
 		
-		if (canAdvanceNextPregnancyPhase()) {
+		if (canAdvanceNextPregnancyPhase() && !hasToGiveBirth()){
 			advanceToNextPregnancyPhase();
 		}	
 	}

@@ -13,6 +13,7 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -52,12 +53,12 @@ public abstract class AbstractQueadrupedCreeperGirlModel<E extends AbstractCreep
 		this.boobs = body.getChild("boobs");
 	}
 	
-	protected static void createBasicBodyLayer(PartDefinition partdefinition, float extraLeftArmRotationZ, float extraRightArmRotationZ) {	
-		partdefinition.addOrReplaceChild("head", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 3.0F, 0.0F));
-		partdefinition.addOrReplaceChild("hat", CubeListBuilder.create().texOffs(32, 0).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.25F)), PartPose.offset(0.0F, 3.0F, 0.0F));
-		partdefinition.addOrReplaceChild("body", CubeListBuilder.create().texOffs(16, 16).addBox(-4.0F, 0.0F, -2.0F, 8.0F, 4.0F, 4.0F, new CubeDeformation(0.0F))
-		.texOffs(19, 18).addBox(-3.5F, 4.0F, -1.5F, 7.0F, 4.0F, 3.0F, new CubeDeformation(0.0F))
-		.texOffs(16, 24).addBox(-4.0F, 7.0F, -2.0F, 8.0F, 3.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 3.0F, 0.0F));	
+	protected static void createBasicBodyLayer(PartDefinition partdefinition) {	
+		partdefinition.addOrReplaceChild("head", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -7.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 3.0F, 0.0F));
+		partdefinition.addOrReplaceChild("hat", CubeListBuilder.create().texOffs(32, 0).addBox(-4.0F, -7.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.25F)), PartPose.offset(0.0F, 3.0F, 0.0F));
+		partdefinition.addOrReplaceChild("body", CubeListBuilder.create().texOffs(16, 16).addBox(-4.0F, 1.0F, -2.0F, 8.0F, 4.0F, 4.0F, new CubeDeformation(0.0F))
+		.texOffs(18, 21).addBox(-3.5F, 5.0F, -1.5F, 7.0F, 3.0F, 3.0F, new CubeDeformation(0.0F))
+		.texOffs(16, 25).addBox(-4.0F, 7.0F, -2.0F, 8.0F, 3.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 3.0F, 0.0F));
 		PartDefinition rightFrontLeg = partdefinition.addOrReplaceChild("right_front_leg", CubeListBuilder.create().texOffs(1, 18).addBox(-1.9F, 0.0F, -2.0F, 4.0F, 11.0F, 3.0F, new CubeDeformation(0.0F))
 		.texOffs(18, 50).addBox(-1.9F, 0.3686F, 0.2378F, 4.0F, 2.0F, 2.0F, new CubeDeformation(-0.01F)), PartPose.offset(-3.0F, 13.0F, -3.0F));
 		rightFrontLeg.addOrReplaceChild("extraCube2_r1", CubeListBuilder.create().texOffs(18, 50).addBox(-2.5F, -1.0F, -1.0F, 4.0F, 2.0F, 2.0F, new CubeDeformation(-0.02F)), PartPose.offsetAndRotation(0.6F, 1.1686F, 1.0378F, 1.405F, 0.0F, 0.0F));
@@ -79,14 +80,14 @@ public abstract class AbstractQueadrupedCreeperGirlModel<E extends AbstractCreep
 	public static LayerDefinition createP0BodyLayer() {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
-		createBasicBodyLayer(partdefinition, 0, 0);		
+		createBasicBodyLayer(partdefinition);		
 		PartDefinition body = partdefinition.getChild("body");
 		PartDefinition boobs = body.addOrReplaceChild("boobs", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, -0.2F, -2.0F, -0.0262F, 0.0F, 0.0F));
 		PartDefinition rightBoob = boobs.addOrReplaceChild("right_boob", CubeListBuilder.create(), PartPose.offset(-2.25F, 0.0F, 0.0F));
-		rightBoob.addOrReplaceChild("Boob_1_r1", CubeListBuilder.create().texOffs(0, 64).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.15F)), PartPose.offsetAndRotation(0.2664F, 2.7279F, -1.0635F, 0.3491F, 0.1309F, 0.0436F));
+		rightBoob.addOrReplaceChild("Boob_1_r1", CubeListBuilder.create().texOffs(0, 64).addBox(-1.5F, -0.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.15F)), PartPose.offsetAndRotation(0.2664F, 2.7279F, -1.0635F, 0.3491F, 0.1309F, 0.0436F));
 		PartDefinition leftBoob = boobs.addOrReplaceChild("left_boob", CubeListBuilder.create(), PartPose.offset(2.25F, 0.0F, 0.0F));
-		leftBoob.addOrReplaceChild("Boob_2_r1", CubeListBuilder.create().texOffs(0, 64).mirror().addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.15F)).mirror(false), PartPose.offsetAndRotation(-0.1674F, 2.7235F, -1.0505F, 0.3491F, -0.1309F, -0.0436F));
-		body.addOrReplaceChild("belly", CubeListBuilder.create(), PartPose.offset(0.0F, 9.0F, 0.0F));
+		leftBoob.addOrReplaceChild("Boob_2_r1", CubeListBuilder.create().texOffs(0, 64).mirror().addBox(-1.5F, -0.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.15F)).mirror(false), PartPose.offsetAndRotation(-0.1674F, 2.7235F, -1.0505F, 0.3491F, -0.1309F, -0.0436F));
+		partdefinition.addOrReplaceChild("belly", CubeListBuilder.create(), PartPose.offset(0.0F, 9.0F, 0.0F));
 		return LayerDefinition.create(meshdefinition, 64, 96);
 	}
 	
@@ -101,8 +102,8 @@ public abstract class AbstractQueadrupedCreeperGirlModel<E extends AbstractCreep
     }
     
 	protected void moveHead(E entity, float netHeadYaw, float headPitch) {
-		this.head.yRot = netHeadYaw * ((float)Math.PI / 180F);
-		this.head.xRot = headPitch * ((float)Math.PI / 180F);
+		this.head.yRot = netHeadYaw * (Mth.PI / 180F);
+		this.head.xRot = headPitch * (Mth.PI / 180F);
 		this.hat.copyFrom(this.head);
 	}
 }

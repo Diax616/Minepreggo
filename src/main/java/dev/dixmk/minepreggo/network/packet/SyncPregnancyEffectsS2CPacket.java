@@ -16,7 +16,7 @@ import net.minecraftforge.network.NetworkEvent;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public record SyncPregnancyEffectsS2CPacket(UUID targetId, PlayerPregnancyEffectsImpl.ClientData data) {		
-	
+
 	public static SyncPregnancyEffectsS2CPacket decode(FriendlyByteBuf buffer) {		
 		return new SyncPregnancyEffectsS2CPacket(buffer.readUUID(), PlayerPregnancyEffectsImpl.ClientData.decode(buffer));
 	}
@@ -34,7 +34,7 @@ public record SyncPregnancyEffectsS2CPacket(UUID targetId, PlayerPregnancyEffect
 				if (player.getUUID().equals(message.targetId)) {					
 					player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
 						cap.getFemaleData().ifPresent(femaleData -> {
-							var pregnancyEffects = femaleData.getPregnancyEffects();
+							var pregnancyEffects = femaleData.getPregnancyEffects();											
 							pregnancyEffects.setCraving(message.data.craving());
 							pregnancyEffects.setMilking(message.data.milking());
 							pregnancyEffects.setBellyRubs(message.data.bellyRubs());

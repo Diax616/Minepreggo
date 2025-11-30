@@ -13,8 +13,7 @@ import net.minecraft.world.level.Level;
 
 public abstract class AbstractTamablePregnantHumanoidCreeperGirl<S extends PregnantPreggoMobSystemP0<?>, P extends PreggoMobPregnancySystemP0<?>> extends AbstractTamablePregnantCreeperGirl<S, P> {
 
-	protected AbstractTamablePregnantHumanoidCreeperGirl(EntityType<? extends AbstractTamableCreeperGirl<?>> p_21803_,
-			Level p_21804_, PregnancyPhase pStage) {
+	protected AbstractTamablePregnantHumanoidCreeperGirl(EntityType<? extends AbstractTamableCreeperGirl<?>> p_21803_, Level p_21804_, PregnancyPhase pStage) {
 		super(p_21803_, p_21804_, Creature.HUMANOID, pStage);
 	}
 	

@@ -3,6 +3,7 @@ package dev.dixmk.minepreggo.world.item.checkup;
 import java.util.EnumMap;
 import java.util.function.Supplier;
 
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
@@ -46,14 +47,16 @@ public final class PrenatalCheckups {
     
     
 	public enum PrenatalCheckup {
-		REGULAR(20),
-		ULTRASOUND_SCAN(25),
-		PATERNITY_TEST(30);
+		REGULAR(20, PregnancyPhase.P1),
+		ULTRASOUND_SCAN(25, PregnancyPhase.P2),
+		PATERNITY_TEST(30, PregnancyPhase.P2);
 		
 		public final int defaultEmeraldCount;
+		public final PregnancyPhase minRequiredPhase;
 		
-		PrenatalCheckup(int defaultEmeraldCount) {
+		PrenatalCheckup(int defaultEmeraldCount, PregnancyPhase minRequiredPhase) {
 			this.defaultEmeraldCount = defaultEmeraldCount;
+			this.minRequiredPhase = minRequiredPhase;
 		}
 		
 		public static final String NBT_KEY = "DataPrenatalCheckup";

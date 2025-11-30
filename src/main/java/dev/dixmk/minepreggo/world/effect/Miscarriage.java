@@ -54,6 +54,8 @@ public class Miscarriage extends AbstractPlayerPregnancyPain {
 			}
 			
 			entity.level().playSound(null, BlockPos.containing(entity.getX(), entity.getY(), entity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "miscarriage")), SoundSource.PLAYERS, 1, 1);
+			
+			MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) entity), Component.translatable("chat.minepreggo.player.miscarriage.message.init"));
 		}	
 	}
 	
@@ -79,9 +81,9 @@ public class Miscarriage extends AbstractPlayerPregnancyPain {
 			
 			entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 2400, 0));	
 			entity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 2400, 0));
-			entity.addEffect(new MobEffectInstance(MobEffects.UNLUCK, 3600, 0));	
-		}	
+			entity.addEffect(new MobEffectInstance(MobEffects.UNLUCK, 7200, 0));
 			
-		MessageHelper.sendMessageToPlayer((Player) entity, Component.translatable("chat.minepreggo.player.miscarriage.message.lost"));	
+			MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) entity), Component.translatable("chat.minepreggo.player.miscarriage.message.post"));
+		}			
 	}
 }

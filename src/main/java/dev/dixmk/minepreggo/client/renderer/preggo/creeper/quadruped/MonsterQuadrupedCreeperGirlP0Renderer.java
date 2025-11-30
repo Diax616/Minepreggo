@@ -22,6 +22,6 @@ public class MonsterQuadrupedCreeperGirlP0Renderer extends AbstractMonsterQuadru
 	
 	@Override
 	public ResourceLocation getTextureLocation(MonsterQuadrupedCreeperGirlP0 p_115812_) {
-		return QUADRUPED_CREEPER_GIRL_P0_LOCATION;
+		return QUADRUPED_CREEPER_GIRL_LOCATION;
 	}
 }

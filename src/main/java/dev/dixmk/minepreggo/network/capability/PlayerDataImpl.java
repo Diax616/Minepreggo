@@ -133,33 +133,19 @@ public class PlayerDataImpl implements IPlayerData {
 		showMainMenu = nbt.getBoolean("DataShowMainMenu");
 		
 	    if (nbt.contains(Gender.NBT_KEY, Tag.TAG_STRING)) {
-	        try {
-	            setGender(Gender.valueOf(nbt.getString(Gender.NBT_KEY)));
-	        } catch (IllegalArgumentException e) {
-	        	e.printStackTrace();
-	            gender = Gender.UNKNOWN;
-	        }
-	    } 
-				
-        if (nbt.contains(Gender.NBT_KEY, Tag.TAG_STRING)) {
-            try {
-                Gender loadedGender = Gender.valueOf(nbt.getString(Gender.NBT_KEY));
-                setGender(loadedGender);
-                
-                if (loadedGender == Gender.FEMALE) {
-                    femalePlayerData.ifPresent(data -> 
-                        data.deserializeNBT(nbt)
-                    );
-                } else if (loadedGender == Gender.MALE) {
-                    malePlayerData.ifPresent(data -> 
-                        data.deserializeNBT(nbt)
-                    );
-                }
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-                gender = Gender.UNKNOWN;
+            Gender loadedGender = Gender.valueOf(nbt.getString(Gender.NBT_KEY));
+            setGender(loadedGender);
+            
+            if (loadedGender == Gender.FEMALE) {
+                femalePlayerData.ifPresent(data -> 
+                    data.deserializeNBT(nbt)
+                );
+            } else if (loadedGender == Gender.MALE) {
+                malePlayerData.ifPresent(data -> 
+                    data.deserializeNBT(nbt)
+                );
             }
-        }
+	    } 			
 	}
 	
 	public void sync(ServerPlayer serverPlayer) {

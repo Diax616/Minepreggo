@@ -28,10 +28,10 @@ public abstract class PreggoMobPregnancySystemP0
 	// It has to be executed on server side
 	protected void evaluatePregnancySystem() {	
 		this.evaluatePregnancyTimer();
-		if (canAdvanceNextPregnancyPhase()) {
+		if (canAdvanceNextPregnancyPhase() && !hasToGiveBirth()) {
 			advanceToNextPregnancyPhase();
 			pregnantEntity.discard();
-			MinepreggoMod.LOGGER.debug("Pregnancy phase advanced to P1 for entity {}", pregnantEntity.getSimpleName());
+			MinepreggoMod.LOGGER.debug("Pregnancy phase advanced from {} for entity {}",pregnantEntity.getCurrentPregnancyStage(), pregnantEntity.getSimpleName());
 			return;
 		}
 		

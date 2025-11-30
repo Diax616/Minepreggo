@@ -126,9 +126,9 @@ public class MapPregnancyPhase {
     @Override
     public String toString() {
 		StringBuilder sb = new StringBuilder();
-		daysByPregnancyPhase.forEach((key, value) -> {
-			sb.append(key.name()).append(": ").append(value).append(" days; ");
-		});
+		daysByPregnancyPhase.forEach((key, value) -> 
+			sb.append(key.name()).append(": ").append(value).append(" days; ")
+		);
 		return sb.toString();
 	}
     

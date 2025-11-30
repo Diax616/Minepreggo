@@ -13,7 +13,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class IllQuadrupedCreeperGirlRenderer extends AbstractQuadrupedCreeperGirlRenderer<IllQuadrupedCreeperGirl, IllQuadrupedCreeperGirlModel> {
 
-	protected static final ResourceLocation ILL_QUADRUPED_CREEPER_GIRL = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/ill_quadruped_creeper_girl_p0.png");
+	protected static final ResourceLocation ILL_QUADRUPED_CREEPER_GIRL = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/ill_quadruped_creeper_girl.png");
 	
 	public IllQuadrupedCreeperGirlRenderer(EntityRendererProvider.Context context) {
 		this(context, AbstractQueadrupedCreeperGirlModel.LAYER_LOCATION_P0, AbstractQueadrupedCreeperGirlModel.LAYER_ENERGY_ARMOR_P0_LOCATION);

@@ -36,6 +36,7 @@ public class PlayerPregnancySystemImpl implements IPlayerPregnancySystemHandler 
 	private int pregnancyPainTimer = 0;
 	private int numOfJumps = 0;
 	private int sprintingTimer = 0;
+	private int sneakingTimer = 0;
 	
 	private PregnancyPhase currentPregnancyPhase = PregnancyPhase.P0;
 	private PregnancyPhase lastPregnancyPhase = PregnancyPhase.P4;
@@ -43,8 +44,8 @@ public class PlayerPregnancySystemImpl implements IPlayerPregnancySystemHandler 
 	private Optional<PregnancyPain> currentPregnancyPain = Optional.empty();
 	private MapPregnancyPhase daysByPregnancyPhase = new MapPregnancyPhase(70, lastPregnancyPhase);
 	private Womb babiesInsideWomb = Womb.empty();
-
 	private byte pregnancySymptomsBitMask = (byte) 0;
+	
 	private Set<PregnancySymptom> cachePregnancySymptoms = null;
 	
 	@Override
@@ -216,14 +217,14 @@ public class PlayerPregnancySystemImpl implements IPlayerPregnancySystemHandler 
 	}	
 
 	@Override
-	public int getNumOfBabiesByType(Species babyType) {
+	public int getNumOfBabiesBySpecies(Species babyType) {
 		return (int) this.babiesInsideWomb.stream()
 				.filter(babyData -> babyData.typeOfSpecies == babyType)
 				.count();
 	}
 	
 	@Override
-	public Set<Species> getTypesOfBabies() {
+	public Set<Species> getBabiesBySpecies() {
 		return this.babiesInsideWomb.stream()
 				.map(baby -> baby.typeOfSpecies)
 				.collect(Collectors.toUnmodifiableSet());
@@ -276,6 +277,52 @@ public class PlayerPregnancySystemImpl implements IPlayerPregnancySystemHandler 
 	@Override
 	public void clearPregnancySymptoms() {
 		this.pregnancySymptomsBitMask = (byte) 0;
+	}
+	
+
+	@Override
+	public void incrementSprintingTimer() {
+		this.sprintingTimer++;
+	}
+
+	@Override
+	public void resetSprintingTimer() {
+		this.sprintingTimer = 0;
+	}
+
+	@Override
+	public int getSprintingTimer() {
+		return this.sprintingTimer;
+	}
+
+	@Override
+	public void incrementNumOfJumps() {
+		this.numOfJumps++;
+	}
+
+	@Override
+	public void resetNumOfJumps() {
+		this.numOfJumps = 0;
+	}
+
+	@Override
+	public int getNumOfJumps() {
+		return this.numOfJumps;
+	}
+
+	@Override
+	public int getSneakingTimer() {
+		return this.sneakingTimer;
+	}
+
+	@Override
+	public void resetSneakingTimer() {
+		this.sneakingTimer = 0;
+	}
+
+	@Override
+	public void incrementSneakingTimer() {
+		this.sneakingTimer++;
 	}
 	
 	public CompoundTag serializeNBT() {
@@ -348,27 +395,6 @@ public class PlayerPregnancySystemImpl implements IPlayerPregnancySystemHandler 
 	    }  
 	}
 
-
-	public void copyFrom(@NonNull PlayerPregnancySystemImpl newData) {		
-		// this is not a COPY, it is a transference
-		this.babiesInsideWomb = newData.babiesInsideWomb;
-		this.daysByPregnancyPhase = newData.daysByPregnancyPhase;
-		
-		this.currentPregnancyPain = Optional.ofNullable(newData.currentPregnancyPain.orElse(null));
-		this.currentPregnancyPhase = newData.currentPregnancyPhase;
-		
-		this.pregnancySymptomsBitMask = newData.pregnancySymptomsBitMask;
-		
-		this.lastPregnancyPhase = newData.lastPregnancyPhase;
-		this.daysPassed = newData.daysPassed;
-		this.daysToGiveBirth = newData.daysToGiveBirth;
-		this.numOfJumps = newData.numOfJumps;
-		this.pregnancyHealth = newData.pregnancyHealth;
-		this.pregnancyPainTimer = newData.pregnancyPainTimer;
-		this.pregnancyTimer = newData.pregnancyTimer;
-		this.sprintingTimer = newData.sprintingTimer;
-	}
-	
 	@NonNull
 	public ClientData createClientData() {
 		return new ClientData(
