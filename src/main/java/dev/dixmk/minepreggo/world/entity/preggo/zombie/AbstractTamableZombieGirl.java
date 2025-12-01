@@ -21,8 +21,9 @@ import dev.dixmk.minepreggo.world.entity.ai.goal.PreggoMobAIHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobBody;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobFace;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobState;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.inventory.preggo.zombie.ZombieGirlMenuHelper;
@@ -67,15 +68,17 @@ import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import net.minecraftforge.items.wrapper.EntityArmorInvWrapper;
 import net.minecraftforge.items.wrapper.EntityHandsInvWrapper;
 
-public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> extends AbstractZombieGirl implements ITamablePreggoMob, IFemaleEntity {
+public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> extends AbstractZombieGirl implements ITamablePreggoMob<FemaleEntityImpl>, IFemaleEntity {
 	protected static final EntityDataAccessor<Integer> DATA_HUNGRY = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.INT);
 	protected static final EntityDataAccessor<Boolean> DATA_SAVAGE = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Boolean> DATA_ANGRY = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Boolean> DATA_WAITING = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Boolean> DATA_PANIC = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
-	protected static final EntityDataAccessor<PreggoMobState> DATA_STATE = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, MinepreggoModEntityDataSerializers.STATE);
 	protected static final EntityDataAccessor<Boolean> DATA_BREAK_BLOCKS = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Boolean> DATA_PICKUP_ITEMS = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
+	
+	protected static final EntityDataAccessor<Optional<PreggoMobFace>> DATA_FACE = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, MinepreggoModEntityDataSerializers.OPTIONAL_PREGGO_MOB_FACE);
+	protected static final EntityDataAccessor<Optional<PreggoMobBody>> DATA_BODY = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, MinepreggoModEntityDataSerializers.OPTIONAL_PREGGO_MOB_BODY);
 	
 	protected final ItemStackHandler inventory = new ItemStackHandler(INVENTORY_SIZE);
 	protected final CombinedInvWrapper combined = new CombinedInvWrapper(inventory, new EntityHandsInvWrapper(this), new EntityArmorInvWrapper(this));
@@ -105,7 +108,8 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 		this.entityData.define(DATA_PANIC, false);
 		this.entityData.define(DATA_BREAK_BLOCKS, false);
 		this.entityData.define(DATA_PICKUP_ITEMS, this.canPickUpLoot());
-		this.entityData.define(DATA_STATE, PreggoMobState.IDLE);
+		this.entityData.define(DATA_FACE, Optional.empty());
+		this.entityData.define(DATA_BODY, Optional.empty());
 	}
 	
 	@Override
@@ -120,8 +124,15 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 		compound.putBoolean("DataPanic", this.entityData.get(DATA_PANIC));	
 		compound.putBoolean("DataBreakBlocks", this.entityData.get(DATA_BREAK_BLOCKS));
 		compound.putBoolean("DataPickUpItems", this.entityData.get(DATA_PICKUP_ITEMS));
-		compound.putInt("DataState", this.entityData.get(DATA_STATE).ordinal());
-		this.defaultFemaleEntityImpl.serializeNBT(compound);
+		final var face = getFaceState();
+		if (face != null) {
+			compound.putString(PreggoMobFace.NBT_KEY, face.name());
+		}
+		final var body = getBodyState();
+		if (body != null) {
+			compound.putString(PreggoMobBody.NBT_KEY, body.name());
+		}
+		compound.put("defaultFemaleEntityImpl", this.defaultFemaleEntityImpl.serializeNBT());
 	}
 	
 	@Override
@@ -138,8 +149,15 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 		this.entityData.set(DATA_PANIC, compound.getBoolean("DataPanic"));	
 		this.entityData.set(DATA_BREAK_BLOCKS, compound.getBoolean("DataBreakBlocks"));	
 		this.entityData.set(DATA_PICKUP_ITEMS, compound.getBoolean("DataPickUpItems"));
-		this.entityData.set(DATA_STATE, PreggoMobState.values()[compound.getInt("DataState")]);	
-		this.defaultFemaleEntityImpl.deserializeNBT(compound);
+		if (compound.contains(PreggoMobFace.NBT_KEY, Tag.TAG_STRING)) {
+			setFaceState(PreggoMobFace.valueOf(compound.getString(PreggoMobFace.NBT_KEY)));
+		}
+		if (compound.contains(PreggoMobBody.NBT_KEY, Tag.TAG_STRING)) {
+			setBodyState(PreggoMobBody.valueOf(compound.getString(PreggoMobBody.NBT_KEY)));
+		}
+		if (compound.contains("defaultFemaleEntityImpl", Tag.TAG_COMPOUND)) {
+			this.defaultFemaleEntityImpl.deserializeNBT(compound.getCompound("defaultFemaleEntityImpl"));
+		}
 	}
 
 	@Override
@@ -307,6 +325,11 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 	
 	// ITamablePreggomob START
 	@Override
+	public int getInventorySize() {
+		return INVENTORY_SIZE;
+	}
+	
+	@Override
 	public int getFullness() {
 	    return this.entityData.get(DATA_HUNGRY);
 	}
@@ -344,16 +367,6 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 	@Override
 	public void resetHungryTimer() {
 		this.hungryTimer = 0;	
-	}
-	
-	@Override
-	public PreggoMobState getState() {
-		return this.entityData.get(DATA_STATE);
-	}
-
-	@Override
-	public void setState(PreggoMobState state) {
-		this.entityData.set(DATA_STATE, state);
 	}
 	
 	@Override
@@ -427,6 +440,42 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 		this.entityData.set(DATA_BREAK_BLOCKS, value);
 	}
 
+
+	@Override
+	public @Nullable PreggoMobFace getFaceState() {
+		return this.entityData.get(DATA_FACE).orElse(null);
+	}
+
+	@Override
+	public void setFaceState(@Nullable PreggoMobFace state) {
+		this.entityData.set(DATA_FACE, Optional.ofNullable(state));
+	}
+
+	@Override
+	public void cleanFaceState() {
+		this.entityData.set(DATA_FACE, Optional.empty());
+	}
+
+	@Override
+	public @Nullable PreggoMobBody getBodyState() {
+		return this.entityData.get(DATA_BODY).orElse(null);
+	}
+
+	@Override
+	public void setBodyState(@Nullable PreggoMobBody state) {
+		this.entityData.set(DATA_BODY, Optional.ofNullable(state));	
+	}
+
+	@Override
+	public void cleanBodyState() {
+		this.entityData.set(DATA_BODY, Optional.empty());			
+	}
+	
+	@Override
+	public FemaleEntityImpl getGenderedData() {
+		return defaultFemaleEntityImpl;
+	}
+	
 	// ITamablePreggomob END
 	
 	
@@ -486,10 +535,15 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 	public @Nullable PostPregnancy getPostPregnancyPhase() {
 		return this.defaultFemaleEntityImpl.getPostPregnancyPhase();
 	}
-
+	
 	@Override
 	public boolean tryActivatePostPregnancyPhase(@NonNull PostPregnancy postPregnancy) {
 		return this.defaultFemaleEntityImpl.tryActivatePostPregnancyPhase(postPregnancy);
+	}
+	
+	@Override
+	public boolean tryRemovePostPregnancyPhase() {
+		return this.defaultFemaleEntityImpl.tryRemovePostPregnancyPhase();
 	}
 	
 	@Override

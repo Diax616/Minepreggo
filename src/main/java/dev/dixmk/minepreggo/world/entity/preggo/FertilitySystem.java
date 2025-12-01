@@ -8,7 +8,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 
-public abstract class FertilitySystem<E extends PreggoMob & ITamablePreggoMob & IFemaleEntity> {
+public abstract class FertilitySystem<E extends PreggoMob & ITamablePreggoMob<?> & IFemaleEntity> {
 
 	protected final RandomSource randomSource;	
 	protected final E preggoMob;

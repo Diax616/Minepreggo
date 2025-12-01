@@ -1,7 +1,6 @@
 package dev.dixmk.minepreggo.network.capability;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
+import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.network.packet.SyncPlayerDataS2CPacket;
 import dev.dixmk.minepreggo.world.pregnancy.Gender;
@@ -110,25 +109,23 @@ public class PlayerDataImpl implements IPlayerData {
 		this.cinematic = value;
 	}
     
-	@NonNull
-	public Tag serializeNBT() {
+	public CompoundTag serializeNBT() {
 		CompoundTag nbt = new CompoundTag();
 		nbt.putBoolean("DataCustomSkin", customSkin);
 		nbt.putBoolean("DataShowMainMenu", showMainMenu);			
 		nbt.putString(Gender.NBT_KEY, gender.name());	
 		
 		if (isFemale()) {			
-	        this.femalePlayerData.resolve().ifPresent(data -> data.serializeNBT(nbt));		
+	        this.femalePlayerData.resolve().ifPresent(data -> nbt.put("FemalePlayerImpl", data.serializeNBT()));		
 		}
 		else if (isMale()) {
-	        this.malePlayerData.resolve().ifPresent(data -> data.serializeNBT(nbt));
+	        this.malePlayerData.resolve().ifPresent(data -> nbt.put("MalePlayerImpl", data.serializeNBT()));
 		}		
 
 		return nbt;
 	}
 	
-	public void deserializeNBT(@NonNull Tag tag) {
-		CompoundTag nbt = (CompoundTag) tag;
+	public void deserializeNBT(CompoundTag nbt) {
 		customSkin = nbt.getBoolean("DataCustomSkin");
 		showMainMenu = nbt.getBoolean("DataShowMainMenu");
 		
@@ -137,15 +134,33 @@ public class PlayerDataImpl implements IPlayerData {
             setGender(loadedGender);
             
             if (loadedGender == Gender.FEMALE) {
-                femalePlayerData.ifPresent(data -> 
-                    data.deserializeNBT(nbt)
-                );
+                femalePlayerData.ifPresent(data -> {
+                	if (nbt.contains("FemalePlayerImpl", Tag.TAG_COMPOUND)) {
+                    	data.deserializeNBT(nbt.getCompound("FemalePlayerImpl"));
+                	}
+                	else {
+                		MinepreggoMod.LOGGER.error("FemalePlayerImpl is not present in nbt");
+                	}
+                });
             } else if (loadedGender == Gender.MALE) {
-                malePlayerData.ifPresent(data -> 
-                    data.deserializeNBT(nbt)
-                );
+            	malePlayerData.ifPresent(data -> {
+                	if (nbt.contains("MalePlayerImpl", Tag.TAG_COMPOUND)) {
+                    	data.deserializeNBT(nbt.getCompound("MalePlayerImpl"));
+                	}
+                	else {
+                		MinepreggoMod.LOGGER.error("MalePlayerImpl is not present in nbt");
+                	}
+            	});
             }
 	    } 			
+	}
+	
+	public void invalidate() {
+		customSkin = true;
+		showMainMenu = true; 
+		cinematic = false;
+		gender = Gender.UNKNOWN;
+		invalidateGenderData();
 	}
 	
 	public void sync(ServerPlayer serverPlayer) {

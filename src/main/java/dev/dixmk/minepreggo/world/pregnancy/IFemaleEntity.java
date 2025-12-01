@@ -31,8 +31,9 @@ public interface IFemaleEntity extends IBreedable {
     boolean hasNaturalPregnancy();
     
     @Nullable PostPregnancy getPostPregnancyPhase();
-
     boolean tryActivatePostPregnancyPhase(@NonNull PostPregnancy postPregnancy);
+    boolean tryRemovePostPregnancyPhase();
+    
     
     int getPostPregnancyTimer();
     void setPostPregnancyTimer(int ticks);

@@ -1,7 +1,5 @@
 package dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.creeper;
 
-import java.util.Optional;
-
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractMonsterPregnantCreeperGirlModel;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterPregnantHumanoidCreeperGirl;
 import net.minecraft.client.renderer.RenderType;
@@ -18,10 +16,10 @@ public class HumanoidMonsterPregnantCreeperGirlExpressionLayer
 	}
 	
 	@Override
-	public Optional<RenderType> renderType(E creeperGirl) {		
+	public RenderType renderType(E creeperGirl) {		
 		if (creeperGirl.hasPregnancyPain()) {
-			return Optional.of(HOSTIL_PAIN);
+			return HOSTIL_PAIN;
 		}	
-		return Optional.of(HOSTIL); 
+		return HOSTIL; 
 	}
 }

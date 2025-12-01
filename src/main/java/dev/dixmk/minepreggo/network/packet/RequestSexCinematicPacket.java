@@ -6,7 +6,7 @@ import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.server.ServerSexCinematicManager;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
-import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobState;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobFace;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -40,10 +40,10 @@ public record RequestSexCinematicPacket(int mobId) {
                 		      		
                         ServerSexCinematicManager.start(player);   
                                         
-                        tamedPreggoMob.setState(PreggoMobState.BLUSHED);
+                        tamedPreggoMob.setFaceState(PreggoMobFace.BLUSHED);
                         tamedPreggoMob.setCinematicOwner(player);
                         tamedPreggoMob.setCinematicEndTime(player.level().getGameTime() + 120);
-                               
+      
                         MinepreggoModPacketHandler.INSTANCE.send(
                             PacketDistributor.PLAYER.with(() -> player),
                             new SexCinematicControlS2CPacket(true, message.mobId)

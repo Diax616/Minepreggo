@@ -6,6 +6,7 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem.Result;
 import dev.dixmk.minepreggo.world.pregnancy.AbstractPregnancySystem;
+import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancyEffectsHandler;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
@@ -17,7 +18,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 
 public abstract class PreggoMobPregnancySystemP0
-	<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler & IPregnancyEffectsHandler> extends AbstractPregnancySystem<E> {
+	<E extends PreggoMob & ITamablePreggoMob<FemaleEntityImpl> & IPregnancySystemHandler & IPregnancyEffectsHandler> extends AbstractPregnancySystem<E> {
 
 	private int angryTicks = 0;
 	
@@ -225,5 +226,10 @@ public abstract class PreggoMobPregnancySystemP0
 	@Override
 	protected void initPostPartum() {
 		// This pregnancy phase does not support birth yet
+	}
+	
+	@Override
+	protected void startMiscarriage() {
+		// This pregnancy phase does not support birth yet	
 	}
 }

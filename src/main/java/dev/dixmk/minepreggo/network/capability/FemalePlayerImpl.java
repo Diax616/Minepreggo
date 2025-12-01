@@ -2,7 +2,6 @@ package dev.dixmk.minepreggo.network.capability;
 
 import java.util.Optional;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
@@ -18,8 +17,8 @@ import net.minecraftforge.network.PacketDistributor;
 
 public class FemalePlayerImpl extends FemaleEntityImpl {
 
-	private final PlayerPregnancySystemHolder pregnancySystemHolder = new PlayerPregnancySystemHolder();
-	private final PlayerPregnancyEffectsHolder pregnancyEffectsHolder = new PlayerPregnancyEffectsHolder();
+	private PlayerPregnancySystemHolder pregnancySystemHolder = new PlayerPregnancySystemHolder();
+	private PlayerPregnancyEffectsHolder pregnancyEffectsHolder = new PlayerPregnancyEffectsHolder();
 	
 	public boolean isPregnancySystemInitialized() {
 		return pregnancySystemHolder.isInitialized();
@@ -38,27 +37,31 @@ public class FemalePlayerImpl extends FemaleEntityImpl {
 	}
 	
 	@Override
-	public void serializeNBT(@NonNull Tag tag) {
-		super.serializeNBT(tag);
-		CompoundTag nbt = (CompoundTag) tag;	
+	public CompoundTag serializeNBT() {
+		CompoundTag nbt = super.serializeNBT();	
 		if (pregnancySystemHolder.isInitialized()) {
 			nbt.put("PlayerPregnancySystem", pregnancySystemHolder.serializeNBT());
 		}	
 		if (pregnancyEffectsHolder.isInitialized()) {
 			nbt.put("PlayerPregnancyEffects", pregnancyEffectsHolder.serializeNBT());
 		}
+		return nbt;
 	}
 	
 	@Override
-	public void deserializeNBT(@NonNull Tag tag) {
-		super.deserializeNBT(tag);
-		CompoundTag nbt = (CompoundTag) tag;		
+	public void deserializeNBT(CompoundTag nbt) {
+		super.deserializeNBT(nbt);		
 		if (nbt.contains("PlayerPregnancySystem", Tag.TAG_COMPOUND)) {
 			pregnancySystemHolder.deserializeNBT(nbt.getCompound("PlayerPregnancySystem"));
 		}	
 		if (nbt.contains("PlayerPregnancyEffects", Tag.TAG_COMPOUND)) {
 			pregnancyEffectsHolder.deserializeNBT(nbt.getCompound("PlayerPregnancyEffects"));
 		}
+	}
+	
+	public void resetPregnancy() {
+		pregnancySystemHolder = new PlayerPregnancySystemHolder();
+		pregnancyEffectsHolder = new PlayerPregnancyEffectsHolder();	
 	}
 	
 	public ClientData createClientData() {

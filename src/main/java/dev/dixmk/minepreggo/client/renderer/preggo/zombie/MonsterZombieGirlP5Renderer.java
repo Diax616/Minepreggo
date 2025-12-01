@@ -20,7 +20,7 @@ public class MonsterZombieGirlP5Renderer extends AbstractMonsterPregnantZombieGi
 	}
 	
 	@Override
-	public ResourceLocation getTextureLocation(MonsterZombieGirlP5 p_115812_) {
-		return ZOMBIE_GIRL_P5_LOCATION;
+	public ResourceLocation getTextureLocation(MonsterZombieGirlP5 entity) {
+		return ZOMBIE_GIRL_P5_LOCATION.getLeft(); 
 	}
 }

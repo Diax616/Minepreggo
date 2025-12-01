@@ -22,7 +22,7 @@ public class TamableCreeperGirlP3Renderer extends AbstractTamablePregnantCreeper
 
 	@Override
 	public ResourceLocation getTextureLocation(TamableCreeperGirlP3 p_115812_) {
-		return AbstractHumanoidCreeperGirlRenderer.CREEPER_GIRL_P3_LOCATION;
+		return CREEPER_GIRL_P3_LOCATION;
 	}
 
 }

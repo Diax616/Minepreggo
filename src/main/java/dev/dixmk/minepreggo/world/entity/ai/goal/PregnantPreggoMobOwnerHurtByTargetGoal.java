@@ -5,7 +5,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import net.minecraft.world.entity.ai.goal.target.OwnerHurtByTargetGoal;
 
-public class PregnantPreggoMobOwnerHurtByTargetGoal<T extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler> extends OwnerHurtByTargetGoal {
+public class PregnantPreggoMobOwnerHurtByTargetGoal<T extends PreggoMob & ITamablePreggoMob<?> & IPregnancySystemHandler> extends OwnerHurtByTargetGoal {
 	private final T preggoMob;
 	
 	public PregnantPreggoMobOwnerHurtByTargetGoal(T p_26107_) {

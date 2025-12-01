@@ -28,13 +28,13 @@ public class DebugHelper {
 
 	private DebugHelper() {}
 	
-	public static<E extends PreggoMob & ITamablePreggoMob> void showBasicInfo(E preggoMob) {
+	public static<E extends PreggoMob & ITamablePreggoMob<?>> void showBasicInfo(E preggoMob) {
 		MinepreggoMod.LOGGER.debug("BASIC INFO: id={} class={}, hungry={}, hungryTimer={}, isAngry={}",
 				preggoMob.getId(), preggoMob.getClass().getSimpleName(), preggoMob.getFullness(), preggoMob.getHungryTimer(), 
 				preggoMob.isAngry());		
 	}
 	
-	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler> void showPregnancyInfo(E preggoMob) {
+	public static<E extends PreggoMob & ITamablePreggoMob<?> & IPregnancySystemHandler> void showPregnancyInfo(E preggoMob) {
 		MinepreggoMod.LOGGER.debug("BASIC PREGNANCY INFO: pregnancyTimer={}, daysByStage={}, daysByStage={}, daysToGiveBirth={}, pregnancyPain={}, "
 				+ "pregnancyPainTimer={}, pregnanctSymptom={}, isIncapacitated={}",
 				preggoMob.getPregnancyTimer(), preggoMob.getDaysByCurrentStage(), preggoMob.getDaysByCurrentStage(),
@@ -42,22 +42,22 @@ public class DebugHelper {
 				preggoMob.getPregnancySymptoms(), preggoMob.isIncapacitated());
 	}
 	
-	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancyEffectsHandler> void showPregnancyP1Info(E preggoMob) {
+	public static<E extends PreggoMob & ITamablePreggoMob<?> & IPregnancyEffectsHandler> void showPregnancyP1Info(E preggoMob) {
 		MinepreggoMod.LOGGER.debug("PREGNANCY P1 INFO: craving={}, cravingTimer={}, cravingChosen={}",
 				preggoMob.getCraving(), preggoMob.getCravingTimer(), preggoMob.getTypeOfCraving());
 	}
 	
-	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancyEffectsHandler> void showPregnancyP2Info(E preggoMob) {
+	public static<E extends PreggoMob & ITamablePreggoMob<?> & IPregnancyEffectsHandler> void showPregnancyP2Info(E preggoMob) {
 		MinepreggoMod.LOGGER.debug("PREGNANCY P2 INFO: milking={}, milkingTimer={}",
 				preggoMob.getMilking(), preggoMob.getMilkingTimer());
 	}
 	
-	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancyEffectsHandler> void showPregnancyP3Info(E preggoMob) {
+	public static<E extends PreggoMob & ITamablePreggoMob<?> & IPregnancyEffectsHandler> void showPregnancyP3Info(E preggoMob) {
 		MinepreggoMod.LOGGER.debug("PREGNANCY P3 INFO: bellyRubs={}, bellyRubsTimer={}",
 				preggoMob.getBellyRubs(), preggoMob.getBellyRubsTimer());
 	}
 	
-	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancyEffectsHandler> void showPregnancyP4Info(E preggoMob) {
+	public static<E extends PreggoMob & ITamablePreggoMob<?> & IPregnancyEffectsHandler> void showPregnancyP4Info(E preggoMob) {
 		MinepreggoMod.LOGGER.debug("PREGNANCY P4 INFO: horny={}, hornyTimer={}",
 				preggoMob.getHorny(), preggoMob.getHornyTimer());
 	}

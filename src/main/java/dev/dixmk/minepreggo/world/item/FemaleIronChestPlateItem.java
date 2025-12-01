@@ -35,6 +35,11 @@ public abstract class FemaleIronChestPlateItem extends ArmorItem implements IFem
 		public PregnancyPhase getMinPregnancyPhaseAllowed() {
 			return maxPregnancyPhase;
 		}
+		
+		@Override
+		public boolean canSupportLactatingBoobs() {
+			return false;
+		}
 	}
 	
 	

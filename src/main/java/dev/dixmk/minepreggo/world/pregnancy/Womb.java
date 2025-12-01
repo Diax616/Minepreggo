@@ -6,11 +6,13 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnegative;
 
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.common.utils.FixedSizeList;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
@@ -22,9 +24,20 @@ import net.minecraft.util.RandomSource;
 public class Womb {
 	FixedSizeList<BabyData> babies = new FixedSizeList<>(IBreedable.MAX_NUMBER_OF_BABIES);
 	
-	public static final String NBT_KEY = "DataWomb";
+	private static final String NBT_KEY = "DataWomb";
 	
 	private Womb() {}
+
+    public Womb (@NonNull ImmutableTriple<UUID, Species, Creature> mother, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father, RandomSource random, @Nonnegative int count) {		
+    	int tempCount = Math.min(count, Womb.getMaxNumOfBabies());   	
+    	for (int i = 0; i < tempCount; i++) {
+    		addBaby(BabyData.create(mother, father, random));
+		}
+    }
+    
+    public Womb (@NonNull ImmutableTriple<UUID, Species, Creature> mother, RandomSource random, @Nonnegative int count) {		
+    	this(mother, ImmutableTriple.of(Optional.empty(), mother.getMiddle(), mother.getRight()) , random, count);
+    }
 	
 	public boolean addBaby(@NonNull BabyData babyData) {
 		return babies.add(babyData);
@@ -62,11 +75,7 @@ public class Womb {
     public CompoundTag toNBT() {
     	CompoundTag wrapper = new CompoundTag();
 		ListTag listTag = new ListTag();
-		babies.forEach(baby -> {
-			CompoundTag tag = new CompoundTag();
-			baby.serializeNBT(tag);
-			listTag.add(tag);
-		});	
+		babies.forEach(baby -> listTag.add(baby.toNBT()));	
 		wrapper.put(NBT_KEY, listTag);
         return wrapper;
     }
@@ -93,26 +102,23 @@ public class Womb {
 		}	
 		return womb;
 	}
-	
-    public static @NonNull Womb create(@NonNull ImmutableTriple<UUID, Species, Creature> mother, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father, RandomSource random, @Nonnegative int count) {		
-    	Womb womb = Womb.empty();  	
-    	int tempCount = Math.min(count, Womb.getMaxNumOfBabies());   	
-    	for (int i = 0; i < tempCount; i++) {
-    		womb.addBaby(BabyData.create(mother, father, random));
-		}
-		return womb;
-    }
-    
-    public static @NonNull Womb create(@NonNull ImmutableTriple<UUID, Species, Creature> mother, RandomSource random, @Nonnegative int count) {		
-    	return create(mother, ImmutableTriple.of(Optional.empty(), mother.getMiddle(), mother.getRight()) , random, count);
-    }
-	
-	public static Womb fromNBT(CompoundTag nbt) {
-		ListTag list = nbt.getList(NBT_KEY, Tag.TAG_COMPOUND);
-		Womb womb = new Womb();	
-        for (var tag : list) {
-        	womb.addBaby(BabyData.deserializeNBT(tag));
-        }
-        return womb;
+
+	@CheckForNull
+	public static Womb fromNBT(CompoundTag nbt) {		
+		if (nbt.contains(NBT_KEY, Tag.TAG_LIST)) {
+			ListTag list = nbt.getList(NBT_KEY, Tag.TAG_COMPOUND);
+			Womb womb = new Womb();			
+	        for (var tag : list) {
+	        	final var baby = BabyData.fromNBT((CompoundTag) tag);     	
+	        	if (baby != null) {
+	            	womb.addBaby(baby);
+	        	}
+	        	else {
+	        		MinepreggoMod.LOGGER.error("BabyData was null from nbt");
+	        	}
+	        }
+	        return womb;
+		}		
+		return null;
 	}
 }

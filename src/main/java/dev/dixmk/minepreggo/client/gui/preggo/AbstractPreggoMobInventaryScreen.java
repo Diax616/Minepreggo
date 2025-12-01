@@ -18,7 +18,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class AbstractPreggoMobInventaryScreen
-	<E extends PreggoMob & ITamablePreggoMob, C extends AbstractPreggoMobInventaryMenu<E>> extends AbstractContainerScreen<C> {
+	<E extends PreggoMob & ITamablePreggoMob<?>, C extends AbstractPreggoMobInventaryMenu<E>> extends AbstractContainerScreen<C> {
 
 	protected final Optional<E> preggoMob;
 	protected final ResourceLocation inventoryTexture;

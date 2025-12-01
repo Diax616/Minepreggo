@@ -18,6 +18,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.creeper.MonsterCreeperGirlP0;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.MonsterZombieGirlP0;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirl;
+import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
 import dev.dixmk.minepreggo.world.pregnancy.IFemaleEntity;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import net.minecraft.core.BlockPos;
@@ -100,7 +101,7 @@ public class Impregnantion extends MobEffect {
 	}
 	
 	
-	protected static<E extends PreggoMob & ITamablePreggoMob & IFemaleEntity & IPregnancySystemHandler> void initPregnancy(PreggoMob source, E target, int amplifier) {
+	protected static<E extends PreggoMob & ITamablePreggoMob<FemaleEntityImpl> & IFemaleEntity & IPregnancySystemHandler> void initPregnancy(PreggoMob source, E target, int amplifier) {
 		PreggoMobHelper.copyRotation(source, target);
 		PreggoMobHelper.transferSlots(source, target);
 		PreggoMobHelper.syncFromEquipmentSlotToInventory(target);

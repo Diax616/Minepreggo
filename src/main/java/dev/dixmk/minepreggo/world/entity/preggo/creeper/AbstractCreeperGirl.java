@@ -379,6 +379,8 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 		EXPLODE,
 		DONT_EXPLODE,
 		FIGHT_AND_EXPLODE;    
+		
+		public static final String NBT_KEY = "DataCombatMode";
 	}	
 }
 

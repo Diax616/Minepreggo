@@ -1,7 +1,6 @@
 package dev.dixmk.minepreggo.world.entity.preggo;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +26,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZo
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractZombieGirl;
 import dev.dixmk.minepreggo.world.item.IFemaleArmor;
 import dev.dixmk.minepreggo.world.item.ItemHelper;
+import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
 import dev.dixmk.minepreggo.world.pregnancy.IBreedable;
 import dev.dixmk.minepreggo.world.pregnancy.IFemaleEntity;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancyEffectsHandler;
@@ -49,6 +49,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -63,19 +64,19 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class PreggoMobHelper {
 			
 	private PreggoMobHelper() {}
 	
+	
+	// Transfer or Copy Data START
 	public static void copyRotation(@NonNull LivingEntity source, @NonNull LivingEntity target) {		
 		target.setYRot(source.getYRot());
 		target.setYBodyRot(source.getYRot());
 		target.setYHeadRot(source.getYRot());
 		target.setXRot(source.getXRot());
-		target.setHealth(source.getHealth());
 	}
 
 	public static void copyOwner(@NonNull TamableAnimal source, @NonNull TamableAnimal target) {
@@ -83,32 +84,34 @@ public class PreggoMobHelper {
 			target.tame((Player) source.getOwner());
 	}
 	
-	public static void copyData(PreggoMob source, PreggoMob target) {
-		target.setHealth(source.getHealth());
-		if (source.hasCustomName())
-			target.setCustomName(source.getCustomName());
-		copyOwner(source, target);
-		copyRotation(source, target);
+	public static void copyHealth(LivingEntity source, LivingEntity target) {
+		target.setHealth(Math.min(target.getMaxHealth(), source.getHealth()));
 	}
 	
-	public static<E extends PreggoMob & ITamablePreggoMob> void copyTamableData(@NonNull E source, @NonNull E target) {
-		copyData(source, target);
+	public static void copyName(Entity source, Entity target) {
+		if (source.hasCustomName())
+			target.setCustomName(source.getCustomName());
+	}
+	
+	public static void copyTamableData(@NonNull ITamablePreggoMob<FemaleEntityImpl> source, @NonNull ITamablePreggoMob<FemaleEntityImpl> target) {
 		target.setFullness(source.getFullness());
 		target.setHungryTimer(source.getHungryTimer());
 		target.setWaiting(source.isWaiting());
 		target.setAngry(source.isAngry());
-		target.setSavage(source.isSavage());
+		target.setSavage(source.isSavage());	
+		target.setBreakBlocks(source.canBreakBlocks());
+		target.setPickUpItems(source.canPickUpItems());		
+		target.setFaceState(source.getFaceState());
+		target.setBodyState(source.getBodyState());			
+		target.getGenderedData().deserializeNBT(source.getGenderedData().serializeNBT());
 	}
 	
-	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler & IPregnancyEffectsHandler> void transferPregnancyData(@NonNull E source, @NonNull E target) {
-		copyTamableData(source, target);
-		transferInventary(source, target);
-		transferAttackTarget(source, target);
-		
+	public static<E extends IPregnancySystemHandler & IPregnancyEffectsHandler> void transferPregnancyData(@NonNull E source, @NonNull E target) {
 		target.resetDaysPassed();
 		target.resetPregnancyTimer();
 		
-		target.setDaysByStage(source.getDaysByStageMapping());
+		target.setMapPregnancyPhase(source.getMapPregnancyPhase());
+		target.setWomb(source.getWomb());
 		
 		target.setDaysToGiveBirth(source.getDaysToGiveBirth());
 		target.setPregnancyHealth(source.getPregnancyHealth());
@@ -127,31 +130,33 @@ public class PreggoMobHelper {
 		target.setHorny(source.getHorny());
 		target.setHornyTimer(source.getHornyTimer());
 	}
-	
-	public static boolean hasValidTarget(Mob entity) {
-	    LivingEntity target = entity.getTarget();
-	    return target != null && target.isAlive() && entity.canAttack(target);
+		
+	public static<E extends PreggoMob & ITamablePreggoMob<FemaleEntityImpl> & IPregnancySystemHandler & IPregnancyEffectsHandler> void transferAllData(@NonNull E source, @NonNull E target) {
+		copyRotation(source, target);
+		copyOwner(source, target);
+		copyHealth(source, target);
+		copyName(source, target);
+		copyTamableData(source, target);
+		transferInventory(source, target);
+		transferPregnancyData(source, target);
 	}
 	
-	public static boolean isTargetStillValid(Mob entity) {
-	    LivingEntity target = entity.getTarget();
-	    return target != null && target.isAlive();
-	}
+	// Transfer or Copy Data START
+	
 
-	public static void putItemStackInOffHand(LivingEntity entity, Item item, int num) {
-		if (entity.getOffhandItem() != ItemStack.EMPTY
-				&& entity.level() instanceof ServerLevel level) {
-			ItemEntity entityToSpawn = new ItemEntity(level, entity.getX(), entity.getY(), entity.getZ(), entity.getOffhandItem());
-			entityToSpawn.setPickUpDelay(10);
-			level.addFreshEntity(entityToSpawn);
-		}
-		entity.setItemInHand(InteractionHand.OFF_HAND, new ItemStack(item, num));
-	}
-
-	public static <E extends PreggoMob & ITamablePreggoMob> void transferInventary(@NonNull E source, @NonNull E target) {
+	// Inventory START
+	public static void transferSlots(@NonNull Mob source, @NonNull Mob target) {
+		target.setItemInHand(InteractionHand.MAIN_HAND, source.getMainHandItem());
+		target.setItemInHand(InteractionHand.OFF_HAND, source.getOffhandItem());
+		target.setItemSlot(EquipmentSlot.HEAD, source.getItemBySlot(EquipmentSlot.HEAD));
+		target.setItemSlot(EquipmentSlot.CHEST, source.getItemBySlot(EquipmentSlot.CHEST));
+		target.setItemSlot(EquipmentSlot.LEGS, source.getItemBySlot(EquipmentSlot.LEGS));
+		target.setItemSlot(EquipmentSlot.FEET, source.getItemBySlot(EquipmentSlot.FEET));
+	}	
+	
+	public static <E extends PreggoMob & ITamablePreggoMob<?>> void transferInventory(@NonNull E source, @NonNull E target) {
 		transferSlots(source, target);
-	
-	    source.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(sourceHandler -> {
+	    source.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(sourceHandler -> 
 	        target.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(targetHandler -> {
 	            if (targetHandler instanceof IItemHandlerModifiable modifiableTarget) {
 	                int slots = Math.min(sourceHandler.getSlots(), modifiableTarget.getSlots());
@@ -159,26 +164,11 @@ public class PreggoMobHelper {
 	                    modifiableTarget.setStackInSlot(slot, sourceHandler.getStackInSlot(slot));
 	                }
 	            }
-	        });
-	    });
+	        })
+	    );
 	}
-	
-	public static<E extends PreggoMob & ITamablePreggoMob> void addItemToInventory(@NonNull E preggoMob, @NonNull ItemEntity itemEntity) {		
-		preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(sourceHandler -> {		
-			var originalItemStack = itemEntity.getItem();
-			var remainder = ItemHandlerHelper.insertItemStacked(sourceHandler, originalItemStack, false);		
-			
-	        if (remainder.getCount() != originalItemStack.getCount()) {
-	            if (remainder.isEmpty()) {
-	            	itemEntity.discard();
-	            } else {
-	            	itemEntity.setItem(remainder);
-	            }
-	        }		
-		});
-	}
-	
-	public static<T extends PreggoMob & ITamablePreggoMob> void syncFromEquipmentSlotToInventory(@NonNull T preggoEntity) {
+
+	public static<T extends PreggoMob & ITamablePreggoMob<?>> void syncFromEquipmentSlotToInventory(@NonNull T preggoEntity) {
         if (!preggoEntity.level().isClientSide) {
     		preggoEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(capability -> {
                 if (capability instanceof IItemHandlerModifiable modHandlerEntSetSlot) {
@@ -193,8 +183,7 @@ public class PreggoMobHelper {
         }
 	}
 	
-
-	public static<T extends PreggoMob & ITamablePreggoMob> void syncFromInventoryToEquipmentSlot(@NonNull T preggoEntity) {
+	public static<T extends PreggoMob & ITamablePreggoMob<?>> void syncFromInventoryToEquipmentSlot(@NonNull T preggoEntity) {
 	    if (!preggoEntity.level().isClientSide) {
 		    preggoEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(capability -> {   	
 		        preggoEntity.setItemInHand(InteractionHand.MAIN_HAND, capability.getStackInSlot(ITamablePreggoMob.MAINHAND_INVENTORY_SLOT));
@@ -207,7 +196,7 @@ public class PreggoMobHelper {
 	    }
 	}
 	
-	public static<E extends PreggoMob & ITamablePreggoMob> void storeItemInSpecificRange(@NonNull E preggoMob, @NonNull ItemEntity itemEntity, int minStorageSlot, int maxStorageSlot) {
+	public static<E extends PreggoMob & ITamablePreggoMob<?>> void storeItemInSpecificRange(@NonNull E preggoMob, @NonNull ItemEntity itemEntity, int minStorageSlot, int maxStorageSlot) {
 		preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(sourceHandler -> {		
 			var originalItemStack = itemEntity.getItem();
 			var originalCount = originalItemStack.getCount();
@@ -216,9 +205,8 @@ public class PreggoMobHelper {
 		    	originalItemStack = sourceHandler.insertItem(slot, originalItemStack, false);
 		    }		
 				    
-		    if (originalItemStack.getCount() != originalCount) {		    	
-	            
-		    	if (!preggoMob.level().isClientSide()) {
+		    if (originalItemStack.getCount() != originalCount) {		          
+		    	if (!preggoMob.level().isClientSide) {
 			    	preggoMob.level().playSound(null, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.item.pickup")), SoundSource.AMBIENT, 0.75F, 0.75F);	    	
 		    	}
 		    	
@@ -231,32 +219,112 @@ public class PreggoMobHelper {
 		});	
 	}
 	
-	public static void transferSlots(@NonNull Mob source, @NonNull Mob target) {
-		target.setItemInHand(InteractionHand.MAIN_HAND, source.getMainHandItem());
-		target.setItemInHand(InteractionHand.OFF_HAND, source.getOffhandItem());
-		target.setItemSlot(EquipmentSlot.HEAD, source.getItemBySlot(EquipmentSlot.HEAD));
-		target.setItemSlot(EquipmentSlot.CHEST, source.getItemBySlot(EquipmentSlot.CHEST));
-		target.setItemSlot(EquipmentSlot.LEGS, source.getItemBySlot(EquipmentSlot.LEGS));
-		target.setItemSlot(EquipmentSlot.FEET, source.getItemBySlot(EquipmentSlot.FEET));
+	public static<E extends PreggoMob & ITamablePreggoMob<?>> void storeItemInSpecificRangeOrDrop(@NonNull E preggoMob, @NonNull ItemStack itemStack, int minStorageSlot, int maxStorageSlot) {
+		preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(sourceHandler -> {		
+			var originalItemStack = itemStack;	
+			var originalCount = originalItemStack.getCount();
+			for (int slot = minStorageSlot; slot <= maxStorageSlot && !originalItemStack.isEmpty(); slot++) {
+		    	originalItemStack = sourceHandler.insertItem(slot, originalItemStack, false);
+		    }			
+			
+		    if (!originalItemStack.isEmpty() || originalItemStack.getCount() != originalCount) {
+            	dropItemStack(preggoMob, originalItemStack);
+		    }
+		});
 	}
 	
+	public static<E extends PreggoMob & ITamablePreggoMob<?>> void transferItemFromInventoryToHand(@NonNull E preggoMob, @NonNull Item item, InteractionHand hand, int minStorageSlot, int maxStorageSlot) {
+		preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(sourceHandler -> {		
+			ItemStack target = null;
+			for (int slot = minStorageSlot; slot <= maxStorageSlot; slot++) {		
+				target = sourceHandler.getStackInSlot(slot); 
+				if (target.is(item) && sourceHandler instanceof IItemHandlerModifiable modHandlerEntSetSlot) {
+					modHandlerEntSetSlot.setStackInSlot(slot, ItemStack.EMPTY);
+					break;
+				}	
+		    }			
+			if (target != null) {				
+				setItemstackInHand(preggoMob, hand, target);	
+			}
+		});
+	}
+	
+	public static<E extends PreggoMob & ITamablePreggoMob<?>> void addItemToInventory(@NonNull E preggoMob, @NonNull ItemEntity itemEntity) {		
+		preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(sourceHandler -> {		
+			var originalItemStack = itemEntity.getItem();
+			var remainder = ItemHandlerHelper.insertItemStacked(sourceHandler, originalItemStack, false);		
+			
+	        if (remainder.getCount() != originalItemStack.getCount()) {
+	            if (remainder.isEmpty()) {
+	            	itemEntity.discard();
+	            } else {
+	            	itemEntity.setItem(remainder);
+	            }
+	        }		
+		});
+	}
+
+	public static<E extends PreggoMob & ITamablePreggoMob<?>> void setItemstackInHand(@Nonnull E preggoMob, InteractionHand hand, @Nonnull ItemStack itemStack) {			
+		preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler -> {			    	
+			if (handler instanceof IItemHandlerModifiable modHandler) {	
+				int inventorySlot = hand == InteractionHand.MAIN_HAND ? ITamablePreggoMob.MAINHAND_INVENTORY_SLOT : ITamablePreggoMob.OFFHAND_INVENTORY_SLOT;		
+				EquipmentSlot equipmentSlot = hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND;	
+				
+				if (!modHandler.getStackInSlot(inventorySlot).isEmpty()) {
+					removeAndDropItemStackFromEquipmentSlot(preggoMob, equipmentSlot);			
+				}
+						
+	            modHandler.setStackInSlot(inventorySlot, itemStack);
+	            preggoMob.setItemSlot(equipmentSlot, itemStack);
+	        }	
+		});
+	}
+	
+	public static<E extends PreggoMob & ITamablePreggoMob<?>> void removeAndDropItemStackFromEquipmentSlot(E preggoMob, EquipmentSlot slotId) {			
+		if (dropItemStack(preggoMob, preggoMob.getItemBySlot(slotId))) {		
+			preggoMob.setItemSlot(slotId, ItemStack.EMPTY);
+			preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler -> {			    
+		        if (handler instanceof IItemHandlerModifiable modHandler) {
+		            modHandler.setStackInSlot(slotId.getFilterFlag(), ItemStack.EMPTY);
+		        }	
+			});			
+		}	
+	}
+	
+	public static boolean dropItemStack(LivingEntity entity, ItemStack stack) {
+	    if (!stack.isEmpty()) {
+	        ItemEntity item = new ItemEntity(
+	            entity.level(),
+	            entity.getX(), entity.getY(), entity.getZ(),
+	            stack
+	        );
+	        item.setDefaultPickUpDelay();
+	        entity.level().addFreshEntity(item);
+	        return true;
+	    }
+	    return false;
+	}	
+	// Inventory END
+	
 	public static void transferAttackTarget(@NonNull Mob source, @NonNull Mob target) {
-		final Vec3 center = new Vec3(source.getX(), source.getY(), source.getZ());
-		List<LivingEntity> entfound = Collections.unmodifiableList(source.level().getEntitiesOfClass(LivingEntity.class, new AABB(center, center).inflate(16)).stream()
-				.sorted(Comparator.comparingDouble(entcnd -> entcnd.distanceToSqr(center)))
-				.toList());
-		
-		for (var ent : entfound) {
+		var entfound = source.level().getEntitiesOfClass(LivingEntity.class, new AABB(source.blockPosition()).inflate(16)).stream()
+				.sorted(Comparator.comparingDouble(entcnd -> entcnd.distanceToSqr(source)))
+				.toList();
+			
+		entfound.forEach(ent -> {
 			if (ent instanceof Mob mob && mob.getTarget() == source) {
 				mob.setTarget(target);
 			}
 			if (source.getTarget() == ent) {
 				target.setTarget(ent);
-			}	
-		}
+			}
+		});
 	}
 
-	private static<E extends PreggoMob & IFemaleEntity & ITamablePreggoMob & IPregnancySystemHandler> boolean initPregnancy(@NonNull E preggoMob) {				
+	
+	
+	// Pregnancy START
+	private static<E extends PreggoMob & IFemaleEntity & ITamablePreggoMob<?> & IPregnancySystemHandler> boolean initPregnancy(@NonNull E preggoMob) {				
 		
 		final boolean result = preggoMob.isPregnant() && preggoMob.getPrePregnancyData().isPresent();
 		
@@ -273,12 +341,12 @@ public class PreggoMobHelper {
 			final var mother = ImmutableTriple.of(preggoMob.getUUID(), preggoMob.getTypeOfSpecies(), preggoMob.getTypeOfCreature());
 			final var father = ImmutableTriple.of(Optional.ofNullable(prePregnancyData.fatherId()), prePregnancyData.typeOfSpeciesOfFather(), prePregnancyData.typeOfCreatureOfFather());
 			final var map = new MapPregnancyPhase(totalDays, lastPregnancyStage);
-			final var womb = Womb.create(mother, father, preggoMob.getRandom(), numOfBabies);
+			final var womb = new Womb(mother, father, preggoMob.getRandom(), numOfBabies);
 
 			preggoMob.setLastPregnancyStage(lastPregnancyStage);	
-			preggoMob.setDaysByStage(map);	
+			preggoMob.setMapPregnancyPhase(map);	
 			preggoMob.setPregnancyHealth(PregnancySystemHelper.MAX_PREGNANCY_HEALTH);		
-			preggoMob.setBabiesInsideWomb(womb);
+			preggoMob.setWomb(womb);
 			preggoMob.setDaysToGiveBirth(PregnancySystemHelper.calculateDaysToGiveBirth(preggoMob));	
 			
 			preggoMob.resetDaysPassed();
@@ -290,17 +358,17 @@ public class PreggoMobHelper {
 		return result;
 	}
 	
-	public static<E extends PreggoMob & IFemaleEntity & ITamablePreggoMob & IPregnancySystemHandler> void initDefaultPregnancy(@NonNull E preggoMob) {				
+	public static<E extends PreggoMob & IFemaleEntity & ITamablePreggoMob<?> & IPregnancySystemHandler> void initDefaultPregnancy(@NonNull E preggoMob) {				
 		final var numOfBabies =	IBreedable.calculateNumOfBabiesByMaxPregnancyStage(preggoMob.getLastPregnancyStage());
 		preggoMob.tryImpregnate(numOfBabies, ImmutableTriple.of(Optional.empty(), preggoMob.getTypeOfSpecies(), preggoMob.getTypeOfCreature()));	
 		initPregnancy(preggoMob);
 	}
 	
-	public static<E extends PreggoMob & ITamablePreggoMob & IFemaleEntity> boolean initPrePregnancy(@NonNull E preggoMob, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father, @Nonnegative int fertilizedEggs) {	
+	public static<E extends PreggoMob & ITamablePreggoMob<?> & IFemaleEntity> boolean initPrePregnancy(@NonNull E preggoMob, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father, @Nonnegative int fertilizedEggs) {	
 		return preggoMob.tryImpregnate(fertilizedEggs, father);
 	}
 	
-	public static<E extends PreggoMob & ITamablePreggoMob & IFemaleEntity & IPregnancySystemHandler> void initPregnancyByPotion(@NonNull E preggoMob, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father, @Nonnegative int amplifier) {	
+	public static<E extends PreggoMob & ITamablePreggoMob<?> & IFemaleEntity & IPregnancySystemHandler> boolean initPregnancyByPotion(@NonNull E preggoMob, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father, @Nonnegative int amplifier) {	
 		final int numOfBabies = IBreedable.calculateNumOfBabiesByPotion(amplifier);	
 		final var r1 = initPrePregnancy(preggoMob, father, numOfBabies);	
 		final var r2 = initPregnancy(preggoMob);
@@ -308,10 +376,12 @@ public class PreggoMobHelper {
 		if (!r1 || !r2) {
 			MinepreggoMod.LOGGER.warn("CANNOT INIT PREGNANCY BY POTION: class={}, fatherId={}, speciesOfFather={}, creatureOfFather={}, amplifier={}, numOfBabies={}, initPrePregnancyResult={}, initPregnancyResult={}",
 					preggoMob.getClass().getSimpleName(), father.getLeft().orElse(null), father.getMiddle(), father.getRight(), amplifier, numOfBabies, r1, r2);
-		}	
+		}
+		
+		return r1 && r2;
 	}
 	
-	public static<E extends PreggoMob & ITamablePreggoMob & IFemaleEntity> boolean initPregnancyBySex(@NonNull E preggoMob, @NonNull ServerPlayer serverPlayer) {	
+	public static<E extends PreggoMob & ITamablePreggoMob<?> & IFemaleEntity> boolean initPregnancyBySex(@NonNull E preggoMob, @NonNull ServerPlayer serverPlayer) {	
 		if (!preggoMob.isOwnedBy(serverPlayer)) {
 			MinepreggoMod.LOGGER.debug("CANNOT INIT PREGNANCY BY SEX : class={}, playerId={}, ownerId={}",
 					preggoMob.getClass().getSimpleName(), serverPlayer.getUUID(), preggoMob.getOwnerUUID());
@@ -339,7 +409,7 @@ public class PreggoMobHelper {
 		return initPrePregnancy(preggoMob, ImmutableTriple.of(Optional.of(serverPlayer.getUUID()), Species.HUMAN, Creature.HUMANOID), numOfBabies);
 	}
 	
-	private static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler> float getSpawnProbabilityBasedPregnancy(@NonNull E preggoMob, float t0, float k, float pMin, float pMax) {
+	private static<E extends PreggoMob & ITamablePreggoMob<?> & IPregnancySystemHandler> float getSpawnProbabilityBasedPregnancy(@NonNull E preggoMob, float t0, float k, float pMin, float pMax) {
 		final int totalDays = preggoMob.getTotalDaysOfPregnancy();
 		final int totalDaysPassed = PregnancySystemHelper.calculateTotalDaysPassedFromPhaseP0(preggoMob);
 		
@@ -351,7 +421,123 @@ public class PreggoMobHelper {
 
 		return p;
 	}
+	// Pregnancy END
 	
+	
+	
+	
+	
+	// Armor START
+	public static boolean canUseChestplate(Item armor) {	
+		return canUseChestplate(armor, true);
+	}
+	
+	public static boolean canUseChestplate(Item armor, boolean considerBoobs) {
+		if (!ItemHelper.isChest(armor)) {
+			return false;
+		}				
+		if (considerBoobs) {
+			return armor instanceof IFemaleArmor;
+		}		
+		return true;
+	}
+	
+	public static<E extends PreggoMob & ITamablePreggoMob<?>> void tryToDamageItemOnMainHand(@NonNull E preggoMob) {	    
+	    Level world = preggoMob.level();
+	    ItemStack stack = preggoMob.getMainHandItem();
+	    RandomSource random = world.random;
+	    
+	    // Check Unbreaking enchantment
+	    int unbreakingLevel = EnchantmentHelper.getTagEnchantmentLevel(Enchantments.UNBREAKING, stack);
+	    boolean bypassUnbreaking = false;
+
+	    if (unbreakingLevel > 0) {
+	        double breakChance = 0.65 / (unbreakingLevel + 1);
+	        bypassUnbreaking = random.nextDouble() < breakChance;
+	    }
+	     
+	    if (stack.isEmpty() || !stack.isDamageableItem() || bypassUnbreaking) return;
+
+
+	    // Let ItemStack handle Unbreaking internally
+	    if (stack.hurt(1, random, null)) {
+	        stack.shrink(1);
+	        stack.setDamageValue(0);
+	    }
+
+	    // Sound & sync
+	    if (stack.getDamageValue() >= stack.getMaxDamage()) {
+	        world.playSound(null, preggoMob.blockPosition(), SoundEvents.ITEM_BREAK, SoundSource.NEUTRAL, 1.0F, 1.0F);
+	    } else {
+	        preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(cap -> {
+	            if (cap instanceof IItemHandlerModifiable mod) {
+	                mod.setStackInSlot(ITamablePreggoMob.MAINHAND_INVENTORY_SLOT, stack);
+	            }
+	        });
+	    }	
+	}
+	
+	public static <E extends PreggoMob & ITamablePreggoMob<?>> void tryToDamageArmor(@NonNull E preggoMob, DamageSource damageSource) {
+	    var world = preggoMob.level();
+	
+	    List<ItemStack> armorStacks = new ArrayList<>(4);
+	
+	    // Collect valid armor stacks and count them
+	    for (int i = 0; i < 4; i++) {
+	        ItemStack stack = preggoMob.getItemBySlot(EquipmentSlot.byTypeAndIndex(EquipmentSlot.Type.ARMOR, i));
+	        armorStacks.add(stack);
+	    }
+	
+	    RandomSource random = world.random;
+	
+	    for (int i = 0; i < 4; i++) {
+	        ItemStack stack = armorStacks.get(i);
+	        
+	        if (stack.isEmpty() || hasUnbreakingProtection(stack, random)) {
+	        	continue;
+	        }
+   
+	        boolean isExplosion = damageSource.is(DamageTypes.EXPLOSION) || damageSource.is(DamageTypes.PLAYER_EXPLOSION);
+	        int damageAmount = isExplosion ? 2 : 1;
+	        
+	        // Apply conditional damage based on armor count and slot
+	        if (shouldTakeDamage(i, random) && stack.hurt(damageAmount, random, null)) {
+                stack.shrink(1);
+                stack.setDamageValue(0);
+                
+    	        if (stack.getDamageValue() >= stack.getMaxDamage()) {
+    	            world.playSound(null, preggoMob.blockPosition(), 
+    	                ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.item.break")),
+    	                SoundSource.NEUTRAL, 1.0F, 1.0F);
+    	        }
+                updateItemHandler(preggoMob, i + 1, stack);
+	        }	
+	    }
+	}
+	
+	private static<E extends PreggoMob & ITamablePreggoMob<?>> void updateItemHandler(E preggoMob, int slotId, @Nonnull ItemStack stack) {
+		preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler -> {
+	        if (handler instanceof IItemHandlerModifiable modHandler) {
+	            modHandler.setStackInSlot(slotId, stack);
+	        }
+	    });
+	}
+
+	private static boolean hasUnbreakingProtection(ItemStack stack, RandomSource random) {
+	    int unbreakingLevel = EnchantmentHelper.getTagEnchantmentLevel(Enchantments.UNBREAKING, stack);
+	    if (unbreakingLevel <= 0) return false;
+	    float avoidanceChance = (60.0F + 40.0F / (1 + unbreakingLevel)) * 0.01F;
+	    return random.nextFloat() > (1F - avoidanceChance);
+	}
+
+	private static boolean shouldTakeDamage(int slotIndex, RandomSource random) {
+	    float threshold = (slotIndex == 3 || slotIndex == 0) ? 0.7F : 0.85F;
+	    return random.nextFloat() < threshold;
+	}
+	// Armor END
+	
+	
+	// Spawn Babies START	
 	private static void spawnBabyOrFetusZombies(float p, int numOfBabies, @NonNull AbstractZombieGirl zombieGirl) {
 		
 		if (!(zombieGirl.level() instanceof ServerLevel serverLevel)) {
@@ -527,176 +713,16 @@ public class PreggoMobHelper {
 		
 		MinepreggoMod.LOGGER.debug("SPAWN BABY AND FETUS ZOMBIES: id={}, class={}, currentPregnancytStage={}, maxPregnancyStage={}, totalDaysPassed={}, t={}",
 				zombie.getId(), zombie.getClass().getSimpleName(), currentPregnancyStage, zombie.getLastPregnancyStage(), totalDaysPassed, t);
-	}
-		
-	public static<E extends PreggoMob & ITamablePreggoMob> void tryToDamageItemOnMainHand(@NonNull E preggoMob) {	    
-	    Level world = preggoMob.level();
-	    ItemStack stack = preggoMob.getMainHandItem();
-	    RandomSource random = world.random;
-	    
-	    // Check Unbreaking enchantment
-	    int unbreakingLevel = EnchantmentHelper.getTagEnchantmentLevel(Enchantments.UNBREAKING, stack);
-	    boolean bypassUnbreaking = false;
-
-	    if (unbreakingLevel > 0) {
-	        double breakChance = 0.65 / (unbreakingLevel + 1);
-	        bypassUnbreaking = random.nextDouble() < breakChance;
-	    }
-	     
-	    if (stack.isEmpty() || !stack.isDamageableItem() || bypassUnbreaking) return;
-
-
-	    // Let ItemStack handle Unbreaking internally
-	    if (stack.hurt(1, random, null)) {
-	        stack.shrink(1);
-	        stack.setDamageValue(0);
-	    }
-
-	    // Sound & sync
-	    if (stack.getDamageValue() >= stack.getMaxDamage()) {
-	        world.playSound(null, preggoMob.blockPosition(), SoundEvents.ITEM_BREAK, SoundSource.NEUTRAL, 1.0F, 1.0F);
-	    } else {
-	        preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(cap -> {
-	            if (cap instanceof IItemHandlerModifiable mod) {
-	                mod.setStackInSlot(ITamablePreggoMob.MAINHAND_INVENTORY_SLOT, stack);
-	            }
-	        });
-	    }	
-	}
+	}	
+	// Spawn Babies END
 	
-	public static <E extends PreggoMob & ITamablePreggoMob> void tryToDamageArmor(@NonNull E preggoMob, DamageSource damageSource) {
-	    var world = preggoMob.level();
-	
-	    List<ItemStack> armorStacks = new ArrayList<>(4);
-	
-	    // Collect valid armor stacks and count them
-	    for (int i = 0; i < 4; i++) {
-	        ItemStack stack = preggoMob.getItemBySlot(EquipmentSlot.byTypeAndIndex(EquipmentSlot.Type.ARMOR, i));
-	        armorStacks.add(stack);
-	    }
-	
-	    RandomSource random = world.random;
-	
-	    for (int i = 0; i < 4; i++) {
-	        ItemStack stack = armorStacks.get(i);
-	        
-	        if (stack.isEmpty() || hasUnbreakingProtection(stack, random)) {
-	        	continue;
-	        }
-   
-	        boolean isExplosion = damageSource.is(DamageTypes.EXPLOSION) || damageSource.is(DamageTypes.PLAYER_EXPLOSION);
-	        int damageAmount = isExplosion ? 2 : 1;
-	        
-	        // Apply conditional damage based on armor count and slot
-	        if (shouldTakeDamage(i, random) && stack.hurt(damageAmount, random, null)) {
-                stack.shrink(1);
-                stack.setDamageValue(0);
-                
-    	        if (stack.getDamageValue() >= stack.getMaxDamage()) {
-    	            world.playSound(null, preggoMob.blockPosition(), 
-    	                ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.item.break")),
-    	                SoundSource.NEUTRAL, 1.0F, 1.0F);
-    	        }
-                updateItemHandler(preggoMob, i + 1, stack);
-	        }	
-	    }
-	}
-	
-	public static boolean isPlayerInCreativeOrSpectator(LivingEntity entity) {
-	    if (entity instanceof Player player) {
-	        return player.isCreative() || player.isSpectator();
-	    }
-	    return false;
-	}
-	
-	private static boolean hasUnbreakingProtection(ItemStack stack, RandomSource random) {
-	    int unbreakingLevel = EnchantmentHelper.getTagEnchantmentLevel(Enchantments.UNBREAKING, stack);
-	    if (unbreakingLevel <= 0) return false;
-	    float avoidanceChance = (60.0F + 40.0F / (1 + unbreakingLevel)) * 0.01F;
-	    return random.nextFloat() > (1F - avoidanceChance);
-	}
-
-	private static boolean shouldTakeDamage(int slotIndex, RandomSource random) {
-	    float threshold = (slotIndex == 3 || slotIndex == 0) ? 0.7F : 0.85F;
-	    return random.nextFloat() < threshold;
-	}
-
-	private static<E extends PreggoMob & ITamablePreggoMob> void updateItemHandler(E preggoMob, int slotId, @Nonnull ItemStack stack) {
-		preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler -> {
-	        if (handler instanceof IItemHandlerModifiable modHandler) {
-	            modHandler.setStackInSlot(slotId, stack);
-	        }
-	    });
-	}
-
-	public static<E extends PreggoMob & ITamablePreggoMob> void setItemstackOnOffHand(@Nonnull E preggoMob, @Nonnull ItemStack itemStack) {			
-		preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler -> {			    	
-			if (handler instanceof IItemHandlerModifiable modHandler) {
-				
-				var oldItemstack = modHandler.getStackInSlot(ITamablePreggoMob.OFFHAND_INVENTORY_SLOT);
-				
-				if (!oldItemstack.isEmpty()) {
-					removeAndDropItemStackFromEquipmentSlot(preggoMob, EquipmentSlot.OFFHAND);			
-				}
-						
-	            modHandler.setStackInSlot(ITamablePreggoMob.OFFHAND_INVENTORY_SLOT, itemStack);
-	            preggoMob.setItemSlot(EquipmentSlot.OFFHAND, itemStack);
-	        }	
-		});
-	}
-	
-	
-	public static<E extends PreggoMob & ITamablePreggoMob> void removeAndDropItemStackFromEquipmentSlot(E preggoMob, EquipmentSlot slotId) {			
-		if (dropItemStack(preggoMob, preggoMob.getItemBySlot(slotId))) {		
-			preggoMob.setItemSlot(slotId, ItemStack.EMPTY);
-			preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler -> {			    
-		        if (handler instanceof IItemHandlerModifiable modHandler) {
-		            modHandler.setStackInSlot(slotId.getFilterFlag(), ItemStack.EMPTY);
-		        }	
-			});			
-		}	
-	}
-	
-	public static void removeAndDropItemStackFromEquipmentSlot(Player player, EquipmentSlot slotId) {
-		if (dropItemStack(player, player.getItemBySlot(slotId))) {
-			player.setItemSlot(slotId, ItemStack.EMPTY);
-		}
- 	}
-		
-	private static boolean dropItemStack(LivingEntity entity, ItemStack stack) {
-	    if (!stack.isEmpty()) {
-	        ItemEntity item = new ItemEntity(
-	            entity.level(),
-	            entity.getX(), entity.getY(), entity.getZ(),
-	            stack
-	        );
-	        item.setDefaultPickUpDelay();
-	        entity.level().addFreshEntity(item);
-	        return true;
-	    }
-	    return false;
-	}
-	
-	public static boolean canUseChestplate(Item armor) {	
-		return canUseChestplate(armor, true);
-	}
-	
-	public static boolean canUseChestplate(Item armor, boolean considerBoobs) {
-		if (!ItemHelper.isChest(armor)) {
-			return false;
-		}				
-		if (considerBoobs) {
-			return armor instanceof IFemaleArmor;
-		}		
-		return true;
-	}
-	
+	// Client Data START
 	public static PregnancySystemHelper.PrenatalRegularCheckUpData createRegularPrenatalCheckUpData(IPregnancySystemHandler ps) {
 		return new PregnancySystemHelper.PrenatalRegularCheckUpData(
 				ps.getCurrentPregnancyStage(),
 				ps.getLastPregnancyStage(),
 				ps.getPregnancyHealth(),
-				ps.getBabiesInsideWomb().getNumOfBabies(),
+				ps.getWomb().getNumOfBabies(),
 				ps.getDaysPassed(),
 				PregnancySystemHelper.calculateDaysToNextPhase(ps),
 				ps.getDaysToGiveBirth()
@@ -706,8 +732,35 @@ public class PreggoMobHelper {
 	public static PregnancySystemHelper.PrenatalUltrasoundScanData createUltrasoundScanPrenatalCheckUpData(Species motherSpecies, IPregnancySystemHandler ps) {
 		return new PregnancySystemHelper.PrenatalUltrasoundScanData(
 				motherSpecies,
-				ps.getBabiesInsideWomb()	
+				ps.getWomb()	
 				);
 	}
+	// Client Data END
+	
+	
+	// Common START	
+	public static boolean isPlayerInCreativeOrSpectator(LivingEntity entity) {
+	    if (entity instanceof Player player) {
+	        return player.isCreative() || player.isSpectator();
+	    }
+	    return false;
+	}
+	
+	public static boolean hasValidTarget(Mob entity) {
+	    LivingEntity target = entity.getTarget();
+	    return target != null && target.isAlive() && entity.canAttack(target);
+	}
+	
+	public static boolean isTargetStillValid(Mob entity) {
+	    LivingEntity target = entity.getTarget();
+	    return target != null && target.isAlive();
+	}
+	
+	public static void removeAndDropItemStackFromEquipmentSlot(Player player, EquipmentSlot slotId) {
+		if (dropItemStack(player, player.getItemBySlot(slotId))) {
+			player.setItemSlot(slotId, ItemStack.EMPTY);
+		}
+ 	}
+	// Common END
 }
 

@@ -15,8 +15,9 @@ import dev.dixmk.minepreggo.world.entity.ai.goal.PreggoMobAIHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobBody;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobFace;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobState;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlMenuHelper;
@@ -60,17 +61,19 @@ import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import net.minecraftforge.items.wrapper.EntityArmorInvWrapper;
 import net.minecraftforge.items.wrapper.EntityHandsInvWrapper;
 
-public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> extends AbstractCreeperGirl implements ITamablePreggoMob, IFemaleEntity {
+public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> extends AbstractCreeperGirl implements ITamablePreggoMob<FemaleEntityImpl>, IFemaleEntity {
 	
 	protected static final EntityDataAccessor<Integer> DATA_HUNGRY = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.INT);
 	protected static final EntityDataAccessor<Boolean> DATA_SAVAGE = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Boolean> DATA_ANGRY = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Boolean> DATA_WAITING = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Boolean> DATA_PANIC = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
-	protected static final EntityDataAccessor<PreggoMobState> DATA_STATE = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, MinepreggoModEntityDataSerializers.STATE);
 	protected static final EntityDataAccessor<CombatMode> DATA_COMBAT_MODE = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, MinepreggoModEntityDataSerializers.COMBAT_MODE);
 	protected static final EntityDataAccessor<Boolean> DATA_BREAK_BLOCKS = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Boolean> DATA_PICKUP_ITEMS = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
+	
+	protected static final EntityDataAccessor<Optional<PreggoMobFace>> DATA_FACE = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, MinepreggoModEntityDataSerializers.OPTIONAL_PREGGO_MOB_FACE);
+	protected static final EntityDataAccessor<Optional<PreggoMobBody>> DATA_BODY = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, MinepreggoModEntityDataSerializers.OPTIONAL_PREGGO_MOB_BODY);
 	
 	public static final int INVENTORY_SIZE = 13;
 	protected final ItemStackHandler inventory = new ItemStackHandler(INVENTORY_SIZE);
@@ -100,8 +103,9 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 		this.entityData.define(DATA_PANIC, false);
 		this.entityData.define(DATA_BREAK_BLOCKS, false);
 		this.entityData.define(DATA_PICKUP_ITEMS, this.canPickUpLoot());
-		this.entityData.define(DATA_STATE, PreggoMobState.IDLE);
 		this.entityData.define(DATA_COMBAT_MODE, CombatMode.FIGHT_AND_EXPLODE);
+		this.entityData.define(DATA_FACE, Optional.empty());
+		this.entityData.define(DATA_BODY, Optional.empty());
 	}
 	
 	@Override
@@ -117,9 +121,16 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 		compound.putBoolean("DataBreakBlocks", this.entityData.get(DATA_BREAK_BLOCKS));
 		compound.putBoolean("DataPickUpItems", this.entityData.get(DATA_PICKUP_ITEMS));
 		compound.putInt("DataPoweredTimer", this.poweredTimer);
-		compound.putInt("DataState", this.entityData.get(DATA_STATE).ordinal());
-		compound.putInt("DataCombatMode", this.entityData.get(DATA_COMBAT_MODE).ordinal());
-		this.defaultFemaleEntityImpl.serializeNBT(compound);
+		compound.putString(CombatMode.NBT_KEY, this.entityData.get(DATA_COMBAT_MODE).name());	
+		final var face = getFaceState();
+		if (face != null) {
+			compound.putString(PreggoMobFace.NBT_KEY, face.name());
+		}
+		final var body = getBodyState();
+		if (body != null) {
+			compound.putString(PreggoMobBody.NBT_KEY, body.name());
+		}
+		compound.put("defaultFemaleEntityImpl", this.defaultFemaleEntityImpl.serializeNBT());
 	}
 	
 	@Override
@@ -137,9 +148,16 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 		this.entityData.set(DATA_BREAK_BLOCKS, compound.getBoolean("DataBreakBlocks"));	
 		this.entityData.set(DATA_PICKUP_ITEMS, compound.getBoolean("DataPickUpItems"));	
 		this.poweredTimer = compound.getInt("DataPoweredTimer");
-		this.entityData.set(DATA_STATE, PreggoMobState.values()[compound.getInt("DataState")]);
-		this.entityData.set(DATA_COMBAT_MODE, CombatMode.values()[compound.getInt("DataCombatMode")]);
-		this.defaultFemaleEntityImpl.deserializeNBT(compound);
+		this.entityData.set(DATA_COMBAT_MODE, CombatMode.valueOf(compound.getString(CombatMode.NBT_KEY)));	
+		if (compound.contains(PreggoMobFace.NBT_KEY, Tag.TAG_STRING)) {
+			setFaceState(PreggoMobFace.valueOf(compound.getString(PreggoMobFace.NBT_KEY)));
+		}
+		if (compound.contains(PreggoMobBody.NBT_KEY, Tag.TAG_STRING)) {
+			setBodyState(PreggoMobBody.valueOf(compound.getString(PreggoMobBody.NBT_KEY)));
+		}
+		if (compound.contains("defaultFemaleEntityImpl", Tag.TAG_COMPOUND)) {
+			this.defaultFemaleEntityImpl.deserializeNBT(compound.getCompound("defaultFemaleEntityImpl"));
+		}
 	}
 	
 	@Override
@@ -270,7 +288,7 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 	public void tick() {
 		super.tick();
 			
-		if (this.level().isClientSide()) return;
+		if (this.level().isClientSide) return;
 				
 		preggoMobSystem.cinematicTick();
 				
@@ -319,8 +337,11 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 		return null;
 	}
 	
-	
 	// ITamablePreggoMob START
+	@Override
+	public int getInventorySize() {
+		return INVENTORY_SIZE;
+	}
 	
 	@Override
 	public int getFullness() {
@@ -363,17 +384,7 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 	public void resetHungryTimer() {
 		this.hungryTimer = 0;	
 	}
-	
-	@Override
-	public PreggoMobState getState() {
-		return this.entityData.get(DATA_STATE);
-	}
 
-	@Override
-	public void setState(PreggoMobState state) {
-		this.entityData.set(DATA_STATE, state);
-	}
-	
 	@Override
 	public boolean isSavage() {
 	    return this.entityData.get(DATA_SAVAGE);
@@ -445,13 +456,46 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 		this.entityData.set(DATA_BREAK_BLOCKS, value);
 	}
 
+	@Override
+	public @Nullable PreggoMobFace getFaceState() {
+		return this.entityData.get(DATA_FACE).orElse(null);
+	}
+
+	@Override
+	public void setFaceState(@Nullable PreggoMobFace state) {
+		this.entityData.set(DATA_FACE, Optional.ofNullable(state));
+	}
+
+	@Override
+	public void cleanFaceState() {
+		this.entityData.set(DATA_FACE, Optional.empty());
+	}
+
+	@Override
+	public @Nullable PreggoMobBody getBodyState() {
+		return this.entityData.get(DATA_BODY).orElse(null);
+	}
+
+	@Override
+	public void setBodyState(@Nullable PreggoMobBody state) {
+		this.entityData.set(DATA_BODY, Optional.ofNullable(state));	
+	}
+
+	@Override
+	public void cleanBodyState() {
+		this.entityData.set(DATA_BODY, Optional.empty());			
+	}
+	
+	@Override
+	public FemaleEntityImpl getGenderedData() {
+		return defaultFemaleEntityImpl;
+	}
+	
 	// ITamablePreggoMob END
 	
+
 	
-	
-	
-	// IFemaleEntity START
-	
+	// IFemaleEntity START	
 	@Override
 	public int getPregnancyInitializerTimer() {
 		return this.defaultFemaleEntityImpl.getPregnancyInitializerTimer();
@@ -512,6 +556,11 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 		return this.defaultFemaleEntityImpl.tryActivatePostPregnancyPhase(postPregnancy);
 	}
 
+	@Override
+	public boolean tryRemovePostPregnancyPhase() {
+		return this.defaultFemaleEntityImpl.tryRemovePostPregnancyPhase();
+	}
+	
 	@Override
 	public int getPostPregnancyTimer() {
 		return this.defaultFemaleEntityImpl.getPostPregnancyTimer();

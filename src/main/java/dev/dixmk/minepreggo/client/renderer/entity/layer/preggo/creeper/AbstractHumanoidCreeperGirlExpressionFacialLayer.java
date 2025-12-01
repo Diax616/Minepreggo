@@ -1,6 +1,6 @@
 package dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.creeper;
 
-import java.util.Optional;
+import javax.annotation.Nullable;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -35,6 +35,10 @@ public abstract class AbstractHumanoidCreeperGirlExpressionFacialLayer
 	protected static final RenderType PAIN4 = RenderType.entityCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/creeper_girl_face_pain4.png"));
 	protected static final RenderType HORNY2 = RenderType.entityCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/creeper_girl_face_horny2.png"));
 	
+	protected static final RenderType POST_PARTUM = RenderType.entityCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/creeper_girl_face_post_partum.png"));
+	protected static final RenderType POST_MISCARRIAGE = RenderType.entityCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/creeper_girl_face_post_miscarriage.png"));
+
+	
 	protected AbstractHumanoidCreeperGirlExpressionFacialLayer(RenderLayerParent<E, M> p_117346_) {
 		super(p_117346_);
 	}
@@ -45,12 +49,13 @@ public abstract class AbstractHumanoidCreeperGirlExpressionFacialLayer
 		
 		if (p_117352_.isInvisible()) return;
 		
-		this.renderType(p_117352_).ifPresent(r -> {
+		final var face = renderType(p_117352_);
+		if (face != null) {
 			poseStack.pushPose();	
-			getParentModel().head.render(poseStack, p_117350_.getBuffer(r), p_117351_, LivingEntityRenderer.getOverlayCoords(p_117352_, 0.0F));
+			getParentModel().head.render(poseStack, p_117350_.getBuffer(face), p_117351_, LivingEntityRenderer.getOverlayCoords(p_117352_, 0.0F));
 			poseStack.popPose();
-		});
+		}
 	}
 	
-	public abstract Optional<RenderType> renderType(E creeperGirl);
+	public abstract @Nullable RenderType renderType(E creeperGirl);
 }

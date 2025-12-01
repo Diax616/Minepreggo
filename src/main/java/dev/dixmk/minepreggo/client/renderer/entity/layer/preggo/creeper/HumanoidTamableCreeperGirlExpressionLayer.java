@@ -1,10 +1,11 @@
 package dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.creeper;
 
-import java.util.Optional;
+import javax.annotation.Nullable;
 
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractTamableCreeperGirlModel;
-import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobState;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobFace;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableHumanoidCreeperGirl;
+import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.world.effect.MobEffects;
@@ -20,21 +21,28 @@ public class HumanoidTamableCreeperGirlExpressionLayer
 		super(p_117346_);
 	}
 	
-	public Optional<RenderType> renderType(E creeperGirl) {	
-		if (creeperGirl.hasEffect(MobEffects.CONFUSION)) {
-			return Optional.of(PAIN4);
+	public @Nullable RenderType renderType(E creeperGirl) {	
+		
+		final var post = creeperGirl.getPostPregnancyPhase();
+		
+		if (post == PostPregnancy.MISCARRIAGE) {
+			return POST_MISCARRIAGE;
 		}
-		else if (creeperGirl.getState() == PreggoMobState.BLUSHED) {
-			return Optional.of(HORNY2);
+		else if (creeperGirl.hasEffect(MobEffects.CONFUSION)) {
+			return PAIN4;
+		}
+		else if (creeperGirl.getFaceState() == PreggoMobFace.BLUSHED) {
+			return HORNY2;
 		}
 		else if (creeperGirl.isWaiting()) {
-			return Optional.of(SAD2);
+			return SAD2;
 		}
 		else if (creeperGirl.isSavage()) {
-			return Optional.of(SAD3);
+			return SAD3;
 		}
-		else {
-			return Optional.empty();
+		else if (post == PostPregnancy.PARTUM) {
+			return POST_PARTUM;
 		}
+		return null;
 	}
 }

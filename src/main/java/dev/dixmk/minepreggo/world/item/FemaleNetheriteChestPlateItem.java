@@ -34,6 +34,11 @@ public abstract class FemaleNetheriteChestPlateItem extends ArmorItem implements
 		public PregnancyPhase getMinPregnancyPhaseAllowed() {
 			return maxPregnancyPhase;
 		}
+		
+		@Override
+		public boolean canSupportLactatingBoobs() {
+			return false;
+		}
 	}
 	
 	

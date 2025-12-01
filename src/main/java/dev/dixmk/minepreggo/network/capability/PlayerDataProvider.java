@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -29,6 +30,6 @@ public class PlayerDataProvider implements ICapabilitySerializable<Tag> {
 
 	@Override
 	public void deserializeNBT(Tag nbt) {
-		playerData.deserializeNBT(nbt);
+		playerData.deserializeNBT((CompoundTag) nbt);
 	}
 }

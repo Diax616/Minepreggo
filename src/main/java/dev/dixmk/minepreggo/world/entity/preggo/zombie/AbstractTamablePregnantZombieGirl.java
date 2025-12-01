@@ -5,12 +5,14 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
+import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Nullable;
 
 
 import dev.dixmk.minepreggo.MinepreggoMod;
+import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
 import dev.dixmk.minepreggo.world.entity.ai.goal.PreggoMobAIHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
@@ -18,6 +20,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobPregnancySystemP0;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.pregnancy.Craving;
+import dev.dixmk.minepreggo.world.pregnancy.IBreedable;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancyEffectsHandler;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.pregnancy.MapPregnancyPhase;
@@ -129,7 +132,7 @@ public abstract class AbstractTamablePregnantZombieGirl<S extends PreggoMobSyste
 			compoundTag.putString(PregnancyPain.NBT_KEY, pain.name());
 		}
 
-		if(babiesInsideWomb != null && !babiesInsideWomb.isEmpty()) {
+		if (babiesInsideWomb != null && !babiesInsideWomb.isEmpty()) {
 			compoundTag.put("DataBabies", this.babiesInsideWomb.toNBT());
 		}
 		if (daysByPregnancyPhase != null && !daysByPregnancyPhase.isEmpty()) {
@@ -167,10 +170,27 @@ public abstract class AbstractTamablePregnantZombieGirl<S extends PreggoMobSyste
 	    
 	    if (compoundTag.contains("DataBabies", Tag.TAG_COMPOUND)) {
 	    	this.babiesInsideWomb = Womb.fromNBT(compoundTag.getCompound("DataBabies"));
+	    	if (this.babiesInsideWomb == null) {
+	    		this.defaultFemaleEntityImpl.getPrePregnancyData().ifPresentOrElse(data -> {
+	    			this.babiesInsideWomb = new Womb(
+	    					ImmutableTriple.of(this.getUUID(), this.getTypeOfSpecies(), this.getTypeOfCreature()),
+	    					ImmutableTriple.of(Optional.ofNullable(data.fatherId()), data.typeOfSpeciesOfFather(), data.typeOfCreatureOfFather()),
+	    					random,
+	    					data.fertilizedEggs());
+	    			MinepreggoMod.LOGGER.error("Womb is not present in NBT of class: {}, Creating a new one from PrePregnancyData", this.getClass().getSimpleName());
+	    		}, () -> {
+	    			this.babiesInsideWomb = new Womb(ImmutableTriple.of(this.getUUID(), this.getTypeOfSpecies(), this.getTypeOfCreature()), random, IBreedable.calculateNumOfBabiesByMaxPregnancyStage(lastPregnancyPhase));
+	    			MinepreggoMod.LOGGER.error("Neither Womb nor PrePregnancyData are present in NBT of class: {}, Creating a new one", this.getClass().getSimpleName());
+	    		});    		
+	    	}
 	    }  	
 	    
 	    if (compoundTag.contains("DaysByPhase", Tag.TAG_COMPOUND)) {
 	    	this.daysByPregnancyPhase = MapPregnancyPhase.fromNBT(compoundTag.getCompound("DaysByPhase"));
+	    	if (this.daysByPregnancyPhase == null) {
+	    		this.daysByPregnancyPhase = new MapPregnancyPhase(MinepreggoModConfig.getTotalPregnancyDays(), lastPregnancyPhase);
+    			MinepreggoMod.LOGGER.error("MapPregnancyPhase is not present in NBT of class: {}, Creating a new one", this.getClass().getSimpleName());
+	    	}
 	    } 
 	}
 	
@@ -260,7 +280,7 @@ public abstract class AbstractTamablePregnantZombieGirl<S extends PreggoMobSyste
 	}
 
 	@Override
-	public MapPregnancyPhase getDaysByStageMapping() {
+	public MapPregnancyPhase getMapPregnancyPhase() {
 		return this.daysByPregnancyPhase;
 	}
 	
@@ -270,7 +290,7 @@ public abstract class AbstractTamablePregnantZombieGirl<S extends PreggoMobSyste
 	}
 	
 	@Override
-	public void setDaysByStage(MapPregnancyPhase map) {
+	public void setMapPregnancyPhase(MapPregnancyPhase map) {
 		this.daysByPregnancyPhase = map;
 	}
 	
@@ -384,12 +404,12 @@ public abstract class AbstractTamablePregnantZombieGirl<S extends PreggoMobSyste
 	}
 
 	@Override
-	public void setBabiesInsideWomb(@NonNull Womb babiesInsideWomb) {
+	public void setWomb(@NonNull Womb babiesInsideWomb) {
 		this.babiesInsideWomb = babiesInsideWomb;
 	}
 	
 	@Override
-	public Womb getBabiesInsideWomb() {
+	public Womb getWomb() {
 		return this.babiesInsideWomb;
 	}
 	

@@ -22,6 +22,6 @@ public class MonsterCreeperGirlP7Renderer extends AbstractMonsterPregnantCreeper
 
 	@Override
 	public ResourceLocation getTextureLocation(MonsterCreeperGirlP7 p_115812_) {
-		return AbstractHumanoidCreeperGirlRenderer.CREEPER_GIRL_P7_LOCATION;
+		return AbstractHumanoidCreeperGirlRenderer.CREEPER_GIRL_P7_LOCATION.getLeft();
 	}
 }

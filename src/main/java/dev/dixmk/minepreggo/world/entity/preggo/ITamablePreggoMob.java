@@ -1,11 +1,13 @@
 package dev.dixmk.minepreggo.world.entity.preggo;
 
 import org.checkerframework.checker.index.qual.NonNegative;
+import org.jetbrains.annotations.Nullable;
 
+import dev.dixmk.minepreggo.world.pregnancy.AbstractBreedableEntity;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 
-public interface ITamablePreggoMob {
+public interface ITamablePreggoMob<G extends AbstractBreedableEntity> {
 	
 	static final int HEAD_INVENTORY_SLOT = EquipmentSlot.HEAD.getFilterFlag();
 	static final int CHEST_INVENTORY_SLOT = EquipmentSlot.CHEST.getFilterFlag();
@@ -40,17 +42,26 @@ public interface ITamablePreggoMob {
     void setPanic(boolean panic);
       
     boolean hasCustomHeadAnimation();
-    
-	PreggoMobState getState();
-	void setState(PreggoMobState state);
+	
+	@Nullable PreggoMobFace getFaceState();
+	void setFaceState (@Nullable PreggoMobFace state);
+	void cleanFaceState ();
+	
+	@Nullable PreggoMobBody getBodyState();
+	void setBodyState (@Nullable PreggoMobBody state);
+	void cleanBodyState ();
 	
 	void setCinematicOwner(ServerPlayer player);
     
     void setCinematicEndTime(long time);
+    
+    int getInventorySize();
     
     boolean canPickUpItems();
     void setPickUpItems(boolean value);
     
     boolean canBreakBlocks();
     void setBreakBlocks(boolean value);
+   
+    G getGenderedData();
 }

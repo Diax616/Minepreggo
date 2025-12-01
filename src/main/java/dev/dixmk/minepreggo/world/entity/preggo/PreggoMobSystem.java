@@ -27,7 +27,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob> {
+public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> {
 	
 	public static final int MIN_FULLNESS_TO_HEAL = 16;
 	public static final int MIN_FULLNESS_TO_TAME_AGAIN = 12;
@@ -229,7 +229,7 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob> {
 	    return null;		
 	}
 	
-	public static<E extends TamableAnimal & ITamablePreggoMob> void spawnParticles(E preggoMob, Result result) {
+	public static<E extends TamableAnimal & ITamablePreggoMob<?>> void spawnParticles(E preggoMob, Result result) {
 
 		ParticleOptions particleoptions;
 			
@@ -261,7 +261,7 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob> {
 	private void endCinematic() {
         if (cinematicOwner != null && ServerSexCinematicManager.isInCinematic(cinematicOwner)) {
             ServerSexCinematicManager.end(cinematicOwner);
-            preggoMob.setState(PreggoMobState.IDLE);
+            preggoMob.cleanFaceState();
             MinepreggoModPacketHandler.INSTANCE.send(
                 PacketDistributor.PLAYER.with(() -> cinematicOwner),
                 new SexCinematicControlS2CPacket(false, preggoMob.getId())

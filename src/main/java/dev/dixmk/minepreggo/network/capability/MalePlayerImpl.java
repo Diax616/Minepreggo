@@ -1,10 +1,7 @@
 package dev.dixmk.minepreggo.network.capability;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import dev.dixmk.minepreggo.world.pregnancy.MaleEntityImpl;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.util.Mth;
 
 public class MalePlayerImpl extends MaleEntityImpl {
@@ -42,26 +39,18 @@ public class MalePlayerImpl extends MaleEntityImpl {
 		this.fap = Math.min(this.fap - Math.max(0, amount), 0);		
 	}
 
-	
 	@Override
-	public void serializeNBT(@NonNull Tag tag) {
-		super.serializeNBT(tag);
-		CompoundTag nbt = (CompoundTag) tag;
+	public CompoundTag serializeNBT() {
+		CompoundTag nbt = super.serializeNBT();
 		nbt.putInt("DataFapTimer", fapTimer);
 		nbt.putInt("DataFap", fap);
+		return nbt;
 	}
 	
 	@Override
-	public void deserializeNBT(@NonNull Tag tag) {
-		super.deserializeNBT(tag);
-		CompoundTag nbt = (CompoundTag) tag;
+	public void deserializeNBT(CompoundTag nbt) {
+		super.deserializeNBT(nbt);
 		fapTimer = nbt.getInt("DataFapTimer");
 		fap = nbt.getInt("Datafap");
-	}
-	
-	public void copyFrom(@NonNull MalePlayerImpl target) {
-	    CompoundTag nbt = new CompoundTag();
-	    target.serializeNBT(nbt);
-	    this.deserializeNBT(nbt);
 	}
 }

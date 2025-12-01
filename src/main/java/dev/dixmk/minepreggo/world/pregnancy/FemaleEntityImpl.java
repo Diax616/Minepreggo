@@ -9,6 +9,7 @@ import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Nullable;
 
+import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import net.minecraft.nbt.CompoundTag;
@@ -67,10 +68,7 @@ public class FemaleEntityImpl extends AbstractBreedableEntity implements IFemale
 
 	@Override
 	public @Nullable PostPregnancy getPostPregnancyPhase() {
-		if (this.postPregnancy.isPresent()) {
-			return this.postPregnancy.get();
-		}
-		return null;
+		return this.postPregnancy.orElse(null);
 	}
 
 	@Override
@@ -78,11 +76,21 @@ public class FemaleEntityImpl extends AbstractBreedableEntity implements IFemale
 		if (pregnant) {
 			this.postPregnancy = Optional.of(postPregnancy);
 			this.pregnant = false;
+			this.prePregnancyData = Optional.empty();
 			return true;
 		}
 		return false;
 	}
 
+	@Override
+	public boolean tryRemovePostPregnancyPhase() {
+		if (getPostPregnancyPhase() != null) {
+			this.postPregnancy = Optional.empty();
+			return true;
+		}
+		return false;
+	}
+	
 	@Override
 	public int getPostPregnancyTimer() {
 		return postPregnancyTimer;
@@ -126,29 +134,32 @@ public class FemaleEntityImpl extends AbstractBreedableEntity implements IFemale
 	}
 	
 	@Override
-	public void serializeNBT(@NonNull Tag tag) {
-		super.serializeNBT(tag);
-		CompoundTag nbt = (CompoundTag) tag;
+	public CompoundTag serializeNBT() {
+		CompoundTag nbt = super.serializeNBT();
 		nbt.putInt("DataPregnancyInitializerTimer", pregnancyInitializerTimer);
 		nbt.putInt("DataPostPregnancyTimer", postPregnancyTimer);
 		nbt.putBoolean("DataPregnant", pregnant);
 		postPregnancy.ifPresent(post -> nbt.putString(PostPregnancy.NBT_KEY, post.name()));
-		prePregnancyData.ifPresent(pre -> pre.serializeNBT(tag, PrePregnancyData.NBT_KEY));
+		prePregnancyData.ifPresent(pre -> nbt.put("DataPrePregnancyData", pre.toNBT()));
+		return nbt;
 	}
 	
 	@Override
-	public void deserializeNBT(@NonNull Tag tag) {
-		super.deserializeNBT(tag);
-		CompoundTag nbt = (CompoundTag) tag;
+	public void deserializeNBT(CompoundTag nbt) {
+		super.deserializeNBT(nbt);
 		pregnancyInitializerTimer = nbt.getInt("DataPregnancyInitializerTimer");
 		pregnant = nbt.getBoolean("DataPregnant");
 		postPregnancyTimer = nbt.getInt("DataPostPregnancyTimer");
 		
 	    if (nbt.contains(PostPregnancy.NBT_KEY, Tag.TAG_STRING)) {
-	        String name = nbt.getString(PostPregnancy.NBT_KEY);
-	        postPregnancy = Optional.of(PostPregnancy.valueOf(name));
+	        postPregnancy = Optional.of(PostPregnancy.valueOf(nbt.getString(PostPregnancy.NBT_KEY)));
 	    }
-	    
-	    prePregnancyData = Optional.ofNullable(PrePregnancyData.deserializeNBT(tag, PrePregnancyData.NBT_KEY));
+
+	    if (nbt.contains("DataPrePregnancyData", Tag.TAG_COMPOUND)) {
+		    prePregnancyData = Optional.ofNullable(PrePregnancyData.fromNBT(nbt.getCompound("DataPrePregnancyData")));
+		    if (prePregnancyData.isEmpty()) {
+		    	MinepreggoMod.LOGGER.error("PrePregnancyData is not present");
+		    }
+	    }
 	}
 }

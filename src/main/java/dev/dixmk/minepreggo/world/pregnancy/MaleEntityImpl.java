@@ -4,8 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -34,9 +32,8 @@ public class MaleEntityImpl extends AbstractBreedableEntity implements IMaleEnti
 	}
 	
 	@Override
-	public void serializeNBT(@NonNull Tag tag) {
-		super.serializeNBT(tag);
-		CompoundTag nbt = (CompoundTag) tag;
+	public CompoundTag serializeNBT() {
+		CompoundTag nbt = super.serializeNBT();
 		ListTag list = new ListTag();
 		this.pregnantEntities.forEach(value -> {		
 			CompoundTag pair = new CompoundTag();
@@ -44,12 +41,12 @@ public class MaleEntityImpl extends AbstractBreedableEntity implements IMaleEnti
 			list.add(pair);
 		});
 		nbt.put("DataPregnantEntitiesByHim", list);
+		return nbt;
 	}
 	
 	@Override
-	public void deserializeNBT(@NonNull Tag tag) {
-		super.deserializeNBT(tag);
-		CompoundTag nbt = (CompoundTag) tag;	
+	public void deserializeNBT(CompoundTag nbt) {
+		super.deserializeNBT(nbt);
 		ListTag list = nbt.getList("DataPregnantEntitiesByHim", Tag.TAG_COMPOUND);		
 	    for (var t : list) {
 	        CompoundTag pair = (CompoundTag) t;

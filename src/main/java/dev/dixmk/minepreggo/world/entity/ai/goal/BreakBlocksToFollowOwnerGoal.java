@@ -10,7 +10,7 @@ import java.util.EnumSet;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 
-public class BreakBlocksToFollowOwnerGoal<E extends PreggoMob & ITamablePreggoMob> extends Goal {
+public class BreakBlocksToFollowOwnerGoal<E extends PreggoMob & ITamablePreggoMob<?>> extends Goal {
     private final E tamable;
     private final float maxDistance;
     private final float minDistance;

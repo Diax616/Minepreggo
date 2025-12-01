@@ -53,6 +53,11 @@ public abstract class FemaleDiamondChestPlateItem extends ArmorItem implements I
 		public PregnancyPhase getMinPregnancyPhaseAllowed() {
 			return maxPregnancyPhase;
 		}
+		
+		@Override
+		public boolean canSupportLactatingBoobs() {
+			return false;
+		}
 	}
 	
 	public static class MaternityChestplateP1 extends MaternityFemaleDiamondChestPlateItem {

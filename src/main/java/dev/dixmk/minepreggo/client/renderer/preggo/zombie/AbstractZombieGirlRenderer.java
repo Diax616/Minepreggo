@@ -1,5 +1,7 @@
 package dev.dixmk.minepreggo.client.renderer.preggo.zombie;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.model.entity.preggo.zombie.AbstractZombieGirlModel;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractZombieGirl;
@@ -18,11 +20,26 @@ public abstract class AbstractZombieGirlRenderer<E extends AbstractZombieGirl, M
 	protected static final ResourceLocation  ZOMBIE_GIRL_P1_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/zombie_girl_p1.png");
 	protected static final ResourceLocation  ZOMBIE_GIRL_P2_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/zombie_girl_p2.png");
 	protected static final ResourceLocation  ZOMBIE_GIRL_P3_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/zombie_girl_p3.png");
-	protected static final ResourceLocation  ZOMBIE_GIRL_P4_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/zombie_girl_p4.png");
-	protected static final ResourceLocation  ZOMBIE_GIRL_P5_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/zombie_girl_p5.png");
-	protected static final ResourceLocation  ZOMBIE_GIRL_P6_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/zombie_girl_p6.png");
-	protected static final ResourceLocation  ZOMBIE_GIRL_P7_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/zombie_girl_p7.png");
-	protected static final ResourceLocation  ZOMBIE_GIRL_P8_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/zombie_girl_p8.png");
+
+	protected static final ImmutablePair<ResourceLocation, ResourceLocation>  ZOMBIE_GIRL_P4_LOCATION = ImmutablePair.of(
+			ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/zombie_girl_p4.png"),
+			ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/zombie_girl_p4_nude.png"));
+	
+	protected static final ImmutablePair<ResourceLocation, ResourceLocation>  ZOMBIE_GIRL_P5_LOCATION = ImmutablePair.of(
+			ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/zombie_girl_p5.png"),
+			ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/zombie_girl_p5_nude.png"));
+	
+	protected static final ImmutablePair<ResourceLocation, ResourceLocation>  ZOMBIE_GIRL_P6_LOCATION = ImmutablePair.of(
+			ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/zombie_girl_p6.png"),
+			ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/zombie_girl_p6_nude.png"));
+	
+	protected static final ImmutablePair<ResourceLocation, ResourceLocation>  ZOMBIE_GIRL_P7_LOCATION = ImmutablePair.of(
+			ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/zombie_girl_p7.png"),
+			ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/zombie_girl_p7_nude.png"));
+	
+	protected static final ImmutablePair<ResourceLocation, ResourceLocation>  ZOMBIE_GIRL_P8_LOCATION = ImmutablePair.of(
+			ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/zombie_girl_p8.png"),
+			ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/zombie_girl_p8_nude.png"));
 	
 	protected AbstractZombieGirlRenderer(EntityRendererProvider.Context context, M main, M inner, M outter) {
 		super(context, main, 0.5F);

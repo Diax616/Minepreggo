@@ -350,8 +350,8 @@
 	
 	"chat.minepreggo.preggo_mob.birth.message.pre": "%s's babies wanna come out, she can't stand up!",
 	"chat.minepreggo.preggo_mob.birth.message.init": "%s's water just broke, her babies are comming!",
-	"chat.minepreggo.preggo_mob.birth.message.post": "%s just gave birth your babies, congratulation %s!",
-	"chat.minepreggo.preggo_mob.birth.message.warning": "%s's babies wanna come out, she can't stand up!",
+	"chat.minepreggo.preggo_mob.birth.message.post": "%s just gave birth your babies, congratulation!",
+	"chat.minepreggo.preggo_mob.birth.message.warning": "%s's babies wanna come out, she can't move!",
 	
 	"chat.minepreggo.preggo_mob.miscarriage.message.post": "%s just lost the babies...",
 	"chat.minepreggo.preggo_mob.miscarriage.message.init": "%s feels much pain below her pregnant belly, it's too late!",

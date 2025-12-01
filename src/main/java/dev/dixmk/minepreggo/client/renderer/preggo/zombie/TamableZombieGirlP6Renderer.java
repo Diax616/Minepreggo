@@ -2,6 +2,7 @@ package dev.dixmk.minepreggo.client.renderer.preggo.zombie;
 
 import dev.dixmk.minepreggo.client.model.entity.preggo.zombie.AbstractZombieGirlModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.zombie.TamableZombieGirlP6Model;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobBody;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP6;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -21,7 +22,10 @@ public class TamableZombieGirlP6Renderer extends AbstractTamablePregnantZombieGi
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(TamableZombieGirlP6 p_115812_) {
-		return ZOMBIE_GIRL_P6_LOCATION;
+	public ResourceLocation getTextureLocation(TamableZombieGirlP6 entity) {
+		if (entity.getBodyState() == PreggoMobBody.NAKED) {
+			return ZOMBIE_GIRL_P6_LOCATION.getRight();
+		}
+		return ZOMBIE_GIRL_P6_LOCATION.getLeft(); 
 	}
 }

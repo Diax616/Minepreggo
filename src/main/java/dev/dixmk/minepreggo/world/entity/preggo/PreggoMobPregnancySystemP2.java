@@ -9,6 +9,7 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem.Result;
+import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancyEffectsHandler;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
@@ -27,7 +28,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public abstract class PreggoMobPregnancySystemP2<E extends PreggoMob
-	& ITamablePreggoMob & IPregnancySystemHandler & IPregnancyEffectsHandler> extends PreggoMobPregnancySystemP1<E> {
+	& ITamablePreggoMob<FemaleEntityImpl> & IPregnancySystemHandler & IPregnancyEffectsHandler> extends PreggoMobPregnancySystemP1<E> {
 	
 	protected @Nonnegative int totalTicksOfMilking = MinepreggoModConfig.getTotalTicksOfMilkingP2();
 	
@@ -86,8 +87,9 @@ public abstract class PreggoMobPregnancySystemP2<E extends PreggoMob
 		}
 		if (pregnantEntity.getMilking() >= PregnancySystemHelper.ACTIVATE_MILKING_SYMPTOM
 				&& !pregnantEntity.getPregnancySymptoms().contains(PregnancySymptom.MILKING)) {
-	    	pregnantEntity.addPregnancySymptom(PregnancySymptom.MILKING);
 	    	
+			pregnantEntity.addPregnancySymptom(PregnancySymptom.MILKING);
+		
 			MinepreggoMod.LOGGER.debug("Player {} has developed pregnancy symptom: {}, all pregnancy symptoms: {}",
 					pregnantEntity.getSimpleName(), PregnancySymptom.MILKING, pregnantEntity.getPregnancySymptoms());
 	    	

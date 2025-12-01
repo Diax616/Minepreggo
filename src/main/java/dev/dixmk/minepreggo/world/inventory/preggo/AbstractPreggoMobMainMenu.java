@@ -15,7 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 public abstract class AbstractPreggoMobMainMenu
-	<E extends PreggoMob & ITamablePreggoMob> extends AbstractContainerMenu {
+	<E extends PreggoMob & ITamablePreggoMob<?>> extends AbstractContainerMenu {
 
 	public final Level level;
 	public final Player player;

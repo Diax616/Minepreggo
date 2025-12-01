@@ -35,6 +35,11 @@ public abstract class FemaleChainmailChestPlateItem extends ArmorItem implements
 		public PregnancyPhase getMinPregnancyPhaseAllowed() {
 			return maxPregnancyPhase;
 		}
+		
+		@Override
+		public boolean canSupportLactatingBoobs() {
+			return false;
+		}
 	}
 		
 	public static class ChestplateP0 extends FemaleChainmailChestPlateItem {	

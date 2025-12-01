@@ -6,6 +6,6 @@ public interface IMaternityArmor extends IFemaleArmor {
 
 	PregnancyPhase getMinPregnancyPhaseAllowed();
 	
-	
+	boolean canSupportLactatingBoobs();
 	
 }

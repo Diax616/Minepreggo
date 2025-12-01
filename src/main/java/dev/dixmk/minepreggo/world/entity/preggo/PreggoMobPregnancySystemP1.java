@@ -1,5 +1,6 @@
 package dev.dixmk.minepreggo.world.entity.preggo;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -14,7 +15,7 @@ import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem.Result;
 import dev.dixmk.minepreggo.world.item.IItemCraving;
-import dev.dixmk.minepreggo.world.pregnancy.IBreedable;
+import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancyEffectsHandler;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
@@ -38,7 +39,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public abstract class PreggoMobPregnancySystemP1<
-	E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler & IPregnancyEffectsHandler> extends PreggoMobPregnancySystemP0<E> {
+	E extends PreggoMob & ITamablePreggoMob<FemaleEntityImpl> & IPregnancySystemHandler & IPregnancyEffectsHandler> extends PreggoMobPregnancySystemP0<E> {
 
 	private int pregnancyPainTicks = 0;
 	private int pregnancysymptonsTicks = 0;
@@ -143,17 +144,36 @@ public abstract class PreggoMobPregnancySystemP1<
     						1, 0, 1, 0, 0.02);
     		    }
     		}
-    		MinepreggoMod.LOGGER.debug("Miscarriage in progress: class={}, timer={}", pregnantEntity.getClass().getSimpleName(), pregnantEntity.getPregnancyPainTimer());
-        } else {  
-        	final var babyItem = PregnancySystemHelper.getDeadBabyItem(pregnantEntity.getTypeOfSpecies(), pregnantEntity.getTypeOfCreature());
-        	if (babyItem == null) {
+        } else {      	
+        	final var deadBabiesItemStacks = new ArrayList<>(PregnancySystemHelper.getDeadBabies(pregnantEntity.getWomb()));   	
+       		
+        	MinepreggoMod.LOGGER.debug("Miscarriage delivering {} dead babies: id={}, class={}",
+					deadBabiesItemStacks.size(), pregnantEntity.getId(), pregnantEntity.getClass().getSimpleName());
+        	
+        	if (deadBabiesItemStacks.isEmpty()) {
 				MinepreggoMod.LOGGER.error("Failed to get dead baby item for miscarriage event. mobId={}, mobClass={}",
 						pregnantEntity.getId(), pregnantEntity.getClass().getSimpleName());
-			} else {
-				ItemStack droppedItem = new ItemStack(babyItem, IBreedable.calculateNumOfBabiesByMaxPregnancyStage(pregnantEntity.getLastPregnancyStage()));
-				PreggoMobHelper.setItemstackOnOffHand(pregnantEntity, droppedItem);
-			}      	
+			}
+        	
+        	// TODO: Babies itemstacks are only removed if player's hands are empty. It should handle stacking unless itemstack is a baby item.
+        	deadBabiesItemStacks.removeIf(baby -> {
+        		if (pregnantEntity.getItemInHand(InteractionHand.MAIN_HAND).isEmpty()) {
+        			PreggoMobHelper.setItemstackInHand(pregnantEntity, InteractionHand.MAIN_HAND, baby);
+            		return true;
+        		}
+        		else if (pregnantEntity.getItemInHand(InteractionHand.OFF_HAND).isEmpty()) {
+        			PreggoMobHelper.setItemstackInHand(pregnantEntity, InteractionHand.OFF_HAND, baby);
+            		return true;
+        		}
+        		return false;
+        	});
+        	    	
+        	if (!deadBabiesItemStacks.isEmpty()) {
+            	deadBabiesItemStacks.forEach(baby -> PreggoMobHelper.storeItemInSpecificRangeOrDrop(pregnantEntity, baby, ITamablePreggoMob.FOOD_INVENTORY_SLOT + 1, pregnantEntity.getInventorySize() - 1)); 	
+        	}
+	    	
         	initPostMiscarriage();	 
+        	MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) pregnantEntity.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.miscarriage.message.post", pregnantEntity.getSimpleName()));
         	pregnantEntity.discard();
         	MinepreggoMod.LOGGER.debug("Miscarriage completed: id={}, class={}", pregnantEntity.getId(), pregnantEntity.getClass().getSimpleName());
         }	
@@ -194,6 +214,8 @@ public abstract class PreggoMobPregnancySystemP1<
 	
 	@Override
 	public void evaluateOnSuccessfulHurt(DamageSource damagesource) {	
+		if (pregnantEntity.getPregnancyPain() == PregnancyPain.MISCARRIAGE) return;
+		
 		if ((pregnantEntity.hasEffect(MinepreggoModMobEffects.PREGNANCY_RESISTANCE.get()) && randomSource.nextFloat() < 0.9F)
 				|| (!damagesource.is(DamageTypes.FALL) && !pregnantEntity.getItemBySlot(EquipmentSlot.CHEST).isEmpty() && randomSource.nextFloat() < 0.5)) {
 			return;
@@ -217,7 +239,10 @@ public abstract class PreggoMobPregnancySystemP1<
 			pregnantEntity.setPregnancyHealth(currentPregnancyHealth);
 		}
 		
-		if (damage > 0) {		
+		if (currentPregnancyHealth == 0) {
+			startMiscarriage();
+		}	
+		else if (damage > 0) {		
 			if (pregnantEntity.getPregnancyHealth() < 40) {
 				MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) pregnantEntity.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.miscarriage.message.warning", pregnantEntity.getSimpleName()));
 			}					
@@ -239,6 +264,14 @@ public abstract class PreggoMobPregnancySystemP1<
 	@Override
 	public boolean isMiscarriageActive() {
 	    return pregnantEntity.getPregnancyPain() == PregnancyPain.MISCARRIAGE;
+	}
+	
+	@Override
+	protected void startMiscarriage() {
+		this.pregnantEntity.setPregnancyPain(PregnancyPain.MISCARRIAGE);
+		this.pregnantEntity.resetPregnancyPainTimer();
+		MinepreggoMod.LOGGER.debug("Miscarriage just started");
+		MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) pregnantEntity.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.miscarriage.message.init", pregnantEntity.getSimpleName()));
 	}
 	
 	@Override

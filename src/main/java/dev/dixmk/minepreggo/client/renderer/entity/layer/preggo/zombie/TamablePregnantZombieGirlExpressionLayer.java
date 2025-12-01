@@ -1,11 +1,12 @@
 package dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.zombie;
 
-import java.util.Optional;
+import javax.annotation.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.model.entity.preggo.zombie.AbstractTamablePregnantZombieGirlModel;
-import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobState;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobFace;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.resources.ResourceLocation;
@@ -29,33 +30,33 @@ public class TamablePregnantZombieGirlExpressionLayer
 	}
 
 	@Override
-	public Optional<RenderType> renderType(E zombieGirl) {		
+	public @Nullable RenderType renderType(E zombieGirl) {		
 		
-		if (zombieGirl.isOnFire()) {
-			return Optional.of(SURPRISED2);
-		}
-			
 		final var pain = zombieGirl.getPregnancyPain();
 		
+		if (zombieGirl.isOnFire() || pain == PregnancyPain.WATER_BREAKING) {
+			return SURPRISED2;
+		}
+				
 		if (pain != null) {			
 			switch (pain) {
 			case MORNING_SICKNESS: {		
-				return Optional.of(PAIN4);
+				return PAIN4;
 			}
 			case FETAL_MOVEMENT: {		
-				return Optional.of(PAIN1);
+				return PAIN1;
 			}
 			case CONTRACTION: {		
-				return Optional.of(PAIN2);
+				return PAIN2;
 			}
 			case MISCARRIAGE: {		
-				return Optional.of(SURPRISED1);
+				return SURPRISED1;
 			}
 			case PREBIRTH: {		
-				return Optional.of(PAIN3);
+				return PAIN3;
 			}
 			case BIRTH: {		
-				return Optional.of(PAIN1);
+				return PAIN1;
 			}
 			default:
 				break;
@@ -63,19 +64,19 @@ public class TamablePregnantZombieGirlExpressionLayer
 		}
 		
 		if (!zombieGirl.getPregnancySymptoms().isEmpty()) {
-			return Optional.of(SAD1);
+			return SAD1;
 		}
-		else if (zombieGirl.getState() == PreggoMobState.BLUSHED) {
-			return Optional.of(HORNY2);
+		else if (zombieGirl.getFaceState() == PreggoMobFace.BLUSHED) {
+			return HORNY2;
 		}
 		else if (zombieGirl.isWaiting()) {
-			return Optional.of(SAD2);
+			return SAD2;
 		}
 		else if (zombieGirl.isSavage()) {
-			return Optional.of(SAD3);
+			return SAD3;
 		}
 
-		return Optional.empty();
+		return null;
 	}
 }
 

@@ -39,15 +39,20 @@ public abstract class AbstractZombieGirlInventoryMenu<E extends AbstractTamableZ
 				@Override
 				public boolean mayPlace(ItemStack itemstack) {	
 					boolean flag = true;
+					var armor = itemstack.getItem();
 					if (zombieGirl instanceof IPregnancySystemHandler pregnancySystem) {
 						final var pregnancyPhase = pregnancySystem.getCurrentPregnancyStage();					
-						if (!PregnancySystemHelper.canUseChestplate(itemstack.getItem(), pregnancyPhase)) {
+						if (!PregnancySystemHelper.canUseChestplate(armor, pregnancyPhase)) {
 							MessageHelper.warnFittedArmor((Player) zombieGirl.getOwner(), zombieGirl, pregnancyPhase);
 			                flag = false;
-						}			
+						}	
+						if (!PregnancySystemHelper.canUseChestPlateInLactation(zombieGirl, armor)) {
+							MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) zombieGirl.getOwner()), Component.translatable("%s's lactating boobs don't fit in this armor", zombieGirl.getSimpleName()));
+			                flag = false;
+						}
 					}					
 					else {                      
-						flag = PreggoMobHelper.canUseChestplate(itemstack.getItem());
+						flag = PreggoMobHelper.canUseChestplate(armor);
 						if (!flag) {
 							MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) zombieGirl.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.armor.message.chestplate_does_not_fit.boobs", zombieGirl.getSimpleName()));
 						}

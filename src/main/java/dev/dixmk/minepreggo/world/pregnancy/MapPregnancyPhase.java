@@ -6,12 +6,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnegative;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import com.google.common.collect.ImmutableMap;
 
+import dev.dixmk.minepreggo.MinepreggoMod;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -60,7 +62,7 @@ public class MapPregnancyPhase {
 					ImmutablePair.of(PregnancyPhase.P8, 0.15F))
 			);
 	
-	public static final String NBT_KEY = "DataMapPregnancyPhase";
+	private static final String NBT_KEY = "DataMapPregnancyPhase";
 	
 	private	Map<PregnancyPhase, Integer> daysByPregnancyPhase;
 	
@@ -146,17 +148,24 @@ public class MapPregnancyPhase {
 		return nbt;
     }
     
-    public static MapPregnancyPhase fromNBT(CompoundTag tag) {
-		Map<PregnancyPhase, Integer> map = new EnumMap<>(PregnancyPhase.class);
-    	ListTag list = tag.getList(NBT_KEY, Tag.TAG_COMPOUND);	
-	    for (var t : list) {
-	        CompoundTag pair = (CompoundTag) t;
-	        PregnancyPhase key = PregnancyPhase.valueOf(pair.getString("pregnancyPhase"));
-	        int value = pair.getInt("days");
-	        map.put(key, value);
-	    }
-	    MapPregnancyPhase temp = new MapPregnancyPhase();
-	    temp.daysByPregnancyPhase = map;
-		return temp;
+    @CheckForNull
+    public static MapPregnancyPhase fromNBT(CompoundTag nbt) {
+    	if (nbt.contains(NBT_KEY, Tag.TAG_LIST)) {
+        	ListTag list = nbt.getList(NBT_KEY, Tag.TAG_COMPOUND);	        	
+    		Map<PregnancyPhase, Integer> map = new EnumMap<>(PregnancyPhase.class);
+    	    for (var t : list) {
+    	        CompoundTag pair = (CompoundTag) t;
+    	        PregnancyPhase key = PregnancyPhase.valueOf(pair.getString("pregnancyPhase"));
+    	        int value = pair.getInt("days");
+    	        map.put(key, value);
+    	    }
+    	    MapPregnancyPhase temp = new MapPregnancyPhase();
+    	    temp.daysByPregnancyPhase = map;
+    		return temp;
+    	}	
+    	else {
+    		MinepreggoMod.LOGGER.error("{} is not present in nbt", NBT_KEY);
+    	}
+    	return null;
     }
 }

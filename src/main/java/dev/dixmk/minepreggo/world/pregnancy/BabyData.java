@@ -23,6 +23,9 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.RandomSource;
 
 public class BabyData {
+	
+	private static final String NBT_KEY = "NBTBabyData";
+	
 	public final Gender gender;
 	public final Species typeOfSpecies;
 	public final Creature typeOfCreature;
@@ -64,28 +67,35 @@ public class BabyData {
 				fatherId);
 	}
 	
-	public void serializeNBT(@NonNull Tag tag) {
-		CompoundTag nbt = (CompoundTag) tag;
+	public CompoundTag toNBT() {
+		CompoundTag nbt = new CompoundTag();
+		CompoundTag wrapper = new CompoundTag();
 		nbt.putString(Gender.NBT_KEY, gender.name());
 		nbt.putString(Species.NBT_KEY, typeOfSpecies.name());
 		nbt.putString(Creature.NBT_KEY, typeOfCreature.name());
 		nbt.putUUID("motheruuid", motherId);
 		fatherId.ifPresent(id -> nbt.putUUID("fatheruuid", id));
+		wrapper.put(NBT_KEY, nbt);
+		return wrapper;
 	}
 	
-	public static BabyData deserializeNBT(@NonNull Tag tag) {
-		CompoundTag nbt = (CompoundTag) tag;
-		Gender gender = Gender.valueOf(nbt.getString(Gender.NBT_KEY));
-		Species typeOfSpecies = Species.valueOf(nbt.getString(Species.NBT_KEY));
-		Creature typeOfCreature = Creature.valueOf(nbt.getString(Creature.NBT_KEY));
-		UUID motherId = nbt.getUUID("motheruuid");
-		UUID fatherId = nbt.contains("fatheruuid") ? nbt.getUUID("fatheruuid") : null;	
-		return new BabyData(
-				gender,
-				typeOfSpecies,
-				typeOfCreature,
-				motherId,
-				fatherId);
+	@CheckForNull
+	public static BabyData fromNBT(CompoundTag nbt) {		
+		if (nbt.contains(NBT_KEY, Tag.TAG_COMPOUND)) {		
+			CompoundTag data = nbt.getCompound(NBT_KEY);	
+			Gender gender = Gender.valueOf(data.getString(Gender.NBT_KEY));
+			Species typeOfSpecies = Species.valueOf(data.getString(Species.NBT_KEY));
+			Creature typeOfCreature = Creature.valueOf(data.getString(Creature.NBT_KEY));
+			UUID motherId = data.getUUID("motheruuid");
+			UUID fatherId = data.contains("fatheruuid") ? data.getUUID("fatheruuid") : null;	
+			return new BabyData(
+					gender,
+					typeOfSpecies,
+					typeOfCreature,
+					motherId,
+					fatherId);
+		}	
+		return null;
 	}
 	
     private static final ImmutableSetMultimap<Species, Creature> VALID_COMBINATIONS =

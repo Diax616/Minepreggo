@@ -233,9 +233,35 @@ public class PregnancySystemHelper {
 		return ALIVE_BABIES.get(species, creature);
 	}
 
+	public static List<ItemStack> getAliveBabies(@NonNull Womb womb) {
+		return womb.stream()
+				.map(babyData -> {
+				var babyItem = getAliveBabyItem(babyData.typeOfSpecies, babyData.typeOfCreature);
+				if (babyItem != null) {
+					return new ItemStack(babyItem);
+				}
+				return ItemStack.EMPTY;
+				})
+				.filter(i -> !i.isEmpty())
+				.toList();
+	}
+
+	public static List<ItemStack> getDeadBabies(@NonNull Womb womb) {
+		return womb.stream()
+				.map(babyData -> {
+				var babyItem = getDeadBabyItem(babyData.typeOfSpecies, babyData.typeOfCreature);
+				if (babyItem != null) {
+					return new ItemStack(babyItem);
+				}
+				return ItemStack.EMPTY;
+				})
+				.filter(i -> !i.isEmpty())
+				.toList();
+	}
+	
 	public static boolean isPregnantEntityValid(LivingEntity entity) {	
 		boolean flag = false;
-		if (entity instanceof ServerPlayer serverPlayer) {				
+		if (entity instanceof ServerPlayer serverPlayer) {	
 			var cap = serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).resolve();		
 			if (cap.isPresent()) {			
 				var data = cap.get().getFemaleData().resolve();			
@@ -359,6 +385,13 @@ public class PregnancySystemHelper {
 			return true;
 		}		
 		return armor instanceof IMaternityArmor maternityArmor && pregnancyPhase.compareTo(maternityArmor.getMinPregnancyPhaseAllowed()) <= 0;
+	}
+	
+	public static boolean canUseChestPlateInLactation(LivingEntity target, Item armor) {	
+		if (!target.hasEffect(MinepreggoModMobEffects.LACTATION.get())) {
+			return true;
+		}
+		return armor instanceof IMaternityArmor maternityArmor && maternityArmor.canSupportLactatingBoobs();
 	}
 	
 	public static boolean canUseChestplate(LivingEntity target, Item armor, PregnancyPhase pregnancyPhase, boolean considerBoobs) {	
@@ -538,7 +571,7 @@ public class PregnancySystemHelper {
     }
     
     public static int calculateTotalDaysPassedFromPhaseP0(@NonNull IPregnancySystemHandler h) {   	
-    	var map = h.getDaysByStageMapping();
+    	var map = h.getMapPregnancyPhase();
     	final PregnancyPhase currentPhase = h.getCurrentPregnancyStage();
     	
     	final var totalDaysPassed = StreamSupport.stream(Arrays.spliterator(PregnancyPhase.values()), false)

@@ -294,7 +294,7 @@ public class PreggoMobAIHelper {
 		});
 	}
 	
-	private static<T extends PreggoMob & ITamablePreggoMob> void setBasicPreggoMobGoals(T preggoMob) {	
+	private static<T extends PreggoMob & ITamablePreggoMob<?>> void setBasicPreggoMobGoals(T preggoMob) {	
 		
 		preggoMob.targetSelector.addGoal(2, new HurtByTargetGoal(preggoMob));	
 		
@@ -345,7 +345,7 @@ public class PreggoMobAIHelper {
 		preggoMob.goalSelector.addGoal(11, new FloatGoal(preggoMob));
 	}
 	
-	private static<T extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler> void setBasicPregnantPreggoMobGoals(T preggoMob) {	
+	private static<T extends PreggoMob & ITamablePreggoMob<?> & IPregnancySystemHandler> void setBasicPregnantPreggoMobGoals(T preggoMob) {	
 		
 		preggoMob.targetSelector.addGoal(2, new HurtByTargetGoal(preggoMob) {
 			@Override

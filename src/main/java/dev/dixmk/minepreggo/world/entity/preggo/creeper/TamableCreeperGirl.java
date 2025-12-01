@@ -61,9 +61,13 @@ public class TamableCreeperGirl extends AbstractTamableHumanoidCreeperGirl<Pregg
 			@Override
 			protected void startPregnancy() {		
 				if (preggoMob.level() instanceof ServerLevel serverLevel) {
-					var creeperGirl = MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P1.get().spawn(serverLevel, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), MobSpawnType.CONVERSION);		
-					PreggoMobHelper.copyTamableData(preggoMob, creeperGirl);			
-					PreggoMobHelper.transferInventary(preggoMob, creeperGirl);					
+					var creeperGirl = MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), MobSpawnType.CONVERSION);		
+					PreggoMobHelper.copyRotation(preggoMob, creeperGirl);
+					PreggoMobHelper.copyOwner(preggoMob, creeperGirl);
+					PreggoMobHelper.copyHealth(preggoMob, creeperGirl);
+					PreggoMobHelper.copyName(preggoMob, creeperGirl);
+					PreggoMobHelper.copyTamableData(preggoMob, creeperGirl);				
+					PreggoMobHelper.transferInventory(preggoMob, creeperGirl);					
 					PreggoMobHelper.transferAttackTarget(preggoMob, creeperGirl);
 				}			
 			}
@@ -99,7 +103,7 @@ public class TamableCreeperGirl extends AbstractTamableHumanoidCreeperGirl<Pregg
    	public void aiStep() {
       super.aiStep();
       
-      if (this.level().isClientSide()) {
+      if (this.level().isClientSide) {
     	  return;
       }
       
@@ -108,7 +112,7 @@ public class TamableCreeperGirl extends AbstractTamableHumanoidCreeperGirl<Pregg
       if (getPostPregnancyPhase() != null) {	  
     	  if (getPostPregnancyTimer() > 7000) {
     		  setPostPregnancyTimer(0);
-    		  this.entityData.set(DATA_POST_PREGNANCY, Optional.empty());
+    		  tryRemovePostPregnancyPhase();
     		  removePostPregnancyAttibutes(this);
     	  }
     	  else {
@@ -124,48 +128,53 @@ public class TamableCreeperGirl extends AbstractTamableHumanoidCreeperGirl<Pregg
 	@Override
 	public boolean tryActivatePostPregnancyPhase(@NonNull PostPregnancy postPregnancy) {
 		var result = this.defaultFemaleEntityImpl.tryActivatePostPregnancyPhase(postPregnancy);
-		this.entityData.set(DATA_POST_PREGNANCY, Optional.ofNullable(this.defaultFemaleEntityImpl.getPostPregnancyPhase()));
+		if (result) {
+			this.entityData.set(DATA_POST_PREGNANCY, Optional.ofNullable(postPregnancy));
+		}
+		return result;
+	}
+	
+	@Override
+	public boolean tryRemovePostPregnancyPhase() {
+		var result = this.defaultFemaleEntityImpl.tryRemovePostPregnancyPhase();	
+		if (result) {
+			this.entityData.set(DATA_POST_PREGNANCY, Optional.empty());
+		}
 		return result;
 	}
 	
 	@Override
 	public @Nullable PostPregnancy getPostPregnancyPhase() {
-		var optional = this.entityData.get(DATA_POST_PREGNANCY);
-		if (optional.isPresent()) {
-			return optional.get();
-		}
-		return null;
-	}
-	
-	public static TamableCreeperGirl spawnPostMiscarriage(ServerLevel serverLevel, double x, double y, double z) {
-		var creeperGirl = MinepreggoModEntities.TAMABLE_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
-		creeperGirl.tryActivatePostPregnancyPhase(PostPregnancy.MISCARRIAGE);
-		addPostPregnancyAttibutes(creeperGirl);
-		return creeperGirl;
-	}
-	
-	public static TamableCreeperGirl spawnPostPartum(ServerLevel serverLevel, double x, double y, double z) {
-		var creeperGirl = MinepreggoModEntities.TAMABLE_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
-		creeperGirl.tryActivatePostPregnancyPhase(PostPregnancy.PARTUM);
-		addPostPregnancyAttibutes(creeperGirl);
-		return creeperGirl;
+		return this.entityData.get(DATA_POST_PREGNANCY).orElse(null);
 	}
 	
 	public static<E extends AbstractTamablePregnantCreeperGirl<?,?>> void onPostPartum(E source) {
 		if (source.level() instanceof ServerLevel serverLevel) {
-			var creeperGirl = TamableCreeperGirl.spawnPostPartum(serverLevel, source.getX(), source.getY(), source.getZ());
-			PreggoMobHelper.copyTamableData(source, creeperGirl);
-			PreggoMobHelper.transferInventary(source, creeperGirl);
-			PreggoMobHelper.transferAttackTarget(source, creeperGirl);
+			TamableCreeperGirl creeperGirl = MinepreggoModEntities.TAMABLE_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(source.getX(), source.getY(), source.getZ()), MobSpawnType.CONVERSION);	
+			PreggoMobHelper.copyRotation(source, creeperGirl);
+			PreggoMobHelper.copyOwner(source, creeperGirl);
+			PreggoMobHelper.copyHealth(source, creeperGirl);
+			PreggoMobHelper.copyName(source, creeperGirl);
+			PreggoMobHelper.copyTamableData(source, creeperGirl);		
+			PreggoMobHelper.transferInventory(source, creeperGirl);
+			PreggoMobHelper.transferAttackTarget(source, creeperGirl);	
+			creeperGirl.tryActivatePostPregnancyPhase(PostPregnancy.PARTUM);
+			addPostPregnancyAttibutes(creeperGirl);
 		}
 	}
 	
 	public static<E extends AbstractTamablePregnantCreeperGirl<?,?>> void onPostMiscarriage(E source) {
 		if (source.level() instanceof ServerLevel serverLevel) {
-			var creeperGirl = TamableCreeperGirl.spawnPostMiscarriage(serverLevel, source.getX(), source.getY(), source.getZ());
-			PreggoMobHelper.copyTamableData(source, creeperGirl);
-			PreggoMobHelper.transferInventary(source, creeperGirl);
+			TamableCreeperGirl creeperGirl = MinepreggoModEntities.TAMABLE_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(source.getX(), source.getY(), source.getZ()), MobSpawnType.CONVERSION);	
+			PreggoMobHelper.copyRotation(source, creeperGirl);
+			PreggoMobHelper.copyOwner(source, creeperGirl);
+			PreggoMobHelper.copyHealth(source, creeperGirl);
+			PreggoMobHelper.copyName(source, creeperGirl);
+			PreggoMobHelper.copyTamableData(source, creeperGirl);		
+			PreggoMobHelper.transferInventory(source, creeperGirl);
 			PreggoMobHelper.transferAttackTarget(source, creeperGirl);
+			creeperGirl.tryActivatePostPregnancyPhase(PostPregnancy.MISCARRIAGE);
+			addPostPregnancyAttibutes(creeperGirl);
 		}
 	}
 	

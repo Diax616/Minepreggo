@@ -34,7 +34,7 @@ public interface IBreedable {
 	Gender getGender();
     
     boolean canFuck();
-	
+    
     public static int calculateNumOfBabiesByPotion(@Nonnegative int amplifier) {
     	switch (Math.abs(amplifier)) {
 		case 0:

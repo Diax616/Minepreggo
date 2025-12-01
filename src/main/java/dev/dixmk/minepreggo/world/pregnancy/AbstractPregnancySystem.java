@@ -64,6 +64,7 @@ public abstract class AbstractPregnancySystem<E extends LivingEntity> {
 	
 	protected abstract void evaluatePregnancyNeeds();
 	
+	protected abstract void startMiscarriage();
 	
 	public static void spawnParticulesForWaterBreaking(ServerLevel serverLevel, LivingEntity target) {	
 		for (ServerPlayer player : serverLevel.getServer().getPlayerList().getPlayers()) {

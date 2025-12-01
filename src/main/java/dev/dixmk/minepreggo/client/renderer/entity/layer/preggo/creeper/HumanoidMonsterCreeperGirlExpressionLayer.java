@@ -1,9 +1,5 @@
 package dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.creeper;
 
-import java.util.Optional;
-
-import javax.annotation.Nonnull;
-
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractMonsterCreeperGirlModel;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterHumanoidCreeperGirl;
 import net.minecraft.client.renderer.RenderType;
@@ -19,10 +15,8 @@ public class HumanoidMonsterCreeperGirlExpressionLayer
 		super(p_117346_);
 	}
 
-	
-	@Nonnull
-	public Optional<RenderType> renderType(E creeperGirl) {	
-		return Optional.of(HOSTIL);
+	public RenderType renderType(E creeperGirl) {	
+		return HOSTIL;
 	}
 }
 

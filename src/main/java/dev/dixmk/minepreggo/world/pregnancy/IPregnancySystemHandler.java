@@ -11,8 +11,9 @@ public interface IPregnancySystemHandler {
 
 	int getDaysByCurrentStage();
 	boolean setDaysByStage(@Nonnegative int days, PregnancyPhase phase);
-	void setDaysByStage(MapPregnancyPhase map);
-	MapPregnancyPhase getDaysByStageMapping();
+	
+	void setMapPregnancyPhase(MapPregnancyPhase map);
+	MapPregnancyPhase getMapPregnancyPhase();
 	
 	int getTotalDaysOfPregnancy();
 	
@@ -58,8 +59,8 @@ public interface IPregnancySystemHandler {
 	void setPregnancyPain(@Nullable PregnancyPain pain);
 	void clearPregnancyPain();
 	 
-	Womb getBabiesInsideWomb();
-	void setBabiesInsideWomb(@NonNull Womb babiesInsideWomb);
+	Womb getWomb();
+	void setWomb(@NonNull Womb babiesInsideWomb);
 	
 	boolean isIncapacitated();
 }

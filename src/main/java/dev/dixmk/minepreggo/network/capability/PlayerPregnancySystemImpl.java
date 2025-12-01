@@ -9,6 +9,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
+import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.network.packet.SyncPregnancySystemS2CPacket;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
@@ -42,7 +43,7 @@ public class PlayerPregnancySystemImpl implements IPlayerPregnancySystemHandler 
 	private PregnancyPhase lastPregnancyPhase = PregnancyPhase.P4;
 	
 	private Optional<PregnancyPain> currentPregnancyPain = Optional.empty();
-	private MapPregnancyPhase daysByPregnancyPhase = new MapPregnancyPhase(70, lastPregnancyPhase);
+	private MapPregnancyPhase daysByPregnancyPhase = new MapPregnancyPhase(MinepreggoModConfig.getTotalPregnancyDays(), lastPregnancyPhase);
 	private Womb babiesInsideWomb = Womb.empty();
 	private byte pregnancySymptomsBitMask = (byte) 0;
 	
@@ -64,12 +65,12 @@ public class PlayerPregnancySystemImpl implements IPlayerPregnancySystemHandler 
 	}
 	
 	@Override
-	public void setDaysByStage(MapPregnancyPhase map) {
+	public void setMapPregnancyPhase(MapPregnancyPhase map) {
 		this.daysByPregnancyPhase = map;
 	}
 	
 	@Override
-	public MapPregnancyPhase getDaysByStageMapping() {
+	public MapPregnancyPhase getMapPregnancyPhase() {
 		return this.daysByPregnancyPhase;
 	}
 	
@@ -231,12 +232,12 @@ public class PlayerPregnancySystemImpl implements IPlayerPregnancySystemHandler 
 	}
 	
 	@Override
-	public void setBabiesInsideWomb(@NonNull Womb babiesInsideWomb) {
+	public void setWomb(@NonNull Womb babiesInsideWomb) {
 		this.babiesInsideWomb = babiesInsideWomb;
 	}
 	
 	@Override
-	public Womb getBabiesInsideWomb() {
+	public Womb getWomb() {
 		return this.babiesInsideWomb;
 	}
 	
@@ -358,6 +359,7 @@ public class PlayerPregnancySystemImpl implements IPlayerPregnancySystemHandler 
 	public void deserializeNBT(@NonNull Tag tag) {
 		CompoundTag wrapper = (CompoundTag) tag;	
 		if (!wrapper.contains(NBT_KEY, Tag.TAG_COMPOUND)) {
+			MinepreggoMod.LOGGER.error("{} is not present in nbt", NBT_KEY);
 			return;
 		}
 		
@@ -369,17 +371,13 @@ public class PlayerPregnancySystemImpl implements IPlayerPregnancySystemHandler 
 		pregnancyTimer = nbt.getInt("DataPregnancyTimer");
 			
 	    if (nbt.contains(PregnancyPhase.CURRENT_PHASE_NBT_KEY, Tag.TAG_STRING)) {
-	        String name = nbt.getString(PregnancyPhase.CURRENT_PHASE_NBT_KEY);
-	        setCurrentPregnancyStage(PregnancyPhase.valueOf(name));
+	        setCurrentPregnancyStage(PregnancyPhase.valueOf(nbt.getString(PregnancyPhase.CURRENT_PHASE_NBT_KEY)));
 	    }
 	    if (nbt.contains(PregnancyPhase.LAST_PHASE_NBT_KEY, Tag.TAG_STRING)) {
-	        String name = nbt.getString(PregnancyPhase.LAST_PHASE_NBT_KEY);
-	        setLastPregnancyStage(PregnancyPhase.valueOf(name));
+	        setLastPregnancyStage(PregnancyPhase.valueOf(nbt.getString(PregnancyPhase.LAST_PHASE_NBT_KEY)));
 	    }
 	    if (nbt.contains(PregnancyPain.NBT_KEY, Tag.TAG_STRING)) {
-	        String name = nbt.getString(PregnancyPain.NBT_KEY);
-	        PregnancyPain pain = PregnancyPain.valueOf(name);
-	        setPregnancyPain(pain);
+	        setPregnancyPain(PregnancyPain.valueOf(nbt.getString(PregnancyPain.NBT_KEY)));
 	    }   
 	    
 	    if (nbt.contains(PregnancySymptom.NBT_KEY, Tag.TAG_BYTE)) {
@@ -388,10 +386,16 @@ public class PlayerPregnancySystemImpl implements IPlayerPregnancySystemHandler 
 	    
 	    if (nbt.contains("DataBabies", Tag.TAG_COMPOUND)) {
 	    	this.babiesInsideWomb = Womb.fromNBT(nbt.getCompound("DataBabies"));
+	    	if (this.babiesInsideWomb == null) {
+	    		throw new RuntimeException(NBT_KEY);
+	    	}
 	    }  	
 	    
 	    if (nbt.contains("DaysByPhase", Tag.TAG_COMPOUND)) {
 	    	this.daysByPregnancyPhase = MapPregnancyPhase.fromNBT(nbt.getCompound("DaysByPhase"));
+	    	if (this.daysByPregnancyPhase == null) {
+	    		throw new RuntimeException(NBT_KEY);
+	    	}
 	    }  
 	}
 

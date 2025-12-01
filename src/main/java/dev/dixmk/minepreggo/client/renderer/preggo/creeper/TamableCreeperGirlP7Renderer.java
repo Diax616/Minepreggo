@@ -2,6 +2,7 @@ package dev.dixmk.minepreggo.client.renderer.preggo.creeper;
 
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractHumanoidCreeperGirlModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.TamableCreeperGirlP7Model;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobBody;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirlP7;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -21,8 +22,11 @@ public class TamableCreeperGirlP7Renderer extends AbstractTamablePregnantCreeper
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(TamableCreeperGirlP7 p_115812_) {
-		return AbstractHumanoidCreeperGirlRenderer.CREEPER_GIRL_P7_LOCATION;
+	public ResourceLocation getTextureLocation(TamableCreeperGirlP7 entity) {
+		if (entity.getBodyState() == PreggoMobBody.NAKED) {
+			return CREEPER_GIRL_P7_LOCATION.getRight();
+		}
+		return CREEPER_GIRL_P7_LOCATION.getLeft();
 	}
 
 }

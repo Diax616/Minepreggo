@@ -2,13 +2,11 @@ package dev.dixmk.minepreggo.world.pregnancy;
 
 import javax.annotation.Nonnegative;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.util.Mth;
+import net.minecraftforge.common.util.INBTSerializable;
 
-public abstract class AbstractBreedableEntity implements IBreedable {
+public abstract class AbstractBreedableEntity implements IBreedable, INBTSerializable<CompoundTag> {
 	protected final Gender gender;
 	protected float fertility = 0;
 	protected int fertilityRateTimer = 0;
@@ -105,17 +103,19 @@ public abstract class AbstractBreedableEntity implements IBreedable {
 	public boolean canFuck() {
 		return sexualAppetite >= 5;
 	}
-
-	public void serializeNBT(@NonNull Tag tag) {
-		CompoundTag nbt = (CompoundTag) tag;
+	
+	@Override
+	public CompoundTag serializeNBT() {
+		CompoundTag nbt = new CompoundTag();
 		nbt.putFloat("DataFertility", fertility);
 		nbt.putInt("DataFertilityRateTimer", fertilityRateTimer);
 		nbt.putInt("DataSexualAppetive", sexualAppetite);
-		nbt.putInt("DataSexualAppetiveTimer", sexualAppetiteTimer);		
+		nbt.putInt("DataSexualAppetiveTimer", sexualAppetiteTimer);	
+		return nbt;
 	}
 	
-	public void deserializeNBT(@NonNull Tag tag) {
-		CompoundTag nbt = (CompoundTag) tag;
+	@Override
+	public void deserializeNBT(CompoundTag nbt) {
 		fertility = nbt.getFloat("DataFertility");
 		fertilityRateTimer = nbt.getInt("DataFertilityRateTimer");
 		sexualAppetite = nbt.getInt("DataSexualAppetive");

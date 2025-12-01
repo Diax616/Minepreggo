@@ -7,8 +7,8 @@ import java.util.UUID;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnegative;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
-import org.apache.commons.lang3.tuple.Pair;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import com.google.common.collect.ImmutableMap;
@@ -18,6 +18,7 @@ import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.item.IFemaleArmor;
 import dev.dixmk.minepreggo.world.item.ItemHelper;
@@ -30,9 +31,11 @@ import dev.dixmk.minepreggo.world.pregnancy.Womb;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 public class PlayerHelper {
 
@@ -45,26 +48,26 @@ public class PlayerHelper {
 					ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/lemon_ice_cream.png")),
 			Craving.SPICY, List.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/spicy_chicken.png")));
 	
-	protected static final ImmutableMap<String, Pair<ResourceLocation, ResourceLocation>> PREDEFINED_SKINS = ImmutableMap.of(
-			"player1", Pair.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1.png"), ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_extra.png"))		
+	protected static final ImmutableMap<String, ImmutablePair<ResourceLocation, ResourceLocation>> PREDEFINED_SKINS = ImmutableMap.of(
+			"player1", ImmutablePair.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1.png"), ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_extra.png"))		
 			);
 	
-	protected static final ImmutableMap<String, ImmutableMap<PregnancyPhase, Pair<ResourceLocation, ResourceLocation>>> MATERNITY_PREDEFINED_SKINS = ImmutableMap.of(
+	protected static final ImmutableMap<String, ImmutableMap<PregnancyPhase, ImmutablePair<ResourceLocation, ResourceLocation>>> MATERNITY_PREDEFINED_SKINS = ImmutableMap.of(
 			"player1", ImmutableMap.of(
-					PregnancyPhase.P0, Pair.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p0.png"), ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p0_extra.png")),
-					PregnancyPhase.P1, Pair.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p1.png"), ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p1_extra.png")),
-					PregnancyPhase.P2, Pair.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p2.png"), ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p2_extra.png")),
-					PregnancyPhase.P3, Pair.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p3.png"), ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p3_extra.png")),
-					PregnancyPhase.P4, Pair.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p4.png"), ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p4_extra.png")),
-					PregnancyPhase.P5, Pair.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p5.png"), ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p5_extra.png")),
-					PregnancyPhase.P6, Pair.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p6.png"), ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p6_extra.png")),
-					PregnancyPhase.P7, Pair.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p7.png"), ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p7_extra.png")),
-					PregnancyPhase.P8, Pair.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p8.png"), ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p8_extra.png"))
+					PregnancyPhase.P0, ImmutablePair.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p0.png"), ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p0_extra.png")),
+					PregnancyPhase.P1, ImmutablePair.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p1.png"), ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p1_extra.png")),
+					PregnancyPhase.P2, ImmutablePair.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p2.png"), ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p2_extra.png")),
+					PregnancyPhase.P3, ImmutablePair.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p3.png"), ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p3_extra.png")),
+					PregnancyPhase.P4, ImmutablePair.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p4.png"), ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p4_extra.png")),
+					PregnancyPhase.P5, ImmutablePair.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p5.png"), ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p5_extra.png")),
+					PregnancyPhase.P6, ImmutablePair.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p6.png"), ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p6_extra.png")),
+					PregnancyPhase.P7, ImmutablePair.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p7.png"), ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p7_extra.png")),
+					PregnancyPhase.P8, ImmutablePair.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p8.png"), ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p8_extra.png"))
 			));
 
 	
 	@CheckForNull
-	public static Pair<ResourceLocation, ResourceLocation> getPredefinedPlayerTextures(String name, PregnancyPhase phase) {
+	public static ImmutablePair<ResourceLocation, ResourceLocation> getPredefinedPlayerTextures(String name, PregnancyPhase phase) {
 		var textures = MATERNITY_PREDEFINED_SKINS.get(name);
 		if (textures != null) {
 			return textures.get(phase);			
@@ -73,7 +76,7 @@ public class PlayerHelper {
 	}
 
 	@CheckForNull
-	public static Pair<ResourceLocation, ResourceLocation> getPredefinedPlayerTextures(String name) {
+	public static ImmutablePair<ResourceLocation, ResourceLocation> getPredefinedPlayerTextures(String name) {
 		return PREDEFINED_SKINS.get(name);
 	}
 	
@@ -94,18 +97,18 @@ public class PlayerHelper {
 				final var lastPregnancyStage = IBreedable.calculateMaxPregnancyPhaseByTotalNumOfBabies(prePregnancyData.fertilizedEggs());
 				final var totalDays = MinepreggoModConfig.getTotalPregnancyDays();
 				final var daysByStage = new MapPregnancyPhase(totalDays, lastPregnancyStage);
-				final var womb = Womb.create(
+				final var womb = new Womb(
 						ImmutableTriple.of(player.getUUID(), Species.HUMAN, Creature.HUMANOID),
 						ImmutableTriple.of(Optional.ofNullable(prePregnancyData.fatherId()), prePregnancyData.typeOfSpeciesOfFather(), prePregnancyData.typeOfCreatureOfFather()),
 						player.getRandom(),
 						prePregnancyData.fertilizedEggs());
 				
 				
-				femaleData.getPregnancySystem().setDaysByStage(daysByStage);
+				femaleData.getPregnancySystem().setMapPregnancyPhase(daysByStage);
 				femaleData.getPregnancySystem().setPregnancyHealth(PregnancySystemHelper.MAX_PREGNANCY_HEALTH);
 				femaleData.getPregnancySystem().setLastPregnancyStage(lastPregnancyStage);
 				femaleData.getPregnancySystem().setDaysToGiveBirth(totalDays);			
-				femaleData.getPregnancySystem().setBabiesInsideWomb(womb);	
+				femaleData.getPregnancySystem().setWomb(womb);	
 				femaleData.getPregnancySystem().setCurrentPregnancyStage(PregnancyPhase.P0);	
 				
 				femaleData.sync(player);
@@ -197,4 +200,10 @@ public class PlayerHelper {
 		}		
 		return armor instanceof IFemaleArmor;
 	}
+	
+	public static void removeAndDropItemStackFromEquipmentSlot(Player player, EquipmentSlot slotId) {
+		if (PreggoMobHelper.dropItemStack(player, player.getItemBySlot(slotId))) {
+			player.setItemSlot(slotId, ItemStack.EMPTY);
+		}
+ 	}
 }

@@ -31,7 +31,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class AbstractPreggoMobMainScreen
-	<E extends PreggoMob & ITamablePreggoMob, M extends AbstractPreggoMobMainMenu<E>> extends AbstractContainerScreen<M> {
+	<E extends PreggoMob & ITamablePreggoMob<?>, M extends AbstractPreggoMobMainMenu<E>> extends AbstractContainerScreen<M> {
 	
 	protected static final ResourceLocation DEFAULT_P0_MAIN_GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/default_preggo_mob_p0_main_gui.png");
 	protected static final ResourceLocation DEFAULT_P1_MAIN_GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/default_preggo_mob_p1_main_gui.png");

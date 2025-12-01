@@ -34,6 +34,11 @@ public abstract class FemaleLeatherChestPlateItem extends DyeableArmorItem imple
 		public PregnancyPhase getMinPregnancyPhaseAllowed() {
 			return maxPregnancyPhase;
 		}
+		
+		@Override
+		public boolean canSupportLactatingBoobs() {
+			return false;
+		}
 	}
 	
 	

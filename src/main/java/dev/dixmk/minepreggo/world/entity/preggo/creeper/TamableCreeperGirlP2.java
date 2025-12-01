@@ -40,7 +40,7 @@ public class TamableCreeperGirlP2 extends AbstractTamablePregnantHumanoidCreeper
 			protected void advanceToNextPregnancyPhase() {
 				if (pregnantEntity.level() instanceof ServerLevel serverLevel) {
 					var creeperGirl = MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P3.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);
-					PreggoMobHelper.transferPregnancyData(pregnantEntity, creeperGirl);
+					PreggoMobHelper.transferAllData(pregnantEntity, creeperGirl);
 				}
 			}
 			

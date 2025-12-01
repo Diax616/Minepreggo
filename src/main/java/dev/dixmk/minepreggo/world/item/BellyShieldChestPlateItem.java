@@ -74,6 +74,11 @@ public abstract class BellyShieldChestPlateItem extends ArmorItem implements IMa
 		return maxPregnancyPhase;
 	}
 	
+	@Override
+	public boolean canSupportLactatingBoobs() {
+		return true;
+	}
+	
 	public static class MaternityChestplateP5 extends BellyShieldChestPlateItem {
 		public MaternityChestplateP5() {
 			super(PregnancyPhase.P5);

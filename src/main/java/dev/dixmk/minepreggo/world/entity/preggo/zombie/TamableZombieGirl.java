@@ -58,8 +58,12 @@ public class TamableZombieGirl extends AbstractTamableZombieGirl<PreggoMobSystem
 			protected void startPregnancy() {
 				if (preggoMob.level() instanceof ServerLevel serverLevel) {
 					var zombieGirl = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P1.get().spawn(serverLevel, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), MobSpawnType.CONVERSION);		
-					PreggoMobHelper.copyData(preggoMob, zombieGirl);			
-					PreggoMobHelper.transferInventary(preggoMob, zombieGirl);
+					PreggoMobHelper.copyRotation(preggoMob, zombieGirl);
+					PreggoMobHelper.copyOwner(preggoMob, zombieGirl);
+					PreggoMobHelper.copyHealth(preggoMob, zombieGirl);
+					PreggoMobHelper.copyName(preggoMob, zombieGirl);
+					PreggoMobHelper.copyTamableData(preggoMob, zombieGirl);				
+					PreggoMobHelper.transferInventory(preggoMob, zombieGirl);
 					PreggoMobHelper.transferAttackTarget(preggoMob, zombieGirl);
 				}
 			}
@@ -89,16 +93,16 @@ public class TamableZombieGirl extends AbstractTamableZombieGirl<PreggoMobSystem
    	public void aiStep() {
       super.aiStep();
       
-      if (this.level().isClientSide()) {
+      if (this.level().isClientSide) {
     	  return;
       }
       
       this.fertilitySystem.onServerTick();
       
       if (getPostPregnancyPhase() != null) {	  
-    	  if (getPostPregnancyTimer() > 7000) {
+    	  if (getPostPregnancyTimer() > 300) {
     		  setPostPregnancyTimer(0);
-    		  this.entityData.set(DATA_POST_PREGNANCY, Optional.empty());
+    		  tryRemovePostPregnancyPhase();
     		  removePostPregnancyAttibutes(this);
     	  }
     	  else {
@@ -110,7 +114,18 @@ public class TamableZombieGirl extends AbstractTamableZombieGirl<PreggoMobSystem
 	@Override
 	public boolean tryActivatePostPregnancyPhase(@NonNull PostPregnancy postPregnancy) {
 		var result = this.defaultFemaleEntityImpl.tryActivatePostPregnancyPhase(postPregnancy);
-		this.entityData.set(DATA_POST_PREGNANCY, Optional.ofNullable(this.defaultFemaleEntityImpl.getPostPregnancyPhase()));
+		if (result) {
+			this.entityData.set(DATA_POST_PREGNANCY, Optional.ofNullable(postPregnancy));
+		}
+		return result;
+	}
+	
+	@Override
+	public boolean tryRemovePostPregnancyPhase() {
+		var result = this.defaultFemaleEntityImpl.tryRemovePostPregnancyPhase();	
+		if (result) {
+			this.entityData.set(DATA_POST_PREGNANCY, Optional.empty());
+		}
 		return result;
 	}
 	
@@ -127,35 +142,33 @@ public class TamableZombieGirl extends AbstractTamableZombieGirl<PreggoMobSystem
 		return AbstractTamableZombieGirl.getBasicAttributes(0.235);
 	}
 	
-	static TamableZombieGirl spawnPostMiscarriage(ServerLevel serverLevel, double x, double y, double z) {
-		var zombieGirl = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);	
-		zombieGirl.tryActivatePostPregnancyPhase(PostPregnancy.MISCARRIAGE);
-		addPostPregnancyAttibutes(zombieGirl);
-		return zombieGirl;
-	}
-	
-	static TamableZombieGirl spawnPostPartum(ServerLevel serverLevel, double x, double y, double z) {
-		var zombieGirl = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);	
-		zombieGirl.tryActivatePostPregnancyPhase(PostPregnancy.PARTUM);
-		addPostPregnancyAttibutes(zombieGirl);
-		return zombieGirl;
-	}
-	
 	static<E extends AbstractTamablePregnantZombieGirl<?,?>> void onPostMiscarriage(E source) {
 		if (source.level() instanceof ServerLevel serverLevel) {
-			var zombieGirl = TamableZombieGirl.spawnPostMiscarriage(serverLevel, source.getX(), source.getY(), source.getZ());
-			PreggoMobHelper.copyData(source, zombieGirl);
-			PreggoMobHelper.transferInventary(source, zombieGirl);
+			var zombieGirl = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL.get().spawn(serverLevel, BlockPos.containing(source.getX(), source.getY(), source.getZ()), MobSpawnType.CONVERSION);	
+			PreggoMobHelper.copyRotation(source, zombieGirl);
+			PreggoMobHelper.copyOwner(source, zombieGirl);
+			PreggoMobHelper.copyHealth(source, zombieGirl);
+			PreggoMobHelper.copyName(source, zombieGirl);
+			PreggoMobHelper.copyTamableData(source, zombieGirl);	
+			PreggoMobHelper.transferInventory(source, zombieGirl);
 			PreggoMobHelper.transferAttackTarget(source, zombieGirl);
+			zombieGirl.tryActivatePostPregnancyPhase(PostPregnancy.MISCARRIAGE);
+			addPostPregnancyAttibutes(zombieGirl);
 		}
 	}
 	
 	static<E extends AbstractTamablePregnantZombieGirl<?,?>> void onPostPartum(E source) {
 		if (source.level() instanceof ServerLevel serverLevel) {
-			var zombieGirl = TamableZombieGirl.spawnPostPartum(serverLevel, source.getX(), source.getY(), source.getZ());
-			PreggoMobHelper.copyData(source, zombieGirl);
-			PreggoMobHelper.transferInventary(source, zombieGirl);
+			var zombieGirl = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL.get().spawn(serverLevel, BlockPos.containing(source.getX(), source.getY(), source.getZ()), MobSpawnType.CONVERSION);	
+			PreggoMobHelper.copyRotation(source, zombieGirl);
+			PreggoMobHelper.copyOwner(source, zombieGirl);
+			PreggoMobHelper.copyHealth(source, zombieGirl);
+			PreggoMobHelper.copyName(source, zombieGirl);
+			PreggoMobHelper.copyTamableData(source, zombieGirl);
+			PreggoMobHelper.transferInventory(source, zombieGirl);
 			PreggoMobHelper.transferAttackTarget(source, zombieGirl);
+			zombieGirl.tryActivatePostPregnancyPhase(PostPregnancy.PARTUM);
+			addPostPregnancyAttibutes(zombieGirl);
 		}
 	}
 	

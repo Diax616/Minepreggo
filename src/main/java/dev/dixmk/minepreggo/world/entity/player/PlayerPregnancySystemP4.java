@@ -135,6 +135,11 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 	}
 	
 	@Override
+	protected void startMiscarriage() {
+
+	}
+	
+	@Override
 	protected void evaluateBirth(ServerLevel serverLevel) {		
 		
 

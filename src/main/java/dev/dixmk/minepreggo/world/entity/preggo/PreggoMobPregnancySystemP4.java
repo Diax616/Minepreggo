@@ -1,23 +1,28 @@
 package dev.dixmk.minepreggo.world.entity.preggo;
 
+import java.util.ArrayList;
+
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
+import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.world.pregnancy.AbstractPregnancySystem;
-import dev.dixmk.minepreggo.world.pregnancy.IBreedable;
+import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancyEffectsHandler;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
 
 public abstract class PreggoMobPregnancySystemP4<E extends PreggoMob
-	& ITamablePreggoMob & IPregnancySystemHandler & IPregnancyEffectsHandler> extends PreggoMobPregnancySystemP3<E> {
+	& ITamablePreggoMob<FemaleEntityImpl> & IPregnancySystemHandler & IPregnancyEffectsHandler> extends PreggoMobPregnancySystemP3<E> {
 	
 	protected @Nonnegative int totalTicksOfHorny = MinepreggoModConfig.getTotalTicksOfHornyP4();
 	protected @Nonnegative int totalTicksOfBirth = PregnancySystemHelper.TOTAL_TICKS_BIRTH_P4;
@@ -73,11 +78,13 @@ public abstract class PreggoMobPregnancySystemP4<E extends PreggoMob
 		if (pain == PregnancyPain.PREBIRTH) {		
 			if (pregnantEntity.getPregnancyPainTimer() >= totalTicksOfPreBirth) {
 				pregnantEntity.setPregnancyPain(PregnancyPain.BIRTH);
+				pregnantEntity.setBodyState(PreggoMobBody.NAKED);
 	    		pregnantEntity.resetPregnancyPainTimer();   		
 				PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.CHEST);
 				PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.LEGS);
 				PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.MAINHAND);
 				PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.OFFHAND);
+	        	MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) pregnantEntity.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.birth.message.pre", pregnantEntity.getSimpleName()));
 			}	
 			else {
 	    		pregnantEntity.incrementPregnancyPainTimer();
@@ -86,17 +93,36 @@ public abstract class PreggoMobPregnancySystemP4<E extends PreggoMob
 		}
 		else if (pain == PregnancyPain.BIRTH) {
 			if (pregnantEntity.getPregnancyPainTimer() >= totalTicksOfBirth) {			
-				final var babyItem = PregnancySystemHelper.getAliveBabyItem(pregnantEntity.getTypeOfSpecies(), pregnantEntity.getTypeOfCreature());
 				
-				if (babyItem != null) {
-					PreggoMobHelper.setItemstackOnOffHand(pregnantEntity, new ItemStack(babyItem, IBreedable.calculateNumOfBabiesByMaxPregnancyStage(pregnantEntity.getLastPregnancyStage())));
-				} else {
+	        	final var aliveBabiesItemStacks = new ArrayList<>(PregnancySystemHelper.getAliveBabies(pregnantEntity.getWomb()));   	
+	       		
+	        	MinepreggoMod.LOGGER.debug("PreggoMob {} is giving birth to {} babies.", pregnantEntity.getDisplayName().getString(), aliveBabiesItemStacks.size());
+	        	
+	        	if (aliveBabiesItemStacks.isEmpty()) {
 					MinepreggoMod.LOGGER.error("Failed to get baby item for pregnancy system {} birth.", pregnantEntity.getCurrentPregnancyStage());
-				}		
-				initPostPartum();
-				
-				MinepreggoMod.LOGGER.debug("PreggoMob {} has given birth.", pregnantEntity.getDisplayName().getString());
-	        	pregnantEntity.discard();        	
+				}
+	        	
+	        	// TODO: Babies itemstacks are only removed if player's hands are empty. It should handle stacking unless itemstack is a baby item.
+	        	aliveBabiesItemStacks.removeIf(baby -> {
+	        		if (pregnantEntity.getItemInHand(InteractionHand.MAIN_HAND).isEmpty()) {
+	        			PreggoMobHelper.setItemstackInHand(pregnantEntity, InteractionHand.MAIN_HAND, baby);
+	            		return true;
+	        		}
+	        		else if (pregnantEntity.getItemInHand(InteractionHand.OFF_HAND).isEmpty()) {
+	        			PreggoMobHelper.setItemstackInHand(pregnantEntity, InteractionHand.OFF_HAND, baby);
+	            		return true;
+	        		}
+	        		return false;
+	        	});
+	        	
+	        	if (!aliveBabiesItemStacks.isEmpty()) {	              	
+		        	aliveBabiesItemStacks.forEach(baby -> PreggoMobHelper.storeItemInSpecificRangeOrDrop(pregnantEntity, baby, ITamablePreggoMob.FOOD_INVENTORY_SLOT + 1, pregnantEntity.getInventorySize() - 1)); 						
+	        	}
+	        	        	
+	        	MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) pregnantEntity.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.birth.message.post", pregnantEntity.getSimpleName()));
+				initPostPartum();	
+	        	pregnantEntity.discard();   	
+				MinepreggoMod.LOGGER.debug("PreggoMob {} has given birth.", pregnantEntity.getDisplayName().getString());	
 			}	
 			else {
 	    		pregnantEntity.incrementPregnancyPainTimer();
@@ -111,6 +137,7 @@ public abstract class PreggoMobPregnancySystemP4<E extends PreggoMob
 		pregnantEntity.setPickUpItems(false);
 		pregnantEntity.setBreakBlocks(false);
 		MinepreggoMod.LOGGER.debug("PreggoMob {} has started labor.", pregnantEntity.getDisplayName().getString());	
+    	MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) pregnantEntity.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.birth.message.warning", pregnantEntity.getSimpleName()));
 	}
 	
 	@Override
@@ -129,6 +156,7 @@ public abstract class PreggoMobPregnancySystemP4<E extends PreggoMob
 		pregnantEntity.resetPregnancyPainTimer();
 		pregnantEntity.setPregnancyPain(PregnancyPain.WATER_BREAKING);
 		MinepreggoMod.LOGGER.debug("PreggoMob {} water has broken.", pregnantEntity.getDisplayName().getString());
+    	MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) pregnantEntity.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.birth.message.init", pregnantEntity.getSimpleName()));
 	}
 	
 	@Override

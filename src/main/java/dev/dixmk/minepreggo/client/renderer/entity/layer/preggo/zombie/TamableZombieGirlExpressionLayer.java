@@ -1,11 +1,12 @@
 package dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.zombie;
 
-import java.util.Optional;
+import javax.annotation.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.model.entity.preggo.zombie.AbstractTamableZombieGirlModel;
-import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobState;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobFace;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamableZombieGirl;
+import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.resources.ResourceLocation;
@@ -23,30 +24,41 @@ public class TamableZombieGirlExpressionLayer
 	protected static final RenderType SURPRISED2 = RenderType.entityCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/expressions/zombie_girl_face_surprised2.png"));
 	protected static final RenderType HORNY2 = RenderType.entityCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/expressions/zombie_girl_face_horny2.png"));
 
+	protected static final RenderType POST_PARTUM = RenderType.entityCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/expressions/zombie_girl_face_post_partum.png"));
+	protected static final RenderType POST_MISCARRIAGE = RenderType.entityCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/expressions/zombie_girl_face_post_miscarriage.png"));
+
+	
 	public TamableZombieGirlExpressionLayer(RenderLayerParent<E, M> p_117346_) {
 		super(p_117346_);
 	}
 	
 	@Override
-	public Optional<RenderType> renderType(E zombieGirl) {	
+	public @Nullable RenderType renderType(E zombieGirl) {	
 		
-		if (zombieGirl.isOnFire()) {
-			return Optional.of(SURPRISED2);
+		final var post = zombieGirl.getPostPregnancyPhase();
+		
+		if (post == PostPregnancy.MISCARRIAGE) {
+			return POST_MISCARRIAGE;
+		}
+		else if (zombieGirl.isOnFire()) {
+			return SURPRISED2;
 		}		
 		else if (zombieGirl.hasEffect(MobEffects.CONFUSION)) {
-			return Optional.of(PAIN4);
+			return PAIN4;
 		}
-		else if (zombieGirl.getState() == PreggoMobState.BLUSHED) {
-			return Optional.of(HORNY2);
+		else if (zombieGirl.getFaceState() == PreggoMobFace.BLUSHED) {
+			return HORNY2;
 		}
 		else if (zombieGirl.isWaiting()) {
-			return Optional.of(SAD2);
+			return SAD2;
 		}
 		else if (zombieGirl.isSavage()) {
-			return Optional.of(SAD3);
+			return SAD3;
 		}
-		else {
-			return Optional.empty();
+		else if (post == PostPregnancy.PARTUM) {
+			return POST_PARTUM;
 		}
+		
+		return null;
 	}
 }

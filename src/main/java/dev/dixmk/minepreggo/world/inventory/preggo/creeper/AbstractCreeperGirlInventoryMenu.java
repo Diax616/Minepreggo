@@ -40,15 +40,20 @@ public abstract class AbstractCreeperGirlInventoryMenu<E extends AbstractTamable
 				@Override
 				public boolean mayPlace(ItemStack itemstack) {	
 					boolean flag = true;
+					var armor = itemstack.getItem();
 					if (creeperGirl instanceof IPregnancySystemHandler pregnancySystem) {
 						final var pregnancyPhase = pregnancySystem.getCurrentPregnancyStage();					
-						if (!PregnancySystemHelper.canUseChestplate(itemstack.getItem(), pregnancyPhase)) {
+						if (!PregnancySystemHelper.canUseChestplate(armor, pregnancyPhase)) {
 							MessageHelper.warnFittedArmor((Player) creeperGirl.getOwner(), creeperGirl, pregnancyPhase);
 			                flag = false;
-						}			
+						}	
+						if (!PregnancySystemHelper.canUseChestPlateInLactation(creeperGirl, armor)) {
+							MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) creeperGirl.getOwner()), Component.translatable("%s's lactating boobs don't fit in this armor", creeperGirl.getSimpleName()));
+			                flag = false;
+						}
 					}					
 					else {                      
-						flag = PreggoMobHelper.canUseChestplate(itemstack.getItem());					
+						flag = PreggoMobHelper.canUseChestplate(armor);					
 						if (!flag) {
 							MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) creeperGirl.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.armor.message.chestplate_does_not_fit.boobs", creeperGirl.getSimpleName()));
 						}

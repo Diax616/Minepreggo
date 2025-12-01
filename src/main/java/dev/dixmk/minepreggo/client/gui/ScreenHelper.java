@@ -11,6 +11,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGi
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamableZombieGirl;
+import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
 import dev.dixmk.minepreggo.world.pregnancy.IFemaleEntity;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancyEffectsHandler;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
@@ -34,7 +35,7 @@ public class ScreenHelper {
 		renderDefaultPreggoP0MainGUI(guiGraphics, leftPos, topPos, creeperGirl.getHealth(), creeperGirl, 1);
 	}
 	
-	private static void renderDefaultPreggoP0MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, float health, ITamablePreggoMob p0, int extraHearts) {
+	private static void renderDefaultPreggoP0MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, float health, ITamablePreggoMob<?> p0, int extraHearts) {
 		for (int i = 0, pos = 74; i < 10; i++, pos += 10) {
 			guiGraphics.blit(MINECRAFT_ICONS_TEXTURE, leftPos + pos, topPos + 56, 16, 27, 9, 9, 256, 256);		
 			guiGraphics.blit(MINECRAFT_ICONS_TEXTURE, leftPos + pos, topPos + 67, 16, 45, 9, 9, 256, 256);		
@@ -130,7 +131,7 @@ public class ScreenHelper {
 		}		
 	}
 	
-	public static<E extends PreggoMob & ITamablePreggoMob & IFemaleEntity> void renderDefaultPreggoP0LabelMainGUI(GuiGraphics guiGraphics, Font font, E p0) {	
+	public static<E extends PreggoMob & ITamablePreggoMob<FemaleEntityImpl> & IFemaleEntity> void renderDefaultPreggoP0LabelMainGUI(GuiGraphics guiGraphics, Font font, E p0) {	
 		guiGraphics.drawString(font, p0.getSimpleName(), 90, 4, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_state"), 78, 21, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_phase"), 75, 34, -12829636, false);
@@ -142,7 +143,7 @@ public class ScreenHelper {
 		}
 	}
 	
-	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler & IPregnancyEffectsHandler> void renderP1LabelMainGUI(GuiGraphics guiGraphics, Font font, E p1) {	
+	public static<E extends PreggoMob & ITamablePreggoMob<FemaleEntityImpl> & IPregnancySystemHandler & IPregnancyEffectsHandler> void renderP1LabelMainGUI(GuiGraphics guiGraphics, Font font, E p1) {	
 		guiGraphics.drawString(font, p1.getSimpleName(), 90, 4, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_state"), 75, 22, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_pregnant"), 107, 22, -12829636, false);
@@ -155,7 +156,7 @@ public class ScreenHelper {
 		} 
 	}
 	
-	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler & IPregnancyEffectsHandler> void renderP2LabelMainGUI(GuiGraphics guiGraphics, Font font, E p2) {
+	public static<E extends PreggoMob & ITamablePreggoMob<FemaleEntityImpl> & IPregnancySystemHandler & IPregnancyEffectsHandler> void renderP2LabelMainGUI(GuiGraphics guiGraphics, Font font, E p2) {
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_phase"), 77, 31, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_state"), 77, 17, -12829636, false);
 		guiGraphics.drawString(font, p2.getCurrentPregnancyStage().toString(), 109, 31, -12829636, false);
@@ -169,7 +170,7 @@ public class ScreenHelper {
 		} 
 	}
 	
-	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler & IPregnancyEffectsHandler> void renderP3LabelMainGUI(GuiGraphics guiGraphics, Font font, E p3) {
+	public static<E extends PreggoMob & ITamablePreggoMob<FemaleEntityImpl> & IPregnancySystemHandler & IPregnancyEffectsHandler> void renderP3LabelMainGUI(GuiGraphics guiGraphics, Font font, E p3) {
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_phase"), 75, 31, -12829636, false);
 		guiGraphics.drawString(font, p3.getCurrentPregnancyStage().toString(), 107, 31, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_state"), 75, 17, -12829636, false);
@@ -183,7 +184,7 @@ public class ScreenHelper {
 		} 
 	}
 	
-	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystemHandler & IPregnancyEffectsHandler> void renderP4LabelMainGUI(GuiGraphics guiGraphics, Font font, E p4) {
+	public static<E extends PreggoMob & ITamablePreggoMob<FemaleEntityImpl> & IPregnancySystemHandler & IPregnancyEffectsHandler> void renderP4LabelMainGUI(GuiGraphics guiGraphics, Font font, E p4) {
 		guiGraphics.drawString(font, p4.getSimpleName(), 90, 4, -12829636, false);	
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_phase"), 74, 35, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_craving"), 74, 51, -12829636, false);

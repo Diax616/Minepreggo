@@ -24,7 +24,7 @@ import net.minecraftforge.items.IItemHandler;
 
 @Mod.EventBusSubscriber
 public abstract class AbstractPreggoMobInventaryMenu
-	<E extends PreggoMob & ITamablePreggoMob> extends AbstractContainerMenu {
+	<E extends PreggoMob & ITamablePreggoMob<?>> extends AbstractContainerMenu {
 
 	public final Level level;
 	public final Player player;

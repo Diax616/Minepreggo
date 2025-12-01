@@ -5,7 +5,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import net.minecraft.world.entity.ai.goal.FollowOwnerGoal;
 
-public class PreggoMobFollowOwnerGoal<T extends PreggoMob & ITamablePreggoMob> extends FollowOwnerGoal {
+public class PreggoMobFollowOwnerGoal<T extends PreggoMob & ITamablePreggoMob<?>> extends FollowOwnerGoal {
 	
 	protected final T preggoMob;
 	
