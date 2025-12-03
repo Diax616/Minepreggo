@@ -26,10 +26,11 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
-import dev.dixmk.minepreggo.world.entity.preggo.FertilitySystem;
+import dev.dixmk.minepreggo.world.entity.preggo.FemaleFertilitySystem;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem;
 import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 
 public class TamableZombieGirl extends AbstractTamableZombieGirl<PreggoMobSystem<TamableZombieGirl>> {
 
@@ -42,7 +43,7 @@ public class TamableZombieGirl extends AbstractTamableZombieGirl<PreggoMobSystem
 	private static final EntityDataAccessor<Optional<PostPregnancy>> DATA_POST_PREGNANCY = SynchedEntityData.defineId(TamableZombieGirl.class, MinepreggoModEntityDataSerializers.OPTIONAL_POST_PREGNANCY);
 	protected static final EntityDataAccessor<Boolean> DATA_PREGNANT = SynchedEntityData.defineId(TamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
 	
-	private final FertilitySystem<TamableZombieGirl> fertilitySystem;
+	private final FemaleFertilitySystem<TamableZombieGirl> fertilitySystem;
 	
 	public TamableZombieGirl(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL.get(), world);
@@ -53,7 +54,7 @@ public class TamableZombieGirl extends AbstractTamableZombieGirl<PreggoMobSystem
 		xpReward = 10;
 		setNoAi(false);
 		setMaxUpStep(0.6f);
-		fertilitySystem = new FertilitySystem<>(this) {
+		fertilitySystem = new FemaleFertilitySystem<>(this) {
 			@Override
 			protected void startPregnancy() {
 				if (preggoMob.level() instanceof ServerLevel serverLevel) {
@@ -72,7 +73,7 @@ public class TamableZombieGirl extends AbstractTamableZombieGirl<PreggoMobSystem
 	
 	@Override
 	protected PreggoMobSystem<TamableZombieGirl> createPreggoMobSystem() {
-		return new PreggoMobSystem<>(this, MinepreggoModConfig.getTotalTicksOfHungryP0());
+		return new PreggoMobSystem<>(this, MinepreggoModConfig.getTotalTicksOfHungryP0(), PregnancySystemHelper.TOTAL_TICKS_SEXUAL_APPETITE_P0);
 	}
 	
 	@Override

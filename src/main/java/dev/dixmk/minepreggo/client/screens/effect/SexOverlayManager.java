@@ -1,5 +1,7 @@
 package dev.dixmk.minepreggo.client.screens.effect;
 
+import javax.annotation.Nonnegative;
+
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -19,6 +21,9 @@ public class SexOverlayManager {
     private int overlayTimer = 0;    
     private int pauseTimer = 0; 
    
+    private int totalOverlayTicks = 0;
+    private int totalPauseTicks = 0;
+    
     private boolean isActive = false;
     private boolean isFirstLoop = true;
     private boolean isPause = false;
@@ -29,7 +34,7 @@ public class SexOverlayManager {
     	
     	
     	if (isFirstLoop) {
-        	if (overlayTimer < 120) {
+        	if (overlayTimer < totalOverlayTicks) {
         		overlayTimer++;
         	}     
         	else {           		
@@ -38,7 +43,7 @@ public class SexOverlayManager {
         	}
     	}
     	else if (isPause) {
-        	if (pauseTimer < 60) {
+        	if (pauseTimer < totalPauseTicks) {
         		pauseTimer++;
         	}     
         	else {           		
@@ -55,8 +60,10 @@ public class SexOverlayManager {
     	} 
     }
     
-    public void trigger() {
-    	isActive = true;
+    public void trigger(@Nonnegative int totalOverlayTicks, @Nonnegative int totalPauseTicks) {
+    	this.isActive = true;
+    	this.totalOverlayTicks = Math.abs(totalOverlayTicks);
+    	this.totalPauseTicks = Math.abs(totalPauseTicks);
     }
 
     public float getAlpha() {
@@ -76,5 +83,7 @@ public class SexOverlayManager {
         isFirstLoop = true;
         overlayTimer = 0;
         pauseTimer = 0;
+        totalOverlayTicks = 0;
+        totalPauseTicks = 0;
     }
 }

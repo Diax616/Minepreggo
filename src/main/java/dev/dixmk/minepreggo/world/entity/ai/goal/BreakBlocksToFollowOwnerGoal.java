@@ -77,14 +77,11 @@ public class BreakBlocksToFollowOwnerGoal<E extends PreggoMob & ITamablePreggoMo
             return;
         }
         
-        // Check if path is blocked
         if (this.tamable.getNavigation().isDone() || !this.tamable.getNavigation().isInProgress()) {
             BlockPos blockingPos = findNextBlockToBreak();
             
             if (blockingPos != null && isSoftBlock(blockingPos)) {
-                // Start or continue breaking the block
                 if (this.targetBlockPos == null || !this.targetBlockPos.equals(blockingPos)) {
-                    // Clean up previous block animation
                     if (this.targetBlockPos != null) {
                         this.tamable.level().destroyBlockProgress(this.tamable.getId(), this.targetBlockPos, -1);
                     }
@@ -95,18 +92,16 @@ public class BreakBlocksToFollowOwnerGoal<E extends PreggoMob & ITamablePreggoMo
                 
                 this.breakingTime++;
                 
-                // Show breaking animation
                 int progress = (int)((float)this.breakingTime / BREAK_DURATION * 10.0F);
                 this.tamable.level().destroyBlockProgress(this.tamable.getId(), this.targetBlockPos, progress);
                 
                 if (this.breakingTime >= BREAK_DURATION) {
-                    // Break the block
+
                     this.tamable.level().destroyBlock(this.targetBlockPos, true, this.tamable);
                     this.tamable.level().destroyBlockProgress(this.tamable.getId(), this.targetBlockPos, -1);
                     this.breakingTime = 0;
                     this.targetBlockPos = null;
                     
-                    // Check if we just finished a vertical column
                     if (this.currentColumnBase != null) {
                         boolean columnStillBlocked = isVerticalColumnBlocked(this.currentColumnBase);
                         if (!columnStillBlocked) {
@@ -115,7 +110,6 @@ public class BreakBlocksToFollowOwnerGoal<E extends PreggoMob & ITamablePreggoMo
                     }
                 }
             } else {
-                // No more blocks to break, try to navigate to owner
                 this.breakingTime = 0;
                 if (this.targetBlockPos != null) {
                     this.tamable.level().destroyBlockProgress(this.tamable.getId(), this.targetBlockPos, -1);
@@ -133,32 +127,27 @@ public class BreakBlocksToFollowOwnerGoal<E extends PreggoMob & ITamablePreggoMo
         int dirX = (int)Math.round(direction.x);
         int dirZ = (int)Math.round(direction.z);
         
-        // If we're working on a column and it's not cleared yet, continue with that column
         if (this.currentColumnBase != null && !this.columnCleared) {
             BlockPos verticalBlock = findVerticalBlockInColumn(this.currentColumnBase);
             if (verticalBlock != null) {
                 return verticalBlock;
             } else {
-                // Column is now clear
                 this.columnCleared = true;
             }
         }
         
-        // Search for horizontal blocking positions
         BlockPos bestColumnBase = null;
         double closestDist = Double.MAX_VALUE;
         
-        // Check in a horizontal range around the forward direction
         for (int xOffset = -HORIZONTAL_RANGE; xOffset <= HORIZONTAL_RANGE; xOffset++) {
             for (int zOffset = -HORIZONTAL_RANGE; zOffset <= HORIZONTAL_RANGE; zOffset++) {
-                // Skip positions that aren't in the general direction of the owner
-                if (dirX * xOffset + dirZ * zOffset < 0) {
+
+            	if (dirX * xOffset + dirZ * zOffset < 0) {
                     continue;
                 }
                 
                 BlockPos columnBase = this.tamable.blockPosition().offset(dirX + xOffset, 0, dirZ + zOffset);
                 
-                // Check if this column has blocking blocks
                 if (isVerticalColumnBlocked(columnBase)) {
                     double dist = columnBase.distSqr(this.tamable.getOwner().blockPosition());
                     if (dist < closestDist) {
@@ -169,7 +158,6 @@ public class BreakBlocksToFollowOwnerGoal<E extends PreggoMob & ITamablePreggoMo
             }
         }
         
-        // If we found a blocking column, set it as current and start breaking from bottom
         if (bestColumnBase != null) {
             this.currentColumnBase = bestColumnBase;
             this.columnCleared = false;
@@ -180,7 +168,6 @@ public class BreakBlocksToFollowOwnerGoal<E extends PreggoMob & ITamablePreggoMo
     }
     
     private boolean isVerticalColumnBlocked(BlockPos basePos) {
-        // Check if there are any soft blocks in the vertical column (up to 3 blocks high)
         for (int y = 0; y <= 2; y++) {
             BlockPos checkPos = basePos.offset(0, y, 0);
             if (isSoftBlock(checkPos) && !this.tamable.level().isEmptyBlock(checkPos)) {
@@ -204,6 +191,6 @@ public class BreakBlocksToFollowOwnerGoal<E extends PreggoMob & ITamablePreggoMo
     private boolean isSoftBlock(BlockPos pos) {
         BlockState state = this.tamable.level().getBlockState(pos);
         var f = state.getDestroySpeed(this.tamable.level(), pos);
-        return f <= 1.2F && f >= 0; // Any block with low hardness
+        return f <= 1.2F && f >= 0;
     }
 }

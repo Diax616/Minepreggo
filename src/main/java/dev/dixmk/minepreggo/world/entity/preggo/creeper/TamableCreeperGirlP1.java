@@ -15,6 +15,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobPregnancySystemP1;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnantPreggoMobSystemP1;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 
 
 public class TamableCreeperGirlP1 extends AbstractTamablePregnantHumanoidCreeperGirl<PregnantPreggoMobSystemP1<TamableCreeperGirlP1>, PreggoMobPregnancySystemP1<TamableCreeperGirlP1>> implements IPregnancyP1<TamableCreeperGirlP1> {
@@ -32,7 +33,7 @@ public class TamableCreeperGirlP1 extends AbstractTamablePregnantHumanoidCreeper
 	
 	@Override
 	protected PregnantPreggoMobSystemP1<TamableCreeperGirlP1> createPreggoMobSystem() {
-		return new PregnantPreggoMobSystemP1<>(this, MinepreggoModConfig.getTotalTicksOfHungryP1());
+		return new PregnantPreggoMobSystemP1<>(this, MinepreggoModConfig.getTotalTicksOfHungryP1(), PregnancySystemHelper.TOTAL_TICKS_SEXUAL_APPETITE_P1);
 	}
 	
 	@Override

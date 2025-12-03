@@ -387,6 +387,13 @@
 
 	"chat.minepreggo.prenantal_checkup.message.warning": "It is necessary to be at least in the %s stage of pregnancy to perform this prenatal check-up",
 
+	"chat.minepreggo.sex.message.mobs": "There are nerby hostil mobs",
+	"chat.minepreggo.sex.message.sexual_appetite": "%s's doesn't have enough sexual appetite to have fun with you",
+	"chat.minepreggo.sex.message.distance": "%s's is too far away from you",
+	"chat.minepreggo.sex.message.enough_beds": "There must be a bed to have fun in.",
+	"chat.minepreggo.sex.message.active_cinematic": "%s's is in other cinematic.",
+
+	
 	"book.minepreggo.prenatal_checkup.regular.template.title": "Regular Prenatal Checkup Results",
 	"book.minepreggo.prenatal_checkup.regular.template.page.1.intro": "       Result\n  Regular Checkup\n\n",
 	

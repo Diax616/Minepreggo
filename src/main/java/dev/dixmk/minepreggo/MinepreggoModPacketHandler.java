@@ -37,8 +37,7 @@ public class MinepreggoModPacketHandler {
 
 	public static void queueServerWork(int tick, Runnable action) {
 		if (Thread.currentThread().getThreadGroup() == SidedThreadGroups.SERVER) {
-			final boolean result = WORK_QUEUE.add(new AbstractMap.SimpleEntry<>(action, tick));
-			MinepreggoMod.LOGGER.debug("ADD JOB, {}", result);
+			WORK_QUEUE.add(new AbstractMap.SimpleEntry<>(action, tick));
 		}
 	}
 

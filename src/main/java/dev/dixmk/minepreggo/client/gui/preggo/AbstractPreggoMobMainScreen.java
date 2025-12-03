@@ -12,7 +12,7 @@ import dev.dixmk.minepreggo.network.packet.UpdatePreggoMobBreakBlocksC2SPacket;
 import dev.dixmk.minepreggo.network.packet.RequestPreggoMobInventoryMenuC2SPacket;
 import dev.dixmk.minepreggo.network.packet.UpdatePreggoMobPickUpItemC2SPacket;
 import dev.dixmk.minepreggo.network.packet.UpdatePreggoMobWaitC2SPacket;
-import dev.dixmk.minepreggo.network.packet.RequestSexCinematicPacket;
+import dev.dixmk.minepreggo.network.packet.RequestSexCinematicP2MC2SPacket;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.inventory.preggo.AbstractPreggoMobMainMenu;
@@ -119,7 +119,7 @@ public abstract class AbstractPreggoMobMainScreen
 								
 			sexButton = new ImageButton(this.leftPos - 24, this.topPos + 32, 16, 16, this.xSexSprite, this.ySexSprite, 16, ScreenHelper.MINEPREGGO_ICONS_TEXTURE, 256, 256, 
 					e -> {
-						MinepreggoModPacketHandler.INSTANCE.sendToServer(new RequestSexCinematicPacket(id));
+						MinepreggoModPacketHandler.INSTANCE.sendToServer(new RequestSexCinematicP2MC2SPacket(id));
 						this.minecraft.player.closeContainer();
 					});							
 			sexButton.setTooltip(Tooltip.create(Component.translatable("gui.minepreggo.preggo_mob_inventory.tooltip_sex")));

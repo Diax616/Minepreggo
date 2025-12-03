@@ -14,7 +14,7 @@ import dev.dixmk.minepreggo.network.packet.SyncFemalePlayerDataS2CPacket;
 import dev.dixmk.minepreggo.network.packet.SyncMobEffectPacket;
 import dev.dixmk.minepreggo.network.packet.SyncPlayerDataS2CPacket;
 import dev.dixmk.minepreggo.network.packet.SyncPregnancySystemS2CPacket;
-import dev.dixmk.minepreggo.server.ServerSexCinematicManager;
+import dev.dixmk.minepreggo.server.ServerCinematicManager;
 import dev.dixmk.minepreggo.utils.DebugHelper;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
@@ -323,10 +323,9 @@ public class PlayerEventHandler {
 	@SubscribeEvent
 	public static void onPlayerQuit(PlayerEvent.PlayerLoggedOutEvent event) {
 	    if (event.getEntity() instanceof ServerPlayer player) {
-	        ServerSexCinematicManager.end(player);
+	    	ServerCinematicManager.getInstance().end(player);
 	    }
 	}
-	
 	
 	private static void showPlayerMainMenu(ServerPlayer serverPlayer) {
 		BlockPos bpos = BlockPos.containing(serverPlayer.getX(), serverPlayer.getY(), serverPlayer.getZ());	

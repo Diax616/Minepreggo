@@ -6,12 +6,7 @@ import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 public class PregnantPreggoMobSystemP1
 	<E extends PreggoMob & ITamablePreggoMob<FemaleEntityImpl> & IPregnancySystemHandler> extends PregnantPreggoMobSystemP0<E> {
 
-	public PregnantPreggoMobSystemP1(E preggoMob, int totalTicksOfHungry) {
-		super(preggoMob, totalTicksOfHungry);
-	}
-
-	@Override
-	public boolean canFeedHerself() {
-		return super.canFeedHerself() && !preggoMob.isIncapacitated();
+	public PregnantPreggoMobSystemP1(E preggoMob, int totalTicksOfHungry, int totalTicksOfSexualAppetitve) {
+		super(preggoMob, totalTicksOfHungry, totalTicksOfSexualAppetitve);
 	}
 }

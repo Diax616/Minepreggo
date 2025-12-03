@@ -13,15 +13,17 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.NetworkEvent;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-public record RenderSexOverlayS2CPacket(boolean start) {
+public record RenderSexOverlayS2CPacket(int totalOverlayTicks, int totalPauseTicks) {
 
 	public static RenderSexOverlayS2CPacket decode(FriendlyByteBuf buffer) {	
 		return new RenderSexOverlayS2CPacket(
-				buffer.readBoolean());
+				buffer.readInt(),
+				buffer.readInt());
 	}
 	
 	public static void encode(RenderSexOverlayS2CPacket message, FriendlyByteBuf buffer) {
-		buffer.writeBoolean(message.start);
+		buffer.writeInt(message.totalOverlayTicks);
+		buffer.writeInt(message.totalPauseTicks);
 	}
 	
 	public static void handler(RenderSexOverlayS2CPacket message, Supplier<NetworkEvent.Context> contextSupplier) {
@@ -29,7 +31,7 @@ public record RenderSexOverlayS2CPacket(boolean start) {
 		context.enqueueWork(() -> 
 	        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {       
 	        	if (!SexOverlayManager.getInstance().isActive()) {
-	                SexOverlayManager.getInstance().trigger();	
+	                SexOverlayManager.getInstance().trigger(message.totalOverlayTicks, message.totalPauseTicks);	
 	        	}
 	        })			
 		);

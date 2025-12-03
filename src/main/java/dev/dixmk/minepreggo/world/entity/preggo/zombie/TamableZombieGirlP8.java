@@ -6,6 +6,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.IPregnancyP8;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobPregnancySystemP8;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnantPreggoMobSystemP2;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.level.Level;
@@ -26,7 +27,7 @@ public class TamableZombieGirlP8 extends AbstractTamablePregnantZombieGirl<Pregn
 	
 	@Override
 	protected PregnantPreggoMobSystemP2<TamableZombieGirlP8> createPreggoMobSystem() {
-		return new PregnantPreggoMobSystemP2<>(this, MinepreggoModConfig.getTotalTicksOfHungryP8());
+		return new PregnantPreggoMobSystemP2<>(this, MinepreggoModConfig.getTotalTicksOfHungryP8(), PregnancySystemHelper.TOTAL_TICKS_SEXUAL_APPETITE_P8);
 	}
 	
 	@Override

@@ -2,64 +2,41 @@ package dev.dixmk.minepreggo.world.entity.preggo;
 
 import javax.annotation.Nonnull;
 
-import dev.dixmk.minepreggo.MinepreggoModConfig;
-import dev.dixmk.minepreggo.world.pregnancy.IFemaleEntity;
+import dev.dixmk.minepreggo.world.pregnancy.AbstractBreedableEntity;
+import dev.dixmk.minepreggo.world.pregnancy.IBreedable;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 
-public abstract class FertilitySystem<E extends PreggoMob & ITamablePreggoMob<?> & IFemaleEntity> {
+public abstract class FertilitySystem<E extends PreggoMob & ITamablePreggoMob<?>> {
 
 	protected final RandomSource randomSource;	
 	protected final E preggoMob;
-	protected int discomfortTick = 0;
-	
+	private final AbstractBreedableEntity abstractBreedableEntity;
 	
 	protected FertilitySystem(@Nonnull E preggoMob) {
 		this.preggoMob = preggoMob;	
 		this.randomSource = preggoMob.getRandom();
+		this.abstractBreedableEntity = preggoMob.getGenderedData();
 	}
 	
-	protected void evaluatePregnancyInitializerTimer() {			    	
-        if (preggoMob.getPregnancyInitializerTimer() >= MinepreggoModConfig.getTicksToStartPregnancy()) {
-        	startPregnancy();
-        	preggoMob.discard();
+	protected void evaluateFertilityTimer() {			    	
+        if (abstractBreedableEntity.getFertilityRateTimer() >= PregnancySystemHelper.TOTAL_TICKS_FERTILITY_RATE
+        		&& abstractBreedableEntity.getFertilityRate() < IBreedable.MAX_FERTILITY_RATE) {
+        	abstractBreedableEntity.resetFertilityRateTimer();
+        	abstractBreedableEntity.incrementFertilityRate(0.075F);
         } else {
-        	preggoMob.incrementPregnancyInitializerTimer();
+        	abstractBreedableEntity.incrementFertilityRateTimer();
         } 
 	}
-
-	protected boolean tryStartRandomDiscomfort() {
-        if (randomSource.nextFloat() < 0.001F && !preggoMob.hasEffect(MobEffects.CONFUSION)) {
-        	preggoMob.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 200, 0, false, true));                 
-        	return true;
-        }    
-        return false;
-	}
 	
-	protected boolean isExperiencingDiscomfort() {
-		return preggoMob.hasEffect(MobEffects.CONFUSION);
-	}
-	
-	public void onServerTick() {		
+	public final void onServerTick() {		
 		if (preggoMob.level().isClientSide) {
 			return;
-		}
-		
-		if (preggoMob.isPregnant()) {			
-			if (!isExperiencingDiscomfort()) {			
-				if (discomfortTick > 40) {
-					tryStartRandomDiscomfort();
-					discomfortTick = 0;
-				}
-				else {
-					++discomfortTick;
-				}
-			}	
-			
-			evaluatePregnancyInitializerTimer();
-		}
+		}		
+		evaluateFertilitySystem();	
 	}
 	
-	protected abstract void startPregnancy();
+	protected void evaluateFertilitySystem() {
+		evaluateFertilityTimer();
+	}
 }

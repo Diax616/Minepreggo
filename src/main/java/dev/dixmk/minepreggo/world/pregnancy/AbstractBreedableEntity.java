@@ -12,7 +12,7 @@ public abstract class AbstractBreedableEntity implements IBreedable, INBTSeriali
 	protected int fertilityRateTimer = 0;
 	
 	protected int sexualAppetiteTimer = 0;
-	protected int sexualAppetite = 0;
+	protected int sexualAppetite = IBreedable.MAX_SEXUAL_APPETIVE;
 	
 	protected AbstractBreedableEntity(Gender gender) {
 		this.gender = gender;

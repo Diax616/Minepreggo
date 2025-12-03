@@ -3,7 +3,7 @@ package dev.dixmk.minepreggo.network.packet;
 import java.util.function.Supplier;
 
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
-import dev.dixmk.minepreggo.server.ServerSexCinematicManager;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -27,7 +27,7 @@ public record SexCinematicAbortC2SPacket(int mobId) {
             if (context.getDirection().getReceptionSide().isServer()) {
                 var player = context.getSender();
                 if (player != null) {
-                    ServerSexCinematicManager.end(player);
+                	
                 }          	          	
             }		
 		});

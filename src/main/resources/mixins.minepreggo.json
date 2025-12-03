@@ -9,6 +9,9 @@
 	 "PlayerModelMixin",
 	 "AbstractClientPlayerMixin",
 	 "PlayerRendererMixin",
-	 "PlayerMixin"
+	 "PlayerMixin",
+	 "LivingEntityMixin",
+	 "MinecraftMixin",
+	 "MouseHandlerMixin"
    ]
 }

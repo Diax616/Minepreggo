@@ -53,6 +53,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -109,7 +110,17 @@ public class PregnancySystemHelper {
 	public static final int TOTAL_TICKS_CONTRACTION_P7 = 900;
 	public static final int TOTAL_TICKS_CONTRACTION_P8 = 1000;
 	
-	public static final int TOTAL_TICKS_FERTILITY_RATE = 6000;
+	public static final int TOTAL_TICKS_FERTILITY_RATE = 4000;
+	
+	public static final int TOTAL_TICKS_SEXUAL_APPETITE_P0 = 4000;
+	public static final int TOTAL_TICKS_SEXUAL_APPETITE_P1 = 3800;
+	public static final int TOTAL_TICKS_SEXUAL_APPETITE_P2 = 3600;
+	public static final int TOTAL_TICKS_SEXUAL_APPETITE_P3 = 3400;
+	public static final int TOTAL_TICKS_SEXUAL_APPETITE_P4 = 3200;
+	public static final int TOTAL_TICKS_SEXUAL_APPETITE_P5 = 3000;
+	public static final int TOTAL_TICKS_SEXUAL_APPETITE_P6 = 2800;
+	public static final int TOTAL_TICKS_SEXUAL_APPETITE_P7 = 2600;
+	public static final int TOTAL_TICKS_SEXUAL_APPETITE_P8 = 2400;
 	
 	// Probabilities
 	public static final float LOW_PREGNANCY_PAIN_PROBABILITY = 0.000075F;
@@ -594,7 +605,26 @@ public class PregnancySystemHelper {
     }
    
 	// Pregnancy Calculates	END	
-    
 
-    
+    public static boolean areHostileMobsNearby(LivingEntity source1, LivingEntity source2, @Nonnegative double detectionRadius) {
+        Level level = source1.level();
+
+        if (level.isClientSide) {
+            return false;
+        }
+
+        double radiusSquared = detectionRadius * detectionRadius;
+
+        return level.getEntitiesOfClass(Mob.class,
+        		source1.getBoundingBox().inflate(detectionRadius))
+                .stream()
+                .anyMatch(mob -> {
+                    if (mob.isDeadOrDying()) return false;
+                    if (mob.distanceToSqr(source1) > radiusSquared || mob.distanceToSqr(source2) > radiusSquared) return false;
+                    
+                    var target = mob.getTarget();
+                    if (target == null) return false;
+                    return target.getId() == source1.getId() || target.getId() == source2.getId();
+                });
+    }
 }

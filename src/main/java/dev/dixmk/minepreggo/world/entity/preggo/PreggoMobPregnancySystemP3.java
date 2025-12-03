@@ -3,11 +3,10 @@ package dev.dixmk.minepreggo.world.entity.preggo;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
-import org.jetbrains.annotations.Nullable;
-
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem.Result;
 import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancyEffectsHandler;
@@ -15,13 +14,9 @@ import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
-import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistries;
 
 public abstract class PreggoMobPregnancySystemP3 <E extends PreggoMob
 	& ITamablePreggoMob<FemaleEntityImpl> & IPregnancySystemHandler & IPregnancyEffectsHandler> extends PreggoMobPregnancySystemP2<E> {
@@ -126,24 +121,25 @@ public abstract class PreggoMobPregnancySystemP3 <E extends PreggoMob
 		return super.canBeAngry() || pregnantEntity.getBellyRubs() >= PregnancySystemHelper.MAX_BELLY_RUBBING_LEVEL;
 	}
 	
-	@Nullable
 	@Override
-	protected Result evaluateBellyRubs(Level level, Player source) {	
-		if (!level.isClientSide) {
-			level.playSound(null, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "belly_touch")), SoundSource.NEUTRAL, 0.75F, 1);
-		}
-		
+	protected Result evaluateBellyRubs(Level level, Player source) {		
 		var currentBellyRubs = pregnantEntity.getBellyRubs();
 	
-		if (currentBellyRubs > 0) {					
-			currentBellyRubs = Math.max(0, currentBellyRubs - PregnancySystemHelper.BELLY_RUBBING_VALUE);			
-			pregnantEntity.setBellyRubs(currentBellyRubs);
-						
-			if (!level.isClientSide && pregnantEntity.getPregnancySymptoms().contains(PregnancySymptom.BELLY_RUBS)
-					&& currentBellyRubs <= PregnancySystemHelper.DESACTIVATEL_BELLY_RUBS_SYMPTOM) {									
-				pregnantEntity.removePregnancySymptom(PregnancySymptom.BELLY_RUBS);							
-			}	
+		if (currentBellyRubs > 0) {	
 			
+			if (!level.isClientSide) {   
+	
+				pregnantEntity.playSound(MinepreggoModSounds.BELLY_TOUCH.get(), 0.8F, 0.8F + pregnantEntity.getRandom().nextFloat() * 0.3F);
+			
+				currentBellyRubs = Math.max(0, currentBellyRubs - PregnancySystemHelper.BELLY_RUBBING_VALUE);			
+				pregnantEntity.setBellyRubs(currentBellyRubs);
+							
+				if (!level.isClientSide && pregnantEntity.getPregnancySymptoms().contains(PregnancySymptom.BELLY_RUBS)
+						&& currentBellyRubs <= PregnancySystemHelper.DESACTIVATEL_BELLY_RUBS_SYMPTOM) {									
+					pregnantEntity.removePregnancySymptom(PregnancySymptom.BELLY_RUBS);							
+				}	
+			}
+						
 			return Result.SUCCESS;
 		}		
 		

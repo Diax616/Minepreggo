@@ -8,8 +8,8 @@ import net.minecraft.world.item.Items;
 public class PregnantPreggoMobSystemP2 
 	<E extends PreggoMob & ITamablePreggoMob<FemaleEntityImpl> & IPregnancySystemHandler> extends PregnantPreggoMobSystemP1<E> {
 
-	public PregnantPreggoMobSystemP2(E preggoMob, int totalTicksOfHungry) {
-		super(preggoMob, totalTicksOfHungry);
+	public PregnantPreggoMobSystemP2(E preggoMob, int totalTicksOfHungry, int totalTicksOfSexualAppetitve) {
+		super(preggoMob, totalTicksOfHungry, totalTicksOfSexualAppetitve);
 	}
 
 	@Override

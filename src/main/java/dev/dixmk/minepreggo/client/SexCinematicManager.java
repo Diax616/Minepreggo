@@ -29,9 +29,19 @@ public class SexCinematicManager {
         storedPitch = player.getXRot();
     }
 
+    public void startCinematicWithPlayer(LocalPlayer player) {
+        isInCinematic = true;
+        storedYaw = player.getYRot();
+        storedPitch = player.getXRot();
+    }
+    
     public void endCinematic() {
         isInCinematic = false;
         activeCinematicMobId = -1;
+    }
+    
+    public void endCinematicWithPlayer() {
+        isInCinematic = false;
     }
 
     public boolean isInCinematic() {

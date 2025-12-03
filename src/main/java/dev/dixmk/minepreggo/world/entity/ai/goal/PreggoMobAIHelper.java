@@ -299,8 +299,7 @@ public class PreggoMobAIHelper {
 		preggoMob.targetSelector.addGoal(2, new HurtByTargetGoal(preggoMob));	
 		
 		preggoMob.targetSelector.addGoal(4, new BreakBlocksToFollowOwnerGoal<>(preggoMob, 2, 7));	
-		
-		
+			
 		preggoMob.goalSelector.addGoal(5, new MeleeAttackGoal(preggoMob, 1.2D, false));
 			
 		preggoMob.goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(preggoMob, 1.0D) {
@@ -310,6 +309,8 @@ public class PreggoMobAIHelper {
 				&& (preggoMob.isSavage() || !preggoMob.isTame());	
 			}
 		});
+				
+		preggoMob.goalSelector.addGoal(6, new EatGoal<>(preggoMob, 0.6F, 20));
 		
 		preggoMob.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(preggoMob, Player.class, false, false) {
 			@Override
@@ -399,6 +400,20 @@ public class PreggoMobAIHelper {
 				&& !preggoMob.isIncapacitated();
 			}
 
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() 
+				&& !preggoMob.isIncapacitated();
+			}
+		});
+		
+		preggoMob.goalSelector.addGoal(6, new EatGoal<>(preggoMob, 0.6F, 30) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 	
+				&& !preggoMob.isIncapacitated();
+			}
+			
 			@Override
 			public boolean canContinueToUse() {
 				return super.canContinueToUse() 

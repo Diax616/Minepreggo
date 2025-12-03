@@ -15,9 +15,7 @@ import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
-import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -25,7 +23,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.registries.ForgeRegistries;
 
 public abstract class PreggoMobPregnancySystemP2<E extends PreggoMob
 	& ITamablePreggoMob<FemaleEntityImpl> & IPregnancySystemHandler & IPregnancyEffectsHandler> extends PreggoMobPregnancySystemP1<E> {
@@ -139,9 +136,9 @@ public abstract class PreggoMobPregnancySystemP2<E extends PreggoMob
 	       
         if (!level.isClientSide) {    	
         	MinepreggoMod.LOGGER.debug("{} {}", mainHandItem, mainHandItem.getCount());
-        	
-        	level.playSound(null, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.cow.milk")), SoundSource.NEUTRAL, 0.75f, 1);	
-     
+
+            pregnantEntity.playSound(SoundEvents.COW_MILK, 0.8F, 0.8F + pregnantEntity.getRandom().nextFloat() * 0.3F);
+    	
             currentMilking = Math.max(0, currentMilking - PregnancySystemHelper.MILKING_VALUE);
             pregnantEntity.setMilking(currentMilking);               
             var milkItem = PregnancySystemHelper.getMilkItem(pregnantEntity.getTypeOfSpecies());
@@ -152,7 +149,8 @@ public abstract class PreggoMobPregnancySystemP2<E extends PreggoMob
 				MinepreggoMod.LOGGER.warn("Milk item is null for species: {}", pregnantEntity.getTypeOfSpecies());
 			}
         	
-            mainHandItem.setCount(mainHandItem.getCount() - 1);        
+            mainHandItem.shrink(1);
+            
             if (mainHandItem.isEmpty()) {
                 source.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
             }        

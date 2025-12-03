@@ -1,6 +1,7 @@
 package dev.dixmk.minepreggo.world.entity.preggo;
 
-import org.checkerframework.checker.index.qual.NonNegative;
+import javax.annotation.Nonnegative;
+
 import org.jetbrains.annotations.Nullable;
 
 import dev.dixmk.minepreggo.world.pregnancy.AbstractBreedableEntity;
@@ -20,9 +21,9 @@ public interface ITamablePreggoMob<G extends AbstractBreedableEntity> {
 	static final int MAX_FULLNESS = 20;
 	
     int getFullness();
-    void setFullness(@NonNegative int fullness);
-    void incrementFullness(@NonNegative int amount);
-    void reduceFullness(@NonNegative int amount);
+    void setFullness(@Nonnegative int fullness);
+    void incrementFullness(@Nonnegative int amount);
+    void reduceFullness(@Nonnegative int amount);
     
     boolean isWaiting();
     void setWaiting(boolean waiting);
