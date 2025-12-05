@@ -1,18 +1,18 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.creeper;
 
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.MonsterCreeperGirlP0;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.MonsterCreeperGirl;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MonsterCreeperGirlP0Model extends AbstractMonsterCreeperGirlModel<MonsterCreeperGirlP0> {
-	public MonsterCreeperGirlP0Model(ModelPart root) {
+public class MonsterCreeperGirlModel extends AbstractMonsterCreeperGirlModel<MonsterCreeperGirl> {
+	public MonsterCreeperGirlModel(ModelPart root) {
 		super(root);
 	}
 	
 	@Override
-	public void setupAnim(MonsterCreeperGirlP0 entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+	public void setupAnim(MonsterCreeperGirl entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 		
 		if (entity.isBaby()) {

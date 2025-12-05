@@ -22,17 +22,21 @@ import net.minecraft.network.protocol.Packet;
 import java.util.Optional;
 import java.util.UUID;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
+import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.FemaleFertilitySystem;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem;
+import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 
@@ -61,7 +65,7 @@ public class TamableCreeperGirl extends AbstractTamableHumanoidCreeperGirl<Pregg
 		fertilitySystem = new FemaleFertilitySystem<>(this) {
 			@Override
 			protected void startPregnancy() {		
-				if (preggoMob.level() instanceof ServerLevel serverLevel) {
+				if (preggoMob.level() instanceof ServerLevel serverLevel && !serverLevel.isClientSide) {
 					var creeperGirl = MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), MobSpawnType.CONVERSION);		
 					PreggoMobHelper.copyRotation(preggoMob, creeperGirl);
 					PreggoMobHelper.copyOwner(preggoMob, creeperGirl);
@@ -70,6 +74,7 @@ public class TamableCreeperGirl extends AbstractTamableHumanoidCreeperGirl<Pregg
 					PreggoMobHelper.copyTamableData(preggoMob, creeperGirl);				
 					PreggoMobHelper.transferInventory(preggoMob, creeperGirl);					
 					PreggoMobHelper.transferAttackTarget(preggoMob, creeperGirl);
+					PreggoMobHelper.initPregnancy(creeperGirl);
 				}			
 			}
 		};
@@ -122,6 +127,20 @@ public class TamableCreeperGirl extends AbstractTamableHumanoidCreeperGirl<Pregg
       } 
 	}
 
+	@Override
+	public boolean tryImpregnate(@Nonnegative int fertilizedEggs, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father) {
+		boolean result = this.defaultFemaleEntityImpl.tryImpregnate(fertilizedEggs, father);
+		if (result) {
+			this.entityData.set(DATA_PREGNANT, true);
+		}
+		return result;
+	}
+	
+	@Override
+	public boolean isPregnant() {
+		return this.entityData.get(DATA_PREGNANT);
+	}
+	
 	public static AttributeSupplier.Builder createAttributes() {
 		return getBasicAttributes(0.24);
 	}

@@ -86,7 +86,7 @@ import dev.dixmk.minepreggo.client.model.entity.preggo.ender.AbstractEnderGirlMo
 import dev.dixmk.minepreggo.client.model.entity.preggo.zombie.AbstractZombieGirlModel;
 import dev.dixmk.minepreggo.client.renderer.entity.ScientificIllagerRenderer;
 import dev.dixmk.minepreggo.client.renderer.preggo.creeper.IllCreeperGirlRenderer;
-import dev.dixmk.minepreggo.client.renderer.preggo.creeper.MonsterCreeperGirlP0Renderer;
+import dev.dixmk.minepreggo.client.renderer.preggo.creeper.MonsterCreeperGirlRenderer;
 import dev.dixmk.minepreggo.client.renderer.preggo.creeper.MonsterCreeperGirlP3Renderer;
 import dev.dixmk.minepreggo.client.renderer.preggo.creeper.MonsterCreeperGirlP5Renderer;
 import dev.dixmk.minepreggo.client.renderer.preggo.creeper.MonsterCreeperGirlP7Renderer;
@@ -103,9 +103,9 @@ import dev.dixmk.minepreggo.client.renderer.preggo.creeper.TamableCreeperGirlRen
 import dev.dixmk.minepreggo.client.renderer.preggo.creeper.quadruped.IllQuadrupedCreeperGirlRenderer;
 import dev.dixmk.minepreggo.client.renderer.preggo.creeper.quadruped.MonsterQuadrupedCreeperGirlP0Renderer;
 import dev.dixmk.minepreggo.client.renderer.preggo.ender.IllEnderGirlRenderer;
-import dev.dixmk.minepreggo.client.renderer.preggo.ender.MonsterlEnderGirlP0Renderer;
+import dev.dixmk.minepreggo.client.renderer.preggo.ender.MonsterlEnderGirlRenderer;
 import dev.dixmk.minepreggo.client.renderer.preggo.zombie.IllZombieGirlRenderer;
-import dev.dixmk.minepreggo.client.renderer.preggo.zombie.MonsterZombieGirlP0Renderer;
+import dev.dixmk.minepreggo.client.renderer.preggo.zombie.MonsterZombieGirlRenderer;
 import dev.dixmk.minepreggo.client.renderer.preggo.zombie.MonsterZombieGirlP3Renderer;
 import dev.dixmk.minepreggo.client.renderer.preggo.zombie.MonsterZombieGirlP5Renderer;
 import dev.dixmk.minepreggo.client.renderer.preggo.zombie.MonsterZombieGirlP7Renderer;
@@ -138,7 +138,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterCreeperGi
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterQuadrupedCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.IllCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.IllQuadrupedCreeperGirl;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.MonsterCreeperGirlP0;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.MonsterCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.MonsterCreeperGirlP3;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.MonsterCreeperGirlP5;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.MonsterCreeperGirlP7;
@@ -156,7 +156,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractMonsterEnderGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.IllEnderGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractMonsterZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.IllZombieGirl;
-import dev.dixmk.minepreggo.world.entity.preggo.zombie.MonsterZombieGirlP0;
+import dev.dixmk.minepreggo.world.entity.preggo.zombie.MonsterZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.MonsterZombieGirlP3;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.MonsterZombieGirlP5;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.MonsterZombieGirlP7;
@@ -225,7 +225,7 @@ public class MinepreggoMod {
 
 	private void onSpawnPlacementRegister(SpawnPlacementRegisterEvent event) {
 		event.register(
-        		MinepreggoModEntities.MONSTER_CREEPER_GIRL_P0.get(),
+        		MinepreggoModEntities.MONSTER_CREEPER_GIRL.get(),
         		SpawnPlacements.Type.ON_GROUND,
         		Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
         		AbstractMonsterCreeperGirl::checkMonsterCreeperGirlSpawnRules,
@@ -249,7 +249,7 @@ public class MinepreggoMod {
         		AbstractMonsterCreeperGirl::checkMonsterCreeperGirlSpawnRules,
         		SpawnPlacementRegisterEvent.Operation.OR);
 		event.register(
-        		MinepreggoModEntities.MONSTER_ZOMBIE_GIRL_P0.get(),
+        		MinepreggoModEntities.MONSTER_ZOMBIE_GIRL.get(),
         		SpawnPlacements.Type.ON_GROUND,
         		Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
         		AbstractMonsterZombieGirl::checkMonsterZombieGirlSpawnRules,
@@ -273,7 +273,7 @@ public class MinepreggoMod {
         		AbstractMonsterZombieGirl::checkMonsterZombieGirlSpawnRules,
         		SpawnPlacementRegisterEvent.Operation.OR);			
 		event.register(
-        		MinepreggoModEntities.MONSTER_ENDER_GIRL_P0.get(),
+        		MinepreggoModEntities.MONSTER_ENDER_GIRL.get(),
         		SpawnPlacements.Type.ON_GROUND,
         		Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
         		AbstractMonsterEnderGirl::checkMonsterEnderGirlSpawnRules,
@@ -287,7 +287,7 @@ public class MinepreggoMod {
     }
 	
 	private void registerAttributes(EntityAttributeCreationEvent event) {
-		event.put(MinepreggoModEntities.MONSTER_ZOMBIE_GIRL_P0.get(), MonsterZombieGirlP0.createAttributes().build());
+		event.put(MinepreggoModEntities.MONSTER_ZOMBIE_GIRL.get(), MonsterZombieGirl.createAttributes().build());
 		event.put(MinepreggoModEntities.MONSTER_ZOMBIE_GIRL_P3.get(), MonsterZombieGirlP3.createAttributes().build());
 		event.put(MinepreggoModEntities.MONSTER_ZOMBIE_GIRL_P5.get(), MonsterZombieGirlP5.createAttributes().build());
 		event.put(MinepreggoModEntities.MONSTER_ZOMBIE_GIRL_P7.get(), MonsterZombieGirlP7.createAttributes().build());
@@ -303,7 +303,7 @@ public class MinepreggoMod {
 		event.put(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P8.get(), TamableZombieGirlP8.createAttributes().build());
 	
 		
-		event.put(MinepreggoModEntities.MONSTER_CREEPER_GIRL_P0.get(), MonsterCreeperGirlP0.createAttributes().build());
+		event.put(MinepreggoModEntities.MONSTER_CREEPER_GIRL.get(), MonsterCreeperGirl.createAttributes().build());
 		event.put(MinepreggoModEntities.MONSTER_CREEPER_GIRL_P3.get(), MonsterCreeperGirlP3.createAttributes().build());
 		event.put(MinepreggoModEntities.MONSTER_CREEPER_GIRL_P5.get(), MonsterCreeperGirlP5.createAttributes().build());
 		event.put(MinepreggoModEntities.MONSTER_CREEPER_GIRL_P7.get(), MonsterCreeperGirlP7.createAttributes().build());	
@@ -318,7 +318,7 @@ public class MinepreggoMod {
 		event.put(MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P7.get(), TamableCreeperGirlP7.createAttributes().build());
 		event.put(MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P8.get(), TamableCreeperGirlP8.createAttributes().build());
 
-		event.put(MinepreggoModEntities.MONSTER_ENDER_GIRL_P0.get(), AbstractMonsterEnderGirl.createDefaultAttributes().build());
+		event.put(MinepreggoModEntities.MONSTER_ENDER_GIRL.get(), AbstractMonsterEnderGirl.createDefaultAttributes().build());
 		event.put(MinepreggoModEntities.MONSTER_QUADRUPED_CREEPER_GIRL_P0.get(), AbstractMonsterQuadrupedCreeperGirl.createDefaultAttributes().build());
 		
 		event.put(MinepreggoModEntities.SCIENTIFIC_ILLAGER.get(), ScientificIllager.createAttributes().build());
@@ -482,7 +482,7 @@ public class MinepreggoMod {
 	}
 	
 	private void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
-		event.registerEntityRenderer(MinepreggoModEntities.MONSTER_ZOMBIE_GIRL_P0.get(), MonsterZombieGirlP0Renderer::new);
+		event.registerEntityRenderer(MinepreggoModEntities.MONSTER_ZOMBIE_GIRL.get(), MonsterZombieGirlRenderer::new);
 		event.registerEntityRenderer(MinepreggoModEntities.MONSTER_ZOMBIE_GIRL_P3.get(), MonsterZombieGirlP3Renderer::new);
 		event.registerEntityRenderer(MinepreggoModEntities.MONSTER_ZOMBIE_GIRL_P5.get(), MonsterZombieGirlP5Renderer::new);
 		event.registerEntityRenderer(MinepreggoModEntities.MONSTER_ZOMBIE_GIRL_P7.get(), MonsterZombieGirlP7Renderer::new);	
@@ -497,7 +497,7 @@ public class MinepreggoMod {
 		event.registerEntityRenderer(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P7.get(), TamableZombieGirlP7Renderer::new);
 		event.registerEntityRenderer(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P8.get(), TamableZombieGirlP8Renderer::new);
 		
-		event.registerEntityRenderer(MinepreggoModEntities.MONSTER_CREEPER_GIRL_P0.get(), MonsterCreeperGirlP0Renderer::new);
+		event.registerEntityRenderer(MinepreggoModEntities.MONSTER_CREEPER_GIRL.get(), MonsterCreeperGirlRenderer::new);
 		event.registerEntityRenderer(MinepreggoModEntities.MONSTER_CREEPER_GIRL_P3.get(), MonsterCreeperGirlP3Renderer::new);
 		event.registerEntityRenderer(MinepreggoModEntities.MONSTER_CREEPER_GIRL_P5.get(), MonsterCreeperGirlP5Renderer::new);
 		event.registerEntityRenderer(MinepreggoModEntities.MONSTER_CREEPER_GIRL_P7.get(), MonsterCreeperGirlP7Renderer::new);
@@ -518,7 +518,7 @@ public class MinepreggoMod {
 		event.registerEntityRenderer(MinepreggoModEntities.ILL_QUADRUPED_CREEPER_GIRL.get(), IllQuadrupedCreeperGirlRenderer::new);
 		event.registerEntityRenderer(MinepreggoModEntities.SCIENTIFIC_ILLAGER.get(), ScientificIllagerRenderer::new);
 		
-		event.registerEntityRenderer(MinepreggoModEntities.MONSTER_ENDER_GIRL_P0.get(), MonsterlEnderGirlP0Renderer::new);	
+		event.registerEntityRenderer(MinepreggoModEntities.MONSTER_ENDER_GIRL.get(), MonsterlEnderGirlRenderer::new);	
 		event.registerEntityRenderer(MinepreggoModEntities.MONSTER_QUADRUPED_CREEPER_GIRL_P0.get(), MonsterQuadrupedCreeperGirlP0Renderer::new);
 	}
 	

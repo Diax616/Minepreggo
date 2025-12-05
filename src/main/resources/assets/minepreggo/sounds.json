@@ -1,81 +1,81 @@
 {
   "belly_touch": {
-    "subtitle": "subtitles.belly_touch",
+    "subtitle": "subtitles.entity.pregnant.belly.touch",
     "sounds": [
       {
-        "name": "minepreggo:bellytouch",
+        "name": "minepreggo:belly_touch",
         "stream": false
       }
     ]
   },
-  "preggo_death": {
-    "subtitle": "subtitles.preggo_death",
+  "pregnant_preggo_mob_death": {
+    "subtitle": "subtitles.entity.pregnant.preggo_mob.death",
     "sounds": [
       {
-        "name": "minepreggo:preggo_death",
+        "name": "minepreggo:pregnant_preggo_mob_death",
         "stream": false
       }
     ]
   },
   "pregnancy_pain1": {
-    "subtitle": "subtitles.pregnancy_pain1",
+    "subtitle": "subtitles.entity.pregnant.pain.1",
     "sounds": [
       {
-        "name": "minepreggo:pregnancypain1",
+        "name": "minepreggo:pregnancy_pain1",
         "stream": false
       }
     ]
   },
   "pregnancy_pain2": {
-    "subtitle": "subtitles.pregnancy_pain2",
+    "subtitle": "subtitles.entity.pregnant.pain.2",
     "sounds": [
       {
-        "name": "minepreggo:pregnancypain2",
+        "name": "minepreggo:pregnancy_pain2",
         "stream": false
       }
     ]
   },
-  "kicking1": {
-    "subtitle": "subtitles.kicking1",
+  "pregnancy_pain3": {
+    "subtitle": "subtitles.entity.pregnant.pain.3",
     "sounds": [
       {
-        "name": "minepreggo:kicking1",
+        "name": "minepreggo:pregnancy_pain3",
         "stream": false
       }
     ]
   },
-  "kicking2": {
-    "subtitle": "subtitles.kicking2",
+  "pregnancy_pain4": {
+    "subtitle": "subtitles.entity.pregnant.pain.4",
     "sounds": [
       {
-        "name": "minepreggo:kicking2",
+        "name": "minepreggo:pregnancy_pain4",
         "stream": false
       }
     ]
   },
-  "birth": {
-    "subtitle": "subtitles.birth",
+  "player_birth": {
+    "subtitle": "subtitles.entity.pregnant.player.birth",
     "sounds": [
       {
-        "name": "minepreggo:birth",
+        "name": "minepreggo:player_birth",
         "stream": false
       }
     ]
   },
-  "contraction1": {
-    "subtitle": "subtitles.contraction1",
+  "player_contraction": {
+    "subtitle": "subtitles.entity.pregnant.player.contraction",
     "sounds": [
       {
-        "name": "minepreggo:contraction1",
+        "name": "minepreggo:player_contraction",
         "stream": false
       }
     ]
   },
-  "miscarriage": {
-    "subtitle": "subtitles.miscarriage",
+  "player_miscarriage": {
+    "subtitle": "subtitles.entity.pregnant.player.miscarriage",
     "sounds": [
       {
-        "name": "minepreggo:miscarriage",
+        "name": "minepreggo:player_miscarriage",
         "stream": false
       }
     ]

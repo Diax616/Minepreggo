@@ -43,12 +43,18 @@
 	
 	"gui.minepreggo.sex_request.button.yeah": "Yeah",
 	"gui.minepreggo.sex_request.button.nope": "Nope",
+	"gui.minepreggo.sex_request.button.later": "Later",
+	"gui.minepreggo.sex_request.button.now": "Now",
+	
 	"gui.minepreggo.sex_request.label.message": "Wanna have fun?",
 	"gui.minepreggo.sex_request.label.requestor": "From: %s",
 	
+	"gui.minepreggo.sex_request.preggo_mob.horny.label.message.1": "When will we have fun again?",
+	"gui.minepreggo.sex_request.preggo_mob.horny.label.message.2": "Can we have some fun tonight?",
+	"gui.minepreggo.sex_request.preggo_mob.horny.label.message.3": "Can we 'shake' our babies tonight?",
 	
 	
-	"entity.minepreggo.monster_zombie_girl_p0": "Monster Zombie Girl",
+	"entity.minepreggo.monster_zombie_girl": "Monster Zombie Girl",
 	"entity.minepreggo.monster_zombie_girl_p3": "Monster Zombie Girl (P3)",
 	"entity.minepreggo.monster_zombie_girl_p5": "Monster Zombie Girl (P5)",
 	"entity.minepreggo.monster_zombie_girl_p7": "Monster Zombie Girl (P7)",
@@ -62,7 +68,7 @@
 	"entity.minepreggo.tamable_zombie_girl_p6": "Zombie Girl (P6)",
 	"entity.minepreggo.tamable_zombie_girl_p7": "Zombie Girl (P7)",
 	"entity.minepreggo.tamable_zombie_girl_p8": "Zombie Girl (P8)",
-	"entity.minepreggo.monster_creeper_girl_p0": "Monster Creeper Girl",
+	"entity.minepreggo.monster_creeper_girl": "Monster Creeper Girl",
 	"entity.minepreggo.monster_creeper_girl_p3": "Monster Creeper Girl (P3)",
 	"entity.minepreggo.monster_creeper_girl_p5": "Monster Creeper Girl (P5)",
 	"entity.minepreggo.monster_creeper_girl_p7": "Monster Creeper Girl (P7)",
@@ -77,7 +83,7 @@
 	"entity.minepreggo.tamable_creeper_girl_p7": "Creeper Girl (P7)",
 	"entity.minepreggo.tamable_creeper_girl_p8": "Creeper Girl (P8)",
 	
-	"entity.minepreggo.monster_ender_girl_p0": "Monster Ender Girl",
+	"entity.minepreggo.monster_ender_girl": "Monster Ender Girl",
 	"entity.minepreggo.monster_quadruped_creeper_girl_p0": "Monster Quadruped Creeper Girl (P0)",
 	
 	"entity.minepreggo.scientific_illager": "Scientific Illager",
@@ -86,7 +92,7 @@
 	"entity.minepreggo.ill_creeper_girl": "Ill Creeper Girl",
 	"entity.minepreggo.ill_zombie_girl": "Ill Zombie Girl",
 	
-	"item.minepreggo.monster_zombie_girl_p0_spawn_egg": "Monster Zombie Girl Spawn Egg",
+	"item.minepreggo.monster_zombie_girl_spawn_egg": "Monster Zombie Girl Spawn Egg",
 	"item.minepreggo.monster_zombie_girl_p3_spawn_egg": "Monster Zombie Girl (P3) Spawn Egg",
 	"item.minepreggo.monster_zombie_girl_p5_spawn_egg": "Monster Zombie Girl (P5) Spawn Egg",
 	"item.minepreggo.monster_zombie_girl_p7_spawn_egg": "Monster Zombie Girl (P7) Spawn Egg",
@@ -100,7 +106,7 @@
 	"item.minepreggo.tamable_zombie_girl_p6_spawn_egg": "Zombie Girl (P6) Spawn Egg",
 	"item.minepreggo.tamable_zombie_girl_p7_spawn_egg": "Zombie Girl (P7) Spawn Egg",
 	"item.minepreggo.tamable_zombie_girl_p8_spawn_egg": "Zombie Girl (P8) Spawn Egg",
-	"item.minepreggo.monster_creeper_girl_p0_spawn_egg": "Monster Creeper Girl Spawn Egg",
+	"item.minepreggo.monster_creeper_girl_spawn_egg": "Monster Creeper Girl Spawn Egg",
 	"item.minepreggo.monster_creeper_girl_p3_spawn_egg": "Monster Creeper Girl (P3) Spawn Egg",
 	"item.minepreggo.monster_creeper_girl_p5_spawn_egg": "Monster Creeper Girl (P5) Spawn Egg",
 	"item.minepreggo.monster_creeper_girl_p7_spawn_egg": "Monster Creeper Girl (P7) Spawn Egg",
@@ -117,7 +123,7 @@
 
 	"item.minepreggo.scientific_illager_spawn_egg": "Scientific Illager Spawn Egg",
 	"item.minepreggo.monster_quadruped_creeper_girl_p0_spawn_egg": "Monster Quadruped Creeper Girl Spawn Egg",
-	"item.minepreggo.monster_ender_girl_p0_spawn_egg": "Monster Ender Girl Spawn Egg",
+	"item.minepreggo.monster_ender_girl_spawn_egg": "Monster Ender Girl Spawn Egg",
 	
 	
 	"block.minepreggo.medical_table": "Medical Table",
@@ -324,16 +330,18 @@
 	"item.minepreggo.hot_chicken": "Hot Chicken",
 	
 	
-	"subtitles.miscarriage": "miscarriage",
-	"subtitles.preggo_death": "belly explosion",
-	"subtitles.belly_touch": "belly rub", 
-	"subtitles.contraction1": "contraction",
-	"subtitles.birth": "birth",
-	"subtitles.pregnancy_pain1": "pregnancy pain",
-	"subtitles.pregnancy_pain2": "pregnancy pain",
-	"subtitles.kicking2": "kicking belly",
-	"subtitles.kicking1": "kicking belly",
+	"subtitles.entity.pregnant.player.miscarriage": "miscarriage",
+	"subtitles.entity.pregnant.preggo_mob.death": "belly explosion",
+	"subtitles.entity.pregnant.belly.touch": "belly touch", 
+	"subtitles.entity.pregnant.player.contraction": "contraction",
+	"subtitles.entity.pregnant.player.birth": "birth",
+	"subtitles.entity.pregnant.pain.1": "pregnancy pain",
+	"subtitles.entity.pregnant.pain.2": "pregnancy pain",
+	"subtitles.entity.pregnant.pain.3": "pregnancy pain",
+	"subtitles.entity.pregnant.pain.4": "pregnancy pain",
 			
+
+	
 	"chat.minepreggo.preggo_mob.armor.message.chestplate_does_not_fit.boobs": "%s's boobs don't fit in this armor!",
 	
 	"chat.minepreggo.preggo_mob.armor.message.chestplate_does_not_fit.p1": "%s's slightly swollen belly doesn't fit in this armor!",
@@ -393,6 +401,11 @@
 	"chat.minepreggo.sex.message.enough_beds": "There must be a bed to have fun in.",
 	"chat.minepreggo.sex.message.active_cinematic": "%s's is in other cinematic.",
 
+	
+	"chat.minepreggo.preggo_mob.message.same_sex": "<%s> I didn't know you belonged to that 'group', but I don't care if it's you...",
+	"chat.minepreggo.preggo_mob.message.still_not_pregnant": "<%s> When are you gonna make me a mom, %s?",
+	"chat.minepreggo.pregnant.preggo_mob.message.without_beds": "<%s> Let's go somewhere more private, %s",
+	"chat.minepreggo.pregnant.preggo_mob.message.rejection_by_its_owner": "<%s> Okay, maybe later... 😖",
 	
 	"book.minepreggo.prenatal_checkup.regular.template.title": "Regular Prenatal Checkup Results",
 	"book.minepreggo.prenatal_checkup.regular.template.page.1.intro": "       Result\n  Regular Checkup\n\n",

@@ -20,12 +20,14 @@ public abstract class FertilitySystem<E extends PreggoMob & ITamablePreggoMob<?>
 	}
 	
 	protected void evaluateFertilityTimer() {			    	
-        if (abstractBreedableEntity.getFertilityRateTimer() >= PregnancySystemHelper.TOTAL_TICKS_FERTILITY_RATE
-        		&& abstractBreedableEntity.getFertilityRate() < IBreedable.MAX_FERTILITY_RATE) {
-        	abstractBreedableEntity.resetFertilityRateTimer();
-        	abstractBreedableEntity.incrementFertilityRate(0.075F);
-        } else {
-        	abstractBreedableEntity.incrementFertilityRateTimer();
+        if (abstractBreedableEntity.getFertilityRate() < IBreedable.MAX_FERTILITY_RATE) {     	
+        	if (abstractBreedableEntity.getFertilityRateTimer() >= PregnancySystemHelper.TOTAL_TICKS_FERTILITY_RATE) {
+            	abstractBreedableEntity.resetFertilityRateTimer();  	
+            	abstractBreedableEntity.incrementFertilityRate(0.075F);
+        	}
+        	else {
+            	abstractBreedableEntity.incrementFertilityRateTimer();
+            } 
         } 
 	}
 	

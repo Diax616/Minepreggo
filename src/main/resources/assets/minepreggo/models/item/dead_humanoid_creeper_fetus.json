@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "minepreggo:item/dead_creeper_fetus"
+    "layer0": "minepreggo:item/dead_humanoid_creeper_fetus"
   }
 }

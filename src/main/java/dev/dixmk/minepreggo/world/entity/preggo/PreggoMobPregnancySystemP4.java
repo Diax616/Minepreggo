@@ -7,7 +7,9 @@ import javax.annotation.Nonnull;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
+import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
+import dev.dixmk.minepreggo.network.packet.RequestSexM2PC2SPacket;
 import dev.dixmk.minepreggo.world.pregnancy.AbstractPregnancySystem;
 import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancyEffectsHandler;
@@ -27,6 +29,8 @@ public abstract class PreggoMobPregnancySystemP4<E extends PreggoMob
 	protected @Nonnegative int totalTicksOfHorny = MinepreggoModConfig.getTotalTicksOfHornyP4();
 	protected @Nonnegative int totalTicksOfBirth = PregnancySystemHelper.TOTAL_TICKS_BIRTH_P4;
 	protected @Nonnegative int totalTicksOfPreBirth = PregnancySystemHelper.TOTAL_TICKS_PREBIRTH_P4;
+	
+	private int sexRequestCooldown = 0;
 	
 	protected PreggoMobPregnancySystemP4(@Nonnull E preggoMob) {
 		super(preggoMob);
@@ -66,6 +70,8 @@ public abstract class PreggoMobPregnancySystemP4<E extends PreggoMob
 			breakWater();
 			return;
 		}
+		
+		tryRequestSexToOwner();
 		
 		super.evaluatePregnancySystem();
 	}
@@ -179,8 +185,7 @@ public abstract class PreggoMobPregnancySystemP4<E extends PreggoMob
 	protected boolean isWaterBroken() {
 		return pregnantEntity.getPregnancyPain() == PregnancyPain.WATER_BREAKING;
  	}
-	
-	
+		
 	@Override
 	protected boolean tryInitPregnancySymptom() {
 		if (super.tryInitPregnancySymptom()) {
@@ -241,5 +246,27 @@ public abstract class PreggoMobPregnancySystemP4<E extends PreggoMob
 	        	pregnantEntity.incrementHornyTimer();
 	        }
 		}	
+	}
+	
+	// TODO: PreggoMob can only request sex if she is pregnant and horny enough. But She can't request if she's not pregnant. It should allow even if not pregnant.
+	// It ignores if their owner (Player) is female or male
+	protected boolean tryRequestSexToOwner() {	
+		if (!pregnantEntity.getPregnancySymptoms().contains(PregnancySymptom.HORNY)) {
+			return false;
+		}
+		
+		if (sexRequestCooldown < 4800) {
+			++sexRequestCooldown;
+			return false;
+		}
+		
+		var owner = pregnantEntity.getOwner();		
+		if (owner != null && pregnantEntity.distanceToSqr(owner) < 25D && !pregnantEntity.isAggressive()) {
+			sexRequestCooldown = 0;
+			MinepreggoModPacketHandler.INSTANCE.sendToServer(new RequestSexM2PC2SPacket(pregnantEntity.getId(), owner.getId()));
+			return true;
+		}
+		
+		return false;
 	}
 }

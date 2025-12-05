@@ -4,6 +4,10 @@ import java.util.function.Supplier;
 
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.client.particle.ParticleHelper;
+import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
+import dev.dixmk.minepreggo.server.ServerCinematicManager;
+import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
+import dev.dixmk.minepreggo.world.pregnancy.Gender;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -11,6 +15,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.network.PacketDistributor;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public record ResponseSexRequestP2PC2SPacket(int sourcePlayerId, int targetPlayerId, boolean accept) {
@@ -40,26 +45,79 @@ public record ResponseSexRequestP2PC2SPacket(int sourcePlayerId, int targetPlaye
 				if (source == null || target == null || !target.getUUID().equals(sender.getUUID())) return;
 				
 				if (message.accept) {	
-					MinepreggoModPacketHandler.queueServerWork(20, () -> {			
-						ParticleHelper.spawnRandomlyFromServer(source, ParticleTypes.HEART);
-						ParticleHelper.spawnRandomlyFromServer(target, ParticleTypes.HEART);
-					});
-					
-					MinepreggoModPacketHandler.queueServerWork(40, () -> {			
-						ParticleHelper.spawnRandomlyFromServer(source, ParticleTypes.HEART);
-						ParticleHelper.spawnRandomlyFromServer(target, ParticleTypes.HEART);
-					});
-					
-					MinepreggoModPacketHandler.queueServerWork(60, () -> {			
-						ParticleHelper.spawnRandomlyFromServer(source, ParticleTypes.HEART);
-						ParticleHelper.spawnRandomlyFromServer(target, ParticleTypes.HEART);
-					});
+					accept(source, target);
 					return;
 				}
-				ParticleHelper.spawnRandomlyFromServer(target, ParticleTypes.SMOKE);			
+				else {
+					reject(target);
+				}
 			}
 		});
 		context.setPacketHandled(true);
+	}
+	
+	private static void accept(ServerPlayer source, ServerPlayer target) {		
+		source.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(sourceCap -> 
+			target.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(targetCap -> {										
+				Runnable impregnationTask = () -> {
+					if (sourceCap.getGender() ==  Gender.FEMALE) {
+						PlayerHelper.tryStartPregnancyBySex(source, target);
+					}
+					else if (targetCap.getGender() == Gender.FEMALE) {
+						PlayerHelper.tryStartPregnancyBySex(target, source);
+					}
+					
+					var breedableData = sourceCap.getBreedableData();				
+					if (breedableData != null) {
+						breedableData.setFertilityRate(0);
+					}
+					breedableData = targetCap.getBreedableData();
+					if (breedableData != null) {
+						breedableData.setFertilityRate(0);
+					}
+				};	
+						
+				final Runnable task = () -> {
+					ParticleHelper.spawnRandomlyFromServer(source, ParticleTypes.HEART);
+					ParticleHelper.spawnRandomlyFromServer(target, ParticleTypes.HEART);
+				};
+				
+				MinepreggoModPacketHandler.queueServerWork(20, task);		
+				MinepreggoModPacketHandler.queueServerWork(40, task);
+				
+				ServerCinematicManager.getInstance().start(target, source, task, impregnationTask);
+			
+				int overlayTicks = 120;
+				int overlayPauseTicks = 60;
+					
+		        MinepreggoModPacketHandler.INSTANCE.send(
+		                PacketDistributor.PLAYER.with(() -> source),
+		                new SexCinematicControlP2PC2SPacket(true)
+		            );	               
+		        MinepreggoModPacketHandler.INSTANCE.send(
+		                PacketDistributor.PLAYER.with(() -> target),
+		                new SexCinematicControlP2PC2SPacket(true)
+		            );	      
+		        MinepreggoModPacketHandler.INSTANCE.send(
+		    			PacketDistributor.PLAYER.with(() -> source),
+		    			new RenderSexOverlayS2CPacket(overlayTicks, overlayPauseTicks)
+		    		);     		
+		        MinepreggoModPacketHandler.INSTANCE.send(
+		    			PacketDistributor.PLAYER.with(() -> target),
+		    			new RenderSexOverlayS2CPacket(overlayTicks, overlayPauseTicks)
+		    		); 
+		        
+				MinepreggoModPacketHandler.queueServerWork(overlayTicks * 2 + overlayPauseTicks, () -> {
+					ServerCinematicManager.getInstance().end(source);
+					ServerCinematicManager.getInstance().end(target);
+				});		
+
+			})
+		);
+	}
+	
+	private static void reject(ServerPlayer target) {
+		ParticleHelper.spawnRandomlyFromServer(target, ParticleTypes.SMOKE);			
 	}
 	
 	@SubscribeEvent

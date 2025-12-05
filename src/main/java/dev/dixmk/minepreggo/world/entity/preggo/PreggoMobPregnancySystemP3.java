@@ -123,26 +123,24 @@ public abstract class PreggoMobPregnancySystemP3 <E extends PreggoMob
 	
 	@Override
 	protected Result evaluateBellyRubs(Level level, Player source) {		
+		if (!level.isClientSide) {  
+			pregnantEntity.playSound(MinepreggoModSounds.BELLY_TOUCH.get(), 0.8F, 0.8F + pregnantEntity.getRandom().nextFloat() * 0.3F);
+		}
+		
 		var currentBellyRubs = pregnantEntity.getBellyRubs();
-	
-		if (currentBellyRubs > 0) {	
-			
-			if (!level.isClientSide) {   
-	
-				pregnantEntity.playSound(MinepreggoModSounds.BELLY_TOUCH.get(), 0.8F, 0.8F + pregnantEntity.getRandom().nextFloat() * 0.3F);
-			
+		if (currentBellyRubs > 0) {			
+			if (!level.isClientSide) {   	
 				currentBellyRubs = Math.max(0, currentBellyRubs - PregnancySystemHelper.BELLY_RUBBING_VALUE);			
 				pregnantEntity.setBellyRubs(currentBellyRubs);
 							
-				if (!level.isClientSide && pregnantEntity.getPregnancySymptoms().contains(PregnancySymptom.BELLY_RUBS)
+				if (pregnantEntity.getPregnancySymptoms().contains(PregnancySymptom.BELLY_RUBS)
 						&& currentBellyRubs <= PregnancySystemHelper.DESACTIVATEL_BELLY_RUBS_SYMPTOM) {									
 					pregnantEntity.removePregnancySymptom(PregnancySymptom.BELLY_RUBS);							
 				}	
-			}
-						
+			}						
 			return Result.SUCCESS;
 		}		
-		
+			
 		return Result.ANGRY;
 	}
 }

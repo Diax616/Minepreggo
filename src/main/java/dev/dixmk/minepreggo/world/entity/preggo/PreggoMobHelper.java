@@ -17,6 +17,8 @@ import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
+import dev.dixmk.minepreggo.network.chat.MessageHelper;
+import dev.dixmk.minepreggo.server.ServerCinematicManager;
 import dev.dixmk.minepreggo.utils.MathHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterPregnantCreeperGirl;
@@ -39,6 +41,7 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -66,10 +69,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.registries.ForgeRegistries;
 
+/**
+ * Helper class for PreggoMob related operations.
+ * WARNING: Some fields from PreggoMobs are only available on the server side, but this class does not check for it. That issue will be fixed in future versions.
+ */
+
+
 public class PreggoMobHelper {
 			
 	private PreggoMobHelper() {}
-	
 	
 	// Transfer or Copy Data START
 	public static void copyRotation(@NonNull LivingEntity source, @NonNull LivingEntity target) {		
@@ -324,7 +332,7 @@ public class PreggoMobHelper {
 	
 	
 	// Pregnancy START
-	private static<E extends PreggoMob & IFemaleEntity & ITamablePreggoMob<?> & IPregnancySystemHandler> boolean initPregnancy(@NonNull E preggoMob) {				
+	public static<E extends PreggoMob & IFemaleEntity & ITamablePreggoMob<?> & IPregnancySystemHandler> boolean initPregnancy(@NonNull E preggoMob) {				
 		
 		final boolean result = preggoMob.isPregnant() && preggoMob.getPrePregnancyData().isPresent();
 		
@@ -422,9 +430,6 @@ public class PreggoMobHelper {
 		return p;
 	}
 	// Pregnancy END
-	
-	
-	
 	
 	
 	// Armor START
@@ -558,7 +563,7 @@ public class PreggoMobHelper {
 					entityToSpawn = EntityType.ZOMBIE.spawn(serverLevel, BlockPos.containing(zombieGirl.getX(), zombieGirl.getY() + zombieGirl.getBbHeight() / 2F, zombieGirl.getZ()), MobSpawnType.MOB_SUMMONED);
 				}
 				else {
-					entityToSpawn = MinepreggoModEntities.MONSTER_ZOMBIE_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(zombieGirl.getX(), zombieGirl.getY() + zombieGirl.getBbHeight() / 2F, zombieGirl.getZ()), MobSpawnType.MOB_SUMMONED);
+					entityToSpawn = MinepreggoModEntities.MONSTER_ZOMBIE_GIRL.get().spawn(serverLevel, BlockPos.containing(zombieGirl.getX(), zombieGirl.getY() + zombieGirl.getBbHeight() / 2F, zombieGirl.getZ()), MobSpawnType.MOB_SUMMONED);
 				}				
 				entityToSpawn.setBaby(true);
 				entityToSpawn.setYRot(randomSource.nextFloat() * 360F);
@@ -593,7 +598,7 @@ public class PreggoMobHelper {
 		
 		for (int i = 0; i < numOfBabies; ++i) {				
 			if (randomSource.nextFloat() < p) {								
-				var entityToSpawn = MinepreggoModEntities.MONSTER_CREEPER_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(creeperGirl.getX(), creeperGirl.getY() + creeperGirl.getBbHeight() / 2F, creeperGirl.getZ()), MobSpawnType.MOB_SUMMONED);
+				var entityToSpawn = MinepreggoModEntities.MONSTER_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(creeperGirl.getX(), creeperGirl.getY() + creeperGirl.getBbHeight() / 2F, creeperGirl.getZ()), MobSpawnType.MOB_SUMMONED);
 				entityToSpawn.setBaby(true);
 				entityToSpawn.setYRot(randomSource.nextFloat() * 360F);	
 				entityToSpawn.setHealth(randomSource.nextInt(MIN_HEALTH, MAX_HEALTH));			
@@ -642,7 +647,7 @@ public class PreggoMobHelper {
 		
 	public static void spawnBabyAndFetusZombies(@NonNull AbstractTamablePregnantZombieGirl<?,?> zombieGirl) {		
 
-		final var numOfBabies = IBreedable.calculateNumOfBabiesByMaxPregnancyStage(zombieGirl.getLastPregnancyStage());
+		final var numOfBabies = zombieGirl.getWomb().getNumOfBabies();
 		final var pregnancyStage = zombieGirl.getCurrentPregnancyStage();
 
 		if (pregnancyStage.ordinal() >= 3) {
@@ -657,7 +662,7 @@ public class PreggoMobHelper {
 	
 	public static void spawnBabyAndFetusCreepers(@NonNull AbstractTamablePregnantCreeperGirl<?,?> creeperGirl) {
 		
-		final var numOfBabies = IBreedable.calculateNumOfBabiesByMaxPregnancyStage(creeperGirl.getLastPregnancyStage());
+		final var numOfBabies = creeperGirl.getWomb().getNumOfBabies();
 		final var pregnancyStage = creeperGirl.getCurrentPregnancyStage();
 		
 		if (pregnancyStage.ordinal() >= 3) {
@@ -738,6 +743,71 @@ public class PreggoMobHelper {
 	// Client Data END
 	
 	
+	// Sex Event START	
+	public static boolean canOwnerActivateSexEvent(ServerPlayer owner, PreggoMob target) {
+		if (!(target instanceof ITamablePreggoMob<?> tamableTarget)) {
+			return false;
+		}
+		
+		if (PregnancySystemHelper.areHostileMobsNearby(owner, target, 16D)) {
+			MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.sex.message.mobs"));
+			return false;
+		}
+		else if (!tamableTarget.getGenderedData().canFuck()) {
+			MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.sex.message.sexual_appetite", target.getSimpleName()));
+			return false;
+		}
+		else if (owner.distanceToSqr(target) >= 32) {
+			MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.sex.message.distance", target.getSimpleName()));
+			return false;
+		}
+		else if (!PregnancySystemHelper.hasEnoughBedsForBreeding(target, 1, 8)) {
+			MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.sex.message.enough_beds"));
+			return false;
+		}
+		else if (ServerCinematicManager.getInstance().isInCinematic(target)) {
+			MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.sex.message.active_cinematic", target.getSimpleName()));
+			return false;
+		}
+		
+		owner.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> {
+			if (cap.getGender() == tamableTarget.getGenderedData().getGender()) {
+				MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.preggo_mob.message.same_sex", target.getSimpleName()));
+			}
+		});
+		
+		return true;
+	}
+	
+	public static boolean canActivateSexEvent(ServerPlayer owner, PreggoMob target) {		
+		if (!(target instanceof ITamablePreggoMob<?>) && !(target instanceof IPregnancySystemHandler)) {
+			return false;
+		}
+		
+		if (PregnancySystemHelper.areHostileMobsNearby(owner, target, 16D)) {
+			MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.sex.message.mobs"));
+		}
+		else if (owner.distanceToSqr(target) >= 32) {
+			MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.sex.message.distance", target.getSimpleName()));
+		}
+		else if (ServerCinematicManager.getInstance().isInCinematic(target)) {
+			MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.sex.message.active_cinematic", target.getSimpleName()));
+		}
+		
+			
+		if (!PregnancySystemHelper.hasEnoughBedsForBreeding(target, 1, 8)) {
+			MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.pregnant.preggo_mob.message.without_beds", target.getSimpleName(), owner.getDisplayName().getString()));
+		}
+		else {
+			return true;
+		}
+
+		return false;
+	}	
+	// Sex Event END
+	
+	
+	
 	// Common START	
 	public static boolean isPlayerInCreativeOrSpectator(LivingEntity entity) {
 	    if (entity instanceof Player player) {
@@ -762,5 +832,7 @@ public class PreggoMobHelper {
 		}
  	}
 	// Common END
+	
+
 }
 

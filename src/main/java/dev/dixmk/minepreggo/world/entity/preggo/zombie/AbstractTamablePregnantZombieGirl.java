@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
+import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.world.entity.ai.goal.PreggoMobAIHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobPregnancySystemP0;
@@ -34,7 +35,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -46,7 +46,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistries;
 
 public abstract class AbstractTamablePregnantZombieGirl<S extends PreggoMobSystem<?>, P extends PreggoMobPregnancySystemP0<?>> extends AbstractTamableZombieGirl<S> implements IPregnancySystemHandler, IPregnancyEffectsHandler {
 	private static final EntityDataAccessor<Integer> DATA_CRAVING = SynchedEntityData.defineId(AbstractTamablePregnantZombieGirl.class, EntityDataSerializers.INT);
@@ -207,7 +206,7 @@ public abstract class AbstractTamablePregnantZombieGirl<S extends PreggoMobSyste
 	
 	@Override
 	public SoundEvent getDeathSound() {
-		return ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "preggo_death"));
+		return MinepreggoModSounds.PREGNANT_PREGGO_MOB_DEATH.get();
 	}
 	
 	@Override
@@ -217,8 +216,10 @@ public abstract class AbstractTamablePregnantZombieGirl<S extends PreggoMobSyste
 	
 	@Override
 	public void die(DamageSource source) {
-		super.die(source);			
-		PreggoMobHelper.spawnBabyAndFetusZombies(this);
+		super.die(source);		
+		if (!this.level().isClientSide) {
+			PreggoMobHelper.spawnBabyAndFetusZombies(this);
+		}
 	}
 	
 	@Override
@@ -300,7 +301,6 @@ public abstract class AbstractTamablePregnantZombieGirl<S extends PreggoMobSyste
 				.mapToInt(Integer::intValue)
 				.sum();
 	}
-	
 	@Override
 	public int getPregnancyHealth() {
 		return this.pregnancyHealth;

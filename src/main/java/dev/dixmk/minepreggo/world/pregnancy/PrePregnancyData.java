@@ -35,7 +35,7 @@ public record PrePregnancyData(@Nonnegative int fertilizedEggs, Species typeOfSp
 		if (nbt.contains(NBT_KEY, Tag.TAG_COMPOUND)) {			
 			CompoundTag data = nbt.getCompound(NBT_KEY);		
 			int fertilizedEggs = data.getInt("DataFertilizedEggs");
-			UUID fatherId = data.contains("DataFatherId") ? data.getUUID("DataFather") : null;
+			UUID fatherId = data.contains("DataFatherId") ? data.getUUID("DataFatherId") : null;
 			Species typeOfSpeciesOfFather = Species.valueOf(data.getString(Species.NBT_KEY));
 			Creature typeOfCreatureOfFather = Creature.valueOf(data.getString(Creature.NBT_KEY));
 		    return new PrePregnancyData(fertilizedEggs, typeOfSpeciesOfFather, typeOfCreatureOfFather, fatherId);

@@ -6,13 +6,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.PlayMessages;
 
-public class MonsterEnderGirlP0 extends AbstractMonsterEnderGirl {
+public class MonsterEnderGirl extends AbstractMonsterEnderGirl {
 	
-	public MonsterEnderGirlP0(PlayMessages.SpawnEntity packet, Level world) {
-		this(MinepreggoModEntities.MONSTER_ENDER_GIRL_P0.get(), world);
+	public MonsterEnderGirl(PlayMessages.SpawnEntity packet, Level world) {
+		this(MinepreggoModEntities.MONSTER_ENDER_GIRL.get(), world);
 	}
 
-	public MonsterEnderGirlP0(EntityType<MonsterEnderGirlP0> type, Level world) {
+	public MonsterEnderGirl(EntityType<MonsterEnderGirl> type, Level world) {
 		super(type, world);
 		xpReward = 12;
 		setNoAi(false);

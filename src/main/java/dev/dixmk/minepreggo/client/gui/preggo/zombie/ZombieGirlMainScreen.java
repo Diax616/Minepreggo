@@ -35,6 +35,6 @@ public class ZombieGirlMainScreen extends AbstractZombieGirlMainScreen<TamableZo
 	
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-		this.preggoMob.ifPresent(zombieGirl -> ScreenHelper.renderDefaultPreggoP0LabelMainGUI(guiGraphics, this.font, zombieGirl));
+		this.preggoMob.ifPresent(zombieGirl -> ScreenHelper.renderDefaultPreggoLabelMainGUI(guiGraphics, this.font, zombieGirl));
 	}
 }

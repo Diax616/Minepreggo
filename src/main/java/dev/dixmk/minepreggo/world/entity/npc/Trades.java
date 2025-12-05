@@ -117,7 +117,7 @@ public class Trades {
 						new ItemsForItems(MinepreggoModItems.BABY_HUMAN.get(), 1, Items.EMERALD, 64, 20),
 						new ItemsForItems(MinepreggoModItems.BABY_ZOMBIE.get(), 1, Items.GOLD_INGOT, 48, 15),
 						new ItemsForItems(MinepreggoModItems.BABY_ZOMBIE.get(), 1, Items.IRON_BLOCK, 9, 15),
-						new ItemsForItems(MinepreggoModItems.BABY_QUADRUPED_CREEPER.get(), 1, Items.DIAMOND, 8, 10),
+						new ItemsForItems(MinepreggoModItems.BABY_CREEPER.get(), 1, Items.DIAMOND, 8, 10),
 						new EnchantBookForBaby(Species.HUMAN),
 						new EnchantBookForBaby(Species.CREEPER),
 						new EnchantBookForBaby(Species.ZOMBIE),
@@ -132,7 +132,7 @@ public class Trades {
 						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_HUMAN_FETUS.get(), 2, 30, 10),
 						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_ZOMBIE_FETUS.get(), 3, 30, 10),
 						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_HUMANOID_CREEPER_FETUS.get(), 1, 30, 10),
-						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_QUADRUPED_CREEPER_FETUS.get(), 2, 30, 10)},	
+						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_CREEPER_FETUS.get(), 2, 30, 10)},	
 				new VillagerTrades.ItemListing[]{
 						new ItemsForItems(MinepreggoModItems.BABY_HUMAN.get(), 1, Items.GOLD_INGOT, 36, 20),
 						new ItemsForItems(MinepreggoModItems.HUMAN_BREAST_MILK_BOTTLE.get(), 12, Items.GOLD_INGOT, 20, 10),
@@ -140,7 +140,7 @@ public class Trades {
 						new ItemsForItems(MinepreggoModItems.ZOMBIE_BREAST_MILK_BOTTLE.get(), 12, Items.GOLD_INGOT, 6, 10),
 						new ItemsForItems(MinepreggoModItems.BABY_HUMAN.get(), 1, Items.EMERALD, 32, 20),
 						new ItemsForItems(MinepreggoModItems.BABY_ZOMBIE.get(), 1, Items.EMERALD, 24, 15),
-						new ItemsForItems(MinepreggoModItems.BABY_QUADRUPED_CREEPER.get(), 1, Items.DIAMOND, 8, 15),
+						new ItemsForItems(MinepreggoModItems.BABY_CREEPER.get(), 1, Items.DIAMOND, 8, 15),
 						new ItemsForItems(MinepreggoModItems.BABY_HUMANOID_CREEPER.get(), 1, Items.DIAMOND, 20, 10),
 						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.IMPREGNATION_POTION_1.get()), 30, 1, 10, 0),
 						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.IMPREGNATION_POTION_2.get()), 33, 1, 10, 0),
@@ -155,13 +155,13 @@ public class Trades {
 						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_HUMAN_FETUS.get(), 2, 30, 10),
 						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_ZOMBIE_FETUS.get(), 3, 30, 10),
 						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_HUMANOID_CREEPER_FETUS.get(), 1, 30, 10),
-						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_QUADRUPED_CREEPER_FETUS.get(), 2, 30, 10)},
+						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_CREEPER_FETUS.get(), 2, 30, 10)},
 				new VillagerTrades.ItemListing[]{
 						new ItemsForItems(MinepreggoModItems.HUMAN_BREAST_MILK_BOTTLE.get(), 12, Items.GOLD_INGOT, 20, 10),
 						new ItemsForItems(MinepreggoModItems.CREEPER_BREAST_MILK_BOTTLE.get(), 12, Items.DIAMOND, 14, 10),
 						new ItemsForItems(MinepreggoModItems.ZOMBIE_BREAST_MILK_BOTTLE.get(), 12, Items.GOLD_INGOT, 6, 10),
 						new ItemsForItems(MinepreggoModItems.BABY_ZOMBIE.get(), 1, Items.GOLD_INGOT, 24, 15),
-						new ItemsForItems(MinepreggoModItems.BABY_QUADRUPED_CREEPER.get(), 1, Items.DIAMOND, 8, 15),
+						new ItemsForItems(MinepreggoModItems.BABY_CREEPER.get(), 1, Items.DIAMOND, 8, 15),
 						new ItemsForItems(MinepreggoModItems.BABY_ZOMBIE.get(), 1, Items.IRON_BLOCK, 4, 15),
 						new ItemsForItems(MinepreggoModItems.BABY_HUMANOID_CREEPER.get(), 1, Items.GOLD_INGOT, 48, 10),
 						new ItemsForItems(MinepreggoModItems.BABY_HUMANOID_CREEPER.get(), 1, Items.DIAMOND, 20, 10),		
@@ -177,7 +177,7 @@ public class Trades {
 						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_HUMAN_FETUS.get(), 2, 30, 10),
 						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_ZOMBIE_FETUS.get(), 3, 30, 10),
 						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_HUMANOID_CREEPER_FETUS.get(), 1, 30, 10),
-						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_QUADRUPED_CREEPER_FETUS.get(), 2, 30, 10)});
+						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_CREEPER_FETUS.get(), 2, 30, 10)});
 		
 		@NonNull
 		public static VillagerTrades.ItemListing[] getRandomTrades(RandomSource random) {		
@@ -244,7 +244,7 @@ public class Trades {
 		public EnchantBookForBaby(Species species) {		    	
 			switch (species) {	
 			case CREEPER: {
-				babyItem = MinepreggoModItems.BABY_QUADRUPED_CREEPER.get();
+				babyItem = MinepreggoModItems.BABY_CREEPER.get();
 				rarity = Rarity.VERY_RARE;
 				enchantmentMaxLevelProbability = 0.8F;
 				break;

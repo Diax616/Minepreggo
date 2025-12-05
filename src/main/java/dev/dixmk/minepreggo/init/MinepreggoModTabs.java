@@ -106,13 +106,17 @@ public class MinepreggoModTabs {
                 output.accept(MinepreggoModItems.BABY_HUMAN.get());
                 output.accept(MinepreggoModItems.BABY_ZOMBIE.get());
                 output.accept(MinepreggoModItems.BABY_HUMANOID_CREEPER.get());
-                output.accept(MinepreggoModItems.BABY_QUADRUPED_CREEPER.get());
+                output.accept(MinepreggoModItems.BABY_CREEPER.get());
+                output.accept(MinepreggoModItems.BABY_HUMANOID_ENDER.get());
+                output.accept(MinepreggoModItems.BABY_ENDER.get());
                 output.accept(MinepreggoModItems.DEAD_HUMAN_FETUS.get());
                 output.accept(MinepreggoModItems.DEAD_ZOMBIE_FETUS.get());
                 output.accept(MinepreggoModItems.DEAD_HUMANOID_CREEPER_FETUS.get());
-                output.accept(MinepreggoModItems.DEAD_QUADRUPED_CREEPER_FETUS.get());
-
-                output.accept(MinepreggoModItems.MONSTER_ZOMBIE_GIRL_P0_SPAWN_EGG.get());
+                output.accept(MinepreggoModItems.DEAD_CREEPER_FETUS.get());
+                output.accept(MinepreggoModItems.DEAD_HUMANOID_ENDER_FETUS.get());
+                output.accept(MinepreggoModItems.DEAD_ENDER_FETUS.get());
+                
+                output.accept(MinepreggoModItems.MONSTER_ZOMBIE_GIRL_SPAWN_EGG.get());
                 output.accept(MinepreggoModItems.MONSTER_ZOMBIE_GIRL_P3_SPAWN_EGG.get());
                 output.accept(MinepreggoModItems.MONSTER_ZOMBIE_GIRL_P5_SPAWN_EGG.get());
                 output.accept(MinepreggoModItems.MONSTER_ZOMBIE_GIRL_P7_SPAWN_EGG.get());
@@ -127,7 +131,7 @@ public class MinepreggoModTabs {
                 output.accept(MinepreggoModItems.TAMABLE_ZOMBIE_GIRL_P7_SPAWN_EGG.get());
                 output.accept(MinepreggoModItems.TAMABLE_ZOMBIE_GIRL_P8_SPAWN_EGG.get());
 
-                output.accept(MinepreggoModItems.MONSTER_CREEPER_GIRL_P0_SPAWN_EGG.get());
+                output.accept(MinepreggoModItems.MONSTER_CREEPER_GIRL_SPAWN_EGG.get());
                 output.accept(MinepreggoModItems.MONSTER_CREEPER_GIRL_P3_SPAWN_EGG.get());
                 output.accept(MinepreggoModItems.MONSTER_CREEPER_GIRL_P5_SPAWN_EGG.get());
                 output.accept(MinepreggoModItems.MONSTER_CREEPER_GIRL_P7_SPAWN_EGG.get());
@@ -143,7 +147,7 @@ public class MinepreggoModTabs {
                 output.accept(MinepreggoModItems.TAMABLE_CREEPER_GIRL_P8_SPAWN_EGG.get());
      
                 output.accept(MinepreggoModItems.MONSTER_QUADRUPED_CREEPER_GIRL_P0_SPAWN_EGG.get());
-                output.accept(MinepreggoModItems.MONSTER_ENDER_GIRL_P0_SPAWN_EGG.get());
+                output.accept(MinepreggoModItems.MONSTER_ENDER_GIRL_SPAWN_EGG.get());
                 output.accept(MinepreggoModItems.SCIENTIFIC_ILLAGER_SPAWN_EGG.get());
                 
                 

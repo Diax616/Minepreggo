@@ -45,7 +45,7 @@ public abstract class FemaleFertilitySystem<E extends PreggoMob & IFemaleEntity 
 	
 	protected boolean tryStartRandomDiscomfort() {
         if (randomSource.nextFloat() < 0.001F && !preggoMob.hasEffect(MobEffects.CONFUSION)) {
-        	preggoMob.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 200, 0, false, true));                 
+        	preggoMob.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 200, 0, true, true, true));                 
         	return true;
         }    
         return false;

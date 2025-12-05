@@ -1,11 +1,12 @@
 package dev.dixmk.minepreggo.client.gui.preggo;
 
-import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.network.packet.ResponseSexRequestP2PC2SPacket;
 import dev.dixmk.minepreggo.world.inventory.preggo.RequestSexP2PMenu;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Button.OnPress;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.chat.Component;
@@ -17,30 +18,31 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class RequestSexP2PScreen extends AbstractRequestSexScreen<Player, Player, RequestSexP2PMenu> {
-	private int xSexSprite = 0; 
-	private int ySexSprite = 0;
 	private ResourceLocation icon = null;
 	
 	public RequestSexP2PScreen(RequestSexP2PMenu container, Inventory inventory, Component text) {
 		super(container, inventory, text);		
 		source.ifPresent(s -> {
 			if (s instanceof AbstractClientPlayer a) {
-				this.xSexSprite = 8;
-				this.ySexSprite = 8;	
 				this.icon = a.getSkinTextureLocation();
 			}
 		});
 	}
 
 	@Override
-	protected void renderComponents(GuiGraphics guiGraphics, float partialTicks, int gx, int gy) {
+	protected void renderRequestorIcon(GuiGraphics guiGraphics) {
 		if (icon != null) {
-			guiGraphics.blit(icon, this.leftPos + 38, this.topPos + 27, 24, 24, xSexSprite, ySexSprite, 8, 8, 64, 64);	
+			guiGraphics.blit(icon, this.leftPos + 8, this.topPos + 27, 24, 24, 8, 8, 8, 8, 64, 64);	
 		}	
 	}
 
 	@Override
-	protected Pair<OnPress, OnPress> createActions() {		
+	protected void renderRequestorMessage(GuiGraphics guiGraphics) {
+		guiGraphics.drawString(this.font, Component.translatable("gui.minepreggo.sex_request.label.requestor", source.isPresent() ? source.get().getName().getString() : "?"), 35, 40, -12829636, false);	
+	}
+	
+	@Override
+	protected ImmutablePair<Button, Button> createButtons() {		
 		OnPress yeahAction = e -> {
 			source.ifPresent(s -> 
 				target.ifPresent(t -> 
@@ -56,7 +58,19 @@ public class RequestSexP2PScreen extends AbstractRequestSexScreen<Player, Player
 			);			
 			player.closeContainer();
 		};	
-		return Pair.of(yeahAction, nopeAction);
+		
+		var yeahButton = Button.builder(Component.translatable("gui.minepreggo.sex_request.button.yeah"), yeahAction)
+				.bounds(this.leftPos + 44, this.topPos + 76, 46, 20).build();
+		
+		var nopeButton = Button.builder(Component.translatable("gui.minepreggo.sex_request.button.nope"), nopeAction)
+				.bounds(this.leftPos + 125, this.topPos + 76, 46, 20).build();
+		
+		return ImmutablePair.of(yeahButton, nopeButton);
+	}
+	
+	@Override
+	protected boolean renderTargetName() {
+		return true;
 	}
 }
 

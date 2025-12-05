@@ -2,6 +2,7 @@ package dev.dixmk.minepreggo.world.entity.ai.goal;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
@@ -12,6 +13,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 
 public class BreakBlocksToFollowOwnerGoal<E extends PreggoMob & ITamablePreggoMob<?>> extends Goal {
     private final E tamable;
+    private Player owner;
     private final float maxDistance;
     private final float minDistance;
     private int breakingTime;
@@ -60,6 +62,7 @@ public class BreakBlocksToFollowOwnerGoal<E extends PreggoMob & ITamablePreggoMo
         this.targetBlockPos = null;
         this.currentColumnBase = null;
         this.columnCleared = false;
+        this.owner = (Player) this.tamable.getOwner();
     }
 
     @Override
@@ -69,11 +72,12 @@ public class BreakBlocksToFollowOwnerGoal<E extends PreggoMob & ITamablePreggoMo
         this.targetBlockPos = null;
         this.currentColumnBase = null;
         this.columnCleared = false;
+        this.owner = null;
     }
 
     @Override
     public void tick() {
-        if (this.tamable.getOwner() == null) {
+        if (owner == null) {
             return;
         }
         

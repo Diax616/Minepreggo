@@ -10,7 +10,7 @@ import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.MonsterCreeperGirlP0;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.MonsterCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirl;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
@@ -42,7 +42,7 @@ public class CreeperImpregnation extends Impregnantion {
 			final double x = entity.getX();
 			final double y = entity.getY();	
 			final double z = entity.getZ();		
-			if (entity instanceof MonsterCreeperGirlP0 creeperGirl && !creeperGirl.isBaby()) {
+			if (entity instanceof MonsterCreeperGirl creeperGirl && !creeperGirl.isBaby()) {
 				var nextStage = MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
 				initPregnancy(creeperGirl, nextStage, amplifier);
 			}		

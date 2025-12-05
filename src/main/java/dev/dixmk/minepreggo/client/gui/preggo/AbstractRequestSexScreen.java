@@ -2,7 +2,8 @@ package dev.dixmk.minepreggo.client.gui.preggo;
 
 import java.util.Optional;
 
-import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
@@ -10,7 +11,6 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.world.inventory.preggo.AbstractRequestSexMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.Button.OnPress;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -32,16 +32,17 @@ public abstract class AbstractRequestSexScreen
 	protected final Optional<S> source;
 	protected final Optional<T> target;
 	protected final boolean isValid;
-
+	private boolean renderTargetName = false;
 	protected AbstractRequestSexScreen(M container, Inventory inventory, Component text) {
 		super(container, inventory, text);
 		this.level = container.level;
 		this.player = container.player;
 		this.source = container.source;
 		this.target = container.target;
-		this.imageWidth = 176;
+		this.imageWidth = 208;
 		this.imageHeight = 106;
-		this.isValid = source.isPresent() && target.isPresent();		
+		this.isValid = source.isPresent() && target.isPresent();	
+		this.renderTargetName = renderTargetName();	
 	}
 
 	@Override
@@ -67,33 +68,34 @@ public abstract class AbstractRequestSexScreen
 		RenderSystem.defaultBlendFunc();
 		guiGraphics.blit(TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
 
-		renderComponents(guiGraphics, partialTicks, gx, gy);
+		renderRequestorIcon(guiGraphics);
 
 		RenderSystem.disableBlend();
 	}
 
-	protected abstract void renderComponents(GuiGraphics guiGraphics, float partialTicks, int gx, int gy);
+	protected abstract void renderRequestorIcon(GuiGraphics guiGraphics);
 	
-	protected abstract Pair<OnPress, OnPress> createActions();
+	protected abstract void renderRequestorMessage(GuiGraphics guiGraphics);
+	
+	protected abstract boolean renderTargetName();
+	
+	protected abstract @NonNull ImmutablePair<Button, Button> createButtons();
 
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-		guiGraphics.drawString(this.font, Component.translatable("gui.minepreggo.sex_request.label.message"), 67, 34, -12829636, false);
-		guiGraphics.drawString(this.font, Component.translatable("gui.minepreggo.sex_request.label.requestor", source.isPresent() ? source.get().getName().getString() : "?"), 22, 3, -12829636, false);
+		guiGraphics.drawString(this.font, Component.translatable("gui.minepreggo.sex_request.label.requestor", source.isPresent() ? source.get().getName().getString() : "?"), 8, 3, -12829636, false);
+		renderRequestorMessage(guiGraphics);
+		
+		if (this.renderTargetName && this.isValid) {
+			guiGraphics.drawString(this.font, this.target.get().getDisplayName().getString(), 35, 30, -12829636, false);
+		}
 	}
 
 	@Override
 	public void init() {
-		super.init();
-		
-		var actions = createActions();
-
-		var yeahButton = Button.builder(Component.translatable("gui.minepreggo.sex_request.button.yeah"), actions.getLeft())
-				.bounds(this.leftPos + 24, this.topPos + 76, 46, 20).build();
-		this.addRenderableWidget(yeahButton);
-		
-		var nopeButton = Button.builder(Component.translatable("gui.minepreggo.sex_request.button.nope"), actions.getRight())
-				.bounds(this.leftPos + 105, this.topPos + 76, 46, 20).build();
-		this.addRenderableWidget(nopeButton);
+		super.init();	
+		var buttons = createButtons();
+		this.addRenderableWidget(buttons.getLeft());
+		this.addRenderableWidget(buttons.getRight());
 	}
 }

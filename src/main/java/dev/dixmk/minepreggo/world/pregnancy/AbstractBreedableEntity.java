@@ -8,7 +8,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 public abstract class AbstractBreedableEntity implements IBreedable, INBTSerializable<CompoundTag> {
 	protected final Gender gender;
-	protected float fertility = 0;
+	protected float fertility = 0.4F;
 	protected int fertilityRateTimer = 0;
 	
 	protected int sexualAppetiteTimer = 0;

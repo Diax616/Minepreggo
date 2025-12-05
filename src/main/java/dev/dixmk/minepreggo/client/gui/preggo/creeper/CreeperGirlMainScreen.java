@@ -36,6 +36,6 @@ public class CreeperGirlMainScreen extends AbstractCreeperGirlMainScreen<Tamable
 
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {	
-		this.preggoMob.ifPresent(creeperGirl -> ScreenHelper.renderDefaultPreggoP0LabelMainGUI(guiGraphics, this.font, creeperGirl));
+		this.preggoMob.ifPresent(creeperGirl -> ScreenHelper.renderDefaultPreggoLabelMainGUI(guiGraphics, this.font, creeperGirl));
 	}
 }

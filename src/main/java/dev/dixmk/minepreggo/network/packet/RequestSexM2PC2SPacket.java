@@ -33,15 +33,8 @@ public record RequestSexM2PC2SPacket(int preggoMobId, int playerId) {
 				var sender = context.getSender();
 				var level = sender.level();
 				
-				PreggoMob source = null;
-				Player target = null;
-	
-				if (level.getEntity(message.preggoMobId) instanceof PreggoMob s) {
-					source = s;
-				}
-				if (level.getEntity(message.playerId) instanceof Player t) {
-					target = t;
-				}
+				final PreggoMob source = level.getEntity(message.preggoMobId) instanceof PreggoMob s ? s : null;
+				final Player target = level.getEntity(message.playerId) instanceof Player t ? t : null;
 				
 				if (source != null && target != null && target.getUUID().equals(sender.getUUID()) && source.isOwnedBy(target)) {
 					RequestSexM2PMenu.create(sender, source);			
@@ -55,6 +48,4 @@ public record RequestSexM2PC2SPacket(int preggoMobId, int playerId) {
 	public static void registerMessage(FMLCommonSetupEvent event) {
 		MinepreggoModPacketHandler.addNetworkMessage(RequestSexM2PC2SPacket.class, RequestSexM2PC2SPacket::encode, RequestSexM2PC2SPacket::decode, RequestSexM2PC2SPacket::handler);
 	}
-	
-	
 }

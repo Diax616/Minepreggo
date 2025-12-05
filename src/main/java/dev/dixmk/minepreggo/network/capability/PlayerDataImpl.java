@@ -3,6 +3,7 @@ package dev.dixmk.minepreggo.network.capability;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.network.packet.SyncPlayerDataS2CPacket;
+import dev.dixmk.minepreggo.world.pregnancy.AbstractBreedableEntity;
 import dev.dixmk.minepreggo.world.pregnancy.Gender;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -99,6 +100,18 @@ public class PlayerDataImpl implements IPlayerData {
         return malePlayerData;
     }
 
+    public AbstractBreedableEntity getBreedableData() {  
+    	
+    	AbstractBreedableEntity data = getFemaleData().resolve().orElse(null);
+    		
+    	if (data == null) {
+    		return getMaleData().resolve().orElse(null);
+    	}
+
+    	return data;
+    }
+    
+    
 	@Override
 	public boolean isCinamatic() {
 		return this.cinematic;

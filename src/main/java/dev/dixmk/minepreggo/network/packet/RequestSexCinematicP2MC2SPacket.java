@@ -5,22 +5,21 @@ import java.util.function.Supplier;
 
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 
+import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.client.particle.ParticleHelper;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
-import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.server.ServerCinematicManager;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobFace;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
 import dev.dixmk.minepreggo.world.pregnancy.IBreedable;
-import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -50,27 +49,10 @@ public record RequestSexCinematicP2MC2SPacket(int mobId) {
                 if (level.getEntity(message.mobId) instanceof PreggoMob preggoMob    
                 		&& preggoMob instanceof ITamablePreggoMob<?> tamedPreggoMob) {
                 		  
-	            		if (PregnancySystemHelper.areHostileMobsNearby(source, preggoMob, 16D)) {
-	            			MessageHelper.sendTo(source, Component.translatable("chat.minepreggo.sex.message.mobs"));
-	            			return;
-	            		}
-                		else if (!tamedPreggoMob.getGenderedData().canFuck()) {
-	            			MessageHelper.sendTo(source, Component.translatable("chat.minepreggo.sex.message.sexual_appetite", preggoMob.getSimpleName()));
-	            			return;
-	            		}
-	            		else if (source.distanceToSqr(preggoMob) >= 32) {
-	            			MessageHelper.sendTo(source, Component.translatable("chat.minepreggo.sex.message.distance", preggoMob.getSimpleName()));
+                		if (!PreggoMobHelper.canOwnerActivateSexEvent(source, preggoMob)) {
                 			return;
                 		}
-                		else if (!PregnancySystemHelper.hasEnoughBedsForBreeding(preggoMob, 1, 8)) {
-	            			MessageHelper.sendTo(source, Component.translatable("chat.minepreggo.sex.message.enough_beds"));
-                			return;
-                		}
-                		else if (ServerCinematicManager.getInstance().isInCinematic(source)) {
-	            			MessageHelper.sendTo(source, Component.translatable("chat.minepreggo.sex.message.active_cinematic", preggoMob.getSimpleName()));
-                			return;
-                		}
-                		
+ 		
                 		ServerCinematicManager.getInstance().start(
                 				source,
                 				preggoMob,
@@ -98,20 +80,26 @@ public record RequestSexCinematicP2MC2SPacket(int mobId) {
 		context.setPacketHandled(true);
     }
     
-    private static void impregnate(ServerPlayer player, ITamablePreggoMob<?> preggoMob) {
-    	player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> {
-    		
+    private static void impregnate(ServerPlayer player, ITamablePreggoMob<?> tamablePreggoMob) {
+    	player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> {	
     		// Player is male and preggomob is female
     		cap.getMaleData().ifPresent(maleData -> {
-    			if (preggoMob.getGenderedData() instanceof FemaleEntityImpl femaleData) {
+    			if (tamablePreggoMob.getGenderedData() instanceof FemaleEntityImpl femaleData) {
     				final var numOfBabies = IBreedable.calculateNumOfBabiesByFertility(maleData.getFertilityRate(), femaleData.getFertilityRate());
     				
     				if (numOfBabies > 0) {
-    					femaleData.tryImpregnate(numOfBabies, ImmutableTriple.of(Optional.of(player.getUUID()), Species.HUMAN, Creature.HUMANOID));    					
-    				}	
+    					boolean result = femaleData.tryImpregnate(numOfBabies, ImmutableTriple.of(Optional.of(player.getUUID()), Species.HUMAN, Creature.HUMANOID));    					
+    					
+    					if (!result) {
+    						MinepreggoMod.LOGGER.debug("Impregnation failed during pregnancy application phase");
+						}
+    				}
+    				else {
+						MinepreggoMod.LOGGER.debug("Impregnation failed during pregnancy attempt phase, player fertility rate: {}, preggo mob fertility rate: {}", maleData.getFertilityRate(), femaleData.getFertilityRate());
+    				}
     			}
-    		});
-    		
+    		}); 		
+    				
     		// Player is female and preggomob is male
     	});
     }

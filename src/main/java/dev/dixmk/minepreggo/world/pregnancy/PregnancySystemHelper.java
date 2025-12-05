@@ -67,6 +67,13 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class PregnancySystemHelper {
 	
+	/*
+	 * Helper class for pregnancy system constants and methods
+	 * WARNING: Some fields from player and preggomob are only available in server side. This class does not check that. It will fixed in future updates.
+	 * 
+	 * */
+	
+	
 	private PregnancySystemHelper() {}
 	
 	// Max Levels
@@ -185,14 +192,18 @@ public class PregnancySystemHelper {
 			.put(Species.HUMAN, Creature.HUMANOID, MinepreggoModItems.BABY_HUMAN.get())
 			.put(Species.ZOMBIE, Creature.HUMANOID, MinepreggoModItems.BABY_ZOMBIE.get())
 			.put(Species.CREEPER, Creature.HUMANOID, MinepreggoModItems.BABY_HUMANOID_CREEPER.get())
-			.put(Species.CREEPER, Creature.MONSTER, MinepreggoModItems.BABY_QUADRUPED_CREEPER.get())
+			.put(Species.CREEPER, Creature.MONSTER, MinepreggoModItems.BABY_CREEPER.get())
+			.put(Species.ENDER, Creature.MONSTER, MinepreggoModItems.BABY_ENDER.get())
+			.put(Species.ENDER, Creature.HUMANOID, MinepreggoModItems.BABY_HUMANOID_ENDER.get())
 			.build();
 
 	protected static final Table<Species, Creature, Item> DEAD_BABIES = ImmutableTable.<Species, Creature, Item>builder()
 			.put(Species.HUMAN, Creature.HUMANOID, MinepreggoModItems.DEAD_HUMAN_FETUS.get())
 			.put(Species.ZOMBIE, Creature.HUMANOID, MinepreggoModItems.DEAD_ZOMBIE_FETUS.get())
 			.put(Species.CREEPER, Creature.HUMANOID, MinepreggoModItems.DEAD_HUMANOID_CREEPER_FETUS.get())
-			.put(Species.CREEPER, Creature.MONSTER, MinepreggoModItems.DEAD_QUADRUPED_CREEPER_FETUS.get())
+			.put(Species.CREEPER, Creature.MONSTER, MinepreggoModItems.DEAD_CREEPER_FETUS.get())
+			.put(Species.ENDER, Creature.MONSTER, MinepreggoModItems.DEAD_ENDER_FETUS.get())
+			.put(Species.ENDER, Creature.HUMANOID, MinepreggoModItems.DEAD_HUMANOID_ENDER_FETUS.get())
 			.build();
 
 	protected static final ImmutableMap<Craving, Float> CRAVING_WEIGHTS = ImmutableMap.of(		

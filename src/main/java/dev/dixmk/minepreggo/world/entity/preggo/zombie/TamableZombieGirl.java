@@ -19,16 +19,20 @@ import net.minecraft.nbt.CompoundTag;
 import java.util.Optional;
 import java.util.UUID;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nullable;
 
+import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
+import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.FemaleFertilitySystem;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem;
+import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 
@@ -57,8 +61,8 @@ public class TamableZombieGirl extends AbstractTamableZombieGirl<PreggoMobSystem
 		fertilitySystem = new FemaleFertilitySystem<>(this) {
 			@Override
 			protected void startPregnancy() {
-				if (preggoMob.level() instanceof ServerLevel serverLevel) {
-					var zombieGirl = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P1.get().spawn(serverLevel, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), MobSpawnType.CONVERSION);		
+				if (preggoMob.level() instanceof ServerLevel serverLevel && !serverLevel.isClientSide) {
+					var zombieGirl = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), MobSpawnType.CONVERSION);		
 					PreggoMobHelper.copyRotation(preggoMob, zombieGirl);
 					PreggoMobHelper.copyOwner(preggoMob, zombieGirl);
 					PreggoMobHelper.copyHealth(preggoMob, zombieGirl);
@@ -66,6 +70,7 @@ public class TamableZombieGirl extends AbstractTamableZombieGirl<PreggoMobSystem
 					PreggoMobHelper.copyTamableData(preggoMob, zombieGirl);				
 					PreggoMobHelper.transferInventory(preggoMob, zombieGirl);
 					PreggoMobHelper.transferAttackTarget(preggoMob, zombieGirl);
+					PreggoMobHelper.initPregnancy(zombieGirl);
 				}
 			}
 		};
@@ -112,6 +117,20 @@ public class TamableZombieGirl extends AbstractTamableZombieGirl<PreggoMobSystem
       } 
 	}
 
+	@Override
+	public boolean tryImpregnate(@Nonnegative int fertilizedEggs, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father) {
+		boolean result = this.defaultFemaleEntityImpl.tryImpregnate(fertilizedEggs, father);
+		if (result) {
+			this.entityData.set(DATA_PREGNANT, true);
+		}
+		return result;
+	}
+	
+	@Override
+	public boolean isPregnant() {
+		return this.entityData.get(DATA_PREGNANT);
+	}
+	
 	@Override
 	public boolean tryActivatePostPregnancyPhase(@NonNull PostPregnancy postPregnancy) {
 		var result = this.defaultFemaleEntityImpl.tryActivatePostPregnancyPhase(postPregnancy);
