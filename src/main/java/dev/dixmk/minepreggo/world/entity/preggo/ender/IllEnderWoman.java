@@ -7,12 +7,12 @@ import net.minecraft.world.entity.monster.AbstractIllager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.server.level.ServerLevel;
 
@@ -22,13 +22,13 @@ import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.world.entity.monster.Ill;
 import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
 
-public class IllEnderGirl extends AbstractMonsterEnderGirl implements Ill {
-
-	public IllEnderGirl(PlayMessages.SpawnEntity packet, Level world) {
-		this(MinepreggoModEntities.ILL_ENDER_GIRL.get(), world);
+public class IllEnderWoman extends AbstractMonsterEnderWoman implements Ill {
+	
+	public IllEnderWoman(PlayMessages.SpawnEntity packet, Level world) {
+		this(MinepreggoModEntities.ILL_ENDER_WOMAN.get(), world);
 	}
 
-	public IllEnderGirl(EntityType<IllEnderGirl> type, Level world) {
+	public IllEnderWoman(EntityType<IllEnderWoman> type, Level world) {
 		super(type, world);
 		xpReward = 12;
 		setNoAi(false);
@@ -56,16 +56,13 @@ public class IllEnderGirl extends AbstractMonsterEnderGirl implements Ill {
 		Ill.removeBehaviourGoals(this);
 	}
 	
-    @Override
-    public boolean isSensitiveToWater() {
-    	if (this.isInWater()) {
-    		return true;
-    	}
-    	else if (!this.getItemBySlot(EquipmentSlot.HEAD).isEmpty()) {
-    		return false;
-    	}
-        return true;
-    }
+	@Override
+	public void die(DamageSource source) {
+		super.die(source);
+		if (this.getOwner() instanceof ScientificIllager owner && owner.isAlive() && !this.level().isClientSide) {
+			owner.removePet(this.getUUID());
+		}		
+	}
 	
 	@Override
     protected boolean shouldRandomlyTeleport() {
@@ -83,7 +80,7 @@ public class IllEnderGirl extends AbstractMonsterEnderGirl implements Ill {
     protected void registerGoals() {
     	this.addBehaviourGoals();
     	Ill.addBehaviourGoals(this);
-        this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.0D, false));
+        this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.2D, false));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));  
     }

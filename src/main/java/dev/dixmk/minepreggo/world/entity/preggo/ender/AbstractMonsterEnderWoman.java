@@ -19,9 +19,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 
-public abstract class AbstractMonsterEnderGirl extends AbstractEnderGirl {
+public abstract class AbstractMonsterEnderWoman extends AbstractEnderWoman {
 
-	protected AbstractMonsterEnderGirl(EntityType<? extends AbstractEnderGirl> p_32485_, Level p_32486_) {
+	protected AbstractMonsterEnderWoman(EntityType<? extends AbstractEnderWoman> p_32485_, Level p_32486_) {
 		super(p_32485_, p_32486_, Creature.MONSTER);
 	}
 
@@ -44,7 +44,7 @@ public abstract class AbstractMonsterEnderGirl extends AbstractEnderGirl {
 		return false;
 	}
 	
-	public static boolean checkMonsterEnderGirlSpawnRules(EntityType<? extends AbstractMonsterEnderGirl> p_219014_, ServerLevelAccessor p_219015_, MobSpawnType p_219016_, BlockPos p_219017_, RandomSource p_219018_) {
+	public static boolean checkMonsterEnderGirlSpawnRules(EntityType<? extends AbstractMonsterEnderWoman> p_219014_, ServerLevelAccessor p_219015_, MobSpawnType p_219016_, BlockPos p_219017_, RandomSource p_219018_) {
 		return p_219015_.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(p_219015_, p_219017_, p_219018_) && checkMobSpawnRules(p_219014_, p_219015_, p_219016_, p_219017_, p_219018_);
 	}
 	

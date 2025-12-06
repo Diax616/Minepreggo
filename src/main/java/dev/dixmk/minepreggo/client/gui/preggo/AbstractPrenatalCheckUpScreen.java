@@ -81,6 +81,15 @@ public abstract class AbstractPrenatalCheckUpScreen
 		RenderSystem.disableBlend();
 	}
 
+	@Override
+	public void tick() {
+		super.tick();	
+		this.target.ifPresent(e -> {
+			if (e.isAggressive()) {
+				this.minecraft.player.closeContainer();
+			}
+		});
+	}
 	
 	@Override
 	public boolean keyPressed(int key, int b, int c) {
@@ -99,4 +108,6 @@ public abstract class AbstractPrenatalCheckUpScreen
 		guiGraphics.drawString(this.font, Component.translatable("gui.minepreggo.medical_checkup.label.prenatal_checkups"), 76, 3, -12829636, false);
 		guiGraphics.drawString(this.font, Component.translatable("gui.minepreggo.medical_checkup.label.inventory"), 14, 73, -12829636, false);
 	}	
+	
+	
 }

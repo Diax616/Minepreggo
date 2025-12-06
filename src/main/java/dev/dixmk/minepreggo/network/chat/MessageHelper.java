@@ -19,8 +19,6 @@ public class MessageHelper {
 	private static final ImmutableMap<PregnancyPhase, String> PLAYER_ARMOR_MESSAGES;	
 	private static final ImmutableMap<PregnancyPhase, String> PREGGO_MOB_ARMOR_MESSAGES;
 	
-	
-	
 	static {			
 		UnaryOperator<String> preggoMobArmorTemplate = phase -> String.format("chat.minepreggo.preggo_mob.armor.message.chestplate_does_not_fit.p%s", phase);
 		UnaryOperator<String> playerArmorTemplate = phase -> String.format("chat.minepreggo.player.armor.message.chestplate_does_not_fit.p%s", phase);
@@ -79,13 +77,10 @@ public class MessageHelper {
 
     public static void sendTo(ServerPlayer player, Component message) {
         if (player != null && !player.level().isClientSide) {
-        	// player.displayClientMessage(message, true);
             player.sendSystemMessage(message);
         }
     }
-    
-    
-    
+      
     public static void sendTo(ServerPlayer player, PreggoMob preggoMob, Component message) {
         if (player != null && preggoMob.isOwnedBy(player) && !player.level().isClientSide) {
             player.sendSystemMessage(message);

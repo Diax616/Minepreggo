@@ -108,10 +108,13 @@ public class BabyData {
                 .put(Species.ENDER, Creature.MONSTER)
                 .put(Species.VILLAGER, Creature.HUMANOID)
                 .build();
-     
-
+    
     public static boolean isValid(Species species, Creature creature) {
     	return VALID_COMBINATIONS.containsEntry(species, creature);
+    }
+    
+    public static int getValidCombinations() {
+    	return VALID_COMBINATIONS.size();
     }
     
     public static @NonNull BabyData create(@NonNull ImmutableTriple<UUID, Species, Creature> mother, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father, RandomSource random) {

@@ -11,6 +11,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EntityType;
@@ -74,6 +75,14 @@ public class IllCreeperGirl extends AbstractMonsterHumanoidCreeperGirl implement
 	}
 	
 	@Override
+	public void die(DamageSource source) {
+		super.die(source);
+		if (this.getOwner() instanceof ScientificIllager owner && owner.isAlive() && !this.level().isClientSide) {
+			owner.removePet(this.getUUID());
+		}		
+	}
+	
+	@Override
 	@Nullable
 	public LivingEntity getOwner() {	
         if (this.getOwnerUUID() == null || this.level().isClientSide) return null;
@@ -110,7 +119,7 @@ public class IllCreeperGirl extends AbstractMonsterHumanoidCreeperGirl implement
 			}
 		});
 		
-    	target.goalSelector.addGoal(3, new MeleeAttackGoal(target, 1.0, false));
+    	target.goalSelector.addGoal(3, new MeleeAttackGoal(target, 1.2, false));
     	target.goalSelector.addGoal(3, new FloatGoal(target));
     	target.goalSelector.addGoal(6, new RandomLookAroundGoal(target));
     	target.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(target, Cat.class, true));
@@ -136,5 +145,4 @@ public class IllCreeperGirl extends AbstractMonsterHumanoidCreeperGirl implement
 		
 		return InteractionResult.FAIL;
 	}
-
 }

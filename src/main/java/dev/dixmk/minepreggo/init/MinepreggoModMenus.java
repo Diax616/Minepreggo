@@ -6,7 +6,7 @@ import dev.dixmk.minepreggo.world.inventory.preggo.PlayerPrenatalCheckUpMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.PreggoMobPrenatalCheckUpMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.RequestSexM2PMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.RequestSexP2PMenu;
-import dev.dixmk.minepreggo.world.inventory.preggo.SelectPregnantEntityForMedicalCheckUpMenu;
+import dev.dixmk.minepreggo.world.inventory.preggo.SelectPregnantEntityForPrenatalCheckUpMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlInventoryMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlMainMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlP0InventoryMenu;
@@ -102,7 +102,7 @@ public class MinepreggoModMenus {
 	public static final RegistryObject<MenuType<CreeperGirlP8MainMenu>> CREEPER_GIRL_P8_MAIN_MENU = REGISTRY.register("creeper_girl_p8_main_menu", () -> IForgeMenuType.create(CreeperGirlP8MainMenu::new));
 	public static final RegistryObject<MenuType<CreeperGirlP8InventoryMenu>> CREEPER_GIRL_P8_INVENTORY_MENU = REGISTRY.register("creeper_girl_p8_inventary_menu", () -> IForgeMenuType.create(CreeperGirlP8InventoryMenu::new));
 
-	public static final RegistryObject<MenuType<SelectPregnantEntityForMedicalCheckUpMenu>> SELECT_PREGNANT_ENTITY_FOR_PRENATAL_CHECKUP_MENU = REGISTRY.register("select_pregnant_entity_for_prenatal_checkup_menu", () -> IForgeMenuType.create(SelectPregnantEntityForMedicalCheckUpMenu::new));
+	public static final RegistryObject<MenuType<SelectPregnantEntityForPrenatalCheckUpMenu>> SELECT_PREGNANT_ENTITY_FOR_PRENATAL_CHECKUP_MENU = REGISTRY.register("select_pregnant_entity_for_prenatal_checkup_menu", () -> IForgeMenuType.create(SelectPregnantEntityForPrenatalCheckUpMenu::new));
 	public static final RegistryObject<MenuType<PreggoMobPrenatalCheckUpMenu>> PREGGO_MOB_PRENATAL_CHECKUP_MENU = REGISTRY.register("preggo_mob_prenatal_checkup_menu", () -> IForgeMenuType.create(PreggoMobPrenatalCheckUpMenu::new));
 	
 	public static final RegistryObject<MenuType<PlayerPrenatalCheckUpMenu.VillagerMenu>> PLAYER_PRENATAL_CHECKUP_BY_VILLAGER_MENU = REGISTRY.register("player_prenatal_checkup_by_villager_menu", () -> IForgeMenuType.create(PlayerPrenatalCheckUpMenu.VillagerMenu::new));

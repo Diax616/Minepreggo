@@ -156,6 +156,14 @@ public abstract class PlayerPrenatalCheckUpMenu<T extends Mob> extends AbstractP
 		}
 
 		@Override
+		public void removed(Player playerIn) {
+			super.removed(playerIn);
+			if (!level.isClientSide) {
+				this.target.ifPresent(t -> t.setTradingPlayer(null));
+			}
+		}
+		
+		@Override
 		protected void onSuccessful() {		
 			this.source.ifPresent(s -> {
 				if (this.level.isClientSide) {
@@ -203,6 +211,14 @@ public abstract class PlayerPrenatalCheckUpMenu<T extends Mob> extends AbstractP
 		
 		public IllagerMenu(int id, Inventory inv, FriendlyByteBuf buffer) {
 			super(MinepreggoModMenus.PLAYER_PRENATAL_CHECKUP_BY_ILLAGER_MENU.get(), id, inv, buffer);
+		}
+		
+		@Override
+		public void removed(Player playerIn) {
+			super.removed(playerIn);
+			if (!level.isClientSide) {
+				this.target.ifPresent(t -> t.setTradingPlayer(null));
+			}
 		}
 		
 		@Override

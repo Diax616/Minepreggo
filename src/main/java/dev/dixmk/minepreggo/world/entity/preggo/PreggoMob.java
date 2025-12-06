@@ -38,6 +38,10 @@ public abstract class PreggoMob extends TamableAnimal {
 	
 	public abstract boolean hasCustomHeadAnimation();
 	
+	protected void afterTaming() {
+		
+	}
+	
 	public @NonNull Species getTypeOfSpecies() {
 		return this.typeOfSpecies;
 	}
@@ -93,6 +97,7 @@ public abstract class PreggoMob extends TamableAnimal {
 			this.usePlayerItem(sourceentity, hand, itemstack);
 			if (this.random.nextInt(3) == 0 && !net.minecraftforge.event.ForgeEventFactory.onAnimalTame(this, sourceentity)) {
 				this.tame(sourceentity);
+				this.afterTaming();
 				this.level().broadcastEntityEvent(this, (byte) 7);						
 			} else {
 				this.level().broadcastEntityEvent(this, (byte) 6);

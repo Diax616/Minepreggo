@@ -19,8 +19,8 @@ import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirlP5;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirlP6;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirlP7;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirlP8;
-import dev.dixmk.minepreggo.world.entity.preggo.ender.IllEnderGirl;
-import dev.dixmk.minepreggo.world.entity.preggo.ender.MonsterEnderGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.IllEnderWoman;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.MonsterEnderWoman;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.IllZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.MonsterZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.MonsterZombieGirlP3;
@@ -148,8 +148,8 @@ public class MinepreggoModEntities {
 	public static final RegistryObject<EntityType<ScientificIllager>> SCIENTIFIC_ILLAGER = register("scientific_illager",
 			EntityType.Builder.<ScientificIllager>of(ScientificIllager::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(ScientificIllager::new).sized(0.6f, 1.95f));
 	
-	public static final RegistryObject<EntityType<IllEnderGirl>> ILL_ENDER_GIRL = register("ill_ender_girl",
-			EntityType.Builder.<IllEnderGirl>of(IllEnderGirl::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(IllEnderGirl::new).sized(0.6f, 2.9f));
+	public static final RegistryObject<EntityType<IllEnderWoman>> ILL_ENDER_WOMAN = register("ill_ender_woman",
+			EntityType.Builder.<IllEnderWoman>of(IllEnderWoman::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(IllEnderWoman::new).sized(0.6f, 2.9f));
 	
 	public static final RegistryObject<EntityType<IllQuadrupedCreeperGirl>> ILL_QUADRUPED_CREEPER_GIRL = register("ill_queadruped_creeper_girl",
 			EntityType.Builder.<IllQuadrupedCreeperGirl>of(IllQuadrupedCreeperGirl::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(IllQuadrupedCreeperGirl::new).sized(0.6f, 1.7f));
@@ -161,8 +161,8 @@ public class MinepreggoModEntities {
 			EntityType.Builder.<IllZombieGirl>of(IllZombieGirl::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(IllZombieGirl::new).sized(0.6f, 1.8f));
 	
 	/*Ender*/
-	public static final RegistryObject<EntityType<MonsterEnderGirl>> MONSTER_ENDER_GIRL = register("monster_ender_girl",
-			EntityType.Builder.<MonsterEnderGirl>of(MonsterEnderGirl::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(MonsterEnderGirl::new).sized(0.6f, 2.9f));
+	public static final RegistryObject<EntityType<MonsterEnderWoman>> MONSTER_ENDER_WOMAN = register("monster_ender_woman",
+			EntityType.Builder.<MonsterEnderWoman>of(MonsterEnderWoman::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(MonsterEnderWoman::new).sized(0.6f, 2.9f));
 	
 	
 	private static <T extends Entity> RegistryObject<EntityType<T>> register(String registryname, EntityType.Builder<T> entityTypeBuilder) {

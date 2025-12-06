@@ -24,10 +24,10 @@ import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractZombieGirl;
-import dev.dixmk.minepreggo.world.inventory.preggo.SelectPregnantEntityForMedicalCheckUpMenu;
+import dev.dixmk.minepreggo.world.inventory.preggo.SelectPregnantEntityForPrenatalCheckUpMenu;
 
 @OnlyIn(Dist.CLIENT)
-public class SelectPregnantEntityForMedicalCheckUpScreen extends AbstractContainerScreen<SelectPregnantEntityForMedicalCheckUpMenu> {
+public class SelectPregnantEntityForPrenatalCheckUpScreen extends AbstractContainerScreen<SelectPregnantEntityForPrenatalCheckUpMenu> {
 	
 	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/select_preggo_mob_for_medical_check_up_gui.png");
 
@@ -37,7 +37,7 @@ public class SelectPregnantEntityForMedicalCheckUpScreen extends AbstractContain
 	private final Optional<ScientificIllager> scientificIllager;
 	private final List<? extends LivingEntity> pregnantEntities;
 	
-	public SelectPregnantEntityForMedicalCheckUpScreen(SelectPregnantEntityForMedicalCheckUpMenu container, Inventory inventory, Component text) {
+	public SelectPregnantEntityForPrenatalCheckUpScreen(SelectPregnantEntityForPrenatalCheckUpMenu container, Inventory inventory, Component text) {
 		super(container, inventory, text);
 		this.scientificIllager = container.getScienticIllager();
 		this.imageWidth = 140;

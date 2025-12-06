@@ -100,6 +100,8 @@ public class MinepreggoModTabs {
                 output.accept(MinepreggoModItems.BELLY_SHIELD_P8.get());
                 
                 output.accept(MinepreggoModItems.ZOMBIE_LIFE_SUBSTANCE.get());
+                output.accept(MinepreggoModItems.CREEPER_LIFE_SUBSTANCE.get());
+                output.accept(MinepreggoModItems.ENDER_LIFE_SUBSTANCE.get());
                 output.accept(MinepreggoModItems.SPECIMEN_TUBE.get());
                 output.accept(MinepreggoModItems.CUM_SPECIMEN_TUBE.get());
                
@@ -147,7 +149,7 @@ public class MinepreggoModTabs {
                 output.accept(MinepreggoModItems.TAMABLE_CREEPER_GIRL_P8_SPAWN_EGG.get());
      
                 output.accept(MinepreggoModItems.MONSTER_QUADRUPED_CREEPER_GIRL_P0_SPAWN_EGG.get());
-                output.accept(MinepreggoModItems.MONSTER_ENDER_GIRL_SPAWN_EGG.get());
+                output.accept(MinepreggoModItems.MONSTER_ENDER_WOMAN_SPAWN_EGG.get());
                 output.accept(MinepreggoModItems.SCIENTIFIC_ILLAGER_SPAWN_EGG.get());
                 
                 

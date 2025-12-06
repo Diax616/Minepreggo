@@ -26,6 +26,8 @@ import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobFace;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
+import dev.dixmk.minepreggo.world.inventory.preggo.zombie.AbstractZombieGirlInventoryMenu;
+import dev.dixmk.minepreggo.world.inventory.preggo.zombie.AbstractZombieGirlMainMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.zombie.ZombieGirlMenuHelper;
 import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
 import dev.dixmk.minepreggo.world.pregnancy.Gender;
@@ -69,21 +71,21 @@ import net.minecraftforge.items.wrapper.EntityArmorInvWrapper;
 import net.minecraftforge.items.wrapper.EntityHandsInvWrapper;
 
 public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> extends AbstractZombieGirl implements ITamablePreggoMob<FemaleEntityImpl>, IFemaleEntity {
-	protected static final EntityDataAccessor<Integer> DATA_HUNGRY = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.INT);
-	protected static final EntityDataAccessor<Boolean> DATA_SAVAGE = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
-	protected static final EntityDataAccessor<Boolean> DATA_ANGRY = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
-	protected static final EntityDataAccessor<Boolean> DATA_WAITING = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
-	protected static final EntityDataAccessor<Boolean> DATA_PANIC = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
-	protected static final EntityDataAccessor<Boolean> DATA_BREAK_BLOCKS = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
-	protected static final EntityDataAccessor<Boolean> DATA_PICKUP_ITEMS = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Integer> DATA_HUNGRY = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.INT);
+	private static final EntityDataAccessor<Boolean> DATA_SAVAGE = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> DATA_ANGRY = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> DATA_WAITING = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> DATA_BREAK_BLOCKS = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> DATA_PICKUP_ITEMS = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
 	
-	protected static final EntityDataAccessor<Optional<PreggoMobFace>> DATA_FACE = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, MinepreggoModEntityDataSerializers.OPTIONAL_PREGGO_MOB_FACE);
-	protected static final EntityDataAccessor<Optional<PreggoMobBody>> DATA_BODY = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, MinepreggoModEntityDataSerializers.OPTIONAL_PREGGO_MOB_BODY);
+	private static final EntityDataAccessor<Optional<PreggoMobFace>> DATA_FACE = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, MinepreggoModEntityDataSerializers.OPTIONAL_PREGGO_MOB_FACE);
+	private static final EntityDataAccessor<Optional<PreggoMobBody>> DATA_BODY = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, MinepreggoModEntityDataSerializers.OPTIONAL_PREGGO_MOB_BODY);
 	
-	protected final ItemStackHandler inventory = new ItemStackHandler(INVENTORY_SIZE);
-	protected final CombinedInvWrapper combined = new CombinedInvWrapper(inventory, new EntityHandsInvWrapper(this), new EntityArmorInvWrapper(this));
+	private final ItemStackHandler inventory = new ItemStackHandler(INVENTORY_SIZE);
+	private final CombinedInvWrapper combined = new CombinedInvWrapper(inventory, new EntityHandsInvWrapper(this), new EntityArmorInvWrapper(this));
 	public static final int INVENTORY_SIZE = 15;
 
+	private boolean panic = false;
 	private int hungryTimer = 0;
 	protected final P preggoMobSystem;
 	
@@ -101,11 +103,10 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 	@Override
 	protected void defineSynchedData() {
 		super.defineSynchedData();
-		this.entityData.define(DATA_HUNGRY, 10);		
+		this.entityData.define(DATA_HUNGRY, 12);		
 		this.entityData.define(DATA_SAVAGE, true);
 		this.entityData.define(DATA_ANGRY, false);
 		this.entityData.define(DATA_WAITING, false);
-		this.entityData.define(DATA_PANIC, false);
 		this.entityData.define(DATA_BREAK_BLOCKS, false);
 		this.entityData.define(DATA_PICKUP_ITEMS, this.canPickUpLoot());
 		this.entityData.define(DATA_FACE, Optional.empty());
@@ -121,9 +122,9 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 		compound.putBoolean("DataSavage", this.entityData.get(DATA_SAVAGE));
 		compound.putBoolean("DataWaiting", this.entityData.get(DATA_WAITING));
 		compound.putBoolean("DataAngry", this.entityData.get(DATA_ANGRY));
-		compound.putBoolean("DataPanic", this.entityData.get(DATA_PANIC));	
 		compound.putBoolean("DataBreakBlocks", this.entityData.get(DATA_BREAK_BLOCKS));
 		compound.putBoolean("DataPickUpItems", this.entityData.get(DATA_PICKUP_ITEMS));
+		compound.putBoolean("DataPanic", this.panic);	
 		final var face = getFaceState();
 		if (face != null) {
 			compound.putString(PreggoMobFace.NBT_KEY, face.name());
@@ -146,9 +147,11 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 		this.entityData.set(DATA_SAVAGE, compound.getBoolean("DataSavage"));		
 		this.entityData.set(DATA_WAITING, compound.getBoolean("DataWaiting"));		
 		this.entityData.set(DATA_ANGRY, compound.getBoolean("DataAngry"));	
-		this.entityData.set(DATA_PANIC, compound.getBoolean("DataPanic"));	
 		this.entityData.set(DATA_BREAK_BLOCKS, compound.getBoolean("DataBreakBlocks"));	
 		this.entityData.set(DATA_PICKUP_ITEMS, compound.getBoolean("DataPickUpItems"));
+		
+		this.panic = compound.getBoolean("DataPanic");
+		
 		if (compound.contains(PreggoMobFace.NBT_KEY, Tag.TAG_STRING)) {
 			setFaceState(PreggoMobFace.valueOf(compound.getString(PreggoMobFace.NBT_KEY)));
 		}
@@ -211,7 +214,12 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 				else if(damagesource.is(DamageTypes.IN_FIRE) || damagesource.is(DamageTypes.ON_FIRE)) {
 					this.setPanic(true);
 				}								
-			}									
+			}	
+			
+			if (this.getOwner() instanceof ServerPlayer serverPlayer
+					&& (serverPlayer.containerMenu instanceof AbstractZombieGirlMainMenu<?> || serverPlayer.containerMenu instanceof AbstractZombieGirlInventoryMenu<?>)) {
+				serverPlayer.closeContainer();
+			}	
 		}		
 		return result;
 	}
@@ -223,7 +231,7 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 	@Override
 	public boolean doHurtTarget(Entity target) {	
 		boolean result = super.doHurtTarget(target);	
-		if (result) {
+		if (result && !this.level().isClientSide) {
 			PreggoMobHelper.tryToDamageItemOnMainHand(this);
 		}
 		return result;
@@ -251,6 +259,13 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 	}
 	
 	@Override
+	protected void afterTaming() {
+		if (!this.level().isClientSide) {
+			this.setSavage(false);
+		}
+	}
+	
+	@Override
 	public InteractionResult mobInteract(Player sourceentity, InteractionHand hand) {	
 		var retval = super.mobInteract(sourceentity, hand); 		
 	
@@ -261,6 +276,7 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 		if (preggoMobSystem.canOwnerAccessGUI(sourceentity)) {			
 			if (!this.level().isClientSide() && sourceentity instanceof ServerPlayer serverPlayer) {
 				ZombieGirlMenuHelper.showMainMenu(serverPlayer, this);
+				if (this.isPanic()) setPanic(false);
 			}			
 			return InteractionResult.SUCCESS;
 		}
@@ -401,12 +417,12 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 	
 	@Override
 	public boolean isPanic() {
-		return this.entityData.get(DATA_PANIC);
+		return this.panic;
 	}
 
 	@Override
 	public void setPanic(boolean panic) {
-	    this.entityData.set(DATA_PANIC, panic);
+	    this.panic = panic;
 	}
 	
 	@Override

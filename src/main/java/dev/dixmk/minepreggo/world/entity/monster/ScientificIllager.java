@@ -14,6 +14,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.raid.Raid;
 import net.minecraft.world.entity.raid.Raider;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MerchantMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -54,14 +55,16 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -69,7 +72,6 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.Maps;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
@@ -77,27 +79,24 @@ import dev.dixmk.minepreggo.world.entity.npc.Trades;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.IllCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.IllQuadrupedCreeperGirl;
-import dev.dixmk.minepreggo.world.entity.preggo.zombie.IllZombieGirl;
-import dev.dixmk.minepreggo.world.inventory.preggo.SelectPregnantEntityForMedicalCheckUpMenu;
+import dev.dixmk.minepreggo.world.inventory.preggo.PlayerPrenatalCheckUpMenu;
+import dev.dixmk.minepreggo.world.inventory.preggo.SelectPregnantEntityForPrenatalCheckUpMenu;
 import dev.dixmk.minepreggo.world.pregnancy.IObstetrician;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.pregnancy.PrenatalCheckupCostHolder;
 import dev.dixmk.minepreggo.world.pregnancy.PrenatalCheckupCostHolder.PrenatalCheckupCost;
 import io.netty.buffer.Unpooled;
-import dev.dixmk.minepreggo.world.entity.preggo.ender.IllEnderGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.IllEnderWoman;
+import dev.dixmk.minepreggo.world.entity.preggo.zombie.IllZombieGirl;
 
 public class ScientificIllager extends AbstractIllager implements Merchant, IObstetrician {
     private MerchantOffers offers;
     private Player tradingPlayer;
     
-    private boolean spawnIllEnderGirl = true;
-    private boolean spawnIllZombieGirl = true;
-    private boolean spawnIllQuadrupedCreeperGirl = true;
-    private boolean spawnIllCreeperGirl = true;
+    private PrenatalCheckupCostHolder prenatalCheckUpCosts = new PrenatalCheckupCostHolder(3, 10);
+	private Set<UUID> petsUUID = null;
     
-    private final Map<String, UUID> petsId = new HashMap<>();
-    private PrenatalCheckupCostHolder prenatalCheckUpCosts = new PrenatalCheckupCostHolder(3, 10);    
-
+    
 	public ScientificIllager(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.SCIENTIFIC_ILLAGER.get(), world);
 	}
@@ -242,6 +241,8 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
 			return false;
 		}
 		
+		setTradingPlayer(serverPlayer);
+		
 		NetworkHooks.openScreen(serverPlayer, new MenuProvider() {
             @Override
             public Component getDisplayName() {
@@ -254,7 +255,7 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
                 packetBuffer.writeBlockPos(blockPos);
                 packetBuffer.writeVarInt(scientificIllagerId);
                 packetBuffer.writeCollection(list, FriendlyByteBuf::writeVarInt);              
-                return new SelectPregnantEntityForMedicalCheckUpMenu(id, inventory, packetBuffer);
+                return new SelectPregnantEntityForPrenatalCheckUpMenu(id, inventory, packetBuffer);
             }
 		}
 					
@@ -274,19 +275,20 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
 	    if (!merchantoffers.isEmpty()) {
 	    	compound.put("Offers", merchantoffers.createTag());
 	    }
-	    compound.putBoolean("SpawnIllEnderGirl", spawnIllEnderGirl);
-	    compound.putBoolean("SpawnIllZombieGirl", spawnIllZombieGirl);
-	    compound.putBoolean("SpawnIllCreeperGirl", spawnIllCreeperGirl);
-	    compound.putBoolean("SpawnIllQuadrupedCreeperGirl", spawnIllQuadrupedCreeperGirl);
-	    
-	    for (final var entry : this.petsId.entrySet()) {  	
-	    	compound.putUUID(entry.getKey(), entry.getValue());
-	    }
 	    
 	    if (prenatalCheckUpCosts.isInitialized()) {
-	    	MinepreggoMod.LOGGER.debug("SAVING PRENATAL CHECKUP COSTS FOR SCIENTIFIC ILLAGER, id={}", this.getId());
 	    	compound.put("prenatalCheckUpCosts", prenatalCheckUpCosts.serializeNBT());
 	    }
+		
+		if (petsUUID != null && !petsUUID.isEmpty()) {
+			ListTag pets = new ListTag();
+			petsUUID.forEach(uuid -> {
+				CompoundTag tag = new CompoundTag();
+				tag.putUUID("petId", uuid);
+				pets.add(tag);
+			});
+			compound.put("DataPetsUUID", pets);
+		}
 	}
 	@Override
 	public void readAdditionalSaveData(CompoundTag compound) {
@@ -295,18 +297,14 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
 			this.offers = new MerchantOffers(compound.getCompound("Offers"));
 		}
 		
-		this.spawnIllEnderGirl = compound.getBoolean("SpawnIllEnderGirl");
-		this.spawnIllZombieGirl = compound.getBoolean("SpawnIllZombieGirl");
-		this.spawnIllCreeperGirl = compound.getBoolean("SpawnIllCreeperGirl");
-		this.spawnIllQuadrupedCreeperGirl = compound.getBoolean("SpawnIllQuadrupedCreeperGirl");
-		this.tryReadPetId("DataIllZombieId", compound);
-		this.tryReadPetId("DataIllCreeperId", compound);
-		this.tryReadPetId("DataIllQuadrupedCreeperId", compound);
-		this.tryReadPetId("DataIllEnderId", compound);	
-		
 		if (compound.contains("prenatalCheckUpCosts", Tag.TAG_COMPOUND)) {
-			MinepreggoMod.LOGGER.debug("LOADING PRENATAL CHECKUP COSTS FOR SCIENTIFIC ILLAGER, id={}", this.getId());
 			prenatalCheckUpCosts.deserializeNBT(compound.getCompound("prenatalCheckUpCosts"));
+		}
+
+		if (petsUUID == null && compound.contains("DataPetsUUID", Tag.TAG_LIST)) {
+			petsUUID = new HashSet<>(4);
+			ListTag  list = compound.getList("DataPetsUUID", Tag.TAG_COMPOUND);
+			list.forEach(tag -> petsUUID.add(((CompoundTag) tag).getUUID("petId")));
 		}
 	}
 	
@@ -320,89 +318,76 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
 		this.targetSelector.addGoal(2, new MeleeAttackGoal(this, 1.2, false));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
-		this.goalSelector.addGoal(8, new RandomStrollGoal(this, 0.6D));
+		this.goalSelector.addGoal(8, new RandomStrollGoal(this, 0.6D) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() && getTradingPlayer() == null;
+			}
+			
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() && getTradingPlayer() == null;
+			}
+		});
 		this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 3.0F, 1.0F));
 		this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, Mob.class, 8.0F));		
 	}
 
-	private void tryReadPetId(String key, CompoundTag compound) {
-		if (compound.hasUUID(key)) {
-			this.petsId.put(key, compound.getUUID(key));
-		}
-	}
-	
-	public boolean canIllZombieGirlSpawn() {
-		return spawnIllZombieGirl;
-	}
-	
-	public boolean canIllCreeperGirlSpawn() {
-		return spawnIllCreeperGirl;
-	}
-	
-	public boolean canIllEnderGirlSpawn() {
-		return spawnIllEnderGirl;
-	}
-	
-	public boolean canIllQueadrupedCreeperGirlSpawn() {
-		return spawnIllQuadrupedCreeperGirl;
-	}
-	
-	protected boolean spawnIllZombieGirlIfCan(double x, double y, double z) {	
-		if (!this.spawnIllZombieGirl) return false;
-		this.spawnIllZombieGirl = false;
-		if (this.level() instanceof ServerLevel serverLevel && !serverLevel.isClientSide()) {	
-			IllZombieGirl mob = MinepreggoModEntities.ILL_ZOMBIE_GIRL.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.MOB_SUMMONED);
-			mob.setYRot(this.random.nextFloat() * 360F);
-			mob.tameByIllager(this);			
-			this.petsId.put("DataIllZombieId", mob.getUUID());	
-		}			
-		return true;
-	}
-	
-	protected boolean spawnIllCreeperGirlIfCan(double x, double y, double z) {
-		if (!this.spawnIllCreeperGirl) return false;
-		this.spawnIllCreeperGirl = false;
-		if (this.level() instanceof ServerLevel serverLevel && !serverLevel.isClientSide()) {	
-			IllCreeperGirl mob = MinepreggoModEntities.ILL_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.MOB_SUMMONED);
-			mob.setYRot(this.random.nextFloat() * 360F);
-			mob.tameByIllager(this);
-			this.petsId.put("DataIllCreeperId", mob.getUUID());
-		}		
-		return true;
-	}
-	
-	protected boolean spawnIllQuadrupedCreeperGirlIfCan(double x, double y, double z) {
-		if (!this.spawnIllQuadrupedCreeperGirl) return false;
-		this.spawnIllQuadrupedCreeperGirl = false;
-		if (this.level() instanceof ServerLevel serverLevel && !serverLevel.isClientSide()) {	
-			IllQuadrupedCreeperGirl mob = MinepreggoModEntities.ILL_QUADRUPED_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.MOB_SUMMONED);
-			mob.setYRot(this.random.nextFloat() * 360F);
-			mob.tameByIllager(this);
-			this.petsId.put("DataIllQuadrupedCreeperId", mob.getUUID());
+	private boolean spawnPets() {			
+		if (petsUUID == null && this.level() instanceof ServerLevel serverLevel) {	
+			petsUUID = new HashSet<>(4);			
+			final var x = this.getX();
+			final var y = this.getY();
+			final var z = this.getZ();
+						
+			IllZombieGirl zombieGirl = MinepreggoModEntities.ILL_ZOMBIE_GIRL.get().spawn(serverLevel, BlockPos.containing(x + 1.25, y, z), MobSpawnType.MOB_SUMMONED);
+			zombieGirl.setYRot(this.random.nextFloat() * 360F);
+			zombieGirl.tameByIllager(this);
+			zombieGirl.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.IRON_HELMET));
+			zombieGirl.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SWORD));
+			petsUUID.add(zombieGirl.getUUID());
+						
+			IllCreeperGirl creeperGirl = MinepreggoModEntities.ILL_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(x - 1.25, y, z), MobSpawnType.MOB_SUMMONED);
+			creeperGirl.setYRot(this.random.nextFloat() * 360F);
+			creeperGirl.tameByIllager(this);
+			petsUUID.add(creeperGirl.getUUID());
+			
+			IllQuadrupedCreeperGirl humanoidCreeperGirl = MinepreggoModEntities.ILL_QUADRUPED_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(x, y, z + 1.25), MobSpawnType.MOB_SUMMONED);
+			humanoidCreeperGirl.setYRot(this.random.nextFloat() * 360F);
+			humanoidCreeperGirl.tameByIllager(this);
+			petsUUID.add(humanoidCreeperGirl.getUUID());
+			
+			IllEnderWoman enderWoman = MinepreggoModEntities.ILL_ENDER_WOMAN.get().spawn(serverLevel, BlockPos.containing(x, y, z - 1.25), MobSpawnType.MOB_SUMMONED);
+			enderWoman.setYRot(this.random.nextFloat() * 360F);
+			enderWoman.tameByIllager(this);
+			enderWoman.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.IRON_HELMET));
+			petsUUID.add(enderWoman.getUUID());
+						
+			return true;
 		}	
-		return true;
+		return false;
 	}
 	
-	protected boolean spawnIllEnderGirlIfCan(double x, double y, double z) {
-		if (!this.spawnIllEnderGirl) return false;
-		this.spawnIllEnderGirl = false;
-		if (this.level() instanceof ServerLevel serverLevel && !serverLevel.isClientSide()) {	
-			IllEnderGirl mob = MinepreggoModEntities.ILL_ENDER_GIRL.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.MOB_SUMMONED);
-			mob.setYRot(this.random.nextFloat() * 360F);
-			mob.tameByIllager(this);
-			this.petsId.put("DataIllEnderId", mob.getUUID());
-		}		
-		return true;
+	@Override
+	public boolean hurt(DamageSource source, float amount) {
+		boolean result = super.hurt(source, amount);	
+	    if (result && !this.level().isClientSide && this.getTradingPlayer() != null) {
+            ServerPlayer player = (ServerPlayer) this.getTradingPlayer();
+            if (player.containerMenu instanceof PlayerPrenatalCheckUpMenu.IllagerMenu || 
+            		player.containerMenu instanceof SelectPregnantEntityForPrenatalCheckUpMenu ||
+            		player.containerMenu instanceof MerchantMenu) {
+            	player.closeContainer();
+            }
+            this.setTradingPlayer(null);
+	    }
+	    return result;
 	}
-	
-	public void trySpawnIllPets() {	
-		final var x = this.getX();
-		final var y = this.getY();
-		final var z = this.getZ();
-		this.spawnIllZombieGirlIfCan(x + 1.25, y, z);
-		this.spawnIllCreeperGirlIfCan(x - 1.25, y, z);
-		this.spawnIllQuadrupedCreeperGirlIfCan(x, y, z + 1.25);
-		this.spawnIllEnderGirlIfCan(x, y, z - 1.25);
+
+	public boolean removePet(UUID uuid) {
+		if (petsUUID != null) {
+			return petsUUID.remove(uuid);
+		}
+		return false;
 	}
 	
 	@Override
@@ -445,6 +430,7 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
 	    RandomSource randomsource = p_34088_.getRandom();
 	    this.populateDefaultEquipmentSlots(randomsource, p_34089_);
 	    this.populateDefaultEquipmentEnchantments(randomsource, p_34089_);
+	    this.spawnPets();
 	    return spawngroupdata;
 	}
 	
@@ -470,19 +456,14 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
 
 	@Override
 	public void die(DamageSource source) {
-		super.die(source);
-		
-		if (!(this.level() instanceof ServerLevel serverLevel)) return;
-
-		MinepreggoMod.LOGGER.debug("ILLAGER SCIENTIFIC DIED, DETACHING PETS");
-		
-		for (final var uuid : this.petsId.values()) {
-			var entity = serverLevel.getEntity(uuid);
-			if (entity != null && entity instanceof Ill ill) {
-				ill.removeIllagerOwner();
-				MinepreggoMod.LOGGER.debug("PET FOUND, id={}, class={}", entity.getId(), entity.getClass().getSimpleName());
-			}
-		}	
+		super.die(source);		
+		if (this.level() instanceof ServerLevel serverLevel && this.petsUUID != null) {			
+			this.petsUUID.forEach(uuid -> {
+				if (serverLevel.getEntity(uuid) instanceof Ill ill) {
+					ill.removeIllagerOwner();
+				}
+			});
+		}
 	}
 	
 	@Override
@@ -501,20 +482,20 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
 	}
 
 	public void applyRaidBuffs(int p_34079_, boolean p_34080_) {
-	    ItemStack itemstack = new ItemStack(Items.IRON_AXE);
-	    Raid raid = this.getCurrentRaid();
-	    int i = 1;
-	    if (p_34079_ > raid.getNumGroups(Difficulty.NORMAL)) {
-	        i = 2;
-	    }
+	      ItemStack itemstack = new ItemStack(Items.IRON_AXE);
+	      Raid raid = this.getCurrentRaid();
+	      int i = 1;
+	      if (p_34079_ > raid.getNumGroups(Difficulty.NORMAL)) {
+	         i = 2;
+	      }
 
-	    boolean flag = this.random.nextFloat() <= raid.getEnchantOdds();
-	    if (flag) {
-	        Map<Enchantment, Integer> map = Maps.newHashMap();
-	        map.put(Enchantments.SHARPNESS, i);
-	        EnchantmentHelper.setEnchantments(map, itemstack);
-	    }
+	      boolean flag = this.random.nextFloat() <= raid.getEnchantOdds();
+	      if (flag) {
+	         Map<Enchantment, Integer> map = Maps.newHashMap();
+	         map.put(Enchantments.SHARPNESS, i);
+	         EnchantmentHelper.setEnchantments(map, itemstack);
+	      }
 
-	    this.setItemSlot(EquipmentSlot.MAINHAND, itemstack);
+	      this.setItemSlot(EquipmentSlot.MAINHAND, itemstack);
 	}
 }

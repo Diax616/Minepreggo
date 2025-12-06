@@ -1,26 +1,26 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.ender;
 
 import dev.dixmk.minepreggo.client.animation.preggo.EnderGirlAnimation;
-import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractMonsterEnderGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractMonsterEnderWoman;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class AbstractMonsterEnderGirlModel
-	<E extends AbstractMonsterEnderGirl> extends AbstractEnderGirlModel<E> {
+public abstract class AbstractMonsterEnderWomanModel
+	<E extends AbstractMonsterEnderWoman> extends AbstractEnderWomanModel<E> {
 	
-	protected AbstractMonsterEnderGirlModel(ModelPart root, HierarchicalModel<E> animator) {
+	protected AbstractMonsterEnderWomanModel(ModelPart root, HierarchicalModel<E> animator) {
 		super(root, animator);
 		this.belly.visible = false;
 	}
 	
-	protected AbstractMonsterEnderGirlModel(ModelPart root) {
+	protected AbstractMonsterEnderWomanModel(ModelPart root) {
 		this(root, createDefaultHierarchicalModel(root));
 	}
 	
-	private static<E extends AbstractMonsterEnderGirl> HierarchicalModel<E> createDefaultHierarchicalModel(ModelPart root) {
+	private static<E extends AbstractMonsterEnderWoman> HierarchicalModel<E> createDefaultHierarchicalModel(ModelPart root) {
 		return new HierarchicalModel<E>() {		
 			@Override
 			public ModelPart root() {

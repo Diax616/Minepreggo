@@ -2,7 +2,7 @@ package dev.dixmk.minepreggo.client.model.entity.preggo.ender;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.model.entity.preggo.PregnantFemaleHumanoidModel;
-import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractEnderGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractEnderWoman;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -18,7 +18,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class AbstractEnderGirlModel<E extends AbstractEnderGirl> extends PregnantFemaleHumanoidModel<E>{
+public abstract class AbstractEnderWomanModel<E extends AbstractEnderWoman> extends PregnantFemaleHumanoidModel<E>{
 	public static final ModelLayerLocation LAYER_INNER_ARMOR_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "ender_girl_inner_model"), "inner");
 	public static final ModelLayerLocation LAYER_OUTER_ARMOR_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "ender_girl_outer_model"), "outer");	
 	
@@ -26,7 +26,7 @@ public abstract class AbstractEnderGirlModel<E extends AbstractEnderGirl> extend
 	protected final ModelPart root;
 	protected final HierarchicalModel<E> animator;
 	
-	protected AbstractEnderGirlModel(ModelPart root, HierarchicalModel<E> animator) {
+	protected AbstractEnderWomanModel(ModelPart root, HierarchicalModel<E> animator) {
 		super(root);
 		this.root = root;
 		this.animator = animator;

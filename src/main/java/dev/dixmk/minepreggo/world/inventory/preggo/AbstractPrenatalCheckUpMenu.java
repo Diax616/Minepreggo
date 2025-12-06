@@ -41,7 +41,7 @@ public abstract class AbstractPrenatalCheckUpMenu
 	protected int emeraldForPaternityTest = 0;
 	protected boolean valid = false; 
     private PrenatalCheckups checkUps = null;
-    
+    private boolean warningShown = false;
     
     private final SimpleContainer container = new SimpleContainer(SIZE); // 0-2: input, 3-5: output
     
@@ -80,11 +80,8 @@ public abstract class AbstractPrenatalCheckUpMenu
         // Generate trades once on server
         if (!player.level().isClientSide) {
             this.checkUps = createTradesForThisSession();
-        } else {
-            this.checkUps = null; // client doesn't need logic
-        }	    
+        }     
 	}
-    
 	
 	// Reads necessary data from the buffer, mainly the target entity and source entity
 	protected abstract void readBuffer(FriendlyByteBuf buffer);
@@ -272,24 +269,26 @@ public abstract class AbstractPrenatalCheckUpMenu
 	            if (!currentOutput.isEmpty()) {
 	                container.setItem(outputSlotIndex, ItemStack.EMPTY);
 	            }
-	            return;
+	            warningShown = false;
 	        }
-
-	        if (!input.isEmpty() && checkUps.get(prenatalCheckup).canTrade(input)) {
-	        	if (motherPregnancyPhase.compareTo(prenatalCheckup.minRequiredPhase) <= -1) {
-	        		MessageHelper.sendTo(MessageHelper.asServerPlayer(player), Component.translatable("chat.minepreggo.prenantal_checkup.message.warning", prenatalCheckup.minRequiredPhase.toString()));       		
-	        		return;
-	        	}
-	        	
-	        	// Only generate output if not already present        	
-	        	if (currentOutput.isEmpty()) {
+	        else if (!input.isEmpty() && checkUps.get(prenatalCheckup).canTrade(input)) {
+	            if (motherPregnancyPhase.compareTo(prenatalCheckup.minRequiredPhase) <= -1) {
+	                if (!warningShown) { // Only send once
+	                    MessageHelper.sendTo(MessageHelper.asServerPlayer(player), 
+	                        Component.translatable("chat.minepreggo.prenatal_checkup.message.warning", 
+	                        prenatalCheckup.minRequiredPhase.toString()));
+	                    warningShown = true;
+	                }
+	            }
+	            else if(currentOutput.isEmpty())  {
 	                container.setItem(outputSlotIndex, checkUps.get(prenatalCheckup).createOutput());
 	            }
 	        } else {
 	            container.setItem(outputSlotIndex, ItemStack.EMPTY);
+	            warningShown = false;
 	        }
 	        
-	        super.setChanged();
+	        super.setChanged();	        
 	    }	   
 	}
 	

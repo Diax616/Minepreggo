@@ -67,7 +67,7 @@ public class MinepreggoModItems {
 	public static final DeferredRegister<Item> REGISTRY = DeferredRegister.create(ForgeRegistries.ITEMS, MinepreggoMod.MODID);
 	
 	public static final RegistryObject<Item> MONSTER_QUADRUPED_CREEPER_GIRL_P0_SPAWN_EGG = REGISTRY.register("monster_quadruped_creeper_girl_p0_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.MONSTER_QUADRUPED_CREEPER_GIRL_P0, -16724839, -16738048, new Item.Properties()));
-	public static final RegistryObject<Item> MONSTER_ENDER_GIRL_SPAWN_EGG = REGISTRY.register("monster_ender_girl_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.MONSTER_ENDER_GIRL, -16724839, -16738048, new Item.Properties()));
+	public static final RegistryObject<Item> MONSTER_ENDER_WOMAN_SPAWN_EGG = REGISTRY.register("monster_ender_woman_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.MONSTER_ENDER_WOMAN, -16724839, -16738048, new Item.Properties()));
 	public static final RegistryObject<Item> SCIENTIFIC_ILLAGER_SPAWN_EGG = REGISTRY.register("scientific_illager_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.SCIENTIFIC_ILLAGER, -16724839, -16738048, new Item.Properties()));
 
 	

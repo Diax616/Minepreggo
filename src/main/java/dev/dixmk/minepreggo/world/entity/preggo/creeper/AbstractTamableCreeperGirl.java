@@ -20,6 +20,8 @@ import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobFace;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
+import dev.dixmk.minepreggo.world.inventory.preggo.creeper.AbstractCreeperGirlInventoryMenu;
+import dev.dixmk.minepreggo.world.inventory.preggo.creeper.AbstractCreeperGirlMainMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlMenuHelper;
 import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
 import dev.dixmk.minepreggo.world.pregnancy.Gender;
@@ -63,23 +65,23 @@ import net.minecraftforge.items.wrapper.EntityHandsInvWrapper;
 
 public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> extends AbstractCreeperGirl implements ITamablePreggoMob<FemaleEntityImpl>, IFemaleEntity {
 	
-	protected static final EntityDataAccessor<Integer> DATA_HUNGRY = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.INT);
-	protected static final EntityDataAccessor<Boolean> DATA_SAVAGE = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
-	protected static final EntityDataAccessor<Boolean> DATA_ANGRY = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
-	protected static final EntityDataAccessor<Boolean> DATA_WAITING = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
-	protected static final EntityDataAccessor<Boolean> DATA_PANIC = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
-	protected static final EntityDataAccessor<CombatMode> DATA_COMBAT_MODE = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, MinepreggoModEntityDataSerializers.COMBAT_MODE);
-	protected static final EntityDataAccessor<Boolean> DATA_BREAK_BLOCKS = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
-	protected static final EntityDataAccessor<Boolean> DATA_PICKUP_ITEMS = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Integer> DATA_HUNGRY = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.INT);
+	private static final EntityDataAccessor<Boolean> DATA_SAVAGE = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> DATA_ANGRY = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> DATA_WAITING = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<CombatMode> DATA_COMBAT_MODE = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, MinepreggoModEntityDataSerializers.COMBAT_MODE);
+	private static final EntityDataAccessor<Boolean> DATA_BREAK_BLOCKS = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> DATA_PICKUP_ITEMS = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
 	
-	protected static final EntityDataAccessor<Optional<PreggoMobFace>> DATA_FACE = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, MinepreggoModEntityDataSerializers.OPTIONAL_PREGGO_MOB_FACE);
-	protected static final EntityDataAccessor<Optional<PreggoMobBody>> DATA_BODY = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, MinepreggoModEntityDataSerializers.OPTIONAL_PREGGO_MOB_BODY);
+	private static final EntityDataAccessor<Optional<PreggoMobFace>> DATA_FACE = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, MinepreggoModEntityDataSerializers.OPTIONAL_PREGGO_MOB_FACE);
+	private static final EntityDataAccessor<Optional<PreggoMobBody>> DATA_BODY = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, MinepreggoModEntityDataSerializers.OPTIONAL_PREGGO_MOB_BODY);
 	
 	public static final int INVENTORY_SIZE = 13;
-	protected final ItemStackHandler inventory = new ItemStackHandler(INVENTORY_SIZE);
-	protected final CombinedInvWrapper combined = new CombinedInvWrapper(inventory, new EntityHandsInvWrapper(this), new EntityArmorInvWrapper(this));	
+	private final ItemStackHandler inventory = new ItemStackHandler(INVENTORY_SIZE);
+	private final CombinedInvWrapper combined = new CombinedInvWrapper(inventory, new EntityHandsInvWrapper(this), new EntityArmorInvWrapper(this));	
 	private int hungryTimer = 0;
 	private int poweredTimer = 0; 
+	private boolean panic = false;
 	protected final S preggoMobSystem;
 	
 	protected final FemaleEntityImpl defaultFemaleEntityImpl = new FemaleEntityImpl();
@@ -96,11 +98,10 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 	@Override
 	protected void defineSynchedData() {
 		super.defineSynchedData();
-		this.entityData.define(DATA_HUNGRY, 10);		
-		this.entityData.define(DATA_SAVAGE, false);
+		this.entityData.define(DATA_HUNGRY, 12);		
+		this.entityData.define(DATA_SAVAGE, true);
 		this.entityData.define(DATA_ANGRY, false);
 		this.entityData.define(DATA_WAITING, false);
-		this.entityData.define(DATA_PANIC, false);
 		this.entityData.define(DATA_BREAK_BLOCKS, false);
 		this.entityData.define(DATA_PICKUP_ITEMS, this.canPickUpLoot());
 		this.entityData.define(DATA_COMBAT_MODE, CombatMode.FIGHT_AND_EXPLODE);
@@ -117,11 +118,12 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 		compound.putBoolean("DataSavage", this.entityData.get(DATA_SAVAGE));
 		compound.putBoolean("DataWaiting", this.entityData.get(DATA_WAITING));
 		compound.putBoolean("DataAngry", this.entityData.get(DATA_ANGRY));
-		compound.putBoolean("DataPanic", this.entityData.get(DATA_PANIC));
 		compound.putBoolean("DataBreakBlocks", this.entityData.get(DATA_BREAK_BLOCKS));
 		compound.putBoolean("DataPickUpItems", this.entityData.get(DATA_PICKUP_ITEMS));
 		compound.putInt("DataPoweredTimer", this.poweredTimer);
 		compound.putString(CombatMode.NBT_KEY, this.entityData.get(DATA_COMBAT_MODE).name());	
+		
+		compound.putBoolean("DataPanic", this.panic);
 		final var face = getFaceState();
 		if (face != null) {
 			compound.putString(PreggoMobFace.NBT_KEY, face.name());
@@ -144,11 +146,12 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 		this.entityData.set(DATA_SAVAGE, compound.getBoolean("DataSavage"));		
 		this.entityData.set(DATA_WAITING, compound.getBoolean("DataWaiting"));		
 		this.entityData.set(DATA_ANGRY, compound.getBoolean("DataAngry"));	
-		this.entityData.set(DATA_PANIC, compound.getBoolean("DataPanic"));
 		this.entityData.set(DATA_BREAK_BLOCKS, compound.getBoolean("DataBreakBlocks"));	
 		this.entityData.set(DATA_PICKUP_ITEMS, compound.getBoolean("DataPickUpItems"));	
 		this.poweredTimer = compound.getInt("DataPoweredTimer");
 		this.entityData.set(DATA_COMBAT_MODE, CombatMode.valueOf(compound.getString(CombatMode.NBT_KEY)));	
+		
+		this.panic = compound.getBoolean("DataPanic");
 		if (compound.contains(PreggoMobFace.NBT_KEY, Tag.TAG_STRING)) {
 			setFaceState(PreggoMobFace.valueOf(compound.getString(PreggoMobFace.NBT_KEY)));
 		}
@@ -242,15 +245,23 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 		boolean result = super.hurt(damagesource, amount);	
 		if (result && !this.level().isClientSide) {
 			PreggoMobHelper.tryToDamageArmor(this, damagesource);			
-			if (this.isWaiting() 
-					&& !this.isPanic()
+			if (canBePanicking()
 					&& damagesource.is(DamageTypes.GENERIC)
 					&& !this.isOwnedBy(this.getLastHurtByMob())) {			
 					this.setTarget(this.getLastHurtByMob());							
 					this.setPanic(true);
-			}										
+			}	
+			
+			if (this.getOwner() instanceof ServerPlayer serverPlayer
+					&& (serverPlayer.containerMenu instanceof AbstractCreeperGirlMainMenu<?> || serverPlayer.containerMenu instanceof AbstractCreeperGirlInventoryMenu<?>)) {
+				serverPlayer.closeContainer();
+			}			
 		}		
 		return result;
+	}
+	
+	public boolean canBePanicking() {
+		return this.isWaiting() && !this.isPanic();
 	}
 	
 	@Override
@@ -263,6 +274,13 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 	}
 	
 	@Override
+	protected void afterTaming() {
+		if (!this.level().isClientSide) {
+			this.setSavage(false);
+		}
+	}
+	
+	@Override
 	public InteractionResult mobInteract(Player sourceentity, InteractionHand hand) {				
 		var retval = super.mobInteract(sourceentity, hand);		
 		if (retval == InteractionResult.SUCCESS || retval == InteractionResult.CONSUME) {
@@ -270,7 +288,8 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 		}		
 		if (preggoMobSystem.canOwnerAccessGUI(sourceentity)) {			
 			if (!this.level().isClientSide && sourceentity instanceof ServerPlayer serverPlayer) {
-				CreeperGirlMenuHelper.showMainMenu(serverPlayer, this);
+				CreeperGirlMenuHelper.showMainMenu(serverPlayer, this);			
+				if (this.isPanic()) setPanic(false);
 			}	
 			return InteractionResult.sidedSuccess(this.level().isClientSide);
 		}
@@ -417,12 +436,12 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 	
 	@Override
 	public boolean isPanic() {
-		return this.entityData.get(DATA_PANIC);
+		return this.panic;
 	}
 
 	@Override
 	public void setPanic(boolean panic) {
-	    this.entityData.set(DATA_PANIC, panic);
+	    this.panic = panic;
 	}
 	
 	@Override

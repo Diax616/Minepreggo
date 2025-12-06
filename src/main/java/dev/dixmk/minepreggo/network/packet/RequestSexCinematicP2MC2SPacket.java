@@ -1,23 +1,19 @@
 package dev.dixmk.minepreggo.network.packet;
 
-import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.apache.commons.lang3.tuple.ImmutableTriple;
-
-import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.client.particle.ParticleHelper;
-import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.server.ServerCinematicManager;
-import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobFace;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.Species;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamableZombieGirl;
 import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
-import dev.dixmk.minepreggo.world.pregnancy.IBreedable;
+import dev.dixmk.minepreggo.world.pregnancy.IFemaleEntity;
+import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -46,62 +42,47 @@ public record RequestSexCinematicP2MC2SPacket(int mobId) {
                 var source = context.getSender();
                 var level = source.level();
                 		
-                if (level.getEntity(message.mobId) instanceof PreggoMob preggoMob    
-                		&& preggoMob instanceof ITamablePreggoMob<?> tamedPreggoMob) {
-                		  
-                		if (!PreggoMobHelper.canOwnerActivateSexEvent(source, preggoMob)) {
-                			return;
-                		}
- 		
-                		ServerCinematicManager.getInstance().start(
-                				source,
-                				preggoMob,
-                				() -> {
-                					ParticleHelper.spawnRandomlyFromServer(preggoMob, ParticleTypes.HEART);
-                					tamedPreggoMob.setFaceState(PreggoMobFace.BLUSHED);  
-                				}, () -> {
-                					tamedPreggoMob.cleanFaceState();
-                					impregnate(source, tamedPreggoMob);
-                				});
-                		
-                        tamedPreggoMob.setCinematicOwner(source);
-                        tamedPreggoMob.setCinematicEndTime(source.level().getGameTime() + 120 * 2 + 60);
-                  
-                        MinepreggoModPacketHandler.INSTANCE.send(
-                            PacketDistributor.PLAYER.with(() -> source),
-                            new SexCinematicControlP2MS2CPacket(true, message.mobId)
-                        );	               
-    					MinepreggoModPacketHandler.INSTANCE.send(
-    						PacketDistributor.PLAYER.with(() -> source),
-    						new RenderSexOverlayS2CPacket(120, 60));           		
+                if (level.getEntity(message.mobId) instanceof PreggoMob preggoMob) {      		  
+                	if (preggoMob instanceof AbstractTamableCreeperGirl<?> creeperGirl) {
+                		init(source, creeperGirl);
+                	}
+                	else if (preggoMob instanceof AbstractTamableZombieGirl<?> zombieGirl) {
+                		init(source, zombieGirl);
+                	}
                 } 
             }			
 		});
 		context.setPacketHandled(true);
     }
     
-    private static void impregnate(ServerPlayer player, ITamablePreggoMob<?> tamablePreggoMob) {
-    	player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> {	
-    		// Player is male and preggomob is female
-    		cap.getMaleData().ifPresent(maleData -> {
-    			if (tamablePreggoMob.getGenderedData() instanceof FemaleEntityImpl femaleData) {
-    				final var numOfBabies = IBreedable.calculateNumOfBabiesByFertility(maleData.getFertilityRate(), femaleData.getFertilityRate());
-    				
-    				if (numOfBabies > 0) {
-    					boolean result = femaleData.tryImpregnate(numOfBabies, ImmutableTriple.of(Optional.of(player.getUUID()), Species.HUMAN, Creature.HUMANOID));    					
-    					
-    					if (!result) {
-    						MinepreggoMod.LOGGER.debug("Impregnation failed during pregnancy application phase");
-						}
-    				}
-    				else {
-						MinepreggoMod.LOGGER.debug("Impregnation failed during pregnancy attempt phase, player fertility rate: {}, preggo mob fertility rate: {}", maleData.getFertilityRate(), femaleData.getFertilityRate());
-    				}
-    			}
-    		}); 		
-    				
-    		// Player is female and preggomob is male
-    	});
+    private static<E extends PreggoMob & ITamablePreggoMob<FemaleEntityImpl> & IFemaleEntity> void init(ServerPlayer source, E preggoMob) {   	
+		if (!PreggoMobHelper.canOwnerActivateSexEvent(source, preggoMob)) {
+			return;
+		}
+
+		ServerCinematicManager.getInstance().start(
+				source,
+				preggoMob,
+				() -> {
+					ParticleHelper.spawnRandomlyFromServer(preggoMob, ParticleTypes.HEART);
+					preggoMob.setFaceState(PreggoMobFace.BLUSHED);  
+				}, () -> {
+					preggoMob.cleanFaceState();
+					if (!(preggoMob instanceof IPregnancySystemHandler)) {
+						PreggoMobHelper.initPregnancyBySex(preggoMob, source);
+					}
+				});
+		
+		preggoMob.setCinematicOwner(source);
+		preggoMob.setCinematicEndTime(source.level().getGameTime() + 120 * 2 + 60);
+  
+        MinepreggoModPacketHandler.INSTANCE.send(
+            PacketDistributor.PLAYER.with(() -> source),
+            new SexCinematicControlP2MS2CPacket(true, preggoMob.getId())
+        );	               
+		MinepreggoModPacketHandler.INSTANCE.send(
+			PacketDistributor.PLAYER.with(() -> source),
+			new RenderSexOverlayS2CPacket(120, 60));  
     }
     
 	@SubscribeEvent

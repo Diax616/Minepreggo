@@ -134,8 +134,6 @@ public class ScreenHelper {
 	public static<E extends PreggoMob & ITamablePreggoMob<FemaleEntityImpl> & IFemaleEntity> void renderDefaultPreggoLabelMainGUI(GuiGraphics guiGraphics, Font font, E p0) {	
 		guiGraphics.drawString(font, p0.getSimpleName(), 90, 4, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_state"), 75, 21, -12829636, false);
-		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_phase"), 75, 34, -12829636, false);
-		guiGraphics.drawString(font, "P0", 107, 34, -12829636, false);
 		if (p0.isPregnant()) {
 			guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_maybe_pregnant"), 104, 21, -12829636, false);
 		} else {

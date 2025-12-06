@@ -1,9 +1,9 @@
 package dev.dixmk.minepreggo.client.renderer.preggo.ender;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.client.model.entity.preggo.ender.AbstractEnderGirlModel;
-import dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.ender.EnderGirlEyesLayer;
-import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractEnderGirl;
+import dev.dixmk.minepreggo.client.model.entity.preggo.ender.AbstractEnderWomanModel;
+import dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.ender.EnderWomanEyesLayer;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractEnderWoman;
 import dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.ender.CarriedBlockLayer;
 
 import net.minecraft.client.renderer.RenderType;
@@ -17,22 +17,22 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 
 @OnlyIn(Dist.CLIENT)
-public abstract class AbstractEnderGirlRenderer
-	<E extends AbstractEnderGirl, M extends AbstractEnderGirlModel<E>> extends HumanoidMobRenderer<E, M> {
+public abstract class AbstractEnderWomanRenderer
+	<E extends AbstractEnderWoman, M extends AbstractEnderWomanModel<E>> extends HumanoidMobRenderer<E, M> {
 	
-	protected static final ResourceLocation ENDER_GIRL_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/ender/ender_girl.png");
+	protected static final ResourceLocation ENDER_GIRL_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/ender/ender_woman.png");
 	private final RandomSource random = RandomSource.create();
 	
-	protected AbstractEnderGirlRenderer(EntityRendererProvider.Context context, M main, RenderType enderEyes) {
+	protected AbstractEnderWomanRenderer(EntityRendererProvider.Context context, M main, RenderType enderEyes) {
 		super(context, main, 0.5F);
 		this.addLayer(new CarriedBlockLayer<>(this, context.getBlockRenderDispatcher()));
-		this.addLayer(new EnderGirlEyesLayer<>(this, enderEyes));
+		this.addLayer(new EnderWomanEyesLayer<>(this, enderEyes));
 	}
 	
-	protected AbstractEnderGirlRenderer(EntityRendererProvider.Context context, M main) {
+	protected AbstractEnderWomanRenderer(EntityRendererProvider.Context context, M main) {
 		super(context, main, 0.5F);
 		this.addLayer(new CarriedBlockLayer<>(this, context.getBlockRenderDispatcher()));
-		this.addLayer(new EnderGirlEyesLayer<>(this));
+		this.addLayer(new EnderWomanEyesLayer<>(this));
 	}
 
 	@Override

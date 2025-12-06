@@ -17,7 +17,7 @@ import java.util.Optional;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SelectPregnantEntityForMedicalCheckUpMenu extends AbstractContainerMenu {
+public class SelectPregnantEntityForPrenatalCheckUpMenu extends AbstractContainerMenu {
 	public final Level level;
 	public final Player player;
 	protected final int x;
@@ -26,7 +26,7 @@ public class SelectPregnantEntityForMedicalCheckUpMenu extends AbstractContainer
 	private final Optional<ScientificIllager> target;
 	private List<LivingEntity> pregnantLivingEntities = new ArrayList<>();
 	
-	public SelectPregnantEntityForMedicalCheckUpMenu(int id, Inventory inv, FriendlyByteBuf extraData) {
+	public SelectPregnantEntityForPrenatalCheckUpMenu(int id, Inventory inv, FriendlyByteBuf extraData) {
 		super(MinepreggoModMenus.SELECT_PREGNANT_ENTITY_FOR_PRENATAL_CHECKUP_MENU.get(), id);	
 		this.player = inv.player;
 		this.level = inv.player.level();

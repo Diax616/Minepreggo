@@ -14,6 +14,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.server.level.ServerLevel;
 
@@ -68,6 +69,14 @@ public class IllQuadrupedCreeperGirl extends AbstractMonsterQuadrupedCreeperGirl
 	    if (other instanceof Ill || other instanceof AbstractIllager) 
 	        return true;    
 	    return super.isAlliedTo(other);
+	}
+	
+	@Override
+	public void die(DamageSource source) {
+		super.die(source);
+		if (this.getOwner() instanceof ScientificIllager owner && owner.isAlive() && !this.level().isClientSide) {
+			owner.removePet(this.getUUID());
+		}		
 	}
 	
 	@Override

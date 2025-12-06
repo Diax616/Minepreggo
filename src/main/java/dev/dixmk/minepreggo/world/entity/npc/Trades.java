@@ -30,7 +30,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
-import net.minecraft.world.item.enchantment.Enchantment.Rarity;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -237,54 +237,47 @@ public class Trades {
 
 	
 	static class EnchantBookForBaby implements VillagerTrades.ItemListing {
-		private Item babyItem;
-		private Enchantment.Rarity rarity;
-		private float enchantmentMaxLevelProbability;
+		private Species species;
 		
-		public EnchantBookForBaby(Species species) {		    	
-			switch (species) {	
-			case CREEPER: {
-				babyItem = MinepreggoModItems.BABY_CREEPER.get();
-				rarity = Rarity.VERY_RARE;
-				enchantmentMaxLevelProbability = 0.8F;
-				break;
-			}
-			case ENDER: {
-				babyItem = MinepreggoModItems.BABY_HUMANOID_CREEPER.get();
-				rarity = Rarity.VERY_RARE;
-				enchantmentMaxLevelProbability = 0.95F;
-				break;
-			}
-			case ZOMBIE: {
-				babyItem = MinepreggoModItems.BABY_ZOMBIE.get();
-				rarity = Rarity.RARE;
-				enchantmentMaxLevelProbability = 0.6F;
-				break;
-			}
-			default:
-				babyItem = MinepreggoModItems.BABY_HUMAN.get();
-				rarity = Rarity.RARE;
-				enchantmentMaxLevelProbability = 0.7F;
-			}    	
+		public EnchantBookForBaby(Species species) {		
+			this.species = species;   		
 		}
 
-
-		public MerchantOffer getOffer(Entity p_219688_, RandomSource p_219689_) {
-			List<Enchantment> list = ForgeRegistries.ENCHANTMENTS.getValues().stream()
-					.filter(e -> e.isTradeable() && !e.isCurse() && e.getRarity() == rarity)
-					.toList();
+		public MerchantOffer getOffer(Entity p_219688_, RandomSource random) {
+			Enchantment enchantment;
+			Item babyItem;
+			int level;
 			
-			Enchantment enchantment = list.get(p_219689_.nextInt(list.size()));
-			int i;	
-			
-			if (p_219689_.nextFloat() < enchantmentMaxLevelProbability) {
-				i = enchantment.getMaxLevel();
+			if (species == Species.ENDER) {
+				enchantment = Enchantments.MENDING;
+				level = Enchantments.MENDING.getMaxLevel();
+				babyItem = random.nextBoolean() ? MinepreggoModItems.BABY_ENDER.get() : MinepreggoModItems.BABY_HUMANOID_ENDER.get();
 			}
-			else {
-				i = p_219689_.nextInt(enchantment.getMinLevel(), enchantment.getMaxLevel() + 1);
+			else {			
+				Enchantment.Rarity rarity;
+				
+				if (species == Species.CREEPER) {
+					rarity = Enchantment.Rarity.VERY_RARE;
+					babyItem = random.nextBoolean() ? MinepreggoModItems.BABY_CREEPER.get() : MinepreggoModItems.BABY_HUMANOID_CREEPER.get();
+				}
+				else if (species == Species.HUMAN) {
+					rarity = Enchantment.Rarity.UNCOMMON;
+					babyItem = MinepreggoModItems.BABY_HUMAN.get();
+				}
+				else {
+					rarity = Enchantment.Rarity.COMMON;
+					babyItem = MinepreggoModItems.BABY_ZOMBIE.get();
+				}
+				
+				List<Enchantment> list = ForgeRegistries.ENCHANTMENTS.getValues().stream()
+						.filter(e -> e.isTradeable() && !e.isCurse() && e.getRarity() == rarity)
+						.toList();
+				
+				enchantment = list.get(random.nextInt(list.size()));
+				level = enchantment.getMaxLevel();
 			}
-	 
-			ItemStack itemstack = EnchantedBookItem.createForEnchantment(new EnchantmentInstance(enchantment, i));	       
+				 
+			ItemStack itemstack = EnchantedBookItem.createForEnchantment(new EnchantmentInstance(enchantment, level));	       
 			return new MerchantOffer(new ItemStack(babyItem), new ItemStack(Items.BOOK), itemstack, 12, 0, 0.2F);
 		}
 	}

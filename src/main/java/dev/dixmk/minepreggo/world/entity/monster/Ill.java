@@ -30,12 +30,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameRules;
 
 public interface Ill {
-
+		
 	void tameByIllager(@NonNull ScientificIllager illagerScientific);
 	
 	void removeIllagerOwner();
-		
-	
+
 	static <E extends PreggoMob & Ill> void removeBehaviourGoals(@NonNull E ill) {
 		var goals =	ill.goalSelector.getAvailableGoals().stream()
 			.filter(wgoal -> {
@@ -47,7 +46,7 @@ public interface Ill {
 				
 		goals.forEach(ill.goalSelector::removeGoal);
 		
-		ill.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(ill, 1.0D, 0.0F));
+		ill.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(ill, 1.1D, 0.0F));
 		ill.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(ill, Player.class, false, false));
 	}
 	

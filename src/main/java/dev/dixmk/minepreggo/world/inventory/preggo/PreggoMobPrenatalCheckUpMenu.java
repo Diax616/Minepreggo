@@ -86,7 +86,15 @@ public class PreggoMobPrenatalCheckUpMenu extends AbstractPrenatalCheckUpMenu<Pr
 	}
 	
 	@Override
-	protected @NonNull PrenatalCheckups createTradesForThisSession() {
+	public void removed(Player playerIn) {
+		super.removed(playerIn);
+		if (!level.isClientSide) {
+			this.target.ifPresent(t -> t.setTradingPlayer(null));
+		}
+	}
+	
+	@Override
+	protected PrenatalCheckups createTradesForThisSession() {
 		if (source.isEmpty() || pregnancySystem.isEmpty() || target.isEmpty()) {
 			MinepreggoMod.LOGGER.error("Source or PregnancySystem was empty when creating trades");
 			return null;

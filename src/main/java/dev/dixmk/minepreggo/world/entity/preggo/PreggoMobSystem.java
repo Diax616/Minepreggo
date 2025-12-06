@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 
 import org.jetbrains.annotations.Nullable;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.client.particle.ParticleHelper;
 import dev.dixmk.minepreggo.network.packet.SexCinematicControlP2MS2CPacket;
@@ -151,8 +150,6 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> {
 			return InteractionResult.PASS;
 		}		
 		
-	    MinepreggoMod.LOGGER.info("POTION:");
-		
 		var level = preggoMob.level();		
 		Result result = evaluateFullness(level, source);
 		
@@ -162,9 +159,7 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> {
 		}
 					
 		result = evaluatePotions(level, source);
-	
-	    MinepreggoMod.LOGGER.info("POTION: {}", result);
-		
+			
 		if (result != null) {
 			return InteractionResult.sidedSuccess(level.isClientSide);
 		}

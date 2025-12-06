@@ -1,15 +1,15 @@
 package dev.dixmk.minepreggo.event.entity.living;
 
-import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractEnderGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractEnderWoman;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.Cancelable;
 
 @Cancelable
-public class EnderGirlAngerEvent extends LivingEvent {
+public class EnderWomanAngerEvent extends LivingEvent {
     private final Player player;
 
-    public EnderGirlAngerEvent(AbstractEnderGirl abstractEnderGirl, Player player) {
+    public EnderWomanAngerEvent(AbstractEnderWoman abstractEnderGirl, Player player) {
         super(abstractEnderGirl);
         this.player = player;
     }
@@ -23,8 +23,8 @@ public class EnderGirlAngerEvent extends LivingEvent {
     }
 
     @Override
-    public AbstractEnderGirl getEntity()
+    public AbstractEnderWoman getEntity()
     {
-        return (AbstractEnderGirl) super.getEntity();
+        return (AbstractEnderWoman) super.getEntity();
     }
 }

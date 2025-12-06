@@ -393,7 +393,7 @@
 	
 	"chat.minepreggo.scientific_illager.no_pregnant_entities": "There are no pregnant entities to checkup",
 
-	"chat.minepreggo.prenantal_checkup.message.warning": "It is necessary to be at least in the %s stage of pregnancy to perform this prenatal check-up",
+	"chat.minepreggo.prenatal_checkup.message.warning": "It is necessary to be at least in the %s stage of pregnancy to perform this prenatal check-up",
 
 	"chat.minepreggo.sex.message.mobs": "There are nerby hostil mobs",
 	"chat.minepreggo.sex.message.sexual_appetite": "%s's doesn't have enough sexual appetite to have fun with you",

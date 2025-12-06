@@ -16,13 +16,14 @@ import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.server.level.ServerLevel;
 
 import javax.annotation.Nullable;
 
 public class IllZombieGirl extends AbstractMonsterZombieGirl implements Ill {
-
+	
 	public IllZombieGirl(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.ILL_ZOMBIE_GIRL.get(), world);
 	}
@@ -66,6 +67,14 @@ public class IllZombieGirl extends AbstractMonsterZombieGirl implements Ill {
 	}
 	
 	@Override
+	public void die(DamageSource source) {
+		super.die(source);
+		if (this.getOwner() instanceof ScientificIllager owner && owner.isAlive() && !this.level().isClientSide) {
+			owner.removePet(this.getUUID());
+		}		
+	}
+	
+	@Override
 	public boolean isAlliedTo(Entity other) {
 	    if (other instanceof Ill || other instanceof AbstractIllager) 
 	        return true;    
@@ -75,7 +84,7 @@ public class IllZombieGirl extends AbstractMonsterZombieGirl implements Ill {
 	@Override
 	protected void registerGoals() {
 		Ill.addBehaviourGoals(this);
-		this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.0, false));	
+		this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.2, false));	
 		this.goalSelector.addGoal(2, new RestrictSunGoal(this));		
         this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 8.0F));
 		this.goalSelector.addGoal(10, new RandomLookAroundGoal(this));
@@ -85,7 +94,4 @@ public class IllZombieGirl extends AbstractMonsterZombieGirl implements Ill {
 	public static AttributeSupplier.Builder createAttributes() {
 		return AbstractMonsterZombieGirl.getBasicAttributes(0.235);
 	}
-
-
-	
 }
