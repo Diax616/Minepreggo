@@ -3,7 +3,7 @@ package dev.dixmk.minepreggo.client.gui.preggo.creeper;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import dev.dixmk.minepreggo.client.gui.ScreenHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirlP7;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableHumanoidCreeperGirlP7;
 import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlP7MainMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -12,7 +12,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class CreeperGirlP7MainScreen extends AbstractCreeperGirlMainScreen<TamableCreeperGirlP7, CreeperGirlP7MainMenu> {
+public class CreeperGirlP7MainScreen extends AbstractCreeperGirlMainScreen<TamableHumanoidCreeperGirlP7, CreeperGirlP7MainMenu> {
 
 	public CreeperGirlP7MainScreen(CreeperGirlP7MainMenu container, Inventory inventory, Component text) {
 		super(container, inventory, text);

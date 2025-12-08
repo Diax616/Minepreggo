@@ -8,12 +8,12 @@ import net.minecraft.network.chat.Component;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import dev.dixmk.minepreggo.client.gui.ScreenHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirlP3;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableHumanoidCreeperGirlP3;
 import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlP3MainMenu;
 import net.minecraft.client.gui.GuiGraphics;
 
 @OnlyIn(Dist.CLIENT)
-public class CreeperGirlP3MainScreen extends AbstractCreeperGirlMainScreen<TamableCreeperGirlP3, CreeperGirlP3MainMenu> {
+public class CreeperGirlP3MainScreen extends AbstractCreeperGirlMainScreen<TamableHumanoidCreeperGirlP3, CreeperGirlP3MainMenu> {
 
 	public CreeperGirlP3MainScreen(CreeperGirlP3MainMenu container, Inventory inventory, Component text) {
 		super(container, inventory, text);

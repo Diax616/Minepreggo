@@ -4,9 +4,8 @@ import dev.dixmk.minepreggo.world.pregnancy.MaleEntityImpl;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 
-public class MalePlayerImpl extends MaleEntityImpl {
+public class MalePlayerImpl extends MaleEntityImpl implements IMalePlayer {
 
-	private static final int MAX_FAP = 20;
 	private int fapTimer = 0;
 	private int fap = 0;
 	
@@ -23,10 +22,20 @@ public class MalePlayerImpl extends MaleEntityImpl {
 		++this.fapTimer;	
 	}
 
+	@Override
+	public void resetFapTimer() {
+		this.fapTimer = 0;	
+	}
+	
 	public boolean canFap() {
 		return this.fap >= 7;
 	}
 
+	@Override
+	public int getFap() {
+		return this.fap;
+	}
+	
 	public void setFap(int amount) {
 		this.fap = Mth.clamp(amount, 0, MAX_FAP);
 	}
@@ -35,7 +44,7 @@ public class MalePlayerImpl extends MaleEntityImpl {
 		this.fap = Math.max(this.fap + Math.max(0, amount), MAX_FAP);
 	}
 
-	public void reduceFap(int amount) {
+	public void decrementFap(int amount) {
 		this.fap = Math.min(this.fap - Math.max(0, amount), 0);		
 	}
 

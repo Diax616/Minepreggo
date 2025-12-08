@@ -2,7 +2,7 @@ package dev.dixmk.minepreggo.client.renderer.entity.layer.player;
 
 import java.util.function.Consumer;
 
-import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -61,7 +61,7 @@ public class PredefinedPregnantBodyLayer extends AbstractPregnantBodyLayer {
         this.pregnantBodyP8Model = new PredefinedPregnantBodyP8Model(modelSet.bakeLayer(PredefinedPregnantBodyP8Model.LAYER_LOCATION));
 	}
 
-    @Override
+	@Override
     public void render(PoseStack poseStack, MultiBufferSource buffer, int packedLight, 
     		AbstractClientPlayer player, float limbSwing, float limbSwingAmount, float partialTick, 
                       float ageInTicks, float netHeadYaw, float headPitch) {
@@ -73,27 +73,21 @@ public class PredefinedPregnantBodyLayer extends AbstractPregnantBodyLayer {
     	
     		cap.getFemaleData().ifPresent(femaleData -> {	
     		
-    	        final var pregnancyPhase = femaleData.getPregnancySystem().getCurrentPregnancyStage();	        
-    	        final Pair<ResourceLocation, ResourceLocation> textures;
-    	         	          
-    			if (pregnancyPhase == null) {
-    				textures = PlayerHelper.getPredefinedPlayerTextures("player1");
-    			}
-    			else {
+    	        final ImmutablePair<ResourceLocation, ResourceLocation> textures;
+    	        PlayerModel<AbstractClientPlayer> playerModel = this.getParentModel(); 
+    	        
+    			if (femaleData.isPregnant()) {
+        	        final var pregnancyPhase = femaleData.getPregnancySystem().getCurrentPregnancyStage();	        
     				textures = PlayerHelper.getPredefinedPlayerTextures("player1", pregnancyPhase);
-    			}
-
-    	        if (textures == null) {
-    	        	MinepreggoMod.LOGGER.error("{} in pregnancy phase {} does not have a valid texture", player.getDisplayName().getString(), pregnancyPhase);
-    	        	return;
-    	        }
-    	          
-    	        final var bellySkin = textures.getRight();
-    	        final VertexConsumer bellyAndBoobsVertexConsumer = buffer.getBuffer(RenderType.entityCutoutNoCull(bellySkin));           	          	        
-    	        PlayerModel<AbstractClientPlayer> playerModel = this.getParentModel();   
- 
-
-    	        if (pregnancyPhase != null) {
+    			
+        	        if (textures == null) {
+        	        	MinepreggoMod.LOGGER.error("{} in pregnancy phase {} does not have a valid texture", player.getDisplayName().getString(), pregnancyPhase);
+        	        	return;
+        	        }
+    				
+        	        final var bellySkin = textures.getRight();
+        	        final VertexConsumer bellyAndBoobsVertexConsumer = buffer.getBuffer(RenderType.entityCutoutNoCull(bellySkin));           	          	        
+     
         	        Consumer<AbstractPregnantBodyModel> renderBellyAndBoobs = model -> {
         	        	model.setupAnim(player, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
         	        	model.body.copyFrom(playerModel.body);
@@ -148,13 +142,23 @@ public class PredefinedPregnantBodyLayer extends AbstractPregnantBodyLayer {
     				default:
     					MinepreggoMod.LOGGER.error("Unsupported pregnancy phase {} for {}", pregnancyPhase, player.getDisplayName().getString());
     					return;
-        	        }  
-    	        }
-    	        else {
+        	        } 	
+    			}
+    			else {
+    				textures = PlayerHelper.getPredefinedPlayerTextures("player1");
+        	        final VertexConsumer boobsVertexConsumer = buffer.getBuffer(RenderType.entityCutoutNoCull(textures.getRight()));           	          	        
+    				
+        	        /*
+        	        if (textures == null) {
+        	        	MinepreggoMod.LOGGER.error("{} does not have a valid texture", player.getDisplayName().getString());
+        	        	return;
+        	        }
+        	        */
+        	        
     	        	boobsModel.setupAnim(player, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
     	        	boobsModel.body.copyFrom(playerModel.body);
-    	        	boobsModel.renderToBuffer(poseStack, bellyAndBoobsVertexConsumer, packedLight, LivingEntityRenderer.getOverlayCoords(player, 0.0F), 1.0F, 1.0F, 1.0F, 1.0F);
-    	        }   
+    	        	boobsModel.renderToBuffer(poseStack, boobsVertexConsumer, packedLight, LivingEntityRenderer.getOverlayCoords(player, 0.0F), 1.0F, 1.0F, 1.0F, 1.0F);
+    			}
     		});	
     	}); 	
     }	

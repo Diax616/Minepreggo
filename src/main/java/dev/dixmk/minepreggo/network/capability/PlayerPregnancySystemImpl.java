@@ -387,14 +387,14 @@ public class PlayerPregnancySystemImpl implements IPlayerPregnancySystemHandler 
 	    if (nbt.contains("DataBabies", Tag.TAG_COMPOUND)) {
 	    	this.babiesInsideWomb = Womb.fromNBT(nbt.getCompound("DataBabies"));
 	    	if (this.babiesInsideWomb == null) {
-	    		throw new RuntimeException(NBT_KEY);
+	    		MinepreggoMod.LOGGER.error("Could not deserialize babies inside womb from nbt DataBabies");
 	    	}
 	    }  	
 	    
 	    if (nbt.contains("DaysByPhase", Tag.TAG_COMPOUND)) {
 	    	this.daysByPregnancyPhase = MapPregnancyPhase.fromNBT(nbt.getCompound("DaysByPhase"));
 	    	if (this.daysByPregnancyPhase == null) {
-	    		throw new RuntimeException(NBT_KEY);
+	    		MinepreggoMod.LOGGER.error("Could not deserialize days by pregnancy phase from nbt DaysByPhase");
 	    	}
 	    }  
 	}

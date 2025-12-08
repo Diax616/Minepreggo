@@ -109,12 +109,12 @@ public class PlayerHelper {
 				femaleData.getPregnancySystem().setLastPregnancyStage(lastPregnancyStage);
 				femaleData.getPregnancySystem().setDaysToGiveBirth(totalDays);			
 				femaleData.getPregnancySystem().setWomb(womb);	
-				femaleData.getPregnancySystem().setCurrentPregnancyStage(PregnancyPhase.P0);	
+				femaleData.getPregnancySystem().setCurrentPregnancyStage(PregnancyPhase.P4);	
 				
 				femaleData.sync(player);
 				femaleData.getPregnancySystem().sync(player);	
 			
-				player.addEffect(new MobEffectInstance(MinepreggoModMobEffects.PREGNANCY_P0.get(), -1, 0, false, false, true));				
+				player.addEffect(new MobEffectInstance(MinepreggoModMobEffects.PREGNANCY_P4.get(), -1, 0, false, false, true));				
 					
 				MinepreggoMod.LOGGER.debug("Player {} has become pregnant with {} babies, total days to give birth: {}, pregnancy phases days: {}, womb: {}", 
 						player.getName().getString(), 
@@ -140,6 +140,9 @@ public class PlayerHelper {
 	
 		if (femaleData.isPresent() && !femaleData.get().isPregnant()) {			
 			return femaleData.get().tryImpregnate(numOfBabies, father);
+		}
+		else {
+			MinepreggoMod.LOGGER.error("Player {} is already pregnant or has no FEMALE_DATA={} capability.", player.getName().getString(), femaleData.isEmpty());
 		}
 		
 		return false;

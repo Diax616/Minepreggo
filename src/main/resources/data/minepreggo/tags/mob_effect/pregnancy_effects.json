@@ -10,18 +10,25 @@
 	"minepreggo:pregnancy_p6",
 	"minepreggo:pregnancy_p7",
 	"minepreggo:pregnancy_p8",
-	"minepreggo:belly_rubs",
-	"minepreggo:birth",
-	"minepreggo:contraction",
+	
 	"minepreggo:craving",
-	"minepreggo:depression",
-	"minepreggo:fertility",
-	"minepreggo:fetal_movement",
-	"minepreggo:horny",
+	"minepreggo:belly_rubs",
 	"minepreggo:lactation",
-	"minepreggo:maternity",
-	"minepreggo:miscarriage",
+	"minepreggo:horny",
+	
 	"minepreggo:morning_sickness",
-	"minepreggo:prebirth"
+	"minepreggo:miscarriage",
+	"minepreggo:birth",
+	"minepreggo:prebirth",
+	"minepreggo:contraction",
+	"minepreggo:fetal_movement",
+	
+	"minepreggo:full_of_zombies",
+	"minepreggo:full_of_creepers",
+	"minepreggo:full_of_enders",
+	
+	"minepreggo:maternity",
+	"minepreggo:depression",
+	"minepreggo:fertility"
   ]
 }

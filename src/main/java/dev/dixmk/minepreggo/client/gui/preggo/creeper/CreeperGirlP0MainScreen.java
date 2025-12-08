@@ -9,11 +9,11 @@ import net.minecraft.client.gui.GuiGraphics;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import dev.dixmk.minepreggo.client.gui.ScreenHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirlP0;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableHumanoidCreeperGirlP0;
 import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlP0MainMenu;
 
 @OnlyIn(Dist.CLIENT)
-public class CreeperGirlP0MainScreen extends AbstractCreeperGirlMainScreen<TamableCreeperGirlP0, CreeperGirlP0MainMenu> {
+public class CreeperGirlP0MainScreen extends AbstractCreeperGirlMainScreen<TamableHumanoidCreeperGirlP0, CreeperGirlP0MainMenu> {
 
 	public CreeperGirlP0MainScreen(CreeperGirlP0MainMenu container, Inventory inventory, Component text) {
 		super(container, inventory, text);

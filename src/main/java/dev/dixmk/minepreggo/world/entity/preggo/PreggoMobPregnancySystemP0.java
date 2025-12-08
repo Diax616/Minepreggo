@@ -4,6 +4,7 @@ import org.jetbrains.annotations.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
+import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem.Result;
 import dev.dixmk.minepreggo.world.pregnancy.AbstractPregnancySystem;
 import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
@@ -61,6 +62,10 @@ public abstract class PreggoMobPregnancySystemP0
 
 	
 	protected void evaluatePregnancyTimer() {
+		if (this.pregnantEntity.hasEffect(MinepreggoModMobEffects.ETERNAL_PREGNANCY.get())) {
+			return;
+		}
+		
         if (pregnantEntity.getPregnancyTimer() >= MinepreggoModConfig.getTotalTicksByPregnancyDay()) {
         	pregnantEntity.resetPregnancyTimer();
         	pregnantEntity.incrementDaysPassed();

@@ -3,6 +3,7 @@ package dev.dixmk.minepreggo.world.entity.player;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
+import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.network.capability.FemalePlayerImpl;
 import dev.dixmk.minepreggo.network.capability.PlayerDataImpl;
 import dev.dixmk.minepreggo.network.capability.PlayerPregnancyEffectsImpl;
@@ -50,8 +51,10 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 		}
 		
 		if (!isValid) {
-			MinepreggoMod.LOGGER.warn("PlayerPregnancySystemP0 is not valid for player: {}. Aborting onServerTick.",
-					pregnantEntity.getGameProfile().getName());
+			MinepreggoMod.LOGGER.warn("PlayerPregnancySystemP0 is not valid for player: {}. Aborting onServerTick. playerData: {}, femaleData: {}, pregnancySystem: {}, pregnancyEffects: {}",
+					pregnantEntity.getGameProfile().getName(), this.playerData != null, this.femaleData != null, this.pregnancySystem != null, this.pregnancyEffects != null);
+			
+			
 			return;
 		}	
 
@@ -124,6 +127,10 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 
 	@Override
 	protected void evaluatePregnancyTimer() {
+		if (this.pregnantEntity.hasEffect(MinepreggoModMobEffects.ETERNAL_PREGNANCY.get())) {
+			return;
+		}
+		
 		if (pregnancySystem.getPregnancyTimer() > MinepreggoModConfig.getTotalTicksByPregnancyDay()) {
 			pregnancySystem.resetPregnancyTimer();
 			pregnancySystem.incrementDaysPassed();

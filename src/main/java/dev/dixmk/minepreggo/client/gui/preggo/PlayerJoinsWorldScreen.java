@@ -27,14 +27,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class PlayerJoinsWorldScreen extends AbstractContainerScreen<PlayerJoinsWorldMenu> {
 	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/player_main_gui.png");
-
 	protected final Level level;
 	protected final Player player;
-	
 	private final List<ToggleableCheckbox> gender = new ArrayList<>();	
 	protected ToggleableCheckbox female;
 	protected ToggleableCheckbox male;
-
+	private boolean selected = false;
+	
 	public PlayerJoinsWorldScreen(PlayerJoinsWorldMenu container, Inventory inv, Component text) {
 		super(container, inv, text);
 		this.level = container.level;
@@ -101,11 +100,13 @@ public class PlayerJoinsWorldScreen extends AbstractContainerScreen<PlayerJoinsW
 			if ((female.selected())) {						
 				MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdatePlayerDataC2SPacket(player.getUUID(), Gender.FEMALE, customSkin.selected()));
 				MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdateShowPlayerMainMenuC2SPacket(player.getUUID(), false));		
+				selected = true;
 				player.closeContainer();		
 			}		
 			else if (male.selected()) {		
-				MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdatePlayerDataC2SPacket(player.getUUID(), Gender.MALE, false));
+				MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdatePlayerDataC2SPacket(player.getUUID(), Gender.MALE, true));
 				MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdateShowPlayerMainMenuC2SPacket(player.getUUID(), false));		
+				selected = true;
 				player.closeContainer();	
 			}	
 		}).bounds(this.leftPos + 67, this.topPos + 140, 35, 20).build();
@@ -117,5 +118,15 @@ public class PlayerJoinsWorldScreen extends AbstractContainerScreen<PlayerJoinsW
 		this.addRenderableWidget(male);	
 		this.addRenderableWidget(customSkin);	
 		this.addRenderableWidget(button);	
+	}
+	
+	@Override
+	public void onClose() {
+		super.onClose();		
+		if (!selected) {
+			MinepreggoMod.LOGGER.info("Player {} does not select a gender - defaulting to MALE with custom skin", player.getName().getString());
+			MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdatePlayerDataC2SPacket(player.getUUID(), Gender.MALE, true));
+			MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdateShowPlayerMainMenuC2SPacket(player.getUUID(), false));	
+		}
 	}
 }

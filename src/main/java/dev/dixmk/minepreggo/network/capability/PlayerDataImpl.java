@@ -15,6 +15,8 @@ public class PlayerDataImpl implements IPlayerData {
 	private boolean customSkin = true;
 	private boolean showMainMenu = true; 
 	private boolean cinematic = false;
+	
+	private String predefinedSkinName = null;		
 	private Gender gender = Gender.UNKNOWN;
 	
 	private LazyOptional<FemalePlayerImpl> femalePlayerData = LazyOptional.empty();
@@ -125,14 +127,14 @@ public class PlayerDataImpl implements IPlayerData {
 	public CompoundTag serializeNBT() {
 		CompoundTag nbt = new CompoundTag();
 		nbt.putBoolean("DataCustomSkin", customSkin);
-		nbt.putBoolean("DataShowMainMenu", showMainMenu);			
+		nbt.putBoolean("DataShowMainMenu", showMainMenu);	
 		nbt.putString(Gender.NBT_KEY, gender.name());	
-		
+	
 		if (isFemale()) {			
-	        this.femalePlayerData.resolve().ifPresent(data -> nbt.put("FemalePlayerImpl", data.serializeNBT()));		
+	        this.femalePlayerData.resolve().ifPresentOrElse(data -> nbt.put("FemalePlayerImpl", data.serializeNBT()), () -> MinepreggoMod.LOGGER.error("Player is female, but female data is not PRESENT"));		
 		}
 		else if (isMale()) {
-	        this.malePlayerData.resolve().ifPresent(data -> nbt.put("MalePlayerImpl", data.serializeNBT()));
+	        this.malePlayerData.resolve().ifPresentOrElse(data -> nbt.put("MalePlayerImpl", data.serializeNBT()), () -> MinepreggoMod.LOGGER.error("Player is male, but male data is not PRESENT"));
 		}		
 
 		return nbt;
@@ -140,7 +142,7 @@ public class PlayerDataImpl implements IPlayerData {
 	
 	public void deserializeNBT(CompoundTag nbt) {
 		customSkin = nbt.getBoolean("DataCustomSkin");
-		showMainMenu = nbt.getBoolean("DataShowMainMenu");
+		showMainMenu = nbt.getBoolean("DataShowMainMenu");		
 		
 	    if (nbt.contains(Gender.NBT_KEY, Tag.TAG_STRING)) {
             Gender loadedGender = Gender.valueOf(nbt.getString(Gender.NBT_KEY));
@@ -173,6 +175,7 @@ public class PlayerDataImpl implements IPlayerData {
 		showMainMenu = true; 
 		cinematic = false;
 		gender = Gender.UNKNOWN;
+		predefinedSkinName = null;
 		invalidateGenderData();
 	}
 	

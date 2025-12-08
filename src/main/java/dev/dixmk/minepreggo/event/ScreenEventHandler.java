@@ -41,7 +41,7 @@ public class ScreenEventHandler {
 		final var playerData = player.getCapability(MinepreggoCapabilities.PLAYER_DATA).resolve();
 
 		if (playerData.isEmpty()) {
-			MinepreggoMod.LOGGER.error("Failed to get player capabilities for pregnancy symptons rendering.");	
+			MinepreggoMod.LOGGER.warn("Failed to get player capabilities for pregnancy symptons rendering.");	
 			return;
 		}
 			

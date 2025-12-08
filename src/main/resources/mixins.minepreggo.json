@@ -12,6 +12,7 @@
 	 "PlayerMixin",
 	 "LivingEntityMixin",
 	 "MinecraftMixin",
-	 "MouseHandlerMixin"
+	 "MouseHandlerMixin",
+	 "MilkBucketItemMixin"
    ]
 }

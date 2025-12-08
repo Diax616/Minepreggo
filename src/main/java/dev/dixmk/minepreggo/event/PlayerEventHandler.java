@@ -6,6 +6,7 @@ import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
 import dev.dixmk.minepreggo.network.capability.FemalePlayerImpl;
+import dev.dixmk.minepreggo.network.capability.IMalePlayer;
 import dev.dixmk.minepreggo.network.capability.MalePlayerImpl;
 import dev.dixmk.minepreggo.network.capability.PlayerDataProvider;
 import dev.dixmk.minepreggo.network.capability.VillagerDataProvider;
@@ -40,6 +41,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
@@ -205,6 +207,15 @@ public class PlayerEventHandler {
 				maleData.incrementFertilityRateTimer();
 			}
 		}
+		if (maleData.getFap() < IMalePlayer.MAX_FAP) {
+			if (maleData.getFapTimer() > 6000) {
+				maleData.incrementFap(4);
+				maleData.resetFapTimer();
+			}
+			else {
+				maleData.incrementFapTimer();
+			}
+		}
 	}
 
 	private static void evalualeFemalePlayerOnTick(ServerPlayer serverPlayer, FemalePlayerImpl femaleData) {
@@ -232,7 +243,13 @@ public class PlayerEventHandler {
 		}
 	}
 	
-	
+	@SubscribeEvent
+	public static void onDimensionChange(PlayerEvent.PlayerChangedDimensionEvent event) {
+	    if (event.getFrom() == Level.END && event.getTo() == Level.OVERWORLD) {
+	        // This will run when returning from the End after defeating the dragon
+	        event.getEntity().sendSystemMessage(Component.literal("Welcome back!"));
+	    }
+	}
 	
 	// Craving gratification handling
 	@SubscribeEvent

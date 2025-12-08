@@ -1,7 +1,7 @@
 package dev.dixmk.minepreggo.client.model.entity.player;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.client.jiggle.AdvancedJigglePhysics;
+import dev.dixmk.minepreggo.client.jiggle.JigglePhysicsFactory;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -20,7 +20,7 @@ public class CustomBoobsModel extends AbstractBoobsModel {
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "custom_boobs_model"), "main");
 
 	public CustomBoobsModel(ModelPart root) {
-		super(root, new AdvancedJigglePhysics.Builder().build());
+		super(root, JigglePhysicsFactory.createLightweightBoobs(2F));
 	}
 	
 	public static LayerDefinition createBodyLayer() {

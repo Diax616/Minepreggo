@@ -13,7 +13,7 @@ public class PregnancyP0 extends AbstractPlayerPregnancy<PlayerPregnancySystemP0
             MinepreggoMod.LOGGER.info("Initialized PlayerPregnancySystemP0 for player: {}", serverPlayer.getName().getString());
         }
         else if (!pregnancySystem.isPlayerValid(serverPlayer)) {
-            MinepreggoMod.LOGGER.info("Player reference is stale, reinitializing PlayerPregnancySystemP1");
+            MinepreggoMod.LOGGER.info("Player reference is stale, reinitializing PlayerPregnancySystemP0");
             this.pregnancySystem = new PlayerPregnancySystemP0(serverPlayer);
         }
     } 

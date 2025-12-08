@@ -22,7 +22,7 @@ public class FullOfEnders extends MobEffect {
 	@Override
 	public void applyEffectTick(LivingEntity entity, int amplifier) {	
 		if (entity instanceof ServerPlayer serverPlayer) {		
-			serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> {			
+			serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 			
 				cap.getFemaleData().ifPresent(femaleData -> {
 					if (!femaleData.isPregnant()) {
 						return;
@@ -32,8 +32,8 @@ public class FullOfEnders extends MobEffect {
 					if (serverPlayer.getRandom().nextFloat() < p) {
 						randomTeleport(entity);
 					}	
-				});
-			});
+				})
+			);
 		}
 	}
 	
@@ -63,6 +63,6 @@ public class FullOfEnders extends MobEffect {
 	
 	@Override
 	public boolean isDurationEffectTick(int duration, int amplifier) {
-		return duration % 600 == 0;
+		return duration % 3600 == 0;
 	}
 }

@@ -15,7 +15,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.PacketDistributor;
 
-public class FemalePlayerImpl extends FemaleEntityImpl {
+public class FemalePlayerImpl extends FemaleEntityImpl implements IFemalePlayer {
 
 	private PlayerPregnancySystemHolder pregnancySystemHolder = new PlayerPregnancySystemHolder();
 	private PlayerPregnancyEffectsHolder pregnancyEffectsHolder = new PlayerPregnancyEffectsHolder();
@@ -28,10 +28,12 @@ public class FemalePlayerImpl extends FemaleEntityImpl {
 		return pregnancyEffectsHolder.isInitialized();
 	}
 	
+	@Override
 	public PlayerPregnancySystemImpl getPregnancySystem() {
 		return pregnancySystemHolder.getValue();
 	}
 	
+	@Override
 	public PlayerPregnancyEffectsImpl getPregnancyEffects() {
 		return pregnancyEffectsHolder.getValue();
 	}

@@ -2,7 +2,7 @@ package dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.creeper;
 
 import javax.annotation.Nullable;
 
-import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractTamableCreeperGirlModel;
+import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractTamableHumanoidCreeperGirlModel;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobFace;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableHumanoidCreeperGirl;
 import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
@@ -14,7 +14,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class HumanoidTamableCreeperGirlExpressionLayer
-	<E extends AbstractTamableHumanoidCreeperGirl<?>, M extends AbstractTamableCreeperGirlModel<E>> extends AbstractHumanoidCreeperGirlExpressionFacialLayer<E, M> {
+	<E extends AbstractTamableHumanoidCreeperGirl<?>, M extends AbstractTamableHumanoidCreeperGirlModel<E>> extends AbstractHumanoidCreeperGirlExpressionFacialLayer<E, M> {
 	
 	
 	public HumanoidTamableCreeperGirlExpressionLayer(RenderLayerParent<E, M> p_117346_) {

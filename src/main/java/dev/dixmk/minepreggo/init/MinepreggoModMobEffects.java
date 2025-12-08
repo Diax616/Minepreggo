@@ -16,6 +16,7 @@ import dev.dixmk.minepreggo.world.effect.FullOfEnders;
 import dev.dixmk.minepreggo.world.effect.FullOfZombies;
 import dev.dixmk.minepreggo.world.effect.Horny;
 import dev.dixmk.minepreggo.world.effect.HumanoidCreeperImpregnation;
+import dev.dixmk.minepreggo.world.effect.HumanoidEnderImpregnation;
 import dev.dixmk.minepreggo.world.effect.Impregnantion;
 import dev.dixmk.minepreggo.world.effect.Lactation;
 import dev.dixmk.minepreggo.world.effect.Maternity;
@@ -35,6 +36,7 @@ import dev.dixmk.minepreggo.world.effect.PregnancyP6;
 import dev.dixmk.minepreggo.world.effect.PregnancyP7;
 import dev.dixmk.minepreggo.world.effect.PregnancyP8;
 import dev.dixmk.minepreggo.world.effect.PregnancyResistance;
+import dev.dixmk.minepreggo.world.effect.WaterBreaking;
 import dev.dixmk.minepreggo.world.effect.ZombieImpregnation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraftforge.registries.DeferredRegister;
@@ -47,10 +49,13 @@ public class MinepreggoModMobEffects {
 	public static final DeferredRegister<MobEffect> REGISTRY = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, MinepreggoMod.MODID);
 
 	public static final RegistryObject<MobEffect> PREGNANCY_RESISTANCE = REGISTRY.register("pregnancy_resistance", PregnancyResistance::new);
+	
 	public static final RegistryObject<MobEffect> IMPREGNANTION = REGISTRY.register("impregnantion", Impregnantion::new);
 	public static final RegistryObject<MobEffect> ZOMBIE_IMPREGNATION = REGISTRY.register("zombie_impregnation", ZombieImpregnation::new);
 	public static final RegistryObject<MobEffect> CREEPER_IMPREGNATION = REGISTRY.register("creeper_impregnation", CreeperImpregnation::new);
 	public static final RegistryObject<MobEffect> ENDER_IMPREGNATION = REGISTRY.register("ender_impregnation", EnderImpregnation::new);
+	public static final RegistryObject<MobEffect> HUMANOID_CREEPER_IMPREGNATION = REGISTRY.register("humanoid_creeper_impregnation", HumanoidCreeperImpregnation::new);
+	public static final RegistryObject<MobEffect> HUMANOID_ENDER_IMPREGNATION = REGISTRY.register("humanoid_ender_impregnation", HumanoidEnderImpregnation::new);
 
 	
 	public static final RegistryObject<MobEffect> PREGNANCY_HEALING = REGISTRY.register("pregnancy_healing", PregnancyHealing::new);
@@ -81,9 +86,10 @@ public class MinepreggoModMobEffects {
 	public static final RegistryObject<MobEffect> ETERNAL_PREGNANCY = REGISTRY.register("eternal_pregnancy", EternalPregnancy::new);
 	public static final RegistryObject<MobEffect> FERTILITY = REGISTRY.register("fertility", Fertility::new);
 	public static final RegistryObject<MobEffect> FETAL_MOVEMENT = REGISTRY.register("fetal_movement", FetalMovement::new);
+	public static final RegistryObject<MobEffect> WATER_BREAKING = REGISTRY.register("water_breaking", WaterBreaking::new);
 
+	
 	public static final RegistryObject<MobEffect> HORNY = REGISTRY.register("horny", Horny::new);
-	public static final RegistryObject<MobEffect> HUMANOID_CREEPER_IMPREGNATION = REGISTRY.register("humanoid_creeper_impregnation", HumanoidCreeperImpregnation::new);
 	public static final RegistryObject<MobEffect> LACTATION = REGISTRY.register("lactation", Lactation::new);
 	public static final RegistryObject<MobEffect> MATERNITY = REGISTRY.register("maternity", Maternity::new);
 	public static final RegistryObject<MobEffect> MISCARRIAGE = REGISTRY.register("miscarriage", Miscarriage::new);

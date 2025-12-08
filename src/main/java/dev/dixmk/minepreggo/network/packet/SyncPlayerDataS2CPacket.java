@@ -16,7 +16,7 @@ import net.minecraftforge.network.NetworkEvent;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public record SyncPlayerDataS2CPacket(UUID source, Gender gender, boolean customSKin) {
-	public static SyncPlayerDataS2CPacket decode(FriendlyByteBuf buffer) {	
+	public static SyncPlayerDataS2CPacket decode(FriendlyByteBuf buffer) {			
 		return new SyncPlayerDataS2CPacket(
 				buffer.readUUID(),
 				buffer.readEnum(Gender.class),
@@ -33,19 +33,20 @@ public record SyncPlayerDataS2CPacket(UUID source, Gender gender, boolean custom
 		NetworkEvent.Context context = contextSupplier.get();
 		context.enqueueWork(() -> {		
             if (context.getDirection().getReceptionSide().isClient()) {    	
-            	var target = Minecraft.getInstance().player.level().players().stream()
-            			.filter(p -> p.getUUID().equals(message.source))
-            			.findFirst();
+            	var target = Minecraft.getInstance().player.level().getPlayerByUUID(message.source);
             	            	
-            	target.ifPresentOrElse(t -> {
-                    t.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(c -> {
+            	if (target != null) {
+            		target.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(c -> {
                         c.setGender(message.gender);
                         c.setCustomSkin(message.customSKin);
+                        
+                        MinepreggoMod.LOGGER.debug("Synchronized player data for {} from {}", 
+                        		Minecraft.getInstance().player.getName().getString(), target.getDisplayName().getString());
                     });
-                    
-                    MinepreggoMod.LOGGER.debug("Synchronized player data for {} from {}", 
-                    		Minecraft.getInstance().player.getName().getString(), t.getDisplayName().getString());
-            	}, () -> MinepreggoMod.LOGGER.warn("SyncPlayerDataS2CPacket: Packet target UUID {} does not match local player or player is null", message.source));     	
+				}
+            	else {
+            		MinepreggoMod.LOGGER.warn("SyncPlayerDataS2CPacket: Packet target UUID {} does not match local player or player is null", message.source);
+            	}
             }
 		});
 		context.setPacketHandled(true);

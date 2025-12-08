@@ -5,7 +5,6 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
 
 public class FullOfZombies extends MobEffect {
 
@@ -15,11 +14,8 @@ public class FullOfZombies extends MobEffect {
 
 	@Override
 	public void applyEffectTick(LivingEntity entity, int amplifier) {	
-        if (tryBurn(entity)) {
-           ItemStack itemstack = entity.getItemBySlot(EquipmentSlot.HEAD);
-           if (!itemstack.isEmpty()) {
-          	 entity.setSecondsOnFire(8);
-           }
+        if (tryBurn(entity) && !entity.getItemBySlot(EquipmentSlot.HEAD).isEmpty()) {
+         	 entity.setSecondsOnFire(8);
         }    
 	}
 	

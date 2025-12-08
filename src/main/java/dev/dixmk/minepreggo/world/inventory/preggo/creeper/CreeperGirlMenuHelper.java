@@ -3,16 +3,16 @@ package dev.dixmk.minepreggo.world.inventory.preggo.creeper;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGirl;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirl;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirlP0;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirlP1;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirlP2;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirlP3;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirlP4;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirlP5;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirlP6;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirlP7;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirlP8;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableHumanoidCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableHumanoidCreeperGirlP0;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableHumanoidCreeperGirlP1;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableHumanoidCreeperGirlP2;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableHumanoidCreeperGirlP3;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableHumanoidCreeperGirlP4;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableHumanoidCreeperGirlP5;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableHumanoidCreeperGirlP6;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableHumanoidCreeperGirlP7;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableHumanoidCreeperGirlP8;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -44,34 +44,34 @@ public class CreeperGirlMenuHelper {
                 packetBuffer.writeBlockPos(blockPos);
                 packetBuffer.writeVarInt(creeperGirlId);
                 
-                if (creeperGirlClass == TamableCreeperGirl.class) {
+                if (creeperGirlClass == TamableHumanoidCreeperGirl.class) {
                 	return new CreeperGirlInventoryMenu(id, inventory, packetBuffer);
                 }
-                else if (creeperGirlClass == TamableCreeperGirlP0.class) {
+                else if (creeperGirlClass == TamableHumanoidCreeperGirlP0.class) {
                 	return new CreeperGirlP0InventoryMenu(id, inventory, packetBuffer);
                 }
-                else if (creeperGirlClass == TamableCreeperGirlP1.class) {
+                else if (creeperGirlClass == TamableHumanoidCreeperGirlP1.class) {
                 	return new CreeperGirlP1InventoryMenu(id, inventory, packetBuffer);
                 }
-                else if (creeperGirlClass == TamableCreeperGirlP2.class) {
+                else if (creeperGirlClass == TamableHumanoidCreeperGirlP2.class) {
                 	return new CreeperGirlP2InventoryMenu(id, inventory, packetBuffer);
                 }
-                else if (creeperGirlClass == TamableCreeperGirlP3.class) {
+                else if (creeperGirlClass == TamableHumanoidCreeperGirlP3.class) {
                 	return new CreeperGirlP3InventoryMenu(id, inventory, packetBuffer);
                 }
-                else if (creeperGirlClass == TamableCreeperGirlP4.class) {
+                else if (creeperGirlClass == TamableHumanoidCreeperGirlP4.class) {
                 	return new CreeperGirlP4InventoryMenu(id, inventory, packetBuffer);
                 }
-                else if (creeperGirlClass == TamableCreeperGirlP5.class) {
+                else if (creeperGirlClass == TamableHumanoidCreeperGirlP5.class) {
                 	return new CreeperGirlP5InventoryMenu(id, inventory, packetBuffer);
                 }
-                else if (creeperGirlClass == TamableCreeperGirlP6.class) {
+                else if (creeperGirlClass == TamableHumanoidCreeperGirlP6.class) {
                 	return new CreeperGirlP6InventoryMenu(id, inventory, packetBuffer);
                 }
-                else if (creeperGirlClass == TamableCreeperGirlP7.class) {
+                else if (creeperGirlClass == TamableHumanoidCreeperGirlP7.class) {
                 	return new CreeperGirlP7InventoryMenu(id, inventory, packetBuffer);
                 }
-                else if (creeperGirlClass == TamableCreeperGirlP8.class) {
+                else if (creeperGirlClass == TamableHumanoidCreeperGirlP8.class) {
                 	return new CreeperGirlP8InventoryMenu(id, inventory, packetBuffer);
                 }
                 else {
@@ -102,34 +102,34 @@ public class CreeperGirlMenuHelper {
                 packetBuffer.writeBlockPos(blockPos);
                 packetBuffer.writeVarInt(creeperGirlId);
                 
-                if (creeperGirlClass == TamableCreeperGirl.class) {
+                if (creeperGirlClass == TamableHumanoidCreeperGirl.class) {
                 	return new CreeperGirlMainMenu(id, inventory, packetBuffer);
                 }
-                else if (creeperGirlClass == TamableCreeperGirlP0.class) {
+                else if (creeperGirlClass == TamableHumanoidCreeperGirlP0.class) {
                 	return new CreeperGirlP0MainMenu(id, inventory, packetBuffer);
                 }
-                else if (creeperGirlClass == TamableCreeperGirlP1.class) {
+                else if (creeperGirlClass == TamableHumanoidCreeperGirlP1.class) {
                 	return new CreeperGirlP1MainMenu(id, inventory, packetBuffer);
                 }
-                else if (creeperGirlClass == TamableCreeperGirlP2.class) {
+                else if (creeperGirlClass == TamableHumanoidCreeperGirlP2.class) {
                 	return new CreeperGirlP2MainMenu(id, inventory, packetBuffer);
                 }
-                else if (creeperGirlClass == TamableCreeperGirlP3.class) {
+                else if (creeperGirlClass == TamableHumanoidCreeperGirlP3.class) {
                 	return new CreeperGirlP3MainMenu(id, inventory, packetBuffer);
                 }
-                else if (creeperGirlClass == TamableCreeperGirlP4.class) {
+                else if (creeperGirlClass == TamableHumanoidCreeperGirlP4.class) {
                 	return new CreeperGirlP4MainMenu(id, inventory, packetBuffer);
                 }
-                else if (creeperGirlClass == TamableCreeperGirlP5.class) {
+                else if (creeperGirlClass == TamableHumanoidCreeperGirlP5.class) {
                 	return new CreeperGirlP5MainMenu(id, inventory, packetBuffer);
                 }
-                else if (creeperGirlClass == TamableCreeperGirlP6.class) {
+                else if (creeperGirlClass == TamableHumanoidCreeperGirlP6.class) {
                 	return new CreeperGirlP6MainMenu(id, inventory, packetBuffer);
                 }
-                else if (creeperGirlClass == TamableCreeperGirlP7.class) {
+                else if (creeperGirlClass == TamableHumanoidCreeperGirlP7.class) {
                 	return new CreeperGirlP7MainMenu(id, inventory, packetBuffer);
                 }
-                else if (creeperGirlClass == TamableCreeperGirlP8.class) {
+                else if (creeperGirlClass == TamableHumanoidCreeperGirlP8.class) {
                 	return new CreeperGirlP8MainMenu(id, inventory, packetBuffer);
                 }
                 else {

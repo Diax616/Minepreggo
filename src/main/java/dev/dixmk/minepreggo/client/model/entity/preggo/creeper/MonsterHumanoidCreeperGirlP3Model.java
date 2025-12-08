@@ -1,0 +1,12 @@
+package dev.dixmk.minepreggo.client.model.entity.preggo.creeper;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.MonsterHumanoidCreeperGirlP3;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
+@OnlyIn(Dist.CLIENT)
+public class MonsterHumanoidCreeperGirlP3Model extends AbstractHumanoidMonsterPregnantCreeperGirlModel<MonsterHumanoidCreeperGirlP3> {
+	public MonsterHumanoidCreeperGirlP3Model(ModelPart root) {
+		super(root);
+	}
+}

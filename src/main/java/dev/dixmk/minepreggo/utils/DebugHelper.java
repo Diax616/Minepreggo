@@ -5,13 +5,13 @@ import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirlP1;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirlP2;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirlP3;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirlP4;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirlP5;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirlP6;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableCreeperGirlP7;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableHumanoidCreeperGirlP1;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableHumanoidCreeperGirlP2;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableHumanoidCreeperGirlP3;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableHumanoidCreeperGirlP4;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableHumanoidCreeperGirlP5;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableHumanoidCreeperGirlP6;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableHumanoidCreeperGirlP7;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamableZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP1;
@@ -71,40 +71,40 @@ public class DebugHelper {
 		if (entity instanceof AbstractTamablePregnantCreeperGirl<?,?> c) {
 			DebugHelper.showBasicInfo(c);	
 			DebugHelper.showPregnancyInfo(c);			
-			if (c instanceof TamableCreeperGirlP7 c7) {
+			if (c instanceof TamableHumanoidCreeperGirlP7 c7) {
 				DebugHelper.showPregnancyP1Info(c7);
 				DebugHelper.showPregnancyP3Info(c7);
 				DebugHelper.showPregnancyP2Info(c7);
 				DebugHelper.showPregnancyP4Info(c7);	
 			}
-			else if (c instanceof TamableCreeperGirlP6 c6) {
+			else if (c instanceof TamableHumanoidCreeperGirlP6 c6) {
 				DebugHelper.showPregnancyP1Info(c6);
 				DebugHelper.showPregnancyP3Info(c6);
 				DebugHelper.showPregnancyP2Info(c6);
 				DebugHelper.showPregnancyP4Info(c6);	
 			}
-			else if (c instanceof TamableCreeperGirlP5 c5) {
+			else if (c instanceof TamableHumanoidCreeperGirlP5 c5) {
 				DebugHelper.showPregnancyP1Info(c5);
 				DebugHelper.showPregnancyP2Info(c5);
 				DebugHelper.showPregnancyP3Info(c5);
 				DebugHelper.showPregnancyP4Info(c5);	
 			}
-			else if (c instanceof TamableCreeperGirlP4 c4) {
+			else if (c instanceof TamableHumanoidCreeperGirlP4 c4) {
 				DebugHelper.showPregnancyP1Info(c4);
 				DebugHelper.showPregnancyP2Info(c4);
 				DebugHelper.showPregnancyP3Info(c4);
 				DebugHelper.showPregnancyP4Info(c4);	
 			}
-			else if (c instanceof TamableCreeperGirlP3 c3) {
+			else if (c instanceof TamableHumanoidCreeperGirlP3 c3) {
 				DebugHelper.showPregnancyP1Info(c3);
 				DebugHelper.showPregnancyP2Info(c3);
 				DebugHelper.showPregnancyP3Info(c3);	
 			}
-			else if (c instanceof TamableCreeperGirlP2 c2) {
+			else if (c instanceof TamableHumanoidCreeperGirlP2 c2) {
 				DebugHelper.showPregnancyP1Info(c2);
 				DebugHelper.showPregnancyP2Info(c2);	
 			}
-			else if (c instanceof TamableCreeperGirlP1 c1) {
+			else if (c instanceof TamableHumanoidCreeperGirlP1 c1) {
 				DebugHelper.showPregnancyP1Info(c1);	
 			}
 		}

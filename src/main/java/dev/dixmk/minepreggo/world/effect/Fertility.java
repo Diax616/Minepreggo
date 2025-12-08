@@ -3,7 +3,6 @@ package dev.dixmk.minepreggo.world.effect;
 import javax.annotation.Nullable;
 
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
-import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.pregnancy.IBreedable;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
@@ -19,15 +18,14 @@ public class Fertility extends MobEffect {
 
 	@Override
 	public void applyInstantenousEffect(@Nullable Entity p_19462_, @Nullable Entity p_19463_, LivingEntity p_19464_, int p_19465_, double p_19466_) { 
-		if (p_19464_ instanceof PreggoMob t && t instanceof IBreedable p) {		
-			p.incrementFertilityRate(0.1F);
-			t.heal(1F);
+		if (p_19464_ instanceof IBreedable p) {		
+			p.incrementFertilityRate(0.5F);
 		}
 		
 		else if (p_19464_ instanceof ServerPlayer player) {										
-			player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> {			
+			player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> {					
 				if (cap.isFemale()) {	
-					cap.getFemaleData().ifPresent(femaleData -> femaleData.incrementFertilityRate(0.25F));	
+					cap.getFemaleData().ifPresent(femaleData -> femaleData.incrementFertilityRate(0.5F));	
 				}
 				else if (cap.isMale()) {
 					cap.getMaleData().ifPresent(maleData -> maleData.incrementFertilityRate(0.5F));	

@@ -2,9 +2,9 @@ package dev.dixmk.minepreggo.client.model.entity.player;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.animation.preggo.HumanoidFemaleAnimation;
-import dev.dixmk.minepreggo.client.jiggle.AdvancedJigglePhysics;
-import dev.dixmk.minepreggo.client.jiggle.SimpleJigglePhysics;
+import dev.dixmk.minepreggo.client.jiggle.JigglePhysicsFactory;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -25,18 +25,9 @@ public class PredefinedPregnantBodyP3Model extends AbstractHeavyPregnantBodyMode
 	
 	public PredefinedPregnantBodyP3Model(ModelPart root) {
 		super(root,
-				AdvancedJigglePhysics.advancedBuilder()
-				.movementMultiplier(0.85F)
-				.maxRotation(0.3F)
-				.build(),
-				AdvancedJigglePhysics.advancedBuilder()
-				.movementMultiplier(0.05F)
-				.rotationSpring(0.1F)
-				.maxRotation(0.05F)
-				.build(),
-				SimpleJigglePhysics.simpleBuilder().build());
-		this.additionalJiggleBellyYPos = 5F;
-		this.simpleJiggleInBelly = false;
+				JigglePhysicsFactory.createLightweightBoobs(2.0F),
+				JigglePhysicsFactory.createBelly(2.0F, PregnancyPhase.P3),
+				JigglePhysicsFactory.createLightweightButt(2.0F));
 	}
 	
 	public static LayerDefinition createBodyLayer() {

@@ -2,7 +2,8 @@ package dev.dixmk.minepreggo.client.model.entity.player;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.animation.preggo.HumanoidFemaleAnimation;
-import dev.dixmk.minepreggo.client.jiggle.AdvancedJigglePhysics;
+import dev.dixmk.minepreggo.client.jiggle.JigglePhysicsFactory;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -22,8 +23,10 @@ public class CustomPregnantBodyP2Model extends AbstractPregnantBodyModel {
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "custom_pregnant_body_p2_model"), "main");
 	
 	public CustomPregnantBodyP2Model(ModelPart root) {
-		super(root, AdvancedJigglePhysics.advancedBuilder().build(),AdvancedJigglePhysics.advancedBuilder().build());
-		this.additionalJiggleBellyYPos = 5.5F;
+		super(root,
+				JigglePhysicsFactory.createLightweightBoobs(2.0F),
+				JigglePhysicsFactory.createBelly(2.0F, PregnancyPhase.P2),
+				true);
 	}
 	
 	public static LayerDefinition createBodyLayer() {
