@@ -46,6 +46,9 @@ public class BoobJigglePhysics extends AbstractJigglePhysics {
     private final float sideMultiplier;
     private final float asymmetricFrequency;
         
+    private boolean axisX = true;
+    private boolean axisZ = true;
+    
     public BoobJigglePhysics(Builder builder) {
         super(builder.springStrength, builder.damping, builder.gravity, builder.maxDisplacement, builder.additionalYPos);
         this.rotationSpringY = builder.rotationSpringY;
@@ -72,7 +75,6 @@ public class BoobJigglePhysics extends AbstractJigglePhysics {
 	}
     
     public void update(float playerY, double playerX, double playerZ, float deltaTime, boolean isMoving, boolean isOnGround) {
-
         float playerVelocityY = (playerY - previousPlayerY) / deltaTime;
         previousPlayerY = playerY;
         
@@ -87,7 +89,6 @@ public class BoobJigglePhysics extends AbstractJigglePhysics {
         boolean isInAir = !isOnGround || hasVerticalMovement;
         
         if (isInAir && !wasInAir) {
-            // Generate completely random target rotations (can be any value between -MAX and +MAX)
             jumpTargetRotationX = (float) ((Math.random() * 2.0 - 1.0) * maxRotationX);
             jumpTargetRotationZ = (float) ((Math.random() * 2.0 - 1.0) * maxRotationZ);
             jumpTargetsSet = true;
@@ -110,14 +111,10 @@ public class BoobJigglePhysics extends AbstractJigglePhysics {
         }
         
         float phaseTime = oscillationTime * asymmetricFrequency + phaseOffset;
-        
         boolean hasAnyMovement = movementIntensity > 0.05f || hasVerticalMovement;
-        
         float springForce = -position * springStrength;
-        float gravityForce = gravity * Math.signum(velocity);
-        
+        float gravityForce = gravity * Math.signum(velocity);    
         float movementForce = movementIntensity * 0.08f * (float) Math.sin(phaseTime);
-
         float asymmetricBounce = phaseInfluence * (float) Math.cos(phaseTime * 1.3f + sideMultiplier * 0.5f) * movementIntensity;
 
         asymmetricBounce += sideMultiplier * asymetricDelay * (float) Math.sin(phaseTime * 1.5f) * movementIntensity;
@@ -139,14 +136,22 @@ public class BoobJigglePhysics extends AbstractJigglePhysics {
             targetRotationY = 0.0f;
         }
         
-        float rotationSpringForceY = (targetRotationY - rotationY) * 
-                (hasAnyMovement ? rotationSpringY : rotationReturnSpring); 
+        float rotationSpringForceY = (targetRotationY - rotationY) * (hasAnyMovement ? rotationSpringY : rotationReturnSpring); 
         rotationVelocityY += rotationSpringForceY;
         rotationVelocityY *= rotationDamping;
         
         rotationY += rotationVelocityY * deltaTime;
         rotationY = Math.max(-maxRotationY, Math.min(maxRotationY, rotationY));
         
+        if (axisX) {
+        	updateAxisX(deltaTime, phaseTime, playerVelocityY, hasAnyMovement, hasVerticalMovement);
+        }
+        if (axisZ) {
+        	updateAxisZ(deltaTime, phaseTime, playerVelocityY, hasAnyMovement, hasVerticalMovement);
+        }
+    }
+    
+    private void updateAxisX(float deltaTime, float phaseTime, float playerVelocityY, boolean hasAnyMovement, boolean hasVerticalMovement) {
         float targetRotationX;
         if (hasAnyMovement) {
             if (jumpTargetsSet && hasVerticalMovement) {
@@ -174,7 +179,9 @@ public class BoobJigglePhysics extends AbstractJigglePhysics {
         
         rotationX += rotationVelocityX * deltaTime;
         rotationX = Math.max(-maxRotationX, Math.min(maxRotationX, rotationX));
-        
+    }
+    
+    private void updateAxisZ(float deltaTime, float phaseTime, float playerVelocityY, boolean hasAnyMovement, boolean hasVerticalMovement) {
         float targetRotationZ;
         if (hasAnyMovement) {
             if (jumpTargetsSet && hasVerticalMovement) {
@@ -237,12 +244,21 @@ public class BoobJigglePhysics extends AbstractJigglePhysics {
         jumpTargetsSet = false;
     }
 	
+    public void useAxisX(boolean axisX) {
+    	this.axisX = axisX;
+    }
+    
+    public void useAxisZ(boolean axisZ) {
+    	this.axisZ = axisZ;
+    }
+    
     public static void setupAnim(LivingEntity entity, BoobJigglePhysics leftJiggle, BoobJigglePhysics rightJiggle,
     		ModelPart boobParent, ModelPart leftBoob, ModelPart rightBoob) {
         
         float deltaTime = 0.05f;
+        boolean axisX = leftJiggle.axisX && rightJiggle.axisX;
+        boolean axisZ = leftJiggle.axisZ && rightJiggle.axisZ;
         
-        // Update physics for both boobs independently
         leftJiggle.update(
             (float) entity.getY(), 
             entity.getX(), 
@@ -267,25 +283,25 @@ public class BoobJigglePhysics extends AbstractJigglePhysics {
         
         // Apply averaged rotations to parent bone
         float avgRotY = (leftJiggle.getRotationY() + rightJiggle.getRotationY()) * 0.5f;
-        float avgRotX = (leftJiggle.getRotationX() + rightJiggle.getRotationX()) * 0.5f;
-        float avgRotZ = (leftJiggle.getRotationZ() + rightJiggle.getRotationZ()) * 0.5f;
         
-        boobParent.yRot = avgRotY;
-        boobParent.xRot = avgRotX;
-        boobParent.zRot = avgRotZ;
-        
-        // Apply individual asymmetric rotations to each boob
-        // Left boob
-        leftBoob.y = leftJiggle.getOffset() * 0.4f; // Increased from 0.3f
-        leftBoob.yRot = leftJiggle.getRotationY() * 0.5f; // Increased from 0.4f
-        leftBoob.xRot = leftJiggle.getRotationX() * 0.6f; // Increased from 0.5f
-        leftBoob.zRot = leftJiggle.getRotationZ() * 0.7f; // Increased from 0.6f
-        
-        // Right boob - stronger individual influence with opposite emphasis
+        boobParent.yRot = avgRotY; 
+        leftBoob.y = leftJiggle.getOffset() * 0.4f;
+        leftBoob.yRot = leftJiggle.getRotationY() * 0.5f;      
         rightBoob.y = rightJiggle.getOffset() * 0.4f;
         rightBoob.yRot = rightJiggle.getRotationY() * 0.5f;
-        rightBoob.xRot = rightJiggle.getRotationX() * 0.6f;
-        rightBoob.zRot = rightJiggle.getRotationZ() * 0.7f;
+               
+        if (axisX) {
+            float avgRotX = (leftJiggle.getRotationX() + rightJiggle.getRotationX()) * 0.5f;
+            boobParent.xRot = avgRotX;
+            leftBoob.xRot = leftJiggle.getRotationX() * 0.6f;
+            rightBoob.xRot = rightJiggle.getRotationX() * 0.6f;
+        }      
+        if (axisZ) {
+            float avgRotZ = (leftJiggle.getRotationZ() + rightJiggle.getRotationZ()) * 0.5f;
+            boobParent.zRot = avgRotZ;
+            leftBoob.zRot = leftJiggle.getRotationZ() * 0.7f;
+            rightBoob.zRot = rightJiggle.getRotationZ() * 0.7f;
+        }
     }
       
     @OnlyIn(Dist.CLIENT)
@@ -320,7 +336,7 @@ public class BoobJigglePhysics extends AbstractJigglePhysics {
         public Builder(float phaseOffset, boolean isLeft) {
         	this.phaseOffset = phaseOffset;
             this.sideMultiplier = isLeft ? -1.0f : 1.0f;
-            this.asymmetricFrequency = isLeft ? 1.0f : 1.15f;
+            this.asymmetricFrequency = isLeft ? 1.0f : 1.25f;
         }
         
     	public BoobJigglePhysics build() {

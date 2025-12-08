@@ -24,7 +24,7 @@ public class CustomPregnantBodyP1Model extends AbstractPregnantBodyModel {
 	
 	public CustomPregnantBodyP1Model(ModelPart root) {
 		super(root,
-				JigglePhysicsFactory.createLightweightBoobs(2.0F),
+				JigglePhysicsFactory.createLightweightBoobs(2.0F, true, true),
 				JigglePhysicsFactory.createBelly(2.0F, PregnancyPhase.P1),
 				true);
 	}

@@ -22,9 +22,9 @@ public class CustomPregnantBodyP2Model extends AbstractPregnantBodyModel {
 	
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "custom_pregnant_body_p2_model"), "main");
 	
-	public CustomPregnantBodyP2Model(ModelPart root) {
+	public CustomPregnantBodyP2Model(ModelPart root) {		
 		super(root,
-				JigglePhysicsFactory.createLightweightBoobs(2.0F),
+				JigglePhysicsFactory.createLightweightBoobs(2.0F, false, false),
 				JigglePhysicsFactory.createBelly(2.0F, PregnancyPhase.P2),
 				true);
 	}

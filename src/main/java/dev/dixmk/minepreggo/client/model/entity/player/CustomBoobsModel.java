@@ -20,7 +20,7 @@ public class CustomBoobsModel extends AbstractBoobsModel {
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "custom_boobs_model"), "main");
 
 	public CustomBoobsModel(ModelPart root) {
-		super(root, JigglePhysicsFactory.createLightweightBoobs(2F));
+		super(root, JigglePhysicsFactory.createLightweightBoobs(2F, true, true));
 	}
 	
 	public static LayerDefinition createBodyLayer() {

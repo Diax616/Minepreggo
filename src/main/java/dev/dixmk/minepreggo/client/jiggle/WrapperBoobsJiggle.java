@@ -18,15 +18,25 @@ public class WrapperBoobsJiggle {
         this.rightBoobJiggle = BoobJigglePhysics.builder(Mth.PI, false).additionalYPos(additionalYPos).build(); // 180 degrees out of phase
 	}
 	
-	WrapperBoobsJiggle(float additionalYPos, BoobJigglePhysics.Builder leftBoobJiggle, BoobJigglePhysics.Builder rightBoobJiggle) {
+	WrapperBoobsJiggle(float additionalYPos, BoobJigglePhysics.Builder leftBoobJiggle, BoobJigglePhysics.Builder rightBoobJiggle, boolean axisX, boolean axisZ) {
 		this.leftBoobJiggle = leftBoobJiggle.additionalYPos(additionalYPos).build();
 		this.rightBoobJiggle = rightBoobJiggle.additionalYPos(additionalYPos).build();
 		this.additionalYPos = additionalYPos;
+		useAxisX(axisX);
+		useAxisZ(axisZ);
 	}
 	
     public void setupAnim(LivingEntity entity, ModelPart boobParent, ModelPart leftBoob, ModelPart rightBoob) {	
     	BoobJigglePhysics.setupAnim(entity, leftBoobJiggle, rightBoobJiggle, boobParent, leftBoob, rightBoob);
     }
     
+    public void useAxisX(boolean axisX) {
+    	leftBoobJiggle.useAxisX(axisX);
+    	rightBoobJiggle.useAxisX(axisX);
+    }
     
+    public void useAxisZ(boolean axisZ) {
+    	leftBoobJiggle.useAxisZ(axisZ);
+    	rightBoobJiggle.useAxisZ(axisZ);
+    }
 }
