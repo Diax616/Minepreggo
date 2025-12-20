@@ -1,5 +1,7 @@
 package dev.dixmk.minepreggo.world.entity.player;
 
+import java.util.ArrayList;
+
 import javax.annotation.Nonnegative;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -7,19 +9,26 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.network.chat.MessageHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.pregnancy.AbstractPregnancySystem;
+import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.EquipmentSlot;
 
 public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 	
 	protected @Nonnegative int totalTicksOfHorny = MinepreggoModConfig.getTotalTicksOfHornyP4();
 	protected @Nonnegative int totalTicksOfBirth = PregnancySystemHelper.TOTAL_TICKS_BIRTH_P4;
 	protected @Nonnegative int totalTicksOfPreBirth = PregnancySystemHelper.TOTAL_TICKS_PREBIRTH_P4;
+	protected @Nonnegative float contractionProb = PregnancySystemHelper.HIGH_PREGNANCY_PAIN_PROBABILITY;
 
 	public PlayerPregnancySystemP4(@NonNull ServerPlayer player) {
 		super(player);
@@ -27,10 +36,11 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 	}
 	
 	@Override
-	protected void initPregnancySymptomsTimers() {
+	protected void initPregnancyTimers() {
 		totalTicksOfCraving = MinepreggoModConfig.getTotalTicksOfCravingP4();
 		totalTicksOfMilking = MinepreggoModConfig.getTotalTicksOfMilkingP4();
 		totalTicksOfBellyRubs = MinepreggoModConfig.getTotalTicksOfBellyRubsP4();
+		fetalMovementProb = PregnancySystemHelper.MEDIUM_PREGNANCY_PAIN_PROBABILITY;
 	}
 	
 	@Override
@@ -81,29 +91,22 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 	
 	@Override
 	protected boolean tryInitRandomPregnancyPain() {
-		boolean flag = false;
-		
-		if (randomSource.nextFloat() < PregnancySystemHelper.MEDIUM_PREGNANCY_PAIN_PROBABILITY) {	
-			if (hasToGiveBirth()) {
-				pregnancySystem.setPregnancyPain(PregnancyPain.CONTRACTION);
-			}
-			else {
-				pregnancySystem.setPregnancyPain(PregnancyPain.FETAL_MOVEMENT);
-			}						
-			flag = true;
-		}
-		else if (randomSource.nextFloat() < PregnancySystemHelper.LOW_MORNING_SICKNESS_PROBABILITY) {
-			pregnancySystem.setPregnancyPain(PregnancyPain.MORNING_SICKNESS);					
-			flag = true;
+		if (super.tryInitRandomPregnancyPain()) {
+			return true;
 		}	
-	
-		if (flag) {
+			
+		if (hasToGiveBirth() && randomSource.nextFloat() < contractionProb) {	
+			pregnancySystem.setPregnancyPain(PregnancyPain.CONTRACTION);
 			pregnancySystem.sync(pregnantEntity);
+			
+			PlayerHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.CHEST);
+			
 			MinepreggoMod.LOGGER.debug("Player {} has developed pregnancy pain: {}",
 					pregnantEntity.getGameProfile().getName(), pregnancySystem.getPregnancyPain());
+			return true;
 		}
 		
-		return flag;
+		return false;
 	}
 	
 	@Override
@@ -128,33 +131,80 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 
 	@Override
 	protected void startLabor() {
+    	MessageHelper.sendTo(pregnantEntity, Component.translatable("chat.minepreggo.player.birth.message.warning", pregnantEntity.getDisplayName().getString()));
 		pregnancySystem.setPregnancyPain(PregnancyPain.PREBIRTH);
 		pregnancySystem.resetPregnancyPainTimer();
+		pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.PREBIRTH.get(), totalTicksOfPreBirth, 0, false, false, true));
 		pregnancySystem.sync(pregnantEntity);
 		MinepreggoMod.LOGGER.debug("Player {} has started labor.", pregnantEntity.getGameProfile().getName());
 	}
 	
 	@Override
-	protected void startMiscarriage() {
-
-	}
-	
-	@Override
 	protected void evaluateBirth(ServerLevel serverLevel) {		
+		final var pain = pregnancySystem.getPregnancyPain();
 		
-
-	}
-	
-	@Override
-	protected void initPostPartum() {
-		
-		
+		if (pain == PregnancyPain.PREBIRTH) {		
+			if (pregnancySystem.getPregnancyPainTimer() >= totalTicksOfPreBirth) {
+				pregnancySystem.setPregnancyPain(PregnancyPain.BIRTH);
+				pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.BIRTH.get(), totalTicksOfBirth, 0, false, false, true));
+				pregnancySystem.resetPregnancyPainTimer();   		
+				PlayerHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.CHEST);
+				PlayerHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.LEGS);
+				PlayerHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.MAINHAND);
+				PlayerHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.OFFHAND);
+	        	MessageHelper.sendTo(pregnantEntity, Component.translatable("chat.minepreggo.player.birth.message.pre", pregnantEntity.getDisplayName().getString()));
+			}	
+			else {
+				pregnancySystem.incrementPregnancyPainTimer();
+	    		AbstractPregnancySystem.spawnParticulesForWaterBreaking(serverLevel, pregnantEntity);
+			}
+		}
+		else if (pain == PregnancyPain.BIRTH) {
+			if (pregnancySystem.getPregnancyPainTimer() >= totalTicksOfBirth) {			
+				
+	        	final var aliveBabiesItemStacks = new ArrayList<>(PregnancySystemHelper.getAliveBabies(pregnancySystem.getWomb()));   	
+	       		
+	        	MinepreggoMod.LOGGER.debug("Player {} is giving birth to {} babies.", pregnantEntity.getDisplayName().getString(), aliveBabiesItemStacks.size());
+	        	
+	        	if (aliveBabiesItemStacks.isEmpty()) {
+					MinepreggoMod.LOGGER.error("Failed to get baby item for pregnancy system {} birth.", pregnancySystem.getCurrentPregnancyStage());
+				}
+	        	
+	        	// TODO: Babies itemstacks are only removed if player's hands are empty. It should handle stacking unless itemstack is a baby item.
+	        	aliveBabiesItemStacks.removeIf(baby -> {
+	        		if (pregnantEntity.getItemInHand(InteractionHand.MAIN_HAND).isEmpty()) {        			
+	        			PlayerHelper.replaceAndDropItemstackInHand(pregnantEntity, InteractionHand.MAIN_HAND, baby);
+	            		return true;
+	        		}
+	        		else if (pregnantEntity.getItemInHand(InteractionHand.OFF_HAND).isEmpty()) {
+	        			PlayerHelper.replaceAndDropItemstackInHand(pregnantEntity, InteractionHand.OFF_HAND, baby);
+	            		return true;
+	        		}
+	        		return false;
+	        	});
+	        	
+	        	if (!aliveBabiesItemStacks.isEmpty()) {	              	
+		        	aliveBabiesItemStacks.forEach(baby -> {
+		        		if(!pregnantEntity.getInventory().add(baby)) 
+		        			PreggoMobHelper.dropItemStack(pregnantEntity, baby);
+		        	}); 						
+	        	}
+	        	        	
+	        	MessageHelper.sendTo(pregnantEntity, Component.translatable("chat.minepreggo.player.birth.message.post", pregnantEntity.getDisplayName().getString()));
+				initPostPartum();		
+				MinepreggoMod.LOGGER.debug("Player {} has given birth.", pregnantEntity.getDisplayName().getString());	
+			}	
+			else {
+				pregnancySystem.incrementPregnancyPainTimer();
+			}
+		}
 	}
 	
 	@Override
 	protected void evaluateWaterBreaking(ServerLevel serverLevel) {
 		if (pregnancySystem.getPregnancyPainTimer() >= PregnancySystemHelper.TOTAL_TICKS_WATER_BREAKING) {
 			startLabor();
+			pregnantEntity.removeEffect(MinepreggoModMobEffects.WATER_BREAKING.get());
 		}
 		else {
 			pregnancySystem.incrementPregnancyPainTimer();
@@ -164,9 +214,12 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 	
 	@Override
 	protected void breakWater() {
+    	MessageHelper.sendTo(pregnantEntity, Component.translatable("chat.minepreggo.player.birth.message.init", pregnantEntity.getDisplayName().getString()));
 		pregnancySystem.resetPregnancyPainTimer();
 		pregnancySystem.setPregnancyPain(PregnancyPain.WATER_BREAKING);
+		pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.WATER_BREAKING.get(), PregnancySystemHelper.TOTAL_TICKS_WATER_BREAKING, 0, false, false, true));
 		pregnancySystem.sync(pregnantEntity);
+		MinepreggoMod.LOGGER.debug("Player {} water has broken.", pregnantEntity.getGameProfile().getName());
 	}
 	
 	@Override
@@ -184,4 +237,18 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 	protected boolean isWaterBroken() {
 		return pregnancySystem.getPregnancyPain() == PregnancyPain.WATER_BREAKING;
  	}
+	
+	// TODO: Redesign the way of resetting pregnancy data after birth
+	@Override
+	protected void initPostPartum() {
+    	MessageHelper.sendTo(pregnantEntity, Component.translatable("chat.minepreggo.player.birth.message.post", pregnantEntity.getDisplayName().getString()));	
+    	// tryActivatePostPregnancyPhase only works if isPregnant flag is true
+    	femaleData.tryActivatePostPregnancyPhase(PostPregnancy.PARTUM);
+		femaleData.sync(pregnantEntity);
+		
+		// resetPregnancy creates new instance of pregnancy system, so it has to be called after tryActivatePostPregnancyPhase, because it changes isPregnant flag to false and tryActivatePostPregnancyPhase does nothing if it's false
+		femaleData.resetPregnancy();
+		femaleData.resetPregnancyOnClient(pregnantEntity);
+		MinepreggoMod.LOGGER.debug("Player {} has entered postpartum phase.", pregnantEntity.getGameProfile().getName());
+	}
 }

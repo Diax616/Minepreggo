@@ -7,21 +7,17 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class BellyJigglePhysics extends AbstractJigglePhysics {
-	// Rotation physics
     private float rotationVelocity = 0.0f;
     private float rotation = 0.0f;
 	
-    // Movement tracking
     private double previousPlayerX = 0.0;
     private double previousPlayerZ = 0.0;
     private float movementIntensity = 0.0f;
     
-    // Rotation constants
     private final float rotationSpring;
     private final float rotationDamping;
     private final float maxRotation;
     
-    // Movement constants
     private final float movementMultiplier;
     private final float movementDecay;
 	

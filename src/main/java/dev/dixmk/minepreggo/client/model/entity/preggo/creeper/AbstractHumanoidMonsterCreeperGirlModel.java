@@ -22,6 +22,7 @@ public abstract class AbstractHumanoidMonsterCreeperGirlModel<E extends Abstract
 	
 	@Override
 	public void setupAnim(E entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+		super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 		animator.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);			
 		this.moveHeadWithHat(entity, netHeadYaw, headPitch);
 	}

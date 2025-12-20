@@ -5,9 +5,11 @@ import java.util.Optional;
 import org.jetbrains.annotations.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
+import dev.dixmk.minepreggo.network.packet.ResetPregnancyS2CPacket;
 import dev.dixmk.minepreggo.network.packet.SyncFemalePlayerDataS2CPacket;
+import dev.dixmk.minepreggo.network.packet.SyncPlayerLactationS2CPacket;
 import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
-import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
+import dev.dixmk.minepreggo.world.pregnancy.PostPregnancyData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
@@ -63,11 +65,16 @@ public class FemalePlayerImpl extends FemaleEntityImpl implements IFemalePlayer 
 	
 	public void resetPregnancy() {
 		pregnancySystemHolder = new PlayerPregnancySystemHolder();
-		pregnancyEffectsHolder = new PlayerPregnancyEffectsHolder();	
+		pregnancyEffectsHolder = new PlayerPregnancyEffectsHolder();
+	}
+	
+	public void resetPregnancyOnClient(ServerPlayer serverPlayer) {
+		MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> serverPlayer),
+				new ResetPregnancyS2CPacket(serverPlayer.getUUID()));
 	}
 	
 	public ClientData createClientData() {
-		return new ClientData(this.pregnant, this.postPregnancy.orElse(null), this.fertility);
+		return new ClientData(this.pregnant, this.postPregnancyData.orElse(null), this.fertility);
 	}
 	
 	public void sync(ServerPlayer serverPlayer) {
@@ -75,12 +82,17 @@ public class FemalePlayerImpl extends FemaleEntityImpl implements IFemalePlayer 
 				new SyncFemalePlayerDataS2CPacket(serverPlayer.getUUID(), createClientData()));
 	}
 	
+	public void syncLactation(ServerPlayer serverPlayer) {
+		MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> serverPlayer),
+				new SyncPlayerLactationS2CPacket(serverPlayer.getUUID(), this.postPregnancyData.map(PostPregnancyData::getPostPartumLactation).orElse(0)));
+	}
+
 	@OnlyIn(Dist.CLIENT)
 	public void updateFromServer(ClientData data) {
 		this.pregnant = data.pregnant;
-		this.postPregnancy = Optional.ofNullable(data.postPregnancy);
+		this.postPregnancyData = Optional.ofNullable(data.postPregnancy);
 		this.fertility = data.fertility;
 	}
 	
-	public static record ClientData(boolean pregnant, @Nullable PostPregnancy postPregnancy, float fertility) {}
+	public static record ClientData(boolean pregnant, @Nullable PostPregnancyData postPregnancy, float fertility) {}
 }

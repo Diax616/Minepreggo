@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.At;
 
 import dev.dixmk.minepreggo.client.animation.player.BellyAnimationManager;
-import dev.dixmk.minepreggo.client.animation.preggo.HumanoidFemaleAnimation;
+import dev.dixmk.minepreggo.client.animation.preggo.BellyAnimation;
 import net.minecraft.world.entity.player.Player;
 
 @Mixin(Player.class)
@@ -14,7 +14,7 @@ public abstract class PlayerMixin {
     
     @Inject(method = "handleEntityEvent", at = @At("HEAD"), cancellable = true)
     private void onHandleEntityEvent(byte id, CallbackInfo ci) {
-        var animation = HumanoidFemaleAnimation.QUICK_ANIMATIONS.get(id);
+        var animation = BellyAnimation.QUICK_ANIMATIONS.get(id);  
         
         if (animation != null) {
             Player self = (Player) (Object) this;

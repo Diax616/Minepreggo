@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 import javax.annotation.CheckForNull;
@@ -25,7 +26,6 @@ import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.client.particle.ParticleHelper;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
-import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.network.packet.RemoveMobEffectPacket;
 import dev.dixmk.minepreggo.network.packet.SyncMobEffectPacket;
 import dev.dixmk.minepreggo.utils.TagHelper;
@@ -54,6 +54,9 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -65,16 +68,20 @@ import net.minecraft.world.phys.AABB;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class PregnancySystemHelper {
-	
+public class PregnancySystemHelper {	
 	/*
 	 * Helper class for pregnancy system constants and methods
 	 * WARNING: Some fields from player and preggomob are only available in server side. This class does not check that. It will fixed in future updates.
 	 * 
 	 * */
-	
-	
+
 	private PregnancySystemHelper() {}
+	
+	// Post-Pregnancy Nerf
+	private static final UUID SPEED_MODIFIER_TIRENESS_UUID = UUID.fromString("fa6a4626-c325-4835-8259-69577a99c9c8");
+	private static final AttributeModifier SPEED_MODIFIER_TIRENESS = new AttributeModifier(SPEED_MODIFIER_TIRENESS_UUID, "Tireness speed boost", -0.1D, AttributeModifier.Operation.MULTIPLY_BASE);
+	private static final UUID MAX_HEALTH_MODIFIER_TIRENESS_UUID = UUID.fromString("94d78c8b-0983-4ae4-af65-8e477ee52f2e");
+	private static final AttributeModifier MAX_HEALTH_MODIFIER_TIRENESS = new AttributeModifier(MAX_HEALTH_MODIFIER_TIRENESS_UUID, "Tireness max health", -0.3D, AttributeModifier.Operation.MULTIPLY_BASE);
 	
 	// Max Levels
 	public static final int MAX_PREGNANCY_HEALTH = 100;
@@ -91,6 +98,10 @@ public class PregnancySystemHelper {
 	public static final int TOTAL_TICKS_MISCARRIAGE = 400;
 	public static final int TOTAL_TICKS_MORNING_SICKNESS = 200;
 	public static final int TOTAL_TICKS_WATER_BREAKING = 1200;
+	
+	public static final int TOTAL_TICKS_POST_PARTUM_LACTATION = 1600;
+	public static final int TOTAL_TICKS_TO_RECOVER_FROM_POST_PREGNANCY = 32000;
+	
 	
 	public static final int TOTAL_TICKS_PREBIRTH_P4 = 300;
 	public static final int TOTAL_TICKS_PREBIRTH_P5 = 400;
@@ -129,6 +140,9 @@ public class PregnancySystemHelper {
 	public static final int TOTAL_TICKS_SEXUAL_APPETITE_P7 = 2600;
 	public static final int TOTAL_TICKS_SEXUAL_APPETITE_P8 = 2400;
 	
+	
+	public static final int TOTAL_TICKS_CALM_BELLY_RUGGING_DOWN = 120;
+	
 	// Probabilities
 	public static final float LOW_PREGNANCY_PAIN_PROBABILITY = 0.000075F;
 	public static final float MEDIUM_PREGNANCY_PAIN_PROBABILITY = 0.000125F;
@@ -162,6 +176,20 @@ public class PregnancySystemHelper {
 	static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 	
 	public static final RandomSource RANDOM_SOURCE = RandomSource.create();
+	
+	public static void applyPostPregnancyNerf(LivingEntity entity) {
+		AttributeInstance speed = entity.getAttribute(Attributes.MOVEMENT_SPEED);
+		AttributeInstance maxHealth = entity.getAttribute(Attributes.MAX_HEALTH);	
+		speed.addTransientModifier(PregnancySystemHelper.SPEED_MODIFIER_TIRENESS);	
+		maxHealth.addTransientModifier(PregnancySystemHelper.MAX_HEALTH_MODIFIER_TIRENESS);	
+	}
+	
+	public static void removePostPregnancyNeft(LivingEntity entity) {
+		AttributeInstance speed = entity.getAttribute(Attributes.MOVEMENT_SPEED);
+		AttributeInstance maxHealth = entity.getAttribute(Attributes.MAX_HEALTH);	
+		speed.removeModifier(PregnancySystemHelper.SPEED_MODIFIER_TIRENESS);	
+		maxHealth.removeModifier(PregnancySystemHelper.MAX_HEALTH_MODIFIER_TIRENESS);	
+	}
 	
 	protected static final ImmutableMap<Species, Item> MILK_ITEM = ImmutableMap.of(
 			Species.CREEPER, MinepreggoModItems.CREEPER_BREAST_MILK_BOTTLE.get(),
@@ -215,10 +243,7 @@ public class PregnancySystemHelper {
 	
 	@CheckForNull
 	public static ImmutableMap<Craving, List<Item>> getCravingMap(Species species) {
-		if (species == null) {
-			return null;
-		}
-		return CRAVING_ITEM.get(species);
+		return species != null ? CRAVING_ITEM.get(species) : null;
 	}
 	
 	@CheckForNull
@@ -392,8 +417,33 @@ public class PregnancySystemHelper {
 				new RemoveMobEffectPacket(entity.getId(), effect));
 	}
 	
+	/**
+	 * Syncs the removal of expired pregnancy effects to a specific player.
+	 * This method ensures that when a tracker player starts tracking another player,
+	 * all expired pregnancy effects are properly communicated.
+	 * 
+	 * @param entity the living entity whose expired effects should be synced
+	 * @param trackerPlayer the player who is tracking this entity
+	 */
+	public static void syncExpiredMobEffectsToTracker(LivingEntity entity, ServerPlayer trackerPlayer) {
+		if (!(entity instanceof ServerPlayer trackedPlayer)) {
+			return;
+		}
+		
+		// Get all known pregnancy effects from the registry
+		StreamSupport.stream(ForgeRegistries.MOB_EFFECTS.spliterator(), false)
+			.filter(effect -> isPregnancyEffect(effect))
+			.forEach(effect -> {
+				// If the tracked player doesn't have this effect, sync its removal
+				if (!trackedPlayer.hasEffect(effect)) {
+					MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> trackerPlayer),
+							new RemoveMobEffectPacket(trackedPlayer.getId(), effect));
+				}
+			});
+	}
+	
 	public static boolean canUseChestplate(Item armor, PregnancyPhase pregnancyPhase) {
-		return canUseChestplate(armor, pregnancyPhase, true);
+		return canUseChestplate(armor, pregnancyPhase, false);
 	}
 	
 	public static boolean canUseChestplate(Item armor, PregnancyPhase pregnancyPhase, boolean considerBoobs) {
@@ -408,22 +458,7 @@ public class PregnancySystemHelper {
 		}		
 		return armor instanceof IMaternityArmor maternityArmor && pregnancyPhase.compareTo(maternityArmor.getMinPregnancyPhaseAllowed()) <= 0;
 	}
-	
-	public static boolean canUseChestPlateInLactation(LivingEntity target, Item armor) {	
-		if (!target.hasEffect(MinepreggoModMobEffects.LACTATION.get())) {
-			return true;
-		}
-		return armor instanceof IMaternityArmor maternityArmor && maternityArmor.canSupportLactatingBoobs();
-	}
-	
-	public static boolean canUseChestplate(LivingEntity target, Item armor, PregnancyPhase pregnancyPhase, boolean considerBoobs) {	
-		return canUseChestplate(armor, pregnancyPhase, considerBoobs) && !target.hasEffect(MinepreggoModMobEffects.LACTATION.get());
-	}
-	
-	public static boolean canUseChestplate(LivingEntity target, Item armor, PregnancyPhase pregnancyPhase) {	
-		return canUseChestplate(armor, pregnancyPhase, true) && !target.hasEffect(MinepreggoModMobEffects.LACTATION.get());
-	}
-	
+
 	public static boolean canUseLegging(Item armor, @Nullable PregnancyPhase pregnancyPhase) {	
 		if (!ItemHelper.isLegging(armor)) {
 			return false;
@@ -617,6 +652,11 @@ public class PregnancySystemHelper {
    
 	// Pregnancy Calculates	END	
 
+	public static boolean shouldBoobsBeHidden(Item armor) {
+		return !(armor instanceof IMaternityArmor maternityArmor && maternityArmor.areBoobsExposed());
+	}
+    
+    
     public static boolean areHostileMobsNearby(LivingEntity source1, LivingEntity source2, @Nonnegative double detectionRadius) {
         Level level = source1.level();
 

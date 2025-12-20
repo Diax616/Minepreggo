@@ -1,6 +1,6 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.zombie;
 
-import dev.dixmk.minepreggo.client.animation.preggo.HumanoidFemaleAnimation;
+import dev.dixmk.minepreggo.client.animation.preggo.BellyAnimation;
 import dev.dixmk.minepreggo.client.animation.preggo.ZombieGirlAnimation;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP2;
 import net.minecraft.client.model.HierarchicalModel;
@@ -23,7 +23,7 @@ public class TamableZombieGirlP2Model extends AbstractTamablePregnantZombieGirlM
 			public void setupAnim(TamableZombieGirlP2 zombieGirl, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 				this.root().getAllParts().forEach(ModelPart::resetPose);
 					
-			    this.animate(zombieGirl.loopAnimationState, HumanoidFemaleAnimation.LOW_BELLY_INFLATION, ageInTicks, 1f);	
+			    this.animate(zombieGirl.loopAnimationState, BellyAnimation.LOW_BELLY_INFLATION, ageInTicks, 1f);	
 				
 			    if (zombieGirl.isAttacking()) {
 				    this.animate(zombieGirl.attackAnimationState, ZombieGirlAnimation.ATTACK, ageInTicks, 1f);	

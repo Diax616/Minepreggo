@@ -3,9 +3,7 @@ package dev.dixmk.minepreggo.event;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.renderer.entity.layer.player.CustomPregnantBodyLayer;
 import dev.dixmk.minepreggo.client.renderer.entity.layer.player.PredefinedPregnantBodyLayer;
-
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
-
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.world.entity.player.Player;
@@ -14,13 +12,12 @@ import net.minecraftforge.api.distmarker.Dist;
 
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
-
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = MinepreggoMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientSetup {
-    
+	
 	private ClientSetup() {}
 	
     @SubscribeEvent

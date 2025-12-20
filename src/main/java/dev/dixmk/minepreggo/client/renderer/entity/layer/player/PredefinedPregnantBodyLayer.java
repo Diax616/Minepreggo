@@ -22,6 +22,8 @@ import dev.dixmk.minepreggo.client.model.entity.player.PredefinedPregnantBodyP7M
 import dev.dixmk.minepreggo.client.model.entity.player.PredefinedPregnantBodyP8Model;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
+import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -154,7 +156,15 @@ public class PredefinedPregnantBodyLayer extends AbstractPregnantBodyLayer {
         	        	return;
         	        }
         	        */
-        	        
+					femaleData.getPostPregnancyData().ifPresent(post -> {
+						if (post.getPostPregnancy() == PostPregnancy.PARTUM && post.getPostPartumLactation() >= PregnancySystemHelper.ACTIVATE_MILKING_SYMPTOM) {
+							boobsModel.boobs.y -= 0.42F;		
+							boobsModel.boobs.xScale = 1.4F;
+							boobsModel.boobs.yScale = 1.2F;
+							boobsModel.boobs.zScale = 1.3F;	
+						}
+					});
+					
     	        	boobsModel.setupAnim(player, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
     	        	boobsModel.body.copyFrom(playerModel.body);
     	        	boobsModel.renderToBuffer(poseStack, boobsVertexConsumer, packedLight, LivingEntityRenderer.getOverlayCoords(player, 0.0F), 1.0F, 1.0F, 1.0F, 1.0F);

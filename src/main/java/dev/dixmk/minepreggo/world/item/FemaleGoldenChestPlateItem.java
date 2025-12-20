@@ -41,7 +41,7 @@ public abstract class FemaleGoldenChestPlateItem extends ArmorItem implements IF
 		}
 		
 		@Override
-		public boolean canSupportLactatingBoobs() {
+		public boolean areBoobsExposed() {
 			return false;
 		}
 	}

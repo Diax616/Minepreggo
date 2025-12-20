@@ -7,7 +7,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
-import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.server.level.ServerPlayer;
@@ -23,8 +22,9 @@ public class PlayerPregnancySystemP2 extends PlayerPregnancySystemP1 {
 	}
 
 	@Override
-	protected void initPregnancySymptomsTimers() {
+	protected void initPregnancyTimers() {
 		totalTicksOfCraving = MinepreggoModConfig.getTotalTicksOfCravingP2();
+		morningSicknessProb = PregnancySystemHelper.MEDIUM_MORNING_SICKNESS_PROBABILITY;
 	}
 	
 	@Override
@@ -72,22 +72,7 @@ public class PlayerPregnancySystemP2 extends PlayerPregnancySystemP1 {
 	        }
 		}	
 	}
-	
-	@Override
-	protected boolean tryInitRandomPregnancyPain() {
-		if (randomSource.nextFloat() < PregnancySystemHelper.MEDIUM_MORNING_SICKNESS_PROBABILITY) {
-			pregnancySystem.setPregnancyPain(PregnancyPain.MORNING_SICKNESS);
-			pregnancySystem.sync(pregnantEntity);
-			
-			MinepreggoMod.LOGGER.debug("Player {} has developed pregnancy pain: {}",
-					pregnantEntity.getGameProfile().getName(), PregnancyPain.MORNING_SICKNESS.name());
 
-			return true;
-		}	
-		
-		return false;
-	}
-	
 	@Override
 	protected boolean tryInitPregnancySymptom() {
 		if (super.tryInitPregnancySymptom()) {

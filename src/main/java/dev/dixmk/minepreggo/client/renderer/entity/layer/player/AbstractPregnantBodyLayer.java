@@ -14,7 +14,4 @@ public abstract class AbstractPregnantBodyLayer extends RenderLayer<AbstractClie
 		super(parent);
 	}
 
-    
- 
-    
 }

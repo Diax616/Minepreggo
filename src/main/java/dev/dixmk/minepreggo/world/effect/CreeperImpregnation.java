@@ -50,6 +50,7 @@ public class CreeperImpregnation extends Impregnantion {
 				var nextStage = MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
 				initPregnancy(creeperGirl, nextStage, amplifier);
 				PreggoMobHelper.copyOwner(creeperGirl, nextStage);
+				PreggoMobHelper.copyTamableData(creeperGirl, nextStage);
 			}
 			else {
 				entity.hurt(new DamageSource(entity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.GENERIC)), 1);

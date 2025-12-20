@@ -9,16 +9,24 @@ import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableHumanoidCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamableZombieGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirl;
 import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
 import dev.dixmk.minepreggo.world.pregnancy.IFemaleEntity;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancyEffectsHandler;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
+import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+
+/*
+ * WARNING: All methods in this class will be redesigned to be able to support any tamable preggo mob in the future.
+ *
+ * */
 
 public class ScreenHelper {
 
@@ -27,15 +35,48 @@ public class ScreenHelper {
 	public static final ResourceLocation MINECRAFT_ICONS_TEXTURE = ResourceLocation.withDefaultNamespace("textures/gui/icons.png");
 	public static final ResourceLocation MINEPREGGO_ICONS_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/icons.png");
 	
-	public static void renderZombieGirlMainScreen(GuiGraphics guiGraphics, int leftPos, int topPos, @NonNull AbstractTamableZombieGirl<?> zombieGirl) {
-		renderDefaultPreggoP0MainGUI(guiGraphics, leftPos, topPos, zombieGirl.getHealth(), zombieGirl, 3);
+	
+	public static void renderZombieGirlMainScreen(GuiGraphics guiGraphics, int leftPos, int topPos, @NonNull TamableZombieGirl zombieGirl) {
+		renderHungryAndHealth(guiGraphics, leftPos, topPos - 20, zombieGirl.getHealth(), zombieGirl, 3);
+		
+		if (zombieGirl.getPostPregnancyPhase() == PostPregnancy.PARTUM) {
+			renderPostPartumLactation(guiGraphics, leftPos, topPos - 11 - 20, zombieGirl.getPostPartumLactation());
+		}
 	}
 		
-	public static void renderCreeperGirlMainScreen(GuiGraphics guiGraphics, int leftPos, int topPos, @NonNull AbstractTamableCreeperGirl<?> creeperGirl) {
-		renderDefaultPreggoP0MainGUI(guiGraphics, leftPos, topPos, creeperGirl.getHealth(), creeperGirl, 1);
+	public static void renderCreeperGirlMainScreen(GuiGraphics guiGraphics, int leftPos, int topPos, @NonNull TamableHumanoidCreeperGirl creeperGirl) {
+		renderHungryAndHealth(guiGraphics, leftPos, topPos - 20, creeperGirl.getHealth(), creeperGirl, 1);
+		
+		if (creeperGirl.getPostPregnancyPhase() == PostPregnancy.PARTUM) {
+			renderPostPartumLactation(guiGraphics, leftPos, topPos - 11 - 20, creeperGirl.getPostPartumLactation());
+		}
 	}
 	
-	private static void renderDefaultPreggoP0MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, float health, ITamablePreggoMob<?> p0, int extraHearts) {
+	private static void renderPostPartumLactation(GuiGraphics guiGraphics, int leftPos, int topPos, int milking) {
+		for (int i = 0, pos = 74, oddValue = 1, evenValue = 2; i < 10; ++i, pos += 10, oddValue += 2, evenValue += 2) {		
+			guiGraphics.blit(MINEPREGGO_ICONS_TEXTURE, leftPos + pos, topPos + 99, 0, 24, 9, 9, 256, 256);		
+
+			if (milking >= evenValue) {
+				guiGraphics.blit(MINEPREGGO_ICONS_TEXTURE, leftPos + pos, topPos + 99, 18, 24, 9, 9, 256, 256);
+			} else if (milking >= oddValue) {
+				guiGraphics.blit(MINEPREGGO_ICONS_TEXTURE, leftPos + pos, topPos + 99, 9, 24, 9, 9, 256, 256);
+			}			
+		}
+	}
+	
+	
+	
+	
+	
+	private static void renderPregnantZombieGirlMainScreen(GuiGraphics guiGraphics, int leftPos, int topPos, @NonNull AbstractTamableZombieGirl<?> zombieGirl) {
+		renderHungryAndHealth(guiGraphics, leftPos, topPos, zombieGirl.getHealth(), zombieGirl, 3);
+	}
+		
+	private static void renderPregnantCreeperGirlMainScreen(GuiGraphics guiGraphics, int leftPos, int topPos, @NonNull AbstractTamableCreeperGirl<?> creeperGirl) {
+		renderHungryAndHealth(guiGraphics, leftPos, topPos, creeperGirl.getHealth(), creeperGirl, 1);
+	}
+	
+	private static void renderHungryAndHealth(GuiGraphics guiGraphics, int leftPos, int topPos, float health, ITamablePreggoMob<?> p0, int extraHearts) {
 		for (int i = 0, pos = 74; i < 10; i++, pos += 10) {
 			guiGraphics.blit(MINECRAFT_ICONS_TEXTURE, leftPos + pos, topPos + 56, 16, 27, 9, 9, 256, 256);		
 			guiGraphics.blit(MINECRAFT_ICONS_TEXTURE, leftPos + pos, topPos + 67, 16, 45, 9, 9, 256, 256);		
@@ -72,17 +113,19 @@ public class ScreenHelper {
 			}		
 		}
 	}
-	
+
 	private static void renderDefaultPreggoP1MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, IPregnancyEffectsHandler p1) {	
+		final int craving = p1.getCraving();
+		
 		for (int i = 0, pos = 74; i < 10; i++, pos += 10) {
 			guiGraphics.blit(MINEPREGGO_ICONS_TEXTURE, leftPos + pos, topPos + 98, 9, 9, 0, 35, 19, 19, 256, 256);		
 		}	
 	
 		for (int i = 0, pos = 74, oddValue = 1, evenValue = 2; i < 10; ++i, pos += 10, oddValue += 2, evenValue += 2) {		
 
-			if (p1.getCraving() >= evenValue) {
+			if (craving >= evenValue) {
 				guiGraphics.blit(MINEPREGGO_ICONS_TEXTURE, leftPos + pos, topPos + 98, 9, 9, 38, 35, 19, 19, 256, 256);
-			} else if (p1.getCraving() >= oddValue) {
+			} else if (craving >= oddValue) {
 				guiGraphics.blit(MINEPREGGO_ICONS_TEXTURE, leftPos + pos, topPos + 98, 9, 9, 19, 35, 19, 19, 256, 256);
 			}					
 		}
@@ -221,21 +264,26 @@ public class ScreenHelper {
 		}
 	}	
 	
+	public static void renderCreeperGirlP0MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, AbstractTamablePregnantCreeperGirl<?,?> creeperGirl) {		
+		renderPregnantCreeperGirlMainScreen(guiGraphics, leftPos, topPos + 10, creeperGirl);		
+
+	}
+	
 	public static void renderCreeperGirlP1MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, AbstractTamablePregnantCreeperGirl<?,?> creeperGirl) {		
-		renderCreeperGirlMainScreen(guiGraphics, leftPos, topPos + 10, creeperGirl);		
+		renderPregnantCreeperGirlMainScreen(guiGraphics, leftPos, topPos + 10, creeperGirl);		
 		renderDefaultPreggoP1MainGUI(guiGraphics, leftPos, topPos, creeperGirl);	
 		tryRenderCravingIcon(guiGraphics, leftPos, topPos, creeperGirl);
 	}
 	
 	public static void renderCreeperGirlP2MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, AbstractTamablePregnantCreeperGirl<?,?> creeperGirl) {
-		renderCreeperGirlMainScreen(guiGraphics, leftPos, topPos + 10, creeperGirl);	
+		renderPregnantCreeperGirlMainScreen(guiGraphics, leftPos, topPos + 10, creeperGirl);	
 		renderDefaultPreggoP1MainGUI(guiGraphics, leftPos, topPos, creeperGirl);	
 		renderDefaultPreggoP2MainGUI(guiGraphics, leftPos, topPos + 5, creeperGirl);	
 		tryRenderCravingIcon(guiGraphics, leftPos, topPos - 5, creeperGirl);
 	}
 	
 	public static void renderCreeperGirlP3MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, AbstractTamablePregnantCreeperGirl<?,?> creeperGirl) {
-		renderCreeperGirlMainScreen(guiGraphics, leftPos, topPos + 10, creeperGirl);
+		renderPregnantCreeperGirlMainScreen(guiGraphics, leftPos, topPos + 10, creeperGirl);
 		renderDefaultPreggoP1MainGUI(guiGraphics, leftPos, topPos, creeperGirl);		
 		renderDefaultPreggoP2MainGUI(guiGraphics, leftPos, topPos + 5, creeperGirl);		
 		renderDefaultPreggoP3MainGUI(guiGraphics, leftPos, topPos + 4, creeperGirl);		
@@ -243,7 +291,7 @@ public class ScreenHelper {
 	}
 	
 	public static void renderCreeperGirlP4MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, AbstractTamablePregnantCreeperGirl<?,?> creeperGirl) {
-		renderCreeperGirlMainScreen(guiGraphics, leftPos, topPos + 10, creeperGirl);	
+		renderPregnantCreeperGirlMainScreen(guiGraphics, leftPos, topPos + 10, creeperGirl);	
 		renderDefaultPreggoP1MainGUI(guiGraphics, leftPos, topPos, creeperGirl);		
 		renderDefaultPreggoP2MainGUI(guiGraphics, leftPos, topPos + 5, creeperGirl);		
 		renderDefaultPreggoP3MainGUI(guiGraphics, leftPos, topPos + 4, creeperGirl);	
@@ -251,22 +299,25 @@ public class ScreenHelper {
 		tryRenderCravingIcon(guiGraphics, leftPos, topPos, creeperGirl);
 	}
 	
+	public static void renderZombieGirlP0MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, AbstractTamablePregnantZombieGirl<?,?> zombieGirl) {
+		renderPregnantZombieGirlMainScreen(guiGraphics, leftPos, topPos, zombieGirl);
+	}
 
 	public static void renderZombieGirlP1MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, AbstractTamablePregnantZombieGirl<?,?> zombieGirl) {
-		renderZombieGirlMainScreen(guiGraphics, leftPos, topPos + 10, zombieGirl);	
+		renderPregnantZombieGirlMainScreen(guiGraphics, leftPos, topPos + 10, zombieGirl);
 		renderDefaultPreggoP1MainGUI(guiGraphics, leftPos, topPos, zombieGirl);		
 		tryRenderCravingIcon(guiGraphics, leftPos, topPos, zombieGirl);
 	}
 	
 	public static void renderZombieGirlP2MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, AbstractTamablePregnantZombieGirl<?,?> zombieGirl) {
-		renderZombieGirlMainScreen(guiGraphics, leftPos, topPos + 10, zombieGirl);	
+		renderPregnantZombieGirlMainScreen(guiGraphics, leftPos, topPos + 10, zombieGirl);	
 		renderDefaultPreggoP1MainGUI(guiGraphics, leftPos, topPos, zombieGirl);	
 		renderDefaultPreggoP2MainGUI(guiGraphics, leftPos, topPos + 5, zombieGirl);	
 		tryRenderCravingIcon(guiGraphics, leftPos, topPos - 5, zombieGirl);
 	}
 	
 	public static void renderZombieGirlP3MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, AbstractTamablePregnantZombieGirl<?,?> zombieGirl) {
-		renderZombieGirlMainScreen(guiGraphics, leftPos, topPos + 10, zombieGirl);
+		renderPregnantZombieGirlMainScreen(guiGraphics, leftPos, topPos + 10, zombieGirl);
 		renderDefaultPreggoP1MainGUI(guiGraphics, leftPos, topPos, zombieGirl);		
 		renderDefaultPreggoP2MainGUI(guiGraphics, leftPos, topPos + 5, zombieGirl);		
 		renderDefaultPreggoP3MainGUI(guiGraphics, leftPos, topPos + 4, zombieGirl);		
@@ -274,7 +325,7 @@ public class ScreenHelper {
 	}
 	
 	public static void renderZombieGirlP4MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, AbstractTamablePregnantZombieGirl<?,?> zombieGirl) {
-		renderZombieGirlMainScreen(guiGraphics, leftPos, topPos + 10, zombieGirl);
+		renderPregnantZombieGirlMainScreen(guiGraphics, leftPos, topPos + 10, zombieGirl);
 		renderDefaultPreggoP1MainGUI(guiGraphics, leftPos, topPos, zombieGirl);		
 		renderDefaultPreggoP2MainGUI(guiGraphics, leftPos, topPos + 5, zombieGirl);		
 		renderDefaultPreggoP3MainGUI(guiGraphics, leftPos, topPos + 4, zombieGirl);	

@@ -4,9 +4,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import dev.dixmk.minepreggo.client.jiggle.WrapperBoobsJiggle;
+import dev.dixmk.minepreggo.world.item.IMaternityArmor;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -30,6 +32,25 @@ public abstract class AbstractBoobsModel extends EntityModel<AbstractClientPlaye
 	public void setupAnim(AbstractClientPlayer entity, float limbSwing, float limbSwingAmount, 
             float ageInTicks, float netHeadYaw, float headPitch) {	      
 		boobsJiggle.setupAnim(entity, boobs, leftBoob, rightBoob);
+		
+		final var armor = entity.getItemBySlot(EquipmentSlot.CHEST);	
+		if (armor.isEmpty()) {
+			boobsJiggle.setupAnim(entity, boobs, leftBoob, rightBoob);
+			if (!boobs.visible) {
+	    		boobs.visible = true;
+	    	}
+		}
+		else { 		
+			if (armor.getItem() instanceof IMaternityArmor maternityArmor && maternityArmor.areBoobsExposed()) {
+				boobsJiggle.setupAnim(entity, boobs, leftBoob, rightBoob);		
+				if (!boobs.visible) {
+		    		boobs.visible = true;
+		    	}
+			}
+			else if (boobs.visible) {
+	    		boobs.visible = false;
+	    	}
+		}	
 	}
 
 	@Override

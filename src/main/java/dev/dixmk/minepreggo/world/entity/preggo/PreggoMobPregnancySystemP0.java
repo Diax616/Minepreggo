@@ -10,10 +10,13 @@ import dev.dixmk.minepreggo.world.pregnancy.AbstractPregnancySystem;
 import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancyEffectsHandler;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -30,8 +33,26 @@ public abstract class PreggoMobPregnancySystemP0
 	// It has to be executed on server side
 	protected void evaluatePregnancySystem() {	
 		this.evaluatePregnancyTimer();
-		if (canAdvanceNextPregnancyPhase() && !hasToGiveBirth()) {
+		if (canAdvanceNextPregnancyPhase() && !hasToGiveBirth()) {			
+			var chestplate = pregnantEntity.getItemBySlot(EquipmentSlot.CHEST);
+			var leggings = pregnantEntity.getItemBySlot(EquipmentSlot.LEGS);
+			var phases = PregnancyPhase.values();
+			var current = pregnantEntity.getCurrentPregnancyStage();
+			var next = phases[Math.min(current.ordinal() + 1, phases.length - 1)];
+			
+			
+			if (!chestplate.isEmpty()
+					&& (!PregnancySystemHelper.canUseChestplate(chestplate.getItem(), next) || pregnantEntity.getPregnancySymptoms().contains(PregnancySymptom.MILKING))) {
+				PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.CHEST);
+			}
+			
+			if (!leggings.isEmpty()
+					&& PregnancySystemHelper.canUseLegging(leggings.getItem(), next)) {
+				PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.LEGS);
+			}
+			
 			advanceToNextPregnancyPhase();
+			
 			pregnantEntity.discard();
 			MinepreggoMod.LOGGER.debug("Pregnancy phase advanced from {} for entity {}",pregnantEntity.getCurrentPregnancyStage(), pregnantEntity.getSimpleName());
 			return;

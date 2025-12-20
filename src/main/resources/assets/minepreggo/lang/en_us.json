@@ -453,5 +453,8 @@
 	"book.minepreggo.prenatal_checkup.paternity_test.template.page.default.name": "Name: %s\n\n",
 	"book.minepreggo.prenatal_checkup.paternity_test.template.page.default.result": "Result: %s",
 	"book.minepreggo.prenatal_checkup.paternity_test.template.page.default.result.positive": "He IS the father!",
-	"book.minepreggo.prenatal_checkup.paternity_test.template.page.default.result.negative": "He IS NOT the father!"
+	"book.minepreggo.prenatal_checkup.paternity_test.template.page.default.result.negative": "He IS NOT the father!",
+	
+	"key.minepreggo.rub_belly": "Rub Your Pregnant Belly",
+	"key.categories.minepreggo": "Minepreggo Keyboard"
 }

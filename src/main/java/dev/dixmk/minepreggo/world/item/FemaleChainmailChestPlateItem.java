@@ -37,7 +37,7 @@ public abstract class FemaleChainmailChestPlateItem extends ArmorItem implements
 		}
 		
 		@Override
-		public boolean canSupportLactatingBoobs() {
+		public boolean areBoobsExposed() {
 			return false;
 		}
 	}

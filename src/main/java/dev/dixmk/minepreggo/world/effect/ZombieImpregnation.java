@@ -50,6 +50,7 @@ public class ZombieImpregnation extends Impregnantion {
 				var nextStage = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
 				initPregnancy(zombieGirl, nextStage, amplifier);
 				PreggoMobHelper.copyOwner(zombieGirl, nextStage);
+				PreggoMobHelper.copyTamableData(zombieGirl, nextStage);
 			}
 			else {
 				entity.hurt(new DamageSource(entity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.GENERIC)), 1);

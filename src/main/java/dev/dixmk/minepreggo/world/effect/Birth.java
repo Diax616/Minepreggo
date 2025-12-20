@@ -8,16 +8,14 @@ import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.registries.ForgeRegistries;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
+import dev.dixmk.minepreggo.server.ServerPlayerAnimationManager;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundSource;
+import net.minecraft.server.level.ServerPlayer;
 
 public class Birth extends AbstractPlayerPregnancyPain {
 	private static final AttributeModifier ATTACK_SPEED_MODIFIER = new AttributeModifier(ATTACK_SPEED_MODIFIER_UUID, "birth attack speed nerf", -1D, AttributeModifier.Operation.MULTIPLY_TOTAL);
@@ -32,6 +30,9 @@ public class Birth extends AbstractPlayerPregnancyPain {
 		if (!PlayerHelper.isPlayerValid(entity)) return;
 		
 		if (!entity.level().isClientSide) {
+			
+	        ServerPlayerAnimationManager.getInstance().triggerAnimation((ServerPlayer) entity, "birth");
+			
 			entity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, -1, 3, false, false));	
 			
 			AttributeInstance speedAttr = entity.getAttribute(Attributes.MOVEMENT_SPEED);
@@ -43,8 +44,8 @@ public class Birth extends AbstractPlayerPregnancyPain {
 			if (attackSpeedAttr != null && attackSpeedAttr.getModifier(ATTACK_SPEED_MODIFIER_UUID) == null) {
 			    attackSpeedAttr.addTransientModifier(ATTACK_SPEED_MODIFIER);
 			}
-			
-			entity.level().playSound(null, BlockPos.containing(entity.getX(), entity.getY(), entity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "birth")), SoundSource.PLAYERS, 1, 1);
+						
+			entity.playSound(MinepreggoModSounds.PLAYER_BIRTH.get(), 0.8F, 0.8F + entity.getRandom().nextFloat() * 0.3F);
 			
 			MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) entity), Component.translatable("chat.minepreggo.player.birth.message.start"));
 		}	
@@ -55,6 +56,9 @@ public class Birth extends AbstractPlayerPregnancyPain {
 		if (!PlayerHelper.isPlayerValid(entity)) return;
 	
 		if (!entity.level().isClientSide) {	
+			
+			ServerPlayerAnimationManager.getInstance().stopAnimation((ServerPlayer) entity);
+			
 			AttributeInstance speedAttr = entity.getAttribute(Attributes.MOVEMENT_SPEED);
 			AttributeInstance attackSpeedAttr = entity.getAttribute(Attributes.ATTACK_SPEED);
 			

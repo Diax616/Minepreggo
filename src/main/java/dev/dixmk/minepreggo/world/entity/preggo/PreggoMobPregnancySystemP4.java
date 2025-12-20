@@ -29,16 +29,19 @@ public abstract class PreggoMobPregnancySystemP4<E extends PreggoMob
 	protected @Nonnegative int totalTicksOfHorny = MinepreggoModConfig.getTotalTicksOfHornyP4();
 	protected @Nonnegative int totalTicksOfBirth = PregnancySystemHelper.TOTAL_TICKS_BIRTH_P4;
 	protected @Nonnegative int totalTicksOfPreBirth = PregnancySystemHelper.TOTAL_TICKS_PREBIRTH_P4;
-	
+	protected @Nonnegative float contractionProb = PregnancySystemHelper.HIGH_PREGNANCY_PAIN_PROBABILITY;
+
 	private int sexRequestCooldown = 0;
+
 	
 	protected PreggoMobPregnancySystemP4(@Nonnull E preggoMob) {
 		super(preggoMob);
 		addNewValidPregnancySymptom(PregnancySymptom.HORNY);
+		fetalMovementProb = PregnancySystemHelper.MEDIUM_PREGNANCY_PAIN_PROBABILITY;
 	}
 	
 	@Override
-	protected void initPregnancySymptomsTimers() {
+	protected void initPregnancyTimers() {
 		totalTicksOfCraving = MinepreggoModConfig.getTotalTicksOfCravingP4();
 		totalTicksOfMilking = MinepreggoModConfig.getTotalTicksOfMilkingP4();
 		totalTicksOfBellyRubs = MinepreggoModConfig.getTotalTicksOfBellyRubsP4();
@@ -111,11 +114,11 @@ public abstract class PreggoMobPregnancySystemP4<E extends PreggoMob
 	        	// TODO: Babies itemstacks are only removed if player's hands are empty. It should handle stacking unless itemstack is a baby item.
 	        	aliveBabiesItemStacks.removeIf(baby -> {
 	        		if (pregnantEntity.getItemInHand(InteractionHand.MAIN_HAND).isEmpty()) {
-	        			PreggoMobHelper.setItemstackInHand(pregnantEntity, InteractionHand.MAIN_HAND, baby);
+	        			PreggoMobHelper.replaceAndDropItemstackInHand(pregnantEntity, InteractionHand.MAIN_HAND, baby);
 	            		return true;
 	        		}
 	        		else if (pregnantEntity.getItemInHand(InteractionHand.OFF_HAND).isEmpty()) {
-	        			PreggoMobHelper.setItemstackInHand(pregnantEntity, InteractionHand.OFF_HAND, baby);
+	        			PreggoMobHelper.replaceAndDropItemstackInHand(pregnantEntity, InteractionHand.OFF_HAND, baby);
 	            		return true;
 	        		}
 	        		return false;
@@ -200,20 +203,11 @@ public abstract class PreggoMobPregnancySystemP4<E extends PreggoMob
 	
 	@Override
 	protected boolean tryInitRandomPregnancyPain() {
-	    if (randomSource.nextFloat() < PregnancySystemHelper.LOW_MORNING_SICKNESS_PROBABILITY) {
-	        pregnantEntity.setPregnancyPain(PregnancyPain.MORNING_SICKNESS);
-	        pregnantEntity.resetPregnancyPainTimer();
-	        return true;
-	    }
-		else if (randomSource.nextFloat() < PregnancySystemHelper.MEDIUM_PREGNANCY_PAIN_PROBABILITY) {
-			
-			if (hasToGiveBirth()) {
-				pregnantEntity.setPregnancyPain(PregnancyPain.CONTRACTION);
-			}		
-			else {
-				pregnantEntity.setPregnancyPain(PregnancyPain.FETAL_MOVEMENT);
-			}
-
+		if (super.tryInitRandomPregnancyPain()) {
+			return true;
+		}			
+		if (hasToGiveBirth() && randomSource.nextFloat() < contractionProb) {
+			pregnantEntity.setPregnancyPain(PregnancyPain.CONTRACTION);
 			pregnantEntity.resetPregnancyPainTimer();
 			PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.CHEST);					
 			return true;

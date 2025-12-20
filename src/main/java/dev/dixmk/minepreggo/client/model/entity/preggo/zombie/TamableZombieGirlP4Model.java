@@ -1,6 +1,6 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.zombie;
 
-import dev.dixmk.minepreggo.client.animation.preggo.HumanoidFemaleAnimation;
+import dev.dixmk.minepreggo.client.animation.preggo.BellyAnimation;
 import dev.dixmk.minepreggo.client.animation.preggo.ZombieGirlAnimation;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP4;
@@ -29,7 +29,7 @@ public class TamableZombieGirlP4Model extends AbstractTamablePregnantZombieGirlM
 				this.root().getAllParts().forEach(ModelPart::resetPose);
 					
 			    if (zombieGirl.getItemBySlot(EquipmentSlot.CHEST).isEmpty()) {
-			    	this.animate(zombieGirl.loopAnimationState, HumanoidFemaleAnimation.MEDIUM_BELLY_INFLATION, ageInTicks, 1f);
+			    	this.animate(zombieGirl.loopAnimationState, BellyAnimation.MEDIUM_BELLY_INFLATION, ageInTicks, 1f);
 			    }
 				
 			    if (zombieGirl.isAttacking()) {

@@ -27,6 +27,7 @@ import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
 import dev.dixmk.minepreggo.world.pregnancy.Gender;
 import dev.dixmk.minepreggo.world.pregnancy.IFemaleEntity;
 import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
+import dev.dixmk.minepreggo.world.pregnancy.PostPregnancyData;
 import dev.dixmk.minepreggo.world.pregnancy.PrePregnancyData;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -549,7 +550,12 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 	public Optional<PrePregnancyData> getPrePregnancyData() {
 		return this.defaultFemaleEntityImpl.getPrePregnancyData();
 	}
-
+	
+	@Override
+	public Optional<PostPregnancyData> getPostPregnancyData() {
+		return this.defaultFemaleEntityImpl.getPostPregnancyData();
+	}
+	
 	@Override
 	public boolean tryCancelPregnancy() {
 		return this.defaultFemaleEntityImpl.tryCancelPregnancy();
@@ -565,9 +571,22 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 		return this.defaultFemaleEntityImpl.hasNaturalPregnancy();
 	}
 
+	
+	
+	// START WARNING: These methods will be removed from IFemaleEntity in future versions, they are only present here because of synchronization issues between server and client
 	@Override
 	public @Nullable PostPregnancy getPostPregnancyPhase() {
 		return this.defaultFemaleEntityImpl.getPostPregnancyPhase();
+	}
+
+	@Override
+	public int getPostPartumLactation() {
+		return this.defaultFemaleEntityImpl.getPostPartumLactation();
+	}
+	
+	@Override
+	public void setPostPartumLactation(int amount) {
+		this.defaultFemaleEntityImpl.setPostPartumLactation(amount);
 	}
 
 	@Override
@@ -593,7 +612,10 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 	@Override
 	public void incrementPostPregnancyTimer() {
 		this.defaultFemaleEntityImpl.incrementPostPregnancyTimer();	
-	}
+	}	
+	// END WARNING
+	
+	
 	
 	@Override
 	public int getFertilityRateTimer() {

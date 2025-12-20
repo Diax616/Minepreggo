@@ -75,11 +75,13 @@ public class Impregnantion extends MobEffect {
 			else if (entity instanceof TamableHumanoidCreeperGirl creeperGirl) {
 				var nextStage = MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
 				PreggoMobHelper.copyOwner(creeperGirl, nextStage);
+				PreggoMobHelper.copyTamableData(creeperGirl, nextStage);
 				initPregnancy(creeperGirl, nextStage, amplifier);
 			}
 			else if (entity instanceof TamableZombieGirl zombieGirl) {
 				var nextStage = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
 				PreggoMobHelper.copyOwner(zombieGirl, nextStage);
+				PreggoMobHelper.copyTamableData(zombieGirl, nextStage);
 				initPregnancy(zombieGirl, nextStage, amplifier);
 			}
 			else {
@@ -103,6 +105,8 @@ public class Impregnantion extends MobEffect {
 	
 	protected static<E extends PreggoMob & ITamablePreggoMob<FemaleEntityImpl> & IFemaleEntity & IPregnancySystemHandler> void initPregnancy(PreggoMob source, E target, int amplifier) {
 		PreggoMobHelper.copyRotation(source, target);
+		PreggoMobHelper.copyName(source, target);
+		PreggoMobHelper.copyHealth(source, target);
 		PreggoMobHelper.transferSlots(source, target);
 		PreggoMobHelper.syncFromEquipmentSlotToInventory(target);
 		PreggoMobHelper.transferAttackTarget(source, target);

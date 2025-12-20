@@ -12,10 +12,12 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
+import dev.dixmk.minepreggo.server.ServerPlayerAnimationManager;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 
 public class PreBirth extends AbstractPlayerPregnancyPain {
@@ -32,6 +34,8 @@ public class PreBirth extends AbstractPlayerPregnancyPain {
 		if (!PlayerHelper.isPlayerValid(entity)) return;
  		
 		if (!entity.level().isClientSide) {
+			
+	        ServerPlayerAnimationManager.getInstance().triggerAnimation((ServerPlayer) entity, "prebirth");
 			
 			entity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, -1, 2, false, false));	
 
@@ -55,6 +59,8 @@ public class PreBirth extends AbstractPlayerPregnancyPain {
 		if (!PlayerHelper.isPlayerValid(entity)) return;
 
 		if (!entity.level().isClientSide) {
+			ServerPlayerAnimationManager.getInstance().stopAnimation((ServerPlayer) entity);
+
 			entity.removeEffect(MobEffects.WEAKNESS);
 			AttributeInstance speedAttr = entity.getAttribute(Attributes.MOVEMENT_SPEED);
 			AttributeInstance attackSpeedAttr = entity.getAttribute(Attributes.ATTACK_SPEED);

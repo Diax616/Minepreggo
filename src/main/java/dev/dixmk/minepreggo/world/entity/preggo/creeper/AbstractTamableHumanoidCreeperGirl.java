@@ -30,7 +30,7 @@ public abstract class AbstractTamableHumanoidCreeperGirl<S extends PreggoMobSyst
 	@Override
 	protected boolean canReplaceArmorBasedInPregnancyPhase(ItemStack armor) {	
 		if (LivingEntity.getEquipmentSlotForItem(armor) == EquipmentSlot.CHEST) {
-			return PreggoMobHelper.canUseChestplate(armor.getItem());
+			return PreggoMobHelper.canUseChestPlateInLactation(this, armor.getItem());
 		}			
 		return true;
 	}

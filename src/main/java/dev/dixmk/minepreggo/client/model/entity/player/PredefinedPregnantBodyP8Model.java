@@ -1,7 +1,7 @@
 package dev.dixmk.minepreggo.client.model.entity.player;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.client.animation.preggo.HumanoidFemaleAnimation;
+import dev.dixmk.minepreggo.client.animation.preggo.BellyAnimation;
 import dev.dixmk.minepreggo.client.jiggle.JigglePhysicsFactory;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
@@ -26,7 +26,7 @@ public class PredefinedPregnantBodyP8Model extends AbstractHeavyPregnantBodyMode
 	public PredefinedPregnantBodyP8Model(ModelPart root) {
 		super(root,
 				JigglePhysicsFactory.createHeavyweightBoobs(2.0F, false, false),
-				JigglePhysicsFactory.createBelly(2.0F, PregnancyPhase.P8),
+				JigglePhysicsFactory.createBelly(5.25F, PregnancyPhase.P8),
 				JigglePhysicsFactory.createHeavyweightButt(2.0F));
 	}
 	
@@ -57,14 +57,14 @@ public class PredefinedPregnantBodyP8Model extends AbstractHeavyPregnantBodyMode
 		.texOffs(0, 1).addBox(-2.5F, -2.5F, -3.5F, 4.0F, 4.0F, 5.0F, new CubeDeformation(0.15F)), PartPose.offsetAndRotation(0.2664F, 2.1279F, -1.1635F, 0.3491F, 0.1745F, 0.0436F));
 		PartDefinition leftBoob = boobs.addOrReplaceChild("left_boob", CubeListBuilder.create(), PartPose.offset(2.0F, 0.0F, 0.0F));
 		leftBoob.addOrReplaceChild("secondExtraRightBoobCube_r2", CubeListBuilder.create().texOffs(0, 10).addBox(0.1388F, -0.657F, -4.7254F, 1.0F, 1.0F, 2.0F, new CubeDeformation(-0.1F))
-		.texOffs(21, 4).addBox(-1.3473F, -2.5081F, -4.3408F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.2F))
+		.texOffs(21, 4).addBox(-1.3473F, -2.5081F, -4.3407F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.2F))
 		.texOffs(18, 1).addBox(-1.5F, -2.5F, -3.5F, 4.0F, 4.0F, 5.0F, new CubeDeformation(0.15F)), PartPose.offsetAndRotation(-0.1674F, 2.1236F, -1.1505F, 0.3491F, -0.1745F, -0.0436F));
 		PartDefinition leftLeg = partdefinition.addOrReplaceChild("left_leg", CubeListBuilder.create(), PartPose.offset(1.9F, 12.0F, 0.0F));
-		leftLeg.addOrReplaceChild("left_butt", CubeListBuilder.create().texOffs(37, 7).addBox(-1.95F, -0.35F, -0.05F, 4.0F, 4.0F, 2.0F, new CubeDeformation(0.0F))
-		.texOffs(37, 7).addBox(-2.05F, -0.35F, 0.55F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.3F)), PartPose.offset(0.1F, 0.0F, 1.0F));
+		leftLeg.addOrReplaceChild("left_butt", CubeListBuilder.create().texOffs(37, 7).addBox(-1.95F, -0.35F, -0.45F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.4F))
+		.texOffs(37, 7).addBox(-2.05F, -0.35F, 0.15F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.6F)), PartPose.offset(-0.1F, 0.0F, 2.0F));
 		PartDefinition rightLeg = partdefinition.addOrReplaceChild("right_leg", CubeListBuilder.create(), PartPose.offset(-1.9F, 12.0F, 0.0F));
-		rightLeg.addOrReplaceChild("right_butt", CubeListBuilder.create().texOffs(37, 1).addBox(-2.05F, -0.35F, -0.05F, 4.0F, 4.0F, 2.0F, new CubeDeformation(0.0F))
-		.texOffs(37, 1).addBox(-2.05F, -0.35F, 0.55F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.3F)), PartPose.offset(-0.1F, 0.0F, 1.0F));
+		rightLeg.addOrReplaceChild("right_butt", CubeListBuilder.create().texOffs(37, 1).addBox(-2.05F, -0.35F, -0.45F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.4F))
+		.texOffs(37, 1).addBox(-2.05F, -0.35F, 0.15F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.6F)), PartPose.offset(0.1F, 0.0F, 2.0F));
 		return LayerDefinition.create(meshdefinition, 64, 32);
 	}
 	
@@ -72,10 +72,10 @@ public class PredefinedPregnantBodyP8Model extends AbstractHeavyPregnantBodyMode
 	protected void animBelly(AbstractClientPlayer entity, float ageInTicks) {
 		super.animBelly(entity, ageInTicks);
 		if (entity.hasEffect(MinepreggoModMobEffects.FETAL_MOVEMENT.get())) {
-			this.animate(this.loopAnimationState, HumanoidFemaleAnimation.FETAL_MOVEMENT_P8, ageInTicks);
+			this.animate(this.loopAnimationState, BellyAnimation.FETAL_MOVEMENT_P8, ageInTicks);
 		}
 		else {
-			this.animate(this.loopAnimationState, HumanoidFemaleAnimation.HIGH_BELLY_INFLATION, ageInTicks);
+			this.animate(this.loopAnimationState, BellyAnimation.HIGH_BELLY_INFLATION, ageInTicks);
 		}
 	}
 }

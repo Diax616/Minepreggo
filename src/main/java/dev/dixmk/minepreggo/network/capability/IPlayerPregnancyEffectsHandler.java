@@ -11,4 +11,16 @@ public interface IPlayerPregnancyEffectsHandler extends IPregnancyEffectsHandler
 	@Nullable ImmutablePair<Craving, Species> getTypeOfCravingBySpecies();	
 	void setTypeOfCravingBySpecies(@Nullable ImmutablePair<Craving, Species> craving);
 	void clearTypeOfCravingBySpecies();
+	
+	public void incrementSprintingTimer();
+	public void resetSprintingTimer();
+	public int getSprintingTimer();
+	
+	public void incrementNumOfJumps();
+	public void resetNumOfJumps();
+	public int getNumOfJumps();
+	
+	public int getSneakingTimer();
+	public void resetSneakingTimer();
+	public void incrementSneakingTimer();
 }

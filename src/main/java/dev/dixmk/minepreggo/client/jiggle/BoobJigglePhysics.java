@@ -163,7 +163,7 @@ public class BoobJigglePhysics extends AbstractJigglePhysics {
                 targetRotationX += playerVelocityY * 0.25f;
                 targetRotationX += sideMultiplier * sideInfluence * 0.8f * (float) Math.cos(phaseTime * 0.95);
                 
-                if (hasVerticalMovement && !jumpTargetsSet) {
+                if (hasVerticalMovement) {
                     targetRotationX += (float) Math.sin(phaseTime * 1.5) * Math.abs(playerVelocityY) * 0.4f;
                     targetRotationX += sideMultiplier * asymetricDelay * (float) Math.cos(phaseTime * 1.8) * Math.abs(playerVelocityY);
                 }
@@ -193,7 +193,7 @@ public class BoobJigglePhysics extends AbstractJigglePhysics {
                 targetRotationZ += sideMultiplier * velocity * 0.6f;
                 targetRotationZ += sideMultiplier * sideInfluence * 1.5f * (float) Math.sin(phaseTime * 1.15);
                 
-                if (hasVerticalMovement && !jumpTargetsSet) {
+                if (hasVerticalMovement) {
                     targetRotationZ += sideMultiplier * (float) Math.cos(phaseTime * 1.3) * Math.abs(playerVelocityY) * 0.5f;
                     targetRotationZ += sideMultiplier * asymetricDelay * 2.0f * (float) Math.sin(phaseTime * 1.6) * Math.abs(playerVelocityY);
                 }

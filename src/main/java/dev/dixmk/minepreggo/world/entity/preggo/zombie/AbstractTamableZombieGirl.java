@@ -33,6 +33,7 @@ import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
 import dev.dixmk.minepreggo.world.pregnancy.Gender;
 import dev.dixmk.minepreggo.world.pregnancy.IFemaleEntity;
 import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
+import dev.dixmk.minepreggo.world.pregnancy.PostPregnancyData;
 import dev.dixmk.minepreggo.world.pregnancy.PrePregnancyData;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -309,14 +310,6 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 	}
 	
 	@Override
-	protected boolean canReplaceCurrentItem(ItemStack p_21428_, ItemStack p_21429_) {	
-		if (!PreggoMobHelper.canUseChestplate(p_21428_.getItem())) {
-			return false;
-		}	
-		return super.canReplaceCurrentItem(p_21428_, p_21429_);
-	}
-	
-	@Override
 	protected void pickUpItem(ItemEntity p_21471_) {
 		ItemStack itemstack = p_21471_.getItem();
 		ItemStack itemstack1 = this.equipItemIfPossible(itemstack.copy());			
@@ -533,6 +526,11 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 	}
 
 	@Override
+	public Optional<PostPregnancyData> getPostPregnancyData() {
+		return this.defaultFemaleEntityImpl.getPostPregnancyData();
+	}
+	
+	@Override
 	public boolean tryCancelPregnancy() {
 		return this.defaultFemaleEntityImpl.tryCancelPregnancy();
 	}
@@ -547,6 +545,9 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 		return this.defaultFemaleEntityImpl.hasNaturalPregnancy();
 	}
 
+	
+	
+	// START WARNING: These methods will be removed from IFemaleEntity in future versions, they are only present here because of synchronization issues between server and client
 	@Override
 	public @Nullable PostPregnancy getPostPregnancyPhase() {
 		return this.defaultFemaleEntityImpl.getPostPregnancyPhase();
@@ -563,15 +564,29 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 	}
 	
 	@Override
+	public int getPostPartumLactation() {
+		return this.defaultFemaleEntityImpl.getPostPartumLactation();
+	}
+	
+	@Override
 	public int getPostPregnancyTimer() {
 		return this.defaultFemaleEntityImpl.getPostPregnancyTimer();
+	}
+	
+	@Override
+	public void setPostPartumLactation(int amount) {
+		this.defaultFemaleEntityImpl.setPostPartumLactation(amount);
 	}
 
 	@Override
 	public void setPostPregnancyTimer(int ticks) {
 		this.defaultFemaleEntityImpl.setPostPregnancyTimer(ticks);
 	}
-
+	// END WARNIN
+	
+	
+	
+	
 	@Override
 	public void incrementPostPregnancyTimer() {
 		this.defaultFemaleEntityImpl.incrementPostPregnancyTimer();	

@@ -10,11 +10,13 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -24,12 +26,13 @@ public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
 	private int pregnancysymptonsTicks = 0;
 	
 	protected @Nonnegative int totalTicksOfCraving = MinepreggoModConfig.getTotalTicksOfCravingP1();
-	
+	protected @Nonnegative float morningSicknessProb = PregnancySystemHelper.LOW_MORNING_SICKNESS_PROBABILITY;
+
 	private Set<PregnancySymptom> validPregnancySymptoms = EnumSet.noneOf(PregnancySymptom.class);
 	
 	public PlayerPregnancySystemP1(@NonNull ServerPlayer player) {
 		super(player);
-		initPregnancySymptomsTimers();
+		initPregnancyTimers();
 		addNewValidPregnancySymptoms(PregnancySymptom.CRAVING);
 	}
 	
@@ -37,7 +40,7 @@ public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
 		this.validPregnancySymptoms.add(newPregnancySymptom);
 	}
 	
-	protected void initPregnancySymptomsTimers() {
+	protected void initPregnancyTimers() {
 
 	}
 	
@@ -173,7 +176,7 @@ public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
 	
 	@Override
 	protected boolean tryInitRandomPregnancyPain() {
-		if (randomSource.nextFloat() < PregnancySystemHelper.LOW_MORNING_SICKNESS_PROBABILITY) {
+		if (randomSource.nextFloat() < morningSicknessProb) {
 			pregnancySystem.setPregnancyPain(PregnancyPain.MORNING_SICKNESS);
 			pregnancySystem.sync(pregnantEntity);
 			
@@ -200,5 +203,29 @@ public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
 			return true;
 		}
 		return false;
+	}
+	
+	@Override
+	protected void startMiscarriage() {
+		MessageHelper.sendTo(pregnantEntity, Component.translatable("chat.minepreggo.player.miscarriage.message.init", pregnantEntity.getDisplayName().getString()));
+		pregnancySystem.resetPregnancyPainTimer();
+		pregnancySystem.setPregnancyPain(PregnancyPain.MISCARRIAGE);
+		pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.MISCARRIAGE.get(), PregnancySystemHelper.TOTAL_TICKS_MISCARRIAGE, 0, false, false, true));
+		pregnancySystem.sync(pregnantEntity);
+		MinepreggoMod.LOGGER.debug("Miscarriage just started");
+	}
+	
+	// TODO: Redesign the way of resetting pregnancy data after birth
+	@Override
+	protected void initPostMiscarriage() {
+    	MessageHelper.sendTo(pregnantEntity, Component.translatable("chat.minepreggo.player.miscarriage.message.post", pregnantEntity.getDisplayName().getString()));
+    	// tryActivatePostPregnancyPhase only works if isPregnant flag is true
+    	femaleData.tryActivatePostPregnancyPhase(PostPregnancy.MISCARRIAGE);
+		femaleData.sync(pregnantEntity);
+		
+		// resetPregnancy creates new instance of pregnancy system, so it has to be called after tryActivatePostPregnancyPhase, because it changes isPregnant flag to false and tryActivatePostPregnancyPhase does nothing if it's false
+		femaleData.resetPregnancy();
+		femaleData.resetPregnancyOnClient(pregnantEntity);
+		MinepreggoMod.LOGGER.debug("Player {} has entered postmiscarriage phase.", pregnantEntity.getGameProfile().getName());
 	}
 }

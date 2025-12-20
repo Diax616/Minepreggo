@@ -12,7 +12,6 @@ import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem.Result;
 import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancyEffectsHandler;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
-import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.sounds.SoundEvents;
@@ -28,15 +27,16 @@ public abstract class PreggoMobPregnancySystemP2<E extends PreggoMob
 	& ITamablePreggoMob<FemaleEntityImpl> & IPregnancySystemHandler & IPregnancyEffectsHandler> extends PreggoMobPregnancySystemP1<E> {
 	
 	protected @Nonnegative int totalTicksOfMilking = MinepreggoModConfig.getTotalTicksOfMilkingP2();
-	
+
 	protected PreggoMobPregnancySystemP2(@Nonnull E preggoMob) {
 		super(preggoMob);
 		addNewValidPregnancySymptom(PregnancySymptom.MILKING);
 	}
 	
 	@Override
-	protected void initPregnancySymptomsTimers() {
+	protected void initPregnancyTimers() {
 		this.totalTicksOfCraving = MinepreggoModConfig.getTotalTicksOfCravingP2();
+		this.morningSicknessProb = PregnancySystemHelper.MEDIUM_MORNING_SICKNESS_PROBABILITY;
 	}
 	
 	@Override
@@ -93,16 +93,6 @@ public abstract class PreggoMobPregnancySystemP2<E extends PreggoMob
 	    	return true;		
 		}
 		return false;
-	}
-	
-	@Override
-	protected boolean tryInitRandomPregnancyPain() {
-	    if (randomSource.nextFloat() < PregnancySystemHelper.MEDIUM_MORNING_SICKNESS_PROBABILITY) {
-	        pregnantEntity.setPregnancyPain(PregnancyPain.MORNING_SICKNESS);
-	        pregnantEntity.resetPregnancyPainTimer();
-	        return true;
-	    }
-	    return false;
 	}
 	
 	@Override

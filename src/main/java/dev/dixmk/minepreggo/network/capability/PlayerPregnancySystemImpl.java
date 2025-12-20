@@ -35,10 +35,7 @@ public class PlayerPregnancySystemImpl implements IPlayerPregnancySystemHandler 
 	private int pregnancyHealth = 0;
 	private int pregnancyTimer = 0;
 	private int pregnancyPainTimer = 0;
-	private int numOfJumps = 0;
-	private int sprintingTimer = 0;
-	private int sneakingTimer = 0;
-	
+
 	private PregnancyPhase currentPregnancyPhase = PregnancyPhase.P0;
 	private PregnancyPhase lastPregnancyPhase = PregnancyPhase.P4;
 	
@@ -278,52 +275,6 @@ public class PlayerPregnancySystemImpl implements IPlayerPregnancySystemHandler 
 	@Override
 	public void clearPregnancySymptoms() {
 		this.pregnancySymptomsBitMask = (byte) 0;
-	}
-	
-
-	@Override
-	public void incrementSprintingTimer() {
-		this.sprintingTimer++;
-	}
-
-	@Override
-	public void resetSprintingTimer() {
-		this.sprintingTimer = 0;
-	}
-
-	@Override
-	public int getSprintingTimer() {
-		return this.sprintingTimer;
-	}
-
-	@Override
-	public void incrementNumOfJumps() {
-		this.numOfJumps++;
-	}
-
-	@Override
-	public void resetNumOfJumps() {
-		this.numOfJumps = 0;
-	}
-
-	@Override
-	public int getNumOfJumps() {
-		return this.numOfJumps;
-	}
-
-	@Override
-	public int getSneakingTimer() {
-		return this.sneakingTimer;
-	}
-
-	@Override
-	public void resetSneakingTimer() {
-		this.sneakingTimer = 0;
-	}
-
-	@Override
-	public void incrementSneakingTimer() {
-		this.sneakingTimer++;
 	}
 	
 	public CompoundTag serializeNBT() {

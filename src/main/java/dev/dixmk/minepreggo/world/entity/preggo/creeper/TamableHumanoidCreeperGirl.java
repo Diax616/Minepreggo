@@ -1,23 +1,20 @@
 package dev.dixmk.minepreggo.world.entity.preggo.creeper;
 
 import net.minecraftforge.network.PlayMessages;
-import net.minecraftforge.network.NetworkHooks;
 
 import net.minecraft.world.level.Level;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -38,18 +35,14 @@ import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
+import dev.dixmk.minepreggo.world.pregnancy.PostPregnancyData;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 
-public class TamableHumanoidCreeperGirl extends AbstractTamableHumanoidCreeperGirl<PreggoMobSystem<TamableHumanoidCreeperGirl>> {
-	
-	private static final UUID SPEED_MODIFIER_TIRENESS_UUID = UUID.fromString("fa6a4626-c325-4835-8259-69577a99c9c8");
-	private static final AttributeModifier SPEED_MODIFIER_TIRENESS = new AttributeModifier(SPEED_MODIFIER_TIRENESS_UUID, "Tireness speed boost", -0.1D, AttributeModifier.Operation.MULTIPLY_BASE);
-	private static final UUID MAX_HEALTH_MODIFIER_TIRENESS_UUID = UUID.fromString("94d78c8b-0983-4ae4-af65-8e477ee52f2e");
-	private static final AttributeModifier MAX_HEALTH_MODIFIER_TIRENESS = new AttributeModifier(MAX_HEALTH_MODIFIER_TIRENESS_UUID, "Tireness max health", -0.3D, AttributeModifier.Operation.MULTIPLY_BASE);
-	
+public class TamableHumanoidCreeperGirl extends AbstractTamableHumanoidCreeperGirl<PreggoMobSystem<TamableHumanoidCreeperGirl>> {	
 	// These both EntityDataAccessor works like bringing data from server to client using FemaleEntityImpl field as source of truth
 	private static final EntityDataAccessor<Optional<PostPregnancy>> DATA_POST_PREGNANCY = SynchedEntityData.defineId(TamableHumanoidCreeperGirl.class, MinepreggoModEntityDataSerializers.OPTIONAL_POST_PREGNANCY);
-	protected static final EntityDataAccessor<Boolean> DATA_PREGNANT = SynchedEntityData.defineId(TamableHumanoidCreeperGirl.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> DATA_PREGNANT = SynchedEntityData.defineId(TamableHumanoidCreeperGirl.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Integer> DATA_POST_PARTUM_LACTATION = SynchedEntityData.defineId(TamableHumanoidCreeperGirl.class, EntityDataSerializers.INT);
 	
 	private final FemaleFertilitySystem<TamableHumanoidCreeperGirl> fertilitySystem;
 	
@@ -77,6 +70,11 @@ public class TamableHumanoidCreeperGirl extends AbstractTamableHumanoidCreeperGi
 					PreggoMobHelper.initPregnancy(creeperGirl);
 				}			
 			}
+
+			@Override
+			protected void afterPostPregnancy() {
+				PregnancySystemHelper.removePostPregnancyNeft(preggoMob);			
+			}
 		};
 	}
 	
@@ -91,6 +89,7 @@ public class TamableHumanoidCreeperGirl extends AbstractTamableHumanoidCreeperGi
 		super.defineSynchedData();
 		this.entityData.define(DATA_POST_PREGNANCY, Optional.empty());
 		this.entityData.define(DATA_PREGNANT, false);
+		this.entityData.define(DATA_POST_PARTUM_LACTATION, 0);
 	}
 	
 	@Override
@@ -98,11 +97,7 @@ public class TamableHumanoidCreeperGirl extends AbstractTamableHumanoidCreeperGi
 		super.readAdditionalSaveData(compound);
 		this.entityData.set(DATA_PREGNANT, this.defaultFemaleEntityImpl.isPregnant());
         this.entityData.set(DATA_POST_PREGNANCY, Optional.ofNullable(this.defaultFemaleEntityImpl.getPostPregnancyPhase()));
-	}
-	
-	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
+        this.entityData.set(DATA_POST_PARTUM_LACTATION, this.defaultFemaleEntityImpl.getPostPregnancyData().map(PostPregnancyData::getPostPartumLactation).orElse(0));
 	}
 	
 	@Override
@@ -113,20 +108,27 @@ public class TamableHumanoidCreeperGirl extends AbstractTamableHumanoidCreeperGi
     	  return;
       }
       
-      fertilitySystem.onServerTick();
-      
-      if (getPostPregnancyPhase() != null) {	  
-    	  if (getPostPregnancyTimer() > 7000) {
-    		  setPostPregnancyTimer(0);
-    		  tryRemovePostPregnancyPhase();
-    		  removePostPregnancyAttibutes(this);
-    	  }
-    	  else {
-    		  incrementPostPregnancyTimer();
-    	  }   	  
-      } 
+      fertilitySystem.onServerTick();  
 	}
-
+	
+	@Override
+	public InteractionResult mobInteract(Player sourceentity, InteractionHand hand) {				
+		var retval = fertilitySystem.onRightClick(sourceentity);			
+		if (retval == InteractionResult.SUCCESS || retval == InteractionResult.CONSUME) {
+			return retval;
+		}			
+		return super.mobInteract(sourceentity, hand);
+	}
+	
+	public static AttributeSupplier.Builder createAttributes() {
+		return getBasicAttributes(0.24);
+	}
+	
+	/*
+	 * START WARNING: These methods use EntityDataAccessor as source of truth for FemaleEntityImpl fields that need to be synched to client
+	 * they will be removed from FemaleEntityImpl in future versions and replaced with similar methods.
+	 * */
+	
 	@Override
 	public boolean tryImpregnate(@Nonnegative int fertilizedEggs, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father) {
 		boolean result = this.defaultFemaleEntityImpl.tryImpregnate(fertilizedEggs, father);
@@ -139,10 +141,6 @@ public class TamableHumanoidCreeperGirl extends AbstractTamableHumanoidCreeperGi
 	@Override
 	public boolean isPregnant() {
 		return this.entityData.get(DATA_PREGNANT);
-	}
-	
-	public static AttributeSupplier.Builder createAttributes() {
-		return getBasicAttributes(0.24);
 	}
 	
 	@Override
@@ -168,6 +166,22 @@ public class TamableHumanoidCreeperGirl extends AbstractTamableHumanoidCreeperGi
 		return this.entityData.get(DATA_POST_PREGNANCY).orElse(null);
 	}
 	
+	@Override
+	public int getPostPartumLactation() {
+		return this.entityData.get(DATA_POST_PARTUM_LACTATION);
+	}
+	
+	@Override
+	public void setPostPartumLactation(int amount) {
+		super.setPostPartumLactation(amount);
+		this.entityData.set(DATA_POST_PARTUM_LACTATION, amount);
+	}
+	
+	// END WARNING
+	
+	
+	
+	
 	public static<E extends AbstractTamablePregnantCreeperGirl<?,?>> void onPostPartum(E source) {
 		if (source.level() instanceof ServerLevel serverLevel) {
 			TamableHumanoidCreeperGirl creeperGirl = MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(source.getX(), source.getY(), source.getZ()), MobSpawnType.CONVERSION);	
@@ -178,8 +192,13 @@ public class TamableHumanoidCreeperGirl extends AbstractTamableHumanoidCreeperGi
 			PreggoMobHelper.copyTamableData(source, creeperGirl);		
 			PreggoMobHelper.transferInventory(source, creeperGirl);
 			PreggoMobHelper.transferAttackTarget(source, creeperGirl);	
-			creeperGirl.tryActivatePostPregnancyPhase(PostPregnancy.PARTUM);
-			addPostPregnancyAttibutes(creeperGirl);
+			
+			if (!creeperGirl.tryActivatePostPregnancyPhase(PostPregnancy.PARTUM)) {
+                creeperGirl.discard();
+				throw new IllegalStateException("Failed to activate PostPregnancy.PARTUM phase on TamableHumanoidCreeperGirl after giving birth");
+			}
+			
+			PregnancySystemHelper.applyPostPregnancyNerf(creeperGirl);
 		}
 	}
 	
@@ -193,22 +212,13 @@ public class TamableHumanoidCreeperGirl extends AbstractTamableHumanoidCreeperGi
 			PreggoMobHelper.copyTamableData(source, creeperGirl);		
 			PreggoMobHelper.transferInventory(source, creeperGirl);
 			PreggoMobHelper.transferAttackTarget(source, creeperGirl);
-			creeperGirl.tryActivatePostPregnancyPhase(PostPregnancy.MISCARRIAGE);
-			addPostPregnancyAttibutes(creeperGirl);
+			
+			if (!creeperGirl.tryActivatePostPregnancyPhase(PostPregnancy.MISCARRIAGE)) {
+                creeperGirl.discard();
+                throw new IllegalStateException("Failed to activate PostPregnancy.MISCARRIAGE phase on TamableHumanoidCreeperGirl after miscarriage");
+			}
+			
+			PregnancySystemHelper.applyPostPregnancyNerf(creeperGirl);
 		}
-	}
-	
-	private static void addPostPregnancyAttibutes(TamableHumanoidCreeperGirl creeperGirl) {
-		AttributeInstance speed = creeperGirl.getAttribute(Attributes.MOVEMENT_SPEED);
-		AttributeInstance maxHealth = creeperGirl.getAttribute(Attributes.MAX_HEALTH);	
-		speed.addTransientModifier(TamableHumanoidCreeperGirl.SPEED_MODIFIER_TIRENESS);	
-		maxHealth.addTransientModifier(TamableHumanoidCreeperGirl.MAX_HEALTH_MODIFIER_TIRENESS);	
-	}
-	
-	private void removePostPregnancyAttibutes(TamableHumanoidCreeperGirl creeperGirl) {
-		AttributeInstance speed = creeperGirl.getAttribute(Attributes.MOVEMENT_SPEED);
-		AttributeInstance maxHealth = creeperGirl.getAttribute(Attributes.MAX_HEALTH);	
-		speed.removeModifier(TamableHumanoidCreeperGirl.SPEED_MODIFIER_TIRENESS);	
-		maxHealth.removeModifier(TamableHumanoidCreeperGirl.MAX_HEALTH_MODIFIER_TIRENESS);	
 	}
 }

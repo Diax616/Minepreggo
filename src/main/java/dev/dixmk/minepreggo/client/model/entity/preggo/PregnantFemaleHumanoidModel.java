@@ -1,11 +1,17 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo;
 
+import java.util.function.Predicate;
+
+import javax.annotation.Nullable;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -53,4 +59,18 @@ public class PregnantFemaleHumanoidModel<E extends LivingEntity> extends Humanoi
 		this.moveHead(entity, netHeadYaw, headPitch);
 		this.hat.copyFrom(this.head);
 	}
+	
+	protected void tryHideBoobs(E entity, @Nullable Predicate<Item> hideBoobs) {
+    	var armor = entity.getItemBySlot(EquipmentSlot.CHEST);
+    	if (!armor.isEmpty()) {
+    		boolean flag = true;
+    		if (hideBoobs != null) {
+    			flag = hideBoobs.test(armor.getItem());
+    		}
+    		if (boobs.visible && flag) boobs.visible = false;
+    	}
+    	else if (!boobs.visible) {
+    		boobs.visible = true;
+    	}
+    }
 }

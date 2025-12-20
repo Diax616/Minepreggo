@@ -3,6 +3,7 @@ package dev.dixmk.minepreggo.client.model.entity.preggo.zombie;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.model.entity.preggo.PregnantFemaleHumanoidModel;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractZombieGirl;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -43,6 +44,11 @@ public abstract class AbstractZombieGirlModel<E extends AbstractZombieGirl> exte
 		this.animator = animator;
 	}
 
+	@Override
+	public void setupAnim(E entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+		this.tryHideBoobs(entity, PregnancySystemHelper::shouldBoobsBeHidden);
+	}
+	
 	protected static void createBasicBodyLayer(PartDefinition partdefinition, float extraLeftArmRotationY, float extraRightArmRotationY) {
 		partdefinition.addOrReplaceChild("head", CubeListBuilder.create()
 		.texOffs(0, 0).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));

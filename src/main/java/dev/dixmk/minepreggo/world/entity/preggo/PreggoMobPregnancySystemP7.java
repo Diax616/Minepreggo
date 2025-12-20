@@ -16,7 +16,7 @@ public abstract class PreggoMobPregnancySystemP7<E extends PreggoMob
 	}
 	
 	@Override
-	protected void initPregnancySymptomsTimers() {
+	protected void initPregnancyTimers() {
 		totalTicksOfCraving = MinepreggoModConfig.getTotalTicksOfCravingP7();
 		totalTicksOfMilking = MinepreggoModConfig.getTotalTicksOfMilkingP7();
 		totalTicksOfBellyRubs = MinepreggoModConfig.getTotalTicksOfBellyRubsP7();

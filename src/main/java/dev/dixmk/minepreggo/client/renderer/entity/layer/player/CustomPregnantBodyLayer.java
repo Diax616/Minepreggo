@@ -18,6 +18,8 @@ import dev.dixmk.minepreggo.client.model.entity.player.CustomPregnantBodyP6Model
 import dev.dixmk.minepreggo.client.model.entity.player.CustomPregnantBodyP7Model;
 import dev.dixmk.minepreggo.client.model.entity.player.CustomPregnantBodyP8Model;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
+import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -40,7 +42,7 @@ public class CustomPregnantBodyLayer extends AbstractPregnantBodyLayer {
 	private final CustomPregnantBodyP6Model pregnantBodyP6Model;
 	private final CustomPregnantBodyP7Model pregnantBodyP7Model;
 	private final CustomPregnantBodyP8Model pregnantBodyP8Model;
-		
+
 	public CustomPregnantBodyLayer(RenderLayerParent<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> parent, EntityModelSet modelSet) {
 		super(parent);
         this.boobsModel = new CustomBoobsModel(modelSet.bakeLayer(CustomBoobsModel.LAYER_LOCATION));
@@ -69,14 +71,15 @@ public class CustomPregnantBodyLayer extends AbstractPregnantBodyLayer {
     		cap.getFemaleData().ifPresent(femaleData -> {				
     	        PlayerModel<AbstractClientPlayer> playerModel = this.getParentModel();       
     	        final VertexConsumer playerVertexConsumer = buffer.getBuffer(RenderType.entityCutoutNoCull(player.getSkinTextureLocation()));       
-    	        final var pregnancyPhase = femaleData.getPregnancySystem().getCurrentPregnancyStage();	        
-
-    	        if (pregnancyPhase != null) {
+    	       
+    	        if (femaleData.isPregnant()) {
+        	        final var pregnancyPhase = femaleData.getPregnancySystem().getCurrentPregnancyStage();	        
+  	      	
         	        Consumer<AbstractPregnantBodyModel> renderBellyAndBoobs = model -> {
         	        	model.setupAnim(player, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
         	        	model.body.copyFrom(playerModel.body);
         	        	model.renderToBuffer(poseStack, playerVertexConsumer, packedLight, LivingEntityRenderer.getOverlayCoords(player, 0.0F), 1.0F, 1.0F, 1.0F, 1.0F);
-        	        };    	        
+        	        };     
         	        Consumer<AbstractHeavyPregnantBodyModel> renderBellyAndBoobsAndButt = model -> {  	
         	        	model.setupAnim(player, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
         	        	model.body.copyFrom(playerModel.body);
@@ -87,7 +90,7 @@ public class CustomPregnantBodyLayer extends AbstractPregnantBodyLayer {
         	        };
        
         	        switch (pregnancyPhase) {
-    				case P0: {
+    				case P0: {			
         	        	renderBellyAndBoobs.accept(pregnantBodyP0Model);
     					return;
     				}
@@ -126,8 +129,17 @@ public class CustomPregnantBodyLayer extends AbstractPregnantBodyLayer {
     				default:
     					throw new IllegalArgumentException("Unexpected value: " + pregnancyPhase);
     				}  
-    	        }
-    	        else {
+    	        } 	        
+    	        else {	      	
+					femaleData.getPostPregnancyData().ifPresent(post -> {
+						if (post.getPostPregnancy() == PostPregnancy.PARTUM && post.getPostPartumLactation() >= PregnancySystemHelper.ACTIVATE_MILKING_SYMPTOM) {
+							boobsModel.boobs.y -= 0.42F;		
+							boobsModel.boobs.xScale = 1.4F;
+							boobsModel.boobs.yScale = 1.2F;
+							boobsModel.boobs.zScale = 1.3F;	
+						}
+					});
+    	        						
     	        	boobsModel.setupAnim(player, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
     	        	boobsModel.body.copyFrom(playerModel.body);
     	        	boobsModel.renderToBuffer(poseStack, playerVertexConsumer, packedLight, LivingEntityRenderer.getOverlayCoords(player, 0.0F), 1.0F, 1.0F, 1.0F, 1.0F);

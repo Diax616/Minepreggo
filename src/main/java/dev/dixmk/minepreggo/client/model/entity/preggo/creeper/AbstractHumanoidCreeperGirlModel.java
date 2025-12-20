@@ -3,6 +3,7 @@ package dev.dixmk.minepreggo.client.model.entity.preggo.creeper;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.model.entity.preggo.PregnantFemaleHumanoidModel;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractCreeperGirl;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -52,6 +53,11 @@ public abstract class AbstractHumanoidCreeperGirlModel<E extends AbstractCreeper
 		super(root);
 		this.root = root;
 		this.animator = animator;
+	}
+	
+	@Override
+	public void setupAnim(E entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+		this.tryHideBoobs(entity, PregnancySystemHelper::shouldBoobsBeHidden);
 	}
 
 	protected static void createBasicBodyLayer(PartDefinition partdefinition, float extraLeftArmRotationZ, float extraRightArmRotationZ) {	
@@ -347,4 +353,6 @@ public abstract class AbstractHumanoidCreeperGirlModel<E extends AbstractCreeper
 
         return LayerDefinition.create(mesh, 64, 32);
     }
+    
+    
 }

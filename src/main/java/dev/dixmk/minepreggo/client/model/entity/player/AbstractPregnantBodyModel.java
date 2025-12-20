@@ -6,10 +6,12 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.dixmk.minepreggo.client.jiggle.BellyJigglePhysics;
 import dev.dixmk.minepreggo.client.jiggle.WrapperBoobsJiggle;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.world.item.IMaternityArmor;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.entity.AnimationState;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -53,8 +55,6 @@ public abstract class AbstractPregnantBodyModel extends HierarchicalModel<Abstra
 		if (entity.level().isClientSide && !this.loopAnimationState.isStarted()) {
 			this.loopAnimationState.start(entity.tickCount);
 		}
-							
-		boobsJiggle.setupAnim(entity, boobs, leftBoob, rightBoob);
 				
 		if (entity.hasEffect(MinepreggoModMobEffects.LACTATION.get())) {
 			this.boobs.y += milkingBoobsYPos;		
@@ -63,9 +63,27 @@ public abstract class AbstractPregnantBodyModel extends HierarchicalModel<Abstra
 			this.boobs.zScale = milkingBoobsZScale;	
 		} 
 		
-		bellyJiggle.setupAnim(entity, belly, simpleBellyJiggle);
-		
-		animBelly(entity, ageInTicks);
+		final var armor = entity.getItemBySlot(EquipmentSlot.CHEST);
+			
+		if (armor.isEmpty()) {
+			bellyJiggle.setupAnim(entity, belly, simpleBellyJiggle);
+			boobsJiggle.setupAnim(entity, boobs, leftBoob, rightBoob);
+			animBelly(entity, ageInTicks);
+			if (!boobs.visible) {
+	    		boobs.visible = true;
+	    	}
+		}
+		else { 		
+			if (armor.getItem() instanceof IMaternityArmor maternityArmor && maternityArmor.areBoobsExposed()) {
+				boobsJiggle.setupAnim(entity, boobs, leftBoob, rightBoob);		
+				if (!boobs.visible) {
+		    		boobs.visible = true;
+		    	}
+			}
+			else if (boobs.visible) {
+	    		boobs.visible = false;
+	    	}
+		}
 	}
 	
 	protected void animBelly(AbstractClientPlayer entity, float ageInTicks) {

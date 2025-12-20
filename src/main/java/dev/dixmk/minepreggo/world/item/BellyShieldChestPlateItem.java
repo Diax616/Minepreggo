@@ -75,7 +75,7 @@ public abstract class BellyShieldChestPlateItem extends ArmorItem implements IMa
 	}
 	
 	@Override
-	public boolean canSupportLactatingBoobs() {
+	public boolean areBoobsExposed() {
 		return true;
 	}
 	

@@ -35,8 +35,8 @@ public abstract class AbstractHeavyPregnantBodyModel extends AbstractPregnantBod
 	}
 
 	@Override
-	public void setupAnim(AbstractClientPlayer entity, float p_102619_, float p_102620_, float p_102621_, float p_102622_, float p_102623_) {
-		super.setupAnim(entity, p_102619_, p_102620_, p_102621_, p_102622_, p_102623_);
+	public void setupAnim(AbstractClientPlayer entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {		
+		super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 		buttsJiggle.setupAnim(entity, leftbutt, rightbutt);
 	}
 	

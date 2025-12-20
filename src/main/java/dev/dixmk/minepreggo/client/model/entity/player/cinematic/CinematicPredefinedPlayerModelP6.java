@@ -1,7 +1,7 @@
 package dev.dixmk.minepreggo.client.model.entity.player.cinematic;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.client.animation.preggo.HumanoidFemaleAnimation;
+import dev.dixmk.minepreggo.client.animation.preggo.BellyAnimation;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -91,7 +91,7 @@ public class CinematicPredefinedPlayerModelP6 extends HierarchicalModel<Abstract
 		
 		entity.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> {
 			if (cap.isCinamatic()) {
-				this.animate(this.loopAnimationState, HumanoidFemaleAnimation.Cinematic.SEX_COW_GIRL, ageInTicks);
+				this.animate(this.loopAnimationState, BellyAnimation.Cinematic.SEX_COW_GIRL, ageInTicks);
 			}
 		});
 	}

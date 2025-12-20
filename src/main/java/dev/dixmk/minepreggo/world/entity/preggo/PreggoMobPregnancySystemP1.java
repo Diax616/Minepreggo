@@ -44,14 +44,15 @@ public abstract class PreggoMobPregnancySystemP1<
 	private final Set<PregnancySymptom> validPregnancySymptoms = EnumSet.noneOf(PregnancySymptom.class);
 
 	protected @Nonnegative int totalTicksOfCraving = MinepreggoModConfig.getTotalTicksOfCravingP1();
-	
+	protected @Nonnegative float morningSicknessProb = PregnancySystemHelper.LOW_MORNING_SICKNESS_PROBABILITY;
+
 	protected PreggoMobPregnancySystemP1(@Nonnull E preggoMob) {
 		super(preggoMob);
-		initPregnancySymptomsTimers();
+		initPregnancyTimers();
 		addNewValidPregnancySymptom(PregnancySymptom.CRAVING);
 	}
 	
-	protected void initPregnancySymptomsTimers() {
+	protected void initPregnancyTimers() {
 
 	}
 	
@@ -155,11 +156,11 @@ public abstract class PreggoMobPregnancySystemP1<
         	// TODO: Babies itemstacks are only removed if player's hands are empty. It should handle stacking unless itemstack is a baby item.
         	deadBabiesItemStacks.removeIf(baby -> {
         		if (pregnantEntity.getItemInHand(InteractionHand.MAIN_HAND).isEmpty()) {
-        			PreggoMobHelper.setItemstackInHand(pregnantEntity, InteractionHand.MAIN_HAND, baby);
+        			PreggoMobHelper.replaceAndDropItemstackInHand(pregnantEntity, InteractionHand.MAIN_HAND, baby);
             		return true;
         		}
         		else if (pregnantEntity.getItemInHand(InteractionHand.OFF_HAND).isEmpty()) {
-        			PreggoMobHelper.setItemstackInHand(pregnantEntity, InteractionHand.OFF_HAND, baby);
+        			PreggoMobHelper.replaceAndDropItemstackInHand(pregnantEntity, InteractionHand.OFF_HAND, baby);
             		return true;
         		}
         		return false;
@@ -273,7 +274,7 @@ public abstract class PreggoMobPregnancySystemP1<
 	
 	@Override
 	protected boolean tryInitRandomPregnancyPain() {
-	    if (randomSource.nextFloat() < PregnancySystemHelper.LOW_MORNING_SICKNESS_PROBABILITY) {
+	    if (randomSource.nextFloat() < morningSicknessProb) {
 	        pregnantEntity.setPregnancyPain(PregnancyPain.MORNING_SICKNESS);
 	        pregnantEntity.resetPregnancyPainTimer();
 	        return true;

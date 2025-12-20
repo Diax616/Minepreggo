@@ -29,7 +29,7 @@ public class ZombieGirlP0MainScreen extends AbstractZombieGirlMainScreen<Tamable
 		
 		guiGraphics.blit(DEFAULT_P0_MAIN_GUI_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
 	
-		this.preggoMob.ifPresent(zombieGirl -> ScreenHelper.renderZombieGirlMainScreen(guiGraphics, this.leftPos, this.topPos, zombieGirl));
+		this.preggoMob.ifPresent(zombieGirl -> ScreenHelper.renderZombieGirlP0MainGUI(guiGraphics, this.leftPos, this.topPos, zombieGirl));
 		
 		RenderSystem.disableBlend();
 	}

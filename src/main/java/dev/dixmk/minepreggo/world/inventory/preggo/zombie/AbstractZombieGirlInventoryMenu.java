@@ -42,21 +42,21 @@ public abstract class AbstractZombieGirlInventoryMenu<E extends AbstractTamableZ
 					var armor = itemstack.getItem();
 					if (zombieGirl instanceof IPregnancySystemHandler pregnancySystem) {
 						final var pregnancyPhase = pregnancySystem.getCurrentPregnancyStage();					
-						if (!PregnancySystemHelper.canUseChestplate(armor, pregnancyPhase)) {
+						if (!PregnancySystemHelper.canUseChestplate(armor, pregnancyPhase, false)) {
 							MessageHelper.warnFittedArmor((Player) zombieGirl.getOwner(), zombieGirl, pregnancyPhase);
 			                flag = false;
 						}	
-						if (!PregnancySystemHelper.canUseChestPlateInLactation(zombieGirl, armor)) {
-							MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) zombieGirl.getOwner()), Component.translatable("%s's lactating boobs don't fit in this armor", zombieGirl.getSimpleName()));
+						else if (!PreggoMobHelper.canUseChestPlateInLactation(pregnancySystem, armor)) {
+							MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) zombieGirl.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.armor.message.lactating", zombieGirl.getSimpleName()));
 			                flag = false;
 						}
 					}					
-					else {                      
-						flag = PreggoMobHelper.canUseChestplate(armor);
-						if (!flag) {
-							MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) zombieGirl.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.armor.message.chestplate_does_not_fit.boobs", zombieGirl.getSimpleName()));
+					else {                      							
+						if (!PreggoMobHelper.canUseChestPlateInLactation(zombieGirl, armor)) {
+							MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) zombieGirl.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.armor.message.lactating", zombieGirl.getSimpleName()));
+							flag = false;
 						}
-					}	
+					}
 			
 					return flag;			
 				}

@@ -10,8 +10,10 @@ import dev.dixmk.minepreggo.network.capability.PlayerPregnancyEffectsImpl;
 import dev.dixmk.minepreggo.network.capability.PlayerPregnancySystemImpl;
 import dev.dixmk.minepreggo.world.pregnancy.AbstractPregnancySystem;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EquipmentSlot;
 
 public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlayer> {
 	
@@ -176,6 +178,22 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 		pregnancySystem.setCurrentPregnancyStage(next);
 		pregnancySystem.resetPregnancyTimer();
 		pregnancySystem.resetDaysPassed();
+		pregnancySystem.sync(pregnantEntity);
+		
+		if (next.compareTo(PregnancyPhase.P0) > 0) {		
+			var chestplate = pregnantEntity.getItemBySlot(EquipmentSlot.CHEST);
+			var legginds = pregnantEntity.getItemBySlot(EquipmentSlot.LEGS);
+
+			if (!chestplate.isEmpty()
+					&& (!PregnancySystemHelper.canUseChestplate(chestplate.getItem(), next) || !PlayerHelper.canUseChestPlateInLactation(pregnantEntity, chestplate.getItem()))) {			
+				PlayerHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.CHEST);
+			}
+			
+			if (!legginds.isEmpty()
+					&& !PregnancySystemHelper.canUseLegging(legginds.getItem(), next)) {
+				PlayerHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.LEGS);
+			}
+		}
 		
 		MinepreggoMod.LOGGER.debug("Player {} advanced to next pregnancy phase: {}",
 				pregnantEntity.getGameProfile().getName(), next);	

@@ -2,6 +2,7 @@ package dev.dixmk.minepreggo.client.model.entity.preggo.creeper;
 
 import dev.dixmk.minepreggo.client.animation.preggo.CreeperGirlAnimation;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableHumanoidCreeperGirl;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraftforge.api.distmarker.Dist;
@@ -21,7 +22,7 @@ public class TamableHumanoidCreeperGirlModel extends AbstractTamableHumanoidCree
 			@Override
 			public void setupAnim(TamableHumanoidCreeperGirl creeperGirl, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 				this.root().getAllParts().forEach(ModelPart::resetPose);
-						
+				
 			    if (creeperGirl.isAttacking()) {
 				    this.animate(creeperGirl.attackAnimationState, CreeperGirlAnimation.ATTACK, ageInTicks, 1f);	
 			    }
@@ -51,5 +52,16 @@ public class TamableHumanoidCreeperGirlModel extends AbstractTamableHumanoidCree
 				}
 			}	
 		});
+	}
+	
+	@Override
+	public void setupAnim(TamableHumanoidCreeperGirl creeperGirl, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+		super.setupAnim(creeperGirl, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+		if (creeperGirl.getPostPartumLactation() >= PregnancySystemHelper.ACTIVATE_MILKING_SYMPTOM) {
+			this.boobs.y -= 0.34F;
+			this.boobs.xScale = 1.2F;
+			this.boobs.zScale = 1.1F;
+			this.boobs.yScale = 1.2F;
+		}
 	}
 }

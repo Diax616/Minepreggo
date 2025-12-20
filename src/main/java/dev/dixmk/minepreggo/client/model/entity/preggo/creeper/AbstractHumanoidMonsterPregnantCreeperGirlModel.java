@@ -1,7 +1,7 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.creeper;
 
 import dev.dixmk.minepreggo.client.animation.preggo.CreeperGirlAnimation;
-import dev.dixmk.minepreggo.client.animation.preggo.HumanoidFemaleAnimation;
+import dev.dixmk.minepreggo.client.animation.preggo.BellyAnimation;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterPregnantCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterPregnantHumanoidCreeperGirl;
 import net.minecraft.client.model.HierarchicalModel;
@@ -24,6 +24,7 @@ public abstract class AbstractHumanoidMonsterPregnantCreeperGirlModel<E extends 
 	
 	@Override
 	public void setupAnim(E entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+		super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 		animator.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);			
 		if (entity.hasPregnancyPain()) {
 			this.hat.copyFrom(this.head);
@@ -46,7 +47,7 @@ public abstract class AbstractHumanoidMonsterPregnantCreeperGirlModel<E extends 
 				this.root().getAllParts().forEach(ModelPart::resetPose);
 					
 			    if (creeperGirl.getItemBySlot(EquipmentSlot.CHEST).isEmpty()) {
-			    	this.animate(creeperGirl.loopAnimationState, HumanoidFemaleAnimation.MEDIUM_BELLY_INFLATION, ageInTicks, 1f);
+			    	this.animate(creeperGirl.loopAnimationState, BellyAnimation.MEDIUM_BELLY_INFLATION, ageInTicks, 1f);
 			    }
 								
 			    if (creeperGirl.isAttacking()) {

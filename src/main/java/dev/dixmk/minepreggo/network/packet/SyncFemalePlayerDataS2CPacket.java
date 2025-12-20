@@ -7,6 +7,7 @@ import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.network.capability.FemalePlayerImpl;
 import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
+import dev.dixmk.minepreggo.world.pregnancy.PostPregnancyData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
@@ -22,10 +23,10 @@ public record SyncFemalePlayerDataS2CPacket(UUID source, FemalePlayerImpl.Client
 		
 		UUID source = buffer.readUUID();
 		boolean pregnant = buffer.readBoolean();
-		PostPregnancy postPregnancy = null;
+		PostPregnancyData postPregnancy = null;
 		
 		if (buffer.readBoolean()) {
-			postPregnancy = buffer.readEnum(PostPregnancy.class);
+			postPregnancy = new PostPregnancyData(buffer.readEnum(PostPregnancy.class));
 		}
 		
 		float fertility = buffer.readFloat();
@@ -41,7 +42,9 @@ public record SyncFemalePlayerDataS2CPacket(UUID source, FemalePlayerImpl.Client
 		buffer.writeBoolean(message.data.postPregnancy() != null);
 		
 		if (message.data.postPregnancy() != null) {
-			buffer.writeEnum(message.data.postPregnancy());
+			var post = message.data.postPregnancy();
+			buffer.writeEnum(post.getPostPregnancy());
+			buffer.writeInt(post.getPostPartumLactation());
 		}
 		
 		buffer.writeFloat(message.data.fertility());

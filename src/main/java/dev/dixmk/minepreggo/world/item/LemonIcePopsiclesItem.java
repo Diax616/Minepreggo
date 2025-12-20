@@ -9,7 +9,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.entity.player.Player;
 
-import org.checkerframework.checker.index.qual.NonNegative;
+import javax.annotation.Nonnegative;
 
 import dev.dixmk.minepreggo.world.pregnancy.Craving;
 import net.minecraft.world.entity.LivingEntity;
@@ -34,7 +34,7 @@ public class LemonIcePopsiclesItem extends Item implements IItemCraving {
 	}
 	
 	@Override
-	public @NonNegative int getGratification() {
+	public @Nonnegative int getGratification() {
 		return 5;
 	}
 

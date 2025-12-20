@@ -13,10 +13,12 @@ import net.minecraftforge.registries.ForgeRegistries;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
+import dev.dixmk.minepreggo.server.ServerPlayerAnimationManager;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
@@ -32,12 +34,12 @@ public class Miscarriage extends AbstractPlayerPregnancyPain {
 	}
 	
 	@Override
-	public void addAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {		
-		
+	public void addAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {			
 		if (!PlayerHelper.isPlayerValid(entity)) return;
-		
-
+	
 		if (!entity.level().isClientSide) {
+	        ServerPlayerAnimationManager.getInstance().triggerAnimation((ServerPlayer) entity, "miscarriage");
+	
 			entity.hurt(new DamageSource(entity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.GENERIC)), 1);
 
 			entity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, -1, 1, false, false));	
@@ -61,15 +63,15 @@ public class Miscarriage extends AbstractPlayerPregnancyPain {
 	
 	@Override
 	public void removeAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {
-		super.removeAttributeModifiers(entity, attributeMap, amplifier);
-
 		if (!PlayerHelper.isPlayerValid(entity)) return;
-			
+					
 		if (!entity.level().isClientSide) {		
+			ServerPlayerAnimationManager.getInstance().stopAnimation((ServerPlayer) entity);
+			
 			entity.removeEffect(MobEffects.WEAKNESS);	
 			entity.removeEffect(MinepreggoModMobEffects.FULL_OF_CREEPERS.get());
 			entity.removeEffect(MinepreggoModMobEffects.FULL_OF_ZOMBIES.get());
-					
+			
 			AttributeInstance speedAttr = entity.getAttribute(Attributes.MOVEMENT_SPEED);
 			AttributeInstance attackSpeedAttr = entity.getAttribute(Attributes.ATTACK_SPEED);
 			if (speedAttr != null && speedAttr.getModifier(SPEED_MODIFIER_UUID) != null) {

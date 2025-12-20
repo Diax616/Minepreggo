@@ -12,20 +12,23 @@ import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.EquipmentSlot;
 
 public class PlayerPregnancySystemP3 extends PlayerPregnancySystemP2 {
 
 	protected @Nonnegative int totalTicksOfBellyRubs = MinepreggoModConfig.getTotalTicksOfBellyRubsP3();
-	
+	protected @Nonnegative float fetalMovementProb = PregnancySystemHelper.LOW_PREGNANCY_PAIN_PROBABILITY;
+
 	public PlayerPregnancySystemP3(@NonNull ServerPlayer player) {
 		super(player);
 		addNewValidPregnancySymptoms(PregnancySymptom.BELLY_RUBS);
 	}
 
 	@Override
-	protected void initPregnancySymptomsTimers() {
+	protected void initPregnancyTimers() {
 		totalTicksOfCraving = MinepreggoModConfig.getTotalTicksOfCravingP3();
 		totalTicksOfMilking = MinepreggoModConfig.getTotalTicksOfMilkingP3();
+		morningSicknessProb = PregnancySystemHelper.HIGH_MORNING_SICKNESS_PROBABILITY;
 	}
 	
 	@Override
@@ -80,25 +83,22 @@ public class PlayerPregnancySystemP3 extends PlayerPregnancySystemP2 {
 	
 	@Override
 	protected boolean tryInitRandomPregnancyPain() {
-		boolean flag = false;
-		
-		if (randomSource.nextFloat() < PregnancySystemHelper.LOW_MORNING_SICKNESS_PROBABILITY) {
-			pregnancySystem.setPregnancyPain(PregnancyPain.MORNING_SICKNESS);
-			pregnancySystem.sync(pregnantEntity);		
-			flag = true;
+		if (super.tryInitRandomPregnancyPain()) {
+			return true;
 		}	
-		else if (randomSource.nextFloat() < PregnancySystemHelper.LOW_PREGNANCY_PAIN_PROBABILITY) {
+		
+		if (randomSource.nextFloat() < fetalMovementProb) {
 			pregnancySystem.setPregnancyPain(PregnancyPain.FETAL_MOVEMENT);
 			pregnancySystem.sync(pregnantEntity);
-			flag = true;
-		}	
-		
-		if (flag) {
+			
+			PlayerHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.CHEST);
+			
 			MinepreggoMod.LOGGER.debug("Player {} has developed pregnancy pain: {}",
 					pregnantEntity.getGameProfile().getName(), pregnancySystem.getPregnancyPain());
-		}
-		
-		return flag;
+			return true;
+		}	
+
+		return false;
 	}
 	
 	@Override

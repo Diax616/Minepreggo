@@ -36,7 +36,6 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> {
 	
 	protected final RandomSource randomSource;	
 	protected final E preggoMob;
-	protected int autoFeedingCooldownTimer = 0;
 	protected int healingCooldownTimer = 0;
 	protected final int totalTicksOfHungry;
 	protected final int totalTicksOfSexualAppetive;
@@ -76,7 +75,7 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> {
 	    final var currentHungry = preggoMob.getFullness();
 		if (currentHungry >= MIN_FULLNESS_TO_HEAL
 				&& preggoMob.getHealth() < preggoMob.getMaxHealth()) {     	
-			if (healingCooldownTimer >= 40) {
+			if (healingCooldownTimer >= 20) {
 		 	preggoMob.heal(1F);
 		 	preggoMob.setFullness(currentHungry - 1);
 		 	healingCooldownTimer = 0;

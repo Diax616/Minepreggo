@@ -76,14 +76,18 @@ public class MessageHelper {
 	}
 
     public static void sendTo(ServerPlayer player, Component message) {
-        if (player != null && !player.level().isClientSide) {
-            player.sendSystemMessage(message);
-        }
+    	sendTo(player, message, false);
     }
       
     public static void sendTo(ServerPlayer player, PreggoMob preggoMob, Component message) {
         if (player != null && preggoMob.isOwnedBy(player) && !player.level().isClientSide) {
-            player.sendSystemMessage(message);
+            sendTo(player, message, false);
+        }
+    }
+    
+    public static void sendTo(ServerPlayer player, Component message, boolean bar) {
+        if (player != null && !player.level().isClientSide) {
+            player.displayClientMessage(message, bar);
         }
     }
 }

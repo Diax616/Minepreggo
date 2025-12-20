@@ -36,6 +36,11 @@ public class PlayerPregnancyEffectsImpl implements IPlayerPregnancyEffectsHandle
 	private int bellyRubs = 0;
 	private int horny = 0;
 	
+	// they do not need to be saved in a NBT
+	private int numOfJumps = 0;
+	private int sprintingTimer = 0;
+	private int sneakingTimer = 0;
+	
 	private Optional<ImmutablePair<Craving, Species>> typeOfCraving = Optional.empty();
 	
 	@Override
@@ -258,6 +263,51 @@ public class PlayerPregnancyEffectsImpl implements IPlayerPregnancyEffectsHandle
 		this.typeOfCraving = Optional.empty();	
 	}
 	
+	@Override
+	public void incrementSprintingTimer() {
+		this.sprintingTimer++;
+	}
+
+	@Override
+	public void resetSprintingTimer() {
+		this.sprintingTimer = 0;
+	}
+
+	@Override
+	public int getSprintingTimer() {
+		return this.sprintingTimer;
+	}
+
+	@Override
+	public void incrementNumOfJumps() {
+		this.numOfJumps++;
+	}
+
+	@Override
+	public void resetNumOfJumps() {
+		this.numOfJumps = 0;
+	}
+
+	@Override
+	public int getNumOfJumps() {
+		return this.numOfJumps;
+	}
+
+	@Override
+	public int getSneakingTimer() {
+		return this.sneakingTimer;
+	}
+
+	@Override
+	public void resetSneakingTimer() {
+		this.sneakingTimer = 0;
+	}
+
+	@Override
+	public void incrementSneakingTimer() {
+		this.sneakingTimer++;
+	}
+		
 	public CompoundTag serializeNBT() {
 		CompoundTag wrapper = new CompoundTag();
 		CompoundTag nbt = new CompoundTag();
@@ -319,11 +369,11 @@ public class PlayerPregnancyEffectsImpl implements IPlayerPregnancyEffectsHandle
 	
 	
 	public void sync(ServerPlayer serverPlayer) {
-	    serverPlayer.getServer().execute(() -> {
+	    serverPlayer.getServer().execute(() -> 
 	        MinepreggoModPacketHandler.INSTANCE.send(
 	            PacketDistributor.PLAYER.with(() -> serverPlayer), 
-	            new SyncPregnancyEffectsS2CPacket(serverPlayer.getUUID(), createClientData()));
-	    });
+	            new SyncPregnancyEffectsS2CPacket(serverPlayer.getUUID(), createClientData()))
+	    );
 	}
 
 	public static record ClientData(int craving, int milking, int bellyRubs, int horny, @Nullable ImmutablePair<Craving, Species> typeOfCravingBySpecies) {	

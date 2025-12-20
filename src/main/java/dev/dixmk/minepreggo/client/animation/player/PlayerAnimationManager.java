@@ -6,13 +6,13 @@ import java.util.UUID;
 
 import org.jetbrains.annotations.Nullable;
 
+import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.common.animation.PlayerAnimation;
 import dev.dixmk.minepreggo.common.animation.PlayerAnimationRegistry;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
 
 @OnlyIn(Dist.CLIENT)
 public class PlayerAnimationManager {
@@ -27,8 +27,8 @@ public class PlayerAnimationManager {
         return Holder.INSTANCE;
     }
 	
-	
     private final Map<UUID, PlayerAnimationCache> animations = new HashMap<>();
+    
     
     public PlayerAnimationCache get(Player player) {
         return animations.computeIfAbsent(player.getUUID(), PlayerAnimationCache::new);
@@ -38,14 +38,14 @@ public class PlayerAnimationManager {
     	animations.remove(playerId);
     }
      
+    @OnlyIn(Dist.CLIENT)
     public static class PlayerAnimationCache { 	
-   
     	public final UUID playerId;
     	private final Map<String, ModelPart> modelParts = new HashMap<>();
     	private final Map<String, PartState> originalStates = new HashMap<>();
     	    
     	private @Nullable PlayerAnimation currentAnimation;
-    	private int animationTick = 0;
+    	private int linearAnimationTick = 0;
         private int continuousAnimationTick = 0; // Tick since animation started playing (does not reset on loop)
     	private boolean isPlaying = false;
     	private @Nullable String lastAnimationName = null;
@@ -73,7 +73,7 @@ public class PlayerAnimationManager {
     		PlayerAnimation anim = PlayerAnimationRegistry.getInstance().getAnimation(animationName);
     		if (anim != null) {
     			this.currentAnimation = anim;
-    			this.animationTick = 0;
+    			this.linearAnimationTick = 0;
     			
                 if (!animationName.equals(this.lastAnimationName)) {
                     this.continuousAnimationTick = 0; // Reset continuous counter for new animation
@@ -87,7 +87,7 @@ public class PlayerAnimationManager {
     	public void stopAnimation() {
     		this.isPlaying = false;
     		this.currentAnimation = null;
-    		this.animationTick = 0;
+    		this.linearAnimationTick = 0;
     		this.continuousAnimationTick = 0;
     		this.lastAnimationName = null;
     		resetToOriginalPose();
@@ -98,12 +98,12 @@ public class PlayerAnimationManager {
     			return;
     		}
     	        
-    		animationTick++;
+    		linearAnimationTick++;
     		continuousAnimationTick++;
     		
-    		if (animationTick >= currentAnimation.getDuration()) {
+    		if (linearAnimationTick >= currentAnimation.getDuration()) {
     			if (currentAnimation.isLooping()) {
-    				animationTick = 0;
+    				linearAnimationTick = 0;
     			} else {
     				stopAnimation();
     			}
@@ -111,7 +111,7 @@ public class PlayerAnimationManager {
     	}
     	    
     	public void applyLinearAnimation() {
-    		applyAnimation(animationTick);
+    		applyAnimation(linearAnimationTick);
     		
     	}
     	
@@ -125,8 +125,11 @@ public class PlayerAnimationManager {
     		}
     	        
     		// Calculate animation progress (0.0 to 1.0)
-    		float progress = (float) animationTick / currentAnimation.getDuration();
-    	           		
+    		float progress = (float) linearAnimationTick / currentAnimation.getDuration();
+    	     
+    		MinepreggoMod.LOGGER.debug("Applying animation '{}' at tick {} (progress: {})", 
+					lastAnimationName, rawTick, progress);
+    		
     		// Apply animation to each part
     		for (String partName : currentAnimation.getAnimatedParts()) {
     			ModelPart part = modelParts.get(partName);
@@ -146,7 +149,7 @@ public class PlayerAnimationManager {
                     }
     	                
     				// Apply animation on top
-    				currentAnimation.applyAnimation(partName, part, progress, rawTick);
+    				currentAnimation.applyAnimation(partName, part, rawTick);
     			}
     		}
     	}
@@ -181,13 +184,17 @@ public class PlayerAnimationManager {
     		return lastAnimationName;    			
     	}
     	    
-    	public int getAnimationTick() {
-    		return animationTick;
+    	public int getLinearAnimationTick() {
+    		return linearAnimationTick;
+    	}
+    	
+    	public int getContinuousAnimationTick() {
+    		return continuousAnimationTick;
     	}
     	    
     	public void setAnimationState(String animationName, int tick) {
     		playAnimation(animationName);
-    		this.animationTick = tick;
+    		this.linearAnimationTick = tick;
     	}
     	    
         public boolean shouldOverrideVanillaAnimations() {

@@ -1,6 +1,6 @@
 package dev.dixmk.minepreggo.world.item;
 
-import org.checkerframework.checker.index.qual.NonNegative;
+import javax.annotation.Nonnegative;
 
 import dev.dixmk.minepreggo.world.pregnancy.Craving;
 
@@ -10,7 +10,7 @@ public class ActivatedGunpowderWithHotSauceItem extends ActivatedGunpowderItem i
 	}
 	
 	@Override
-	@NonNegative
+	@Nonnegative
 	public int getGratification() {
 		return 5;
 	}

@@ -1,9 +1,6 @@
 package dev.dixmk.minepreggo.world.effect;
 
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
-import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
@@ -23,9 +20,7 @@ public class FetalMovement extends AbstractPlayerPregnancyPain {
 	public void addAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {
 		if (!PlayerHelper.isPlayerValid(entity)) return;
 		
-		if (!entity.level().isClientSide) {	
-			entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, PregnancySystemHelper.TOTAL_TICKS_MORNING_SICKNESS, 0, false, false));			
-		
+		if (!entity.level().isClientSide) {			
 			AttributeInstance speedAttr = entity.getAttribute(Attributes.MOVEMENT_SPEED);
 			AttributeInstance attackSpeedAttr = entity.getAttribute(Attributes.ATTACK_SPEED);
 

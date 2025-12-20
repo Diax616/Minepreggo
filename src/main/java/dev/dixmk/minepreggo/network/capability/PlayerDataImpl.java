@@ -14,6 +14,8 @@ import net.minecraftforge.network.PacketDistributor;
 public class PlayerDataImpl implements IPlayerData {
 	private boolean customSkin = true;
 	private boolean showMainMenu = true; 
+	
+	// Sex Event
 	private boolean cinematic = false;
 	
 	private String predefinedSkinName = null;		
@@ -188,16 +190,9 @@ public class PlayerDataImpl implements IPlayerData {
 		sync(serverPlayer);			
 		getFemaleData().ifPresent(cap -> {
 			cap.sync(serverPlayer);
+			cap.syncLactation(serverPlayer);
 			cap.getPregnancySystem().sync(serverPlayer);
 			cap.getPregnancyEffects().sync(serverPlayer);
-		});
-	}
-
-	public void syncNeededClientData(ServerPlayer serverPlayer) {
-		sync(serverPlayer);			
-		getFemaleData().ifPresent(cap -> {
-			cap.sync(serverPlayer);
-			cap.getPregnancySystem().sync(serverPlayer);
 		});
 	}
 }

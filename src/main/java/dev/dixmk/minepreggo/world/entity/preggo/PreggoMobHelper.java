@@ -27,6 +27,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractMonsterPregnantZo
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractZombieGirl;
 import dev.dixmk.minepreggo.world.item.IFemaleArmor;
+import dev.dixmk.minepreggo.world.item.IMaternityArmor;
 import dev.dixmk.minepreggo.world.item.ItemHelper;
 import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
 import dev.dixmk.minepreggo.world.pregnancy.IBreedable;
@@ -35,6 +36,7 @@ import dev.dixmk.minepreggo.world.pregnancy.IPregnancyEffectsHandler;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.pregnancy.MapPregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import dev.dixmk.minepreggo.world.pregnancy.Womb;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -252,7 +254,7 @@ public class PreggoMobHelper {
 				}	
 		    }			
 			if (target != null) {				
-				setItemstackInHand(preggoMob, hand, target);	
+				replaceAndDropItemstackInHand(preggoMob, hand, target);	
 			}
 		});
 	}
@@ -272,7 +274,7 @@ public class PreggoMobHelper {
 		});
 	}
 
-	public static<E extends PreggoMob & ITamablePreggoMob<?>> void setItemstackInHand(@Nonnull E preggoMob, InteractionHand hand, @Nonnull ItemStack itemStack) {			
+	public static<E extends PreggoMob & ITamablePreggoMob<?>> void replaceAndDropItemstackInHand(@Nonnull E preggoMob, InteractionHand hand, @Nonnull ItemStack itemStack) {			
 		preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler -> {			    	
 			if (handler instanceof IItemHandlerModifiable modHandler) {	
 				int inventorySlot = hand == InteractionHand.MAIN_HAND ? ITamablePreggoMob.MAINHAND_INVENTORY_SLOT : ITamablePreggoMob.OFFHAND_INVENTORY_SLOT;		
@@ -433,8 +435,26 @@ public class PreggoMobHelper {
 	
 	
 	// Armor START
+	
+	public static boolean canUseChestPlateInLactation(ITamablePreggoMob<FemaleEntityImpl> preggoMob, Item armor) {
+		var result = preggoMob.getGenderedData().getPostPregnancyData().map(post -> 
+				post.getPostPartumLactation() < PregnancySystemHelper.ACTIVATE_MILKING_SYMPTOM
+			);	
+		if (result.isPresent() && !result.get().booleanValue()) {
+			return armor instanceof IMaternityArmor maternityArmor && maternityArmor.areBoobsExposed();
+		}
+		return true;
+	}
+	
+	public static boolean canUseChestPlateInLactation(IPregnancySystemHandler preggoMob, Item armor) {
+		if (!preggoMob.getPregnancySymptoms().contains(PregnancySymptom.MILKING)) {
+			return true;
+		}
+		return armor instanceof IMaternityArmor maternityArmor && maternityArmor.areBoobsExposed();
+	}
+	
 	public static boolean canUseChestplate(Item armor) {	
-		return canUseChestplate(armor, true);
+		return canUseChestplate(armor, false);
 	}
 	
 	public static boolean canUseChestplate(Item armor, boolean considerBoobs) {
@@ -826,13 +846,6 @@ public class PreggoMobHelper {
 	    return target != null && target.isAlive();
 	}
 	
-	public static void removeAndDropItemStackFromEquipmentSlot(Player player, EquipmentSlot slotId) {
-		if (dropItemStack(player, player.getItemBySlot(slotId))) {
-			player.setItemSlot(slotId, ItemStack.EMPTY);
-		}
- 	}
 	// Common END
-	
-
 }
 

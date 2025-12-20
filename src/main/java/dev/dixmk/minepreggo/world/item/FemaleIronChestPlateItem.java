@@ -37,7 +37,7 @@ public abstract class FemaleIronChestPlateItem extends ArmorItem implements IFem
 		}
 		
 		@Override
-		public boolean canSupportLactatingBoobs() {
+		public boolean areBoobsExposed() {
 			return false;
 		}
 	}

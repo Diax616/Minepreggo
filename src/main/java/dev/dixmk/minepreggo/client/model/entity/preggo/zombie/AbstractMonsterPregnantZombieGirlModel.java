@@ -1,8 +1,9 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.zombie;
 
-import dev.dixmk.minepreggo.client.animation.preggo.HumanoidFemaleAnimation;
+import dev.dixmk.minepreggo.client.animation.preggo.BellyAnimation;
 import dev.dixmk.minepreggo.client.animation.preggo.ZombieGirlAnimation;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractMonsterPregnantZombieGirl;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -23,6 +24,7 @@ public abstract class AbstractMonsterPregnantZombieGirlModel<E extends AbstractM
 		
 	@Override
 	public void setupAnim(E entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+		tryHideBoobs(entity, PregnancySystemHelper::shouldBoobsBeHidden);
 		animator.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);			
 		if (entity.hasPregnancyPain()) {
 			this.hat.copyFrom(this.head);
@@ -44,7 +46,7 @@ public abstract class AbstractMonsterPregnantZombieGirlModel<E extends AbstractM
 				this.root().getAllParts().forEach(ModelPart::resetPose);	
 				
 			    if (zombieGirl.getItemBySlot(EquipmentSlot.CHEST).isEmpty()) {
-			    	this.animate(zombieGirl.loopAnimationState, HumanoidFemaleAnimation.MEDIUM_BELLY_INFLATION, ageInTicks, 1f);
+			    	this.animate(zombieGirl.loopAnimationState, BellyAnimation.MEDIUM_BELLY_INFLATION, ageInTicks, 1f);
 			    }
 			    		    
 			    if (zombieGirl.isAttacking()) {

@@ -22,6 +22,7 @@ public abstract class PreggoMobPregnancySystemP3 <E extends PreggoMob
 	& ITamablePreggoMob<FemaleEntityImpl> & IPregnancySystemHandler & IPregnancyEffectsHandler> extends PreggoMobPregnancySystemP2<E> {
 
 	protected @Nonnegative int totalTicksOfBellyRubs = MinepreggoModConfig.getTotalTicksOfBellyRubsP3();
+	protected @Nonnegative float fetalMovementProb = PregnancySystemHelper.LOW_PREGNANCY_PAIN_PROBABILITY;
 
 	protected PreggoMobPregnancySystemP3(@Nonnull E preggoMob) {
 		super(preggoMob);
@@ -29,9 +30,10 @@ public abstract class PreggoMobPregnancySystemP3 <E extends PreggoMob
 	}
 	
 	@Override
-	protected void initPregnancySymptomsTimers() {
+	protected void initPregnancyTimers() {
 		totalTicksOfCraving = MinepreggoModConfig.getTotalTicksOfCravingP3();
 		totalTicksOfMilking = MinepreggoModConfig.getTotalTicksOfMilkingP3();
+		morningSicknessProb = PregnancySystemHelper.HIGH_MORNING_SICKNESS_PROBABILITY;
 	}
 	
 	@Override
@@ -88,12 +90,10 @@ public abstract class PreggoMobPregnancySystemP3 <E extends PreggoMob
 	
 	@Override
 	protected boolean tryInitRandomPregnancyPain() {
-	    if (randomSource.nextFloat() < PregnancySystemHelper.HIGH_MORNING_SICKNESS_PROBABILITY) {
-	        pregnantEntity.setPregnancyPain(PregnancyPain.MORNING_SICKNESS);
-	        pregnantEntity.resetPregnancyPainTimer();
-	        return true;
-	    }
-		else if (randomSource.nextFloat() < PregnancySystemHelper.LOW_PREGNANCY_PAIN_PROBABILITY) {
+		if (super.tryInitRandomPregnancyPain()) {
+			return true;
+		}	
+		if (randomSource.nextFloat() < fetalMovementProb) {
 			pregnantEntity.setPregnancyPain(PregnancyPain.FETAL_MOVEMENT);
 			pregnantEntity.resetPregnancyPainTimer();
 			PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.CHEST);				

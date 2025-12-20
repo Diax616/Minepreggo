@@ -55,7 +55,7 @@ public abstract class FemaleDiamondChestPlateItem extends ArmorItem implements I
 		}
 		
 		@Override
-		public boolean canSupportLactatingBoobs() {
+		public boolean areBoobsExposed() {
 			return false;
 		}
 	}

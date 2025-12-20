@@ -4,7 +4,7 @@ package dev.dixmk.minepreggo.world.item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.Item;
 
-import org.checkerframework.checker.index.qual.NonNegative;
+import javax.annotation.Nonnegative;
 
 import dev.dixmk.minepreggo.world.pregnancy.Craving;
 import net.minecraft.world.food.FoodProperties;
@@ -15,7 +15,7 @@ public class ChocolateBarItem extends Item implements IItemCraving {
 	}
 
 	@Override
-	public @NonNegative int getGratification() {
+	public @Nonnegative int getGratification() {
 		return 8;
 	}
 

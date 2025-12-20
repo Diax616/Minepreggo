@@ -243,7 +243,7 @@ public abstract class AbstractTamablePregnantZombieGirl<S extends PreggoMobSyste
 	
 	@Override
 	protected boolean canReplaceCurrentItem(ItemStack p_21428_, ItemStack p_21429_) {	
-		if (!PregnancySystemHelper.canUseChestplate(this, p_21428_.getItem(), this.getCurrentPregnancyStage())
+		if (!(PregnancySystemHelper.canUseChestplate(p_21428_.getItem(), this.getCurrentPregnancyStage(), false) && PreggoMobHelper.canUseChestPlateInLactation((IPregnancySystemHandler) this, p_21428_.getItem()))
 					|| !PregnancySystemHelper.canUseLegging(p_21428_.getItem(), this.getCurrentPregnancyStage())) {
 			return false;
 		}	

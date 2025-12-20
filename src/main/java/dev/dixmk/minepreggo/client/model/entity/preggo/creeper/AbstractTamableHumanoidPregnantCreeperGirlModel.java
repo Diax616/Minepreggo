@@ -22,6 +22,7 @@ public abstract class AbstractTamableHumanoidPregnantCreeperGirlModel<E extends 
 	
 	@Override
 	public void setupAnim(E entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+		super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 		animator.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);			
 		if (entity.hasCustomHeadAnimation()) {
 			this.hat.copyFrom(this.head);

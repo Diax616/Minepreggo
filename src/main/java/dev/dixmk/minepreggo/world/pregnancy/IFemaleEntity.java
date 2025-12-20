@@ -27,14 +27,20 @@ public interface IFemaleEntity extends IBreedable {
     @Nullable UUID getFather();
     
     Optional<PrePregnancyData> getPrePregnancyData();
+    Optional<PostPregnancyData> getPostPregnancyData();
     
     boolean hasNaturalPregnancy();
     
+    
+    /*
+     * TODO: This methods are present in PostPregnancyData, they are only present here because of synchronization issues between server and client
+     * some fields need to be present on client side for rendering purposes, but the PostPregnancyData is not synchronized properly.
+     * */
     @Nullable PostPregnancy getPostPregnancyPhase();
     boolean tryActivatePostPregnancyPhase(@NonNull PostPregnancy postPregnancy);
     boolean tryRemovePostPregnancyPhase();
-    
-    
+    int getPostPartumLactation();
+    void setPostPartumLactation(int amount); 
     int getPostPregnancyTimer();
     void setPostPregnancyTimer(int ticks);
     void incrementPostPregnancyTimer();

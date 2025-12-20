@@ -36,7 +36,7 @@ public abstract class FemaleNetheriteChestPlateItem extends ArmorItem implements
 		}
 		
 		@Override
-		public boolean canSupportLactatingBoobs() {
+		public boolean areBoobsExposed() {
 			return false;
 		}
 	}

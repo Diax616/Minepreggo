@@ -1,6 +1,8 @@
 package dev.dixmk.minepreggo.world.effect;
 
+import dev.dixmk.minepreggo.server.ServerPlayerAnimationManager;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
@@ -20,7 +22,9 @@ public class WaterBreaking extends AbstractPlayerPregnancyPain {
 	public void addAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {
 		if (!PlayerHelper.isPlayerValid(entity)) return;
 		
-		if (!entity.level().isClientSide) {			
+		if (!entity.level().isClientSide) {		
+	        ServerPlayerAnimationManager.getInstance().triggerAnimation((ServerPlayer) entity, "water_breaking");
+			
 			AttributeInstance speedAttr = entity.getAttribute(Attributes.MOVEMENT_SPEED);
 			AttributeInstance attackSpeedAttr = entity.getAttribute(Attributes.ATTACK_SPEED);
 
@@ -38,6 +42,8 @@ public class WaterBreaking extends AbstractPlayerPregnancyPain {
 		if (!PlayerHelper.isPlayerValid(entity)) return;
 		
 		if (!entity.level().isClientSide) {
+			ServerPlayerAnimationManager.getInstance().stopAnimation((ServerPlayer) entity);
+			
 			AttributeInstance speedAttr = entity.getAttribute(Attributes.MOVEMENT_SPEED);
 			AttributeInstance attackSpeedAttr = entity.getAttribute(Attributes.ATTACK_SPEED);
 

@@ -36,7 +36,7 @@ public abstract class FemaleLeatherChestPlateItem extends DyeableArmorItem imple
 		}
 		
 		@Override
-		public boolean canSupportLactatingBoobs() {
+		public boolean areBoobsExposed() {
 			return false;
 		}
 	}

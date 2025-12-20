@@ -1,8 +1,10 @@
 package dev.dixmk.minepreggo.world.entity.preggo.creeper;
 
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobPregnancySystemP0;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnantPreggoMobSystemP0;
+import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.world.entity.EntityType;
@@ -21,7 +23,7 @@ public abstract class AbstractTamablePregnantHumanoidCreeperGirl<S extends Pregn
 	protected boolean canReplaceArmorBasedInPregnancyPhase(ItemStack armor) {	
 		final var slot = LivingEntity.getEquipmentSlotForItem(armor);				
 		if (slot == EquipmentSlot.CHEST) {
-			return PregnancySystemHelper.canUseChestplate(this, armor.getItem(), this.getCurrentPregnancyStage());
+			return PregnancySystemHelper.canUseChestplate(armor.getItem(), this.getCurrentPregnancyStage(), false) && PreggoMobHelper.canUseChestPlateInLactation((IPregnancySystemHandler) this, armor.getItem());
 		}
 		else if (slot == EquipmentSlot.LEGS) {
 			return PregnancySystemHelper.canUseLegging(armor.getItem(), this.getCurrentPregnancyStage());

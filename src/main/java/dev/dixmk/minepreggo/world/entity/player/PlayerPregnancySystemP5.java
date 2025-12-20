@@ -13,7 +13,7 @@ public class PlayerPregnancySystemP5 extends PlayerPregnancySystemP4 {
 	}
 	
 	@Override
-	protected void initPregnancySymptomsTimers() {
+	protected void initPregnancyTimers() {
 		totalTicksOfCraving = MinepreggoModConfig.getTotalTicksOfCravingP5();
 		totalTicksOfMilking = MinepreggoModConfig.getTotalTicksOfMilkingP5();
 		totalTicksOfBellyRubs = MinepreggoModConfig.getTotalTicksOfBellyRubsP5();
