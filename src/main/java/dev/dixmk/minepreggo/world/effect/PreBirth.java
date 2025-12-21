@@ -8,17 +8,13 @@ import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.registries.ForgeRegistries;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
+import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.server.ServerPlayerAnimationManager;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundSource;
 
 public class PreBirth extends AbstractPlayerPregnancyPain {
 	private static final AttributeModifier ATTACK_SPEED_MODIFIER = new AttributeModifier(ATTACK_SPEED_MODIFIER_UUID, "prebirth attack speed nerf", -0.5, AttributeModifier.Operation.MULTIPLY_TOTAL);
@@ -49,7 +45,7 @@ public class PreBirth extends AbstractPlayerPregnancyPain {
 			    attackSpeedAttr.addTransientModifier(ATTACK_SPEED_MODIFIER);
 			}
 			
-			entity.level().playSound(null, BlockPos.containing(entity.getX(), entity.getY(), entity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "contraction1")), SoundSource.PLAYERS, 1, 1);
+			entity.playSound(MinepreggoModSounds.getRandomPregnancyPain(entity.getRandom()), 0.8F, 0.8F + entity.getRandom().nextFloat() * 0.3F);
 			MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) entity), Component.translatable("chat.minepreggo.player.birth.message.pre"));
 		}
 	}

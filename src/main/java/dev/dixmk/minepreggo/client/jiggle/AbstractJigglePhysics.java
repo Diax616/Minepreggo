@@ -15,6 +15,7 @@ public abstract class AbstractJigglePhysics {
     protected final float gravity;
     protected final float maxDisplacement;
     
+	// TODO: additionalYPos provokes bugs in Y axis position, it does not respect the original position defined in the model during animations, need to be fixed or removed
     protected final float additionalYPos;
     
 	protected AbstractJigglePhysics(float springStrength, float damping, float gravity, float maxDisplacement, float additionalYPos) {

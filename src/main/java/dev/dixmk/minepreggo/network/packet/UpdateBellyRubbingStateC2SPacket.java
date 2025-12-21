@@ -4,21 +4,25 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
+import dev.dixmk.minepreggo.client.particle.ParticleHelper;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.NetworkEvent;
 
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public record UpdateBellyRubbingStateC2SPacket(UUID target) {
 
 	public static UpdateBellyRubbingStateC2SPacket decode(FriendlyByteBuf buffer) {	
 		return new UpdateBellyRubbingStateC2SPacket(buffer.readUUID());
-		}
+	}
 		
 	public static void encode(UpdateBellyRubbingStateC2SPacket message, FriendlyByteBuf buffer) {
 		buffer.writeUUID(message.target);
@@ -43,6 +47,8 @@ public record UpdateBellyRubbingStateC2SPacket(UUID target) {
    	        			if (system.getCurrentPregnancyStage().compareTo(PregnancyPhase.P2) > 0 && bellyRubs > 0) {
    	        				bellyRubs -= PregnancySystemHelper.BELLY_RUBBING_VALUE;
    	        				effect.setBellyRubs(bellyRubs);
+   	        				
+   	        				ParticleHelper.spawnRandomlyFromServer(target, ParticleTypes.HEART);
    	        				
    	        				if (system.getPregnancySymptoms().contains(PregnancySymptom.BELLY_RUBS) && bellyRubs <= PregnancySystemHelper.DESACTIVATEL_BELLY_RUBS_SYMPTOM) {
    	        					system.removePregnancySymptom(PregnancySymptom.BELLY_RUBS);

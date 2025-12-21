@@ -58,7 +58,7 @@ public class FemaleEntityImpl extends AbstractBreedableEntity implements IFemale
 	
 	@Override
 	public boolean tryImpregnate(@Nonnegative int fertilizedEggs, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father) {
-		if (!this.pregnant) {
+		if (!this.pregnant && postPregnancyData.isEmpty()) {
 			this.pregnant = true;
 			this.prePregnancyData = Optional.of(new PrePregnancyData(fertilizedEggs, father.getMiddle(), father.getRight(), father.getLeft().orElse(null)));
 			return true;

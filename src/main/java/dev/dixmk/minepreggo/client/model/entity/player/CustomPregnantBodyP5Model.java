@@ -24,27 +24,28 @@ public class CustomPregnantBodyP5Model extends AbstractHeavyPregnantBodyModel {
 	
 	public CustomPregnantBodyP5Model(ModelPart root) {
 		super(root,
-				JigglePhysicsFactory.createLightweightBoobs(2.0F, false, false),
-				JigglePhysicsFactory.createBelly(2.0F, PregnancyPhase.P5),
-				JigglePhysicsFactory.createLightweightButt(2.0F));
+				JigglePhysicsFactory.createHeavyweightBoobs(0.85F, false, false),
+				JigglePhysicsFactory.createBelly(5.5F, PregnancyPhase.P5),
+				JigglePhysicsFactory.createHeavyweightButt(0.0F));
 	}
 	
 	public static LayerDefinition createBodyLayer() {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
-		PartDefinition body = partdefinition.addOrReplaceChild("body", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-		PartDefinition belly = body.addOrReplaceChild("belly", CubeListBuilder.create().texOffs(16, 21).addBox(-4.0F, -0.25F, -3.0F, 8.0F, 7.0F, 4.0F, new CubeDeformation(0.3F))
-		.texOffs(19, 25).addBox(-3.5F, 0.25F, -3.6F, 7.0F, 6.0F, 1.0F, new CubeDeformation(0.4F))
-		.texOffs(22, 29).addBox(-0.6F, 4.4493F, -4.5305F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 5.0F, -2.0F, 0.0436F, 0.0F, 0.0F));
-		belly.addOrReplaceChild("bellyCube4_r1", CubeListBuilder.create().texOffs(19, 25).addBox(-3.5F, -1.5F, -0.5F, 7.0F, 3.0F, 1.0F, new CubeDeformation(0.4F)), PartPose.offsetAndRotation(0.0F, 1.0F, -1.1F, -1.5708F, 0.0F, 0.0F));
-		belly.addOrReplaceChild("front_kick", CubeListBuilder.create().texOffs(18, 26).addBox(-1.5F, 0.1F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.1F)), PartPose.offset(2.5F, 3.8F, -2.5F));
-		belly.addOrReplaceChild("right_kick", CubeListBuilder.create().texOffs(18, 26).addBox(-1.5F, -1.1F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.2F)), PartPose.offset(0.5F, 5.0F, -2.1F));
-		belly.addOrReplaceChild("left_kick", CubeListBuilder.create().texOffs(18, 26).addBox(-1.5F, 0.0F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.2F)), PartPose.offset(0.5F, 3.9F, -2.0F));
-		PartDefinition boobs = body.addOrReplaceChild("boobs", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 0.8F, -2.0F, -0.2967F, 0.0F, 0.0F));
-		PartDefinition rightBoob = boobs.addOrReplaceChild("right_boob", CubeListBuilder.create(), PartPose.offset(-1.5F, -0.2F, 0.0F));
-		rightBoob.addOrReplaceChild("rightBoobCube_r1", CubeListBuilder.create().texOffs(18, 21).addBox(-1.5F, -2.4F, -1.3F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.3F)), PartPose.offsetAndRotation(-0.5336F, 3.3279F, -0.6635F, 0.3491F, 0.1745F, 0.0436F));
-		PartDefinition leftBoob = boobs.addOrReplaceChild("left_boob", CubeListBuilder.create(), PartPose.offset(1.5F, -0.2F, 0.0F));
-		leftBoob.addOrReplaceChild("letfBoobCube_r1", CubeListBuilder.create().texOffs(18, 21).mirror().addBox(-1.5F, -2.3956F, -1.313F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.3F)).mirror(false), PartPose.offsetAndRotation(0.6326F, 3.3236F, -0.6505F, 0.3491F, -0.1745F, -0.0436F));
+		PartDefinition body = partdefinition.addOrReplaceChild("body", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));	
+		PartDefinition belly = body.addOrReplaceChild("belly", CubeListBuilder.create().texOffs(17, 22).addBox(-4.0F, 0.1401F, -7.9716F, 8.0F, 7.0F, 3.0F, new CubeDeformation(0.9F))
+		.texOffs(17, 22).addBox(-4.0F, 0.1401F, -3.7216F, 8.0F, 7.0F, 3.0F, new CubeDeformation(0.89F))
+		.texOffs(19, 25).addBox(-3.5F, 0.6401F, -8.8716F, 7.0F, 6.0F, 1.0F, new CubeDeformation(0.75F))
+		.texOffs(22, 29).addBox(-0.6F, 4.8394F, -10.2021F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 5.0F, -2.0F, 0.0436F, 0.0F, 0.0F));
+		belly.addOrReplaceChild("bellyCube4_r1", CubeListBuilder.create().texOffs(19, 25).addBox(-3.5F, -1.5F, -0.5F, 7.0F, 3.0F, 1.0F, new CubeDeformation(0.4F)), PartPose.offsetAndRotation(0.0F, 1.3901F, -5.5216F, -1.5708F, 0.0F, 0.0F));
+		belly.addOrReplaceChild("front_kick", CubeListBuilder.create().texOffs(18, 26).addBox(-1.5F, 0.1F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.1F)), PartPose.offset(2.5F, 4.1901F, -7.3216F));
+		belly.addOrReplaceChild("right_kick", CubeListBuilder.create().texOffs(18, 26).addBox(-1.5F, -1.1F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.2F)), PartPose.offset(0.5F, 5.3901F, -6.9216F));
+		belly.addOrReplaceChild("left_kick", CubeListBuilder.create().texOffs(18, 26).addBox(-1.5F, 0.0F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.2F)), PartPose.offset(0.5F, 4.2901F, -6.8216F));
+		PartDefinition boobs = body.addOrReplaceChild("boobs", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 0.7F, -2.2F, -0.2967F, 0.0F, 0.0F));
+		PartDefinition rightBoob = boobs.addOrReplaceChild("right_boob", CubeListBuilder.create(), PartPose.offset(-1.5F, -0.3913F, -0.0585F));
+		rightBoob.addOrReplaceChild("rightBoobCube_r1", CubeListBuilder.create().texOffs(18, 21).addBox(-1.5F, -2.4F, -1.3F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.4F)), PartPose.offsetAndRotation(-0.6336F, 3.3279F, -0.6635F, 0.3491F, 0.1745F, 0.0436F));
+		PartDefinition leftBoob = boobs.addOrReplaceChild("left_boob", CubeListBuilder.create(), PartPose.offset(1.5F, -0.3913F, -0.0585F));
+		leftBoob.addOrReplaceChild("letfBoobCube_r1", CubeListBuilder.create().texOffs(18, 21).mirror().addBox(-1.5F, -2.3956F, -1.313F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.4F)).mirror(false), PartPose.offsetAndRotation(0.7326F, 3.3235F, -0.6505F, 0.3491F, -0.1745F, -0.0436F));
 		PartDefinition rightLeg = partdefinition.addOrReplaceChild("right_leg", CubeListBuilder.create(), PartPose.offset(-1.9F, 12.0F, 0.0F));
 		PartDefinition rightButt = rightLeg.addOrReplaceChild("right_butt", CubeListBuilder.create(), PartPose.offset(0.1F, 0.0F, 2.0F));
 		rightButt.addOrReplaceChild("rightAssCube_r1", CubeListBuilder.create().texOffs(2, 18).mirror().addBox(-1.9F, -2.0F, -1.0F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.4F)).mirror(false), PartPose.offsetAndRotation(0.05F, 1.65F, 0.35F, 0.0F, 3.1416F, 0.0F));
@@ -57,6 +58,6 @@ public class CustomPregnantBodyP5Model extends AbstractHeavyPregnantBodyModel {
 	@Override
 	protected void animBelly(AbstractClientPlayer entity, float ageInTicks) {
 		super.animBelly(entity, ageInTicks);
-		this.animate(this.loopAnimationState, BellyAnimation.MEDIUM_BELLY_INFLATION, ageInTicks, 1f);
+		this.animate(this.loopAnimationState, BellyAnimation.MEDIUM_BELLY_INFLATION, ageInTicks);
 	}
 }

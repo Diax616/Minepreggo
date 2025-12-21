@@ -47,10 +47,14 @@ public class MessageHelper {
 	}
 
 	public static boolean warnFittedArmor(Player player, PregnancyPhase pregnancyPhase) {
+		return warnFittedArmor(player, pregnancyPhase, true);
+	}
+	
+	public static boolean warnFittedArmor(Player player, PregnancyPhase pregnancyPhase, boolean bar) {
 		ServerPlayer serverPlayer;
 		String message;
 		if ((message = PLAYER_ARMOR_MESSAGES.get(pregnancyPhase)) != null && (serverPlayer = asServerPlayer(player)) != null) {
-			sendTo(serverPlayer, Component.translatable(message));	
+			sendTo(serverPlayer, Component.translatable(message), bar);	
 			return true;
 		}			
 	

@@ -26,9 +26,9 @@ public class PredefinedPregnantBodyP6Model extends AbstractHeavyPregnantBodyMode
 	
 	public PredefinedPregnantBodyP6Model(ModelPart root) {
 		super(root,
-				JigglePhysicsFactory.createHeavyweightBoobs(2.0F, false, false),
-				JigglePhysicsFactory.createBelly(5.25F, PregnancyPhase.P6),
-				JigglePhysicsFactory.createHeavyweightButt(2.0F));
+				JigglePhysicsFactory.createHeavyweightBoobs(1.45F, false, false),
+				JigglePhysicsFactory.createBelly(5.75F, PregnancyPhase.P6),
+				JigglePhysicsFactory.createHeavyweightButt(0.0F));
 	}
 	
 	public static LayerDefinition createBodyLayer() {
@@ -52,10 +52,10 @@ public class PredefinedPregnantBodyP6Model extends AbstractHeavyPregnantBodyMode
 		belly.addOrReplaceChild("front_kick", CubeListBuilder.create().texOffs(8, 26).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(2.5F, 2.5F, -6.5F));
 		belly.addOrReplaceChild("top_kick", CubeListBuilder.create().texOffs(8, 26).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(1.5F, 1.5F, -7.5F));
 		belly.addOrReplaceChild("bottom_kick", CubeListBuilder.create().texOffs(8, 26).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(-0.5F, 4.5F, -5.5F));
-		PartDefinition rightLeg = partdefinition.addOrReplaceChild("right_leg", CubeListBuilder.create(), PartPose.offset(-1.9F, 12.0F, 1.0F));
-		rightLeg.addOrReplaceChild("right_butt", CubeListBuilder.create().texOffs(36, 2).addBox(-1.905F, -0.35F, -0.45F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.4F)), PartPose.offset(-0.1F, 0.0F, 1.0F));
-		PartDefinition leftLeg = partdefinition.addOrReplaceChild("left_leg", CubeListBuilder.create(), PartPose.offset(1.9F, 12.0F, 1.0F));
-		leftLeg.addOrReplaceChild("left_butt", CubeListBuilder.create().texOffs(48, 2).mirror().addBox(-2.15F, -0.35F, -0.45F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.4F)).mirror(false), PartPose.offset(0.1F, 0.0F, 1.0F));
+		PartDefinition rightLeg = partdefinition.addOrReplaceChild("right_leg", CubeListBuilder.create(), PartPose.offset(-1.9F, 12.0F, 0.0F));
+		rightLeg.addOrReplaceChild("right_butt", CubeListBuilder.create().texOffs(36, 2).addBox(-1.905F, -0.35F, -0.45F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.4F)), PartPose.offset(-0.1F, 0.0F, 2.0F));
+		PartDefinition leftLeg = partdefinition.addOrReplaceChild("left_leg", CubeListBuilder.create(), PartPose.offset(1.9F, 12.0F, 0.0F));
+		leftLeg.addOrReplaceChild("left_butt", CubeListBuilder.create().texOffs(48, 2).mirror().addBox(-2.15F, -0.35F, -0.45F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.4F)).mirror(false), PartPose.offset(0.1F, 0.0F, 2.0F));
 		return LayerDefinition.create(meshdefinition, 64, 32);
 	}
 	

@@ -101,7 +101,6 @@ public class PredefinedPregnantBodyLayer extends AbstractPregnantBodyLayer {
         	        	model.leftLeg.copyFrom(playerModel.leftLeg);
         	        	model.rightLeg.copyFrom(playerModel.rightLeg);
         	        	model.renderToBuffer(poseStack, bellyAndBoobsVertexConsumer, packedLight, LivingEntityRenderer.getOverlayCoords(player, 0.0F), 1.0F, 1.0F, 1.0F, 1.0F);
-        	        	renderBellyAndBoobs.accept(model);
         	        };
        
         	        switch (pregnancyPhase) {

@@ -1,5 +1,6 @@
 package dev.dixmk.minepreggo.world.effect;
 
+import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -30,6 +31,8 @@ public class FetalMovement extends AbstractPlayerPregnancyPain {
 			if (attackSpeedAttr != null && attackSpeedAttr.getModifier(ATTACK_SPEED_MODIFIER_UUID) == null) {
 			    attackSpeedAttr.addPermanentModifier(ATTACK_SPEED_MODIFIER);
 			}
+			
+			entity.playSound(MinepreggoModSounds.getRandomPregnancyPain(entity.getRandom()), 0.8F, 0.8F + entity.getRandom().nextFloat() * 0.3F);
 		}
 	}
 	

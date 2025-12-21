@@ -20,10 +20,11 @@ public class CustomPregnantBodyP0Model extends AbstractPregnantBodyModel {
 	
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "custom_pregnant_body_p1_model"), "main");
 	
+	// TODO: additionalYPos provokes bugs in belly and boobs Y axis position during animations, need to be fixed or removed
 	public CustomPregnantBodyP0Model(ModelPart root) {
 		super(root,
 				JigglePhysicsFactory.createLightweightBoobs(2.0F, true, true),
-				JigglePhysicsFactory.createBelly(2.0F, PregnancyPhase.P0),
+				JigglePhysicsFactory.createBelly(6.5F, PregnancyPhase.P0),
 				true);
 	}
 	

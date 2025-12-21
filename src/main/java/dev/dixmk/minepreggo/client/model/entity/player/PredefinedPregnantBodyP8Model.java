@@ -25,17 +25,17 @@ public class PredefinedPregnantBodyP8Model extends AbstractHeavyPregnantBodyMode
 	
 	public PredefinedPregnantBodyP8Model(ModelPart root) {
 		super(root,
-				JigglePhysicsFactory.createHeavyweightBoobs(2.0F, false, false),
-				JigglePhysicsFactory.createBelly(5.25F, PregnancyPhase.P8),
-				JigglePhysicsFactory.createHeavyweightButt(2.0F));
+				JigglePhysicsFactory.createHeavyweightBoobs(1.25F, false, false),
+				JigglePhysicsFactory.createBelly(9.25F, PregnancyPhase.P8),
+				JigglePhysicsFactory.createHeavyweightButt(0.0F));
 	}
 	
 	public static LayerDefinition createBodyLayer() {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 		PartDefinition body = partdefinition.addOrReplaceChild("body", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-		body.addOrReplaceChild("extraRightWait_r1", CubeListBuilder.create().texOffs(52, 17).mirror().addBox(-1.0F, -5.5F, -2.0F, 2.0F, 11.0F, 4.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(-3.8827F, 10.0F, -0.4239F, 0.0F, 0.3927F, 0.0F));
-		body.addOrReplaceChild("extraLeftWait_r1", CubeListBuilder.create().texOffs(52, 2).addBox(-1.0F, -5.5F, -2.0F, 2.0F, 11.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(3.8827F, 9.75F, -0.4239F, 0.0F, -0.3927F, 0.0F));
+		body.addOrReplaceChild("extraRightWait_r1", CubeListBuilder.create().texOffs(52, 17).mirror().addBox(-1.0F, -5.5F, -2.0F, 2.0F, 9.0F, 4.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(-3.8827F, 10.0F, -0.4239F, 0.0F, 0.3927F, 0.0F));
+		body.addOrReplaceChild("extraLeftWait_r1", CubeListBuilder.create().texOffs(52, 2).addBox(-1.0F, -5.5F, -2.0F, 2.0F, 9.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(3.8827F, 9.75F, -0.4239F, 0.0F, -0.3927F, 0.0F));
 		PartDefinition belly = body.addOrReplaceChild("belly", CubeListBuilder.create().texOffs(0, 10).addBox(-5.0F, -3.65F, -13.25F, 10.0F, 10.0F, 12.0F, new CubeDeformation(1.0F))
 		.texOffs(12, 20).addBox(-4.45F, -3.2076F, -13.8735F, 9.0F, 9.0F, 1.0F, new CubeDeformation(1.2F))
 		.texOffs(12, 20).addBox(-4.4F, -3.1723F, -14.5617F, 9.0F, 9.0F, 1.0F, new CubeDeformation(1.0F))

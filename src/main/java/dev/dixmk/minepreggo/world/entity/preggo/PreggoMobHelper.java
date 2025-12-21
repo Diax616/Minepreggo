@@ -368,17 +368,17 @@ public class PreggoMobHelper {
 		return result;
 	}
 	
-	public static<E extends PreggoMob & IFemaleEntity & ITamablePreggoMob<?> & IPregnancySystemHandler> void initDefaultPregnancy(@NonNull E preggoMob) {				
+	public static<E extends PreggoMob & IFemaleEntity & ITamablePreggoMob<FemaleEntityImpl> & IPregnancySystemHandler> void initDefaultPregnancy(@NonNull E preggoMob) {				
 		final var numOfBabies =	IBreedable.calculateNumOfBabiesByMaxPregnancyStage(preggoMob.getLastPregnancyStage());
 		preggoMob.tryImpregnate(numOfBabies, ImmutableTriple.of(Optional.empty(), preggoMob.getTypeOfSpecies(), preggoMob.getTypeOfCreature()));	
 		initPregnancy(preggoMob);
 	}
 	
-	public static<E extends PreggoMob & ITamablePreggoMob<?> & IFemaleEntity> boolean initPrePregnancy(@NonNull E preggoMob, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father, @Nonnegative int fertilizedEggs) {	
+	public static<E extends PreggoMob & ITamablePreggoMob<FemaleEntityImpl> & IFemaleEntity> boolean initPrePregnancy(@NonNull E preggoMob, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father, @Nonnegative int fertilizedEggs) {	
 		return preggoMob.tryImpregnate(fertilizedEggs, father);
 	}
 	
-	public static<E extends PreggoMob & ITamablePreggoMob<?> & IFemaleEntity & IPregnancySystemHandler> boolean initPregnancyByPotion(@NonNull E preggoMob, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father, @Nonnegative int amplifier) {	
+	public static<E extends PreggoMob & ITamablePreggoMob<FemaleEntityImpl> & IFemaleEntity & IPregnancySystemHandler> boolean initPregnancyByPotion(@NonNull E preggoMob, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father, @Nonnegative int amplifier) {	
 		final int numOfBabies = IBreedable.calculateNumOfBabiesByPotion(amplifier);	
 		final var r1 = initPrePregnancy(preggoMob, father, numOfBabies);	
 		final var r2 = initPregnancy(preggoMob);
@@ -391,7 +391,7 @@ public class PreggoMobHelper {
 		return r1 && r2;
 	}
 	
-	public static<E extends PreggoMob & ITamablePreggoMob<?> & IFemaleEntity> boolean initPregnancyBySex(@NonNull E preggoMob, @NonNull ServerPlayer serverPlayer) {	
+	public static<E extends PreggoMob & ITamablePreggoMob<FemaleEntityImpl> & IFemaleEntity> boolean initPregnancyBySex(@NonNull E preggoMob, @NonNull ServerPlayer serverPlayer) {	
 		if (!preggoMob.isOwnedBy(serverPlayer)) {
 			MinepreggoMod.LOGGER.debug("CANNOT INIT PREGNANCY BY SEX : class={}, playerId={}, ownerId={}",
 					preggoMob.getClass().getSimpleName(), serverPlayer.getUUID(), preggoMob.getOwnerUUID());

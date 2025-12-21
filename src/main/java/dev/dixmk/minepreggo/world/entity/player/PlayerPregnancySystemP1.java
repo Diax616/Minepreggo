@@ -114,9 +114,11 @@ public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
 			
 			femaleData.tryActivatePostPregnancyPhase(PostPregnancy.MISCARRIAGE);
 				
+			femaleData.resetPregnancy();
+			femaleData.resetPregnancyOnClient(pregnantEntity);
+			removePregnancy();
+			
 			femaleData.sync(pregnantEntity);
-			pregnancySystem.sync(pregnantEntity);
-			playerData.sync(pregnantEntity);
 		} else {
 			
     		for (ServerPlayer otherPlayer : serverLevel.getServer().getPlayerList().getPlayers()) {

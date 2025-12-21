@@ -18,6 +18,7 @@ import dev.dixmk.minepreggo.network.packet.SyncMobEffectPacket;
 import dev.dixmk.minepreggo.network.packet.SyncPlayerDataS2CPacket;
 import dev.dixmk.minepreggo.network.packet.SyncPregnancySystemS2CPacket;
 import dev.dixmk.minepreggo.server.ServerCinematicManager;
+import dev.dixmk.minepreggo.server.ServerPlayerAnimationManager;
 import dev.dixmk.minepreggo.utils.DebugHelper;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
@@ -35,13 +36,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -154,6 +155,8 @@ public class PlayerEventHandler {
 					showPlayerMainMenu(serverPlayer);
 				}
         	});
+
+        	ServerPlayerAnimationManager.getInstance().stopAnimation(serverPlayer);
         }     
 	}
 	
@@ -197,7 +200,11 @@ public class PlayerEventHandler {
 	// PREGNANCY EFFECTS IN PLAYER HANDLING START
 	@SubscribeEvent
 	public static void onEntityJump(LivingEvent.LivingJumpEvent event) {
-		if (!(event.getEntity() instanceof ServerPlayer serverPlayer) || serverPlayer.level().isClientSide) return;
+		if (!(event.getEntity() instanceof ServerPlayer serverPlayer)) return;
+		
+		if (serverPlayer.level().isClientSide) {
+			return;
+		}
 		
 		serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
 			cap.getFemaleData().ifPresent(femaleData -> {			
@@ -207,7 +214,7 @@ public class PlayerEventHandler {
 						var effects = femaleData.getPregnancyEffects();
 						effects.incrementNumOfJumps();			
 						if (effects.getNumOfJumps() >= PlayerHelper.maxJumps(phase)) {
-							serverPlayer.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 200, 0, true, true, true));
+							serverPlayer.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 260, 0, true, true, true));
 							effects.resetNumOfJumps();
 						}
 						
@@ -225,8 +232,12 @@ public class PlayerEventHandler {
 
 	@SubscribeEvent
 	public static void onPlayerTick(TickEvent.PlayerTickEvent event) {		
-		if (event.phase != TickEvent.Phase.END || !(event.player instanceof ServerPlayer serverPlayer) || serverPlayer.level().isClientSide) return;
-					
+		if (event.phase != TickEvent.Phase.END || !(event.player instanceof ServerPlayer serverPlayer)) return;
+				
+		if (serverPlayer.level().isClientSide) {
+			return;
+		}
+		
 		serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> {		
 			if (cap.isFemale()) {
 				cap.getFemaleData().ifPresent(femaleData -> evalualeFemalePlayerOnTick(serverPlayer, femaleData)) ;				
@@ -276,16 +287,17 @@ public class PlayerEventHandler {
 			if (phase.compareTo(PregnancyPhase.P3) >= 0 && serverPlayer.isSprinting()) {
 				if (effetcs.getSprintingTimer() > PlayerHelper.sprintingTimer(phase)) {
 					effetcs.resetSprintingTimer();
-					serverPlayer.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 200, 0, true, true, true));
+					serverPlayer.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 260, 0, true, true, true));
 				}
 				else {
+					MinepreggoMod.LOGGER.debug("asdasd, {}", effetcs.getSprintingTimer());
 					effetcs.incrementSprintingTimer();
 				}
 			}
 			else if (phase.compareTo(PregnancyPhase.P4) >= 0 && serverPlayer.isShiftKeyDown()) {
 				if (effetcs.getSneakingTimer() > PlayerHelper.sneakingTimer(phase)) {
 					effetcs.resetSneakingTimer();
-					serverPlayer.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 200, 0, true, true, true));
+					serverPlayer.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 260, 0, true, true, true));
 				}
 				else {
 					effetcs.incrementSneakingTimer();
@@ -395,9 +407,9 @@ public class PlayerEventHandler {
 			            }        
 			            serverPlayer.getInventory().setChanged();
 											
-						ItemHandlerHelper.giveItemToPlayer(serverPlayer, new ItemStack(MinepreggoModItems.HUMAN_BREAST_MILK_BOTTLE.get()));				
-						serverPlayer.level().playSound(null, serverPlayer.getX(), serverPlayer.getY(), serverPlayer.getZ(), SoundEvents.COW_MILK, SoundSource.PLAYERS, 1F, 1F);
-					
+						ItemHandlerHelper.giveItemToPlayer(serverPlayer, new ItemStack(MinepreggoModItems.HUMAN_BREAST_MILK_BOTTLE.get()));					
+						serverPlayer.playSound(SoundEvents.COW_MILK, 0.8F, 0.8F + serverPlayer.getRandom().nextFloat() * 0.3F);
+
 						femaleData.getPregnancyEffects().sync(serverPlayer);
 						
 						MinepreggoMod.LOGGER.debug("Player {} milked. Current milking value: {}", serverPlayer.getName().getString(), femaleData.getPregnancyEffects().getMilking());
@@ -410,6 +422,37 @@ public class PlayerEventHandler {
 	
 	
 	
+	
+	// TODO: It does not completely prevent a pregnant player from using valid armor, Search a solution using Mixin, setItemSlot from LivingEntity does not work, it crashes the game.
+    @SubscribeEvent
+    public static void onEquipmentChange(LivingEquipmentChangeEvent event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) return;
+        player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
+        	cap.getFemaleData().ifPresent(femaleData -> {   
+    	        ItemStack newArmor = event.getTo();
+                EquipmentSlot slot = event.getSlot();
+        		if (!newArmor.isEmpty() && newArmor.getItem() instanceof ArmorItem) {
+	               	var item = newArmor.getItem();
+        			if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized() && !PregnancySystemHelper.canUseChestplate(item, femaleData.getPregnancySystem().getCurrentPregnancyStage())) {
+        				MessageHelper.warnFittedArmor(player, femaleData.getPregnancySystem().getCurrentPregnancyStage());
+        				event.getEntity().setItemSlot(slot, ItemStack.EMPTY);   		
+                        if (!player.getInventory().add(newArmor)) {
+                            player.drop(newArmor, false);
+                        }		
+	               	}		
+        			else if (!PlayerHelper.canUseChestPlateInLactation(player, item)) {
+               			MessageHelper.sendTo(player, Component.translatable("chat.minepreggo.player.armor.message.lactating"), true);
+        				event.getEntity().setItemSlot(slot, ItemStack.EMPTY);   		
+                        if (!player.getInventory().add(newArmor)) {
+                            player.drop(newArmor, false);
+                        }
+        			}
+    	        } 
+        	})
+        );
+    }
+	
+  
 	@SubscribeEvent
 	public static void onRightClickEntity(PlayerInteractEvent.EntityInteract event) {	
 		if (event.getTarget() instanceof PreggoMob t) {
@@ -436,28 +479,6 @@ public class PlayerEventHandler {
 			}
 		}
 	}
-	
-    @SubscribeEvent
-    public static void onEquipmentChange(LivingEquipmentChangeEvent event) {
-        if (!(event.getEntity() instanceof ServerPlayer player && player.level().isClientSide)) return;
-  
-        player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
-        	cap.getFemaleData().ifPresent(femaleData -> {   
-    	        ItemStack newArmor = event.getTo();
-        		if (!newArmor.isEmpty() && newArmor.getItem() instanceof ArmorItem) {
-	               	var item = newArmor.getItem();
-        			if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized() && !PregnancySystemHelper.canUseChestplate(item, femaleData.getPregnancySystem().getCurrentPregnancyStage())) {
-        				MessageHelper.warnFittedArmor(player, femaleData.getPregnancySystem().getCurrentPregnancyStage());
-        				event.setCanceled(true);    		
-	               	}		
-        			else if (!PlayerHelper.canUseChestPlateInLactation(player, item)) {
-               			MessageHelper.sendTo(player, Component.translatable("chat.minepreggo.player.armor.message.lactating"), true);
-        				event.setCanceled(true);   
-        			}
-    	        } 
-        	})
-        );
-    }
 		
 	@SubscribeEvent
 	public static void onPlayerQuit(PlayerEvent.PlayerLoggedOutEvent event) {

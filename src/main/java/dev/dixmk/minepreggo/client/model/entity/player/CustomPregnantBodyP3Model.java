@@ -24,9 +24,9 @@ public class CustomPregnantBodyP3Model extends AbstractHeavyPregnantBodyModel {
 	
 	public CustomPregnantBodyP3Model(ModelPart root) {
 		super(root,
-				JigglePhysicsFactory.createLightweightBoobs(2.0F, false, false),
-				JigglePhysicsFactory.createBelly(2.0F, PregnancyPhase.P3),
-				JigglePhysicsFactory.createLightweightButt(2.0F));
+				JigglePhysicsFactory.createBoobs(2.0F, false, false),
+				JigglePhysicsFactory.createBelly(5.0F, PregnancyPhase.P3),
+				JigglePhysicsFactory.createLightweightButt(0.0F));
 	}
 	
 	public static LayerDefinition createBodyLayer() {
@@ -50,15 +50,6 @@ public class CustomPregnantBodyP3Model extends AbstractHeavyPregnantBodyModel {
 		PartDefinition leftButt = leftLeg.addOrReplaceChild("left_butt", CubeListBuilder.create(), PartPose.offset(-0.1F, 0.0F, 3.0F));
 		leftButt.addOrReplaceChild("leftAssCube_r1", CubeListBuilder.create().texOffs(18, 50).mirror().addBox(-2.0F, -2.0F, -1.0F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.4F)).mirror(false), PartPose.offsetAndRotation(-0.05F, 1.65F, -0.75F, 0.0F, 3.1416F, 0.0F));
 		return LayerDefinition.create(meshdefinition, 64, 64);
-	}
-	
-	@Override
-	public void setupAnim(AbstractClientPlayer entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {		
-		super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-		this.boobs.y += 0.05F;		
-		this.belly.xScale = 1.1F;
-		this.belly.yScale = 1.05F;
-		this.belly.zScale = 1.2F;	
 	}
 	
 	@Override

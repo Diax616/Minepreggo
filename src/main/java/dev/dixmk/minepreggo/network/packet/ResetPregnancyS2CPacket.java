@@ -9,9 +9,11 @@ import dev.dixmk.minepreggo.network.capability.FemalePlayerImpl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.NetworkEvent;
 
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public record ResetPregnancyS2CPacket(UUID playerId) {
 	public static ResetPregnancyS2CPacket decode(FriendlyByteBuf buffer) {	
 		return new ResetPregnancyS2CPacket(

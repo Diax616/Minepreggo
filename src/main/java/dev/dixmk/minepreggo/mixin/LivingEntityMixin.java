@@ -12,13 +12,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import dev.dixmk.minepreggo.client.SexCinematicManager;
 
 @Mixin(LivingEntity.class)
-public class LivingEntityMixin {
-    @Inject(method = "travel", at = @At("HEAD"), cancellable = true)
+public abstract class LivingEntityMixin {
+	
+    @Inject(
+    		method = "travel",
+    		at = @At("HEAD"),
+    		cancellable = true
+    		)
     private void onTravel(Vec3 movement, CallbackInfo ci) {
-        if ((Object) this instanceof Player player) {
-            if (player == Minecraft.getInstance().player && SexCinematicManager.getInstance().isInCinematic()) {
-                ci.cancel();
-            }
+        if ((LivingEntity.class.cast(this)) instanceof Player player && player == Minecraft.getInstance().player && SexCinematicManager.getInstance().isInCinematic()) {
+        	ci.cancel();
         }
     }
 }

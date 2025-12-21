@@ -46,7 +46,7 @@ public class ZombieImpregnation extends Impregnantion {
 				var nextStage = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
 				initPregnancy(zombieGirl, nextStage, amplifier);
 			}
-			else if (entity instanceof TamableZombieGirl zombieGirl) {
+			else if (entity instanceof TamableZombieGirl zombieGirl && zombieGirl.getPostPregnancyData().isEmpty()) {
 				var nextStage = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
 				initPregnancy(zombieGirl, nextStage, amplifier);
 				PreggoMobHelper.copyOwner(zombieGirl, nextStage);

@@ -146,6 +146,7 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 		if (pain == PregnancyPain.PREBIRTH) {		
 			if (pregnancySystem.getPregnancyPainTimer() >= totalTicksOfPreBirth) {
 				pregnancySystem.setPregnancyPain(PregnancyPain.BIRTH);
+				pregnantEntity.removeEffect(MinepreggoModMobEffects.PREBIRTH.get());
 				pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.BIRTH.get(), totalTicksOfBirth, 0, false, false, true));
 				pregnancySystem.resetPregnancyPainTimer();   		
 				PlayerHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.CHEST);
@@ -242,6 +243,7 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 	@Override
 	protected void initPostPartum() {
     	MessageHelper.sendTo(pregnantEntity, Component.translatable("chat.minepreggo.player.birth.message.post", pregnantEntity.getDisplayName().getString()));	
+    	
     	// tryActivatePostPregnancyPhase only works if isPregnant flag is true
     	femaleData.tryActivatePostPregnancyPhase(PostPregnancy.PARTUM);
 		femaleData.sync(pregnantEntity);
@@ -249,6 +251,10 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 		// resetPregnancy creates new instance of pregnancy system, so it has to be called after tryActivatePostPregnancyPhase, because it changes isPregnant flag to false and tryActivatePostPregnancyPhase does nothing if it's false
 		femaleData.resetPregnancy();
 		femaleData.resetPregnancyOnClient(pregnantEntity);
+		
+		removePregnancy();
+		
+		pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.MATERNITY.get(), 32000, 0, false, false, true));
 		MinepreggoMod.LOGGER.debug("Player {} has entered postpartum phase.", pregnantEntity.getGameProfile().getName());
 	}
 }

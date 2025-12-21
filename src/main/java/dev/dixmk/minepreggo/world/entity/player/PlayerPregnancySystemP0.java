@@ -13,6 +13,7 @@ import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 
 public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlayer> {
@@ -175,6 +176,9 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 		final var phases = PregnancyPhase.values();	
 		final var next = phases[Math.min(previousStage.ordinal() + 1, phases.length - 1)];
 		
+		pregnantEntity.removeEffect(PlayerHelper.pregnancyEffects(pregnancySystem.getCurrentPregnancyStage()));
+		pregnantEntity.addEffect(new MobEffectInstance(PlayerHelper.pregnancyEffects(next), -1, 0, false, false, true));
+		
 		pregnancySystem.setCurrentPregnancyStage(next);
 		pregnancySystem.resetPregnancyTimer();
 		pregnancySystem.resetDaysPassed();
@@ -217,5 +221,14 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 	@Override
 	protected void startMiscarriage() {
 		// This pregnancy phase does not miscarriage yet	
+	}
+
+	protected void removePregnancy() {		
+		pregnantEntity.getActiveEffects().forEach(effect -> {
+			var e = effect.getEffect();
+			if (PregnancySystemHelper.isPregnancyEffect(e)) {
+				pregnantEntity.removeEffect(e);
+			}
+		});
 	}
 }

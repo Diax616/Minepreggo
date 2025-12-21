@@ -41,6 +41,8 @@ public class BoobJigglePhysics extends AbstractJigglePhysics {
     private float jumpTargetRotationX = 0.0f;
     private float jumpTargetRotationZ = 0.0f;
     private boolean jumpTargetsSet = false;
+    private float jumpElevationTarget = 0.0f;
+    private float jumpElevationCurrent = 0.0f;
     
     private final float phaseOffset;
     private final float sideMultiplier;
@@ -48,6 +50,16 @@ public class BoobJigglePhysics extends AbstractJigglePhysics {
         
     private boolean axisX = true;
     private boolean axisZ = true;
+    
+    
+    
+    // Jump bounce constants
+    private static final float JUMP_ELEVATION_MIN = 0.4f;
+    private static final float JUMP_ELEVATION_MAX = 0.8f;
+    private static final float JUMP_ELEVATION_SPRING = 0.15f;
+    private static final float JUMP_ELEVATION_DAMPING = 0.85f;
+    
+    
     
     public BoobJigglePhysics(Builder builder) {
         super(builder.springStrength, builder.damping, builder.gravity, builder.maxDisplacement, builder.additionalYPos);
@@ -92,10 +104,13 @@ public class BoobJigglePhysics extends AbstractJigglePhysics {
             jumpTargetRotationX = (float) ((Math.random() * 2.0 - 1.0) * maxRotationX);
             jumpTargetRotationZ = (float) ((Math.random() * 2.0 - 1.0) * maxRotationZ);
             jumpTargetsSet = true;
+  
+            jumpElevationTarget = JUMP_ELEVATION_MIN + (float) (Math.random() * (JUMP_ELEVATION_MAX - JUMP_ELEVATION_MIN));
         }
         
         if (!isInAir && wasInAir) {
             jumpTargetsSet = false;
+            jumpElevationTarget = 0.0f; // Return to zero on landing
         }
         
         wasInAir = isInAir;
@@ -110,6 +125,10 @@ public class BoobJigglePhysics extends AbstractJigglePhysics {
             oscillationTime += oscillationSpeed * Math.max(movementIntensity, Math.abs(playerVelocityY) * 2.0f);
         }
         
+        float elevationSpringForce = (jumpElevationTarget - jumpElevationCurrent) * JUMP_ELEVATION_SPRING;
+        jumpElevationCurrent += elevationSpringForce;
+        jumpElevationCurrent *= JUMP_ELEVATION_DAMPING;
+
         float phaseTime = oscillationTime * asymmetricFrequency + phaseOffset;
         boolean hasAnyMovement = movementIntensity > 0.05f || hasVerticalMovement;
         float springForce = -position * springStrength;
@@ -209,6 +228,11 @@ public class BoobJigglePhysics extends AbstractJigglePhysics {
         
         rotationZ += rotationVelocityZ * deltaTime;
         rotationZ = Math.max(-maxRotationZ, Math.min(maxRotationZ, rotationZ));
+    }
+    
+    @Override
+    public float getOffset() {
+    	return position - jumpElevationCurrent;
     }
     
     public float getRotationY() {

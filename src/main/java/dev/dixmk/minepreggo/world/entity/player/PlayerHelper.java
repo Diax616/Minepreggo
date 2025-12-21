@@ -21,9 +21,7 @@ import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
-import dev.dixmk.minepreggo.world.item.IFemaleArmor;
 import dev.dixmk.minepreggo.world.item.IMaternityArmor;
-import dev.dixmk.minepreggo.world.item.ItemHelper;
 import dev.dixmk.minepreggo.world.pregnancy.Craving;
 import dev.dixmk.minepreggo.world.pregnancy.IBreedable;
 import dev.dixmk.minepreggo.world.pregnancy.MapPregnancyPhase;
@@ -39,6 +37,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -112,6 +111,17 @@ public class PlayerHelper {
 			PregnancyPhase.P8, 2200
 			)));
 	
+	private static final ImmutableMap<PregnancyPhase, MobEffect> PREGNANCY_EFFECTS = ImmutableMap.of(
+			PregnancyPhase.P0, MinepreggoModMobEffects.PREGNANCY_P0.get(),
+			PregnancyPhase.P1, MinepreggoModMobEffects.PREGNANCY_P1.get(),
+			PregnancyPhase.P2, MinepreggoModMobEffects.PREGNANCY_P2.get(),
+			PregnancyPhase.P3, MinepreggoModMobEffects.PREGNANCY_P3.get(),
+			PregnancyPhase.P4, MinepreggoModMobEffects.PREGNANCY_P4.get(),
+			PregnancyPhase.P5, MinepreggoModMobEffects.PREGNANCY_P5.get(),
+			PregnancyPhase.P6, MinepreggoModMobEffects.PREGNANCY_P6.get(),
+			PregnancyPhase.P7, MinepreggoModMobEffects.PREGNANCY_P7.get(),
+			PregnancyPhase.P8, MinepreggoModMobEffects.PREGNANCY_P8.get()
+			);
 	
 	public static int maxJumps(PregnancyPhase phase) {
 		return MAX_JUMPS.getInt(phase.compareTo(PregnancyPhase.P3) <= -1 ? PregnancyPhase.P3 : phase);
@@ -127,6 +137,10 @@ public class PlayerHelper {
 	
 	public static int sneakingTimer(PregnancyPhase phase) {
 		return SNEAKING_TIMERS.getInt(phase.compareTo(PregnancyPhase.P4) <= -1 ? PregnancyPhase.P4 : phase);
+	}
+	
+	public static MobEffect pregnancyEffects(PregnancyPhase phase) {
+		return PREGNANCY_EFFECTS.get(phase);
 	}
 	
 	@CheckForNull
@@ -201,7 +215,7 @@ public class PlayerHelper {
 
 		final var femaleData = playerDataCap.get().getFemaleData().resolve();
 	
-		if (femaleData.isPresent() && !femaleData.get().isPregnant()) {			
+		if (femaleData.isPresent() && !femaleData.get().isPregnant() && femaleData.get().getPostPregnancyData().isEmpty()) {			
 			return femaleData.get().tryImpregnate(numOfBabies, father);
 		}
 		else {
@@ -257,28 +271,12 @@ public class PlayerHelper {
 		return entity instanceof ServerPlayer s && s.getCapability(MinepreggoCapabilities.PLAYER_DATA).map(cap -> cap.getFemaleData().isPresent()).isPresent();
 	}
 	
-	public static boolean canUseChestplate(Item armor) {
-		if (!ItemHelper.isChest(armor)) {
-			return false;
-		}		
-		return armor instanceof IFemaleArmor;
-	}
-	
 	public static boolean canUseChestPlateInLactation(LivingEntity target, Item armor) {	
 		if (!target.hasEffect(MinepreggoModMobEffects.LACTATION.get())) {
 			return true;
 		}
 		return armor instanceof IMaternityArmor maternityArmor && maternityArmor.areBoobsExposed();
 	}
-	
-	public static boolean canUseChestplate(LivingEntity target, Item armor, PregnancyPhase pregnancyPhase, boolean considerBoobs) {	
-		return PregnancySystemHelper.canUseChestplate(armor, pregnancyPhase, considerBoobs) && !target.hasEffect(MinepreggoModMobEffects.LACTATION.get());
-	}
-	
-	public static boolean canUseChestplate(LivingEntity target, Item armor, PregnancyPhase pregnancyPhase) {	
-		return PregnancySystemHelper.canUseChestplate(armor, pregnancyPhase, true) && !target.hasEffect(MinepreggoModMobEffects.LACTATION.get());
-	}
-	
 	
 	public static void removeAndDropItemStackFromEquipmentSlot(Player player, EquipmentSlot slotId) {
 		if (PreggoMobHelper.dropItemStack(player, player.getItemBySlot(slotId))) {
@@ -298,5 +296,5 @@ public class PlayerHelper {
     public static boolean isPlayingBirthAnimation(Player player) {
     	var anim = PlayerAnimationManager.getInstance().get(player).getCurrentAnimationName();
         return anim != null && anim.equals("birth");
-    }
+    }	
 }

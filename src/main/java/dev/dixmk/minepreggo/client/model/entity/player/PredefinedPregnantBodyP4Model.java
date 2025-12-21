@@ -24,9 +24,9 @@ public class PredefinedPregnantBodyP4Model extends AbstractHeavyPregnantBodyMode
 	
 	public PredefinedPregnantBodyP4Model(ModelPart root) {
 		super(root,
-				JigglePhysicsFactory.createBoobs(2.0F, false, false),
-				JigglePhysicsFactory.createBelly(5.25F, PregnancyPhase.P4),
-				JigglePhysicsFactory.createHeavyweightButt(0.25F));
+				JigglePhysicsFactory.createHeavyweightBoobs(1.75F, false, false),
+				JigglePhysicsFactory.createBelly(5.0F, PregnancyPhase.P4),
+				JigglePhysicsFactory.createLightweightButt(0.0F));
 	}
 	
 	public static LayerDefinition createBodyLayer() {

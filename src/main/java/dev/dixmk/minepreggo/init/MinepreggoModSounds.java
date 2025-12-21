@@ -4,7 +4,10 @@ import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.RandomSource;
 import net.minecraft.resources.ResourceLocation;
+
+import java.util.List;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 
@@ -25,4 +28,9 @@ public class MinepreggoModSounds {
 	public static final RegistryObject<SoundEvent> PLAYER_BIRTH = REGISTRY.register("player_birth", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "player_birth")));
 	public static final RegistryObject<SoundEvent> PLAYER_CONTRACTION = REGISTRY.register("player_contraction", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "player_contraction")));
 	public static final RegistryObject<SoundEvent> PLAYER_MISCARRIAGE = REGISTRY.register("player_miscarriage", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "player_miscarriage")));
+
+	public static final SoundEvent getRandomPregnancyPain(RandomSource random) {
+		final var list = List.of(PREGNANCY_PAIN1.get(), PREGNANCY_PAIN2.get(), PREGNANCY_PAIN3.get(), PREGNANCY_PAIN4.get());
+		return list.get(random.nextInt(0, list.size()));
+	}
 }
