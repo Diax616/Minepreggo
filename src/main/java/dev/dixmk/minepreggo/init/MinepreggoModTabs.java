@@ -18,7 +18,7 @@ public class MinepreggoModTabs {
     public static final RegistryObject<CreativeModeTab> MINEPREGGO_TAB = REGISTRY.register("minepreggo_tab", () -> CreativeModeTab.builder()
             .withTabsBefore(CreativeModeTabs.COMBAT)
             .title(Component.literal("Minepreggo"))
-            .icon(() -> MinepreggoModItems.LEMON.get().getDefaultInstance())
+            .icon(() -> MinepreggoModItems.MATERNITY_DIAMOND_P1_CHESTPLATE.get().getDefaultInstance())
             .displayItems((parameters, output) -> {
                 output.accept(MinepreggoModItems.LEMON.get());
                 output.accept(MinepreggoModItems.LEMON_ICE_CREAM.get());
@@ -31,6 +31,10 @@ public class MinepreggoModTabs {
                 output.accept(MinepreggoModItems.SALTY_WATER_BOTTLE.get());
                 output.accept(MinepreggoModItems.HOT_CHICKEN.get());
                 output.accept(MinepreggoModItems.HOT_SAUCE.get());
+                output.accept(MinepreggoModItems.LEMON_DROPS.get());
+                output.accept(MinepreggoModItems.CHILI_POPPERS.get());
+                output.accept(MinepreggoModItems.FRENCH_FRIES.get());
+                output.accept(MinepreggoModItems.CANDY_APPLE.get());
                 
                 output.accept(MinepreggoModItems.HUMAN_BREAST_MILK_BOTTLE.get());
                 output.accept(MinepreggoModItems.ZOMBIE_BREAST_MILK_BOTTLE.get());
@@ -111,13 +115,15 @@ public class MinepreggoModTabs {
                 output.accept(MinepreggoModItems.BABY_CREEPER.get());
                 output.accept(MinepreggoModItems.BABY_HUMANOID_ENDER.get());
                 output.accept(MinepreggoModItems.BABY_ENDER.get());
+                output.accept(MinepreggoModItems.BABY_VILLAGER.get());
                 output.accept(MinepreggoModItems.DEAD_HUMAN_FETUS.get());
                 output.accept(MinepreggoModItems.DEAD_ZOMBIE_FETUS.get());
                 output.accept(MinepreggoModItems.DEAD_HUMANOID_CREEPER_FETUS.get());
                 output.accept(MinepreggoModItems.DEAD_CREEPER_FETUS.get());
                 output.accept(MinepreggoModItems.DEAD_HUMANOID_ENDER_FETUS.get());
                 output.accept(MinepreggoModItems.DEAD_ENDER_FETUS.get());
-                
+                output.accept(MinepreggoModItems.DEAD_VILLAGER_FETUS.get());
+        
                 output.accept(MinepreggoModItems.MONSTER_ZOMBIE_GIRL_SPAWN_EGG.get());
                 output.accept(MinepreggoModItems.MONSTER_ZOMBIE_GIRL_P3_SPAWN_EGG.get());
                 output.accept(MinepreggoModItems.MONSTER_ZOMBIE_GIRL_P5_SPAWN_EGG.get());
@@ -148,11 +154,10 @@ public class MinepreggoModTabs {
                 output.accept(MinepreggoModItems.TAMABLE_HUMANOID_CREEPER_GIRL_P7_SPAWN_EGG.get());
                 output.accept(MinepreggoModItems.TAMABLE_HUMANOID_CREEPER_GIRL_P8_SPAWN_EGG.get());
      
-                output.accept(MinepreggoModItems.MONSTER_QUADRUPED_CREEPER_GIRL_P0_SPAWN_EGG.get());
+                output.accept(MinepreggoModItems.MONSTER_CREEPER_GIRL_SPAWN_EGG.get());
                 output.accept(MinepreggoModItems.MONSTER_ENDER_WOMAN_SPAWN_EGG.get());
                 output.accept(MinepreggoModItems.SCIENTIFIC_ILLAGER_SPAWN_EGG.get());
-                
-                
-                
+                output.accept(MinepreggoModItems.FERTILITY_WITCH_SPAWN_EGG.get());
+ 
             }).build());
 }

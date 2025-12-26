@@ -3,6 +3,7 @@ package dev.dixmk.minepreggo.client.model.entity.player;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.animation.preggo.BellyAnimation;
 import dev.dixmk.minepreggo.client.jiggle.JigglePhysicsFactory;
+import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -33,38 +34,38 @@ public class CustomPregnantBodyP8Model extends AbstractHeavyPregnantBodyModel {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 		PartDefinition body = partdefinition.addOrReplaceChild("body", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-		PartDefinition belly = body.addOrReplaceChild("belly", CubeListBuilder.create().texOffs(17, 22).addBox(-4.0F, -3.6556F, -14.4737F, 8.0F, 7.0F, 3.0F, new CubeDeformation(1.6F))
-		.texOffs(19, 25).addBox(-3.5F, -3.1556F, -15.1737F, 7.0F, 6.0F, 1.0F, new CubeDeformation(1.6F))
-		.texOffs(19, 30).addBox(-3.5F, 3.8444F, -15.1737F, 7.0F, 0.0F, 1.0F, new CubeDeformation(1.59F))
+		PartDefinition belly = body.addOrReplaceChild("belly", CubeListBuilder.create().texOffs(17, 22).addBox(-4.0F, -3.6556F, -13.1737F, 8.0F, 7.0F, 3.0F, new CubeDeformation(1.6F))
+		.texOffs(19, 25).addBox(-3.5F, -3.1556F, -13.8737F, 7.0F, 6.0F, 1.0F, new CubeDeformation(1.6F))
+		.texOffs(19, 30).addBox(-3.5F, 3.8444F, -13.8737F, 7.0F, 0.0F, 1.0F, new CubeDeformation(1.59F))
 		.texOffs(17, 22).addBox(-4.0F, -3.6556F, -8.4737F, 8.0F, 7.0F, 3.0F, new CubeDeformation(1.6F))
 		.texOffs(19, 24).addBox(-4.0F, -3.6556F, -2.4737F, 8.0F, 7.0F, 1.0F, new CubeDeformation(1.6F))
 		.texOffs(17, 22).addBox(-4.0F, 4.3444F, -8.4737F, 8.0F, 0.0F, 3.0F, new CubeDeformation(1.59F))
 		.texOffs(19, 24).addBox(-4.0F, 4.3444F, -2.4737F, 8.0F, 0.0F, 1.0F, new CubeDeformation(1.59F))
-		.texOffs(17, 22).addBox(-4.0F, 4.3444F, -14.4737F, 8.0F, 0.0F, 3.0F, new CubeDeformation(1.59F))
-		.texOffs(22, 29).addBox(-0.5F, 2.1437F, -17.3042F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.25F)), PartPose.offsetAndRotation(0.0F, 10.25F, -2.0F, 0.1396F, 0.0F, 0.0F));
+		.texOffs(17, 22).addBox(-4.0F, 4.3444F, -13.1737F, 8.0F, 0.0F, 3.0F, new CubeDeformation(1.59F))
+		.texOffs(22, 29).addBox(-0.5F, 2.1437F, -16.0042F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.25F)), PartPose.offsetAndRotation(0.0F, 10.25F, -2.0F, 0.1396F, 0.0F, 0.0F));
 		belly.addOrReplaceChild("bellyCube7_r1", CubeListBuilder.create().texOffs(20, 28).addBox(-3.5F, 1.5F, -0.5F, 7.0F, 0.0F, 1.0F, new CubeDeformation(1.6F)), PartPose.offsetAndRotation(0.0F, 4.2944F, -3.5737F, 1.5708F, 0.0F, 0.0F));
 		belly.addOrReplaceChild("bellyCube8_r1", CubeListBuilder.create().texOffs(27, 25).addBox(-1.5F, 2.5F, -0.5F, 1.0F, 0.0F, 1.0F, new CubeDeformation(1.59F))
 		.texOffs(27, 25).addBox(-1.5F, -4.5F, -0.5F, 1.0F, 6.0F, 1.0F, new CubeDeformation(1.6F)), PartPose.offsetAndRotation(4.15F, 1.3444F, -0.4737F, 0.0F, -1.5708F, 0.0F));
 		belly.addOrReplaceChild("bellyCube7_r2", CubeListBuilder.create().texOffs(27, 25).addBox(-1.5F, 2.5F, -0.5F, 3.0F, 0.0F, 1.0F, new CubeDeformation(1.58F))
 		.texOffs(27, 25).addBox(-1.5F, -4.5F, -0.5F, 3.0F, 6.0F, 1.0F, new CubeDeformation(1.59F)), PartPose.offsetAndRotation(4.15F, 1.3444F, -6.4737F, 0.0F, -1.5708F, 0.0F));
 		belly.addOrReplaceChild("bellyCube6_r1", CubeListBuilder.create().texOffs(27, 25).addBox(-1.5F, 2.5F, -0.5F, 3.0F, 0.0F, 1.0F, new CubeDeformation(1.59F))
-		.texOffs(27, 25).addBox(-1.5F, -4.5F, -0.5F, 3.0F, 6.0F, 1.0F, new CubeDeformation(1.6F)), PartPose.offsetAndRotation(4.15F, 1.3444F, -12.4737F, 0.0F, -1.5708F, 0.0F));
+		.texOffs(27, 25).addBox(-1.5F, -4.5F, -0.5F, 3.0F, 6.0F, 1.0F, new CubeDeformation(1.6F)), PartPose.offsetAndRotation(4.15F, 1.3444F, -11.1737F, 0.0F, -1.5708F, 0.0F));
 		belly.addOrReplaceChild("bellyCube7_r3", CubeListBuilder.create().texOffs(18, 25).addBox(0.5F, 2.5F, -0.5F, 1.0F, 0.0F, 1.0F, new CubeDeformation(1.59F))
 		.texOffs(18, 25).addBox(0.5F, -4.5F, -0.5F, 1.0F, 6.0F, 1.0F, new CubeDeformation(1.6F)), PartPose.offsetAndRotation(-4.15F, 1.3444F, -0.4737F, 0.0F, 1.5708F, 0.0F));
-		belly.addOrReplaceChild("bellyCube6_r2", CubeListBuilder.create().texOffs(16, 25).addBox(-1.5F, 2.5F, -0.5F, 3.0F, 0.0F, 1.0F, new CubeDeformation(1.59F))
-		.texOffs(16, 25).addBox(-1.5F, -4.5F, -0.5F, 3.0F, 6.0F, 1.0F, new CubeDeformation(1.6F)), PartPose.offsetAndRotation(-4.15F, 1.3444F, -6.4737F, 0.0F, 1.5708F, 0.0F));
+		belly.addOrReplaceChild("bellyCube6_r2", CubeListBuilder.create().texOffs(16, 25).addBox(-1.5F, 2.5F, -0.5F, 3.0F, 0.0F, 1.0F, new CubeDeformation(1.58F))
+		.texOffs(16, 25).addBox(-1.5F, -4.5F, -0.5F, 3.0F, 6.0F, 1.0F, new CubeDeformation(1.59F)), PartPose.offsetAndRotation(-4.15F, 1.3444F, -6.4737F, 0.0F, 1.5708F, 0.0F));
 		belly.addOrReplaceChild("bellyCube5_r1", CubeListBuilder.create().texOffs(16, 25).addBox(-1.5F, 2.5F, -0.5F, 3.0F, 0.0F, 1.0F, new CubeDeformation(1.59F))
-		.texOffs(16, 25).addBox(-1.5F, -4.5F, -0.5F, 3.0F, 6.0F, 1.0F, new CubeDeformation(1.6F)), PartPose.offsetAndRotation(-4.15F, 1.3444F, -12.4737F, 0.0F, 1.5708F, 0.0F));
+		.texOffs(16, 25).addBox(-1.5F, -4.5F, -0.5F, 3.0F, 6.0F, 1.0F, new CubeDeformation(1.6F)), PartPose.offsetAndRotation(-4.15F, 1.3444F, -11.1737F, 0.0F, 1.5708F, 0.0F));
 		belly.addOrReplaceChild("bellyCube6_r3", CubeListBuilder.create().texOffs(20, 23).addBox(-3.5F, 0.5F, -0.5F, 7.0F, 1.0F, 1.0F, new CubeDeformation(1.6F)), PartPose.offsetAndRotation(0.0F, -3.7056F, -0.5737F, -1.5708F, 0.0F, 0.0F));
-		belly.addOrReplaceChild("bellyCube6_r4", CubeListBuilder.create().texOffs(20, 28).addBox(-3.5F, -1.5F, -0.5F, 7.0F, 3.0F, 1.0F, new CubeDeformation(1.6F)), PartPose.offsetAndRotation(0.0F, 4.2944F, -6.5737F, 1.5708F, 0.0F, 0.0F));
-		belly.addOrReplaceChild("bellyCube5_r2", CubeListBuilder.create().texOffs(20, 23).addBox(-3.5F, -1.5F, -0.5F, 7.0F, 3.0F, 1.0F, new CubeDeformation(1.6F)), PartPose.offsetAndRotation(0.0F, -3.7056F, -6.5737F, -1.5708F, 0.0F, 0.0F));
-		belly.addOrReplaceChild("bellyCube5_r3", CubeListBuilder.create().texOffs(20, 28).addBox(-3.5F, -1.5F, -0.5F, 7.0F, 3.0F, 1.0F, new CubeDeformation(1.6F)), PartPose.offsetAndRotation(0.0F, 4.2944F, -12.5737F, 1.5708F, 0.0F, 0.0F));
-		belly.addOrReplaceChild("bellyCube4_r1", CubeListBuilder.create().texOffs(20, 23).addBox(-3.5F, -1.5F, -0.5F, 7.0F, 3.0F, 1.0F, new CubeDeformation(1.6F)), PartPose.offsetAndRotation(0.0F, -3.7056F, -12.5737F, -1.5708F, 0.0F, 0.0F));
-		belly.addOrReplaceChild("left_kick", CubeListBuilder.create().texOffs(18, 26).addBox(-1.0F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(-2.0F, -0.7747F, -10.9765F));
-		belly.addOrReplaceChild("right_kick", CubeListBuilder.create().texOffs(18, 26).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(0.5F, 1.2253F, -12.9765F));
-		belly.addOrReplaceChild("front_kick", CubeListBuilder.create().texOffs(18, 26).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(2.5F, -0.7747F, -12.9765F));
-		belly.addOrReplaceChild("bottom_kick", CubeListBuilder.create().texOffs(18, 26).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(-0.5F, 1.2253F, -11.9765F));
-		belly.addOrReplaceChild("top_kick", CubeListBuilder.create().texOffs(18, 26).addBox(-1.5F, -1.5F, -0.8F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(1.5F, -1.7747F, -13.9765F));
+		belly.addOrReplaceChild("bellyCube6_r4", CubeListBuilder.create().texOffs(20, 28).addBox(-3.5F, -1.5F, -0.5F, 7.0F, 3.0F, 1.0F, new CubeDeformation(1.58F)), PartPose.offsetAndRotation(0.0F, 4.2944F, -6.5737F, 1.5708F, 0.0F, 0.0F));
+		belly.addOrReplaceChild("bellyCube5_r2", CubeListBuilder.create().texOffs(20, 23).addBox(-3.5F, -1.5F, -0.5F, 7.0F, 3.0F, 1.0F, new CubeDeformation(1.59F)), PartPose.offsetAndRotation(0.0F, -3.7056F, -6.5737F, -1.5708F, 0.0F, 0.0F));
+		belly.addOrReplaceChild("bellyCube5_r3", CubeListBuilder.create().texOffs(20, 28).addBox(-3.5F, -1.5F, -0.5F, 7.0F, 3.0F, 1.0F, new CubeDeformation(1.59F)), PartPose.offsetAndRotation(0.0F, 4.2944F, -11.2737F, 1.5708F, 0.0F, 0.0F));
+		belly.addOrReplaceChild("bellyCube4_r1", CubeListBuilder.create().texOffs(20, 23).addBox(-3.5F, -0.5F, -0.5F, 7.0F, 2.0F, 1.0F, new CubeDeformation(1.6F)), PartPose.offsetAndRotation(0.0F, -3.7056F, -11.2737F, -1.5708F, 0.0F, 0.0F));
+		belly.addOrReplaceChild("left_kick", CubeListBuilder.create().texOffs(16, 24).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(-0.01F)), PartPose.offset(-2.0F, -0.15F, -6.0F));
+		belly.addOrReplaceChild("right_kick", CubeListBuilder.create().texOffs(16, 24).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(-0.01F)), PartPose.offset(0.0F, -0.15F, -8.0F));
+		belly.addOrReplaceChild("front_kick", CubeListBuilder.create().texOffs(16, 24).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(-0.01F)), PartPose.offset(2.0F, -1.15F, -7.0F));
+		belly.addOrReplaceChild("bottom_kick", CubeListBuilder.create().texOffs(16, 24).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(-0.01F)), PartPose.offset(-1.0F, 1.85F, -8.0F));
+		belly.addOrReplaceChild("top_kick", CubeListBuilder.create().texOffs(16, 24).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(-0.01F)), PartPose.offset(1.0F, -1.15F, -9.0F));
 		PartDefinition boobs = body.addOrReplaceChild("boobs", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 0.6F, -2.3F, -0.2618F, 0.0F, 0.0F));
 		PartDefinition rightBoob = boobs.addOrReplaceChild("right_boob", CubeListBuilder.create(), PartPose.offset(-1.5F, -0.2F, 0.0F));
 		rightBoob.addOrReplaceChild("rightBoobCube_r1", CubeListBuilder.create().texOffs(22, 23).addBox(0.5F, -0.4F, -1.3F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.01F)), PartPose.offsetAndRotation(-2.1336F, 3.2279F, -2.0635F, 0.3491F, 0.1745F, 0.0436F));
@@ -88,6 +89,11 @@ public class CustomPregnantBodyP8Model extends AbstractHeavyPregnantBodyModel {
 	@Override
 	protected void animBelly(AbstractClientPlayer entity, float ageInTicks) {
 		super.animBelly(entity, ageInTicks);
-		this.animate(this.loopAnimationState, BellyAnimation.HIGH_BELLY_INFLATION, ageInTicks, 1f);
+		if (entity.hasEffect(MinepreggoModMobEffects.FETAL_MOVEMENT.get())) {
+			this.animate(this.loopAnimationState, BellyAnimation.FETAL_MOVEMENT_P8, ageInTicks);
+		}
+		else {
+			this.animate(this.loopAnimationState, BellyAnimation.HIGH_BELLY_INFLATION, ageInTicks);
+		}
 	}
 }

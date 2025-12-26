@@ -1,7 +1,5 @@
 package dev.dixmk.minepreggo.world.effect;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.lang3.tuple.ImmutableTriple;
@@ -32,8 +30,6 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 public class Impregnantion extends MobEffect {
 	
@@ -90,13 +86,6 @@ public class Impregnantion extends MobEffect {
 		}
 	}
 	
-	@Override
-	public List<ItemStack> getCurativeItems() {
-		ArrayList<ItemStack> cures = new ArrayList<>();
-		cures.add(new ItemStack(Items.MILK_BUCKET));
-		return cures;
-	}
-
 	@Override
 	public boolean isDurationEffectTick(int duration, int amplifier) {
 		return true;

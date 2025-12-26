@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.Nullable;
 
 import dev.dixmk.minepreggo.world.pregnancy.IObstetrician;
 import dev.dixmk.minepreggo.world.pregnancy.PrenatalCheckupCostHolder;
@@ -14,6 +15,7 @@ import net.minecraft.nbt.Tag;
 public class VillagerDataImpl implements IVillagerData, IObstetrician {
     private PrenatalCheckupCostHolder prenatalCheckUpCosts = new PrenatalCheckupCostHolder(3, 8);    
     private Optional<UUID> motherPlayer = Optional.empty();
+    private boolean villagerKnowIsPlayerIsPregnant = false;
     
 	@Override
 	public Optional<UUID> getMotherPlayerId() {		
@@ -25,21 +27,34 @@ public class VillagerDataImpl implements IVillagerData, IObstetrician {
     	return this.prenatalCheckUpCosts.getValue();
     }
     
+    public void setMotherPlayer(@Nullable UUID playerId) {
+    	this.motherPlayer = Optional.ofNullable(playerId);
+    }
+    
+    public void setVillagerKnowIsPlayerIsPregnant(boolean know) {
+		this.villagerKnowIsPlayerIsPregnant = know;
+	}
+    
+    public boolean doesVillagerKnowPlayerIsPregnant() {
+    	return villagerKnowIsPlayerIsPregnant;
+    }
+    
 	public @NonNull Tag serializeNBT() {
-		CompoundTag nbt = new CompoundTag();		
+		CompoundTag nbt = new CompoundTag();	
+		nbt.putBoolean("villagerKnowIsPlayerIsPregnant", villagerKnowIsPlayerIsPregnant);
 		motherPlayer.ifPresent(id -> nbt.putUUID("motherPlayer", id));	
-		if (prenatalCheckUpCosts.isInitialized()) {
+		if (prenatalCheckUpCosts.isInitialized()) {		
 			nbt.put("prenatalCheckUpCosts", prenatalCheckUpCosts.serializeNBT());
 		}
 		return nbt;
 	}
 	
 	public void deserializeNBT(@NonNull Tag tag) {
-		CompoundTag nbt = (CompoundTag) tag;		
+		CompoundTag nbt = (CompoundTag) tag;	
+		villagerKnowIsPlayerIsPregnant = nbt.getBoolean("villagerKnowIsPlayerIsPregnant");
 		if (nbt.contains("motherPlayer")) {
 			motherPlayer = Optional.ofNullable(nbt.getUUID("motherPlayer"));
-		}
-		
+		}	
 		if (nbt.contains("prenatalCheckUpCosts", Tag.TAG_COMPOUND)) {
 			prenatalCheckUpCosts.deserializeNBT(nbt.getCompound("prenatalCheckUpCosts"));
 		}

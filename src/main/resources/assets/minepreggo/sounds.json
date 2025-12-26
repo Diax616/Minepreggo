@@ -18,7 +18,7 @@
     ]
   },
   "pregnancy_pain1": {
-    "subtitle": "subtitles.entity.pregnant.pain.1",
+    "subtitle": "subtitles.entity.pregnant.player.pain",
     "sounds": [
       {
         "name": "minepreggo:pregnancy_pain1",
@@ -27,7 +27,7 @@
     ]
   },
   "pregnancy_pain2": {
-    "subtitle": "subtitles.entity.pregnant.pain.2",
+    "subtitle": "subtitles.entity.pregnant.player.pain",
     "sounds": [
       {
         "name": "minepreggo:pregnancy_pain2",
@@ -36,7 +36,7 @@
     ]
   },
   "pregnancy_pain3": {
-    "subtitle": "subtitles.entity.pregnant.pain.3",
+    "subtitle": "subtitles.entity.pregnant.player.pain",
     "sounds": [
       {
         "name": "minepreggo:pregnancy_pain3",
@@ -45,7 +45,7 @@
     ]
   },
   "pregnancy_pain4": {
-    "subtitle": "subtitles.entity.pregnant.pain.4",
+    "subtitle": "subtitles.entity.pregnant.player.pain",
     "sounds": [
       {
         "name": "minepreggo:pregnancy_pain4",
@@ -76,6 +76,87 @@
     "sounds": [
       {
         "name": "minepreggo:player_miscarriage",
+        "stream": false
+      }
+    ]
+  },
+  "stomach_growls_1": {
+    "subtitle": "subtitles.entity.pregnant.stomach_growls",
+    "sounds": [
+      {
+        "name": "minepreggo:stomach_growls_1",
+        "stream": false
+      }
+    ]
+  },
+  "stomach_growls_2": {
+    "subtitle": "subtitles.entity.pregnant.stomach_growls",
+    "sounds": [
+      {
+        "name": "minepreggo:stomach_growls_2",
+        "stream": false
+      }
+    ]
+  },
+  "stomach_growls_3": {
+    "subtitle": "subtitles.entity.pregnant.stomach_growls",
+    "sounds": [
+      {
+        "name": "minepreggo:stomach_growls_3",
+        "stream": false
+      }
+    ]
+  },
+  "stomach_growls_4": {
+    "subtitle": "subtitles.entity.pregnant.stomach_growls",
+    "sounds": [
+      {
+        "name": "minepreggo:stomach_growls_4",
+        "stream": false
+      }
+    ]
+  },
+  "stomach_growls_5": {
+    "subtitle": "subtitles.entity.pregnant.stomach_growls",
+    "sounds": [
+      {
+        "name": "minepreggo:stomach_growls_5",
+        "stream": false
+      }
+    ]
+  },
+  "stomach_growls_6": {
+    "subtitle": "subtitles.entity.pregnant.stomach_growls",
+    "sounds": [
+      {
+        "name": "minepreggo:stomach_growls_6",
+        "stream": false
+      }
+    ]
+  },
+  "player_push_1": {
+    "subtitle": "subtitles.entity.pregnant.player.push",
+    "sounds": [
+      {
+        "name": "minepreggo:player_push_1",
+        "stream": false
+      }
+    ]
+  },
+  "player_push_2": {
+    "subtitle": "subtitles.entity.pregnant.player.push",
+    "sounds": [
+      {
+        "name": "minepreggo:player_push_2",
+        "stream": false
+      }
+    ]
+  },
+  "player_push_3": {
+    "subtitle": "subtitles.entity.pregnant.player.push",
+    "sounds": [
+      {
+        "name": "minepreggo:player_push_3",
         "stream": false
       }
     ]

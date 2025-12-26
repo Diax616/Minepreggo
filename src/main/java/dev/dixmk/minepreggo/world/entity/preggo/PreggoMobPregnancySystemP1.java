@@ -11,7 +11,6 @@ import org.jetbrains.annotations.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
-import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem.Result;
 import dev.dixmk.minepreggo.world.item.IItemCraving;
@@ -29,8 +28,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -213,40 +210,18 @@ public abstract class PreggoMobPregnancySystemP1<
 	@Override
 	public void evaluateOnSuccessfulHurt(DamageSource damagesource) {	
 		if (pregnantEntity.getPregnancyPain() == PregnancyPain.MISCARRIAGE) return;
-		
-		if ((pregnantEntity.hasEffect(MinepreggoModMobEffects.PREGNANCY_RESISTANCE.get()) && randomSource.nextFloat() < 0.9F)
-				|| (!damagesource.is(DamageTypes.FALL) && !pregnantEntity.getItemBySlot(EquipmentSlot.CHEST).isEmpty() && randomSource.nextFloat() < 0.5)) {
-			return;
-		}
-		
-		int damage = 0;
-		var currentPregnancyHealth = pregnantEntity.getPregnancyHealth();
-		
-		if (pregnantEntity.getHealth() < pregnantEntity.getMaxHealth() / 2F) {
-			damage = pregnantEntity.getCurrentPregnancyStage().ordinal() + randomSource.nextInt(3);
-				
-			if (damagesource.is(DamageTypes.EXPLOSION) || damagesource.is(DamageTypes.PLAYER_EXPLOSION) || damagesource.is(DamageTypes.FALL)) {
-				damage *= 2;
-			}
 
-			currentPregnancyHealth = Math.max(0, currentPregnancyHealth - damage);
-			pregnantEntity.setPregnancyHealth(currentPregnancyHealth);			
-		} 
-		else if (damagesource.is(DamageTypes.EXPLOSION) || damagesource.is(DamageTypes.PLAYER_EXPLOSION) || damagesource.is(DamageTypes.FALL)) {
-			currentPregnancyHealth = Math.max(0, currentPregnancyHealth - 5);
-			pregnantEntity.setPregnancyHealth(currentPregnancyHealth);
-		}
-		
-		if (currentPregnancyHealth == 0) {
-			startMiscarriage();
-		}	
-		else if (damage > 0) {		
-			if (pregnantEntity.getPregnancyHealth() < 40) {
+		PregnancySystemHelper.getPregnancyDamage(pregnantEntity, pregnantEntity.getCurrentPregnancyStage(), damagesource).ifPresent(damage -> {
+			pregnantEntity.reducePregnancyHealth(damage);
+			var currentPregnancyHealth = pregnantEntity.getPregnancyHealth();
+
+			if (currentPregnancyHealth <= 0) {
+				startMiscarriage();
+			}	
+			else if (currentPregnancyHealth < 40) {
 				MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) pregnantEntity.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.miscarriage.message.warning", pregnantEntity.getSimpleName()));
-			}					
-			MinepreggoMod.LOGGER.debug("PREGNANCY HEALTH: id={}, class={}, pregnancyHealth={}, damage={}, damageSource={}",
-					pregnantEntity.getId(), pregnantEntity.getClass().getSimpleName(), currentPregnancyHealth, damage, damagesource);
-		}
+			}		
+		});
 	}
 	
 	@Override
@@ -311,6 +286,8 @@ public abstract class PreggoMobPregnancySystemP1<
 	    		return Result.ANGRY;
 	    	}
 	    	    	
+            pregnantEntity.playSound(SoundEvents.GENERIC_EAT, 0.8F, 0.8F + pregnantEntity.getRandom().nextFloat() * 0.3F);
+
 	    	if (!level.isClientSide) {
 				mainHandItem.shrink(1);
 	            if (mainHandItem.isEmpty()) {
@@ -318,7 +295,6 @@ public abstract class PreggoMobPregnancySystemP1<
 	            }        
 	            source.getInventory().setChanged();    		  		
 	    		pregnantEntity.setCraving(currentCraving - ((IItemCraving)mainHandItem.getItem()).getGratification());    
-                pregnantEntity.playSound(SoundEvents.GENERIC_EAT, 0.8F, 0.8F + pregnantEntity.getRandom().nextFloat() * 0.3F);
 	    	}
             
             return Result.SUCCESS; 

@@ -20,7 +20,6 @@ import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
 import dev.dixmk.minepreggo.world.entity.ai.goal.PreggoMobAIHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
-import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobBody;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobFace;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
@@ -92,7 +91,7 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 	
 	protected final FemaleEntityImpl defaultFemaleEntityImpl = new FemaleEntityImpl();
 	
-	protected AbstractTamableZombieGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_) {
+	protected AbstractTamableZombieGirl(EntityType<? extends AbstractZombieGirl> p_21803_, Level p_21804_) {
 	      super(p_21803_, p_21804_, Creature.HUMANOID);
 	      this.reassessTameGoals();	     
 	      this.preggoMobSystem = createPreggoMobSystem();
@@ -277,6 +276,8 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 		if (preggoMobSystem.canOwnerAccessGUI(sourceentity)) {			
 			if (!this.level().isClientSide() && sourceentity instanceof ServerPlayer serverPlayer) {
 				ZombieGirlMenuHelper.showMainMenu(serverPlayer, this);
+				
+				// TODO: Find a better way to stop panicking when owner interacts with the mob.
 				if (this.isPanic()) setPanic(false);
 			}			
 			return InteractionResult.SUCCESS;

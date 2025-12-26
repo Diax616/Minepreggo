@@ -15,6 +15,7 @@ public class CreeperBreastMilkBottleItem extends AbstractBreastMilk {
 	@Override
 	public ItemStack finishUsingItem(ItemStack itemstack, Level world, LivingEntity entity) {
 		if (entity.level() instanceof ServerLevel serverLevel
+				&& !serverLevel.isClientSide
 				&& !entity.hasEffect(MinepreggoModMobEffects.FULL_OF_CREEPERS.get())
 				&& world.random.nextFloat() < 0.35F) {
 			serverLevel.explode(entity, entity.getX(), entity.getY(), entity.getZ(), 1, Level.ExplosionInteraction.MOB);		

@@ -1,0 +1,149 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": {
+        "min": 1,
+        "max": 3
+      },
+      "bonus_rolls": {
+        "min": 1,
+        "max": 2
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minepreggo:villager_brain",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 10,
+                "max": 15
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minepreggo:activated_gunpowder",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 20,
+                "max": 25
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:chorus_fruit",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 1,
+                "max": 4
+              }
+            }
+          ]
+        }
+      ]
+    },
+	
+    {
+      "rolls": 1,
+      "entries": [
+			
+		{
+		  "type": "minecraft:item",
+		  "name": "minecraft:potion",
+		  "weight": 1,
+		  "functions": [
+		    {
+		      "function": "set_nbt",
+			  "tag": "{Potion:\"minepreggo:impregnation_0\"}"
+		    }
+		  ]
+		},
+		
+		{
+		  "type": "minecraft:item",
+		  "name": "minecraft:potion",
+		  "weight": 1,
+		  "functions": [
+		    {
+		      "function": "set_nbt",
+			  "tag": "{Potion:\"minepreggo:ender_impregnation_0\"}"
+		    }
+		  ]
+		},
+		
+		{
+		  "type": "minecraft:item",
+		  "name": "minecraft:potion",
+		  "weight": 1,
+		  "functions": [
+		    {
+		      "function": "set_nbt",
+			  "tag": "{Potion:\"minepreggo:creeper_impregnation_0\"}"
+		    }
+		  ]
+		},
+		
+		{
+		  "type": "minecraft:item",
+		  "name": "minecraft:potion",
+		  "weight": 1,
+		  "functions": [
+		    {
+		      "function": "set_nbt",
+			  "tag": "{Potion:\"minepreggo:zombie_impregnation_0\"}"
+		    }
+		  ]
+		}	
+								
+      ]
+    },
+	
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minepreggo:brain_with_chocolate",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 1,
+                "max": 3
+              }
+            }
+          ]
+        },
+		{
+		  "type": "minecraft:item",
+		  "name": "minepreggo:activated_gunpowder_with_chocolate",
+		  "weight": 1,
+		  "functions": [
+		    {
+		      "function": "set_count",
+		      "count": {
+		        "min": 2,
+		        "max": 5
+		      }
+		    }
+		  ]
+		}
+      ]
+    }
+  ],
+  "random_sequence": "minepreggo:chests/scientific_illager_hideout_loot"
+}

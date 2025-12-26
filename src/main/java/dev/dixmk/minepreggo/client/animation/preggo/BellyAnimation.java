@@ -1,7 +1,10 @@
 package dev.dixmk.minepreggo.client.animation.preggo;
 
-import java.util.Map;
+import com.google.common.collect.ImmutableMap;
 
+import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
+import it.unimi.dsi.fastutil.bytes.Byte2ObjectMaps;
+import it.unimi.dsi.fastutil.bytes.Byte2ObjectOpenHashMap;
 import net.minecraft.client.animation.AnimationChannel;
 import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.client.animation.Keyframe;
@@ -11,7 +14,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class BellyAnimation {
-	
+
 	private BellyAnimation() {}
 	
 	public static final AnimationDefinition LOW_BELLY_INFLATION = AnimationDefinition.Builder.withLength(5.0F).looping()
@@ -535,7 +538,10 @@ public class BellyAnimation {
 			))
 			.build();
 	
-	public static final Map<Byte, AnimationDefinition> QUICK_ANIMATIONS = Map.of(
-			(byte) 100, RIGHT_HANDED_SLAP);
+	public static final Byte2ObjectMap<AnimationDefinition> BELLY_SLAP_ANIMATION = Byte2ObjectMaps.unmodifiable(new Byte2ObjectOpenHashMap<>(ImmutableMap.of(
+			(byte) 100, LEFT_HANDED_SLAP,
+			(byte) 101, CENTER_HANDED_SLAP,
+			(byte) 102, RIGHT_HANDED_SLAP))		
+	);
 }
 

@@ -80,21 +80,21 @@ public class BabyData {
 	}
 	
 	@CheckForNull
-	public static BabyData fromNBT(CompoundTag nbt) {		
-		if (nbt.contains(NBT_KEY, Tag.TAG_COMPOUND)) {		
-			CompoundTag data = nbt.getCompound(NBT_KEY);	
+	public static BabyData fromNBT(CompoundTag nbt) { 		
+		if (nbt.contains(NBT_KEY, Tag.TAG_COMPOUND)) { 		
+			CompoundTag data = nbt.getCompound(NBT_KEY); 	
 			Gender gender = Gender.valueOf(data.getString(Gender.NBT_KEY));
 			Species typeOfSpecies = Species.valueOf(data.getString(Species.NBT_KEY));
 			Creature typeOfCreature = Creature.valueOf(data.getString(Creature.NBT_KEY));
 			UUID motherId = data.getUUID("motheruuid");
-			UUID fatherId = data.contains("fatheruuid") ? data.getUUID("fatheruuid") : null;	
+			UUID fatherId = data.contains("fatheruuid") ? data.getUUID("fatheruuid") : null; 	
 			return new BabyData(
 					gender,
 					typeOfSpecies,
 					typeOfCreature,
 					motherId,
 					fatherId);
-		}	
+		} 	
 		return null;
 	}
 	
@@ -117,16 +117,14 @@ public class BabyData {
     	return VALID_COMBINATIONS.size();
     }
     
-    public static @NonNull BabyData create(@NonNull ImmutableTriple<UUID, Species, Creature> mother, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father, RandomSource random) {
-    	
+    public static @NonNull BabyData create(@NonNull ImmutableTriple<UUID, Species, Creature> mother, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father, RandomSource random) { 	
     	Gender gender = random.nextBoolean() ? Gender.FEMALE : Gender.MALE;
     	ImmutablePair<Species, Creature> pair;
  	
 		pair = getValidSpeciesAndCreatureFromParents(
 				ImmutablePair.of(mother.getMiddle(), mother.getRight()),
 				ImmutablePair.of(father.getMiddle(), father.getRight()),
-				random);  	  		
-		
+				random);  	    		
 		if (pair != null) {
 			return new BabyData(gender, pair.getLeft(), pair.getRight(), mother.getLeft(), father.getLeft().orElse(null));
 		}
@@ -135,7 +133,12 @@ public class BabyData {
 			return new BabyData(gender, mother.getMiddle(), mother.getRight(), mother.getLeft(), father.getLeft().orElse(null));
 		}
     }
-
+    
+    public static @NonNull BabyData create(@NonNull ImmutableTriple<UUID, Species, Creature> mother, RandomSource random) {
+    	Gender gender = random.nextBoolean() ? Gender.FEMALE : Gender.MALE;
+		return new BabyData(gender, mother.getMiddle(), mother.getRight(), mother.getLeft(), null);
+    }
+    
     @CheckForNull
     public static ImmutablePair<Species, Creature> getValidSpeciesAndCreatureFromParents(ImmutablePair<Species, Creature> mother, ImmutablePair<Species, Creature> father, RandomSource random) {
         var motherSpecies = mother.getLeft();
@@ -153,8 +156,14 @@ public class BabyData {
         // Inheritance rules
         if (motherSpecies == Species.HUMAN) {
             // Baby can be either species
-            candidates.add(ImmutablePair.of(motherSpecies, motherCreature));
+            candidates.add(ImmutablePair.of(motherSpecies, motherCreature));   
             candidates.add(ImmutablePair.of(fatherSpecies, fatherCreature));
+           
+            // TODO: Change to weighted random selection for a father that is not HUMAN, do not just duplicate entries to increase chance
+            if (fatherSpecies != Species.HUMAN) {
+                candidates.add(ImmutablePair.of(fatherSpecies, fatherCreature));
+                candidates.add(ImmutablePair.of(fatherSpecies, fatherCreature));
+            }
         } else {
             // Baby is mother's species
             candidates.add(ImmutablePair.of(motherSpecies, motherCreature));
@@ -176,7 +185,7 @@ public class BabyData {
                
         return validCandidates.get(random.nextInt(0, validCandidates.size()));
     }
-    
+        
     @Override
 	public String toString() {
     	return "Baby [ gender = " + gender + 
@@ -185,4 +194,17 @@ public class BabyData {
 				", motherId = " + Boolean.toString(motherId != null) + 
 				", fatherId = " + Boolean.toString(fatherId.isPresent()) + " ]";
     }
+
+	/**
+	 * Creates a duplicate of the given BabyData instance.
+	 */
+	public static BabyData duplicate(BabyData original) {
+		return new BabyData(
+			original.gender,
+			original.typeOfSpecies,
+			original.typeOfCreature,
+			original.motherId,
+			original.fatherId.orElse(null)
+		);
+	}
 }

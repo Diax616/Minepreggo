@@ -8,12 +8,13 @@
    "client": [
 	 "PlayerModelMixin",
 	 "AbstractClientPlayerMixin",
-	 "PlayerRendererMixin",
 	 "PlayerMixin",
 	 "LivingEntityMixin",
 	 "MinecraftMixin",
 	 "MouseHandlerMixin",
 	 "MilkBucketItemMixin",
-	 "CameraMixin"
+	 "CameraMixin",
+	 "ServerPlayerMixin",
+	 "VillagerMixin"
    ]
 }

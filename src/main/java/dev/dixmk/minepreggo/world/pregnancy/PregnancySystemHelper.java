@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.StreamSupport;
@@ -26,12 +27,17 @@ import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.client.particle.ParticleHelper;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
+import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.network.packet.RemoveMobEffectPacket;
 import dev.dixmk.minepreggo.network.packet.SyncMobEffectPacket;
+import dev.dixmk.minepreggo.utils.MathHelper;
 import dev.dixmk.minepreggo.utils.TagHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.world.item.IFemaleArmor;
 import dev.dixmk.minepreggo.world.item.IMaternityArmor;
 import dev.dixmk.minepreggo.world.item.ItemHelper;
@@ -45,10 +51,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -65,6 +72,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -128,7 +136,7 @@ public class PregnancySystemHelper {
 	public static final int TOTAL_TICKS_CONTRACTION_P7 = 900;
 	public static final int TOTAL_TICKS_CONTRACTION_P8 = 1000;
 	
-	public static final int TOTAL_TICKS_FERTILITY_RATE = 4000;
+	public static final int TOTAL_TICKS_FERTILITY_RATE = 6000;
 	
 	public static final int TOTAL_TICKS_SEXUAL_APPETITE_P0 = 4000;
 	public static final int TOTAL_TICKS_SEXUAL_APPETITE_P1 = 3800;
@@ -144,13 +152,13 @@ public class PregnancySystemHelper {
 	public static final int TOTAL_TICKS_CALM_BELLY_RUGGING_DOWN = 120;
 	
 	// Probabilities
-	public static final float LOW_PREGNANCY_PAIN_PROBABILITY = 0.000075F;
-	public static final float MEDIUM_PREGNANCY_PAIN_PROBABILITY = 0.000125F;
-	public static final float HIGH_PREGNANCY_PAIN_PROBABILITY = 0.000175F;
+	public static final float LOW_PREGNANCY_PAIN_PROBABILITY = 0.00075F;
+	public static final float MEDIUM_PREGNANCY_PAIN_PROBABILITY = 0.00125F;
+	public static final float HIGH_PREGNANCY_PAIN_PROBABILITY = 0.00175F;
 	
-	public static final float LOW_MORNING_SICKNESS_PROBABILITY = 0.0001F;
-	public static final float MEDIUM_MORNING_SICKNESS_PROBABILITY = 0.00015F;
-	public static final float HIGH_MORNING_SICKNESS_PROBABILITY = 0.0002F;
+	public static final float LOW_MORNING_SICKNESS_PROBABILITY = 0.001F;
+	public static final float MEDIUM_MORNING_SICKNESS_PROBABILITY = 0.0015F;
+	public static final float HIGH_MORNING_SICKNESS_PROBABILITY = 0.002F;
 	
 	public static final float LOW_ANGER_PROBABILITY = 0.005F;
 	public static final float MEDIUM_ANGER_PROBABILITY = 0.0075F;
@@ -191,14 +199,14 @@ public class PregnancySystemHelper {
 		maxHealth.removeModifier(PregnancySystemHelper.MAX_HEALTH_MODIFIER_TIRENESS);	
 	}
 	
-	protected static final ImmutableMap<Species, Item> MILK_ITEM = ImmutableMap.of(
+	private static final ImmutableMap<Species, Item> MILK_ITEM = ImmutableMap.of(
 			Species.CREEPER, MinepreggoModItems.CREEPER_BREAST_MILK_BOTTLE.get(),
 			Species.ZOMBIE, MinepreggoModItems.ZOMBIE_BREAST_MILK_BOTTLE.get(),
 			Species.HUMAN, MinepreggoModItems.HUMAN_BREAST_MILK_BOTTLE.get()			
 	);
 	
 	
-	protected static final ImmutableMap<Species, ImmutableMap<Craving, List<Item>>> CRAVING_ITEM = ImmutableMap.of(
+	private static final ImmutableMap<Species, ImmutableMap<Craving, List<Item>>> CRAVING_ITEM = ImmutableMap.of(
 			Species.CREEPER, ImmutableMap.of(
 					Craving.SALTY, List.of(MinepreggoModItems.ACTIVATED_GUNPOWDER_WITH_SALT.get()), 
 					Craving.SWEET, List.of(MinepreggoModItems.ACTIVATED_GUNPOWDER_WITH_CHOCOLATE.get()), 
@@ -210,33 +218,35 @@ public class PregnancySystemHelper {
 					Craving.SOUR, List.of(MinepreggoModItems.SOUR_BRAIN.get()),
 					Craving.SPICY, List.of(MinepreggoModItems.BRAIN_WITH_HOT_SAUCE.get())),
 			Species.HUMAN,	ImmutableMap.of(
-					Craving.SALTY, List.of(MinepreggoModItems.PICKLE.get()), 
-					Craving.SWEET, List.of(MinepreggoModItems.CHOCOLATE_BAR.get()), 
-					Craving.SOUR, List.of(MinepreggoModItems.LEMON_ICE_POPSICLES.get(), MinepreggoModItems.LEMON_ICE_CREAM.get()),
-					Craving.SPICY, List.of(MinepreggoModItems.HOT_CHICKEN.get()))	
+					Craving.SALTY, List.of(MinepreggoModItems.PICKLE.get(), MinepreggoModItems.FRENCH_FRIES.get()), 
+					Craving.SWEET, List.of(MinepreggoModItems.CHOCOLATE_BAR.get(), MinepreggoModItems.CANDY_APPLE.get()), 
+					Craving.SOUR, List.of(MinepreggoModItems.LEMON_ICE_POPSICLES.get(), MinepreggoModItems.LEMON_ICE_CREAM.get(), MinepreggoModItems.LEMON_DROPS.get()),
+					Craving.SPICY, List.of(MinepreggoModItems.HOT_CHICKEN.get(), MinepreggoModItems.CHILI_POPPERS.get()))	
 	);
 	
-	protected static final Table<Species, Creature, Item> ALIVE_BABIES = ImmutableTable.<Species, Creature, Item>builder()
+	private static final Table<Species, Creature, Item> ALIVE_BABIES = ImmutableTable.<Species, Creature, Item>builder()
 			.put(Species.HUMAN, Creature.HUMANOID, MinepreggoModItems.BABY_HUMAN.get())
 			.put(Species.ZOMBIE, Creature.HUMANOID, MinepreggoModItems.BABY_ZOMBIE.get())
 			.put(Species.CREEPER, Creature.HUMANOID, MinepreggoModItems.BABY_HUMANOID_CREEPER.get())
 			.put(Species.CREEPER, Creature.MONSTER, MinepreggoModItems.BABY_CREEPER.get())
 			.put(Species.ENDER, Creature.MONSTER, MinepreggoModItems.BABY_ENDER.get())
 			.put(Species.ENDER, Creature.HUMANOID, MinepreggoModItems.BABY_HUMANOID_ENDER.get())
+			.put(Species.VILLAGER, Creature.HUMANOID, MinepreggoModItems.BABY_VILLAGER.get())
 			.build();
 
-	protected static final Table<Species, Creature, Item> DEAD_BABIES = ImmutableTable.<Species, Creature, Item>builder()
+	private static final Table<Species, Creature, Item> DEAD_BABIES = ImmutableTable.<Species, Creature, Item>builder()
 			.put(Species.HUMAN, Creature.HUMANOID, MinepreggoModItems.DEAD_HUMAN_FETUS.get())
 			.put(Species.ZOMBIE, Creature.HUMANOID, MinepreggoModItems.DEAD_ZOMBIE_FETUS.get())
 			.put(Species.CREEPER, Creature.HUMANOID, MinepreggoModItems.DEAD_HUMANOID_CREEPER_FETUS.get())
 			.put(Species.CREEPER, Creature.MONSTER, MinepreggoModItems.DEAD_CREEPER_FETUS.get())
 			.put(Species.ENDER, Creature.MONSTER, MinepreggoModItems.DEAD_ENDER_FETUS.get())
 			.put(Species.ENDER, Creature.HUMANOID, MinepreggoModItems.DEAD_HUMANOID_ENDER_FETUS.get())
+			.put(Species.VILLAGER, Creature.HUMANOID, MinepreggoModItems.DEAD_VILLAGER_FETUS.get())
 			.build();
 
-	protected static final ImmutableMap<Craving, Float> CRAVING_WEIGHTS = ImmutableMap.of(		
-			Craving.SWEET, 0.1F,
-			Craving.SOUR, 0.25F,
+	private static final ImmutableMap<Craving, Float> CRAVING_WEIGHTS = ImmutableMap.of(		
+			Craving.SWEET, 0.075F,
+			Craving.SOUR, 0.275F,
 			Craving.SPICY, 0.3F,
 			Craving.SALTY, 0.35F
 			);
@@ -365,7 +375,7 @@ public class PregnancySystemHelper {
 		
 		final var femaleData = cap.get().getFemaleData().resolve();
 		
-		if (femaleData.isEmpty() || !femaleData.get().isPregnant()) {
+		if (femaleData.isEmpty() || !femaleData.get().isPregnant() || !femaleData.get().isPregnancySystemInitialized()) {
 			return false;
 		}
 		
@@ -375,18 +385,15 @@ public class PregnancySystemHelper {
 			return false;
 		}
 
+		target.playSound(MinepreggoModSounds.BELLY_TOUCH.get(), 0.8F, 0.8F + target.getRandom().nextFloat() * 0.3F);
+		
 		if (!level.isClientSide) {			
 			final var isFather = femaleData.get().getFather() != null && femaleData.get().getFather().equals(source.getUUID());
-			
 			ParticleOptions particle = isFather ? ParticleTypes.HEART : ParticleTypes.SMOKE;
 
-
-			target.level().broadcastEntityEvent(target, (byte) 100);
-			
-			
-			if (pregnancyStage.ordinal() > 2) {
-				level.playSound(null, BlockPos.containing(target.getX(), target.getY(), target.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "belly_touch")), SoundSource.NEUTRAL, 0.75F, 1);			
-				
+			playSlappingBellyAnimation(source, target);
+					
+			if (pregnancyStage.compareTo(PregnancyPhase.P3) >= 0) {				
 				if (femaleData.get().getPregnancyEffects().getBellyRubs() >= BELLY_RUBBING_VALUE) {
 					femaleData.get().getPregnancyEffects().decrementBellyRubs(isFather ? BELLY_RUBBING_VALUE : 1);
 					femaleData.get().getPregnancyEffects().sync(target);			
@@ -405,6 +412,16 @@ public class PregnancySystemHelper {
     public static boolean isPregnancyEffect(MobEffect effect) { 	
     	Optional<Holder<MobEffect>> holder = ForgeRegistries.MOB_EFFECTS.getHolder(effect);
         return holder.isPresent() && holder.get().is(TagHelper.PREGNANCY_EFFECTS);
+    }
+    
+    public static boolean isSecondaryPregnancyEffect(MobEffect effect) { 	
+    	Optional<Holder<MobEffect>> holder = ForgeRegistries.MOB_EFFECTS.getHolder(effect);
+    	return holder.isPresent() && holder.get().is(TagHelper.SECONDARY_PREGNANCY_EFFECTS);
+    }
+    
+    public static boolean isFemaleEffect(MobEffect effect) { 	
+    	Optional<Holder<MobEffect>> holder = ForgeRegistries.MOB_EFFECTS.getHolder(effect);
+    	return holder.isPresent() && holder.get().is(TagHelper.FEMALE_EFFECTS);
     }
     
 	public static void syncNewMobEffect(LivingEntity entity, MobEffectInstance effect) {
@@ -657,6 +674,8 @@ public class PregnancySystemHelper {
 	}
     
     
+	
+	// TODO: Rework this method to evaluate only hostile mobs that can target the source entities, ITamablePreggoMob are hostile by default
     public static boolean areHostileMobsNearby(LivingEntity source1, LivingEntity source2, @Nonnegative double detectionRadius) {
         Level level = source1.level();
 
@@ -677,5 +696,105 @@ public class PregnancySystemHelper {
                     if (target == null) return false;
                     return target.getId() == source1.getId() || target.getId() == source2.getId();
                 });
+    }
+    
+    public enum HorizontalPosition {
+        LEFT, RIGHT, CENTER
+    }
+
+    public static HorizontalPosition getHorizontalPosition(LivingEntity reference, LivingEntity target, double tolerance) {
+        // Get horizontal look vector (ignoring pitch)
+        Vec3 look = reference.getLookAngle();
+        Vec3 flatLook = new Vec3(look.x, 0, look.z).normalize();
+
+        // Compute relative offset from reference to target
+        Vec3 offset = new Vec3(
+            target.getX() - reference.getX(),
+            0,
+            target.getZ() - reference.getZ()
+        ).normalize();
+
+        // Avoid NaNs if offset is zero-length
+        if (offset.lengthSqr() < 1e-6) {
+            return HorizontalPosition.CENTER;
+        }
+
+        // Cross product in 2D: (a.x * b.z - a.z * b.x)
+        // This gives signed magnitude: >0 = left, <0 = right
+        double cross = flatLook.x * offset.z - flatLook.z * offset.x;
+
+        if (cross > tolerance) {
+            return HorizontalPosition.LEFT;
+        } else if (cross < -tolerance) {
+            return HorizontalPosition.RIGHT;
+        } else {
+            return HorizontalPosition.CENTER;
+        }
+    }
+    
+    
+    public static OptionalInt getPregnancyDamage(LivingEntity pregnantEntity, PregnancyPhase phase, DamageSource damagesource) {
+    	if (phase == PregnancyPhase.P0) {
+    		return OptionalInt.empty();
+    	}
+    	
+    	RandomSource randomSource = pregnantEntity.getRandom();
+
+		if ((pregnantEntity.hasEffect(MinepreggoModMobEffects.PREGNANCY_RESISTANCE.get()) && randomSource.nextFloat() < 0.9F)
+				|| (!damagesource.is(DamageTypes.FALL) && !pregnantEntity.getItemBySlot(EquipmentSlot.CHEST).isEmpty() && randomSource.nextFloat() < 0.5)) {
+			return OptionalInt.empty();
+		}
+		int damage = 0;
+		
+		if (pregnantEntity.getHealth() < pregnantEntity.getMaxHealth() * 0.5f) {
+			damage = phase.ordinal() + randomSource.nextInt(3);
+		} 	
+		
+		if (damagesource.is(DamageTypes.EXPLOSION) || damagesource.is(DamageTypes.PLAYER_EXPLOSION) || damagesource.is(DamageTypes.FALL)) {
+			damage = damage == 0 ? 7 : damage * 2;
+		}	
+				
+		return OptionalInt.of(damage);
+    }
+    
+    public static void playSlappingBellyAnimation(LivingEntity source, LivingEntity target) {
+		final HorizontalPosition position = getHorizontalPosition(source, target, 0.1);
+		byte id;	
+		// TODO: Use contant values for ids, try to link with animation system later
+		if (position == HorizontalPosition.LEFT) {
+			id = 102;
+		}
+		else if (position == HorizontalPosition.CENTER) {
+			id = 101;
+		}
+		else {
+			id = 100;
+		}		
+		target.level().broadcastEntityEvent(target, id);
+    }
+    
+    public static void playSlappingBellyAnimation(Player source, Player target) {
+    	playSlappingBellyAnimation((LivingEntity) source, (LivingEntity) target);
+    }
+    
+    public static void playSlappingBellyAnimation(Player source, AbstractTamablePregnantZombieGirl<?,?> target) {
+    	playSlappingBellyAnimation((LivingEntity) source, (LivingEntity) target);
+    }
+    
+    public static void playSlappingBellyAnimation(Player source, AbstractTamablePregnantCreeperGirl<?,?> target) {
+    	playSlappingBellyAnimation((LivingEntity) source, (LivingEntity) target);
+    }
+    
+    public static float getSpawnProbabilityBasedPregnancy(IPregnancySystemHandler handler, float t0, float k, float pMin, float pMax) {
+		final int totalDays = handler.getTotalDaysOfPregnancy();
+		final int totalDaysPassed = PregnancySystemHelper.calculateTotalDaysPassedFromPhaseP0(handler);
+		
+		final float t = Mth.clamp(totalDaysPassed / (float) totalDays, 0, 1);	
+		final float p = MathHelper.sigmoid(pMin, pMax, k, t, t0);
+		
+		MinepreggoMod.LOGGER.debug("SPAWN PROBABILITY BASED IN PREGNANCY: class={}, totalDays={}, totalDaysPassed={}, t={}, p={}",
+				handler.getClass().getSimpleName(), totalDays, totalDaysPassed, t, p);
+		
+		return p;
     }
 }

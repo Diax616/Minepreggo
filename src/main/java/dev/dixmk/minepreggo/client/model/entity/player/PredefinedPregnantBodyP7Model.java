@@ -3,6 +3,7 @@ package dev.dixmk.minepreggo.client.model.entity.player;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.animation.preggo.BellyAnimation;
 import dev.dixmk.minepreggo.client.jiggle.JigglePhysicsFactory;
+import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -69,7 +70,11 @@ public class PredefinedPregnantBodyP7Model extends AbstractHeavyPregnantBodyMode
 	@Override
 	protected void animBelly(AbstractClientPlayer entity, float ageInTicks) {
 		super.animBelly(entity, ageInTicks);
-		this.animate(this.loopAnimationState, BellyAnimation.HIGH_BELLY_INFLATION, ageInTicks, 1f);
+		if (entity.hasEffect(MinepreggoModMobEffects.FETAL_MOVEMENT.get())) {
+			this.animate(this.loopAnimationState, BellyAnimation.FETAL_MOVEMENT_P7, ageInTicks);
+		}
+		else {
+			this.animate(this.loopAnimationState, BellyAnimation.HIGH_BELLY_INFLATION, ageInTicks);
+		}	
 	}
-
 }

@@ -1,7 +1,6 @@
 package dev.dixmk.minepreggo.world.entity.preggo.zombie;
 
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
-import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -31,7 +30,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 
 public abstract class AbstractMonsterZombieGirl extends AbstractZombieGirl {
 
-	protected AbstractMonsterZombieGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_) {
+	protected AbstractMonsterZombieGirl(EntityType<? extends AbstractZombieGirl> p_21803_, Level p_21804_) {
 		super(p_21803_, p_21804_, Creature.HUMANOID);
 	}
 	

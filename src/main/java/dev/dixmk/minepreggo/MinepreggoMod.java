@@ -78,12 +78,11 @@ import dev.dixmk.minepreggo.client.model.entity.player.PredefinedPregnantBodyP5M
 import dev.dixmk.minepreggo.client.model.entity.player.PredefinedPregnantBodyP6Model;
 import dev.dixmk.minepreggo.client.model.entity.player.PredefinedPregnantBodyP7Model;
 import dev.dixmk.minepreggo.client.model.entity.player.PredefinedPregnantBodyP8Model;
-import dev.dixmk.minepreggo.client.model.entity.player.cinematic.CinematicMalePlayerModel;
-import dev.dixmk.minepreggo.client.model.entity.player.cinematic.CinematicPredefinedPlayerModelP6;
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractHumanoidCreeperGirlModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.quadruped.AbstractCreeperGirlModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.ender.AbstractEnderWomanModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.zombie.AbstractZombieGirlModel;
+import dev.dixmk.minepreggo.client.renderer.entity.FertilityWitchRenderer;
 import dev.dixmk.minepreggo.client.renderer.entity.ScientificIllagerRenderer;
 import dev.dixmk.minepreggo.client.renderer.preggo.creeper.IllCreeperGirlRenderer;
 import dev.dixmk.minepreggo.client.renderer.preggo.creeper.IllHumanoidCreeperGirlRenderer;
@@ -119,8 +118,8 @@ import dev.dixmk.minepreggo.client.renderer.preggo.zombie.TamableZombieGirlP6Ren
 import dev.dixmk.minepreggo.client.renderer.preggo.zombie.TamableZombieGirlP7Renderer;
 import dev.dixmk.minepreggo.client.renderer.preggo.zombie.TamableZombieGirlP8Renderer;
 import dev.dixmk.minepreggo.client.renderer.preggo.zombie.TamableZombieGirlRenderer;
-import dev.dixmk.minepreggo.common.animation.ArmAnimationRegistry;
 import dev.dixmk.minepreggo.common.animation.PlayerAnimationRegistry;
+import dev.dixmk.minepreggo.init.MinepreggoLootModifier;
 import dev.dixmk.minepreggo.init.MinepreggoModBlocks;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
@@ -170,6 +169,11 @@ import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP5;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP6;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP7;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP8;
+import dev.dixmk.minepreggo.world.item.alchemy.CreeperImpregnationPotionBrewingRecipe;
+import dev.dixmk.minepreggo.world.item.alchemy.EnderImpregnationPotionBrewingRecipe;
+import dev.dixmk.minepreggo.world.item.alchemy.ImpregnationPotionBrewingRecipe;
+import dev.dixmk.minepreggo.world.item.alchemy.PregnancyHealingBrewingRecipe;
+import dev.dixmk.minepreggo.world.item.alchemy.ZombieImpregnationPotionBrewingRecipe;
 
 import org.apache.logging.log4j.LogManager;
 
@@ -181,9 +185,13 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.monster.Witch;
+import net.minecraft.world.level.block.ComposterBlock;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.entity.SpawnPlacementRegisterEvent;
@@ -208,6 +216,7 @@ public class MinepreggoMod {
 		MinepreggoModMobEffects.REGISTRY.register(modEventBus);
 		MinepreggoModPotions.REGISTRY.register(modEventBus);
 		MinepreggoModVillagerProfessions.REGISTRY.register(modEventBus);
+		MinepreggoLootModifier.GLM.register(modEventBus);
 		MinepreggoModEntityDataSerializers.register();
        	
 		modEventBus.addListener(this::registerLayerDefinitions);	
@@ -284,6 +293,12 @@ public class MinepreggoMod {
         		Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
         		AbstractMonsterCreeperGirl::checkMonsterCreeperGirlSpawnRules,
         		SpawnPlacementRegisterEvent.Operation.OR);	
+		event.register(
+        		MinepreggoModEntities.FERTILITY_WITCH.get(),
+        		SpawnPlacements.Type.ON_GROUND,
+        		Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+        		Monster::checkAnyLightMonsterSpawnRules,
+        		SpawnPlacementRegisterEvent.Operation.OR);
     }
 	
 	private void registerAttributes(EntityAttributeCreationEvent event) {
@@ -326,6 +341,7 @@ public class MinepreggoMod {
 		event.put(MinepreggoModEntities.ILL_HUMANOID_CREEPER_GIRL.get(), IllHumanoidCreeperGirl.createAttributes().build());
 		event.put(MinepreggoModEntities.ILL_CREEPER_GIRL.get(), IllCreeperGirl.createAttributes().build());
 		event.put(MinepreggoModEntities.ILL_ENDER_WOMAN.get(), IllEnderWoman.createAttributes().build());
+		event.put(MinepreggoModEntities.FERTILITY_WITCH.get(), Witch.createAttributes().build());
 	}
 	
 	
@@ -415,11 +431,6 @@ public class MinepreggoMod {
 		event.registerLayerDefinition(PredefinedPregnantBodyP6Model.LAYER_LOCATION, PredefinedPregnantBodyP6Model::createBodyLayer);
 		event.registerLayerDefinition(PredefinedPregnantBodyP7Model.LAYER_LOCATION, PredefinedPregnantBodyP7Model::createBodyLayer);
 		event.registerLayerDefinition(PredefinedPregnantBodyP8Model.LAYER_LOCATION, PredefinedPregnantBodyP8Model::createBodyLayer);
-	
-	
-		//Cinematic
-		event.registerLayerDefinition(CinematicPredefinedPlayerModelP6.LAYER_LOCATION, CinematicPredefinedPlayerModelP6::createBodyLayer);
-		event.registerLayerDefinition(CinematicMalePlayerModel.LAYER_LOCATION, CinematicMalePlayerModel::createBodyLayer);
 	}
 	
 	private void clientLoad(FMLClientSetupEvent event) {
@@ -517,7 +528,8 @@ public class MinepreggoMod {
 		event.registerEntityRenderer(MinepreggoModEntities.ILL_ENDER_WOMAN.get(), IllEnderWomanRenderer::new);
 		event.registerEntityRenderer(MinepreggoModEntities.ILL_CREEPER_GIRL.get(), IllCreeperGirlRenderer::new);
 		event.registerEntityRenderer(MinepreggoModEntities.SCIENTIFIC_ILLAGER.get(), ScientificIllagerRenderer::new);
-		
+		event.registerEntityRenderer(MinepreggoModEntities.FERTILITY_WITCH.get(), FertilityWitchRenderer::new);
+
 		event.registerEntityRenderer(MinepreggoModEntities.MONSTER_ENDER_WOMAN.get(), MonsterlEnderWomanRenderer::new);	
 		event.registerEntityRenderer(MinepreggoModEntities.MONSTER_CREEPER_GIRL.get(), MonsterCreeperGirlRenderer::new);
 	}
@@ -527,8 +539,32 @@ public class MinepreggoMod {
 		event.register(VillagerDataImpl.class);
 	}
 	
-    private void commonSetup(final FMLCommonSetupEvent event) {
-        event.enqueueWork(() -> PlayerAnimationRegistry.getInstance().init());     
-        event.enqueueWork(() -> ArmAnimationRegistry.getInstance().init());     
+    private void commonSetup(FMLCommonSetupEvent event) {
+        event.enqueueWork(() -> PlayerAnimationRegistry.getInstance().init()); 
+		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new CreeperImpregnationPotionBrewingRecipe.A0()));
+		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new CreeperImpregnationPotionBrewingRecipe.A1()));
+		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new CreeperImpregnationPotionBrewingRecipe.A2()));
+		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new CreeperImpregnationPotionBrewingRecipe.A3()));
+		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new CreeperImpregnationPotionBrewingRecipe.A4()));
+		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new EnderImpregnationPotionBrewingRecipe.A0()));
+		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new EnderImpregnationPotionBrewingRecipe.A1()));
+		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new EnderImpregnationPotionBrewingRecipe.A2()));
+		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new EnderImpregnationPotionBrewingRecipe.A3()));
+		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new EnderImpregnationPotionBrewingRecipe.A4()));
+		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new ZombieImpregnationPotionBrewingRecipe.A0()));
+		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new ZombieImpregnationPotionBrewingRecipe.A1()));
+		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new ZombieImpregnationPotionBrewingRecipe.A2()));
+		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new ZombieImpregnationPotionBrewingRecipe.A3()));
+		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new ZombieImpregnationPotionBrewingRecipe.A4()));
+		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new ImpregnationPotionBrewingRecipe.A0()));
+		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new ImpregnationPotionBrewingRecipe.A1()));
+		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new ImpregnationPotionBrewingRecipe.A2()));
+		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new ImpregnationPotionBrewingRecipe.A3()));
+		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new ImpregnationPotionBrewingRecipe.A4()));
+		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new PregnancyHealingBrewingRecipe()));
+  
+        ComposterBlock.COMPOSTABLES.put(MinepreggoModItems.CHILI_PEPPER.get(), 0.6f);
+        ComposterBlock.COMPOSTABLES.put(MinepreggoModItems.CUCUMBER.get(), 0.7f);
+        ComposterBlock.COMPOSTABLES.put(MinepreggoModItems.LEMON.get(), 0.6f);
     }
 }

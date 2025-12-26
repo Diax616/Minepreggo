@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aab",
+    "acb",
+    "abb"
+  ],
+  "key": {
+    "a": {
+      "tag": "minepreggo:dead_ender_fetuses"
+    },
+    "b": {
+      "item": "minecraft:ender_pearl"
+    },
+    "c": {
+      "item": "minepreggo:cum_specimen_tube"
+    }
+  },
+  "result": {
+    "item": "minepreggo:ender_life_substance",
+    "count": 1
+  }
+}

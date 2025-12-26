@@ -2,6 +2,7 @@ package dev.dixmk.minepreggo.world.item;
 
 import javax.annotation.Nonnegative;
 
+import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.pregnancy.Craving;
 
 public class ActivatedGunpowderWithChocolateItem extends ActivatedGunpowderItem implements IItemCraving {
@@ -12,11 +13,21 @@ public class ActivatedGunpowderWithChocolateItem extends ActivatedGunpowderItem 
 	@Override
 	@Nonnegative
 	public int getGratification() {
-		return 6;
+		return 20;
 	}
 
 	@Override
-	public Craving getTypeOfCraving() {
+	public Craving getCravingType() {
 		return Craving.SWEET;
+	}
+
+	@Override
+	public Species getSpeciesType() {
+		return Species.CREEPER;
+	}
+
+	@Override
+	public @Nonnegative float getPenalty() {
+		return 0.3f;
 	}
 }

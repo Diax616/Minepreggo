@@ -1,8 +1,10 @@
 package dev.dixmk.minepreggo.world.entity.player;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnegative;
@@ -17,7 +19,9 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.client.animation.player.PlayerAnimationManager;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
+import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.network.capability.FemalePlayerImpl;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
@@ -34,13 +38,20 @@ import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -51,17 +62,25 @@ public class PlayerHelper {
 
 	private PlayerHelper() {}
 	
+	@OnlyIn(Dist.CLIENT)
 	private static final ImmutableMap<Craving, List<ResourceLocation>> CRAVING_ICONS = ImmutableMap.of(
-			Craving.SALTY, List.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/salty_pickle.png")), 
-			Craving.SWEET, List.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/chocolate_bar.png")), 
+			Craving.SALTY, List.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/salty_pickle.png"),
+					ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/french_fries.png")), 
+			Craving.SWEET, List.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/chocolate_bar.png"),
+					ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/lemon_drops.png")), 
 			Craving.SOUR, List.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/lemon_ice_popsicles.png"),
-					ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/lemon_ice_cream.png")),
-			Craving.SPICY, List.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/spicy_chicken.png")));
+					ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/lemon_ice_cream.png"),
+					ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/lemon_drops.png")),
+			Craving.SPICY, List.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/spicy_chicken.png"),
+					ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/chili_poppers.png"))
+			);
 	
+	@OnlyIn(Dist.CLIENT)
 	private static final ImmutableMap<String, ImmutablePair<ResourceLocation, ResourceLocation>> PREDEFINED_SKINS = ImmutableMap.of(
 			"player1", ImmutablePair.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1.png"), ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_extra.png"))		
 			);
 	
+	@OnlyIn(Dist.CLIENT)
 	private static final ImmutableMap<String, ImmutableMap<PregnancyPhase, ImmutablePair<ResourceLocation, ResourceLocation>>> MATERNITY_PREDEFINED_SKINS = ImmutableMap.of(
 			"player1", ImmutableMap.of(
 					PregnancyPhase.P0, ImmutablePair.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p0.png"), ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p0_extra.png")),
@@ -76,22 +95,23 @@ public class PlayerHelper {
 			));
 
 	
+	
 	private static final Object2IntMap<PregnancyPhase> MAX_JUMPS = Object2IntMaps.unmodifiable(new Object2IntOpenHashMap<>(ImmutableMap.of(
-			PregnancyPhase.P3, 30,
-			PregnancyPhase.P4, 25,
-			PregnancyPhase.P5, 20,
-			PregnancyPhase.P6, 15,
-			PregnancyPhase.P7, 10,
-			PregnancyPhase.P8, 5
+			PregnancyPhase.P3, 40,
+			PregnancyPhase.P4, 35,
+			PregnancyPhase.P5, 30,
+			PregnancyPhase.P6, 25,
+			PregnancyPhase.P7, 20,
+			PregnancyPhase.P8, 15
 			)));
 	
 	private static final Object2FloatMap<PregnancyPhase> MAX_JUMP_STRENGTH = Object2FloatMaps.unmodifiable(new Object2FloatOpenHashMap<>(ImmutableMap.of(
-			PregnancyPhase.P3,0.01F,
-			PregnancyPhase.P4, 0.015F,
-			PregnancyPhase.P5, 0.02F,
-			PregnancyPhase.P6, 0.025F,
-			PregnancyPhase.P7, 0.03F,
-			PregnancyPhase.P8, 0.035F
+			PregnancyPhase.P3,0.955F,
+			PregnancyPhase.P4, 0.945F,
+			PregnancyPhase.P5, 0.935F,
+			PregnancyPhase.P6, 0.925F,
+			PregnancyPhase.P7, 0.915F,
+			PregnancyPhase.P8, 0.9F
 			)));
 	
 	private static final Object2IntMap<PregnancyPhase> SPRINTING_TIMERS = Object2IntMaps.unmodifiable(new Object2IntOpenHashMap<>(ImmutableMap.of(
@@ -139,7 +159,7 @@ public class PlayerHelper {
 		return SNEAKING_TIMERS.getInt(phase.compareTo(PregnancyPhase.P4) <= -1 ? PregnancyPhase.P4 : phase);
 	}
 	
-	public static MobEffect pregnancyEffects(PregnancyPhase phase) {
+	public static MobEffect getPregnancyEffects(PregnancyPhase phase) {
 		return PREGNANCY_EFFECTS.get(phase);
 	}
 	
@@ -167,20 +187,20 @@ public class PlayerHelper {
 		final var femaleDataOpt = playerDataCap.get().getFemaleData().resolve();
 		boolean result = femaleDataOpt.isPresent() && femaleDataOpt.get().isPregnant() && femaleDataOpt.get().getPrePregnancyData().isPresent();
 
-		femaleDataOpt.ifPresent(femaleData -> {				
+		femaleDataOpt.ifPresent(femaleData -> {	
 			if (!femaleData.isPregnant()) return;
 			
 			femaleData.getPrePregnancyData().ifPresent(prePregnancyData -> {
 				final var lastPregnancyStage = IBreedable.calculateMaxPregnancyPhaseByTotalNumOfBabies(prePregnancyData.fertilizedEggs());
 				final var totalDays = MinepreggoModConfig.getTotalPregnancyDays();
 				final var daysByStage = new MapPregnancyPhase(totalDays, lastPregnancyStage);
+				
 				final var womb = new Womb(
 						ImmutableTriple.of(player.getUUID(), Species.HUMAN, Creature.HUMANOID),
 						ImmutableTriple.of(Optional.ofNullable(prePregnancyData.fatherId()), prePregnancyData.typeOfSpeciesOfFather(), prePregnancyData.typeOfCreatureOfFather()),
 						player.getRandom(),
 						prePregnancyData.fertilizedEggs());
-				
-				
+					
 				femaleData.getPregnancySystem().setMapPregnancyPhase(daysByStage);
 				femaleData.getPregnancySystem().setPregnancyHealth(PregnancySystemHelper.MAX_PREGNANCY_HEALTH);
 				femaleData.getPregnancySystem().setLastPregnancyStage(lastPregnancyStage);
@@ -215,7 +235,11 @@ public class PlayerHelper {
 
 		final var femaleData = playerDataCap.get().getFemaleData().resolve();
 	
-		if (femaleData.isPresent() && !femaleData.get().isPregnant() && femaleData.get().getPostPregnancyData().isEmpty()) {			
+		if (femaleData.isPresent()
+				&& !femaleData.get().isPregnant() 
+				&& femaleData.get().getPostPregnancyData().isEmpty()) {	
+			
+			player.removeEffect(MinepreggoModMobEffects.FERTILE.get());
 			return femaleData.get().tryImpregnate(numOfBabies, father);
 		}
 		else {
@@ -256,10 +280,9 @@ public class PlayerHelper {
 		}
 		return false;
 	}
-	
-	
+		
 	public static boolean tryStartPregnancyByMobAttack(ServerPlayer female, Species species) {
-		return false;
+		return tryToStartPrePregnancy(female, ImmutableTriple.of(Optional.empty(), species, Creature.MONSTER), female.getRandom().nextInt(1, IBreedable.MAX_NUMBER_OF_BABIES + 1));
 	}
 	
 	@CheckForNull
@@ -297,4 +320,122 @@ public class PlayerHelper {
     	var anim = PlayerAnimationManager.getInstance().get(player).getCurrentAnimationName();
         return anim != null && anim.equals("birth");
     }	
+	
+	public static boolean isValidCravingBySpecies(Species species) {
+		return species == Species.HUMAN || species == Species.ZOMBIE || species == Species.CREEPER;
+	}
+	
+	public static boolean addInterspeciesPregnancy(ServerPlayer serverPlayer) {	
+		var result = serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).map(cap -> cap.getFemaleData().map(FemalePlayerImpl::getPrePregnancyData)).orElse(Optional.empty()).orElse(Optional.empty());
+			
+		if (result.isPresent()) {
+			var pre = result.get();	
+			switch (pre.typeOfSpeciesOfFather()){
+			case ZOMBIE: {			
+				if (!serverPlayer.hasEffect(MinepreggoModMobEffects.FULL_OF_ZOMBIES.get())) {
+					serverPlayer.addEffect(new MobEffectInstance(MinepreggoModMobEffects.FULL_OF_ZOMBIES.get(), -1, 0, false, false, true));
+					return true;
+				}
+				break;
+			}
+			case CREEPER: {		
+				if (!serverPlayer.hasEffect(MinepreggoModMobEffects.FULL_OF_CREEPERS.get())) {
+					serverPlayer.addEffect(new MobEffectInstance(MinepreggoModMobEffects.FULL_OF_CREEPERS.get(), -1, 0, false, false, true));
+					return true;
+				}
+				break;
+			}
+			case ENDER: {	
+				if (!serverPlayer.hasEffect(MinepreggoModMobEffects.FULL_OF_ENDERS.get())) {
+					serverPlayer.addEffect(new MobEffectInstance(MinepreggoModMobEffects.FULL_OF_ENDERS.get(), -1, 0, false, false, true));
+					return true;
+				}
+				break;
+			}
+			default:
+				return false;
+			}
+		}
+		else {
+			MinepreggoMod.LOGGER.error("Player {} has no PRE_PREGNANCY_DATA={} capability.", serverPlayer.getName().getString(), result.isEmpty());
+		}
+		
+		return false;
+	}
+	
+	public static List<MobEffect> removeEffects(LivingEntity entity, Predicate<MobEffect> predicate) {
+		List<MobEffect> effectsToRemove = new ArrayList<>();
+    	for (MobEffectInstance effectInstance : entity.getActiveEffects()) {
+            MobEffect effect = effectInstance.getEffect();
+            if (predicate.test(effect)) {
+                effectsToRemove.add(effect);
+            }
+        }
+    	return effectsToRemove;
+	}
+	
+	public static List<MobEffect> removeEffectsByPregnancyPhase(Player player, PregnancyPhase phase) {
+		Predicate<MobEffect> predicate = phase.compareTo(PregnancyPhase.P2) >= 0
+				? effect -> !PregnancySystemHelper.isPregnancyEffect(effect) && !PregnancySystemHelper.isSecondaryPregnancyEffect(effect)
+				: effect -> !PregnancySystemHelper.isPregnancyEffect(effect);
+					
+		return removeEffects(player, predicate);
+	}
+	
+	private static boolean spawnBaby(ServerLevel serverLevel, double x, double y, double z, Species species, RandomSource random) {		
+		final var minHealth = 5;
+		final var maxHealth = 10;
+		Mob entity = null;
+		var pos = BlockPos.containing(x, y, z);
+		
+		if (species == Species.ZOMBIE) {
+			entity = MinepreggoModEntities.MONSTER_ZOMBIE_GIRL.get().spawn(serverLevel, pos, MobSpawnType.MOB_SUMMONED);
+		}
+		else if (species == Species.CREEPER) {
+			entity = MinepreggoModEntities.MONSTER_HUMANOID_CREEPER_GIRL.get().spawn(serverLevel, pos, MobSpawnType.MOB_SUMMONED);
+		}
+		else if (species == Species.VILLAGER) {
+			entity = EntityType.VILLAGER.spawn(serverLevel, pos, MobSpawnType.MOB_SUMMONED);
+		}
+
+		if (entity != null) {
+			entity.setBaby(true);
+			entity.setYRot(random.nextFloat() * 360F);	
+			entity.setHealth(random.nextInt(minHealth, maxHealth));	
+			return true;
+		}
+		return false;
+	}
+	
+	private static boolean spawnFetus(ServerLevel serverLevel, double x, double y, double z, Species species, Creature creature) {
+		var deadBabyItem = PregnancySystemHelper.getDeadBabyItem(species, creature);
+		if (deadBabyItem == null) return false;
+		ItemEntity entityToSpawn = new ItemEntity(serverLevel, x, y, z, new ItemStack(deadBabyItem));
+		entityToSpawn.setPickUpDelay(10);
+		serverLevel.addFreshEntity(entityToSpawn);
+		return true;
+	}
+	
+	public static void spawnBabiesOrFetuses(ServerLevel serverLevel, double x, double y, double z, float alive, Womb womb, RandomSource random) {
+		womb.forEach(babyData -> {
+			if (random.nextFloat() < alive && !spawnBaby(serverLevel, x, y, z, babyData.typeOfSpecies, random)) {
+				spawnFetus(serverLevel, x, y, z, babyData.typeOfSpecies, babyData.typeOfCreature);
+			}
+		});
+	}
+	
+	public static void spawnFetuses(ServerLevel serverLevel, double x, double y, double z, float prob, Womb womb, RandomSource random) {
+		womb.forEach(babyData -> {
+			if (random.nextFloat() < prob) {
+				spawnFetus(serverLevel, x, y, z, babyData.typeOfSpecies, babyData.typeOfCreature);
+			}
+		});
+	}
+	
+	public static @Nonnegative int calculateExplosionLevelByPregnancyPhase(PregnancyPhase phase) {
+		int ordinal = phase.ordinal();
+		int maxOrdinal = PregnancyPhase.values().length - 1;
+		int level = (int) Math.round(ordinal * 5.0 / maxOrdinal);
+		return Math.min(level, 5);
+	}
 }

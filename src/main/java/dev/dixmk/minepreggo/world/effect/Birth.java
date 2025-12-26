@@ -7,14 +7,10 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.player.Player;
 
-import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.init.MinepreggoModSounds;
-import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.server.ServerPlayerAnimationManager;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
 public class Birth extends AbstractPlayerPregnancyPain {
@@ -29,12 +25,15 @@ public class Birth extends AbstractPlayerPregnancyPain {
 	public void addAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {		
 		if (!PlayerHelper.isPlayerValid(entity)) return;
 		
-		if (!entity.level().isClientSide) {
-			
-	        ServerPlayerAnimationManager.getInstance().triggerAnimation((ServerPlayer) entity, "birth");
-			
+		if (entity.level().isClientSide) {
+	        entity.playSound(MinepreggoModSounds.PLAYER_BIRTH.get(), 0.8F, 0.8F + entity.getRandom().nextFloat() * 0.3F);
+		}
+		
+		if (!entity.level().isClientSide) {			
 			entity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, -1, 3, false, false));	
 			
+	        ServerPlayerAnimationManager.getInstance().triggerAnimation((ServerPlayer) entity, "birth");
+
 			AttributeInstance speedAttr = entity.getAttribute(Attributes.MOVEMENT_SPEED);
 			AttributeInstance attackSpeedAttr = entity.getAttribute(Attributes.ATTACK_SPEED);
 
@@ -43,11 +42,7 @@ public class Birth extends AbstractPlayerPregnancyPain {
 			}			
 			if (attackSpeedAttr != null && attackSpeedAttr.getModifier(ATTACK_SPEED_MODIFIER_UUID) == null) {
 			    attackSpeedAttr.addTransientModifier(ATTACK_SPEED_MODIFIER);
-			}
-						
-			entity.playSound(MinepreggoModSounds.PLAYER_BIRTH.get(), 0.8F, 0.8F + entity.getRandom().nextFloat() * 0.3F);
-			
-			MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) entity), Component.translatable("chat.minepreggo.player.birth.message.start"));
+			}				
 		}	
 	}
 	
@@ -67,18 +62,9 @@ public class Birth extends AbstractPlayerPregnancyPain {
 			}	
 			if (attackSpeedAttr != null && attackSpeedAttr.getModifier(ATTACK_SPEED_MODIFIER_UUID) != null) {
 				attackSpeedAttr.removeModifier(ATTACK_SPEED_MODIFIER);
-			}
+			}		
 			
 			entity.removeEffect(MobEffects.WEAKNESS);	
-			entity.removeEffect(MinepreggoModMobEffects.FULL_OF_CREEPERS.get());
-			entity.removeEffect(MinepreggoModMobEffects.FULL_OF_ZOMBIES.get());
-			entity.refreshDimensions();
-			
-			entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 3600, 0));	
-			entity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 3600, 0));
-			entity.addEffect(new MobEffectInstance(MobEffects.LUCK, 4800, 0));	
-		
-			MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) entity), Component.translatable("chat.minepreggo.player.birth.message.post"));
 		}
 	}
 }

@@ -2,6 +2,7 @@ package dev.dixmk.minepreggo.world.item;
 
 import javax.annotation.Nonnegative;
 
+import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.pregnancy.Craving;
 
 public class BrainWithChocolateItem extends AbstractBrain implements IItemCraving {
@@ -12,11 +13,21 @@ public class BrainWithChocolateItem extends AbstractBrain implements IItemCravin
 	@Override
 	@Nonnegative
 	public int getGratification() {
-		return 10;
+		return 20;
 	}
 	
 	@Override
-	public Craving getTypeOfCraving() {
+	public Craving getCravingType() {
 		return Craving.SWEET;
+	}
+	
+	@Override
+	public Species getSpeciesType() {
+		return Species.ZOMBIE;
+	}
+
+	@Override
+	public @Nonnegative float getPenalty() {
+		return 0.5f;
 	}
 }

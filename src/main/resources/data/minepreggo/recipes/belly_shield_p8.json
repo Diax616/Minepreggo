@@ -3,10 +3,10 @@
   "category": "misc",
   "ingredients": [
     {
-      "item": "minecraft:string"
+      "item": "minecraft:shield"
     },
     {
-      "item": "minecraft:shield"
+      "item": "minecraft:string"
     },
     {
       "item": "minecraft:string"

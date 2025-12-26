@@ -3,6 +3,7 @@ package dev.dixmk.minepreggo.client.model.entity.player;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.animation.preggo.BellyAnimation;
 import dev.dixmk.minepreggo.client.jiggle.JigglePhysicsFactory;
+import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -33,8 +34,8 @@ public class CustomPregnantBodyP7Model extends AbstractHeavyPregnantBodyModel {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 		PartDefinition body = partdefinition.addOrReplaceChild("body", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-		PartDefinition belly = body.addOrReplaceChild("belly", CubeListBuilder.create().texOffs(22, 29).addBox(-0.6F, 1.6213F, -13.7175F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F))
-		.texOffs(19, 25).addBox(-3.5F, -2.578F, -11.787F, 7.0F, 6.0F, 1.0F, new CubeDeformation(1.25F)), PartPose.offsetAndRotation(0.0F, 8.75F, -2.0F, 0.1309F, 0.0F, 0.0F));
+		PartDefinition belly = body.addOrReplaceChild("belly", CubeListBuilder.create().texOffs(22, 29).addBox(-0.6F, 1.6213F, -13.0175F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F))
+		.texOffs(19, 25).addBox(-3.5F, -2.578F, -11.087F, 7.0F, 6.0F, 1.0F, new CubeDeformation(1.25F)), PartPose.offsetAndRotation(0.0F, 8.75F, -2.0F, 0.1309F, 0.0F, 0.0F));
 		belly.addOrReplaceChild("bellyCube7_r1", CubeListBuilder.create().texOffs(27, 25).addBox(-1.5F, -3.5F, -0.5F, 1.0F, 6.0F, 1.0F, new CubeDeformation(1.2F)), PartPose.offsetAndRotation(4.15F, 0.922F, -0.487F, 0.0F, -1.5708F, 0.0F));
 		belly.addOrReplaceChild("bellyCube6_r1", CubeListBuilder.create().texOffs(27, 25).addBox(-1.5F, -3.5F, -0.5F, 3.0F, 6.0F, 1.0F, new CubeDeformation(1.19F)), PartPose.offsetAndRotation(4.15F, 0.922F, -4.787F, 0.0F, -1.5708F, 0.0F));
 		belly.addOrReplaceChild("bellyCube5_r1", CubeListBuilder.create().texOffs(27, 25).addBox(-1.5F, -3.5F, -0.5F, 3.0F, 6.0F, 1.0F, new CubeDeformation(1.2F)), PartPose.offsetAndRotation(4.15F, 0.922F, -9.087F, 0.0F, -1.5708F, 0.0F));
@@ -47,11 +48,11 @@ public class CustomPregnantBodyP7Model extends AbstractHeavyPregnantBodyModel {
 		belly.addOrReplaceChild("bellyCube6_r4", CubeListBuilder.create().texOffs(20, 23).addBox(-3.5F, -0.5F, -0.5F, 7.0F, 2.0F, 1.0F, new CubeDeformation(1.2F)), PartPose.offsetAndRotation(0.0F, -2.728F, -0.787F, -1.5708F, 0.0F, 0.0F));
 		belly.addOrReplaceChild("bellyCube5_r4", CubeListBuilder.create().texOffs(20, 23).addBox(-3.5F, -1.5F, -0.5F, 7.0F, 3.0F, 1.0F, new CubeDeformation(1.19F)), PartPose.offsetAndRotation(0.0F, -2.728F, -4.987F, -1.5708F, 0.0F, 0.0F));
 		belly.addOrReplaceChild("bellyCube4_r2", CubeListBuilder.create().texOffs(20, 23).addBox(-3.5F, -1.5F, -0.5F, 7.0F, 3.0F, 1.0F, new CubeDeformation(1.2F)), PartPose.offsetAndRotation(0.0F, -2.728F, -9.187F, -1.5708F, 0.0F, 0.0F));
-		belly.addOrReplaceChild("left_kick", CubeListBuilder.create().texOffs(18, 26).addBox(-1.0F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(-2.0F, -0.1972F, -7.2899F));
-		belly.addOrReplaceChild("right_kick", CubeListBuilder.create().texOffs(18, 26).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(0.5F, 1.8028F, -9.2899F));
-		belly.addOrReplaceChild("front_kick", CubeListBuilder.create().texOffs(18, 26).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(2.5F, -0.1972F, -9.2899F));
-		belly.addOrReplaceChild("bottom_kick", CubeListBuilder.create().texOffs(18, 26).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(-0.5F, 1.8028F, -8.2899F));
-		belly.addOrReplaceChild("top_kick", CubeListBuilder.create().texOffs(18, 26).addBox(-1.5F, -1.5F, -0.8F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(1.5F, -1.1972F, -10.2899F));
+		belly.addOrReplaceChild("left_kick", CubeListBuilder.create().texOffs(16, 24).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(-0.01F)), PartPose.offset(-2.0F, 1.35F, -6.0F));
+		belly.addOrReplaceChild("right_kick", CubeListBuilder.create().texOffs(16, 24).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(-0.01F)), PartPose.offset(0.0F, 1.35F, -8.0F));
+		belly.addOrReplaceChild("front_kick", CubeListBuilder.create().texOffs(16, 24).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(-0.01F)), PartPose.offset(2.0F, 0.35F, -7.0F));
+		belly.addOrReplaceChild("bottom_kick", CubeListBuilder.create().texOffs(16, 24).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(-0.01F)), PartPose.offset(-1.0F, 3.35F, -8.0F));
+		belly.addOrReplaceChild("top_kick", CubeListBuilder.create().texOffs(16, 24).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(-0.01F)), PartPose.offset(1.0F, 0.35F, -9.0F));
 		PartDefinition boobs = body.addOrReplaceChild("boobs", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 0.6F, -2.3F, -0.2618F, 0.0F, 0.0F));
 		PartDefinition rightBoob = boobs.addOrReplaceChild("right_boob", CubeListBuilder.create(), PartPose.offset(-1.5F, -0.2F, 0.0F));
 		rightBoob.addOrReplaceChild("rightBoobCube1_r1", CubeListBuilder.create().texOffs(18, 21).addBox(-1.5F, -2.4F, -1.3F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.2F)), PartPose.offsetAndRotation(-0.8336F, 3.6279F, -1.2635F, 0.3491F, 0.1745F, 0.0436F));
@@ -73,6 +74,11 @@ public class CustomPregnantBodyP7Model extends AbstractHeavyPregnantBodyModel {
 	@Override
 	protected void animBelly(AbstractClientPlayer entity, float ageInTicks) {
 		super.animBelly(entity, ageInTicks);
-		this.animate(this.loopAnimationState, BellyAnimation.HIGH_BELLY_INFLATION, ageInTicks, 1f);
+		if (entity.hasEffect(MinepreggoModMobEffects.FETAL_MOVEMENT.get())) {
+			this.animate(this.loopAnimationState, BellyAnimation.FETAL_MOVEMENT_P7, ageInTicks);
+		}
+		else {
+			this.animate(this.loopAnimationState, BellyAnimation.HIGH_BELLY_INFLATION, ageInTicks);
+		}
 	}
 }

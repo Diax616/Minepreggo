@@ -17,7 +17,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class PregnantFemaleHumanoidModel<E extends LivingEntity> extends HumanoidModel<E> {
-
 	public final ModelPart boobs;
 	public final ModelPart belly;
 	

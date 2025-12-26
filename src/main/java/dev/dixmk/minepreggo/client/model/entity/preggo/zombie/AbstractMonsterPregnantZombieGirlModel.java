@@ -12,7 +12,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class AbstractMonsterPregnantZombieGirlModel<E extends AbstractMonsterPregnantZombieGirl> extends AbstractMonsterZombieGirlModel<E> {
-
 	protected AbstractMonsterPregnantZombieGirlModel(ModelPart root) {
 		this(root, createDefaultHierarchicalModel(root));		
 	}
@@ -32,6 +31,10 @@ public abstract class AbstractMonsterPregnantZombieGirlModel<E extends AbstractM
 		else {
 			this.moveHeadWithHat(entity, netHeadYaw, headPitch);
 		}
+	}
+	
+	protected void animBelly(E entity, float ageInTicks) {
+		
 	}
 	
 	private static<E extends AbstractMonsterPregnantZombieGirl> HierarchicalModel<E> createDefaultHierarchicalModel(ModelPart root) {

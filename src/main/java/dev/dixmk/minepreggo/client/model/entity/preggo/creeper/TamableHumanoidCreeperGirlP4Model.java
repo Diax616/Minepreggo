@@ -1,11 +1,17 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.creeper;
 
 import dev.dixmk.minepreggo.client.animation.preggo.CreeperGirlAnimation;
+
+import java.util.UUID;
+
+import dev.dixmk.minepreggo.client.animation.player.BellyAnimationManager;
 import dev.dixmk.minepreggo.client.animation.preggo.BellyAnimation;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableHumanoidCreeperGirlP4;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
+import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -13,23 +19,37 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class TamableHumanoidCreeperGirlP4Model extends AbstractTamableHumanoidPregnantCreeperGirlModel<TamableHumanoidCreeperGirlP4> {
 	
+	// TODO: Duplication of code from TamableHumanoidCreeperGirlP3Model to TamableHumanoidCreeperGirlP8Model - refactor later
+	
 	public TamableHumanoidCreeperGirlP4Model(ModelPart root) {
-		super(root, createDefaultP4HierarchicalModel(root));
-	}
-
-	public static<E extends AbstractTamablePregnantCreeperGirl<?,?>> HierarchicalModel<E> createDefaultP4HierarchicalModel(ModelPart root) {
-		return new HierarchicalModel<E>() {		
+		super(root, new HierarchicalModel<TamableHumanoidCreeperGirlP4>() {		
 			@Override
 			public ModelPart root() {
 				return root;
 			}
 
 			@Override
-			public void setupAnim(E creeperGirl, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+			public void setupAnim(TamableHumanoidCreeperGirlP4 creeperGirl, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 				this.root().getAllParts().forEach(ModelPart::resetPose);
 								
-			    if (creeperGirl.getItemBySlot(EquipmentSlot.CHEST).isEmpty()) {
-			    	this.animate(creeperGirl.loopAnimationState, BellyAnimation.MEDIUM_BELLY_INFLATION, ageInTicks, 1f);
+			    if (creeperGirl.getItemBySlot(EquipmentSlot.CHEST).isEmpty()) {		    	
+			    	if (creeperGirl.getPregnancyPain() ==  PregnancyPain.FETAL_MOVEMENT) {
+				    	this.animate(creeperGirl.loopAnimationState, BellyAnimation.FETAL_MOVEMENT_P4, ageInTicks);		    
+			    	}
+			    	else {
+				    	this.animate(creeperGirl.loopAnimationState, BellyAnimation.MEDIUM_BELLY_INFLATION, ageInTicks);		    
+			    	}
+
+			    	UUID preggoMobId = creeperGirl.getUUID();       
+			        if (!BellyAnimationManager.getInstance().isAnimating(preggoMobId)) {
+			            return;
+			        }
+					AnimationState state = BellyAnimationManager.getInstance().getAnimationState(preggoMobId);
+			        AnimationDefinition animation = BellyAnimationManager.getInstance().getCurrentAnimation(preggoMobId);
+			        
+			        if (state != null && animation != null) {
+			            this.animate(state, animation, ageInTicks);
+			        }
 			    }    	
 		    
 			    if (creeperGirl.isAttacking()) {
@@ -63,10 +83,6 @@ public class TamableHumanoidCreeperGirlP4Model extends AbstractTamableHumanoidPr
 						this.animate(creeperGirl.loopAnimationState, CreeperGirlAnimation.BIRTH, ageInTicks, 1f);						
 						break;
 					}
-					case FETAL_MOVEMENT: {
-						this.animate(creeperGirl.loopAnimationState, CreeperGirlAnimation.KICKING1, ageInTicks, 1f);						
-						break;
-					}
 					case CONTRACTION: {
 						this.animate(creeperGirl.loopAnimationState, CreeperGirlAnimation.CONTRACTION1, ageInTicks, 1f);						
 						break;
@@ -91,7 +107,12 @@ public class TamableHumanoidCreeperGirlP4Model extends AbstractTamableHumanoidPr
 					this.animate(creeperGirl.loopAnimationState, CreeperGirlAnimation.IDLE, ageInTicks, 1f);						
 				}				
 			}	
-		};
+		});
 	}
+
+
+
+	
+	
 }
 

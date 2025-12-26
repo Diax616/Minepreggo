@@ -16,7 +16,7 @@ public class VillagerDataProvider implements ICapabilitySerializable<Tag> {
 	
 	@Override
 	public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == MinepreggoCapabilities.PLAYER_DATA) {
+        if (cap == MinepreggoCapabilities.VILLAGER_DATA) {
             return instance.cast();
         }
         return LazyOptional.empty();

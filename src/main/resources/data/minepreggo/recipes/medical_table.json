@@ -6,19 +6,19 @@
       "tag": "minecraft:planks"
     },
     {
-      "tag": "minecraft:planks"
+      "item": "minecraft:bone"
     },
     {
-      "item": "minecraft:red_dye"
+      "item": "minecraft:bone"
     },
     {
-      "item": "minecraft:white_dye"
+      "item": "minecraft:potion"
     },
     {
-      "tag": "minecraft:planks"
+      "item": "minecraft:potion"
     },
     {
-      "tag": "minecraft:planks"
+      "item": "minecraft:potion"
     }
   ],
   "result": {

@@ -2,9 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "minepreggo:dead_human_fetus"
-    }
+	{
+	  "tag": "minepreggo:dead_fetus"
+	}
   ],
   "result": {
     "item": "minecraft:rotten_flesh",

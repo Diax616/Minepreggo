@@ -134,7 +134,7 @@ public class ScreenEventHandler {
 
 		if (species == Species.HUMAN) {		
 			final var list = PlayerHelper.getCravingIcon(craving);			
-			if (list != null) {
+			if (list != null && !list.isEmpty()) {
 				if (list.size() > 1) {
 					if (ticks <= 0) {
 						cravingIcon = list.get(Minecraft.getInstance().player.getRandom().nextInt(0, list.size()));

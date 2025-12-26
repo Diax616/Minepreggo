@@ -1,56 +1,78 @@
 package dev.dixmk.minepreggo.event;
 
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
+import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
+import net.minecraftforge.event.level.SleepFinishedTimeEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = MinepreggoMod.MODID)
 public class WorldEventHandler {
-    private static final ConcurrentHashMap<ServerLevel, Long> lastProcessedDay = new ConcurrentHashMap<>();
 
 	private WorldEventHandler() {}
-	
+
     @SubscribeEvent
-    public static void onPlayerWakeUp(PlayerWakeUpEvent event) {
-        if (event.getEntity() instanceof ServerPlayer player) {
-            ServerLevel serverLevel = player.serverLevel();
-            final long currentDay = serverLevel.getDayTime() / 24000;       
-            
-            // Only process once per in-game day
-            if (lastProcessedDay.getOrDefault(serverLevel, -1L) < currentDay) {
-                lastProcessedDay.put(serverLevel, currentDay);
-                                        
-                List<IPregnancySystemHandler> entities = StreamSupport.stream(serverLevel.getAllEntities().spliterator(), false)
-                		.filter(IPregnancySystemHandler.class::isInstance)
-                		.map(IPregnancySystemHandler.class::cast)
-                		.toList();
-                                  
-                entities.forEach(preggoMob -> {
-                	final var tickResult = preggoMob.getPregnancyTimer() + (int) (24000L - currentDay);
-    				final var numOfDays = Math.min(tickResult / MinepreggoModConfig.getTotalTicksByPregnancyDay(), preggoMob.getDaysByCurrentStage() - preggoMob.getDaysPassed());
-    				final var remainingTicks = tickResult % MinepreggoModConfig.getTotalTicksByPregnancyDay();
-                   				
-    				if (numOfDays > 0) {
-    					preggoMob.setPregnancyTimer(remainingTicks);
-    					preggoMob.setDaysPassed(Math.min(preggoMob.getDaysByCurrentStage(), preggoMob.getDaysPassed() + numOfDays));
-    					preggoMob.setDaysToGiveBirth(Math.max(0, preggoMob.getDaysToGiveBirth() - numOfDays));
-    				} else {
-    					preggoMob.setPregnancyTimer(tickResult);
-    				}
-    				
-    				MinepreggoMod.LOGGER.debug("TIME SKIP EVENT: currentPregnanctStage={}, tickResult={}, numOfDaysPassed={}, remainingTicks={}",
-    						preggoMob.getCurrentPregnancyStage(), tickResult, numOfDays, remainingTicks);
-                });
-            }
+    public static void onSleepFinished(SleepFinishedTimeEvent event) {
+       ServerLevel level = (ServerLevel) event.getLevel();
+        
+        if (level.isClientSide()) {
+            return;
         }
+
+        long currentWorldTime = level.getDayTime(); 
+        long currentTick = currentWorldTime % 24000L; 
+        long ticksSkipped = 24000L - currentTick;
+
+        final List<IPregnancySystemHandler> pregnantEntities = StreamSupport.stream(level.getAllEntities().spliterator(), false)
+                .flatMap(entity -> {
+                    // If the entity itself implements the pregnancy handler, return it directly
+                    if (entity instanceof IPregnancySystemHandler handler) {
+                        return Stream.of(handler);
+                    }
+
+                    // If the entity is a player, try to obtain the player's pregnancy system from capability
+                    if (entity instanceof ServerPlayer serverPlayer) { 
+                        var playerDataOpt = serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).resolve();
+                        if (playerDataOpt.isPresent()) {
+                            var femaleOpt = playerDataOpt.get().getFemaleData().resolve();
+                            if (femaleOpt.isPresent()) {
+                                var femaleData = femaleOpt.get();
+                                if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {
+                                    return Stream.of(IPregnancySystemHandler.class.cast(femaleData.getPregnancySystem()));
+                                }
+                            }
+                        }
+                    }
+
+                    return Stream.empty();
+                })
+                .toList();
+
+        pregnantEntities.forEach(pregnantEntity -> {
+            // Add the skipped ticks to the pregnancy timer.
+        	final var pregnancyTimer = pregnantEntity.getPregnancyTimer();
+            final var tickResult = pregnancyTimer + (int) ticksSkipped;
+            final var numOfDays = Math.min(tickResult / MinepreggoModConfig.getTotalTicksByPregnancyDay(), pregnantEntity.getDaysByCurrentStage() - pregnantEntity.getDaysPassed());
+            final var remainingTicks = tickResult % MinepreggoModConfig.getTotalTicksByPregnancyDay();
+                            
+            if (numOfDays > 0) {
+                pregnantEntity.setPregnancyTimer(remainingTicks);
+                pregnantEntity.setDaysPassed(Math.min(pregnantEntity.getDaysByCurrentStage(), pregnantEntity.getDaysPassed() + numOfDays));
+                pregnantEntity.setDaysToGiveBirth(Math.max(0, pregnantEntity.getDaysToGiveBirth() - numOfDays));
+            } else {
+                pregnantEntity.setPregnancyTimer(tickResult);
+            }
+            
+            MinepreggoMod.LOGGER.debug("TIME SKIP EVENT: currentPregnanctStage={}, pregnancyTimer={}, ticksSkipped={}, tickResult={}, numOfDaysPassed={}, remainingTicks={}",
+                    pregnantEntity.getCurrentPregnancyStage(), pregnancyTimer, ticksSkipped, tickResult, numOfDays, remainingTicks);
+        });
     }
 }

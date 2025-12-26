@@ -3,6 +3,7 @@ package dev.dixmk.minepreggo.client.model.entity.player;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.animation.preggo.BellyAnimation;
 import dev.dixmk.minepreggo.client.jiggle.JigglePhysicsFactory;
+import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -42,9 +43,9 @@ public class CustomPregnantBodyP4Model extends AbstractHeavyPregnantBodyModel {
 		.texOffs(17, 22).addBox(-4.0F, -0.0048F, -2.2025F, 8.0F, 7.0F, 3.0F, new CubeDeformation(0.29F))
 		.texOffs(19, 25).addBox(-3.5F, 0.5952F, -6.1025F, 7.0F, 6.0F, 1.0F, new CubeDeformation(0.5F))
 		.texOffs(22, 28).addBox(-0.6F, 4.6952F, -7.033F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 5.1F, -2.0F, 0.0524F, 0.0F, 0.0F));
-		belly.addOrReplaceChild("front_kick", CubeListBuilder.create().texOffs(18, 26).addBox(-1.5F, 0.1F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.1F)), PartPose.offset(2.5F, 3.7952F, -4.5025F));
-		belly.addOrReplaceChild("right_kick", CubeListBuilder.create().texOffs(18, 26).addBox(-1.5F, -1.1F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.2F)), PartPose.offset(0.5F, 4.9952F, -4.1025F));
-		belly.addOrReplaceChild("left_kick", CubeListBuilder.create().texOffs(18, 26).addBox(-1.5F, 0.0F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.2F)), PartPose.offset(0.5F, 3.8952F, -4.0025F));
+		belly.addOrReplaceChild("left_kick", CubeListBuilder.create().texOffs(18, 26).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.2F)), PartPose.offset(0.5F, 3.8F, -2.0F));
+		belly.addOrReplaceChild("right_kick", CubeListBuilder.create().texOffs(18, 26).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.2F)), PartPose.offset(0.5F, 4.9F, -2.1F));
+		belly.addOrReplaceChild("front_kick", CubeListBuilder.create().texOffs(18, 26).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.1F)), PartPose.offset(2.5F, 3.7F, -2.5F));
 		PartDefinition rightLeg = partdefinition.addOrReplaceChild("right_leg", CubeListBuilder.create(), PartPose.offset(-1.9F, 12.0F, 0.0F));
 		PartDefinition rightButt = rightLeg.addOrReplaceChild("right_butt", CubeListBuilder.create(), PartPose.offset(0.1F, 0.0F, 1.6F));
 		rightButt.addOrReplaceChild("rightAssCube_r1", CubeListBuilder.create().texOffs(2, 18).mirror().addBox(-1.95F, -2.0F, -1.0F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.4F)).mirror(false), PartPose.offsetAndRotation(0.05F, 1.65F, 0.75F, 0.0F, 3.1416F, 0.0F));
@@ -58,5 +59,11 @@ public class CustomPregnantBodyP4Model extends AbstractHeavyPregnantBodyModel {
 	protected void animBelly(AbstractClientPlayer entity, float ageInTicks) {
 		super.animBelly(entity, ageInTicks);
 		this.animate(this.loopAnimationState, BellyAnimation.MEDIUM_BELLY_INFLATION, ageInTicks);
+		if (entity.hasEffect(MinepreggoModMobEffects.FETAL_MOVEMENT.get())) {
+			this.animate(this.loopAnimationState, BellyAnimation.FETAL_MOVEMENT_P4, ageInTicks);
+		}
+		else {
+			this.animate(this.loopAnimationState, BellyAnimation.MEDIUM_BELLY_INFLATION, ageInTicks);
+		}
 	}
 }

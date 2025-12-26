@@ -3,9 +3,6 @@
   "category": "misc",
   "ingredients": [
     {
-      "item": "minecraft:cooked_chicken"
-    },
-    {
       "item": "minepreggo:hot_sauce"
     },
     {
@@ -14,6 +11,6 @@
   ],
   "result": {
     "item": "minepreggo:hot_chicken",
-    "count": 6
+    "count": 1
   }
 }

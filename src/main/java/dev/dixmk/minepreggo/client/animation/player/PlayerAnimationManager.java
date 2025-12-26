@@ -6,7 +6,6 @@ import java.util.UUID;
 
 import org.jetbrains.annotations.Nullable;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.common.animation.PlayerAnimation;
 import dev.dixmk.minepreggo.common.animation.PlayerAnimationRegistry;
 import net.minecraft.client.model.geom.ModelPart;
@@ -124,12 +123,6 @@ public class PlayerAnimationManager {
     			return;
     		}
     	        
-    		// Calculate animation progress (0.0 to 1.0)
-    		float progress = (float) linearAnimationTick / currentAnimation.getDuration();
-    	     
-    		MinepreggoMod.LOGGER.debug("Applying animation '{}' at tick {} (progress: {})", 
-					lastAnimationName, rawTick, progress);
-    		
     		// Apply animation to each part
     		for (String partName : currentAnimation.getAnimatedParts()) {
     			ModelPart part = modelParts.get(partName);

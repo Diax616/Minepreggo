@@ -5,6 +5,7 @@ import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.network.packet.SyncPlayerDataS2CPacket;
 import dev.dixmk.minepreggo.world.pregnancy.AbstractBreedableEntity;
 import dev.dixmk.minepreggo.world.pregnancy.Gender;
+import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
@@ -14,11 +15,8 @@ import net.minecraftforge.network.PacketDistributor;
 public class PlayerDataImpl implements IPlayerData {
 	private boolean customSkin = true;
 	private boolean showMainMenu = true; 
-	
-	// Sex Event
 	private boolean cinematic = false;
 	
-	private String predefinedSkinName = null;		
 	private Gender gender = Gender.UNKNOWN;
 	
 	private LazyOptional<FemalePlayerImpl> femalePlayerData = LazyOptional.empty();
@@ -156,16 +154,18 @@ public class PlayerDataImpl implements IPlayerData {
                     	data.deserializeNBT(nbt.getCompound("FemalePlayerImpl"));
                 	}
                 	else {
-                		MinepreggoMod.LOGGER.error("FemalePlayerImpl is not present in nbt");
+                		invalidate();
+						throw new IllegalStateException("FemalePlayerImpl is not present in nbt");
                 	}
                 });
             } else if (loadedGender == Gender.MALE) {
             	malePlayerData.ifPresent(data -> {
                 	if (nbt.contains("MalePlayerImpl", Tag.TAG_COMPOUND)) {
-                    	data.deserializeNBT(nbt.getCompound("MalePlayerImpl"));
+                    	data.deserializeNBT(nbt.getCompound("MalePlayerImpl"));            	
                 	}
                 	else {
-                		MinepreggoMod.LOGGER.error("MalePlayerImpl is not present in nbt");
+                		invalidate();
+                		throw new IllegalStateException("MalePlayerImpl is not present in nbt");
                 	}
             	});
             }
@@ -177,7 +177,6 @@ public class PlayerDataImpl implements IPlayerData {
 		showMainMenu = true; 
 		cinematic = false;
 		gender = Gender.UNKNOWN;
-		predefinedSkinName = null;
 		invalidateGenderData();
 	}
 	
@@ -190,9 +189,13 @@ public class PlayerDataImpl implements IPlayerData {
 		sync(serverPlayer);			
 		getFemaleData().ifPresent(cap -> {
 			cap.sync(serverPlayer);
-			cap.syncLactation(serverPlayer);
-			cap.getPregnancySystem().sync(serverPlayer);
-			cap.getPregnancyEffects().sync(serverPlayer);
+			if (cap.isPregnant()) {
+				cap.getPregnancySystem().sync(serverPlayer);
+				cap.getPregnancyEffects().sync(serverPlayer);
+			}
+			else if (cap.getPostPregnancyData().isPresent() && cap.getPostPregnancyData().get().getPostPregnancy() == PostPregnancy.PARTUM) {
+				cap.syncLactation(serverPlayer);
+			}
 		});
 	}
 }

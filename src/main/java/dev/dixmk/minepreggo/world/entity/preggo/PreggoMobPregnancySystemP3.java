@@ -23,6 +23,7 @@ public abstract class PreggoMobPregnancySystemP3 <E extends PreggoMob
 
 	protected @Nonnegative int totalTicksOfBellyRubs = MinepreggoModConfig.getTotalTicksOfBellyRubsP3();
 	protected @Nonnegative float fetalMovementProb = PregnancySystemHelper.LOW_PREGNANCY_PAIN_PROBABILITY;
+	protected @Nonnegative int totalTicksOfFetalMovement = PregnancySystemHelper.TOTAL_TICKS_KICKING_P3;
 
 	protected PreggoMobPregnancySystemP3(@Nonnull E preggoMob) {
 		super(preggoMob);
@@ -34,6 +35,12 @@ public abstract class PreggoMobPregnancySystemP3 <E extends PreggoMob
 		totalTicksOfCraving = MinepreggoModConfig.getTotalTicksOfCravingP3();
 		totalTicksOfMilking = MinepreggoModConfig.getTotalTicksOfMilkingP3();
 		morningSicknessProb = PregnancySystemHelper.HIGH_MORNING_SICKNESS_PROBABILITY;
+	}
+	
+	@Override
+	protected void evaluatePregnancySystem() {
+		super.evaluatePregnancySystem();
+		tryPlayStomachGrowlsSound();
 	}
 	
 	@Override
@@ -104,15 +111,15 @@ public abstract class PreggoMobPregnancySystemP3 <E extends PreggoMob
 	
 	@Override
 	protected void evaluatePregnancyPains() {
-		final var pain = pregnantEntity.getPregnancyPain();
-	
-		if ((pain == PregnancyPain.MORNING_SICKNESS && pregnantEntity.getPregnancyPainTimer() >= PregnancySystemHelper.TOTAL_TICKS_MORNING_SICKNESS)
-				|| (pain == PregnancyPain.FETAL_MOVEMENT && pregnantEntity.getPregnancyPainTimer() >= PregnancySystemHelper.TOTAL_TICKS_KICKING_P3)) {
-			pregnantEntity.clearPregnancyPain();
-			pregnantEntity.resetPregnancyPainTimer();
-		}
-		else {
-			pregnantEntity.incrementPregnancyPainTimer();
+		super.evaluatePregnancyPains();
+		if (pregnantEntity.getPregnancyPain() == PregnancyPain.FETAL_MOVEMENT) {
+			if (pregnantEntity.getPregnancyPainTimer() >= totalTicksOfFetalMovement) {
+				pregnantEntity.clearPregnancyPain();	
+				pregnantEntity.resetPregnancyPainTimer();
+			}
+			else {
+				pregnantEntity.incrementPregnancyPainTimer();
+			}
 		}
 	}
 	
@@ -123,10 +130,8 @@ public abstract class PreggoMobPregnancySystemP3 <E extends PreggoMob
 	
 	@Override
 	protected Result evaluateBellyRubs(Level level, Player source) {		
-		if (!level.isClientSide) {  
-			pregnantEntity.playSound(MinepreggoModSounds.BELLY_TOUCH.get(), 0.8F, 0.8F + pregnantEntity.getRandom().nextFloat() * 0.3F);
-		}
-		
+		super.evaluateBellyRubs(level, source);	
+		pregnantEntity.playSound(MinepreggoModSounds.BELLY_TOUCH.get(), 0.8F, 0.8F + pregnantEntity.getRandom().nextFloat() * 0.3F);	
 		var currentBellyRubs = pregnantEntity.getBellyRubs();
 		if (currentBellyRubs > 0) {			
 			if (!level.isClientSide) {   	

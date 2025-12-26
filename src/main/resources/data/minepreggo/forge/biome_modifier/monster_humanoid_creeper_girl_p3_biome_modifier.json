@@ -1,0 +1,10 @@
+{
+  "type": "forge:add_spawns",
+  "biomes": "#minecraft:is_overworld",
+  "spawners": {
+    "type": "minepreggo:monster_humanoid_creeper_girl_p3",
+    "weight": 17,
+    "minCount": 1,
+    "maxCount": 1
+  }
+}

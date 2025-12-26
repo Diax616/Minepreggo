@@ -8,6 +8,7 @@ import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.pregnancy.MapPregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhaseHelper;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffect;
@@ -17,6 +18,14 @@ import net.minecraft.world.entity.LivingEntity;
 
 public class PregnancyDelay extends MobEffect {
 
+    private static final float[][] PERCETANGES_RANGES = {
+			{0.05f, 0.10f},
+			{0.10f, 0.15f},
+			{0.15f, 0.20f},
+			{0.20f, 0.25f},
+			{0.30f, 0.35f}
+		};
+	
 	public PregnancyDelay() {
 		super(MobEffectCategory.HARMFUL, -39220);
 	}
@@ -25,47 +34,52 @@ public class PregnancyDelay extends MobEffect {
 	public boolean isInstantenous() {
 		return true;
 	}
-
-	// TODO: Extra days is not proporsional to total days of pregnancy, should be reworked later 
-	private static int getDaysByAmplifier(RandomSource random, int amplifier) {
-		switch (amplifier) {
-		case 0: return random.nextInt(5, 16);
-		case 1: return random.nextInt(15, 26);
-		case 2: return random.nextInt(25, 36);
-		case 3: return random.nextInt(35, 46);
-		default: return random.nextInt(45, 56);
-		}
-	}
 	
 	@Override
 	public void applyInstantenousEffect(@Nullable Entity source, @Nullable Entity indirectSource, LivingEntity target, int amplifier, double effectiveness) {
 		if (target.level().isClientSide || target.hasEffect(MinepreggoModMobEffects.ETERNAL_PREGNANCY.get())) return;
 
-		int extraDays = getDaysByAmplifier(target.getRandom(), amplifier);
-
-		if (target instanceof IPregnancySystemHandler s) {
-			MapPregnancyPhase map = s.getMapPregnancyPhase();
-			PregnancyPhase current = s.getCurrentPregnancyStage();
-			int currentDays = map.getDaysByPregnancyPhase(current);
-			map.modifyDaysByPregnancyPhase(current, currentDays + extraDays);
-			s.setMapPregnancyPhase(map);
-			
-			MinepreggoMod.LOGGER.debug("PregnancyDelay applied to entity {}, added {} days to pregnancy phase {}, New MapPregnancyPhase: {}", target.getDisplayName().getString(), extraDays, current.name(), map);
-			
+		if (target instanceof IPregnancySystemHandler handler) {
+			apply(handler, getDaysByAmplifier(target.getRandom(), amplifier));
 		} else if (target instanceof ServerPlayer serverPlayer) {
 			serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap ->
 				cap.getFemaleData().ifPresent(femaleData -> {
-					if (!femaleData.isPregnant()) return;
-					var pregnancySystem = femaleData.getPregnancySystem();
-					MapPregnancyPhase map = pregnancySystem.getMapPregnancyPhase();
-					PregnancyPhase current = pregnancySystem.getCurrentPregnancyStage();
-					int currentDays = map.getDaysByPregnancyPhase(current);
-					map.modifyDaysByPregnancyPhase(current, currentDays + extraDays);
-					pregnancySystem.setMapPregnancyPhase(map);
-					
-					MinepreggoMod.LOGGER.debug("PregnancyDelay applied to player {}, added {} days to pregnancy phase {}, New MapPregnancyPhase: {}", target.getDisplayName().getString(), extraDays, current.name(), map);
+					if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {
+						apply(femaleData.getPregnancySystem(), getDaysByAmplifier(target.getRandom(), amplifier));
+					}
 				})		
 			);
 		}
+	}
+	
+    private static void apply(IPregnancySystemHandler handler, int extraDays) {
+		MapPregnancyPhase map = handler.getMapPregnancyPhase();
+		PregnancyPhase current = handler.getCurrentPregnancyStage();
+
+		int added = PregnancyPhaseHelper.addDaysToPhase(map, current, extraDays);
+		if (added > 0) {
+			// Increase overall days to give birth by the added delay
+			int currentDaysToBirth = handler.getDaysToGiveBirth();
+			handler.setDaysToGiveBirth(currentDaysToBirth + added);
+		}
+
+		handler.setMapPregnancyPhase(map);
+		
+		MinepreggoMod.LOGGER.debug("PregnancyDelay applied, added {} days to pregnancy phase {}, New MapPregnancyPhase: {}", extraDays, current.name(), map);			
+    }
+    
+	// Returns a number of days proportional to the total pregnancy days, based on amplifier
+	private static int getDaysByAmplifier(RandomSource random, int amplifier) {
+		int totalPregnancyDays = dev.dixmk.minepreggo.MinepreggoModConfig.getTotalPregnancyDays();
+
+		int idx = Math.min(amplifier, PERCETANGES_RANGES.length - 1);
+		double minPercent = PERCETANGES_RANGES[idx][0];
+		double maxPercent = PERCETANGES_RANGES[idx][1];
+
+		int minDays = Math.max(1, (int)Math.round(totalPregnancyDays * minPercent));
+		int maxDays = Math.max(minDays, (int)Math.round(totalPregnancyDays * maxPercent));
+		maxDays = Math.min(maxDays, totalPregnancyDays); // Don't exceed total days
+
+		return random.nextInt(minDays, maxDays + 1); // upper bound is exclusive, so +1
 	}
 }

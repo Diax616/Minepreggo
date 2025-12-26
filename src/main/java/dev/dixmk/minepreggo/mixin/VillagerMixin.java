@@ -1,0 +1,183 @@
+package dev.dixmk.minepreggo.mixin;
+
+import java.util.Optional;
+
+import org.apache.commons.lang3.tuple.ImmutableTriple;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import dev.dixmk.minepreggo.MinepreggoMod;
+import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
+import dev.dixmk.minepreggo.client.particle.ParticleHelper;
+import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
+import dev.dixmk.minepreggo.init.MinepreggoModItems;
+import dev.dixmk.minepreggo.init.MinepreggoModVillagerProfessions;
+import dev.dixmk.minepreggo.network.packet.RenderSexOverlayS2CPacket;
+import dev.dixmk.minepreggo.network.packet.SexCinematicControlP2MS2CPacket;
+import dev.dixmk.minepreggo.server.ServerCinematicManager;
+import dev.dixmk.minepreggo.world.entity.preggo.Creature;
+import dev.dixmk.minepreggo.world.entity.preggo.Species;
+import dev.dixmk.minepreggo.world.inventory.preggo.PlayerPrenatalCheckUpMenu;
+import dev.dixmk.minepreggo.world.pregnancy.IBreedable;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
+
+import org.spongepowered.asm.mixin.injection.At;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.ai.gossip.GossipType;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.network.PacketDistributor;
+
+@Mixin(Villager.class)
+public class VillagerMixin {
+	
+    @Inject(method = "pickUpItem", at = @At("HEAD"))
+    private void onPickUpItem(ItemEntity itemEntity, CallbackInfo ci) {
+        ItemStack stack = itemEntity.getItem();
+        CompoundTag tag = stack.getTag();
+        if (tag != null && tag.hasUUID("femalePlayerUUID")) { 	
+            Villager villager = Villager.class.cast(this);
+            if (villager.getVillagerData().getProfession() != VillagerProfession.NONE
+            		&& villager.canBreed()
+            		&& PregnancySystemHelper.hasEnoughBedsForBreeding(villager, 1, 8)
+            		&& villager.level() instanceof ServerLevel serverLevel) {        	
+            	MinepreggoMod.LOGGER.debug("Villager picked up food from female player UUID: {}", tag.getUUID("femalePlayerUUID"));
+            	if (serverLevel.getPlayerByUUID(tag.getUUID("femalePlayerUUID")) instanceof ServerPlayer serverPlayer
+            			&& serverPlayer.distanceToSqr(villager) < 25D) {           		
+            		villager.getNavigation().moveTo(serverPlayer, 0.95); 
+            		initSex(serverPlayer, villager);
+            	}      	
+            }               
+        } 
+    }
+
+    @Inject(method = "mobInteract", at = @At("HEAD"), cancellable = true)
+	private void onMobInteract(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
+    	if (!player.level().isClientSide) {
+        	Villager villager = Villager.class.cast(this);	
+        	if (ServerCinematicManager.getInstance().isInCinematic(villager)) {
+                cir.setReturnValue(InteractionResult.FAIL);
+                return;
+            }    
+        	else if (player.getItemInHand(hand).is(MinepreggoModItems.BABY_VILLAGER.get()) && player.level() instanceof ServerLevel serverLevel) {  
+				Villager babyVillager = EntityType.VILLAGER.spawn(serverLevel, BlockPos.containing(villager.getX(), villager.getY(), villager.getZ()), MobSpawnType.BREEDING);
+				babyVillager.setBaby(true);
+				ItemStack itemstack = player.getItemInHand(hand);
+				itemstack.shrink(1);
+	            if (itemstack.isEmpty()) {
+	            	player.setItemInHand(hand, ItemStack.EMPTY);
+	            }        
+	            player.getInventory().setChanged();	
+        		cir.setReturnValue(InteractionResult.SUCCESS);
+                return;
+        	}
+
+        	if (player instanceof ServerPlayer serverPlayer) {
+        		if (serverPlayer.isCrouching()) {
+	        		Optional<Boolean> result = serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).map(cap -> 
+			        				cap.getFemaleData().map(femaleData -> {
+			        					return femaleData.isPregnant() && femaleData.isPregnancySystemInitialized();
+			        				})
+			        			).orElse(Optional.empty());
+	        		
+	        		if (result.isPresent() && result.get().booleanValue() && villager.getVillagerData().getProfession() == MinepreggoModVillagerProfessions.VILLAGER_DOCTOR.get()) {
+	        			// TODO: Villager does not keep standing facing the player when the menu is open, the method setTradingPlayer from Merchant interface does work for this case
+	        			villager.setTradingPlayer(serverPlayer);
+	        			
+	        			PlayerPrenatalCheckUpMenu.VillagerMenu.showPrenatalCheckUpMenu(serverPlayer, villager);
+	            		cir.setReturnValue(InteractionResult.SUCCESS);
+	            		return;
+	        		}	
+        		}
+        		else {
+            		villager.getCapability(MinepreggoCapabilities.VILLAGER_DATA).ifPresent(villagerCap -> 
+	                	serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(playerCap -> 
+	                		playerCap.getFemaleData().ifPresent(femaleData ->             			
+	                			villagerCap.getMotherPlayerId().ifPresent(motherId -> {
+	                    			if (!villagerCap.doesVillagerKnowPlayerIsPregnant()
+	                    					&& motherId.equals(serverPlayer.getUUID())
+	                    					&& femaleData.isPregnant()
+	                    					&& femaleData.isPregnancySystemInitialized()) {
+	        							villager.getGossips().add(serverPlayer.getUUID(), GossipType.MAJOR_POSITIVE, 75);
+	        							villagerCap.setVillagerKnowIsPlayerIsPregnant(true);
+	                    			}
+	                			})
+	                		)
+	                	)
+	                );
+        		}
+        	}
+    	}
+	}
+    
+    private static void initSex(ServerPlayer femalePlayer, Villager villager) {
+    	
+		final Runnable start = () -> {
+			villager.setTradingPlayer(femalePlayer);
+			ParticleHelper.spawnRandomlyFromServer(femalePlayer, ParticleTypes.HEART);
+			ParticleHelper.spawnRandomlyFromServer(villager, ParticleTypes.HEART);
+		};
+		
+		Runnable end = () -> {
+			villager.setTradingPlayer(null);
+			femalePlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
+				cap.getFemaleData().ifPresent(femaleData -> {				
+					int numOfBabies = IBreedable.calculateNumOfBabiesByFertility(femaleData.getFertilityRate(), villager.getRandom().nextFloat());					
+					if (!femaleData.tryImpregnate(numOfBabies, ImmutableTriple.of(Optional.of(villager.getUUID()), Species.VILLAGER, Creature.HUMANOID))) {
+						MinepreggoMod.LOGGER.error("Failed to impregnate female player {} by villager {}", femalePlayer.getUUID(), villager.getUUID());
+					}
+					else {
+						femaleData.resetFertilityRate();
+						villager.eatAndDigestFood();
+						villager.getCapability(MinepreggoCapabilities.VILLAGER_DATA).ifPresent(capVillager -> {
+							capVillager.setMotherPlayer(femalePlayer.getUUID());
+							villager.getGossips().add(femalePlayer.getUUID(), GossipType.MAJOR_POSITIVE, 10);
+						});												
+					}
+				})
+			);	
+		};
+				
+		MinepreggoModPacketHandler.queueServerWork(20, start);		
+		MinepreggoModPacketHandler.queueServerWork(40, start);
+		
+		ServerCinematicManager.getInstance().start(femalePlayer, villager, start, end);
+		
+		int overlayTicks = 120;
+		int overlayPauseTicks = 60;
+			                  
+        MinepreggoModPacketHandler.INSTANCE.send(
+    			PacketDistributor.PLAYER.with(() -> femalePlayer),
+    			new RenderSexOverlayS2CPacket(overlayTicks, overlayPauseTicks)
+    		);     		
+        
+        MinepreggoModPacketHandler.INSTANCE.send(
+    			PacketDistributor.PLAYER.with(() -> femalePlayer),
+    			new SexCinematicControlP2MS2CPacket(true, villager.getId())
+    		);
+        
+        
+		MinepreggoModPacketHandler.queueServerWork(overlayTicks * 2 + overlayPauseTicks, () -> {
+			ServerCinematicManager.getInstance().end(femalePlayer);
+	        
+			MinepreggoModPacketHandler.INSTANCE.send(
+	    			PacketDistributor.PLAYER.with(() -> femalePlayer),
+	    			new SexCinematicControlP2MS2CPacket(false, villager.getId())
+	    		);
+		});		
+    }
+}

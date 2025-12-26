@@ -8,8 +8,11 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
+import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
+import dev.dixmk.minepreggo.network.packet.PlayEntitySoundS2CPacket;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.pregnancy.AbstractPregnancySystem;
 import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
@@ -21,7 +24,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraftforge.network.PacketDistributor;
 
 public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 	
@@ -29,7 +34,10 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 	protected @Nonnegative int totalTicksOfBirth = PregnancySystemHelper.TOTAL_TICKS_BIRTH_P4;
 	protected @Nonnegative int totalTicksOfPreBirth = PregnancySystemHelper.TOTAL_TICKS_PREBIRTH_P4;
 	protected @Nonnegative float contractionProb = PregnancySystemHelper.HIGH_PREGNANCY_PAIN_PROBABILITY;
-
+	
+	private int pushCoolDown = 0;
+	protected float pushProb = 0.01f;
+	
 	public PlayerPregnancySystemP4(@NonNull ServerPlayer player) {
 		super(player);
 		addNewValidPregnancySymptoms(PregnancySymptom.HORNY);
@@ -41,6 +49,8 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 		totalTicksOfMilking = MinepreggoModConfig.getTotalTicksOfMilkingP4();
 		totalTicksOfBellyRubs = MinepreggoModConfig.getTotalTicksOfBellyRubsP4();
 		fetalMovementProb = PregnancySystemHelper.MEDIUM_PREGNANCY_PAIN_PROBABILITY;
+		totalTicksOfFetalMovement = PregnancySystemHelper.TOTAL_TICKS_KICKING_P4;	
+		pregnancyExhaustion = 1.05f;
 	}
 	
 	@Override
@@ -97,6 +107,7 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 			
 		if (hasToGiveBirth() && randomSource.nextFloat() < contractionProb) {	
 			pregnancySystem.setPregnancyPain(PregnancyPain.CONTRACTION);
+			pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.CONTRACTION.get(), totalTicksOfFetalMovement, 0, false, false, true));
 			pregnancySystem.sync(pregnantEntity);
 			
 			PlayerHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.CHEST);
@@ -117,7 +128,7 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 		if (pregnancyEffects.getHorny() >= PregnancySystemHelper.MAX_HORNY_LEVEL
 				&& !pregnancySystem.getPregnancySymptoms().contains(PregnancySymptom.HORNY)) {
 			pregnancySystem.addPregnancySymptom(PregnancySymptom.HORNY);
-			pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.HORNY.get(), -1, 0, true, true));
+			pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.HORNY.get(), -1, 0, false, false, true));
 			pregnancySystem.sync(pregnantEntity);
 			pregnancyEffects.sync(pregnantEntity);	
 			MinepreggoMod.LOGGER.debug("Player {} has developed pregnancy symptom: {}",
@@ -131,7 +142,7 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 
 	@Override
 	protected void startLabor() {
-    	MessageHelper.sendTo(pregnantEntity, Component.translatable("chat.minepreggo.player.birth.message.warning", pregnantEntity.getDisplayName().getString()));
+    	MessageHelper.sendTo(pregnantEntity, Component.translatable("chat.minepreggo.player.birth.message.pre", pregnantEntity.getDisplayName().getString()), true);
 		pregnancySystem.setPregnancyPain(PregnancyPain.PREBIRTH);
 		pregnancySystem.resetPregnancyPainTimer();
 		pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.PREBIRTH.get(), totalTicksOfPreBirth, 0, false, false, true));
@@ -191,12 +202,12 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 		        	}); 						
 	        	}
 	        	        	
-	        	MessageHelper.sendTo(pregnantEntity, Component.translatable("chat.minepreggo.player.birth.message.post", pregnantEntity.getDisplayName().getString()));
 				initPostPartum();		
 				MinepreggoMod.LOGGER.debug("Player {} has given birth.", pregnantEntity.getDisplayName().getString());	
 			}	
 			else {
 				pregnancySystem.incrementPregnancyPainTimer();
+				tryPlayPushSound();
 			}
 		}
 	}
@@ -215,7 +226,7 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 	
 	@Override
 	protected void breakWater() {
-    	MessageHelper.sendTo(pregnantEntity, Component.translatable("chat.minepreggo.player.birth.message.init", pregnantEntity.getDisplayName().getString()));
+    	MessageHelper.sendTo(pregnantEntity, Component.translatable("chat.minepreggo.player.birth.message.start", pregnantEntity.getDisplayName().getString()), true);
 		pregnancySystem.resetPregnancyPainTimer();
 		pregnancySystem.setPregnancyPain(PregnancyPain.WATER_BREAKING);
 		pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.WATER_BREAKING.get(), PregnancySystemHelper.TOTAL_TICKS_WATER_BREAKING, 0, false, false, true));
@@ -239,10 +250,28 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 		return pregnancySystem.getPregnancyPain() == PregnancyPain.WATER_BREAKING;
  	}
 	
+	@Override
+	protected void evaluatePregnancyPains() {
+		super.evaluatePregnancyPains();
+		if (pregnancySystem.getPregnancyPain() == PregnancyPain.CONTRACTION) {
+			if (pregnancySystem.getPregnancyPainTimer() >= totalTicksOfFetalMovement) {
+				pregnantEntity.removeEffect(MinepreggoModMobEffects.CONTRACTION.get());
+				pregnancySystem.clearPregnancyPain();
+				pregnancySystem.resetPregnancyPainTimer();
+				pregnancySystem.sync(pregnantEntity);
+				
+				MinepreggoMod.LOGGER.debug("Player {} pregnancy pain cleared: {}",
+						pregnantEntity.getGameProfile().getName(), PregnancyPain.CONTRACTION.name());
+			} else {
+				pregnancySystem.incrementPregnancyPainTimer();
+			}
+		}
+	}
+	
 	// TODO: Redesign the way of resetting pregnancy data after birth
 	@Override
 	protected void initPostPartum() {
-    	MessageHelper.sendTo(pregnantEntity, Component.translatable("chat.minepreggo.player.birth.message.post", pregnantEntity.getDisplayName().getString()));	
+    	MessageHelper.sendTo(pregnantEntity, Component.translatable("chat.minepreggo.player.birth.message.post", Integer.toString(pregnancySystem.getWomb().getNumOfBabies())));	
     	
     	// tryActivatePostPregnancyPhase only works if isPregnant flag is true
     	femaleData.tryActivatePostPregnancyPhase(PostPregnancy.PARTUM);
@@ -255,6 +284,28 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 		removePregnancy();
 		
 		pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.MATERNITY.get(), 32000, 0, false, false, true));
+		pregnantEntity.addEffect(new MobEffectInstance(MobEffects.LUCK, 12000, 0, false, true, true));
+		pregnantEntity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 3600, 0, false, false, true));
+		pregnantEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 3600, 0, false, false, true));
+		
 		MinepreggoMod.LOGGER.debug("Player {} has entered postpartum phase.", pregnantEntity.getGameProfile().getName());
+	}
+	
+	protected boolean tryPlayPushSound() {
+		if (pushCoolDown < 20) {
+			++pushCoolDown;
+			return false;
+		}
+		pushCoolDown = 0;	
+		if (randomSource.nextFloat() < pushProb) {
+			MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> pregnantEntity),
+					new PlayEntitySoundS2CPacket(
+							pregnantEntity.getId(),
+							MinepreggoModSounds.getRandomPlayerPush(randomSource),
+							0.7f,
+							0.8F + randomSource.nextFloat() * 0.3F));
+			return true;
+		}	
+		return false;
 	}
 }

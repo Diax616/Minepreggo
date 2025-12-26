@@ -1,13 +1,14 @@
 {
   "parent": "block/cube",
   "textures": {
-    "down": "minepreggo:block/medical_table",
-    "up": "minepreggo:block/medical_table",
-    "north": "minepreggo:block/medical_table",
-    "east": "minepreggo:block/medical_table",
-    "south": "minepreggo:block/medical_table",
-    "west": "minepreggo:block/medical_table",
-    "particle": "minepreggo:block/medical_table"
+    "down": "minepreggo:block/medical_table_bottom",
+    "up": "minepreggo:block/medical_table_top",
+    "north": "minepreggo:block/medical_table_front",
+    "east": "minepreggo:block/medical_table_letf",
+    "south": "minepreggo:block/medical_table_back",
+    "west": "minepreggo:block/medical_table_right",
+    "particle": "minepreggo:block/medical_table_bottom"
   },
   "render_type": "solid"
 }
+

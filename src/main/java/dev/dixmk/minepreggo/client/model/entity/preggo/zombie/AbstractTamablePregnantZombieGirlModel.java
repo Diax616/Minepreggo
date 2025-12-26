@@ -9,7 +9,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class AbstractTamablePregnantZombieGirlModel<E extends AbstractTamablePregnantZombieGirl<?,?>> extends AbstractTamableZombieGirlModel<E> {
-
+	
 	protected float extraBoobsXScale = 1.2F;
 	protected float extraBoobsYScale = 1.1F;
 	protected float extraBoobsZScale = 1.2F;

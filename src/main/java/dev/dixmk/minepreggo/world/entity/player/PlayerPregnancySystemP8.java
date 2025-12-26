@@ -20,5 +20,7 @@ public class PlayerPregnancySystemP8 extends PlayerPregnancySystemP6 {
 		totalTicksOfHorny = MinepreggoModConfig.getTotalTicksOfHornyP8();
 		totalTicksOfPreBirth = PregnancySystemHelper.TOTAL_TICKS_PREBIRTH_P8;
 		totalTicksOfBirth = PregnancySystemHelper.TOTAL_TICKS_BIRTH_P8;
+		totalTicksOfFetalMovement = PregnancySystemHelper.TOTAL_TICKS_KICKING_P8;
+		pregnancyExhaustion = 1.1f;
 	}
 }

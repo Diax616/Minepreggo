@@ -1,5 +1,6 @@
 package dev.dixmk.minepreggo.network.capability;
 
+import dev.dixmk.minepreggo.MinepreggoMod;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -17,6 +18,7 @@ public class PlayerPregnancySystemHolder implements INBTSerializable<CompoundTag
 	
 	private Lazy<PlayerPregnancySystemImpl> createLazy() {
 		return Lazy.of(() -> {
+			MinepreggoMod.LOGGER.debug("PlayerPregnancySystemImpl was initialized");
 			isInitialized = true;
 			PlayerPregnancySystemImpl system = new PlayerPregnancySystemImpl();
 			if (savedData.contains(PlayerPregnancySystemImpl.NBT_KEY, Tag.TAG_COMPOUND)) {

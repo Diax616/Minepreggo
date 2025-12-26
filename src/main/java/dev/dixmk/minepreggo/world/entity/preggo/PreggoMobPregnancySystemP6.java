@@ -23,5 +23,6 @@ public abstract class PreggoMobPregnancySystemP6<E extends PreggoMob
 		totalTicksOfHorny = MinepreggoModConfig.getTotalTicksOfHornyP6();
 		totalTicksOfPreBirth = PregnancySystemHelper.TOTAL_TICKS_PREBIRTH_P6;
 		totalTicksOfBirth = PregnancySystemHelper.TOTAL_TICKS_BIRTH_P6;
+		totalTicksOfFetalMovement = PregnancySystemHelper.TOTAL_TICKS_KICKING_P6;
 	}
 }

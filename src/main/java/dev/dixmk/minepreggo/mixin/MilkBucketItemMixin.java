@@ -1,11 +1,14 @@
 package dev.dixmk.minepreggo.mixin;
 
-import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.MilkBucketItem;
 import net.minecraft.world.level.Level;
+
+import java.util.List;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -13,31 +16,48 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
+import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 
 @Mixin(MilkBucketItem.class)
 public class MilkBucketItemMixin {
 
-    @Inject(
-    		method = "finishUsingItem",
-    		at = @At(
-    		value = "INVOKE",
-    		target = "Lnet/minecraft/world/entity/LivingEntity;removeAllEffects()Z"
-            ),
-            cancellable = true
-        )
-	private void onDrinkMilk(ItemStack stack, Level level, LivingEntity entity, CallbackInfoReturnable<ItemStack> cir) {
-    	if (entity instanceof Player player) {
-    		player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> {     		
-    			if (cap.getFemaleData().isPresent()) {
-        			player.getActiveEffectsMap().entrySet().removeIf(entry -> {
-            			MobEffectInstance effect = entry.getValue();
-            			return !PregnancySystemHelper.isPregnancyEffect(effect.getEffect());
-            		});
-            		cir.setReturnValue(stack);
-    			}	
-    		});
-    	}
-    	// If not a Player, do nothing -> vanilla behavior (removeAllEffects) proceeds as normal
-	}
+    // Inject at HEAD to prevent the original method from executing when we handle milk
+    @Inject(method = "finishUsingItem", at = @At("HEAD"), cancellable = true)
+    private void preventEffectRemoval(ItemStack stack, Level level, LivingEntity entity, CallbackInfoReturnable<ItemStack> cir) {
+        if (!level.isClientSide && entity instanceof Player player) {
+            player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
+                cap.getFemaleData().ifPresent(femaleData -> {      
+                	boolean flag = false;
+                	List<MobEffect> effectsToRemove = null;
+                	if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {        
+                    	// TODO: Refactor the logic to avoid removing secondary pregnancy effects
+						effectsToRemove = PlayerHelper.removeEffectsByPregnancyPhase(player, femaleData.getPregnancySystem().getCurrentPregnancyStage());
+                    	flag = true;
+                    }
+                    else {         
+                    	effectsToRemove = PlayerHelper.removeEffects(entity, effect -> !PregnancySystemHelper.isFemaleEffect(effect));
+                        flag = true;
+                    }
+                    
+                    
+                    if (flag && effectsToRemove != null) {
+                        // Remove the effects safely (they were already collected into a separate list)
+                        for (MobEffect effect : effectsToRemove) {
+                            player.removeEffect(effect);
+                        }
+                        
+                        // Handle item consumption and return the appropriate ItemStack (bucket)
+                        if (!player.getAbilities().instabuild) {
+                            stack.shrink(1);
+                        }
+
+                        // Set the return value and cancel further execution so the original
+                        cir.setReturnValue(stack.isEmpty() ? new ItemStack(Items.BUCKET) : stack);
+                        cir.cancel();
+                    }
+                })    
+            );
+        }
+    }
 }

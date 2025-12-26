@@ -45,6 +45,7 @@ public abstract class PreggoMobPregnancySystemP4<E extends PreggoMob
 		totalTicksOfCraving = MinepreggoModConfig.getTotalTicksOfCravingP4();
 		totalTicksOfMilking = MinepreggoModConfig.getTotalTicksOfMilkingP4();
 		totalTicksOfBellyRubs = MinepreggoModConfig.getTotalTicksOfBellyRubsP4();
+		totalTicksOfFetalMovement = PregnancySystemHelper.TOTAL_TICKS_KICKING_P4;
 	}
 	
 	@Override
@@ -217,16 +218,15 @@ public abstract class PreggoMobPregnancySystemP4<E extends PreggoMob
 	
 	@Override
 	protected void evaluatePregnancyPains() {
-		final var pain = pregnantEntity.getPregnancyPain();
-	
-		if ((pain == PregnancyPain.MORNING_SICKNESS && pregnantEntity.getPregnancyPainTimer() >= PregnancySystemHelper.TOTAL_TICKS_MORNING_SICKNESS)
-				|| (pain == PregnancyPain.FETAL_MOVEMENT && pregnantEntity.getPregnancyPainTimer() >= PregnancySystemHelper.TOTAL_TICKS_KICKING_P4)
-				|| (pain == PregnancyPain.CONTRACTION && pregnantEntity.getPregnancyPainTimer() >= PregnancySystemHelper.TOTAL_TICKS_CONTRACTION_P4)) {
-			pregnantEntity.clearPregnancyPain();
-			pregnantEntity.resetPregnancyPainTimer();
-		}
-		else {
-			pregnantEntity.incrementPregnancyPainTimer();
+		super.evaluatePregnancyPains();
+		if (pregnantEntity.getPregnancyPain() == PregnancyPain.CONTRACTION) {
+			if (pregnantEntity.getPregnancyPainTimer() >= totalTicksOfFetalMovement) {
+				pregnantEntity.clearPregnancyPain();	
+				pregnantEntity.resetPregnancyPainTimer();
+			}
+			else {
+				pregnantEntity.incrementPregnancyPainTimer();
+			}
 		}
 	}
 	

@@ -351,15 +351,15 @@ public class MinepreggoModConfig {
             builder.push("Client"); // category name
 
             enablePlayerMoans = builder
-                    .comment("Enable or disable player moans.")
+                    .comment("Enable or disable player moans. (NOT WORKING)")
                     .define("enablePlayerMoans", true);
 
             enablePreggoMobsMoans = builder
-                    .comment("Enable or disable pregnant mobs moans.")
+                    .comment("Enable or disable pregnant mobs moans. (NOT WORKING)")
                     .define("enablePreggoMobsMoans", true);
 
             enableBellySounds = builder
-                    .comment("Enable or disable belly sounds.")
+                    .comment("Enable or disable belly sounds. (NOT WORKING)")
                     .define("enableBellySounds", true);
             
             builder.pop();

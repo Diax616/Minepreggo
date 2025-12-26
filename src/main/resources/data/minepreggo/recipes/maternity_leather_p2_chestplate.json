@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:leather_chestplate"
+    },
+    {
+      "item": "minecraft:leather"
+    },
+	{
+	  "item": "minecraft:leather"
+	}
+  ],
+  "result": {
+    "item": "minepreggo:maternity_leather_p2_chestplate",
+    "count": 1
+  }
+}

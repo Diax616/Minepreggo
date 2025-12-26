@@ -5,13 +5,13 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
-import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.MinepreggoModConfig;
+import dev.dixmk.minepreggo.client.animation.player.BellyAnimationManager;
+import dev.dixmk.minepreggo.client.animation.preggo.BellyAnimation;
 import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
 import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.world.entity.ai.goal.PreggoMobAIHelper;
@@ -21,7 +21,6 @@ import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobPregnancySystemP0;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.pregnancy.Craving;
-import dev.dixmk.minepreggo.world.pregnancy.IBreedable;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancyEffectsHandler;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.pregnancy.MapPregnancyPhase;
@@ -167,25 +166,16 @@ public abstract class AbstractTamablePregnantCreeperGirl<S extends PreggoMobSyst
 	    if (compoundTag.contains("DataBabies", Tag.TAG_COMPOUND)) {
 	    	this.babiesInsideWomb = Womb.fromNBT(compoundTag.getCompound("DataBabies"));
 	    	if (this.babiesInsideWomb == null) {
-	    		this.defaultFemaleEntityImpl.getPrePregnancyData().ifPresentOrElse(data -> {
-	    			this.babiesInsideWomb = new Womb(
-	    					ImmutableTriple.of(this.getUUID(), this.getTypeOfSpecies(), this.getTypeOfCreature()),
-	    					ImmutableTriple.of(Optional.ofNullable(data.fatherId()), data.typeOfSpeciesOfFather(), data.typeOfCreatureOfFather()),
-	    					random,
-	    					data.fertilizedEggs());
-	    			MinepreggoMod.LOGGER.error("Womb is not present in NBT of class: {}, Creating a new one from PrePregnancyData", this.getClass().getSimpleName());
-	    		}, () -> {
-	    			this.babiesInsideWomb = new Womb(ImmutableTriple.of(this.getUUID(), this.getTypeOfSpecies(), this.getTypeOfCreature()), random, IBreedable.calculateNumOfBabiesByMaxPregnancyStage(lastPregnancyPhase));
-	    			MinepreggoMod.LOGGER.error("Neither Womb nor PrePregnancyData are present in NBT of class: {}, Creating a new one", this.getClass().getSimpleName());
-	    		});    		
+	    		this.discard();
+	    		throw new IllegalStateException("Womb is not present in NBT of class: " + this.getClass().getSimpleName());
 	    	}
 	    }  	
 	    
 	    if (compoundTag.contains("DaysByPhase", Tag.TAG_COMPOUND)) {
 	    	this.daysByPregnancyPhase = MapPregnancyPhase.fromNBT(compoundTag.getCompound("DaysByPhase"));
 	    	if (this.daysByPregnancyPhase == null) {
-	    		this.daysByPregnancyPhase = new MapPregnancyPhase(MinepreggoModConfig.getTotalPregnancyDays(), lastPregnancyPhase);
-    			MinepreggoMod.LOGGER.error("MapPregnancyPhase is not present in NBT of class: {}, Creating a new one", this.getClass().getSimpleName());
+	    		this.discard();
+	    		throw new IllegalStateException("DaysByPregnancyPhase is not present in NBT of class: " + this.getClass().getSimpleName());
 	    	}
 	    } 
 	}
@@ -226,6 +216,18 @@ public abstract class AbstractTamablePregnantCreeperGirl<S extends PreggoMobSyst
 		
 		return result;
 	}
+	
+    @Override
+    public void handleEntityEvent(byte id) {
+        if (this.level().isClientSide) {
+        	var animation = BellyAnimation.BELLY_SLAP_ANIMATION.get(id); 
+            if (animation != null) {
+            	BellyAnimationManager.getInstance().startAnimation(this, animation);
+            	return;
+            }
+        }
+        super.handleEntityEvent(id);
+    }
 	
 	@Override
    	public void aiStep() {

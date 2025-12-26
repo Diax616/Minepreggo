@@ -1,11 +1,16 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.zombie;
 
+import java.util.UUID;
+
+import dev.dixmk.minepreggo.client.animation.player.BellyAnimationManager;
 import dev.dixmk.minepreggo.client.animation.preggo.BellyAnimation;
 import dev.dixmk.minepreggo.client.animation.preggo.ZombieGirlAnimation;
-import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP4;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
+import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -13,24 +18,38 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class TamableZombieGirlP4Model extends AbstractTamablePregnantZombieGirlModel<TamableZombieGirlP4> {
 	
-	public TamableZombieGirlP4Model(ModelPart root) {
-		super(root, createDefaultP4HierarchicalModel(root));
-	}
+	// TODO: Duplication of code from TamableZombieGirlP3Model to TamableZombieGirlP8Model - refactor later
 	
-	public static<E extends AbstractTamablePregnantZombieGirl<?,?>> HierarchicalModel<E> createDefaultP4HierarchicalModel(ModelPart root) {
-		return new HierarchicalModel<E>() {		
+	public TamableZombieGirlP4Model(ModelPart root) {
+		super(root, new HierarchicalModel<>() {		
 			@Override
 			public ModelPart root() {
 				return root;
 			}
 
 			@Override
-			public void setupAnim(E zombieGirl, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+			public void setupAnim(TamableZombieGirlP4 zombieGirl, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 				this.root().getAllParts().forEach(ModelPart::resetPose);
 					
-			    if (zombieGirl.getItemBySlot(EquipmentSlot.CHEST).isEmpty()) {
-			    	this.animate(zombieGirl.loopAnimationState, BellyAnimation.MEDIUM_BELLY_INFLATION, ageInTicks, 1f);
-			    }
+			    if (zombieGirl.getItemBySlot(EquipmentSlot.CHEST).isEmpty()) {		    	
+			    	if (zombieGirl.getPregnancyPain() ==  PregnancyPain.FETAL_MOVEMENT) {
+				    	this.animate(zombieGirl.loopAnimationState, BellyAnimation.FETAL_MOVEMENT_P4, ageInTicks);		    
+			    	}
+			    	else {
+				    	this.animate(zombieGirl.loopAnimationState, BellyAnimation.MEDIUM_BELLY_INFLATION, ageInTicks);		    
+			    	}
+
+			    	UUID preggoMobId = zombieGirl.getUUID();       
+			        if (!BellyAnimationManager.getInstance().isAnimating(preggoMobId)) {
+			            return;
+			        }
+					AnimationState state = BellyAnimationManager.getInstance().getAnimationState(preggoMobId);
+			        AnimationDefinition animation = BellyAnimationManager.getInstance().getCurrentAnimation(preggoMobId);
+			        
+			        if (state != null && animation != null) {
+			            this.animate(state, animation, ageInTicks);
+			        }
+			    } 
 				
 			    if (zombieGirl.isAttacking()) {
 				    this.animate(zombieGirl.attackAnimationState, ZombieGirlAnimation.ATTACK, ageInTicks, 1f);	
@@ -91,7 +110,7 @@ public class TamableZombieGirlP4Model extends AbstractTamablePregnantZombieGirlM
 					this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.IDLE, ageInTicks, 1f);						
 				}			
 			}	
-		};
+		});
 	}
 }
 

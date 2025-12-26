@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minepreggo:chili_pepper"
+    },
+    {
+      "item": "minepreggo:chili_pepper"
+    },
+    {
+      "item": "minepreggo:chili_pepper"
+    },
+    {
+      "item": "minecraft:cooked_porkchop"
+    }
+  ],
+  "result": {
+    "item": "minepreggo:chili_poppers",
+    "count": 1
+  }
+}

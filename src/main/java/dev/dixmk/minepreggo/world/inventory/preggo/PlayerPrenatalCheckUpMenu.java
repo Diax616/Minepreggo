@@ -15,7 +15,6 @@ import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
 import dev.dixmk.minepreggo.world.item.checkup.PrenatalCheckups;
 import dev.dixmk.minepreggo.world.item.checkup.PrenatalCheckups.PrenatalCheckup;
 import dev.dixmk.minepreggo.world.item.checkup.PrenatalCheckups.PrenatalCheckupData;
-import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import dev.dixmk.minepreggo.world.pregnancy.PrenatalCheckupCostHolder.PrenatalCheckupCost;
 import io.netty.buffer.Unpooled;
@@ -36,8 +35,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraftforge.network.NetworkHooks;
 
 public abstract class PlayerPrenatalCheckUpMenu<T extends Mob> extends AbstractPrenatalCheckUpMenu<Player, T> {
-	
-	protected PregnancyPhase motherPregnancyPhase = PregnancyPhase.P0;
 	
 	protected PlayerPrenatalCheckUpMenu(MenuType<?> menu, int id, Inventory inv, FriendlyByteBuf buffer) {
 		super(menu, id, inv, buffer);
@@ -152,6 +149,7 @@ public abstract class PlayerPrenatalCheckUpMenu<T extends Mob> extends AbstractP
 			if (!valid) {
 				MinepreggoMod.LOGGER.error("Target={} or Source={} was null",
 						this.source.isPresent(), this.target.isPresent());
+				
 			}
 		}
 
@@ -245,6 +243,14 @@ public abstract class PlayerPrenatalCheckUpMenu<T extends Mob> extends AbstractP
 			this.target = Optional.ofNullable(t);
 			this.source = Optional.ofNullable(s);
 				
+			this.source.ifPresent(p -> 
+				p.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
+					cap.getFemaleData().ifPresent(femaleData -> 
+						this.motherPregnancyPhase =	femaleData.getPregnancySystem().getCurrentPregnancyStage()
+					)
+				)
+			);	
+			
 			this.valid = this.source.isPresent() && this.target.isPresent();		
 			
 			if (!valid) {

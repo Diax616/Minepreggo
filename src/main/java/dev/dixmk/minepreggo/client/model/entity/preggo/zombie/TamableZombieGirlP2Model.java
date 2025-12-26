@@ -1,10 +1,16 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.zombie;
 
+import java.util.UUID;
+
+import dev.dixmk.minepreggo.client.animation.player.BellyAnimationManager;
 import dev.dixmk.minepreggo.client.animation.preggo.BellyAnimation;
 import dev.dixmk.minepreggo.client.animation.preggo.ZombieGirlAnimation;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP2;
+import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.world.entity.AnimationState;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -22,9 +28,22 @@ public class TamableZombieGirlP2Model extends AbstractTamablePregnantZombieGirlM
 			@Override
 			public void setupAnim(TamableZombieGirlP2 zombieGirl, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 				this.root().getAllParts().forEach(ModelPart::resetPose);
-					
-			    this.animate(zombieGirl.loopAnimationState, BellyAnimation.LOW_BELLY_INFLATION, ageInTicks, 1f);	
-				
+									
+			    if (zombieGirl.getItemBySlot(EquipmentSlot.CHEST).isEmpty()) {		    	
+			    	this.animate(zombieGirl.loopAnimationState, BellyAnimation.LOW_BELLY_INFLATION, ageInTicks);		    
+			    	
+			    	UUID preggoMobId = zombieGirl.getUUID();       
+			        if (!BellyAnimationManager.getInstance().isAnimating(preggoMobId)) {
+			            return;
+			        }
+					AnimationState state = BellyAnimationManager.getInstance().getAnimationState(preggoMobId);
+			        AnimationDefinition animation = BellyAnimationManager.getInstance().getCurrentAnimation(preggoMobId);
+			        
+			        if (state != null && animation != null) {
+			            this.animate(state, animation, ageInTicks);
+			        }
+			    } 
+			    
 			    if (zombieGirl.isAttacking()) {
 				    this.animate(zombieGirl.attackAnimationState, ZombieGirlAnimation.ATTACK, ageInTicks, 1f);	
 			    }

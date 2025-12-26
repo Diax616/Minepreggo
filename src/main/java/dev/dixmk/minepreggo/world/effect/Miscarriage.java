@@ -7,22 +7,14 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.registries.ForgeRegistries;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
-import dev.dixmk.minepreggo.network.chat.MessageHelper;
+import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.server.ServerPlayerAnimationManager;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.network.chat.Component;
 
 public class Miscarriage extends AbstractPlayerPregnancyPain {
 
@@ -37,6 +29,10 @@ public class Miscarriage extends AbstractPlayerPregnancyPain {
 	public void addAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {			
 		if (!PlayerHelper.isPlayerValid(entity)) return;
 	
+		if (entity.level().isClientSide) {
+			entity.playSound(MinepreggoModSounds.PLAYER_MISCARRIAGE.get(), 0.8F, 0.8F + entity.getRandom().nextFloat() * 0.3F);
+		}
+		
 		if (!entity.level().isClientSide) {
 	        ServerPlayerAnimationManager.getInstance().triggerAnimation((ServerPlayer) entity, "miscarriage");
 	
@@ -53,11 +49,7 @@ public class Miscarriage extends AbstractPlayerPregnancyPain {
 			
 			if (attackSpeedAttr != null && attackSpeedAttr.getModifier(ATTACK_SPEED_MODIFIER_UUID) == null) {
 			    attackSpeedAttr.addTransientModifier(ATTACK_SPEED_MODIFIER);
-			}
-			
-			entity.level().playSound(null, BlockPos.containing(entity.getX(), entity.getY(), entity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "miscarriage")), SoundSource.PLAYERS, 1, 1);
-			
-			MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) entity), Component.translatable("chat.minepreggo.player.miscarriage.message.init"));
+			}					
 		}	
 	}
 	
@@ -69,8 +61,6 @@ public class Miscarriage extends AbstractPlayerPregnancyPain {
 			ServerPlayerAnimationManager.getInstance().stopAnimation((ServerPlayer) entity);
 			
 			entity.removeEffect(MobEffects.WEAKNESS);	
-			entity.removeEffect(MinepreggoModMobEffects.FULL_OF_CREEPERS.get());
-			entity.removeEffect(MinepreggoModMobEffects.FULL_OF_ZOMBIES.get());
 			
 			AttributeInstance speedAttr = entity.getAttribute(Attributes.MOVEMENT_SPEED);
 			AttributeInstance attackSpeedAttr = entity.getAttribute(Attributes.ATTACK_SPEED);
@@ -79,13 +69,7 @@ public class Miscarriage extends AbstractPlayerPregnancyPain {
 			}	
 			if (attackSpeedAttr != null && attackSpeedAttr.getModifier(ATTACK_SPEED_MODIFIER_UUID) != null) {
 				attackSpeedAttr.removeModifier(ATTACK_SPEED_MODIFIER);
-			}
-			
-			entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 2400, 0));	
-			entity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 2400, 0));
-			entity.addEffect(new MobEffectInstance(MobEffects.UNLUCK, 7200, 0));
-			
-			MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) entity), Component.translatable("chat.minepreggo.player.miscarriage.message.post"));
+			}		
 		}			
 	}
 }

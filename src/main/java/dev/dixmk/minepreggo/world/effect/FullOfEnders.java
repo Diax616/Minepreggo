@@ -1,7 +1,9 @@
 package dev.dixmk.minepreggo.world.effect;
 
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
+import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
+import dev.dixmk.minepreggo.world.pregnancy.Womb;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -24,14 +26,12 @@ public class FullOfEnders extends MobEffect {
 		if (entity instanceof ServerPlayer serverPlayer) {		
 			serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 			
 				cap.getFemaleData().ifPresent(femaleData -> {
-					if (!femaleData.isPregnant()) {
-						return;
+					if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {
+						var pregnancySystem = femaleData.getPregnancySystem();
+						if (serverPlayer.getRandom().nextFloat() < calculateProbabilityToRandomTeleport(pregnancySystem.getCurrentPregnancyStage(), pregnancySystem.getWomb())) {
+							randomTeleport(entity);
+						}					
 					}
-				
-					final float p = femaleData.getPregnancySystem().getCurrentPregnancyStage().ordinal() / (float) PregnancyPhase.values().length;				
-					if (serverPlayer.getRandom().nextFloat() < p) {
-						randomTeleport(entity);
-					}	
 				})
 			);
 		}
@@ -63,6 +63,14 @@ public class FullOfEnders extends MobEffect {
 	
 	@Override
 	public boolean isDurationEffectTick(int duration, int amplifier) {
-		return duration % 3600 == 0;
+		return duration % 2400 == 0;
+	}
+	
+	public static float calculateProbabilityToRandomTeleport(PregnancyPhase phase, Womb womb) {
+		int numOfBabiesEnder = womb.calculateNumOfBabiesBySpecies(Species.ENDER);
+		float phaseProgress = phase.ordinal() / (float) (PregnancyPhase.values().length - 1);
+		float enderFactor = numOfBabiesEnder / (float) Womb.getMaxNumOfBabies();
+		float prob = phaseProgress * enderFactor;
+		return Mth.clamp(prob, 0.0f, 1.0f);
 	}
 }

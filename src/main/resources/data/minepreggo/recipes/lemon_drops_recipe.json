@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minepreggo:lemon"
+    },
+    {
+      "item": "minepreggo:lemon"
+    },
+    {
+      "item": "minepreggo:lemon"
+    },
+    {
+      "item": "minecraft:sugar"
+    }
+  ],
+  "result": {
+    "item": "minepreggo:lemon_drops",
+    "count": 1
+  }
+}

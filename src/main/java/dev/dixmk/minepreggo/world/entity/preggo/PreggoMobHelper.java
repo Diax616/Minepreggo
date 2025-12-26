@@ -419,17 +419,8 @@ public class PreggoMobHelper {
 		return initPrePregnancy(preggoMob, ImmutableTriple.of(Optional.of(serverPlayer.getUUID()), Species.HUMAN, Creature.HUMANOID), numOfBabies);
 	}
 	
-	private static<E extends PreggoMob & ITamablePreggoMob<?> & IPregnancySystemHandler> float getSpawnProbabilityBasedPregnancy(@NonNull E preggoMob, float t0, float k, float pMin, float pMax) {
-		final int totalDays = preggoMob.getTotalDaysOfPregnancy();
-		final int totalDaysPassed = PregnancySystemHelper.calculateTotalDaysPassedFromPhaseP0(preggoMob);
-		
-		final float t = Mth.clamp(totalDaysPassed / (float) totalDays, 0, 1);	
-		final float p = MathHelper.sigmoid(pMin, pMax, k, t, t0);
-		
-		MinepreggoMod.LOGGER.debug("SPAWN PROBABILITY BASED IN PREGNANCY: class={}, totalDays={}, totalDaysPassed={}, t={}, p={}",
-				preggoMob.getClass().getSimpleName(), totalDays, totalDaysPassed, t, p);
-
-		return p;
+	private static<E extends PreggoMob & ITamablePreggoMob<?> & IPregnancySystemHandler> float getSpawnProbabilityBasedPregnancy(@NonNull E preggoMob, float t0, float k, float pMin, float pMax) {	
+		return PregnancySystemHelper.getSpawnProbabilityBasedPregnancy(preggoMob, t0, k, pMin, pMax);
 	}
 	// Pregnancy END
 	

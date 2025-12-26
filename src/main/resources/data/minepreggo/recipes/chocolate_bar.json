@@ -13,13 +13,10 @@
     },
     {
       "item": "minecraft:cocoa_beans"
-    },
-    {
-      "item": "minecraft:cocoa_beans"
     }
   ],
   "result": {
     "item": "minepreggo:chocolate_bar",
-    "count": 3
+    "count": 2
   }
 }

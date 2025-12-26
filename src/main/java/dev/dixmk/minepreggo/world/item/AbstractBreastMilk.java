@@ -1,5 +1,12 @@
 package dev.dixmk.minepreggo.world.item;
 
+import java.util.List;
+import java.util.Optional;
+
+import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
+import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
@@ -34,8 +41,32 @@ public abstract class AbstractBreastMilk extends Item {
 	}
 
 	@Override
-	public ItemStack finishUsingItem(ItemStack itemstack, Level world, LivingEntity entity) {
-		super.finishUsingItem(itemstack, world, entity);
+	public ItemStack finishUsingItem(ItemStack itemstack, Level level, LivingEntity entity) {
+		super.finishUsingItem(itemstack, level, entity);
+		if (!level.isClientSide) {
+			if (entity instanceof Player player && player.getCapability(MinepreggoCapabilities.PLAYER_DATA).isPresent()) {	
+				player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> {			
+					Optional<List<MobEffect>> result = cap.getFemaleData().map(femaleData -> {
+						if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {
+							return PlayerHelper.removeEffectsByPregnancyPhase(player, femaleData.getPregnancySystem().getCurrentPregnancyStage());
+						}
+						return PlayerHelper.removeEffects(player, effect -> !PregnancySystemHelper.isFemaleEffect(effect));
+					});
+					if (result.isPresent()) {
+	                    for (MobEffect effect : result.get()) {
+                            player.removeEffect(effect);
+                        }
+					}
+					else {
+						entity.curePotionEffects(itemstack);
+					}
+				});		
+			}
+			else {
+				entity.curePotionEffects(itemstack);
+			}
+		}	
+		
 		ItemStack retval = new ItemStack(Items.GLASS_BOTTLE);
 		if (itemstack.isEmpty()) {
 			return retval;

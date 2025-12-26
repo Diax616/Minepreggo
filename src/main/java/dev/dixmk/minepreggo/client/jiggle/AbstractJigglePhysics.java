@@ -4,6 +4,11 @@ import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+/*
+ * TODO: This set of classes currectly only works with Player Entity, it has tested with other entities but the calculations are not correct or do not apply well.
+ * It needs to be refactored to work with any entity, possibly by passing the entity's position directly instead of relying on player-specific data.
+ */
+
 @OnlyIn(Dist.CLIENT)
 public abstract class AbstractJigglePhysics {
     protected float velocity = 0.0f;

@@ -257,7 +257,6 @@ public class PlayerPregnancyEffectsImpl implements IPlayerPregnancyEffectsHandle
 		this.typeOfCraving = Optional.ofNullable(craving);
 	}
 	
-
 	@Override
 	public void clearTypeOfCravingBySpecies() {
 		this.typeOfCraving = Optional.empty();	

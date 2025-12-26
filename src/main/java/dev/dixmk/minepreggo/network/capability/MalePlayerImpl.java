@@ -28,7 +28,7 @@ public class MalePlayerImpl extends MaleEntityImpl implements IMalePlayer {
 	}
 	
 	public boolean canFap() {
-		return this.fap >= 7;
+		return this.fap >= 6;
 	}
 
 	@Override
@@ -41,11 +41,11 @@ public class MalePlayerImpl extends MaleEntityImpl implements IMalePlayer {
 	}
 
 	public void incrementFap(int amount) {
-		this.fap = Math.max(this.fap + Math.max(0, amount), MAX_FAP);
+		setFap(this.fap + Math.abs(amount));
 	}
 
 	public void decrementFap(int amount) {
-		this.fap = Math.min(this.fap - Math.max(0, amount), 0);		
+		setFap(this.fap - Math.abs(amount));	
 	}
 
 	@Override

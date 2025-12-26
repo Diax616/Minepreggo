@@ -69,7 +69,7 @@ public record RequestSexCinematicP2PC2SPacket(UUID targetPlayerUUID) {
     private static void sendControlPacket(ServerPlayer player, boolean start) {
     	MinepreggoModPacketHandler.INSTANCE.send(
             PacketDistributor.PLAYER.with(() -> player),
-            new SexCinematicControlP2PC2SPacket(start)
+            new SexCinematicControlP2PS2CPacket(start)
         );
     }
     

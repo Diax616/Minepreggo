@@ -290,6 +290,8 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 		if (preggoMobSystem.canOwnerAccessGUI(sourceentity)) {			
 			if (!this.level().isClientSide && sourceentity instanceof ServerPlayer serverPlayer) {
 				CreeperGirlMenuHelper.showMainMenu(serverPlayer, this);			
+				
+				// TODO: Find a better way to stop panicking when owner interacts with the mob.
 				if (this.isPanic()) setPanic(false);
 			}	
 			return InteractionResult.sidedSuccess(this.level().isClientSide);

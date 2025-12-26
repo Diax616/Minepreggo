@@ -14,7 +14,7 @@ public class ZombieBreastMilkBottleItem extends AbstractBreastMilk {
 
 	@Override
 	public ItemStack finishUsingItem(ItemStack itemstack, Level world, LivingEntity entity) {
-		if (!entity.hasEffect(MinepreggoModMobEffects.FULL_OF_ZOMBIES.get()) && !entity.level().isClientSide()) {
+		if (!entity.hasEffect(MinepreggoModMobEffects.FULL_OF_ZOMBIES.get()) && !entity.level().isClientSide) {
 			entity.addEffect(new MobEffectInstance(MobEffects.HUNGER, 200, 0, false, true));
 			entity.addEffect(new MobEffectInstance(MobEffects.POISON, 100, 0, false, true));
 		}

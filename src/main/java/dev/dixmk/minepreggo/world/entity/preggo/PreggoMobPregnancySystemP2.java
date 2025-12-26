@@ -123,12 +123,12 @@ public abstract class PreggoMobPregnancySystemP2<E extends PreggoMob
 	    if (currentMilking < PregnancySystemHelper.MILKING_VALUE || mainHandItem.isEmpty() || mainHandItem.getItem() != Items.GLASS_BOTTLE) {   
 	    	return null;
 	    }
+	    
+        pregnantEntity.playSound(SoundEvents.COW_MILK, 0.8F, 0.8F + pregnantEntity.getRandom().nextFloat() * 0.3F);
 	       
         if (!level.isClientSide) {    	
         	MinepreggoMod.LOGGER.debug("{} {}", mainHandItem, mainHandItem.getCount());
-
-            pregnantEntity.playSound(SoundEvents.COW_MILK, 0.8F, 0.8F + pregnantEntity.getRandom().nextFloat() * 0.3F);
-    	
+	
             currentMilking = Math.max(0, currentMilking - PregnancySystemHelper.MILKING_VALUE);
             pregnantEntity.setMilking(currentMilking);               
             var milkItem = PregnancySystemHelper.getMilkItem(pregnantEntity.getTypeOfSpecies());
@@ -157,4 +157,14 @@ public abstract class PreggoMobPregnancySystemP2<E extends PreggoMob
      
         return Result.SUCCESS;   
 	}
+	
+	@Override
+	protected Result evaluateBellyRubs(Level level, Player source) {
+		// In this pregnancy phase, the belly is not large enough to do some action
+		
+		PregnancySystemHelper.playSlappingBellyAnimation(source, pregnantEntity);
+		
+		return Result.FAIL;
+	}
 }
+

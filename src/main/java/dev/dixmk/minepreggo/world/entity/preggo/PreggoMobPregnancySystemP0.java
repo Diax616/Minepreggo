@@ -1,7 +1,5 @@
 package dev.dixmk.minepreggo.world.entity.preggo;
 
-import org.jetbrains.annotations.Nullable;
-
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
@@ -205,10 +203,6 @@ public abstract class PreggoMobPregnancySystemP0
 	}
 	
 	
-	
-	
-	// BIRTH
-	@Nullable
 	protected Result evaluateBellyRubs(Level level, Player source) {
 		// In this pregnancy phase, the belly is not large enough to do some action
 		return Result.FAIL;

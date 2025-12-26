@@ -11,6 +11,7 @@ import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.Nonnegative;
 
+import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.pregnancy.Craving;
 import net.minecraft.world.entity.LivingEntity;
 
@@ -39,7 +40,17 @@ public class LemonIcePopsiclesItem extends Item implements IItemCraving {
 	}
 
 	@Override
-	public Craving getTypeOfCraving() {
+	public Craving getCravingType() {
 		return Craving.SOUR;
+	}
+	
+	@Override
+	public Species getSpeciesType() {
+		return Species.HUMAN;
+	}
+
+	@Override
+	public @Nonnegative float getPenalty() {
+		return 0.1f;
 	}
 }

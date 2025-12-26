@@ -52,15 +52,11 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 		if (pregnantEntity.level().isClientSide) {
 			return;
 		}
-		
 		if (!isValid) {
 			MinepreggoMod.LOGGER.warn("PlayerPregnancySystemP0 is not valid for player: {}. Aborting onServerTick. playerData: {}, femaleData: {}, pregnancySystem: {}, pregnancyEffects: {}",
-					pregnantEntity.getGameProfile().getName(), this.playerData != null, this.femaleData != null, this.pregnancySystem != null, this.pregnancyEffects != null);
-			
-			
+					pregnantEntity.getGameProfile().getName(), this.playerData != null, this.femaleData != null, this.pregnancySystem != null, this.pregnancyEffects != null);		
 			return;
 		}	
-
 		evaluatePregnancySystem();
 	}
 	
@@ -176,8 +172,8 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 		final var phases = PregnancyPhase.values();	
 		final var next = phases[Math.min(previousStage.ordinal() + 1, phases.length - 1)];
 		
-		pregnantEntity.removeEffect(PlayerHelper.pregnancyEffects(pregnancySystem.getCurrentPregnancyStage()));
-		pregnantEntity.addEffect(new MobEffectInstance(PlayerHelper.pregnancyEffects(next), -1, 0, false, false, true));
+		pregnantEntity.removeEffect(PlayerHelper.getPregnancyEffects(pregnancySystem.getCurrentPregnancyStage()));
+		pregnantEntity.addEffect(new MobEffectInstance(PlayerHelper.getPregnancyEffects(next), -1, 0, false, false, true));
 		
 		pregnancySystem.setCurrentPregnancyStage(next);
 		pregnancySystem.resetPregnancyTimer();

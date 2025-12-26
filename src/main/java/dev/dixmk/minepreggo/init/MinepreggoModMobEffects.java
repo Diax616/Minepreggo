@@ -1,6 +1,7 @@
 package dev.dixmk.minepreggo.init;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
+import dev.dixmk.minepreggo.world.effect.BabyDuplication;
 import dev.dixmk.minepreggo.world.effect.BellyRubs;
 import dev.dixmk.minepreggo.world.effect.Birth;
 import dev.dixmk.minepreggo.world.effect.Contraction;
@@ -9,6 +10,7 @@ import dev.dixmk.minepreggo.world.effect.CreeperImpregnation;
 import dev.dixmk.minepreggo.world.effect.Depression;
 import dev.dixmk.minepreggo.world.effect.EnderImpregnation;
 import dev.dixmk.minepreggo.world.effect.EternalPregnancy;
+import dev.dixmk.minepreggo.world.effect.Fertile;
 import dev.dixmk.minepreggo.world.effect.Fertility;
 import dev.dixmk.minepreggo.world.effect.FetalMovement;
 import dev.dixmk.minepreggo.world.effect.FullOfCreepers;
@@ -56,12 +58,12 @@ public class MinepreggoModMobEffects {
 	public static final RegistryObject<MobEffect> ENDER_IMPREGNATION = REGISTRY.register("ender_impregnation", EnderImpregnation::new);
 	public static final RegistryObject<MobEffect> HUMANOID_CREEPER_IMPREGNATION = REGISTRY.register("humanoid_creeper_impregnation", HumanoidCreeperImpregnation::new);
 	public static final RegistryObject<MobEffect> HUMANOID_ENDER_IMPREGNATION = REGISTRY.register("humanoid_ender_impregnation", HumanoidEnderImpregnation::new);
-
 	
 	public static final RegistryObject<MobEffect> PREGNANCY_HEALING = REGISTRY.register("pregnancy_healing", PregnancyHealing::new);
 	public static final RegistryObject<MobEffect> PREGNANCY_DELAY = REGISTRY.register("pregnancy_delay", PregnancyDelay::new);
 	public static final RegistryObject<MobEffect> PREGNANCY_ACCELERATION = REGISTRY.register("pregnancy_acceleration", PregnancyAcceleration::new);
-
+	public static final RegistryObject<MobEffect> BABY_DUPLICATION = REGISTRY.register("baby_duplication", BabyDuplication::new);
+	
 	public static final RegistryObject<MobEffect> FULL_OF_ZOMBIES = REGISTRY.register("full_of_zombies", FullOfZombies::new);
 	public static final RegistryObject<MobEffect> FULL_OF_CREEPERS = REGISTRY.register("full_of_creepers", FullOfCreepers::new);
 	public static final RegistryObject<MobEffect> FULL_OF_ENDERS = REGISTRY.register("full_of_enders", FullOfEnders::new);
@@ -75,8 +77,7 @@ public class MinepreggoModMobEffects {
 	public static final RegistryObject<MobEffect> PREGNANCY_P6 = REGISTRY.register("pregnancy_p6", PregnancyP6::new);
 	public static final RegistryObject<MobEffect> PREGNANCY_P7 = REGISTRY.register("pregnancy_p7", PregnancyP7::new);
 	public static final RegistryObject<MobEffect> PREGNANCY_P8 = REGISTRY.register("pregnancy_p8", PregnancyP8::new);
-	
-	
+		
 	public static final RegistryObject<MobEffect> BELLY_RUBS = REGISTRY.register("belly_rubs", BellyRubs::new);
 	public static final RegistryObject<MobEffect> BIRTH = REGISTRY.register("birth", Birth::new);
 	public static final RegistryObject<MobEffect> CONTRACTION = REGISTRY.register("contraction", Contraction::new);
@@ -85,10 +86,10 @@ public class MinepreggoModMobEffects {
 
 	public static final RegistryObject<MobEffect> ETERNAL_PREGNANCY = REGISTRY.register("eternal_pregnancy", EternalPregnancy::new);
 	public static final RegistryObject<MobEffect> FERTILITY = REGISTRY.register("fertility", Fertility::new);
+	public static final RegistryObject<MobEffect> FERTILE = REGISTRY.register("fertile", Fertile::new);
 	public static final RegistryObject<MobEffect> FETAL_MOVEMENT = REGISTRY.register("fetal_movement", FetalMovement::new);
 	public static final RegistryObject<MobEffect> WATER_BREAKING = REGISTRY.register("water_breaking", WaterBreaking::new);
 
-	
 	public static final RegistryObject<MobEffect> HORNY = REGISTRY.register("horny", Horny::new);
 	public static final RegistryObject<MobEffect> LACTATION = REGISTRY.register("lactation", Lactation::new);
 	public static final RegistryObject<MobEffect> MATERNITY = REGISTRY.register("maternity", Maternity::new);

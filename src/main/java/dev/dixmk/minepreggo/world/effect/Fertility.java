@@ -19,16 +19,20 @@ public class Fertility extends MobEffect {
 	@Override
 	public void applyInstantenousEffect(@Nullable Entity p_19462_, @Nullable Entity p_19463_, LivingEntity p_19464_, int p_19465_, double p_19466_) { 
 		if (p_19464_ instanceof IBreedable p) {		
-			p.incrementFertilityRate(0.5F);
+			p.incrementFertilityRate(0.9F);
 		}
 		
 		else if (p_19464_ instanceof ServerPlayer player) {										
 			player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> {					
 				if (cap.isFemale()) {	
-					cap.getFemaleData().ifPresent(femaleData -> femaleData.incrementFertilityRate(0.5F));	
+					cap.getFemaleData().ifPresent(femaleData -> {
+						if (!femaleData.isPregnant() && femaleData.getPostPregnancyData().isEmpty()) {
+							femaleData.incrementFertilityRate(1.0F);
+						}
+					});	
 				}
 				else if (cap.isMale()) {
-					cap.getMaleData().ifPresent(maleData -> maleData.incrementFertilityRate(0.5F));	
+					cap.getMaleData().ifPresent(maleData -> maleData.incrementFertilityRate(1.0F));	
 				}	
 			});			
 		}

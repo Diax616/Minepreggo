@@ -8,6 +8,8 @@ import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.server.ServerCinematicManager;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.pregnancy.Gender;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -60,13 +62,16 @@ public record ResponseSexRequestP2PC2SPacket(int sourcePlayerId, int targetPlaye
 		source.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(sourceCap -> 
 			target.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(targetCap -> {										
 				Runnable impregnationTask = () -> {
-					if (sourceCap.getGender() ==  Gender.FEMALE) {
+			
+					if (sourceCap.getGender() ==  Gender.FEMALE) {						
 						PlayerHelper.tryStartPregnancyBySex(source, target);
+						removeHorny(source);
 					}
-					else if (targetCap.getGender() == Gender.FEMALE) {
+					else if (targetCap.getGender() ==  Gender.FEMALE) {						
 						PlayerHelper.tryStartPregnancyBySex(target, source);
+						removeHorny(target);
 					}
-					
+						
 					var breedableData = sourceCap.getBreedableData();				
 					if (breedableData != null) {
 						breedableData.setFertilityRate(0);
@@ -90,14 +95,16 @@ public record ResponseSexRequestP2PC2SPacket(int sourcePlayerId, int targetPlaye
 				int overlayTicks = 120;
 				int overlayPauseTicks = 60;
 					
+				
 		        MinepreggoModPacketHandler.INSTANCE.send(
 		                PacketDistributor.PLAYER.with(() -> source),
-		                new SexCinematicControlP2PC2SPacket(true)
+		                new SexCinematicControlP2PS2CPacket(true)
 		            );	               
 		        MinepreggoModPacketHandler.INSTANCE.send(
 		                PacketDistributor.PLAYER.with(() -> target),
-		                new SexCinematicControlP2PC2SPacket(true)
+		                new SexCinematicControlP2PS2CPacket(true)
 		            );	      
+		              
 		        MinepreggoModPacketHandler.INSTANCE.send(
 		    			PacketDistributor.PLAYER.with(() -> source),
 		    			new RenderSexOverlayS2CPacket(overlayTicks, overlayPauseTicks)
@@ -110,9 +117,34 @@ public record ResponseSexRequestP2PC2SPacket(int sourcePlayerId, int targetPlaye
 				MinepreggoModPacketHandler.queueServerWork(overlayTicks * 2 + overlayPauseTicks, () -> {
 					ServerCinematicManager.getInstance().end(source);
 					ServerCinematicManager.getInstance().end(target);
+					
+			        MinepreggoModPacketHandler.INSTANCE.send(
+			                PacketDistributor.PLAYER.with(() -> source),
+			                new SexCinematicControlP2PS2CPacket(false)
+			            );	               
+			        MinepreggoModPacketHandler.INSTANCE.send(
+			                PacketDistributor.PLAYER.with(() -> target),
+			                new SexCinematicControlP2PS2CPacket(false)
+			            );
 				});		
 
 			})
+		);
+	}
+	
+	private static void removeHorny(ServerPlayer source) {
+		source.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
+			cap.getFemaleData().ifPresent(femaleData -> {
+				if (femaleData.isPregnant()
+						&& femaleData.isPregnancySystemInitialized()
+						&& femaleData.getPregnancySystem().getCurrentPregnancyStage().compareTo(PregnancyPhase.P4) >= 0) {				
+					femaleData.getPregnancyEffects().setHorny(0);
+					femaleData.getPregnancySystem().getPregnancySymptoms().remove(PregnancySymptom.HORNY);
+					
+					femaleData.getPregnancyEffects().sync(source);
+					femaleData.getPregnancySystem().sync(source);
+				}
+			})			
 		);
 	}
 	

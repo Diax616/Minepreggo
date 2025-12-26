@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "minepreggo:dead_human_fetus",
+    "minepreggo:dead_zombie_fetus",
+    "minepreggo:dead_humanoid_creeper_fetus",
+    "minepreggo:dead_creeper_fetus",
+    "minepreggo:dead_humanoid_ender_fetus",
+	"minepreggo:dead_ender_fetus",
+	"minepreggo:dead_villager_fetus"
+  ]
+}

@@ -2,7 +2,6 @@ package dev.dixmk.minepreggo.event;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
-import dev.dixmk.minepreggo.client.animation.player.ArmAnimationManager;
 import dev.dixmk.minepreggo.client.animation.player.PlayerAnimationManager;
 import dev.dixmk.minepreggo.client.animation.player.PlayerAnimationManager.PlayerAnimationCache;
 import dev.dixmk.minepreggo.client.screens.effect.SexOverlayManager;
@@ -76,7 +75,6 @@ public class ClientEventHandler {
     	
     	if (event.phase == TickEvent.Phase.END) {
         	SexOverlayManager.getInstance().tick();      	       
-            ArmAnimationManager.getInstance().tick();
 
             for (Player ply : mc.level.players()) {
             	final var cache = PlayerAnimationManager.getInstance().get(ply);       	

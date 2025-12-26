@@ -3,7 +3,6 @@ package dev.dixmk.minepreggo.world.entity.preggo.zombie;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.utils.MathHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.ISimplePregnancy;
-import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
@@ -42,7 +41,7 @@ public abstract class AbstractMonsterPregnantZombieGirl extends AbstractMonsterZ
 	private int totalDaysPassed;
 	private final float pregnancyPainProbability;
 	
-	protected AbstractMonsterPregnantZombieGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_, PregnancyPhase currentPregnancyStage) {
+	protected AbstractMonsterPregnantZombieGirl(EntityType<? extends AbstractMonsterZombieGirl> p_21803_, Level p_21804_, PregnancyPhase currentPregnancyStage) {
 		super(p_21803_, p_21804_);
 		this.currentPregnanctStage = currentPregnancyStage;
 		this.maxPregnanctStage = PregnancySystemHelper.calculateRandomMinPhaseToGiveBirthFrom(currentPregnancyStage, random);

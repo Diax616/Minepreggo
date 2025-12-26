@@ -78,7 +78,7 @@ public class PredefinedPregnantBodyLayer extends AbstractPregnantBodyLayer {
     	        final ImmutablePair<ResourceLocation, ResourceLocation> textures;
     	        PlayerModel<AbstractClientPlayer> playerModel = this.getParentModel(); 
     	        
-    			if (femaleData.isPregnant()) {
+    			if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {
         	        final var pregnancyPhase = femaleData.getPregnancySystem().getCurrentPregnancyStage();	        
     				textures = PlayerHelper.getPredefinedPlayerTextures("player1", pregnancyPhase);
     			

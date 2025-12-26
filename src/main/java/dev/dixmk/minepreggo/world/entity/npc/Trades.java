@@ -78,9 +78,10 @@ public class Trades {
 			
 			p_35633_.put(MinepreggoModVillagerProfessions.VILLAGER_DOCTOR.get(), new Int2ObjectOpenHashMap<>(ImmutableMap.of(
 					1, new VillagerTrades.ItemListing[]
-					{ new PotionsForEmeralds(PotionItemFactory.createPotion(Potions.HEALING), 15, 1, 20, 15)},
+					{ new PotionsForEmeralds(PotionItemFactory.createPotion(Potions.HEALING), 15, 1, 20, 15),
+					  new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.FERTILITY.get()), 15, 1, 20, 15)},
 					2, new VillagerTrades.ItemListing[]
-					{ new PotionsForEmeralds(PotionItemFactory.createPotion(Potions.STRONG_HEALING), 17, 1, 20, 17),
+					{ new PotionsForEmeralds(PotionItemFactory.createSplashPotion(Potions.STRONG_HEALING), 17, 1, 20, 17),
 						new PotionsForEmeralds(PotionItemFactory.createSplashPotion(Potions.HEALING), 16, 1, 20, 17)},
 					3, new VillagerTrades.ItemListing[]
 					{ new PotionsForEmeralds(PotionItemFactory.createSplashPotion(MinepreggoModPotions.IMPREGNATION_POTION_0.get()), 30, 1, 20, 20)},

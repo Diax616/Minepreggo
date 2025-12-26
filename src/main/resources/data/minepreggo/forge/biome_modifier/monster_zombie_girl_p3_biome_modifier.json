@@ -1,11 +1,9 @@
 {
   "type": "forge:add_spawns",
-  "biomes": {
-    "type": "forge:any"
-  },
+  "biomes": "#minecraft:is_overworld",
   "spawners": {
     "type": "minepreggo:monster_zombie_girl_p3",
-    "weight": 19,
+    "weight": 17,
     "minCount": 1,
     "maxCount": 1
   }

@@ -9,12 +9,15 @@ import dev.dixmk.minepreggo.world.item.BabyEnderItem;
 import dev.dixmk.minepreggo.world.item.BabyHumanItem;
 import dev.dixmk.minepreggo.world.item.BabyHumanoidCreeperItem;
 import dev.dixmk.minepreggo.world.item.BabyHumanoidEnderItem;
+import dev.dixmk.minepreggo.world.item.BabyVillagerItem;
 import dev.dixmk.minepreggo.world.item.BabyCreeperItem;
 import dev.dixmk.minepreggo.world.item.BabyZombieItem;
 import dev.dixmk.minepreggo.world.item.BellyShieldChestPlateItem;
 import dev.dixmk.minepreggo.world.item.BrainWithChocolateItem;
 import dev.dixmk.minepreggo.world.item.BrainWithHotSauceItem;
 import dev.dixmk.minepreggo.world.item.BrainWithSaltItem;
+import dev.dixmk.minepreggo.world.item.CandyAppleItem;
+import dev.dixmk.minepreggo.world.item.ChiliPoppersItem;
 import dev.dixmk.minepreggo.world.item.ChocolateBarItem;
 import dev.dixmk.minepreggo.world.item.CreeperBreastMilkBottleItem;
 import dev.dixmk.minepreggo.world.item.CumSpecimenTubeItem;
@@ -22,6 +25,7 @@ import dev.dixmk.minepreggo.world.item.DeadEnderFetusItem;
 import dev.dixmk.minepreggo.world.item.DeadEnderHumanoidFetusItem;
 import dev.dixmk.minepreggo.world.item.DeadHumanFetusItem;
 import dev.dixmk.minepreggo.world.item.DeadHumanoidCreeperFetusItem;
+import dev.dixmk.minepreggo.world.item.DeadVillagerFetusItem;
 import dev.dixmk.minepreggo.world.item.DeadCreeperFetusItem;
 import dev.dixmk.minepreggo.world.item.DeadZombieFetusItem;
 import dev.dixmk.minepreggo.world.item.EnderLifeSubstanceItem;
@@ -31,11 +35,13 @@ import dev.dixmk.minepreggo.world.item.FemaleGoldenChestPlateItem;
 import dev.dixmk.minepreggo.world.item.FemaleIronChestPlateItem;
 import dev.dixmk.minepreggo.world.item.FemaleLeatherChestPlateItem;
 import dev.dixmk.minepreggo.world.item.FemaleNetheriteChestPlateItem;
+import dev.dixmk.minepreggo.world.item.FrenchFriesItem;
 import dev.dixmk.minepreggo.world.item.HotChickenItem;
 import dev.dixmk.minepreggo.world.item.HotSauceItem;
 import dev.dixmk.minepreggo.world.item.HumanBreastMilkBottleItem;
 import dev.dixmk.minepreggo.world.item.CreeperLifeSubstanceItem;
 import dev.dixmk.minepreggo.world.item.KneeBraceItem;
+import dev.dixmk.minepreggo.world.item.LemonDropsItem;
 import dev.dixmk.minepreggo.world.item.LemonIceCreamItem;
 import dev.dixmk.minepreggo.world.item.LemonIcePopsiclesItem;
 import dev.dixmk.minepreggo.world.item.LemonItem;
@@ -66,15 +72,16 @@ public class MinepreggoModItems {
 	
 	public static final DeferredRegister<Item> REGISTRY = DeferredRegister.create(ForgeRegistries.ITEMS, MinepreggoMod.MODID);
 	
-	public static final RegistryObject<Item> MONSTER_QUADRUPED_CREEPER_GIRL_P0_SPAWN_EGG = REGISTRY.register("monster_quadruped_creeper_girl_p0_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.MONSTER_CREEPER_GIRL, -16724839, -16738048, new Item.Properties()));
-	public static final RegistryObject<Item> MONSTER_ENDER_WOMAN_SPAWN_EGG = REGISTRY.register("monster_ender_woman_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.MONSTER_ENDER_WOMAN, -16724839, -16738048, new Item.Properties()));
-	public static final RegistryObject<Item> SCIENTIFIC_ILLAGER_SPAWN_EGG = REGISTRY.register("scientific_illager_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.SCIENTIFIC_ILLAGER, -16724839, -16738048, new Item.Properties()));
+	public static final RegistryObject<Item> MONSTER_CREEPER_GIRL_SPAWN_EGG = REGISTRY.register("monster_creeper_girl_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.MONSTER_CREEPER_GIRL, -16539904, -16777216, new Item.Properties()));
+	public static final RegistryObject<Item> MONSTER_ENDER_WOMAN_SPAWN_EGG = REGISTRY.register("monster_ender_woman_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.MONSTER_ENDER_WOMAN, -14869219, -16777216, new Item.Properties()));
+	public static final RegistryObject<Item> SCIENTIFIC_ILLAGER_SPAWN_EGG = REGISTRY.register("scientific_illager_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.SCIENTIFIC_ILLAGER, -13434880, -10066330, new Item.Properties()));
+	public static final RegistryObject<Item> FERTILITY_WITCH_SPAWN_EGG = REGISTRY.register("fertility_witch_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.FERTILITY_WITCH, -39271, -65434, new Item.Properties()));
 
 	
-	public static final RegistryObject<Item> MONSTER_ZOMBIE_GIRL_SPAWN_EGG = REGISTRY.register("monster_zombie_girl_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.MONSTER_ZOMBIE_GIRL, -16724839, -16738048, new Item.Properties()));
-	public static final RegistryObject<Item> MONSTER_ZOMBIE_GIRL_P3_SPAWN_EGG = REGISTRY.register("monster_zombie_girl_p3_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.MONSTER_ZOMBIE_GIRL_P3, -16724839, -16738048, new Item.Properties()));
-	public static final RegistryObject<Item> MONSTER_ZOMBIE_GIRL_P5_SPAWN_EGG = REGISTRY.register("monster_zombie_girl_p5_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.MONSTER_ZOMBIE_GIRL_P5, -16724839, -16738048, new Item.Properties()));
-	public static final RegistryObject<Item> MONSTER_ZOMBIE_GIRL_P7_SPAWN_EGG = REGISTRY.register("monster_zombie_girl_p7_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.MONSTER_ZOMBIE_GIRL_P7, -16724839, -16738048, new Item.Properties()));
+	public static final RegistryObject<Item> MONSTER_ZOMBIE_GIRL_SPAWN_EGG = REGISTRY.register("monster_zombie_girl_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.MONSTER_ZOMBIE_GIRL, -15950178, -13272780, new Item.Properties()));
+	public static final RegistryObject<Item> MONSTER_ZOMBIE_GIRL_P3_SPAWN_EGG = REGISTRY.register("monster_zombie_girl_p3_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.MONSTER_ZOMBIE_GIRL_P3, -15950178, -13272780, new Item.Properties()));
+	public static final RegistryObject<Item> MONSTER_ZOMBIE_GIRL_P5_SPAWN_EGG = REGISTRY.register("monster_zombie_girl_p5_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.MONSTER_ZOMBIE_GIRL_P5, -15950178, -13272780, new Item.Properties()));
+	public static final RegistryObject<Item> MONSTER_ZOMBIE_GIRL_P7_SPAWN_EGG = REGISTRY.register("monster_zombie_girl_p7_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.MONSTER_ZOMBIE_GIRL_P7, -15950178, -13272780, new Item.Properties()));
 	
 	public static final RegistryObject<Item> TAMABLE_ZOMBIE_GIRL_SPAWN_EGG = REGISTRY.register("tamable_zombie_girl_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL, -16724839, -16738048, new Item.Properties()));
 	public static final RegistryObject<Item> TAMABLE_ZOMBIE_GIRL_P0_SPAWN_EGG = REGISTRY.register("tamable_zombie_girl_p0_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P0, -16724839, -16738048, new Item.Properties()));
@@ -87,10 +94,10 @@ public class MinepreggoModItems {
 	public static final RegistryObject<Item> TAMABLE_ZOMBIE_GIRL_P7_SPAWN_EGG = REGISTRY.register("tamable_zombie_girl_p7_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P7, -16724839, -16738048, new Item.Properties()));
 	public static final RegistryObject<Item> TAMABLE_ZOMBIE_GIRL_P8_SPAWN_EGG = REGISTRY.register("tamable_zombie_girl_p8_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P8, -16724839, -16738048, new Item.Properties()));
 
-	public static final RegistryObject<Item> MONSTER_HUMANOID_CREEPER_GIRL_SPAWN_EGG = REGISTRY.register("monster_humanoid_creeper_girl_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.MONSTER_HUMANOID_CREEPER_GIRL, -16738048, -26368, new Item.Properties()));
-	public static final RegistryObject<Item> MONSTER_HUMANOID_CREEPER_GIRL_P3_SPAWN_EGG = REGISTRY.register("monster_humanoid_creeper_girl_p3_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.MONSTER_HUMANOID_CREEPER_GIRL_P3, -16738048, -26368, new Item.Properties()));
-	public static final RegistryObject<Item> MONSTER_HUMANOID_CREEPER_GIRL_P5_SPAWN_EGG = REGISTRY.register("monster_humanoid_creeper_girl_p5_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.MONSTER_HUMANOID_CREEPER_GIRL_P5, -16738048, -26368, new Item.Properties()));
-	public static final RegistryObject<Item> MONSTER_HUMANOID_CREEPER_GIRL_P7_SPAWN_EGG = REGISTRY.register("monster_humanoid_creeper_girl_p7_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.MONSTER_HUMANOID_CREEPER_GIRL_P7, -16738048, -26368, new Item.Properties()));
+	public static final RegistryObject<Item> MONSTER_HUMANOID_CREEPER_GIRL_SPAWN_EGG = REGISTRY.register("monster_humanoid_creeper_girl_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.MONSTER_HUMANOID_CREEPER_GIRL, -16539904, -16777216, new Item.Properties()));
+	public static final RegistryObject<Item> MONSTER_HUMANOID_CREEPER_GIRL_P3_SPAWN_EGG = REGISTRY.register("monster_humanoid_creeper_girl_p3_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.MONSTER_HUMANOID_CREEPER_GIRL_P3, -16539904, -16777216, new Item.Properties()));
+	public static final RegistryObject<Item> MONSTER_HUMANOID_CREEPER_GIRL_P5_SPAWN_EGG = REGISTRY.register("monster_humanoid_creeper_girl_p5_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.MONSTER_HUMANOID_CREEPER_GIRL_P5, -16539904, -16777216, new Item.Properties()));
+	public static final RegistryObject<Item> MONSTER_HUMANOID_CREEPER_GIRL_P7_SPAWN_EGG = REGISTRY.register("monster_humanoid_creeper_girl_p7_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.MONSTER_HUMANOID_CREEPER_GIRL_P7, -16539904, -16777216, new Item.Properties()));
 
 	public static final RegistryObject<Item> TAMABLE_HUMANOID_CREEPER_GIRL_SPAWN_EGG = REGISTRY.register("tamable_humanoid_creeper_girl_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL, -16738048, -26368, new Item.Properties()));
 	public static final RegistryObject<Item> TAMABLE_HUMANOID_CREEPER_GIRL_P0_SPAWN_EGG = REGISTRY.register("tamable_humanoid_creeper_girl_p0_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P0, -16738048, -26368, new Item.Properties()));
@@ -114,7 +121,11 @@ public class MinepreggoModItems {
 	public static final RegistryObject<Item> HOT_SAUCE = REGISTRY.register("hot_sauce", HotSauceItem::new);
 	public static final RegistryObject<Item> PICKLE = REGISTRY.register("pickle", PickleItem::new);
 	public static final RegistryObject<Item> SALTY_WATER_BOTTLE = REGISTRY.register("salty_water_bottle", SaltyWaterBottleItem::new);
-	
+	public static final RegistryObject<Item> LEMON_DROPS = REGISTRY.register("lemon_drops", LemonDropsItem::new);
+	public static final RegistryObject<Item> CHILI_POPPERS = REGISTRY.register("chili_poppers", ChiliPoppersItem::new);
+	public static final RegistryObject<Item> FRENCH_FRIES = REGISTRY.register("french_fries", FrenchFriesItem::new);
+	public static final RegistryObject<Item> CANDY_APPLE = REGISTRY.register("candy_apple", CandyAppleItem::new);
+
 	public static final RegistryObject<Item> HUMAN_BREAST_MILK_BOTTLE = REGISTRY.register("human_breast_milk_bottle", HumanBreastMilkBottleItem::new);
 	public static final RegistryObject<Item> ZOMBIE_BREAST_MILK_BOTTLE = REGISTRY.register("zombie_breast_milk_bottle", ZombieBreastMilkBottleItem::new);
 	public static final RegistryObject<Item> CREEPER_BREAST_MILK_BOTTLE = REGISTRY.register("creeper_breast_milk_bottle", CreeperBreastMilkBottleItem::new);
@@ -186,13 +197,15 @@ public class MinepreggoModItems {
 	public static final RegistryObject<Item> BABY_CREEPER = REGISTRY.register("baby_creeper", BabyCreeperItem::new);	
 	public static final RegistryObject<Item> BABY_HUMANOID_ENDER = REGISTRY.register("baby_humanoid_ender", BabyHumanoidEnderItem::new);
 	public static final RegistryObject<Item> BABY_ENDER = REGISTRY.register("baby_ender", BabyEnderItem::new);
-	
+	public static final RegistryObject<Item> BABY_VILLAGER = REGISTRY.register("baby_villager", BabyVillagerItem::new);
+
 	public static final RegistryObject<Item> DEAD_HUMAN_FETUS = REGISTRY.register("dead_human_fetus", DeadHumanFetusItem::new);
 	public static final RegistryObject<Item> DEAD_ZOMBIE_FETUS = REGISTRY.register("dead_zombie_fetus", DeadZombieFetusItem::new);
 	public static final RegistryObject<Item> DEAD_HUMANOID_CREEPER_FETUS = REGISTRY.register("dead_humanoid_creeper_fetus", DeadHumanoidCreeperFetusItem::new);
 	public static final RegistryObject<Item> DEAD_CREEPER_FETUS = REGISTRY.register("dead_creeper_fetus", DeadCreeperFetusItem::new);	
 	public static final RegistryObject<Item> DEAD_HUMANOID_ENDER_FETUS = REGISTRY.register("dead_humanoid_ender_fetus", DeadEnderHumanoidFetusItem::new);
 	public static final RegistryObject<Item> DEAD_ENDER_FETUS = REGISTRY.register("dead_ender_fetus", DeadEnderFetusItem::new);
+	public static final RegistryObject<Item> DEAD_VILLAGER_FETUS = REGISTRY.register("dead_villager_fetus", DeadVillagerFetusItem::new);
 	
 	public static final RegistryObject<Item> ZOMBIE_LIFE_SUBSTANCE = REGISTRY.register("zombie_life_substance", ZombieLifeSubstanceItem::new);
 	public static final RegistryObject<Item> CREEPER_LIFE_SUBSTANCE = REGISTRY.register("creeper_life_substance", CreeperLifeSubstanceItem::new);

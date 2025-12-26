@@ -11,6 +11,7 @@ import javax.annotation.Nullable;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.npc.Villager;
 
 public class ServerCinematicManager {
 	
@@ -27,6 +28,7 @@ public class ServerCinematicManager {
     private final Map<UUID, CinematicSession<?>> activeSessions = new HashMap<>();
     private final Set<UUID> playersInCinematic = new HashSet<>();
     private final Set<UUID> preggoMobsInCinematic = new HashSet<>();
+    private final Set<UUID> villagerInCinematic = new HashSet<>();
     
     public void start(ServerPlayer playerA, ServerPlayer playerB, @Nullable Runnable onStart, @Nullable Runnable onEnd) {
         if (isInCinematic(playerA) || isInCinematic(playerB)) return;
@@ -42,12 +44,22 @@ public class ServerCinematicManager {
         if (isInCinematic(owner) || isInCinematic(preggoMob)) return;
 
         var session = new CinematicP2MSession(owner, preggoMob, onStart, onEnd);
-        activeSessions.put(owner.getUUID(), session); // or use session ID
+        activeSessions.put(owner.getUUID(), session);
         playersInCinematic.add(owner.getUUID());
         preggoMobsInCinematic.add(preggoMob.getUUID());
         session.start();
     }
     
+    public void start(ServerPlayer owner, Villager villager, @Nullable Runnable onStart, @Nullable Runnable onEnd) {
+        if (isInCinematic(owner) || isInCinematic(villager)) return;
+
+        var session = new CinematicP2VSession(owner, villager, onStart, onEnd);
+        activeSessions.put(owner.getUUID(), session);
+        playersInCinematic.add(owner.getUUID());
+        villagerInCinematic.add(villager.getUUID());
+        session.start();
+    }
+      
     public void end(ServerPlayer player) {
         CinematicSession<?> session = null;
         for (var entry : activeSessions.entrySet()) {
@@ -59,13 +71,15 @@ public class ServerCinematicManager {
         }
         
         if (session != null) {
+            playersInCinematic.remove(session.source);
             if (session instanceof CinematicP2PSession) {
-                playersInCinematic.remove(session.source);
                 playersInCinematic.remove(session.target);
             }
-            else {
-                playersInCinematic.remove(session.source);
+            else if (session instanceof CinematicP2MSession) {
                 preggoMobsInCinematic.remove(session.target);
+            }
+            else {
+                villagerInCinematic.remove(session.target);
             }
             session.end();
         }
@@ -78,6 +92,10 @@ public class ServerCinematicManager {
     
     public boolean isInCinematic(PreggoMob preggoMob) {
         return preggoMobsInCinematic.contains(preggoMob.getUUID());
+    }
+    
+    public boolean isInCinematic(Villager villager) {
+        return villagerInCinematic.contains(villager.getUUID());
     }
 
     public abstract static class CinematicSession<E extends LivingEntity> {
@@ -118,6 +136,12 @@ public class ServerCinematicManager {
     
     public static class CinematicP2MSession extends CinematicSession<PreggoMob> {        
         public CinematicP2MSession(ServerPlayer a, PreggoMob b, @Nullable Runnable onStart, @Nullable Runnable onEnd) {
+        	super(a, b, onStart, onEnd);
+        }
+    }
+    
+    public static class CinematicP2VSession extends CinematicSession<Villager> {        
+        public CinematicP2VSession(ServerPlayer a, Villager b, @Nullable Runnable onStart, @Nullable Runnable onEnd) {
         	super(a, b, onStart, onEnd);
         }
     }

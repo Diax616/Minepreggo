@@ -9,7 +9,6 @@ import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Nullable;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import net.minecraft.nbt.CompoundTag;
@@ -29,6 +28,7 @@ public class FemaleEntityImpl extends AbstractBreedableEntity implements IFemale
 	protected Optional<PostPregnancyData> postPregnancyData = Optional.empty();
 	protected Optional<PrePregnancyData> prePregnancyData = Optional.empty(); 
 	
+	// ???????????? TODO: Remove or rework this shit
 	@Override
 	public boolean canGetPregnant() {
 		return this.gender == Gender.FEMALE;
@@ -160,14 +160,14 @@ public class FemaleEntityImpl extends AbstractBreedableEntity implements IFemale
 	    if (nbt.contains("DataPostPregnancyData", Tag.TAG_COMPOUND)) {
 	    	postPregnancyData = Optional.ofNullable(PostPregnancyData.fromNBT(nbt.getCompound("DataPostPregnancyData")));
 		    if (postPregnancyData.isEmpty()) {
-		    	MinepreggoMod.LOGGER.error("PostPregnancyData is not present");
+		    	throw new IllegalStateException("Failed to load PostPregnancyData from NBT");
 		    }
 	    }
 
 	    if (nbt.contains("DataPrePregnancyData", Tag.TAG_COMPOUND)) {
 		    prePregnancyData = Optional.ofNullable(PrePregnancyData.fromNBT(nbt.getCompound("DataPrePregnancyData")));
 		    if (prePregnancyData.isEmpty()) {
-		    	MinepreggoMod.LOGGER.error("PrePregnancyData is not present");
+		    	throw new IllegalStateException("Failed to load PrePregnancyData from NBT");
 		    }
 	    }
 	}

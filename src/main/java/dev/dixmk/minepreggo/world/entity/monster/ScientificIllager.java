@@ -230,7 +230,7 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
 		
 		serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 			  		 		 		   		    		
 			cap.getFemaleData().ifPresent(femaleData -> {
-        		if (femaleData.isPregnant() && femaleData.getPregnancySystem().getCurrentPregnancyStage() != null) {
+        		if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {
             		list.add(serverPlayer.getId());		
         		}
 			}) 		

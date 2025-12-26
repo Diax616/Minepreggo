@@ -15,7 +15,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 public class PlayerPregnancySystemP2 extends PlayerPregnancySystemP1 {
 
 	protected @Nonnegative int totalTicksOfMilking = MinepreggoModConfig.getTotalTicksOfMilkingP2();
-	
 	public PlayerPregnancySystemP2(@NonNull ServerPlayer player) {
 		super(player);		
 		addNewValidPregnancySymptoms(PregnancySymptom.MILKING);
@@ -81,7 +80,7 @@ public class PlayerPregnancySystemP2 extends PlayerPregnancySystemP1 {
 		if (pregnancyEffects.getMilking() >= PregnancySystemHelper.MAX_MILKING_LEVEL
 				&& !pregnancySystem.getPregnancySymptoms().contains(PregnancySymptom.MILKING)) {
 			pregnancySystem.addPregnancySymptom(PregnancySymptom.MILKING);
-			pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.LACTATION.get(), -1, 0, true, true));
+			pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.LACTATION.get(), -1, 0, false, false, true));
 			pregnancySystem.sync(pregnantEntity);
 			pregnancyEffects.sync(pregnantEntity);	
 			MinepreggoMod.LOGGER.debug("Player {} has developed pregnancy symptom: {}, all pregnancy symptoms: {}",

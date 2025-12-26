@@ -21,6 +21,10 @@ public class FetalMovement extends AbstractPlayerPregnancyPain {
 	public void addAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {
 		if (!PlayerHelper.isPlayerValid(entity)) return;
 		
+		if (entity.level().isClientSide) {
+			entity.playSound(MinepreggoModSounds.getRandomPregnancyPain(entity.getRandom()), 0.8F, 0.8F + entity.getRandom().nextFloat() * 0.3F);
+		}
+		
 		if (!entity.level().isClientSide) {			
 			AttributeInstance speedAttr = entity.getAttribute(Attributes.MOVEMENT_SPEED);
 			AttributeInstance attackSpeedAttr = entity.getAttribute(Attributes.ATTACK_SPEED);
@@ -30,9 +34,7 @@ public class FetalMovement extends AbstractPlayerPregnancyPain {
 			}	
 			if (attackSpeedAttr != null && attackSpeedAttr.getModifier(ATTACK_SPEED_MODIFIER_UUID) == null) {
 			    attackSpeedAttr.addPermanentModifier(ATTACK_SPEED_MODIFIER);
-			}
-			
-			entity.playSound(MinepreggoModSounds.getRandomPregnancyPain(entity.getRandom()), 0.8F, 0.8F + entity.getRandom().nextFloat() * 0.3F);
+			}		
 		}
 	}
 	

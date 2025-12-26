@@ -1,5 +1,6 @@
 package dev.dixmk.minepreggo.network.capability;
 
+import dev.dixmk.minepreggo.MinepreggoMod;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -18,6 +19,7 @@ public class PlayerPregnancyEffectsHolder implements INBTSerializable<CompoundTa
 	private Lazy<PlayerPregnancyEffectsImpl> createLazy() {
 		return Lazy.of(() -> {
 			isInitialized = true;
+			MinepreggoMod.LOGGER.debug("PlayerPregnancyEffectsImpl was initialized");
 			PlayerPregnancyEffectsImpl effects = new PlayerPregnancyEffectsImpl();
 			if (savedData.contains(PlayerPregnancyEffectsImpl.NBT_KEY, Tag.TAG_COMPOUND)) {
 				effects.deserializeNBT(savedData);

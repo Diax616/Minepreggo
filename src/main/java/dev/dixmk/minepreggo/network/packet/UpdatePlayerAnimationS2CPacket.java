@@ -5,7 +5,6 @@ import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.client.animation.player.PlayerAnimationManager;
 import net.minecraft.client.Minecraft;
@@ -41,9 +40,6 @@ public record UpdatePlayerAnimationS2CPacket(UUID playerId, @Nullable String ani
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
                 var player = Minecraft.getInstance().level.getPlayerByUUID(msg.playerId);
                 if (player != null) {
-                	
-                	MinepreggoMod.LOGGER.debug("Received UpdatePlayerAnimationS2CPacket for player: {} | Animation: {} | Tick: {} | isPlaying: {}", player.getName().getString(), msg.animationName, msg.animationTick, msg.isPlaying);
-                	
                     var manager = PlayerAnimationManager.getInstance().get(player);
                     if (msg.isPlaying && msg.animationName != null) {
                         manager.setAnimationState(msg.animationName, msg.animationTick);

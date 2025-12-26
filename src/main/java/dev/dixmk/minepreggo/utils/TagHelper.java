@@ -22,8 +22,10 @@ public class TagHelper {
 	public static final TagKey<MobEffect> PREGNANCY_EFFECTS =
 	        TagKey.create(Registries.MOB_EFFECT, ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "pregnancy_effects"));
 	
-
-	public static final TagKey<MobEffect> LABOR_EFFECTS =
-	        TagKey.create(Registries.MOB_EFFECT, ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "labor_effects"));
+	public static final TagKey<MobEffect> SECONDARY_PREGNANCY_EFFECTS =
+	        TagKey.create(Registries.MOB_EFFECT, ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "secondary_pregnancy_effects"));
+	
+	public static final TagKey<MobEffect> FEMALE_EFFECTS =
+	        TagKey.create(Registries.MOB_EFFECT, ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "female_effects"));
 	
 }

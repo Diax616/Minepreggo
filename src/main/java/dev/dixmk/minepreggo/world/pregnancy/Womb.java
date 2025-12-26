@@ -36,7 +36,10 @@ public class Womb {
     }
     
     public Womb (@NonNull ImmutableTriple<UUID, Species, Creature> mother, RandomSource random, @Nonnegative int count) {		
-    	this(mother, ImmutableTriple.of(Optional.empty(), mother.getMiddle(), mother.getRight()) , random, count);
+    	int tempCount = Math.min(count, Womb.getMaxNumOfBabies());   	
+    	for (int i = 0; i < tempCount; i++) {
+    		addBaby(BabyData.create(mother, random));
+		}
     }
 	
 	public boolean addBaby(@NonNull BabyData babyData) {
@@ -55,6 +58,10 @@ public class Womb {
 		return babies.size();
 	}
 	
+	public int calculateNumOfBabiesBySpecies(Species species) {
+		return (int) babies.stream().filter(baby -> baby.typeOfSpecies == species).count();
+	}
+	
 	public Stream<BabyData> stream() {
 		return babies.stream();
 	}
@@ -67,6 +74,18 @@ public class Womb {
 		babies.forEach(consumer);
 	}
 	
+	public boolean duplicateRandomBaby(RandomSource random) {
+	    if (this.babies.size() >= IBreedable.MAX_NUMBER_OF_BABIES || this.babies.isEmpty()) {
+	        return false;
+	    }
+
+	    // Select a random baby to duplicate
+	    int idx = random.nextInt(0, this.babies.size());
+	    BabyData original = this.babies.get(idx);
+	    // Use BabyData.duplicate to create a copy
+	    BabyData duplicate = BabyData.duplicate(original);
+	    return this.babies.add(duplicate);
+	}
 	
 	public static int getMaxNumOfBabies() {
 		return IBreedable.MAX_NUMBER_OF_BABIES;
