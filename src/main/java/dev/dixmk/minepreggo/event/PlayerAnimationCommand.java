@@ -5,7 +5,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 
-import dev.dixmk.minepreggo.common.animation.PlayerAnimationRegistry;
+import dev.dixmk.minepreggo.common.animation.CommonPlayerAnimationRegistry;
 import dev.dixmk.minepreggo.server.ServerPlayerAnimationManager;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -24,7 +24,7 @@ public class PlayerAnimationCommand {
 	private PlayerAnimationCommand() {}
 	
     private static final SuggestionProvider<CommandSourceStack> ANIMATION_SUGGESTIONS = (context, builder) -> {
-    	PlayerAnimationRegistry.getInstance().getAllAnimationNames().forEach(builder::suggest);
+    	CommonPlayerAnimationRegistry.getInstance().getAllAnimationNames().forEach(builder::suggest);
         return builder.buildFuture();
     };
     
@@ -59,7 +59,7 @@ public class PlayerAnimationCommand {
     private static int playAnimation(CommandContext<CommandSourceStack> context, ServerPlayer player) {
         String animationName = StringArgumentType.getString(context, "animation");
         
-        if (PlayerAnimationRegistry.getInstance().getAnimation(animationName) == null) {
+        if (CommonPlayerAnimationRegistry.getInstance().getAnimation(animationName) == null) {
             context.getSource().sendFailure(Component.literal("Animation '" + animationName + "' not found!"));
             return 0;
         }
@@ -75,7 +75,7 @@ public class PlayerAnimationCommand {
     private static int playAnimationOnTargets(CommandContext<CommandSourceStack> context) {
         String animationName = StringArgumentType.getString(context, "animation");
         
-        if (PlayerAnimationRegistry.getInstance().getAnimation(animationName) == null) {
+        if (CommonPlayerAnimationRegistry.getInstance().getAnimation(animationName) == null) {
             context.getSource().sendFailure(Component.literal("Animation '" + animationName + "' not found!"));
             return 0;
         }
@@ -129,7 +129,7 @@ public class PlayerAnimationCommand {
     }
     
     private static int listAnimations(CommandContext<CommandSourceStack> context) {
-        Collection<String> animations = PlayerAnimationRegistry.getInstance().getAllAnimationNames();
+        Collection<String> animations = CommonPlayerAnimationRegistry.getInstance().getAllAnimationNames();
         
         if (animations.isEmpty()) {
             context.getSource().sendSuccess(

@@ -190,14 +190,15 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> {
         	if (foodProperties == null) {
         		return null;
         	}
-        	    	    	        	      
+        	    	    	 
+            preggoMob.playSound(SoundEvents.GENERIC_EAT, 0.8F, 0.8F + preggoMob.getRandom().nextFloat() * 0.3F);
+        	
             if (!level.isClientSide) {
             	int foodValue = foodProperties.getNutrition();          	
             	mainHandItem.shrink(1);
                 source.getInventory().setChanged(); 
                 currentFullness += foodValue;          
                 preggoMob.setFullness(currentFullness);             
-                preggoMob.playSound(SoundEvents.GENERIC_EAT, 0.8F, 0.8F + preggoMob.getRandom().nextFloat() * 0.3F);
                 
                 if (preggoMob.isSavage() && preggoMob.isTame() && currentFullness >= MIN_FULLNESS_TO_TAME_AGAIN) {
                 	preggoMob.setSavage(false);
@@ -218,12 +219,15 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> {
 	    }
 	        
     	var effects = PotionUtils.getMobEffects(heldStack);
-        if (!effects.isEmpty()) { 
+        if (!effects.isEmpty()) { 	
+        	if (level.isClientSide) {
+                preggoMob.playSound(SoundEvents.GENERIC_DRINK, 0.8F, 0.8F + preggoMob.getRandom().nextFloat() * 0.3F);
+        	}
+        	
         	if (!level.isClientSide) {    
                 for (MobEffectInstance effect : effects) {
                     preggoMob.addEffect(new MobEffectInstance(effect));
                 }
-                preggoMob.playSound(SoundEvents.GENERIC_DRINK, 0.8F, 0.8F + preggoMob.getRandom().nextFloat() * 0.3F);
             	ItemHandlerHelper.giveItemToPlayer(source, new ItemStack(Items.GLASS_BOTTLE));
                 heldStack.shrink(1);          
         	}                         

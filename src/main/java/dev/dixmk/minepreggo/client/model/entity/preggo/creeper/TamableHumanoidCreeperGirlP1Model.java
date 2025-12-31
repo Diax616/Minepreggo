@@ -1,6 +1,6 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.creeper;
 
-import dev.dixmk.minepreggo.client.animation.preggo.CreeperGirlAnimation;
+import dev.dixmk.minepreggo.client.animation.preggo.HumanoidCreeperGirlAnimation;
 import dev.dixmk.minepreggo.client.animation.preggo.BellyAnimation;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableHumanoidCreeperGirlP1;
 import net.minecraft.client.model.HierarchicalModel;
@@ -12,7 +12,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class TamableHumanoidCreeperGirlP1Model extends AbstractTamableHumanoidPregnantCreeperGirlModel<TamableHumanoidCreeperGirlP1> {
 	
 	public TamableHumanoidCreeperGirlP1Model(ModelPart root) {
-		super(root, new HierarchicalModel<TamableHumanoidCreeperGirlP1>() {
+		super(root, new HierarchicalModel<>() {
 			
 			@Override
 			public ModelPart root() {
@@ -26,26 +26,26 @@ public class TamableHumanoidCreeperGirlP1Model extends AbstractTamableHumanoidPr
 			    this.animate(creeperGirl.loopAnimationState, BellyAnimation.LOW_BELLY_INFLATION, ageInTicks, 1f);	
 				
 			    if (creeperGirl.isAttacking()) {
-				    this.animate(creeperGirl.attackAnimationState, CreeperGirlAnimation.ATTACK, ageInTicks, 1f);	
+				    this.animate(creeperGirl.attackAnimationState, HumanoidCreeperGirlAnimation.ATTACK, ageInTicks, 1f);	
 			    }
 				
 				if (creeperGirl.walkAnimation.isMoving()) {
 					if (creeperGirl.isAggressive()) {
-						this.animateWalk(CreeperGirlAnimation.AGGRESSION, limbSwing, limbSwingAmount * 4.5F, 1f, 1f);
+						this.animateWalk(HumanoidCreeperGirlAnimation.AGGRESSION, limbSwing, limbSwingAmount * 4.5F, 1f, 1f);
 					}
 					else {
-						this.animateWalk(CreeperGirlAnimation.WALK, limbSwing, limbSwingAmount * 4.5F, 1f, 1f);
+						this.animateWalk(HumanoidCreeperGirlAnimation.WALK, limbSwing, limbSwingAmount * 4.5F, 1f, 1f);
 					}
 				}
 						
 				if (creeperGirl.isIncapacitated()) {
 					switch (creeperGirl.getPregnancyPain()) {
 					case MORNING_SICKNESS: {
-						this.animate(creeperGirl.loopAnimationState, CreeperGirlAnimation.MORNING_SICKNESS, ageInTicks, 1f);										
+						this.animate(creeperGirl.loopAnimationState, HumanoidCreeperGirlAnimation.MORNING_SICKNESS, ageInTicks, 1f);										
 						break;
 					}
 					case MISCARRIAGE: {
-						this.animate(creeperGirl.loopAnimationState, CreeperGirlAnimation.MISCARRIAGE, ageInTicks, 1f);						
+						this.animate(creeperGirl.loopAnimationState, HumanoidCreeperGirlAnimation.MISCARRIAGE, ageInTicks, 1f);						
 						break;
 					}		
 					default:
@@ -54,18 +54,16 @@ public class TamableHumanoidCreeperGirlP1Model extends AbstractTamableHumanoidPr
 				} 
 				
 				if (creeperGirl.isPanic()) {
-					this.animate(creeperGirl.loopAnimationState, CreeperGirlAnimation.IDLE, ageInTicks, 1f);						
-					return;
-				} 
-								
-				if (creeperGirl.isWaiting()) {
-					this.animate(creeperGirl.loopAnimationState, CreeperGirlAnimation.WAIT1, ageInTicks, 1f);										
+					this.animate(creeperGirl.loopAnimationState, HumanoidCreeperGirlAnimation.IDLE, ageInTicks, 1f);						
+				} 					
+				else if (creeperGirl.isWaiting()) {
+					this.animate(creeperGirl.loopAnimationState, HumanoidCreeperGirlAnimation.WAIT1, ageInTicks, 1f);										
 				}
 				else if (creeperGirl.isPassenger()) {
-					this.animate(creeperGirl.loopAnimationState, CreeperGirlAnimation.RIDING, ageInTicks, 1f);						
+					this.animate(creeperGirl.loopAnimationState, HumanoidCreeperGirlAnimation.RIDING, ageInTicks, 1f);						
 				}
 				else {
-					this.animate(creeperGirl.loopAnimationState, CreeperGirlAnimation.IDLE, ageInTicks, 1f);						
+					this.animate(creeperGirl.loopAnimationState, HumanoidCreeperGirlAnimation.IDLE, ageInTicks, 1f);						
 				}
 			}	
 		});

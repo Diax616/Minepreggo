@@ -33,6 +33,7 @@ import dev.dixmk.minepreggo.network.packet.RemoveMobEffectPacket;
 import dev.dixmk.minepreggo.network.packet.SyncMobEffectPacket;
 import dev.dixmk.minepreggo.utils.MathHelper;
 import dev.dixmk.minepreggo.utils.TagHelper;
+import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
@@ -87,9 +88,9 @@ public class PregnancySystemHelper {
 	
 	// Post-Pregnancy Nerf
 	private static final UUID SPEED_MODIFIER_TIRENESS_UUID = UUID.fromString("fa6a4626-c325-4835-8259-69577a99c9c8");
-	private static final AttributeModifier SPEED_MODIFIER_TIRENESS = new AttributeModifier(SPEED_MODIFIER_TIRENESS_UUID, "Tireness speed boost", -0.1D, AttributeModifier.Operation.MULTIPLY_BASE);
-	private static final UUID MAX_HEALTH_MODIFIER_TIRENESS_UUID = UUID.fromString("94d78c8b-0983-4ae4-af65-8e477ee52f2e");
-	private static final AttributeModifier MAX_HEALTH_MODIFIER_TIRENESS = new AttributeModifier(MAX_HEALTH_MODIFIER_TIRENESS_UUID, "Tireness max health", -0.3D, AttributeModifier.Operation.MULTIPLY_BASE);
+	private static final AttributeModifier SPEED_MODIFIER_TIRENESS = new AttributeModifier(SPEED_MODIFIER_TIRENESS_UUID, "Tireness speed boost", -0.1, AttributeModifier.Operation.MULTIPLY_BASE);
+	private static final UUID ATTACK_SPEED_MODIFIER_TIRENESS_UUID = UUID.fromString("94d78c8b-0983-4ae4-af65-8e477ee52f2e");
+	private static final AttributeModifier ATTACK_SPEED_MODIFIER_TIRENESS = new AttributeModifier(ATTACK_SPEED_MODIFIER_TIRENESS_UUID, "Tireness attack speed", -0.2, AttributeModifier.Operation.MULTIPLY_BASE);
 	
 	// Max Levels
 	public static final int MAX_PREGNANCY_HEALTH = 100;
@@ -103,38 +104,34 @@ public class PregnancySystemHelper {
 	public static final int TOTAL_PREGNANCY_DAYS = 70;
 	
 	// Ticks
-	public static final int TOTAL_TICKS_MISCARRIAGE = 400;
-	public static final int TOTAL_TICKS_MORNING_SICKNESS = 200;
-	public static final int TOTAL_TICKS_WATER_BREAKING = 1200;
+	public static final int TOTAL_TICKS_MISCARRIAGE = 1200;
+	public static final int TOTAL_TICKS_MORNING_SICKNESS = 300;
+	public static final int TOTAL_TICKS_WATER_BREAKING = 1200;	
 	
-	public static final int TOTAL_TICKS_POST_PARTUM_LACTATION = 1600;
-	public static final int TOTAL_TICKS_TO_RECOVER_FROM_POST_PREGNANCY = 32000;
+	public static final int TOTAL_TICKS_PREBIRTH_P4 = 600;
+	public static final int TOTAL_TICKS_PREBIRTH_P5 = 800;
+	public static final int TOTAL_TICKS_PREBIRTH_P6 = 900;
+	public static final int TOTAL_TICKS_PREBIRTH_P7 = 1000;
+	public static final int TOTAL_TICKS_PREBIRTH_P8 = 1100;
 	
+	public static final int TOTAL_TICKS_BIRTH_P4 = 1200;
+	public static final int TOTAL_TICKS_BIRTH_P5 = 1300;
+	public static final int TOTAL_TICKS_BIRTH_P6 = 1400;
+	public static final int TOTAL_TICKS_BIRTH_P7 = 1500;
+	public static final int TOTAL_TICKS_BIRTH_P8 = 1600;
 	
-	public static final int TOTAL_TICKS_PREBIRTH_P4 = 300;
-	public static final int TOTAL_TICKS_PREBIRTH_P5 = 400;
-	public static final int TOTAL_TICKS_PREBIRTH_P6 = 500;
-	public static final int TOTAL_TICKS_PREBIRTH_P7 = 600;
-	public static final int TOTAL_TICKS_PREBIRTH_P8 = 700;
+	public static final int TOTAL_TICKS_KICKING_P3 = 1200;
+	public static final int TOTAL_TICKS_KICKING_P4 = 1400;
+	public static final int TOTAL_TICKS_KICKING_P5 = 1600;
+	public static final int TOTAL_TICKS_KICKING_P6 = 1800;
+	public static final int TOTAL_TICKS_KICKING_P7 = 2000;
+	public static final int TOTAL_TICKS_KICKING_P8 = 2200;
 	
-	public static final int TOTAL_TICKS_BIRTH_P4 = 900;
-	public static final int TOTAL_TICKS_BIRTH_P5 = 1000;
-	public static final int TOTAL_TICKS_BIRTH_P6 = 1100;
-	public static final int TOTAL_TICKS_BIRTH_P7 = 1200;
-	public static final int TOTAL_TICKS_BIRTH_P8 = 1300;
-	
-	public static final int TOTAL_TICKS_KICKING_P3 = 400;
-	public static final int TOTAL_TICKS_KICKING_P4 = 500;
-	public static final int TOTAL_TICKS_KICKING_P5 = 600;
-	public static final int TOTAL_TICKS_KICKING_P6 = 700;
-	public static final int TOTAL_TICKS_KICKING_P7 = 800;
-	public static final int TOTAL_TICKS_KICKING_P8 = 900;
-	
-	public static final int TOTAL_TICKS_CONTRACTION_P4 = 600;
-	public static final int TOTAL_TICKS_CONTRACTION_P5 = 700;
-	public static final int TOTAL_TICKS_CONTRACTION_P6 = 800;
-	public static final int TOTAL_TICKS_CONTRACTION_P7 = 900;
-	public static final int TOTAL_TICKS_CONTRACTION_P8 = 1000;
+	public static final int TOTAL_TICKS_CONTRACTION_P4 = 800;
+	public static final int TOTAL_TICKS_CONTRACTION_P5 = 1000;
+	public static final int TOTAL_TICKS_CONTRACTION_P6 = 1200;
+	public static final int TOTAL_TICKS_CONTRACTION_P7 = 1400;
+	public static final int TOTAL_TICKS_CONTRACTION_P8 = 1600;
 	
 	public static final int TOTAL_TICKS_FERTILITY_RATE = 6000;
 	
@@ -152,9 +149,9 @@ public class PregnancySystemHelper {
 	public static final int TOTAL_TICKS_CALM_BELLY_RUGGING_DOWN = 120;
 	
 	// Probabilities
-	public static final float LOW_PREGNANCY_PAIN_PROBABILITY = 0.00075F;
+	public static final float LOW_PREGNANCY_PAIN_PROBABILITY = 0.001F;
 	public static final float MEDIUM_PREGNANCY_PAIN_PROBABILITY = 0.00125F;
-	public static final float HIGH_PREGNANCY_PAIN_PROBABILITY = 0.00175F;
+	public static final float HIGH_PREGNANCY_PAIN_PROBABILITY = 0.0015F;
 	
 	public static final float LOW_MORNING_SICKNESS_PROBABILITY = 0.001F;
 	public static final float MEDIUM_MORNING_SICKNESS_PROBABILITY = 0.0015F;
@@ -170,12 +167,12 @@ public class PregnancySystemHelper {
 	public static final int DESACTIVATE_CRAVING_SYMPTOM = 2;
 	
 	public static final int MILKING_VALUE = 5;
-	public static final int ACTIVATE_MILKING_SYMPTOM = 16;
+	public static final int ACTIVATE_MILKING_SYMPTOM = 12;
 	public static final int DESACTIVATE_MILKING_SYMPTOM = 8;
 	
 	public static final int BELLY_RUBBING_VALUE = 3;
 	public static final int ACTIVATE_BELLY_RUBS_SYMPTOM = 12;
-	public static final int DESACTIVATEL_BELLY_RUBS_SYMPTOM = 4;
+	public static final int DESACTIVATEL_BELLY_RUBS_SYMPTOM = 8;
 	
 	public static final int ACTIVATE_HORNY_SYMPTOM = 17;
 		
@@ -187,16 +184,16 @@ public class PregnancySystemHelper {
 	
 	public static void applyPostPregnancyNerf(LivingEntity entity) {
 		AttributeInstance speed = entity.getAttribute(Attributes.MOVEMENT_SPEED);
-		AttributeInstance maxHealth = entity.getAttribute(Attributes.MAX_HEALTH);	
-		speed.addTransientModifier(PregnancySystemHelper.SPEED_MODIFIER_TIRENESS);	
-		maxHealth.addTransientModifier(PregnancySystemHelper.MAX_HEALTH_MODIFIER_TIRENESS);	
+		AttributeInstance attackSpeed = entity.getAttribute(Attributes.ATTACK_SPEED);	
+		speed.addTransientModifier(SPEED_MODIFIER_TIRENESS);	
+		attackSpeed.addTransientModifier(ATTACK_SPEED_MODIFIER_TIRENESS);	
 	}
 	
 	public static void removePostPregnancyNeft(LivingEntity entity) {
 		AttributeInstance speed = entity.getAttribute(Attributes.MOVEMENT_SPEED);
-		AttributeInstance maxHealth = entity.getAttribute(Attributes.MAX_HEALTH);	
-		speed.removeModifier(PregnancySystemHelper.SPEED_MODIFIER_TIRENESS);	
-		maxHealth.removeModifier(PregnancySystemHelper.MAX_HEALTH_MODIFIER_TIRENESS);	
+		AttributeInstance attackSpeed = entity.getAttribute(Attributes.ATTACK_SPEED);	
+		speed.removeModifier(SPEED_MODIFIER_TIRENESS);	
+		attackSpeed.removeModifier(ATTACK_SPEED_MODIFIER_TIRENESS);	
 	}
 	
 	private static final ImmutableMap<Species, Item> MILK_ITEM = ImmutableMap.of(
@@ -317,19 +314,38 @@ public class PregnancySystemHelper {
 	}
 	
 	public static boolean isPregnantEntityValid(LivingEntity entity) {	
-		boolean flag = false;
-		if (entity instanceof ServerPlayer serverPlayer) {	
-			var cap = serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).resolve();		
-			if (cap.isPresent()) {			
-				var data = cap.get().getFemaleData().resolve();			
-				if (data.isPresent()) {
-					flag = data.get().isPregnant();
-				}	
+		if (entity instanceof ServerPlayer serverPlayer) {			
+			Optional<Boolean> result = serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).map(cap ->
+											cap.getFemaleData().map(IFemaleEntity::isPregnant)
+										).orElse(Optional.empty());		
+			if (result.isPresent()) {
+				return result.get().booleanValue();
 			}		
 		}
 
-		return flag || entity instanceof PreggoMob p && p instanceof IPregnancySystemHandler;
+		return entity instanceof PreggoMob p && p instanceof IPregnancySystemHandler;
 	}
+	
+	
+	public static boolean isInPostPregnancyPhase(LivingEntity entity) {	
+		
+		if (entity instanceof ServerPlayer serverPlayer) {	
+			Optional<Boolean> result = serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).map(cap ->
+											cap.getFemaleData().map(femaleData -> femaleData.getPostPregnancyData().isPresent())
+										).orElse(Optional.empty());		
+			if (result.isPresent()) {
+				return result.get().booleanValue();
+			}
+		}
+		else if (entity instanceof IFemaleEntity femaleEntity) {
+			return femaleEntity.getPostPregnancyData().isPresent();
+		}
+
+		return false;
+	}
+	
+	
+	
 	
 	public static boolean hasEnoughBedsForBreeding(LivingEntity source, @Nonnegative int minBedsRequired, @Nonnegative int range) {
 	    Level level = source.level();
@@ -367,46 +383,39 @@ public class PregnancySystemHelper {
 	
 	
 	public static boolean tryRubBelly(ServerPlayer source, ServerPlayer target, Level level) {
-		final var cap = target.getCapability(MinepreggoCapabilities.PLAYER_DATA).resolve();
-		
-		if (cap.isEmpty() || cap.get().isMale()) {
-			return false;
-		}
-		
-		final var femaleData = cap.get().getFemaleData().resolve();
-		
-		if (femaleData.isEmpty() || !femaleData.get().isPregnant() || !femaleData.get().isPregnancySystemInitialized()) {
-			return false;
-		}
-		
-		final var pregnancyStage = femaleData.get().getPregnancySystem().getCurrentPregnancyStage();
-			
-		if (pregnancyStage == null || !canTouchBelly(source, target)) {
-			return false;
-		}
-
-		target.playSound(MinepreggoModSounds.BELLY_TOUCH.get(), 0.8F, 0.8F + target.getRandom().nextFloat() * 0.3F);
-		
-		if (!level.isClientSide) {			
-			final var isFather = femaleData.get().getFather() != null && femaleData.get().getFather().equals(source.getUUID());
-			ParticleOptions particle = isFather ? ParticleTypes.HEART : ParticleTypes.SMOKE;
-
-			playSlappingBellyAnimation(source, target);
+		Optional<Boolean> result = target.getCapability(MinepreggoCapabilities.PLAYER_DATA).map(cap -> 
+			cap.getFemaleData().map(femaleData -> {
+				if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized() && canTouchBelly(source, target)) {
 					
-			if (pregnancyStage.compareTo(PregnancyPhase.P3) >= 0) {				
-				if (femaleData.get().getPregnancyEffects().getBellyRubs() >= BELLY_RUBBING_VALUE) {
-					femaleData.get().getPregnancyEffects().decrementBellyRubs(isFather ? BELLY_RUBBING_VALUE : 1);
-					femaleData.get().getPregnancyEffects().sync(target);			
+					if (!level.isClientSide) {
+										
+						PlayerHelper.playSoundNearTo(target, MinepreggoModSounds.BELLY_TOUCH.get(), 0.6f);
+						
+						final var pregnancySystem = femaleData.getPregnancySystem();
+						final var isFather = femaleData.getFather() != null && femaleData.getFather().equals(source.getUUID());
+						ParticleOptions particle = isFather ? ParticleTypes.HEART : ParticleTypes.SMOKE;
+
+						playSlappingBellyAnimation(source, target);
+								
+						if (pregnancySystem.getCurrentPregnancyStage().compareTo(PregnancyPhase.P3) >= 0) {				
+							if (femaleData.getPregnancyEffects().getBellyRubs() >= BELLY_RUBBING_VALUE) {
+								femaleData.getPregnancyEffects().decrementBellyRubs(isFather ? BELLY_RUBBING_VALUE : 1);
+								femaleData.getPregnancyEffects().sync(target);			
+							}
+							else {
+								particle = ParticleTypes.ANGRY_VILLAGER;
+							}
+						}
+					
+						ParticleHelper.spawnRandomlyFromServer(target, particle);
+					}
+					return true;			
 				}
-				else {
-					particle = ParticleTypes.ANGRY_VILLAGER;
-				}
-			}
+				return false;
+			})
+		).orElse(Optional.empty());
 		
-			ParticleHelper.spawnRandomlyFromServer(target, particle);
-		}
-		
-		return true;
+		return result.isPresent() && result.get().booleanValue();
 	}
 	
     public static boolean isPregnancyEffect(MobEffect effect) { 	

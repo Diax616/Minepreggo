@@ -2,6 +2,7 @@ package dev.dixmk.minepreggo;
 
 import org.apache.logging.log4j.Logger;
 
+import dev.dixmk.minepreggo.client.animation.player.PlayerAnimationRegistry;
 import dev.dixmk.minepreggo.client.gui.preggo.PlayerJoinsWorldScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.PlayerPrenatalCheckUpScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.PreggoMobPrenatalCheckUpScreen;
@@ -118,7 +119,6 @@ import dev.dixmk.minepreggo.client.renderer.preggo.zombie.TamableZombieGirlP6Ren
 import dev.dixmk.minepreggo.client.renderer.preggo.zombie.TamableZombieGirlP7Renderer;
 import dev.dixmk.minepreggo.client.renderer.preggo.zombie.TamableZombieGirlP8Renderer;
 import dev.dixmk.minepreggo.client.renderer.preggo.zombie.TamableZombieGirlRenderer;
-import dev.dixmk.minepreggo.common.animation.PlayerAnimationRegistry;
 import dev.dixmk.minepreggo.init.MinepreggoLootModifier;
 import dev.dixmk.minepreggo.init.MinepreggoModBlocks;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
@@ -226,7 +226,7 @@ public class MinepreggoMod {
 		modEventBus.addListener(this::registerEntityRenderers);
 		modEventBus.addListener(this::registerCapabilities);
         modEventBus.addListener(this::commonSetup);
-		
+
         context.registerConfig(ModConfig.Type.CLIENT, MinepreggoModConfig.CLIENT_SPEC);
 		context.registerConfig(ModConfig.Type.COMMON, MinepreggoModConfig.COMMON_SPEC);
 		context.registerConfig(ModConfig.Type.SERVER, MinepreggoModConfig.SERVER_SPEC);
@@ -489,6 +489,8 @@ public class MinepreggoMod {
 		
 			MenuScreens.register(MinepreggoModMenus.REQUEST_SEX_M2P_MENU.get(), RequestSexM2PScreen::new);
 			MenuScreens.register(MinepreggoModMenus.REQUEST_SEX_P2P_MENU.get(), RequestSexP2PScreen::new);
+		
+			PlayerAnimationRegistry.getInstance().init();
 		});
 	}
 	
@@ -539,9 +541,8 @@ public class MinepreggoMod {
 		event.register(VillagerDataImpl.class);
 	}
 	
-    private void commonSetup(FMLCommonSetupEvent event) {
-        event.enqueueWork(() -> PlayerAnimationRegistry.getInstance().init()); 
-		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new CreeperImpregnationPotionBrewingRecipe.A0()));
+    private void commonSetup(FMLCommonSetupEvent event) {		
+        event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new CreeperImpregnationPotionBrewingRecipe.A0()));
 		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new CreeperImpregnationPotionBrewingRecipe.A1()));
 		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new CreeperImpregnationPotionBrewingRecipe.A2()));
 		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new CreeperImpregnationPotionBrewingRecipe.A3()));

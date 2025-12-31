@@ -85,6 +85,11 @@ public class IllEnderWoman extends AbstractMonsterEnderWoman implements Ill {
         this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));  
     }
     
+	@Override
+	public ItemStack getPickResult() {
+	    return ItemStack.EMPTY;
+	}
+    
     public static AttributeSupplier.Builder createAttributes() {
         return createBasicAttributes(0.35D);
 	}

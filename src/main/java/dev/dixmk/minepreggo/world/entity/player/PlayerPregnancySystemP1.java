@@ -32,7 +32,7 @@ public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
 	
 	protected @Nonnegative int totalTicksOfCraving = MinepreggoModConfig.getTotalTicksOfCravingP1();
 	protected @Nonnegative float morningSicknessProb = PregnancySystemHelper.LOW_MORNING_SICKNESS_PROBABILITY;
-	protected @Nonnegative float pregnancyExhaustion = 1.025f;
+	protected @Nonnegative float pregnancyExhaustion = 1.01f;
 	
 	private Set<PregnancySymptom> validPregnancySymptoms = EnumSet.noneOf(PregnancySymptom.class);
 	
@@ -136,6 +136,8 @@ public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
 			pregnantEntity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 4800, 0, false, false, true));
 			
 			removePregnancy();
+			
+			PregnancySystemHelper.applyPostPregnancyNerf(pregnantEntity);
 		} else {
 			
     		for (ServerPlayer otherPlayer : serverLevel.getServer().getPlayerList().getPlayers()) {

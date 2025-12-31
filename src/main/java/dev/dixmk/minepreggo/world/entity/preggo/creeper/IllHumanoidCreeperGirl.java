@@ -106,6 +106,11 @@ public class IllHumanoidCreeperGirl extends AbstractMonsterHumanoidCreeperGirl i
 		return IllHumanoidCreeperGirl.mobInteract(this, sourceentity, hand);
 	}
 	
+	@Override
+	public ItemStack getPickResult() {
+	    return ItemStack.EMPTY;
+	}
+	
 	public static AttributeSupplier.Builder createAttributes() {
 		return AbstractMonsterHumanoidCreeperGirl.getBasicAttributes(0.235);
 	}

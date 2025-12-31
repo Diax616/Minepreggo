@@ -38,19 +38,24 @@ public class PlayerPregnancyEffectsHolder implements INBTSerializable<CompoundTa
 	
 	@Override
 	public CompoundTag serializeNBT() {
+		CompoundTag tag;
         if (isInitialized) {  	
             return lazyValue.get().serializeNBT();
         }   
         else if (savedData.contains(PlayerPregnancyEffectsImpl.NBT_KEY)) {
             return savedData;
-        }       
+        }   
+        else {
+            tag = new CompoundTag();
+        }
+        tag.putBoolean("PregnancySystemInitialized", isInitialized);
         return new CompoundTag();
 	}
 	
 	@Override
 	public void deserializeNBT(CompoundTag nbt) {
         this.savedData = nbt.copy();
-        this.isInitialized = false;
+        this.isInitialized = nbt.getBoolean("PregnancySystemInitialized");
         this.lazyValue = createLazy();		
 	}
 }

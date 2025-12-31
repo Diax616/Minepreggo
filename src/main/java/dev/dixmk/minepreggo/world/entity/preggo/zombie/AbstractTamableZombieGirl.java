@@ -259,6 +259,14 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 	}
 	
 	@Override
+	public void tick() {
+		super.tick();		
+		if (this.level().isClientSide) return;	
+		
+		preggoMobSystem.cinematicTick();		
+	}
+	
+	@Override
 	protected void afterTaming() {
 		if (!this.level().isClientSide) {
 			this.setSavage(false);

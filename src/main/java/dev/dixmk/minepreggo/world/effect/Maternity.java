@@ -15,7 +15,7 @@ public class Maternity extends AbstractPlayerPostPregnancy {
 
 	@Override
 	public void addAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {	
-		if (!entity.level().isClientSide()) {
+		if (!entity.level().isClientSide) {
 			AttributeInstance speedAttr = entity.getAttribute(Attributes.MOVEMENT_SPEED);
 
 			if (speedAttr != null && speedAttr.getModifier(SPEED_MODIFIER_UUID) == null) {

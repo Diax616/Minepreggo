@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aab",
+    "acb",
+    "abb"
+  ],
+  "key": {
+    "a": {
+      "item": "minepreggo:dead_villager_fetus"
+    },
+    "b": {
+      "item": "minecraft:bread"
+    },
+    "c": {
+      "item": "minepreggo:cum_specimen_tube"
+    }
+  },
+  "result": {
+    "item": "minepreggo:villager_life_substance",
+    "count": 1
+  }
+}

@@ -2,15 +2,13 @@ package dev.dixmk.minepreggo.world.pregnancy;
 
 import javax.annotation.Nonnull;
 
-import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoModSounds;
-import dev.dixmk.minepreggo.network.packet.PlayEntitySoundS2CPacket;
+import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraftforge.network.PacketDistributor;
 
 public abstract class AbstractPregnancySystem<E extends LivingEntity> {
 
@@ -18,7 +16,7 @@ public abstract class AbstractPregnancySystem<E extends LivingEntity> {
 	protected final RandomSource randomSource;
 	
 	private int stomachGrowlCoolDown = 0;
-	protected float stomachGrowlProb = 0.0001f;
+	protected float stomachGrowlProb = 0.025f;
 	
 	protected AbstractPregnancySystem(@Nonnull E pregnantEntity) {
 		this.pregnantEntity = pregnantEntity;
@@ -89,21 +87,15 @@ public abstract class AbstractPregnancySystem<E extends LivingEntity> {
 	}
 	
 	protected boolean tryPlayStomachGrowlsSound() {	
-		if (stomachGrowlCoolDown < 30) {
+		if (stomachGrowlCoolDown < 20) {
 			++stomachGrowlCoolDown;
 			return false;
 		}
 		stomachGrowlCoolDown = 0;	
 		if (randomSource.nextFloat() < stomachGrowlProb) {
-			MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> pregnantEntity),
-					new PlayEntitySoundS2CPacket(
-							pregnantEntity.getId(),
-							MinepreggoModSounds.getRandomStomachGrowls(randomSource),
-							0.3f,
-							0.8F + randomSource.nextFloat() * 0.3F));
+			PlayerHelper.playSoundNearTo(pregnantEntity, MinepreggoModSounds.getRandomStomachGrowls(randomSource), 0.2f);	
 			return true;
 		}	
 		return false;
 	}
 }
-

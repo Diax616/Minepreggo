@@ -23,6 +23,8 @@ public class MinepreggoModConfig {
     private static int totalTickByPregnancyDays;
     private static int totalPregnancyDays;
     private static int ticksToStartPregnancy;
+    private static int totalTicksOfMaternityLactation;
+    private static int totalTicksOfPostPregnancyPhase;
     
     private static int totalTicksOfHungryP0;
     private static int totalTicksOfHungryP1;
@@ -81,6 +83,14 @@ public class MinepreggoModConfig {
     
     public static int getTicksToStartPregnancy() {
     	return ticksToStartPregnancy;
+    }
+    
+    public static int getTotalTicksOfMaternityLactation() {
+		return totalTicksOfMaternityLactation;
+	}
+    
+    public static int getTotalTicksOfPostPregnancyPhase() {
+    	return totalTicksOfPostPregnancyPhase;
     }
     
     public static int getTotalTicksOfHungryP0() {
@@ -268,7 +278,9 @@ public class MinepreggoModConfig {
         if (event.getConfig().getSpec() == COMMON_SPEC) {
         	totalTickByPregnancyDays = COMMON.totalTickByPregnancyDays.get();
         	totalPregnancyDays = COMMON.totalPregnancyDays.get();
-        	ticksToStartPregnancy = COMMON.ticksToStartPregnancy.get();
+        	ticksToStartPregnancy = COMMON.ticksToStartPregnancy.get();    
+        	totalTicksOfMaternityLactation = COMMON.totalTicksOfMaternityLactation.get();
+        	totalTicksOfPostPregnancyPhase = COMMON.totalTicksOfPostPregnancyPhase.get();
         	totalTicksOfHungryP0 = COMMON.totalTicksOfHungry.get();
         	totalTicksOfCravingP1 = COMMON.totalTicksOfCraving.get();
         	totalTicksOfMilkingP2 = COMMON.totalTicksOfMilking.get();
@@ -301,7 +313,9 @@ public class MinepreggoModConfig {
         final ForgeConfigSpec.IntValue totalTicksOfMilking;
         final ForgeConfigSpec.IntValue totalTicksOfBellyRubs;
         final ForgeConfigSpec.IntValue totalTicksOfHorny;
-             
+        final ForgeConfigSpec.IntValue totalTicksOfMaternityLactation;
+        final ForgeConfigSpec.IntValue totalTicksOfPostPregnancyPhase;
+        
         Common(ForgeConfigSpec.Builder builder) {
             builder.push("Common"); // category name
 
@@ -316,6 +330,14 @@ public class MinepreggoModConfig {
             ticksToStartPregnancy = builder
                     .comment("Ticks to start pregnancy after mating.")
                     .defineInRange("ticksToStartPregnancy", 6000, 100, 24000);
+            
+            totalTicksOfMaternityLactation = builder
+					.comment("Total ticks of maternity lactation for preggo mobs and player.")
+					.defineInRange("totalTicksOfMaternityLactation", 24000, 100, Integer.MAX_VALUE);
+                   
+            totalTicksOfPostPregnancyPhase = builder
+            		.comment("Total ticks of post pregnancy phase for preggo mobs and player.")
+            		.defineInRange("totalTicksOfPostPregnancyPhase", 24000, 100, Integer.MAX_VALUE);
             
             totalTicksOfHungry = builder
                     .comment("Total ticks of hungry for preggo mobs.")
@@ -337,7 +359,6 @@ public class MinepreggoModConfig {
                     .comment("total ticks of horny for pregnant entities.")
                     .defineInRange("totalTicksOfHorny", 7200, 100, 24000);
                   
-   
             builder.pop();
         }
     }
@@ -386,47 +407,47 @@ public class MinepreggoModConfig {
     }
     
     private static void calculateHungryValues() { 	
-    	totalTicksOfHungryP1 = (int) Math.ceil(totalTicksOfHungryP0 - totalTicksOfHungryP0 * 0.1F);
-    	totalTicksOfHungryP2 = (int) Math.ceil(totalTicksOfHungryP0 - totalTicksOfHungryP0 * 0.15F);
-    	totalTicksOfHungryP3 = (int) Math.ceil(totalTicksOfHungryP0 - totalTicksOfHungryP0 * 0.2F);
-    	totalTicksOfHungryP4 = (int) Math.ceil(totalTicksOfHungryP0 - totalTicksOfHungryP0 * 0.25F);
-    	totalTicksOfHungryP5 = (int) Math.ceil(totalTicksOfHungryP0 - totalTicksOfHungryP0 * 0.3F);
-    	totalTicksOfHungryP6 = (int) Math.ceil(totalTicksOfHungryP0 - totalTicksOfHungryP0  * 0.35F);
-    	totalTicksOfHungryP7 = (int) Math.ceil(totalTicksOfHungryP0 - totalTicksOfHungryP0 * 0.45F);
-    	totalTicksOfHungryP8 = (int) Math.ceil(totalTicksOfHungryP0 - totalTicksOfHungryP0 * 0.5F);
+    	totalTicksOfHungryP1 = (int) Math.ceil(totalTicksOfHungryP0 * 0.85F);
+    	totalTicksOfHungryP2 = (int) Math.ceil(totalTicksOfHungryP0 * 0.8F);
+    	totalTicksOfHungryP3 = (int) Math.ceil(totalTicksOfHungryP0 * 0.75F);
+    	totalTicksOfHungryP4 = (int) Math.ceil(totalTicksOfHungryP0 * 0.7F);
+    	totalTicksOfHungryP5 = (int) Math.ceil(totalTicksOfHungryP0 * 0.65F);
+    	totalTicksOfHungryP6 = (int) Math.ceil(totalTicksOfHungryP0  * 0.6F);
+    	totalTicksOfHungryP7 = (int) Math.ceil(totalTicksOfHungryP0 * 0.55F);
+    	totalTicksOfHungryP8 = (int) Math.ceil(totalTicksOfHungryP0 * 0.5);
     }
     
     private static void calculateCravingValues() { 	
-    	totalTicksOfCravingP2 = (int) Math.ceil(totalTicksOfCravingP1 - totalTicksOfCravingP1 * 0.2F);
-    	totalTicksOfCravingP3 = (int) Math.ceil(totalTicksOfCravingP1 - totalTicksOfCravingP1 * 0.25F);
-    	totalTicksOfCravingP4 = (int) Math.ceil(totalTicksOfCravingP1 - totalTicksOfCravingP1 * 0.3F);
-    	totalTicksOfCravingP5 = (int) Math.ceil(totalTicksOfCravingP1 - totalTicksOfCravingP1 * 0.35F);
-    	totalTicksOfCravingP6 = (int) Math.ceil(totalTicksOfCravingP1 - totalTicksOfCravingP1 * 0.4F);
-    	totalTicksOfCravingP7 = (int) Math.ceil(totalTicksOfCravingP1 - totalTicksOfCravingP1 * 0.45F);
-    	totalTicksOfCravingP8 = (int) Math.ceil(totalTicksOfCravingP1 - totalTicksOfCravingP1 * 0.5F);
+    	totalTicksOfCravingP2 = (int) Math.ceil(totalTicksOfCravingP1 * 0.8F);
+    	totalTicksOfCravingP3 = (int) Math.ceil(totalTicksOfCravingP1 * 0.75F);
+    	totalTicksOfCravingP4 = (int) Math.ceil(totalTicksOfCravingP1 * 0.7F);
+    	totalTicksOfCravingP5 = (int) Math.ceil(totalTicksOfCravingP1 * 0.65F);
+    	totalTicksOfCravingP6 = (int) Math.ceil(totalTicksOfCravingP1 * 0.6F);
+    	totalTicksOfCravingP7 = (int) Math.ceil(totalTicksOfCravingP1 * 0.55F);
+    	totalTicksOfCravingP8 = (int) Math.ceil(totalTicksOfCravingP1 * 0.5F);
     }
     
     private static void calculateMilkingValues() { 	
-    	totalTicksOfMilkingP3 = (int) Math.ceil(totalTicksOfMilkingP2 - totalTicksOfMilkingP2 * 0.1F);
-    	totalTicksOfMilkingP4 = (int) Math.ceil(totalTicksOfMilkingP2 - totalTicksOfMilkingP2 * 0.15F);
-    	totalTicksOfMilkingP5 = (int) Math.ceil(totalTicksOfMilkingP2 - totalTicksOfMilkingP2 * 0.2F);
-    	totalTicksOfMilkingP6 = (int) Math.ceil(totalTicksOfMilkingP2 - totalTicksOfMilkingP2 * 0.3F);
-    	totalTicksOfMilkingP7 = (int) Math.ceil(totalTicksOfMilkingP2 - totalTicksOfMilkingP2 * 0.4F);
-    	totalTicksOfMilkingP8 = (int) Math.ceil(totalTicksOfMilkingP2 - totalTicksOfMilkingP2 * 0.5F);
+    	totalTicksOfMilkingP3 = (int) Math.ceil(totalTicksOfMilkingP2 * 0.75F);
+    	totalTicksOfMilkingP4 = (int) Math.ceil(totalTicksOfMilkingP2 * 0.7F);
+    	totalTicksOfMilkingP5 = (int) Math.ceil(totalTicksOfMilkingP2 * 0.65F);
+    	totalTicksOfMilkingP6 = (int) Math.ceil(totalTicksOfMilkingP2 * 0.6F);
+    	totalTicksOfMilkingP7 = (int) Math.ceil(totalTicksOfMilkingP2 * 0.55F);
+    	totalTicksOfMilkingP8 = (int) Math.ceil(totalTicksOfMilkingP2 * 0.5F);
     }
     
     private static void calculateBellyRubsValues() { 	
-    	totalTicksOfBellyRubsP4 = (int) Math.ceil(totalTicksOfBellyRubsP3 - totalTicksOfBellyRubsP3 * 0.1F);
-    	totalTicksOfBellyRubsP5 = (int) Math.ceil(totalTicksOfBellyRubsP3 - totalTicksOfBellyRubsP3 * 0.2F);
-    	totalTicksOfBellyRubsP6 = (int) Math.ceil(totalTicksOfBellyRubsP3 - totalTicksOfBellyRubsP3 * 0.3F);
-    	totalTicksOfBellyRubsP7 = (int) Math.ceil(totalTicksOfBellyRubsP3 - totalTicksOfBellyRubsP3 * 0.4F);
-    	totalTicksOfBellyRubsP8 = (int) Math.ceil(totalTicksOfBellyRubsP3 - totalTicksOfBellyRubsP3 * 0.5F);
+    	totalTicksOfBellyRubsP4 = (int) Math.ceil(totalTicksOfBellyRubsP3 * 0.7F);
+    	totalTicksOfBellyRubsP5 = (int) Math.ceil(totalTicksOfBellyRubsP3 * 0.65F);
+    	totalTicksOfBellyRubsP6 = (int) Math.ceil(totalTicksOfBellyRubsP3 * 0.6F);
+    	totalTicksOfBellyRubsP7 = (int) Math.ceil(totalTicksOfBellyRubsP3 * 0.55F);
+    	totalTicksOfBellyRubsP8 = (int) Math.ceil(totalTicksOfBellyRubsP3 * 0.5F);
     }
    
     private static void calculateHornyValues() { 	
-    	totalTicksOfHornyP5 = (int) Math.ceil(totalTicksOfHornyP4 - totalTicksOfHornyP4 * 0.2F);
-    	totalTicksOfHornyP6 = (int) Math.ceil(totalTicksOfHornyP4 - totalTicksOfHornyP4 * 0.3F);
-    	totalTicksOfHornyP7 = (int) Math.ceil(totalTicksOfHornyP4 - totalTicksOfHornyP4 * 0.4F);
-    	totalTicksOfHornyP8 = (int) Math.ceil(totalTicksOfHornyP4 - totalTicksOfHornyP4 * 0.5F);
+    	totalTicksOfHornyP5 = (int) Math.ceil(totalTicksOfHornyP4 * 0.65F);
+    	totalTicksOfHornyP6 = (int) Math.ceil(totalTicksOfHornyP4 * 0.6F);
+    	totalTicksOfHornyP7 = (int) Math.ceil(totalTicksOfHornyP4 * 0.55F);
+    	totalTicksOfHornyP8 = (int) Math.ceil(totalTicksOfHornyP4 * 0.5F);
     }    
 }

@@ -6,10 +6,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnegative;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -17,16 +15,16 @@ import com.google.common.collect.ImmutableMap;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
-import dev.dixmk.minepreggo.client.animation.player.PlayerAnimationManager;
+import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.network.capability.FemalePlayerImpl;
+import dev.dixmk.minepreggo.network.packet.PlayEntitySoundS2CPacket;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.item.IMaternityArmor;
-import dev.dixmk.minepreggo.world.pregnancy.Craving;
 import dev.dixmk.minepreggo.world.pregnancy.IBreedable;
 import dev.dixmk.minepreggo.world.pregnancy.MapPregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
@@ -39,9 +37,9 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffect;
@@ -55,47 +53,12 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.network.PacketDistributor;
 
 public class PlayerHelper {
 
 	private PlayerHelper() {}
-	
-	@OnlyIn(Dist.CLIENT)
-	private static final ImmutableMap<Craving, List<ResourceLocation>> CRAVING_ICONS = ImmutableMap.of(
-			Craving.SALTY, List.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/salty_pickle.png"),
-					ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/french_fries.png")), 
-			Craving.SWEET, List.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/chocolate_bar.png"),
-					ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/lemon_drops.png")), 
-			Craving.SOUR, List.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/lemon_ice_popsicles.png"),
-					ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/lemon_ice_cream.png"),
-					ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/lemon_drops.png")),
-			Craving.SPICY, List.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/spicy_chicken.png"),
-					ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/chili_poppers.png"))
-			);
-	
-	@OnlyIn(Dist.CLIENT)
-	private static final ImmutableMap<String, ImmutablePair<ResourceLocation, ResourceLocation>> PREDEFINED_SKINS = ImmutableMap.of(
-			"player1", ImmutablePair.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1.png"), ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_extra.png"))		
-			);
-	
-	@OnlyIn(Dist.CLIENT)
-	private static final ImmutableMap<String, ImmutableMap<PregnancyPhase, ImmutablePair<ResourceLocation, ResourceLocation>>> MATERNITY_PREDEFINED_SKINS = ImmutableMap.of(
-			"player1", ImmutableMap.of(
-					PregnancyPhase.P0, ImmutablePair.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p0.png"), ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p0_extra.png")),
-					PregnancyPhase.P1, ImmutablePair.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p1.png"), ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p1_extra.png")),
-					PregnancyPhase.P2, ImmutablePair.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p2.png"), ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p2_extra.png")),
-					PregnancyPhase.P3, ImmutablePair.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p3.png"), ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p3_extra.png")),
-					PregnancyPhase.P4, ImmutablePair.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p4.png"), ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p4_extra.png")),
-					PregnancyPhase.P5, ImmutablePair.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p5.png"), ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p5_extra.png")),
-					PregnancyPhase.P6, ImmutablePair.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p6.png"), ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p6_extra.png")),
-					PregnancyPhase.P7, ImmutablePair.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p7.png"), ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p7_extra.png")),
-					PregnancyPhase.P8, ImmutablePair.of(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p8.png"), ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/predefined/player1/player_1_p8_extra.png"))
-			));
 
-	
-	
 	private static final Object2IntMap<PregnancyPhase> MAX_JUMPS = Object2IntMaps.unmodifiable(new Object2IntOpenHashMap<>(ImmutableMap.of(
 			PregnancyPhase.P3, 40,
 			PregnancyPhase.P4, 35,
@@ -161,20 +124,6 @@ public class PlayerHelper {
 	
 	public static MobEffect getPregnancyEffects(PregnancyPhase phase) {
 		return PREGNANCY_EFFECTS.get(phase);
-	}
-	
-	@CheckForNull
-	public static ImmutablePair<ResourceLocation, ResourceLocation> getPredefinedPlayerTextures(String name, PregnancyPhase phase) {
-		var textures = MATERNITY_PREDEFINED_SKINS.get(name);
-		if (textures != null) {
-			return textures.get(phase);			
-		}	
-		return null;
-	}
-
-	@CheckForNull
-	public static ImmutablePair<ResourceLocation, ResourceLocation> getPredefinedPlayerTextures(String name) {
-		return PREDEFINED_SKINS.get(name);
 	}
 	
 	public static boolean tryToStartPregnancy(ServerPlayer player) {
@@ -284,14 +233,13 @@ public class PlayerHelper {
 	public static boolean tryStartPregnancyByMobAttack(ServerPlayer female, Species species) {
 		return tryToStartPrePregnancy(female, ImmutableTriple.of(Optional.empty(), species, Creature.MONSTER), female.getRandom().nextInt(1, IBreedable.MAX_NUMBER_OF_BABIES + 1));
 	}
-	
-	@CheckForNull
-	public static List<ResourceLocation> getCravingIcon(Craving craving) {
-		return craving != null ? CRAVING_ICONS.get(craving) : null;	
-	}
-	
+
 	public static boolean isPlayerValid(LivingEntity entity) {
-		return entity instanceof ServerPlayer s && s.getCapability(MinepreggoCapabilities.PLAYER_DATA).map(cap -> cap.getFemaleData().isPresent()).isPresent();
+		if (entity instanceof Player player) {
+			Optional<Boolean> result = player.getCapability(MinepreggoCapabilities.PLAYER_DATA).map(cap -> cap.getFemaleData().isPresent());
+			return result.isPresent() && result.get().booleanValue();
+		}
+		return false;
 	}
 	
 	public static boolean canUseChestPlateInLactation(LivingEntity target, Item armor) {	
@@ -314,12 +262,6 @@ public class PlayerHelper {
 		}		
 		player.setItemInHand(hand, itemStack);
 	}
-	
-	@OnlyIn(Dist.CLIENT)
-    public static boolean isPlayingBirthAnimation(Player player) {
-    	var anim = PlayerAnimationManager.getInstance().get(player).getCurrentAnimationName();
-        return anim != null && anim.equals("birth");
-    }	
 	
 	public static boolean isValidCravingBySpecies(Species species) {
 		return species == Species.HUMAN || species == Species.ZOMBIE || species == Species.CREEPER;
@@ -437,5 +379,16 @@ public class PlayerHelper {
 		int maxOrdinal = PregnancyPhase.values().length - 1;
 		int level = (int) Math.round(ordinal * 5.0 / maxOrdinal);
 		return Math.min(level, 5);
+	}
+	
+	public static void playSoundNearTo(LivingEntity serverPlayer, SoundEvent sound) {
+		playSoundNearTo(serverPlayer, sound, 0.5f);
+	}
+	
+	public static void playSoundNearTo(LivingEntity serverPlayer, SoundEvent soundEvent, float sound) {
+		MinepreggoModPacketHandler.INSTANCE.send(
+				PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(
+						serverPlayer.getX(), serverPlayer.getY(), serverPlayer.getZ(), 32, serverPlayer.level().dimension())),
+				new PlayEntitySoundS2CPacket(serverPlayer.getId(), soundEvent, sound, 0.9F + serverPlayer.getRandom().nextFloat() * 0.3F));
 	}
 }

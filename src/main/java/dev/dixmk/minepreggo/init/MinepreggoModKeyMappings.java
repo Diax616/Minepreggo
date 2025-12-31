@@ -30,9 +30,19 @@ public class MinepreggoModKeyMappings {
         KEY_CATEGORY
     	);
     
+    
+    public static final KeyMapping TASK = new KeyMapping(
+    	"TEST-TASK",
+        KeyConflictContext.IN_GAME,
+        InputConstants.Type.KEYSYM,
+        GLFW.GLFW_KEY_U,
+        KEY_CATEGORY
+    	);
+    
     @SubscribeEvent
     public static void registerKeyBindings(RegisterKeyMappingsEvent event) {
         event.register(RUB_BELLY_KEY);
+        event.register(TASK);
     }
 }
 

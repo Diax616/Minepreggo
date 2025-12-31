@@ -8,6 +8,7 @@ import javax.annotation.Nonnull;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
+import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.network.packet.RequestSexM2PC2SPacket;
 import dev.dixmk.minepreggo.world.pregnancy.AbstractPregnancySystem;
@@ -206,8 +207,10 @@ public abstract class PreggoMobPregnancySystemP4<E extends PreggoMob
 	protected boolean tryInitRandomPregnancyPain() {
 		if (super.tryInitRandomPregnancyPain()) {
 			return true;
-		}			
-		if (hasToGiveBirth() && randomSource.nextFloat() < contractionProb) {
+		}				
+		if (hasToGiveBirth()
+				&& !pregnantEntity.hasEffect(MinepreggoModMobEffects.ETERNAL_PREGNANCY.get())
+				&& randomSource.nextFloat() < contractionProb) {
 			pregnantEntity.setPregnancyPain(PregnancyPain.CONTRACTION);
 			pregnantEntity.resetPregnancyPainTimer();
 			PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.CHEST);					

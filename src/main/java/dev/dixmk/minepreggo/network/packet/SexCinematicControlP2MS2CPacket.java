@@ -4,7 +4,7 @@ import java.util.function.Supplier;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
-import dev.dixmk.minepreggo.client.SexCinematicManager;
+import dev.dixmk.minepreggo.client.CinematicManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -32,9 +32,9 @@ public record SexCinematicControlP2MS2CPacket(boolean start, int mobEntityId) {
             if (context.getDirection().getReceptionSide().isClient()) {
                 Minecraft mc = Minecraft.getInstance();
                 if (message.start) {
-                	SexCinematicManager.getInstance().startCinematic(mc.player, message.mobEntityId);                   	
+                	CinematicManager.getInstance().startCinematic(mc.player, message.mobEntityId);                   	
                 } else {
-                	SexCinematicManager.getInstance().endCinematic();
+                	CinematicManager.getInstance().endCinematic();
                 }                 
                 MinepreggoMod.LOGGER.debug("SEX CINEMATIC CONTROL: player={}, id={}, mobId={}, start={}",
                 		mc.player.getName().getString(), mc.player.getId(), message.mobEntityId, message.start);     	

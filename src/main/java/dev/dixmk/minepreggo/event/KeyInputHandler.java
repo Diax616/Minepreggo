@@ -5,6 +5,7 @@ import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.client.animation.player.PlayerAnimationManager;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModKeyMappings;
+import dev.dixmk.minepreggo.network.packet.ForceTaskC2SPacket;
 import dev.dixmk.minepreggo.network.packet.RequestBellyRubbingAnimationC2SPacket;
 import dev.dixmk.minepreggo.network.packet.StopPlayerAnimationC2SPacket;
 import net.minecraft.client.Minecraft;
@@ -41,5 +42,8 @@ public class KeyInputHandler {
         		})
         	);	
         }
+    	else if (MinepreggoModKeyMappings.TASK.consumeClick()) {   
+			MinepreggoModPacketHandler.INSTANCE.sendToServer(new ForceTaskC2SPacket(player.getId()));
+    	}
     }	
 }

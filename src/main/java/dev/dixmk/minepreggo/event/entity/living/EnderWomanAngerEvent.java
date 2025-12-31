@@ -17,14 +17,12 @@ public class EnderWomanAngerEvent extends LivingEvent {
     /**
      * The player that is being checked.
      */
-    public Player getPlayer()
-    {
+    public Player getPlayer() {
         return player;
     }
 
     @Override
-    public AbstractEnderWoman getEntity()
-    {
+    public AbstractEnderWoman getEntity() {
         return (AbstractEnderWoman) super.getEntity();
     }
 }

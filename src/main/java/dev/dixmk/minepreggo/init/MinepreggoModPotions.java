@@ -48,6 +48,12 @@ public class MinepreggoModPotions {
 	public static final RegistryObject<Potion> HUMANOID_ENDER_IMPREGNATION_3 = REGISTRY.register("humanoid_ender_impregnation_3", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.HUMANOID_ENDER_IMPREGNATION.get(), 200, 3, false, true)));
 	public static final RegistryObject<Potion> HUMANOID_ENDER_IMPREGNATION_4 = REGISTRY.register("humanoid_ender_impregnation_4", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.HUMANOID_ENDER_IMPREGNATION.get(), 200, 4, false, true)));
 	
+	public static final RegistryObject<Potion> VILLAGER_IMPREGNATION_0 = REGISTRY.register("villager_impregnation_0", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.VILLAGER_IMPREGNATION.get(), 200, 0, false, true)));
+	public static final RegistryObject<Potion> VILLAGER_IMPREGNATION_1 = REGISTRY.register("villager_impregnation_1", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.VILLAGER_IMPREGNATION.get(), 200, 1, false, true)));
+	public static final RegistryObject<Potion> VILLAGER_IMPREGNATION_2 = REGISTRY.register("villager_impregnation_2", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.VILLAGER_IMPREGNATION.get(), 200, 2, false, true)));
+	public static final RegistryObject<Potion> VILLAGER_IMPREGNATION_3 = REGISTRY.register("villager_impregnation_3", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.VILLAGER_IMPREGNATION.get(), 200, 3, false, true)));
+	public static final RegistryObject<Potion> VILLAGER_IMPREGNATION_4 = REGISTRY.register("villager_impregnation_4", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.VILLAGER_IMPREGNATION.get(), 200, 4, false, true)));
+
 	public static final RegistryObject<Potion> PREGNANCY_DELAY_0 = REGISTRY.register("pregnancy_delay_0", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.PREGNANCY_DELAY.get(), 20, 0, false, true)));
 	public static final RegistryObject<Potion> PREGNANCY_DELAY_1 = REGISTRY.register("pregnancy_delay_1", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.PREGNANCY_DELAY.get(), 20, 1, false, true)));
 	public static final RegistryObject<Potion> PREGNANCY_DELAY_2 = REGISTRY.register("pregnancy_delay_2", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.PREGNANCY_DELAY.get(), 20, 2, false, true)));

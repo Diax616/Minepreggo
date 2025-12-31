@@ -38,7 +38,7 @@ public class RequestSexP2PScreen extends AbstractRequestSexScreen<Player, Player
 
 	@Override
 	protected void renderRequestorMessage(GuiGraphics guiGraphics) {
-		guiGraphics.drawString(this.font, Component.translatable("gui.minepreggo.sex_request.label.requestor", source.isPresent() ? source.get().getName().getString() : "?"), 35, 40, -12829636, false);	
+		guiGraphics.drawString(this.font, Component.translatable("gui.minepreggo.sex_request.label.message"), 35, 40, -12829636, false);	
 	}
 	
 	@Override

@@ -5,15 +5,15 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class SexCinematicManager {
+public class CinematicManager {
 	
-	private SexCinematicManager() {}
+	private CinematicManager() {}
 	
     private static class Holder {
-        private static final SexCinematicManager INSTANCE = new SexCinematicManager();
+        private static final CinematicManager INSTANCE = new CinematicManager();
     }
        	    
-    public static SexCinematicManager getInstance() {
+    public static CinematicManager getInstance() {
         return Holder.INSTANCE;
     }
 	

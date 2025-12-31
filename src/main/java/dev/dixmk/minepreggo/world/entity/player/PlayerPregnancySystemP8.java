@@ -21,6 +21,7 @@ public class PlayerPregnancySystemP8 extends PlayerPregnancySystemP6 {
 		totalTicksOfPreBirth = PregnancySystemHelper.TOTAL_TICKS_PREBIRTH_P8;
 		totalTicksOfBirth = PregnancySystemHelper.TOTAL_TICKS_BIRTH_P8;
 		totalTicksOfFetalMovement = PregnancySystemHelper.TOTAL_TICKS_KICKING_P8;
-		pregnancyExhaustion = 1.1f;
+		fetalMovementProb = PregnancySystemHelper.HIGH_PREGNANCY_PAIN_PROBABILITY;
+		pregnancyExhaustion = 1.05f;
 	}
 }

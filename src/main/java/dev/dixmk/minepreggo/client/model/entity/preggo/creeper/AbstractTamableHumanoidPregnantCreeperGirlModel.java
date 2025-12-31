@@ -10,10 +10,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public abstract class AbstractTamableHumanoidPregnantCreeperGirlModel<E extends AbstractTamablePregnantHumanoidCreeperGirl<?,?>> extends AbstractHumanoidCreeperGirlModel<E> {
 
-	protected float milkingBoobsXScale = 1.25F;
-	protected float milkingBoobsYScale = 1.1F;
-	protected float milkingBoobsZScale = 1.2F;
-	protected float milkingBoobsYPos = -0.375F;
+	protected float milkingBoobsXScale = 1.15F;
+	protected float milkingBoobsYScale = 1.05F;
+	protected float milkingBoobsZScale = 1.25F;
+	protected float milkingBoobsYPos = -0.42F;
 	
 	protected AbstractTamableHumanoidPregnantCreeperGirlModel(ModelPart root, HierarchicalModel<E> animator) {
 		super(root, animator);

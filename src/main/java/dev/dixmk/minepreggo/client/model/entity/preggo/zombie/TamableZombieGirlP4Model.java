@@ -33,21 +33,20 @@ public class TamableZombieGirlP4Model extends AbstractTamablePregnantZombieGirlM
 					
 			    if (zombieGirl.getItemBySlot(EquipmentSlot.CHEST).isEmpty()) {		    	
 			    	if (zombieGirl.getPregnancyPain() ==  PregnancyPain.FETAL_MOVEMENT) {
-				    	this.animate(zombieGirl.loopAnimationState, BellyAnimation.FETAL_MOVEMENT_P4, ageInTicks);		    
+				    	this.animate(zombieGirl.bellyAnimationState, BellyAnimation.FETAL_MOVEMENT_P4, ageInTicks);		    
 			    	}
 			    	else {
-				    	this.animate(zombieGirl.loopAnimationState, BellyAnimation.MEDIUM_BELLY_INFLATION, ageInTicks);		    
+				    	this.animate(zombieGirl.bellyAnimationState, BellyAnimation.MEDIUM_BELLY_INFLATION, ageInTicks);		    
 			    	}
 
 			    	UUID preggoMobId = zombieGirl.getUUID();       
-			        if (!BellyAnimationManager.getInstance().isAnimating(preggoMobId)) {
-			            return;
-			        }
-					AnimationState state = BellyAnimationManager.getInstance().getAnimationState(preggoMobId);
-			        AnimationDefinition animation = BellyAnimationManager.getInstance().getCurrentAnimation(preggoMobId);
-			        
-			        if (state != null && animation != null) {
-			            this.animate(state, animation, ageInTicks);
+			        if (BellyAnimationManager.getInstance().isAnimating(preggoMobId)) {
+						AnimationState state = BellyAnimationManager.getInstance().getAnimationState(preggoMobId);
+				        AnimationDefinition animation = BellyAnimationManager.getInstance().getCurrentAnimation(preggoMobId);
+				        
+				        if (state != null && animation != null) {
+				            this.animate(state, animation, ageInTicks);
+				        }
 			        }
 			    } 
 				
@@ -82,10 +81,6 @@ public class TamableZombieGirlP4Model extends AbstractTamablePregnantZombieGirlM
 						this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.BIRTH, ageInTicks, 1f);						
 						break;
 					}
-					case FETAL_MOVEMENT: {
-						this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.KICKING1, ageInTicks, 1f);						
-						break;
-					}
 					case CONTRACTION: {
 						this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.CONTRACTION1, ageInTicks, 1f);						
 						break;
@@ -97,10 +92,8 @@ public class TamableZombieGirlP4Model extends AbstractTamablePregnantZombieGirlM
 				
 				if (zombieGirl.isPanic()) {
 					this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.IDLE, ageInTicks, 1f);						
-					return;
-				} 	
-				
-				if (zombieGirl.isWaiting()) {
+				} 				
+				else if (zombieGirl.isWaiting()) {
 					this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.WAIT1, ageInTicks, 1f);										
 				}
 				else if (zombieGirl.isPassenger()) {

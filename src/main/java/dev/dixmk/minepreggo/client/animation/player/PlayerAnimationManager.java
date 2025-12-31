@@ -6,8 +6,6 @@ import java.util.UUID;
 
 import org.jetbrains.annotations.Nullable;
 
-import dev.dixmk.minepreggo.common.animation.PlayerAnimation;
-import dev.dixmk.minepreggo.common.animation.PlayerAnimationRegistry;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;

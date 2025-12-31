@@ -18,8 +18,6 @@ import dev.dixmk.minepreggo.client.model.entity.player.CustomPregnantBodyP6Model
 import dev.dixmk.minepreggo.client.model.entity.player.CustomPregnantBodyP7Model;
 import dev.dixmk.minepreggo.client.model.entity.player.CustomPregnantBodyP8Model;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
-import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
-import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -129,16 +127,7 @@ public class CustomPregnantBodyLayer extends AbstractPregnantBodyLayer {
     					throw new IllegalArgumentException("Unexpected value: " + pregnancyPhase);
     				}  
     	        } 	        
-    	        else {	      	
-					femaleData.getPostPregnancyData().ifPresent(post -> {
-						if (post.getPostPregnancy() == PostPregnancy.PARTUM && post.getPostPartumLactation() >= PregnancySystemHelper.ACTIVATE_MILKING_SYMPTOM) {
-							boobsModel.boobs.y -= 0.42F;		
-							boobsModel.boobs.xScale = 1.4F;
-							boobsModel.boobs.yScale = 1.2F;
-							boobsModel.boobs.zScale = 1.3F;	
-						}
-					});
-    	        						
+    	        else {	      	  	        						
     	        	boobsModel.setupAnim(player, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
     	        	boobsModel.body.copyFrom(playerModel.body);
     	        	boobsModel.renderToBuffer(poseStack, playerVertexConsumer, packedLight, LivingEntityRenderer.getOverlayCoords(player, 0.0F), 1.0F, 1.0F, 1.0F, 1.0F);

@@ -1,9 +1,9 @@
 package dev.dixmk.minepreggo.client.model.entity.player;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.client.animation.preggo.BellyAnimation;
 import dev.dixmk.minepreggo.client.jiggle.JigglePhysicsFactory;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
+import dev.dixmk.minepreggo.client.animation.preggo.BellyInflation;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -12,7 +12,6 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -24,6 +23,7 @@ public class CustomPregnantBodyP1Model extends AbstractPregnantBodyModel {
 	
 	public CustomPregnantBodyP1Model(ModelPart root) {
 		super(root,
+				BellyInflation.LOW,
 				JigglePhysicsFactory.createLightweightBoobs(2.0F, true, true),
 				JigglePhysicsFactory.createBelly(6.0F, PregnancyPhase.P1),
 				true);
@@ -40,11 +40,5 @@ public class CustomPregnantBodyP1Model extends AbstractPregnantBodyModel {
 		PartDefinition leftBoob = boobs.addOrReplaceChild("left_boob", CubeListBuilder.create(), PartPose.offset(1.5F, 0.0F, 0.0F));
 		leftBoob.addOrReplaceChild("Boob_2_r1", CubeListBuilder.create().texOffs(18, 21).mirror().addBox(-0.9F, -0.2717F, -3.066F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.15F)).mirror(false), PartPose.offsetAndRotation(-0.5F, 0.2F, 0.1F, 0.3491F, -0.1309F, -0.0436F));	
 		return LayerDefinition.create(meshdefinition, 64, 64);
-	}
-	
-	@Override
-	public void setupAnim(AbstractClientPlayer entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-		this.animate(this.loopAnimationState, BellyAnimation.LOW_BELLY_INFLATION, ageInTicks, 1f);
 	}
 }

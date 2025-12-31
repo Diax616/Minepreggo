@@ -28,6 +28,7 @@ public abstract class CameraMixin {
      * Inject into Camera.setup() to apply persistent camera offsets
      * This is called every frame during camera setup
      */
+ 
     @Inject(method = "setup", at = @At("TAIL"))
     private void applyPersistentCameraOffset(CallbackInfo ci) {
         // Get the offset values (they persist across ticks)

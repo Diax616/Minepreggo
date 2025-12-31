@@ -34,4 +34,5 @@ public class PredefinedBoobsModel extends AbstractBoobsModel {
 		leftBoob.addOrReplaceChild("Boob_2_r1", CubeListBuilder.create().texOffs(2, 1).mirror().addBox(-0.9F, -0.2717F, -3.266F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(-0.6F, 0.2F, 0.3F, 0.3491F, -0.1309F, -0.0436F));
 		return LayerDefinition.create(meshdefinition, 64, 32);
 	}
+
 }

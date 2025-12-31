@@ -320,7 +320,7 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 				this.setPower(false);
 			}
 			else {
-				--this.poweredTimer;
+				++this.poweredTimer;
 			}
 		}
 	}

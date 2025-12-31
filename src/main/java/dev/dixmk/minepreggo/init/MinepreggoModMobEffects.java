@@ -38,6 +38,7 @@ import dev.dixmk.minepreggo.world.effect.PregnancyP6;
 import dev.dixmk.minepreggo.world.effect.PregnancyP7;
 import dev.dixmk.minepreggo.world.effect.PregnancyP8;
 import dev.dixmk.minepreggo.world.effect.PregnancyResistance;
+import dev.dixmk.minepreggo.world.effect.VillagerImpregnation;
 import dev.dixmk.minepreggo.world.effect.WaterBreaking;
 import dev.dixmk.minepreggo.world.effect.ZombieImpregnation;
 import net.minecraft.world.effect.MobEffect;
@@ -58,7 +59,8 @@ public class MinepreggoModMobEffects {
 	public static final RegistryObject<MobEffect> ENDER_IMPREGNATION = REGISTRY.register("ender_impregnation", EnderImpregnation::new);
 	public static final RegistryObject<MobEffect> HUMANOID_CREEPER_IMPREGNATION = REGISTRY.register("humanoid_creeper_impregnation", HumanoidCreeperImpregnation::new);
 	public static final RegistryObject<MobEffect> HUMANOID_ENDER_IMPREGNATION = REGISTRY.register("humanoid_ender_impregnation", HumanoidEnderImpregnation::new);
-	
+	public static final RegistryObject<MobEffect> VILLAGER_IMPREGNATION = REGISTRY.register("villager_impregnation", VillagerImpregnation::new);
+
 	public static final RegistryObject<MobEffect> PREGNANCY_HEALING = REGISTRY.register("pregnancy_healing", PregnancyHealing::new);
 	public static final RegistryObject<MobEffect> PREGNANCY_DELAY = REGISTRY.register("pregnancy_delay", PregnancyDelay::new);
 	public static final RegistryObject<MobEffect> PREGNANCY_ACCELERATION = REGISTRY.register("pregnancy_acceleration", PregnancyAcceleration::new);

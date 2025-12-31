@@ -99,7 +99,7 @@ public abstract class AbstractMonsterPregnantCreeperGirl extends AbstractMonster
 	
 	@Override
 	public boolean hurt(DamageSource damagesource, float amount) {	
-		if (super.hurt(damagesource, amount) && !this.hasPregnancyPain() && !this.level().isClientSide()) {		
+		if (super.hurt(damagesource, amount) && !this.isIncapacitated() && !this.level().isClientSide()) {		
 					
 			if (this.getRandom().nextFloat() < pregnancyPainProbability) {
 				this.setPregnancyPain(true);
@@ -112,7 +112,7 @@ public abstract class AbstractMonsterPregnantCreeperGirl extends AbstractMonster
 	
 	@Override
 	public boolean hasCustomHeadAnimation() {
-		return this.hasPregnancyPain();
+		return this.isIncapacitated();
 	}
 	
 	@Override
@@ -123,7 +123,7 @@ public abstract class AbstractMonsterPregnantCreeperGirl extends AbstractMonster
     	  return;
       }
 
-      if (this.hasPregnancyPain()) {   	  
+      if (this.isIncapacitated()) {   	  
     	  final var timer = this.getPregnancyPainTimer();
     	  if (timer > 120) {
     		  this.setPregnancyPainTimer(0);
@@ -141,21 +141,21 @@ public abstract class AbstractMonsterPregnantCreeperGirl extends AbstractMonster
 		this.goalSelector.addGoal(3, new MeleeAttackGoal(this, 1.2, false) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() && !hasPregnancyPain();		
+				return super.canUse() && !isIncapacitated();		
 			}
 			@Override
 			public boolean canContinueToUse() {
-				return super.canContinueToUse() && !hasPregnancyPain();			   
+				return super.canContinueToUse() && !isIncapacitated();			   
 			}
 		});
 		this.targetSelector.addGoal(2, new HurtByTargetGoal(this) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() && !hasPregnancyPain();		
+				return super.canUse() && !isIncapacitated();		
 			}
 			@Override
 			public boolean canContinueToUse() {
-				return super.canContinueToUse() && !hasPregnancyPain();			   
+				return super.canContinueToUse() && !isIncapacitated();			   
 			}
 		});
 
@@ -163,29 +163,29 @@ public abstract class AbstractMonsterPregnantCreeperGirl extends AbstractMonster
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
-					&& !hasPregnancyPain();		
+					&& !isIncapacitated();		
 			}
 		});
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() && !hasPregnancyPain();		
+				return super.canUse() && !isIncapacitated();		
 			}
 			@Override
 			public boolean canContinueToUse() {
-				return super.canContinueToUse() && !hasPregnancyPain();			   
+				return super.canContinueToUse() && !isIncapacitated();			   
 			}
 		});
 		this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8F) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() && !hasPregnancyPain();		
+				return super.canUse() && !isIncapacitated();		
 			}
 		});
 		this.goalSelector.addGoal(8, new RandomLookAroundGoal(this) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() && !hasPregnancyPain();		
+				return super.canUse() && !isIncapacitated();		
 			}
 		});
 	}
@@ -197,43 +197,43 @@ public abstract class AbstractMonsterPregnantCreeperGirl extends AbstractMonster
 			public boolean canUse() {												
 				return super.canUse() 
 					&& canExplode()
-					&& !hasPregnancyPain();
+					&& !isIncapacitated();
 			}
 		});
 		this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Player.class, true) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() && !hasPregnancyPain();		
+				return super.canUse() && !isIncapacitated();		
 			}
 			@Override
 			public boolean canContinueToUse() {
-				return super.canContinueToUse() && !hasPregnancyPain();			   
+				return super.canContinueToUse() && !isIncapacitated();			   
 			}
 		});
 		this.goalSelector.addGoal(3, new AvoidEntityGoal<>(this, Ocelot.class, 6F, 1, 1.2) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() && !hasPregnancyPain();		
+				return super.canUse() && !isIncapacitated();		
 			}
 			@Override
 			public boolean canContinueToUse() {
-				return super.canContinueToUse() && !hasPregnancyPain();			   
+				return super.canContinueToUse() && !isIncapacitated();			   
 			}
 		});
 		this.goalSelector.addGoal(3, new AvoidEntityGoal<>(this, Cat.class, 6F, 1, 1.2) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() && !hasPregnancyPain();		
+				return super.canUse() && !isIncapacitated();		
 			}
 			@Override
 			public boolean canContinueToUse() {
-				return super.canContinueToUse() && !hasPregnancyPain();			   
+				return super.canContinueToUse() && !isIncapacitated();			   
 			}
 		});	
 	}
 	
 	@Override
-	public boolean hasPregnancyPain() {
+	public boolean isIncapacitated() {
 		return this.entityData.get(DATA_HAS_PREGNANCY_PAIN);
 	}
 	

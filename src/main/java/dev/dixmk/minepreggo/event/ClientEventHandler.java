@@ -4,11 +4,11 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.client.animation.player.PlayerAnimationManager;
 import dev.dixmk.minepreggo.client.animation.player.PlayerAnimationManager.PlayerAnimationCache;
+import dev.dixmk.minepreggo.client.animation.player.PlayerAnimationRegistry;
+import dev.dixmk.minepreggo.client.renderer.entity.layer.player.ClientPlayerHelper;
 import dev.dixmk.minepreggo.client.screens.effect.SexOverlayManager;
-import dev.dixmk.minepreggo.common.animation.PlayerAnimationRegistry;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.network.packet.UpdateBellyRubbingStateC2SPacket;
-import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.client.Minecraft;
@@ -80,7 +80,7 @@ public class ClientEventHandler {
             	final var cache = PlayerAnimationManager.getInstance().get(ply);       	
             	cache.tick();   
             	evaluateBellyRubbingLogic(player, cache);
-            }    
+            }             
         }
     }
        
@@ -118,14 +118,15 @@ public class ClientEventHandler {
         
         // Apply the persistent camera offset without modifying player position
         // This ensures the offset survives across ticks without server resync
-        if (PlayerHelper.isPlayingBirthAnimation(player)) {
+        
+        if (ClientPlayerHelper.isPlayingBirthAnimation(player)) {
             // Only update offset once when animation starts (if offset is 0)
             if (cameraOffsetY == 0.0) {
             	cameraOffsetY = -player.getEyeHeight(Pose.SLEEPING) * 4;
             }
         } else {
         	cameraOffsetY = 0;
-        }
+        }     
     }
 }
 

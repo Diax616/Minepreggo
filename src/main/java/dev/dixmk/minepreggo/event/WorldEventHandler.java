@@ -23,7 +23,7 @@ public class WorldEventHandler {
     public static void onSleepFinished(SleepFinishedTimeEvent event) {
        ServerLevel level = (ServerLevel) event.getLevel();
         
-        if (level.isClientSide()) {
+        if (level.isClientSide) {
             return;
         }
 

@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem.Result;
 import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancyEffectsHandler;
@@ -161,9 +162,10 @@ public abstract class PreggoMobPregnancySystemP2<E extends PreggoMob
 	@Override
 	protected Result evaluateBellyRubs(Level level, Player source) {
 		// In this pregnancy phase, the belly is not large enough to do some action
-		
-		PregnancySystemHelper.playSlappingBellyAnimation(source, pregnantEntity);
-		
+		pregnantEntity.playSound(MinepreggoModSounds.BELLY_TOUCH.get(), 0.7F, 0.8F + pregnantEntity.getRandom().nextFloat() * 0.3F);	
+		if (!level.isClientSide) {
+			PregnancySystemHelper.playSlappingBellyAnimation(source, pregnantEntity);
+		}
 		return Result.FAIL;
 	}
 }

@@ -39,6 +39,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
@@ -71,6 +72,8 @@ public abstract class AbstractTamablePregnantCreeperGirl<S extends PreggoMobSyst
 	private MapPregnancyPhase daysByPregnancyPhase = null;
 	private Womb babiesInsideWomb = null;
 
+	public final AnimationState bellyAnimationState = new AnimationState();
+	
 	private Set<PregnancySymptom> cachePregnancySymptoms = null;
 	
 	protected AbstractTamablePregnantCreeperGirl(EntityType<? extends AbstractTamableCreeperGirl<?>> p_21803_, Level p_21804_, Creature typeOfCreature, PregnancyPhase currentPregnancyStage) {
@@ -235,6 +238,14 @@ public abstract class AbstractTamablePregnantCreeperGirl<S extends PreggoMobSyst
       if (this.isAlive()) {	  
           this.pregnancySystem.onServerTick();       
       }
+	}
+	
+	@Override
+	public void tick() {
+		super.tick();	
+		if (this.level().isClientSide && !this.bellyAnimationState.isStarted()) {
+			this.bellyAnimationState.start(this.tickCount);
+		}		
 	}
 	
 	@Override

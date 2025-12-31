@@ -6,9 +6,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import dev.dixmk.minepreggo.client.animation.player.BellyAnimationManager;
+import dev.dixmk.minepreggo.client.animation.preggo.BellyInflation;
+import dev.dixmk.minepreggo.client.animation.preggo.FetalMovementIntensity;
 import dev.dixmk.minepreggo.client.jiggle.BellyJigglePhysics;
 import dev.dixmk.minepreggo.client.jiggle.WrapperBoobsJiggle;
 import dev.dixmk.minepreggo.client.jiggle.WrapperButtJiggle;
+import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
+import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -25,13 +29,16 @@ public abstract class AbstractHeavyPregnantBodyModel extends AbstractPregnantBod
 	
 	protected final WrapperButtJiggle buttsJiggle;
 	
-	protected AbstractHeavyPregnantBodyModel(ModelPart root, WrapperBoobsJiggle boobsJiggle, BellyJigglePhysics bellyJiggle, WrapperButtJiggle buttsJiggle) {
-		super(root, boobsJiggle, bellyJiggle, false);
+	protected final FetalMovementIntensity fetalMovementIntensity;
+	
+	protected AbstractHeavyPregnantBodyModel(ModelPart root, BellyInflation bellyInflation, FetalMovementIntensity fetalMovementIntensity, WrapperBoobsJiggle boobsJiggle, BellyJigglePhysics bellyJiggle, WrapperButtJiggle buttsJiggle) {
+		super(root, bellyInflation, boobsJiggle, bellyJiggle, false);
 		this.leftLeg = root.getChild("left_leg");
 		this.rightLeg = root.getChild("right_leg");
 		this.leftbutt = leftLeg.getChild("left_butt");
 		this.rightbutt = rightLeg.getChild("right_butt");	
 		this.buttsJiggle = buttsJiggle;
+		this.fetalMovementIntensity = fetalMovementIntensity;
 	}
 
 	@Override
@@ -42,17 +49,25 @@ public abstract class AbstractHeavyPregnantBodyModel extends AbstractPregnantBod
 	
 	@Override
 	protected void animBelly(AbstractClientPlayer entity, float ageInTicks) {      
-        UUID playerId = entity.getUUID();
-        
-        if (!BellyAnimationManager.getInstance().isAnimating(playerId)) {
-            return;
-        }
-		
-		AnimationState state = BellyAnimationManager.getInstance().getAnimationState(playerId);
-        AnimationDefinition animation = BellyAnimationManager.getInstance().getCurrentAnimation(playerId);
-        
-        if (state != null && animation != null) {
-            this.animate(state, animation, ageInTicks);
+		entity.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
+			cap.getFemaleData().ifPresent(femaleData -> {		
+				if (entity.hasEffect(MinepreggoModMobEffects.FETAL_MOVEMENT.get()) ) {
+					this.animate(femaleData.getPregnancySystem().bellyAnimationState, fetalMovementIntensity.animation, ageInTicks);
+				}		
+				else {
+					this.animate(femaleData.getPregnancySystem().bellyAnimationState, bellyInflation.animation, ageInTicks);
+				}
+			})
+		);
+
+		UUID playerId = entity.getUUID(); 
+        if (BellyAnimationManager.getInstance().isAnimating(playerId)) {
+    		AnimationState state = BellyAnimationManager.getInstance().getAnimationState(playerId);
+            AnimationDefinition animation = BellyAnimationManager.getInstance().getCurrentAnimation(playerId);
+            
+            if (state != null && animation != null) {
+                this.animate(state, animation, ageInTicks);
+            }
         }
 	}
 	

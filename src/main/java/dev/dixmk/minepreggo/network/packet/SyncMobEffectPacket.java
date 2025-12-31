@@ -58,17 +58,21 @@ public class SyncMobEffectPacket {
 
     public static void handle(SyncMobEffectPacket message, Supplier<NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context context = contextSupplier.get();
-        context.enqueueWork(() -> {   	
+        context.enqueueWork(() -> {    
             if (context.getDirection().getReceptionSide().isClient()) {  
-                if (Minecraft.getInstance().level.getEntity(message.entityId) instanceof LivingEntity livingEntity) {    	
-                	MobEffect effect = ForgeRegistries.MOB_EFFECTS.getValue(message.effectId);
-                	if (effect == null) {
-                		return;
-                	} 	
-                    livingEntity.addEffect(new MobEffectInstance(effect, message.duration, message.amplifier, message.ambient, message.visible, message.showIcon));
+                if (Minecraft.getInstance().level.getEntity(message.entityId) instanceof LivingEntity livingEntity) {    
+                    MobEffect effect = ForgeRegistries.MOB_EFFECTS.getValue(message.effectId);
+                    if (effect == null) {
+                        return;
+                    }
+                    if (message.duration <= 0) {
+                        livingEntity.removeEffect(effect);
+                    } else {
+                        livingEntity.addEffect(new MobEffectInstance(effect, message.duration, message.amplifier, message.ambient, message.visible, message.showIcon));
+                    }
                 }
                 else {
-                	MinepreggoMod.LOGGER.warn("SyncMobEffectPacket: Entity with ID {} is not a LivingEntity or does not exist.", message.entityId);
+                    MinepreggoMod.LOGGER.warn("SyncMobEffectPacket: Entity with ID {} is not a LivingEntity or does not exist.", message.entityId);
                 }
             }
         });

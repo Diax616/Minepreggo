@@ -132,6 +132,7 @@
 	"effect.minepreggo.zombie_impregnation": "Zombie Impregnation",
 	"effect.minepreggo.creeper_impregnation": "Creeper Impregnation",
 	"effect.minepreggo.ender_impregnation": "Ender Impregnation",
+	"effect.minepreggo.villager_impregnation": "Villager Impregnation",
 	"effect.minepreggo.humanoid_creeper_impregnation": "Humanoid Creeper Impregnation",
 	"effect.minepreggo.humanoid_ender_impregnation": "Humanoid Ender Impregnation",
 	"effect.minepreggo.impregnantion": "Impregnantion",
@@ -152,7 +153,7 @@
 	"effect.minepreggo.depression": "Depression",
 	"effect.minepreggo.miscarriage": "Miscarriage",
 	"effect.minepreggo.horny": "Horny",
-	"effect.minepreggo.pre_birth": "PreBirth",
+	"effect.minepreggo.prebirth": "PreBirth",
 	"effect.minepreggo.water_breaking": "Water Breaking",
 	"effect.minepreggo.pregnancy_resistance": "Pregnancy Resistance",
 	"effect.minepreggo.contraction": "Contraction",
@@ -177,6 +178,11 @@
 	"item.minecraft.potion.effect.creeper_impregnation_2": "Potion of Creeper Impregnation",
 	"item.minecraft.potion.effect.creeper_impregnation_3": "Potion of Creeper Impregnation",
 	"item.minecraft.potion.effect.creeper_impregnation_4": "Potion of Creeper Impregnation",
+	"item.minecraft.potion.effect.villager_impregnation_0": "Potion of Villager Impregnation",
+	"item.minecraft.potion.effect.villager_impregnation_1": "Potion of Villager Impregnation",
+	"item.minecraft.potion.effect.villager_impregnation_2": "Potion of Villager Impregnation",
+	"item.minecraft.potion.effect.villager_impregnation_3": "Potion of Villager Impregnation",
+	"item.minecraft.potion.effect.villager_impregnation_4": "Potion of Villager Impregnation",
 	"item.minecraft.potion.effect.impregnation_0": "Potion of Impregnation",
 	"item.minecraft.potion.effect.impregnation_1": "Potion of Impregnation",
 	"item.minecraft.potion.effect.impregnation_2": "Potion of Impregnation",
@@ -227,6 +233,11 @@
 	"item.minecraft.splash_potion.effect.creeper_impregnation_2": "Splash Potion of Creeper Impregnation",
 	"item.minecraft.splash_potion.effect.creeper_impregnation_3": "Splash Potion of Creeper Impregnation",
 	"item.minecraft.splash_potion.effect.creeper_impregnation_4": "Splash Potion of Creeper Impregnation",
+	"item.minecraft.splash_potion.effect.villager_impregnation_0": "Splash Potion of Villager Impregnation",
+	"item.minecraft.splash_potion.effect.villager_impregnation_1": "Splash Potion of Villager Impregnation",
+	"item.minecraft.splash_potion.effect.villager_impregnation_2": "Splash Potion of Villager Impregnation",
+	"item.minecraft.splash_potion.effect.villager_impregnation_3": "Splash Potion of Villager Impregnation",
+	"item.minecraft.splash_potion.effect.villager_impregnation_4": "Splash Potion of Villager Impregnation",
 	"item.minecraft.splash_potion.effect.impregnation_0": "Splash Potion of Impregnation",
 	"item.minecraft.splash_potion.effect.impregnation_1": "Splash Potion of Impregnation",
 	"item.minecraft.splash_potion.effect.impregnation_2": "Splash Potion of Impregnation",
@@ -277,6 +288,11 @@
 	"item.minecraft.lingering_potion.effect.creeper_impregnation_2": "Lingering Potion of Creeper Impregnation",
 	"item.minecraft.lingering_potion.effect.creeper_impregnation_3": "Lingering Potion of Creeper Impregnation",
 	"item.minecraft.lingering_potion.effect.creeper_impregnation_4": "Lingering Potion of Creeper Impregnation",
+	"item.minecraft.lingering_potion.effect.villager_impregnation_0": "Lingering Potion of Villager Impregnation",
+	"item.minecraft.lingering_potion.effect.villager_impregnation_1": "Lingering Potion of Villager Impregnation",
+	"item.minecraft.lingering_potion.effect.villager_impregnation_2": "Lingering Potion of Villager Impregnation",
+	"item.minecraft.lingering_potion.effect.villager_impregnation_3": "Lingering Potion of Villager Impregnation",
+	"item.minecraft.lingering_potion.effect.villager_impregnation_4": "Lingering Potion of Villager Impregnation",
 	"item.minecraft.lingering_potion.effect.impregnation_0": "Lingering Potion of Impregnation",
 	"item.minecraft.lingering_potion.effect.impregnation_1": "Lingering Potion of Impregnation",
 	"item.minecraft.lingering_potion.effect.impregnation_2": "Lingering Potion of Impregnation",
@@ -327,6 +343,11 @@
 	"item.minecraft.tipped_arrow.effect.creeper_impregnation_2": "Arrow of Creeper Impregnation",
 	"item.minecraft.tipped_arrow.effect.creeper_impregnation_3": "Arrow of Creeper Impregnation",
 	"item.minecraft.tipped_arrow.effect.creeper_impregnation_4": "Arrow of Creeper Impregnation",
+	"item.minecraft.tipped_arrow.effect.villager_impregnation_0": "Arrow of Villager Impregnation",
+	"item.minecraft.tipped_arrow.effect.villager_impregnation_1": "Arrow of Villager Impregnation",
+	"item.minecraft.tipped_arrow.effect.villager_impregnation_2": "Arrow of Villager Impregnation",
+	"item.minecraft.tipped_arrow.effect.villager_impregnation_3": "Arrow of Villager Impregnation",
+	"item.minecraft.tipped_arrow.effect.villager_impregnation_4": "Arrow of Villager Impregnation",
 	"item.minecraft.tipped_arrow.effect.impregnation_0": "Arrow of Impregnation",
 	"item.minecraft.tipped_arrow.effect.impregnation_1": "Arrow of Impregnation",
 	"item.minecraft.tipped_arrow.effect.impregnation_2": "Arrow of Impregnation",
@@ -413,7 +434,8 @@
 	"item.minepreggo.iron_knee_brace": "Iron Knee Brace",
 	"item.minepreggo.netherite_knee_brace": "Netherite Knee Brace",
 	"item.minepreggo.leather_knee_brace": "Leather Knee Brace",
-	
+	"item.minepreggo.ropes": "Ropes",
+
 	
 	"item.minepreggo.chili_pepper": "Chili Pepper",
 	"item.minepreggo.activated_gunpowder_with_salt": "Activated Gunpowder With Salt",
@@ -598,6 +620,6 @@
 	"book.minepreggo.prenatal_checkup.paternity_test.template.page.default.result.negative": "He IS NOT the father!",
 	
 	"key.minepreggo.rub_belly": "Rub Your Pregnant Belly",
-	"key.categories.minepreggo": "Minepreggo Keyboard"
+	"key.categories.minepreggo": "Minepreggo Keyboards"
 	
 }

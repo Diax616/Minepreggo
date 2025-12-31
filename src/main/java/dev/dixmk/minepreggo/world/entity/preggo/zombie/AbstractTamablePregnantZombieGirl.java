@@ -39,6 +39,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
@@ -74,6 +75,8 @@ public abstract class AbstractTamablePregnantZombieGirl<S extends PreggoMobSyste
 	private MapPregnancyPhase daysByPregnancyPhase = null;
 	private Womb babiesInsideWomb = null;
 	
+	public final AnimationState bellyAnimationState = new AnimationState();
+	
 	private Set<PregnancySymptom> cachePregnancySymptoms = null;
 	
 	protected AbstractTamablePregnantZombieGirl(EntityType<? extends AbstractTamablePregnantZombieGirl<?, ?>> p_21803_, Level p_21804_, PregnancyPhase currentPregnancyStage) {
@@ -90,7 +93,7 @@ public abstract class AbstractTamablePregnantZombieGirl<S extends PreggoMobSyste
 	protected void defineSynchedData() {
 		super.defineSynchedData();		
 		this.entityData.define(DATA_CRAVING, 0);
-		this.entityData.define(DATA_MILKING, 0);
+		this.entityData.define(DATA_MILKING, 10);
 		this.entityData.define(DATA_BELLY_RUBS, 0);
 		this.entityData.define(DATA_HORNY, 0);
 		this.entityData.define(DATA_PREGNANCY_SYMPTOM, (byte) 0);
@@ -229,6 +232,14 @@ public abstract class AbstractTamablePregnantZombieGirl<S extends PreggoMobSyste
       if (this.isAlive()) {	  
           this.pregnancySystem.onServerTick();       
       }
+	}
+	
+	@Override
+	public void tick() {
+		super.tick();	
+		if (this.level().isClientSide && !this.bellyAnimationState.isStarted()) {
+			this.bellyAnimationState.start(this.tickCount);
+		}		
 	}
 	
 	@Override

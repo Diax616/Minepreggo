@@ -11,7 +11,7 @@ import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.Optional;
 
-import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 
 
 public abstract class AbstractRequestSexMenu<S extends LivingEntity, T extends LivingEntity> extends AbstractContainerMenu {
@@ -29,7 +29,7 @@ public abstract class AbstractRequestSexMenu<S extends LivingEntity, T extends L
 		this.target = Optional.ofNullable(pair.getRight());	
 	}
 
-	protected abstract Pair<S, T> getSourceAndTarget(FriendlyByteBuf extraData);
+	protected abstract ImmutablePair<S, T> getSourceAndTarget(FriendlyByteBuf extraData);
 	
 	@Override
 	public boolean stillValid(Player player) {

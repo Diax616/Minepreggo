@@ -1,6 +1,6 @@
 package dev.dixmk.minepreggo.world.inventory.preggo;
 
-import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import dev.dixmk.minepreggo.init.MinepreggoModMenus;
 import io.netty.buffer.Unpooled;
@@ -20,7 +20,7 @@ public class RequestSexP2PMenu extends AbstractRequestSexMenu<Player, Player> {
 	}
 
 	@Override
-	protected Pair<Player, Player> getSourceAndTarget(FriendlyByteBuf extraData) {
+	protected ImmutablePair<Player, Player> getSourceAndTarget(FriendlyByteBuf extraData) {
 		Player source = null;
 		Player target = null;	
 		if (extraData != null) {
@@ -31,7 +31,7 @@ public class RequestSexP2PMenu extends AbstractRequestSexMenu<Player, Player> {
 				target = t;
 			}
 		}
-		return Pair.of(source, target);
+		return ImmutablePair.of(source, target);
 	}
 	
 	public static void create(ServerPlayer target, ServerPlayer source) {

@@ -22,12 +22,15 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /*
  * WARNING: All methods in this class will be redesigned to be able to support any tamable preggo mob in the future.
  *
  * */
 
+@OnlyIn(Dist.CLIENT)
 public class ScreenHelper {
 
 	private ScreenHelper() {}

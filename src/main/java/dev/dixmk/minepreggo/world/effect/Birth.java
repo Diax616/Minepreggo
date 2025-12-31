@@ -8,7 +8,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
-import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.server.ServerPlayerAnimationManager;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import net.minecraft.server.level.ServerPlayer;
@@ -24,10 +23,6 @@ public class Birth extends AbstractPlayerPregnancyPain {
 	@Override
 	public void addAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {		
 		if (!PlayerHelper.isPlayerValid(entity)) return;
-		
-		if (entity.level().isClientSide) {
-	        entity.playSound(MinepreggoModSounds.PLAYER_BIRTH.get(), 0.8F, 0.8F + entity.getRandom().nextFloat() * 0.3F);
-		}
 		
 		if (!entity.level().isClientSide) {			
 			entity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, -1, 3, false, false));	

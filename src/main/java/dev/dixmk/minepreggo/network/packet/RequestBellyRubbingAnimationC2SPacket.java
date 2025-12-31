@@ -4,7 +4,7 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
-import dev.dixmk.minepreggo.common.animation.PlayerAnimationRegistry;
+import dev.dixmk.minepreggo.common.animation.CommonPlayerAnimationRegistry;
 import dev.dixmk.minepreggo.server.ServerPlayerAnimationManager;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import net.minecraft.network.FriendlyByteBuf;
@@ -33,7 +33,7 @@ public record RequestBellyRubbingAnimationC2SPacket(UUID target, PregnancyPhase 
                 var source = context.getSender();
                 var level = source.level();         		
                 if (level.getPlayerByUUID(message.target) instanceof ServerPlayer target) {        	
-        	        ServerPlayerAnimationManager.getInstance().triggerAnimation(target, PlayerAnimationRegistry.getInstance().getBellyRubbingAnimationName(message.phase));  	    
+        	        ServerPlayerAnimationManager.getInstance().triggerAnimation(target, CommonPlayerAnimationRegistry.getInstance().getBellyRubbingAnimationName(message.phase));  	    
                 } 
             }			
 		});

@@ -24,6 +24,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.AnimationState;
 import net.minecraftforge.network.PacketDistributor;
 
 public class PlayerPregnancySystemImpl implements IPlayerPregnancySystemHandler {	
@@ -45,6 +46,8 @@ public class PlayerPregnancySystemImpl implements IPlayerPregnancySystemHandler 
 	private byte pregnancySymptomsBitMask = (byte) 0;
 	
 	private Set<PregnancySymptom> cachePregnancySymptoms = null;
+	
+	public final AnimationState bellyAnimationState = new AnimationState();
 	
 	@Override
 	public int getDaysByCurrentStage() {	

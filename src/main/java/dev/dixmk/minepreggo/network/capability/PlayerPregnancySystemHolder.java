@@ -38,19 +38,22 @@ public class PlayerPregnancySystemHolder implements INBTSerializable<CompoundTag
 	
 	@Override
 	public CompoundTag serializeNBT() {
-        if (isInitialized) {  	
-            return lazyValue.get().serializeNBT();
-        }   
-        else if (savedData.contains(PlayerPregnancySystemImpl.NBT_KEY)) {
-            return savedData;
-        }       
-        return new CompoundTag();
-	}
-	
-	@Override
-	public void deserializeNBT(CompoundTag nbt) {
+        CompoundTag tag;
+        if (isInitialized) {
+            tag = lazyValue.get().serializeNBT();
+        } else if (savedData.contains(PlayerPregnancySystemImpl.NBT_KEY)) {
+            tag = savedData.copy();
+        } else {
+            tag = new CompoundTag();
+        }
+        tag.putBoolean("PregnancySystemInitialized", isInitialized);
+        return tag;
+    }
+
+    @Override
+    public void deserializeNBT(CompoundTag nbt) {
         this.savedData = nbt.copy();
-        this.isInitialized = false;
-        this.lazyValue = createLazy();		
-	}
+        this.isInitialized = nbt.getBoolean("PregnancySystemInitialized");
+        this.lazyValue = createLazy();
+    }
 }

@@ -7,7 +7,7 @@ import net.minecraft.util.Mth;
 public class MalePlayerImpl extends MaleEntityImpl implements IMalePlayer {
 
 	private int fapTimer = 0;
-	private int fap = 0;
+	private int fap = 6;
 	
 	public int getFapTimer() {
 		return fapTimer;

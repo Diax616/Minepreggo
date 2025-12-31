@@ -9,7 +9,6 @@ import net.minecraftforge.network.PlayMessages;
 
 public class MonsterZombieGirlP3 extends AbstractMonsterPregnantZombieGirl {
 
-	
 	public MonsterZombieGirlP3(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.MONSTER_ZOMBIE_GIRL_P3.get(), world);
 	}

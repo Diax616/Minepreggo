@@ -18,7 +18,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class TamableZombieGirlP2Model extends AbstractTamablePregnantZombieGirlModel<TamableZombieGirlP2> {
 
 	public TamableZombieGirlP2Model(ModelPart root) {
-		super(root, new HierarchicalModel<TamableZombieGirlP2>() {
+		super(root, new HierarchicalModel<>() {
 			
 			@Override
 			public ModelPart root() {
@@ -30,17 +30,16 @@ public class TamableZombieGirlP2Model extends AbstractTamablePregnantZombieGirlM
 				this.root().getAllParts().forEach(ModelPart::resetPose);
 									
 			    if (zombieGirl.getItemBySlot(EquipmentSlot.CHEST).isEmpty()) {		    	
-			    	this.animate(zombieGirl.loopAnimationState, BellyAnimation.LOW_BELLY_INFLATION, ageInTicks);		    
+			    	this.animate(zombieGirl.bellyAnimationState, BellyAnimation.LOW_BELLY_INFLATION, ageInTicks);		    
 			    	
 			    	UUID preggoMobId = zombieGirl.getUUID();       
-			        if (!BellyAnimationManager.getInstance().isAnimating(preggoMobId)) {
-			            return;
-			        }
-					AnimationState state = BellyAnimationManager.getInstance().getAnimationState(preggoMobId);
-			        AnimationDefinition animation = BellyAnimationManager.getInstance().getCurrentAnimation(preggoMobId);
-			        
-			        if (state != null && animation != null) {
-			            this.animate(state, animation, ageInTicks);
+			        if (BellyAnimationManager.getInstance().isAnimating(preggoMobId)) {
+						AnimationState state = BellyAnimationManager.getInstance().getAnimationState(preggoMobId);
+				        AnimationDefinition animation = BellyAnimationManager.getInstance().getCurrentAnimation(preggoMobId);
+				        
+				        if (state != null && animation != null) {
+				            this.animate(state, animation, ageInTicks);
+				        }
 			        }
 			    } 
 			    
@@ -74,10 +73,8 @@ public class TamableZombieGirlP2Model extends AbstractTamablePregnantZombieGirlM
 				
 				if (zombieGirl.isPanic()) {
 					this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.IDLE, ageInTicks, 1f);						
-					return;
-				} 	
-				
-				if (zombieGirl.isWaiting()) {
+				} 				
+				else if (zombieGirl.isWaiting()) {
 					this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.WAIT1, ageInTicks, 1f);										
 				}
 				else if (zombieGirl.isPassenger()) {

@@ -10,6 +10,7 @@ import net.minecraftforge.network.PlayMessages;
 
 import net.minecraft.world.entity.monster.AbstractIllager;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.InteractionHand;
@@ -87,6 +88,11 @@ public class IllCreeperGirl extends AbstractMonsterQuadrupedCreeperGirl implemen
 	@Override
 	public InteractionResult mobInteract(Player sourceentity, InteractionHand hand) {					
 		return IllHumanoidCreeperGirl.mobInteract(this, sourceentity, hand);
+	}
+	
+	@Override
+	public ItemStack getPickResult() {
+	    return ItemStack.EMPTY;
 	}
 	
 	public static AttributeSupplier.Builder createAttributes() {

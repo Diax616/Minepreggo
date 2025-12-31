@@ -6,7 +6,6 @@ import javax.annotation.Nonnull;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
-import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem.Result;
 import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancyEffectsHandler;
@@ -100,7 +99,13 @@ public abstract class PreggoMobPregnancySystemP3 <E extends PreggoMob
 		if (super.tryInitRandomPregnancyPain()) {
 			return true;
 		}	
-		if (randomSource.nextFloat() < fetalMovementProb) {
+		
+		float newFetalMovementProb = fetalMovementProb;	
+		if (this.pregnantEntity.hasEffect(MinepreggoModMobEffects.ETERNAL_PREGNANCY.get())) {
+			newFetalMovementProb *= 5f;
+		}
+		
+		if (randomSource.nextFloat() < newFetalMovementProb) {
 			pregnantEntity.setPregnancyPain(PregnancyPain.FETAL_MOVEMENT);
 			pregnantEntity.resetPregnancyPainTimer();
 			PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.CHEST);				
@@ -131,7 +136,6 @@ public abstract class PreggoMobPregnancySystemP3 <E extends PreggoMob
 	@Override
 	protected Result evaluateBellyRubs(Level level, Player source) {		
 		super.evaluateBellyRubs(level, source);	
-		pregnantEntity.playSound(MinepreggoModSounds.BELLY_TOUCH.get(), 0.8F, 0.8F + pregnantEntity.getRandom().nextFloat() * 0.3F);	
 		var currentBellyRubs = pregnantEntity.getBellyRubs();
 		if (currentBellyRubs > 0) {			
 			if (!level.isClientSide) {   	

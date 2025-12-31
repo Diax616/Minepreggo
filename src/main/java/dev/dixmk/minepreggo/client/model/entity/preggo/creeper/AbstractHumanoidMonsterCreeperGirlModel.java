@@ -1,6 +1,6 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.creeper;
 
-import dev.dixmk.minepreggo.client.animation.preggo.CreeperGirlAnimation;
+import dev.dixmk.minepreggo.client.animation.preggo.HumanoidCreeperGirlAnimation;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterHumanoidCreeperGirl;
 import net.minecraft.client.model.HierarchicalModel;
@@ -40,19 +40,19 @@ public abstract class AbstractHumanoidMonsterCreeperGirlModel<E extends Abstract
 				this.root().getAllParts().forEach(ModelPart::resetPose);
 						
 				if (entity.isAttacking()) {
-				    this.animate(entity.attackAnimationState, CreeperGirlAnimation.ATTACK, ageInTicks, 1f);
+				    this.animate(entity.attackAnimationState, HumanoidCreeperGirlAnimation.ATTACK, ageInTicks, 1f);
 				}
 				
 				if (entity.walkAnimation.isMoving()) {
 					if (entity.isAggressive()) {
-						this.animateWalk(CreeperGirlAnimation.AGGRESSION, limbSwing, limbSwingAmount * 4F, 1f, 1f);
+						this.animateWalk(HumanoidCreeperGirlAnimation.AGGRESSION, limbSwing, limbSwingAmount * 4F, 1f, 1f);
 					}
 					else {
-						this.animateWalk(CreeperGirlAnimation.WALK, limbSwing, limbSwingAmount * 4F, 1f, 1f);
+						this.animateWalk(HumanoidCreeperGirlAnimation.WALK, limbSwing, limbSwingAmount * 4F, 1f, 1f);
 					}
 				} 
 
-				this.animate(entity.loopAnimationState, CreeperGirlAnimation.IDLE, ageInTicks, 1f);						
+				this.animate(entity.loopAnimationState, HumanoidCreeperGirlAnimation.IDLE, ageInTicks, 1f);						
 			}	
 		};
 	}

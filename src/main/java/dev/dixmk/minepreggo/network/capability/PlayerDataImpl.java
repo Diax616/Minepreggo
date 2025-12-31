@@ -188,14 +188,16 @@ public class PlayerDataImpl implements IPlayerData {
 	public void syncAllClientData(ServerPlayer serverPlayer) {
 		sync(serverPlayer);			
 		getFemaleData().ifPresent(cap -> {
-			cap.sync(serverPlayer);
-			if (cap.isPregnant()) {
+			cap.sync(serverPlayer);		
+			
+			if (cap.isPregnant() && cap.isPregnancySystemInitialized()) {
 				cap.getPregnancySystem().sync(serverPlayer);
 				cap.getPregnancyEffects().sync(serverPlayer);
 			}
 			else if (cap.getPostPregnancyData().isPresent() && cap.getPostPregnancyData().get().getPostPregnancy() == PostPregnancy.PARTUM) {
 				cap.syncLactation(serverPlayer);
 			}
+			
 		});
 	}
 }

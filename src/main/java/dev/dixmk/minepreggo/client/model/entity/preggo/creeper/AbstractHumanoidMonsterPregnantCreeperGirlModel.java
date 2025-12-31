@@ -1,6 +1,6 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.creeper;
 
-import dev.dixmk.minepreggo.client.animation.preggo.CreeperGirlAnimation;
+import dev.dixmk.minepreggo.client.animation.preggo.HumanoidCreeperGirlAnimation;
 import dev.dixmk.minepreggo.client.animation.preggo.BellyAnimation;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterPregnantCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterPregnantHumanoidCreeperGirl;
@@ -26,7 +26,7 @@ public abstract class AbstractHumanoidMonsterPregnantCreeperGirlModel<E extends 
 	public void setupAnim(E entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 		animator.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);			
-		if (entity.hasPregnancyPain()) {
+		if (entity.hasCustomHeadAnimation()) {
 			this.hat.copyFrom(this.head);
 		}
 		else {
@@ -51,26 +51,26 @@ public abstract class AbstractHumanoidMonsterPregnantCreeperGirlModel<E extends 
 			    }
 								
 			    if (creeperGirl.isAttacking()) {
-				    this.animate(creeperGirl.attackAnimationState, CreeperGirlAnimation.ATTACK, ageInTicks, 1f);	
+				    this.animate(creeperGirl.attackAnimationState, HumanoidCreeperGirlAnimation.ATTACK, ageInTicks, 1f);	
 			    }
 				
 				if (creeperGirl.walkAnimation.isMoving()) {
 					if (creeperGirl.isAggressive()) {
-						this.animateWalk(CreeperGirlAnimation.AGGRESSION, limbSwing, limbSwingAmount * 4.5F, 1f, 1f);
+						this.animateWalk(HumanoidCreeperGirlAnimation.AGGRESSION, limbSwing, limbSwingAmount * 4.5F, 1f, 1f);
 					}
 					else {
-						this.animateWalk(CreeperGirlAnimation.WALK, limbSwing, limbSwingAmount * 4.5F, 1f, 1f);
+						this.animateWalk(HumanoidCreeperGirlAnimation.WALK, limbSwing, limbSwingAmount * 4.5F, 1f, 1f);
 					}
 				} 
 				
-				if (creeperGirl.hasPregnancyPain()) {
-				    this.animate(creeperGirl.loopAnimationState, CreeperGirlAnimation.CONTRACTION2, ageInTicks, 1f);	
+				if (creeperGirl.isIncapacitated()) {
+				    this.animate(creeperGirl.loopAnimationState, HumanoidCreeperGirlAnimation.CONTRACTION2, ageInTicks, 1f);	
 				}
 				else if (creeperGirl.isPassenger()) {
-				    this.animate(creeperGirl.loopAnimationState, CreeperGirlAnimation.RIDING, ageInTicks, 1f);	
+				    this.animate(creeperGirl.loopAnimationState, HumanoidCreeperGirlAnimation.RIDING, ageInTicks, 1f);	
 				}
 				else {
-				    this.animate(creeperGirl.loopAnimationState, CreeperGirlAnimation.IDLE, ageInTicks, 1f);	
+				    this.animate(creeperGirl.loopAnimationState, HumanoidCreeperGirlAnimation.IDLE, ageInTicks, 1f);	
 				}
 			}
 		};

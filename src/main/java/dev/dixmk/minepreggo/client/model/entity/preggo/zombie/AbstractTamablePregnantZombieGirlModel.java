@@ -10,10 +10,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public abstract class AbstractTamablePregnantZombieGirlModel<E extends AbstractTamablePregnantZombieGirl<?,?>> extends AbstractTamableZombieGirlModel<E> {
 	
-	protected float extraBoobsXScale = 1.2F;
-	protected float extraBoobsYScale = 1.1F;
-	protected float extraBoobsZScale = 1.2F;
-	protected float extraBoobsYPos = -0.34F;
+	protected float milkingBoobsXScale = 1.15F;
+	protected float milkingBoobsYScale = 1.05F;
+	protected float milkingBoobsZScale = 1.25F;
+	protected float milkingBoobsYPos = -0.36F;
 	
 	protected AbstractTamablePregnantZombieGirlModel(ModelPart root, HierarchicalModel<E> animator) {
 		super(root, animator);
@@ -25,10 +25,10 @@ public abstract class AbstractTamablePregnantZombieGirlModel<E extends AbstractT
 		super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 		
 		if (entity.getPregnancySymptoms().contains(PregnancySymptom.MILKING)) {
-			this.boobs.y += extraBoobsYPos;
-			this.boobs.xScale = extraBoobsXScale;
-			this.boobs.zScale = extraBoobsZScale;
-			this.boobs.yScale = extraBoobsYScale;			
+			this.boobs.y += milkingBoobsYPos;
+			this.boobs.xScale = milkingBoobsXScale;
+			this.boobs.yScale = milkingBoobsYScale;		
+			this.boobs.zScale = milkingBoobsZScale;	
 		} 
 	}
 }

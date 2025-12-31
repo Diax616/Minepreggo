@@ -7,7 +7,7 @@ import javax.annotation.Nonnegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface IPregnancySystemHandler {
+public interface IPregnancySystemHandler extends IPregnant {
 
 	int getDaysByCurrentStage();
 	boolean setDaysByStage(@Nonnegative int days, PregnancyPhase phase);
@@ -61,7 +61,5 @@ public interface IPregnancySystemHandler {
 	 
 	Womb getWomb();
 	void setWomb(@NonNull Womb babiesInsideWomb);
-	
-	boolean isIncapacitated();
 }
 

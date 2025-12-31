@@ -1,6 +1,6 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.creeper;
 
-import dev.dixmk.minepreggo.client.animation.preggo.CreeperGirlAnimation;
+import dev.dixmk.minepreggo.client.animation.preggo.HumanoidCreeperGirlAnimation;
 
 import java.util.UUID;
 
@@ -18,7 +18,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class TamableHumanoidCreeperGirlP2Model extends AbstractTamableHumanoidPregnantCreeperGirlModel<TamableHumanoidCreeperGirlP2> {
 	public TamableHumanoidCreeperGirlP2Model(ModelPart root) {
-		super(root, new HierarchicalModel<TamableHumanoidCreeperGirlP2>() {
+		super(root, new HierarchicalModel<>() {
 			
 			@Override
 			public ModelPart root() {
@@ -28,43 +28,40 @@ public class TamableHumanoidCreeperGirlP2Model extends AbstractTamableHumanoidPr
 			@Override
 			public void setupAnim(TamableHumanoidCreeperGirlP2 creeperGirl, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 				this.root().getAllParts().forEach(ModelPart::resetPose);
-									
+					
 			    if (creeperGirl.getItemBySlot(EquipmentSlot.CHEST).isEmpty()) {		    	
-			    	this.animate(creeperGirl.loopAnimationState, BellyAnimation.LOW_BELLY_INFLATION, ageInTicks);		    
-			    	
+			    	this.animate(creeperGirl.bellyAnimationState, BellyAnimation.LOW_BELLY_INFLATION, ageInTicks);		    
 			    	UUID preggoMobId = creeperGirl.getUUID();       
-			        if (!BellyAnimationManager.getInstance().isAnimating(preggoMobId)) {
-			            return;
-			        }
-					AnimationState state = BellyAnimationManager.getInstance().getAnimationState(preggoMobId);
-			        AnimationDefinition animation = BellyAnimationManager.getInstance().getCurrentAnimation(preggoMobId);
-			        
-			        if (state != null && animation != null) {
-			            this.animate(state, animation, ageInTicks);
+			        if (BellyAnimationManager.getInstance().isAnimating(preggoMobId)) {
+						AnimationState state = BellyAnimationManager.getInstance().getAnimationState(preggoMobId);
+				        AnimationDefinition animation = BellyAnimationManager.getInstance().getCurrentAnimation(preggoMobId);        
+				        if (state != null && animation != null) {
+				            this.animate(state, animation, ageInTicks);
+				        }
 			        }
 			    }  
 			    
 			    if (creeperGirl.isAttacking()) {
-				    this.animate(creeperGirl.attackAnimationState, CreeperGirlAnimation.ATTACK, ageInTicks, 1f);	
+				    this.animate(creeperGirl.attackAnimationState, HumanoidCreeperGirlAnimation.ATTACK, ageInTicks);	
 			    }
 				
 				if (creeperGirl.walkAnimation.isMoving()) {
 					if (creeperGirl.isAggressive()) {
-						this.animateWalk(CreeperGirlAnimation.AGGRESSION, limbSwing, limbSwingAmount * 4.5F, 1f, 1f);
+						this.animateWalk(HumanoidCreeperGirlAnimation.AGGRESSION, limbSwing, limbSwingAmount * 4.5F, 1f, 1f);
 					}
 					else {
-						this.animateWalk(CreeperGirlAnimation.WALK, limbSwing, limbSwingAmount * 4.5F, 1f, 1f);
+						this.animateWalk(HumanoidCreeperGirlAnimation.WALK, limbSwing, limbSwingAmount * 4.5F, 1f, 1f);
 					}
 				}
 						
 				if (creeperGirl.isIncapacitated()) {
 					switch (creeperGirl.getPregnancyPain()) {
 					case MORNING_SICKNESS: {
-						this.animate(creeperGirl.loopAnimationState, CreeperGirlAnimation.MORNING_SICKNESS, ageInTicks, 1f);										
+						this.animate(creeperGirl.loopAnimationState, HumanoidCreeperGirlAnimation.MORNING_SICKNESS, ageInTicks);										
 						break;
 					}
 					case MISCARRIAGE: {
-						this.animate(creeperGirl.loopAnimationState, CreeperGirlAnimation.MISCARRIAGE, ageInTicks, 1f);						
+						this.animate(creeperGirl.loopAnimationState, HumanoidCreeperGirlAnimation.MISCARRIAGE, ageInTicks);						
 						break;
 					}		
 					default:
@@ -73,18 +70,16 @@ public class TamableHumanoidCreeperGirlP2Model extends AbstractTamableHumanoidPr
 				} 
 				
 				if (creeperGirl.isPanic()) {
-					this.animate(creeperGirl.loopAnimationState, CreeperGirlAnimation.IDLE, ageInTicks, 1f);						
-					return;
-				} 
-								
-				if (creeperGirl.isWaiting()) {
-					this.animate(creeperGirl.loopAnimationState, CreeperGirlAnimation.WAIT1, ageInTicks, 1f);										
+					this.animate(creeperGirl.loopAnimationState, HumanoidCreeperGirlAnimation.IDLE, ageInTicks);						
+				} 					
+				else if (creeperGirl.isWaiting()) {
+					this.animate(creeperGirl.loopAnimationState, HumanoidCreeperGirlAnimation.WAIT1, ageInTicks);										
 				}
 				else if (creeperGirl.isPassenger()) {
-					this.animate(creeperGirl.loopAnimationState, CreeperGirlAnimation.RIDING, ageInTicks, 1f);						
+					this.animate(creeperGirl.loopAnimationState, HumanoidCreeperGirlAnimation.RIDING, ageInTicks);						
 				}
 				else {
-					this.animate(creeperGirl.loopAnimationState, CreeperGirlAnimation.IDLE, ageInTicks, 1f);						
+					this.animate(creeperGirl.loopAnimationState, HumanoidCreeperGirlAnimation.IDLE, ageInTicks);						
 				}
 			}	
 		});

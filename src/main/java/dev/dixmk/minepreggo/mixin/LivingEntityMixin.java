@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import dev.dixmk.minepreggo.client.SexCinematicManager;
+import dev.dixmk.minepreggo.client.CinematicManager;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
@@ -24,7 +24,7 @@ public abstract class LivingEntityMixin {
     		cancellable = true
     		)
     private void onTravel(Vec3 movement, CallbackInfo ci) {
-        if ((LivingEntity.class.cast(this)) instanceof Player player && player == Minecraft.getInstance().player && SexCinematicManager.getInstance().isInCinematic()) {
+        if ((LivingEntity.class.cast(this)) instanceof Player player && player == Minecraft.getInstance().player && CinematicManager.getInstance().isInCinematic()) {
         	ci.cancel();
         }
     }

@@ -2,12 +2,12 @@
   "type": "minecraft:jigsaw",
   "start_pool": "minepreggo:scientific_illager_hideout",
   "size": 1,
-  "max_distance_from_center": 80,
+  "max_distance_from_center": 60,
   "spawn_overrides": {},
   "step": "surface_structures",
   "terrain_adaptation": "beard_thin",
   "start_height": {
-    "absolute": -1
+    "absolute": 0
   },
   "project_start_to_heightmap": "WORLD_SURFACE",
   "biomes": "forest",

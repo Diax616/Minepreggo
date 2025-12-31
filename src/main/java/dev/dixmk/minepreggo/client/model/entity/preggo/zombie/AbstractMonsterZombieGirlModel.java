@@ -27,7 +27,7 @@ public abstract class AbstractMonsterZombieGirlModel<E extends AbstractMonsterZo
 	}
 	
 	private static<E extends AbstractMonsterZombieGirl> HierarchicalModel<E> createDefaultHierarchicalModel(ModelPart root) {
-		return new HierarchicalModel<E>() {
+		return new HierarchicalModel<>() {
 			
 			@Override
 			public ModelPart root() {

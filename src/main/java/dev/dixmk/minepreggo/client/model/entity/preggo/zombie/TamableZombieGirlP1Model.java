@@ -12,7 +12,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class TamableZombieGirlP1Model extends AbstractTamablePregnantZombieGirlModel<TamableZombieGirlP1> {
 	
 	public TamableZombieGirlP1Model(ModelPart root) {
-		super(root, new HierarchicalModel<TamableZombieGirlP1>() {
+		super(root, new HierarchicalModel<>() {
 			
 			@Override
 			public ModelPart root() {
@@ -23,7 +23,7 @@ public class TamableZombieGirlP1Model extends AbstractTamablePregnantZombieGirlM
 			public void setupAnim(TamableZombieGirlP1 zombieGirl, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 				this.root().getAllParts().forEach(ModelPart::resetPose);
 					
-			    this.animate(zombieGirl.loopAnimationState, BellyAnimation.LOW_BELLY_INFLATION, ageInTicks, 1f);	
+			    this.animate(zombieGirl.bellyAnimationState, BellyAnimation.LOW_BELLY_INFLATION, ageInTicks, 1f);	
 				
 			    if (zombieGirl.isAttacking()) {
 				    this.animate(zombieGirl.attackAnimationState, ZombieGirlAnimation.ATTACK, ageInTicks, 1f);	
@@ -55,10 +55,8 @@ public class TamableZombieGirlP1Model extends AbstractTamablePregnantZombieGirlM
 				
 				if (zombieGirl.isPanic()) {
 					this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.IDLE, ageInTicks, 1f);						
-					return;
-				} 	
-				
-				if (zombieGirl.isWaiting()) {
+				} 		
+				else if (zombieGirl.isWaiting()) {
 					this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.WAIT1, ageInTicks, 1f);										
 				}
 				else if (zombieGirl.isPassenger()) {

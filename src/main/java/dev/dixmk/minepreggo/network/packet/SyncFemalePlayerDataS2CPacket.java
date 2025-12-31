@@ -57,7 +57,7 @@ public record SyncFemalePlayerDataS2CPacket(UUID source, FemalePlayerImpl.Client
 				final Player target = Minecraft.getInstance().player.level().getPlayerByUUID(message.source);
 				if (target == null) return;
 				target.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
-					cap.getFemaleData().ifPresent(femaleData -> femaleData.updateFromServer(message.data))
+					cap.getFemaleData().ifPresent(femaleData -> femaleData.update(message.data))
 				);			
 			}			
 		});

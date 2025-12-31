@@ -1,7 +1,7 @@
 package dev.dixmk.minepreggo.client.model.entity.player;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.client.animation.preggo.BellyAnimation;
+import dev.dixmk.minepreggo.client.animation.preggo.BellyInflation;
 import dev.dixmk.minepreggo.client.jiggle.JigglePhysicsFactory;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -12,7 +12,6 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -24,6 +23,7 @@ public class PredefinedPregnantBodyP2Model extends AbstractPregnantBodyModel {
 	
 	public PredefinedPregnantBodyP2Model(ModelPart root) {
 		super(root,
+				BellyInflation.LOW,
 				JigglePhysicsFactory.createBoobs(2.0F, false, false),
 				JigglePhysicsFactory.createBelly(4.95f, PregnancyPhase.P2),
 				true);
@@ -41,11 +41,4 @@ public class PredefinedPregnantBodyP2Model extends AbstractPregnantBodyModel {
 		leftBoob.addOrReplaceChild("Boob_2_r1", CubeListBuilder.create().texOffs(1, 1).mirror().addBox(-0.85F, -0.2717F, -3.266F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.2F)).mirror(false), PartPose.offsetAndRotation(-0.4F, 0.1F, 0.3F, 0.3491F, -0.1309F, -0.0436F));
 		return LayerDefinition.create(meshdefinition, 64, 32);
 	}
-	
-	@Override
-	protected void animBelly(AbstractClientPlayer entity, float ageInTicks) {
-		super.animBelly(entity, ageInTicks);
-		this.animate(this.loopAnimationState, BellyAnimation.LOW_BELLY_INFLATION, ageInTicks, 1f);
-	}
-	
 }

@@ -1,6 +1,7 @@
 package dev.dixmk.minepreggo.client.model.entity.player;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
+import dev.dixmk.minepreggo.client.animation.preggo.BellyInflation;
 import dev.dixmk.minepreggo.client.jiggle.JigglePhysicsFactory;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -23,6 +24,7 @@ public class PredefinedPregnantBodyP1Model extends AbstractPregnantBodyModel {
 	
 	public PredefinedPregnantBodyP1Model(ModelPart root) {
 		super(root,
+				BellyInflation.LOW,
 				JigglePhysicsFactory.createLightweightBoobs(2.0F, true, true),
 				JigglePhysicsFactory.createBelly(6.0F, PregnancyPhase.P1),
 				true);

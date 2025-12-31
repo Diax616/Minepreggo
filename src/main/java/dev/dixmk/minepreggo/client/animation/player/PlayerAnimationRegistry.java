@@ -1,93 +1,75 @@
-package dev.dixmk.minepreggo.common.animation;
+package dev.dixmk.minepreggo.client.animation.player;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.CheckForNull;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
-import com.google.common.collect.ImmutableMap;
-
+import dev.dixmk.minepreggo.common.animation.AnimationInfo;
+import dev.dixmk.minepreggo.common.animation.CommonPlayerAnimationRegistry;
 import dev.dixmk.minepreggo.utils.MathHelper;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import net.minecraft.util.Mth;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+
+@OnlyIn(Dist.CLIENT)
 public class PlayerAnimationRegistry {
-	
-	private PlayerAnimationRegistry() {}
-	
+    private PlayerAnimationRegistry() {}
+
     private static class Holder {
         private static final PlayerAnimationRegistry INSTANCE = new PlayerAnimationRegistry();
     }
-       	    
-	public static PlayerAnimationRegistry getInstance() {
+
+    public static PlayerAnimationRegistry getInstance() {
         return Holder.INSTANCE;
     }
-	
-	private final Map<String, PlayerAnimation> animations = new HashMap<>();
-	    
-	private static final String RUBBING_BELLY_ANIM = "rubbing_belly_p";
-	
-	private static final ImmutableMap<PregnancyPhase, String> RUBBING_BELLY_NAMES = ImmutableMap.of(
-			PregnancyPhase.P0, RUBBING_BELLY_ANIM + "0",
-			PregnancyPhase.P1, RUBBING_BELLY_ANIM + "1",
-			PregnancyPhase.P2, RUBBING_BELLY_ANIM + "2",
-			PregnancyPhase.P3, RUBBING_BELLY_ANIM + "3",
-			PregnancyPhase.P4, RUBBING_BELLY_ANIM + "4",
-			PregnancyPhase.P5, RUBBING_BELLY_ANIM + "5",
-			PregnancyPhase.P6, RUBBING_BELLY_ANIM + "6",
-			PregnancyPhase.P7, RUBBING_BELLY_ANIM + "7",
-			PregnancyPhase.P8, RUBBING_BELLY_ANIM + "8"
-	);
-	
-	public void register(PlayerAnimation animation) {
-		animations.put(animation.getName(), animation);
-	}
-	    
-	@CheckForNull
-	public PlayerAnimation getAnimation(String name) {
-		return animations.get(name);
-	}
-	    
-	public @NonNull String getBellyRubbingAnimationName(PregnancyPhase phase) {
-		var name = RUBBING_BELLY_NAMES.get(phase);
-		if (name == null) throw new IllegalArgumentException("No rubbing belly animation for pregnancy phase: " + phase);
-		return  name;
-	}
-		
-	public boolean isBellyRubbingAnimation(String name) {
-		return name != null && name.matches(RUBBING_BELLY_ANIM + "[0-8]");
-	}
-	
-	public Collection<String> getAllAnimationNames() {
-		return animations.keySet();
-	}
-	    
-	public void init() { 
-		// Using blockbench, X and Y axis use their opposite value, z axis maintains its original value		
+
+    private final Map<String, PlayerAnimation> animations = new HashMap<>();
+
+    private static final String RUBBING_BELLY_ANIM = "rubbing_belly_p";
+
+    public void register(PlayerAnimation animation) {
+        animations.put(animation.getName(), animation);
+    }
+
+    @CheckForNull
+    public PlayerAnimation getAnimation(String name) {
+        return animations.get(name);
+    }
+
+    public String getBellyRubbingAnimationName(PregnancyPhase phase) {
+        return RUBBING_BELLY_ANIM + phase.ordinal();
+    }
+
+    public boolean isBellyRubbingAnimation(String name) {
+        return name != null && name.startsWith(RUBBING_BELLY_ANIM);
+    }
+
+    public void init() {
 		birthAnim();
 		preBirth();
 		miscarriageAnim();
 		waterBreakingAnim();
 		rubbingBelly();
-	}
-	
+    }
+    
 	private void birthAnim() {
 		PlayerAnimation birth = new PlayerAnimation("birth", 360, true);
+		final float extraZ = -20;
 		
 		birth.addPartAnimation("body", (part, continuousAnimationTick) -> {
 				part.yRot = MathHelper.animateBetweenAnglesMth(-1, 1, continuousAnimationTick, 0.065F);
 				part.xRot = -Mth.HALF_PI;
 				part.y = 22;
-				part.z = 12;
+				part.z = 12 + extraZ;
 			});
 		
 		birth.addPartAnimation("head", (part, continuousAnimationTick) -> {
 				part.xRot = -Mth.HALF_PI;
 				part.y = 22;
-				part.z = 12;
+				part.z = 12 + extraZ;
 			});
 		
 		birth.addPartAnimation("right_arm", (part, continuousAnimationTick) -> {		
@@ -95,7 +77,7 @@ public class PlayerAnimationRegistry {
 			part.yRot = MathHelper.animateBetweenAnglesMth(25F, 35F, continuousAnimationTick, 0.075F);
 			part.xRot = -Mth.HALF_PI;
 			part.y = 22;
-			part.z = 12;
+			part.z = 12 + extraZ;
 		});
 		
 		birth.addPartAnimation("left_arm", (part, continuousAnimationTick) -> {			
@@ -103,14 +85,15 @@ public class PlayerAnimationRegistry {
 			part.yRot = MathHelper.animateBetweenAnglesMth(-25F, -35F, continuousAnimationTick, 0.075F);
 			part.xRot = -Mth.HALF_PI;
 			part.y = 22;
-			part.z = 12;
+			part.z = 12 + extraZ;
 		});
 	
 		birth.addPartAnimation("right_leg", (part, continuousAnimationTick) -> {
 			part.zRot = MathHelper.animateBetweenAnglesMth(-2.5F, -5F, continuousAnimationTick, 0.065F);
 			part.yRot = MathHelper.animateBetweenAnglesMth(30F, 40F, continuousAnimationTick, 0.065F);
 			part.xRot = -Mth.HALF_PI;
-			part.y = 22;	
+			part.y = 22;
+			part.z = extraZ;
 		});
 		
 		birth.addPartAnimation("left_leg", (part, continuousAnimationTick) -> {
@@ -118,9 +101,10 @@ public class PlayerAnimationRegistry {
 			part.yRot = MathHelper.animateBetweenAnglesMth(-30F, -40F, continuousAnimationTick, 0.065F);
 			part.xRot = -Mth.HALF_PI;
 			part.y = 22;
+			part.z = extraZ;
 		});
 		
-		register(birth);
+		registerAndSync(birth);
 	}
 	
 	private void miscarriageAnim() {
@@ -156,7 +140,7 @@ public class PlayerAnimationRegistry {
 	
 		});
 				
-		register(miscarriage);
+		registerAndSync(miscarriage);
 	}
 	
 	private void waterBreakingAnim() {
@@ -194,7 +178,7 @@ public class PlayerAnimationRegistry {
 			part.yRot += MathHelper.animateBetweenAnglesMth(-10, -12.5F, continuousAnimationTick, 0.085F);
 	
 		});
-		register(waterBreaking);	
+		registerAndSync(waterBreaking);	
 	}
 	
 	private void preBirth() {
@@ -234,7 +218,7 @@ public class PlayerAnimationRegistry {
 	
 		});
 	
-		register(preBirth);	
+		registerAndSync(preBirth);	
 	}
 	
 	private void rubbingBelly() {
@@ -245,7 +229,7 @@ public class PlayerAnimationRegistry {
 			part.yRot = MathHelper.animateBetweenAnglesMth(12.8595F, 13.8965F, continuousAnimationTick, 0.085F);
 			part.zRot = MathHelper.animateBetweenAnglesMth(-16.6430F, -29.4254F, continuousAnimationTick, 0.085F);	
 		});
-		register(rubbingBellyP0);
+		registerAndSync(rubbingBellyP0);
 		
 		PlayerAnimation rubbingBellyP1 = new PlayerAnimation(getBellyRubbingAnimationName(PregnancyPhase.P1), 240, true);
 		
@@ -254,7 +238,7 @@ public class PlayerAnimationRegistry {
 			part.yRot = MathHelper.animateBetweenAnglesMth(12.8595F, 13.8965F, continuousAnimationTick, 0.085F);
 			part.zRot = MathHelper.animateBetweenAnglesMth(-18.6430F, -31.4254F, continuousAnimationTick, 0.085F);
 		});
-		register(rubbingBellyP1);
+		registerAndSync(rubbingBellyP1);
 		
 		PlayerAnimation rubbingBellyP2 = new PlayerAnimation(getBellyRubbingAnimationName(PregnancyPhase.P2), 240, true);
 		
@@ -270,7 +254,7 @@ public class PlayerAnimationRegistry {
 			part.zRot = MathHelper.animateBetweenAnglesMth(56.3194F, 71.6639F, continuousAnimationTick, 0.085F);
 		});
 		
-		register(rubbingBellyP2);
+		registerAndSync(rubbingBellyP2);
 			
 		PlayerAnimation rubbingBellyP3 = new PlayerAnimation(getBellyRubbingAnimationName(PregnancyPhase.P3), 240, true);
 		
@@ -286,7 +270,7 @@ public class PlayerAnimationRegistry {
 			part.zRot = MathHelper.animateBetweenAnglesMth(-14.6035F, -3.8908F, continuousAnimationTick, 0.085F);
 		});
 		
-		register(rubbingBellyP3);	
+		registerAndSync(rubbingBellyP3);	
 		
 		PlayerAnimation rubbingBellyP4 = new PlayerAnimation(getBellyRubbingAnimationName(PregnancyPhase.P4), 240, true);
 		
@@ -302,7 +286,7 @@ public class PlayerAnimationRegistry {
 			part.zRot = MathHelper.animateBetweenAnglesMth(-17.6035F, -7.8908F, continuousAnimationTick, 0.085F);
 		});
 		
-		register(rubbingBellyP4);	
+		registerAndSync(rubbingBellyP4);	
 		
 		PlayerAnimation rubbingBellyP5 = new PlayerAnimation(getBellyRubbingAnimationName(PregnancyPhase.P5), 240, true);
 		
@@ -318,7 +302,7 @@ public class PlayerAnimationRegistry {
 			part.zRot = MathHelper.animateBetweenAnglesMth(-20.0369F, -11.4144F, continuousAnimationTick, 0.085F);
 		});
 		
-		register(rubbingBellyP5);
+		registerAndSync(rubbingBellyP5);
 		
 		
 		PlayerAnimation rubbingBellyP6 = new PlayerAnimation(getBellyRubbingAnimationName(PregnancyPhase.P6), 240, true);
@@ -335,7 +319,7 @@ public class PlayerAnimationRegistry {
 			part.zRot = MathHelper.animateBetweenAnglesMth(-25.0369F, -17.4144F, continuousAnimationTick, 0.085F);
 		});
 		
-		register(rubbingBellyP6);
+		registerAndSync(rubbingBellyP6);
 		
 	
 		PlayerAnimation rubbingBellyP7 = new PlayerAnimation(getBellyRubbingAnimationName(PregnancyPhase.P7), 240, true);
@@ -352,7 +336,7 @@ public class PlayerAnimationRegistry {
 			part.zRot = MathHelper.animateBetweenAnglesMth(-27.4395F, -15.9488F, continuousAnimationTick, 0.085F);
 		});
 		
-		register(rubbingBellyP7);
+		registerAndSync(rubbingBellyP7);
 
 		
 		PlayerAnimation rubbingBellyP8 = new PlayerAnimation(getBellyRubbingAnimationName(PregnancyPhase.P8), 240, true);
@@ -369,6 +353,13 @@ public class PlayerAnimationRegistry {
 			part.zRot = MathHelper.animateBetweenAnglesMth(-32.4395F, -20.9488F, continuousAnimationTick, 0.085F);
 		});
 		
-		register(rubbingBellyP8);
+		registerAndSync(rubbingBellyP8);
 	}
+	
+	private void registerAndSync(PlayerAnimation anim) {
+        register(anim);
+        CommonPlayerAnimationRegistry.getInstance().register(
+            new AnimationInfo(anim.getName(), anim.getDuration(), anim.isLooping(), anim.shouldOverrideVanilla())
+        );
+    }
 }

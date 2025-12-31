@@ -7,6 +7,7 @@ import net.minecraftforge.network.PlayMessages;
 
 import net.minecraft.world.level.Level;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.monster.AbstractIllager;
 import net.minecraft.world.entity.ai.goal.RestrictSunGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
@@ -91,6 +92,11 @@ public class IllZombieGirl extends AbstractMonsterZombieGirl implements Ill {
 		this.goalSelector.addGoal(11, new FloatGoal(this));
 	}
 
+	@Override
+	public ItemStack getPickResult() {
+	    return ItemStack.EMPTY;
+	}
+	
 	public static AttributeSupplier.Builder createAttributes() {
 		return AbstractMonsterZombieGirl.getBasicAttributes(0.235);
 	}

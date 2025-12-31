@@ -24,6 +24,7 @@ public class PlayerPregnancySystemP2 extends PlayerPregnancySystemP1 {
 	protected void initPregnancyTimers() {
 		totalTicksOfCraving = MinepreggoModConfig.getTotalTicksOfCravingP2();
 		morningSicknessProb = PregnancySystemHelper.MEDIUM_MORNING_SICKNESS_PROBABILITY;
+		pregnancyExhaustion = 1.02f;
 	}
 	
 	@Override
@@ -77,7 +78,7 @@ public class PlayerPregnancySystemP2 extends PlayerPregnancySystemP1 {
 		if (super.tryInitPregnancySymptom()) {
 			return true;
 		} 	
-		if (pregnancyEffects.getMilking() >= PregnancySystemHelper.MAX_MILKING_LEVEL
+		if (pregnancyEffects.getMilking() >= PregnancySystemHelper.ACTIVATE_MILKING_SYMPTOM
 				&& !pregnancySystem.getPregnancySymptoms().contains(PregnancySymptom.MILKING)) {
 			pregnancySystem.addPregnancySymptom(PregnancySymptom.MILKING);
 			pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.LACTATION.get(), -1, 0, false, false, true));

@@ -9,7 +9,9 @@ import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Nullable;
 
+import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
+import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.network.packet.ResetPregnancyS2CPacket;
 import dev.dixmk.minepreggo.network.packet.SyncFemalePlayerDataS2CPacket;
 import dev.dixmk.minepreggo.network.packet.SyncPlayerLactationS2CPacket;
@@ -17,14 +19,14 @@ import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
 import dev.dixmk.minepreggo.world.pregnancy.PostPregnancyData;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.PacketDistributor;
 
 public class FemalePlayerImpl extends FemaleEntityImpl implements IFemalePlayer {
@@ -154,12 +156,53 @@ public class FemalePlayerImpl extends FemaleEntityImpl implements IFemalePlayer 
 				new SyncPlayerLactationS2CPacket(serverPlayer.getUUID(), this.postPregnancyData.map(PostPregnancyData::getPostPartumLactation).orElse(0)));
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	public void updateFromServer(ClientData data) {
+	// TODO: It does not validate if the data is valid for player's current state, it could cause inconsistencies.
+	public void update(ClientData data) {		   
+		if (data.fertility() >= 0.0f && data.fertility() <= 1.0f) {
+			this.fertility = data.fertility;
+	    }
+
 		this.pregnant = data.pregnant;
 		this.postPregnancyData = Optional.ofNullable(data.postPregnancy);
-		this.fertility = data.fertility;
 	}
 	
+	
+	/*
+	 *	TODO: This method is temorary, pregnancy symptoms should be handled by a dedicated system,
+	 * but when player is birth, miscarriage, prebirth, their symptoms are not evaluated by the currect system: PlayerPregnancySystemP0, 
+	 * so this method is called after those events to ensure symptoms are properly removed when their conditions are no longer met.
+	 * It needs to be reworked in the future.
+	 * */
+	public void evaluatePregnancySymptom(ServerPlayer pregnantEntity) {
+		if (isPregnant() && isPregnancySystemInitialized()) {
+			var pregnancySystem = getPregnancySystem();
+			var pregnancyEffects = getPregnancyEffects();
+			pregnancySystem.getPregnancySymptoms().forEach(symptom -> {					
+				boolean flag = false;		
+				if (symptom == PregnancySymptom.CRAVING && pregnancyEffects.getCraving() <= PregnancySystemHelper.DESACTIVATE_CRAVING_SYMPTOM) {
+					getPregnancyEffects().clearTypeOfCravingBySpecies();
+					pregnantEntity.removeEffect(MinepreggoModMobEffects.CRAVING.get());
+					flag = true;
+				}
+				else if (symptom == PregnancySymptom.MILKING && pregnancyEffects.getMilking() <= PregnancySystemHelper.DESACTIVATE_MILKING_SYMPTOM) {
+					pregnantEntity.removeEffect(MinepreggoModMobEffects.LACTATION.get());
+					flag = true;
+				}
+				else if (symptom == PregnancySymptom.BELLY_RUBS && pregnancyEffects.getBellyRubs() <= PregnancySystemHelper.DESACTIVATEL_BELLY_RUBS_SYMPTOM) {
+					pregnantEntity.removeEffect(MinepreggoModMobEffects.BELLY_RUBS.get());
+					flag = true;
+				}
+						
+				if (flag) {
+					pregnancySystem.removePregnancySymptom(symptom);
+					pregnancySystem.sync(pregnantEntity);
+					pregnancyEffects.sync(pregnantEntity);
+					MinepreggoMod.LOGGER.debug("Player {} pregnancy symptom cleared: {}",
+							pregnantEntity.getGameProfile().getName(), symptom);
+				}
+			});	
+		}
+	}
+
 	public static record ClientData(boolean pregnant, @Nullable PostPregnancyData postPregnancy, float fertility) {}
 }

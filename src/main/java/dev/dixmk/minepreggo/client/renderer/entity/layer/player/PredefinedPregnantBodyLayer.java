@@ -21,9 +21,6 @@ import dev.dixmk.minepreggo.client.model.entity.player.PredefinedPregnantBodyP6M
 import dev.dixmk.minepreggo.client.model.entity.player.PredefinedPregnantBodyP7Model;
 import dev.dixmk.minepreggo.client.model.entity.player.PredefinedPregnantBodyP8Model;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
-import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
-import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
-import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -80,7 +77,7 @@ public class PredefinedPregnantBodyLayer extends AbstractPregnantBodyLayer {
     	        
     			if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {
         	        final var pregnancyPhase = femaleData.getPregnancySystem().getCurrentPregnancyStage();	        
-    				textures = PlayerHelper.getPredefinedPlayerTextures("player1", pregnancyPhase);
+    				textures = ClientPlayerHelper.getPredefinedPlayerTextures("player1", pregnancyPhase);
     			
         	        if (textures == null) {
         	        	MinepreggoMod.LOGGER.error("{} in pregnancy phase {} does not have a valid texture", player.getDisplayName().getString(), pregnancyPhase);
@@ -146,24 +143,15 @@ public class PredefinedPregnantBodyLayer extends AbstractPregnantBodyLayer {
         	        } 	
     			}
     			else {
-    				textures = PlayerHelper.getPredefinedPlayerTextures("player1");
-        	        final VertexConsumer boobsVertexConsumer = buffer.getBuffer(RenderType.entityCutoutNoCull(textures.getRight()));           	          	        
-    				
-        	        /*
+    				textures = ClientPlayerHelper.getPredefinedPlayerTextures("player1");
+        	        			
         	        if (textures == null) {
         	        	MinepreggoMod.LOGGER.error("{} does not have a valid texture", player.getDisplayName().getString());
         	        	return;
         	        }
-        	        */
-					femaleData.getPostPregnancyData().ifPresent(post -> {
-						if (post.getPostPregnancy() == PostPregnancy.PARTUM && post.getPostPartumLactation() >= PregnancySystemHelper.ACTIVATE_MILKING_SYMPTOM) {
-							boobsModel.boobs.y -= 0.42F;		
-							boobsModel.boobs.xScale = 1.4F;
-							boobsModel.boobs.yScale = 1.2F;
-							boobsModel.boobs.zScale = 1.3F;	
-						}
-					});
-					
+    				
+    				final VertexConsumer boobsVertexConsumer = buffer.getBuffer(RenderType.entityCutoutNoCull(textures.getRight()));           	          	        
+				
     	        	boobsModel.setupAnim(player, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
     	        	boobsModel.body.copyFrom(playerModel.body);
     	        	boobsModel.renderToBuffer(poseStack, boobsVertexConsumer, packedLight, LivingEntityRenderer.getOverlayCoords(player, 0.0F), 1.0F, 1.0F, 1.0F, 1.0F);

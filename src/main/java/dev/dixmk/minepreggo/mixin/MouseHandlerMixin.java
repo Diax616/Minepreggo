@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import dev.dixmk.minepreggo.client.SexCinematicManager;
+import dev.dixmk.minepreggo.client.CinematicManager;
 
 @Mixin(MouseHandler.class)
 public class MouseHandlerMixin {
@@ -18,11 +18,11 @@ public class MouseHandlerMixin {
         var mc = Minecraft.getInstance();    
         if (mc.player == null) return;
         
-    	if (SexCinematicManager.getInstance().isInCinematic()) {
-    		mc.player.setYRot(SexCinematicManager.getInstance().getStoredYaw());
-    		mc.player.setXRot(SexCinematicManager.getInstance().getStoredPitch());
-    		mc.player.yRotO = SexCinematicManager.getInstance().getStoredYaw();
-    		mc.player.xRotO = SexCinematicManager.getInstance().getStoredPitch();
+    	if (CinematicManager.getInstance().isInCinematic()) {
+    		mc.player.setYRot(CinematicManager.getInstance().getStoredYaw());
+    		mc.player.setXRot(CinematicManager.getInstance().getStoredPitch());
+    		mc.player.yRotO = CinematicManager.getInstance().getStoredYaw();
+    		mc.player.xRotO = CinematicManager.getInstance().getStoredPitch();
             ci.cancel();
         }
     }

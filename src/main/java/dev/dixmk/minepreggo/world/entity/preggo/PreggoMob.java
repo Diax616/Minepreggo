@@ -73,7 +73,7 @@ public abstract class PreggoMob extends TamableAnimal {
 	@Override
 	public void tick() {
 		super.tick();	
-		if (this.level().isClientSide() && !this.loopAnimationState.isStarted()) {
+		if (this.level().isClientSide && !this.loopAnimationState.isStarted()) {
 			this.loopAnimationState.start(this.tickCount);
 		}		
 	}

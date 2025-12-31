@@ -2,6 +2,7 @@ package dev.dixmk.minepreggo.client.model.entity.player;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.jiggle.JigglePhysicsFactory;
+import dev.dixmk.minepreggo.client.animation.preggo.BellyInflation;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -23,6 +24,7 @@ public class CustomPregnantBodyP0Model extends AbstractPregnantBodyModel {
 	// TODO: additionalYPos provokes bugs in belly and boobs Y axis position during animations, need to be fixed or removed
 	public CustomPregnantBodyP0Model(ModelPart root) {
 		super(root,
+				BellyInflation.LOW,
 				JigglePhysicsFactory.createLightweightBoobs(2.0F, true, true),
 				JigglePhysicsFactory.createBelly(6.5F, PregnancyPhase.P0),
 				true);

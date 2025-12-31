@@ -59,7 +59,7 @@ public class MinepreggoModTabs {
                 
                 output.accept(MinepreggoModItems.FEMALE_CHAINMAIL_P0_CHESTPLATE.get());
                 output.accept(MinepreggoModItems.FEMALE_IRON_P0_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_IRON_P0_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.FEMALE_GOLDEN_P0_CHESTPLATE.get());
                 output.accept(MinepreggoModItems.FEMALE_DIAMOND_P0_CHESTPLATE.get());
                 output.accept(MinepreggoModItems.FEMALE_NETHERITE_P0_CHESTPLATE.get());
                 output.accept(MinepreggoModItems.FEMALE_LEATHER_P0_CHESTPLATE.get());
@@ -91,12 +91,13 @@ public class MinepreggoModTabs {
                 output.accept(MinepreggoModItems.MATERNITY_DIAMOND_P4_CHESTPLATE.get());
                 output.accept(MinepreggoModItems.MATERNITY_NETHERITE_P4_CHESTPLATE.get());
                 output.accept(MinepreggoModItems.MATERNITY_LEATHER_P4_CHESTPLATE.get());
-                         
+
+                output.accept(MinepreggoModItems.ROPES.get());
+                output.accept(MinepreggoModItems.LEATHER_KNEE_BRACE.get());
                 output.accept(MinepreggoModItems.IRON_KNEE_BRACE.get());
                 output.accept(MinepreggoModItems.GOLD_KNEE_BRACE.get());
                 output.accept(MinepreggoModItems.DIAMOND_KNEE_BRACE.get());
                 output.accept(MinepreggoModItems.NETHERITE_KNEE_BRACE.get());
-                output.accept(MinepreggoModItems.LEATHER_KNEE_BRACE.get());
                 
                 output.accept(MinepreggoModItems.BELLY_SHIELD_P5.get());
                 output.accept(MinepreggoModItems.BELLY_SHIELD_P6.get());
@@ -106,6 +107,7 @@ public class MinepreggoModTabs {
                 output.accept(MinepreggoModItems.ZOMBIE_LIFE_SUBSTANCE.get());
                 output.accept(MinepreggoModItems.CREEPER_LIFE_SUBSTANCE.get());
                 output.accept(MinepreggoModItems.ENDER_LIFE_SUBSTANCE.get());
+                output.accept(MinepreggoModItems.VILLAGER_LIFE_SUBSTANCE.get());
                 output.accept(MinepreggoModItems.SPECIMEN_TUBE.get());
                 output.accept(MinepreggoModItems.CUM_SPECIMEN_TUBE.get());
                

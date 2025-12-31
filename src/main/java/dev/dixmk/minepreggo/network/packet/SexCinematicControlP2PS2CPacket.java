@@ -3,7 +3,7 @@ package dev.dixmk.minepreggo.network.packet;
 import java.util.function.Supplier;
 
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
-import dev.dixmk.minepreggo.client.SexCinematicManager;
+import dev.dixmk.minepreggo.client.CinematicManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -29,9 +29,9 @@ public record SexCinematicControlP2PS2CPacket(boolean start) {
             if (context.getDirection().getReceptionSide().isClient()) {
                 Minecraft mc = Minecraft.getInstance();
                 if (message.start) {
-                	SexCinematicManager.getInstance().startCinematicWithPlayer(mc.player);                   	
+                	CinematicManager.getInstance().startCinematicWithPlayer(mc.player);                   	
                 } else {
-                	SexCinematicManager.getInstance().endCinematic();
+                	CinematicManager.getInstance().endCinematic();
                 }                    	
             }	  
 		});

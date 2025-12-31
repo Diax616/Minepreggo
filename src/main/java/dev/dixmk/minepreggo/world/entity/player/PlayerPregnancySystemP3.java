@@ -7,6 +7,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
@@ -33,7 +34,7 @@ public class PlayerPregnancySystemP3 extends PlayerPregnancySystemP2 {
 		totalTicksOfCraving = MinepreggoModConfig.getTotalTicksOfCravingP3();
 		totalTicksOfMilking = MinepreggoModConfig.getTotalTicksOfMilkingP3();
 		morningSicknessProb = PregnancySystemHelper.HIGH_MORNING_SICKNESS_PROBABILITY;
-		pregnancyExhaustion = 1.05f;
+		pregnancyExhaustion = 1.03f;
 	}
 	
 	@Override
@@ -115,7 +116,16 @@ public class PlayerPregnancySystemP3 extends PlayerPregnancySystemP2 {
 		if (super.tryInitRandomPregnancyPain()) {
 			return true;
 		}		
-		if (randomSource.nextFloat() < fetalMovementProb) {
+		
+		float newFetalMovementProb = fetalMovementProb;
+		
+		if (this.pregnantEntity.hasEffect(MinepreggoModMobEffects.ETERNAL_PREGNANCY.get())) {
+			newFetalMovementProb *= 5f;
+		}
+		
+		if (randomSource.nextFloat() < newFetalMovementProb) {
+			PlayerHelper.playSoundNearTo(pregnantEntity, MinepreggoModSounds.getRandomPregnancyPain(randomSource));	
+			
 			pregnancySystem.setPregnancyPain(PregnancyPain.FETAL_MOVEMENT);
 			pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.FETAL_MOVEMENT.get(), totalTicksOfFetalMovement, 0, false, false, true));
 			pregnancySystem.sync(pregnantEntity);

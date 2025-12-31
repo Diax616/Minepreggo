@@ -25,7 +25,7 @@ public abstract class AbstractMonsterPregnantZombieGirlModel<E extends AbstractM
 	public void setupAnim(E entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		tryHideBoobs(entity, PregnancySystemHelper::shouldBoobsBeHidden);
 		animator.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);			
-		if (entity.hasPregnancyPain()) {
+		if (entity.hasCustomHeadAnimation()) {
 			this.hat.copyFrom(this.head);
 		}
 		else {
@@ -38,7 +38,7 @@ public abstract class AbstractMonsterPregnantZombieGirlModel<E extends AbstractM
 	}
 	
 	private static<E extends AbstractMonsterPregnantZombieGirl> HierarchicalModel<E> createDefaultHierarchicalModel(ModelPart root) {
-		return new HierarchicalModel<E>() {
+		return new HierarchicalModel<>() {
 			@Override
 			public ModelPart root() {
 				return root;
@@ -64,7 +64,7 @@ public abstract class AbstractMonsterPregnantZombieGirlModel<E extends AbstractM
 						this.animateWalk(ZombieGirlAnimation.WALK, limbSwing, limbSwingAmount * 4.5F, 1f, 1f);
 					}
 				}	
-				if (zombieGirl.hasPregnancyPain()) {
+				if (zombieGirl.isIncapacitated()) {
 				    this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.CONTRACTION2, ageInTicks, 1f);	
 				}
 				else if (zombieGirl.isPassenger()) {

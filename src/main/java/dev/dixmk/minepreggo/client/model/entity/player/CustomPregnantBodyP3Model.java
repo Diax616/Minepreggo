@@ -1,9 +1,9 @@
 package dev.dixmk.minepreggo.client.model.entity.player;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.client.animation.preggo.BellyAnimation;
+import dev.dixmk.minepreggo.client.animation.preggo.BellyInflation;
+import dev.dixmk.minepreggo.client.animation.preggo.FetalMovementIntensity;
 import dev.dixmk.minepreggo.client.jiggle.JigglePhysicsFactory;
-import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -13,7 +13,6 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -25,9 +24,12 @@ public class CustomPregnantBodyP3Model extends AbstractHeavyPregnantBodyModel {
 	
 	public CustomPregnantBodyP3Model(ModelPart root) {
 		super(root,
+				BellyInflation.MEDIUM,
+				FetalMovementIntensity.P3,
 				JigglePhysicsFactory.createBoobs(2.0F, false, false),
 				JigglePhysicsFactory.createBelly(5.0F, PregnancyPhase.P3),
 				JigglePhysicsFactory.createLightweightButt(0.0F));
+		milkingBoobsYPos = -0.46F;
 	}
 	
 	public static LayerDefinition createBodyLayer() {
@@ -51,17 +53,5 @@ public class CustomPregnantBodyP3Model extends AbstractHeavyPregnantBodyModel {
 		PartDefinition leftButt = leftLeg.addOrReplaceChild("left_butt", CubeListBuilder.create(), PartPose.offset(-0.1F, 0.0F, 3.0F));
 		leftButt.addOrReplaceChild("leftAssCube_r1", CubeListBuilder.create().texOffs(18, 50).mirror().addBox(-2.0F, -2.0F, -1.0F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.4F)).mirror(false), PartPose.offsetAndRotation(-0.05F, 1.65F, -0.75F, 0.0F, 3.1416F, 0.0F));
 		return LayerDefinition.create(meshdefinition, 64, 64);
-	}
-	
-	@Override
-	protected void animBelly(AbstractClientPlayer entity, float ageInTicks) {
-		super.animBelly(entity, ageInTicks);
-		this.animate(this.loopAnimationState, BellyAnimation.MEDIUM_BELLY_INFLATION, ageInTicks, 1f);
-		if (entity.hasEffect(MinepreggoModMobEffects.FETAL_MOVEMENT.get())) {
-			this.animate(this.loopAnimationState, BellyAnimation.FETAL_MOVEMENT_P3, ageInTicks);
-		}
-		else {
-			this.animate(this.loopAnimationState, BellyAnimation.MEDIUM_BELLY_INFLATION, ageInTicks);
-		}
 	}
 }

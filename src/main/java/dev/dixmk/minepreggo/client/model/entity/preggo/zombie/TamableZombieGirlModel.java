@@ -12,7 +12,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class TamableZombieGirlModel extends AbstractTamableZombieGirlModel<TamableZombieGirl> {
 	
 	public TamableZombieGirlModel(ModelPart root) {
-		super(root, new HierarchicalModel<TamableZombieGirl>() {
+		super(root, new HierarchicalModel<>() {
 			
 			@Override
 			public ModelPart root() {
@@ -39,10 +39,8 @@ public class TamableZombieGirlModel extends AbstractTamableZombieGirlModel<Tamab
 			
 				if (zombieGirl.isPanic()) {
 					this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.IDLE, ageInTicks, 1f);						
-					return;
-				} 	
-				
-				if (zombieGirl.isWaiting()) {
+				} 		
+				else if (zombieGirl.isWaiting()) {
 					this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.WAIT1, ageInTicks, 1f);										
 				}
 				else if (zombieGirl.isPassenger()) {

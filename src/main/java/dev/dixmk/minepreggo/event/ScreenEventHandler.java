@@ -5,7 +5,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.client.event.RenderGuiEvent;
 import net.minecraftforge.api.distmarker.Dist;
-
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -14,9 +13,9 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.gui.ScreenHelper;
 import dev.dixmk.minepreggo.client.gui.preggo.creeper.AbstractCreeperGirlMainScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.zombie.AbstractZombieGirlMainScreen;
+import dev.dixmk.minepreggo.client.renderer.entity.layer.player.ClientPlayerHelper;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
-import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
 import dev.dixmk.minepreggo.world.pregnancy.PostPregnancyData;
@@ -57,7 +56,7 @@ public class ScreenEventHandler {
 				RenderSystem.setShaderColor(1, 1, 1, 1);
 				final int w = event.getWindow().getGuiScaledWidth();
 				final var gui = event.getGuiGraphics();
-				if (femaleData.isPregnant()) {
+				if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {
 					final var pregnancySystem = femaleData.getPregnancySystem();
 					final var pregnancyEffects = femaleData.getPregnancyEffects();
 					
@@ -133,7 +132,7 @@ public class ScreenEventHandler {
 		gui.blit(ScreenHelper.MINECRAFT_ICONS_TEXTURE, w - 42, 1, 18, 18, 52, 0, 9, 9, 256, 256);
 
 		if (species == Species.HUMAN) {		
-			final var list = PlayerHelper.getCravingIcon(craving);			
+			final var list = ClientPlayerHelper.getCravingIcon(craving);			
 			if (list != null && !list.isEmpty()) {
 				if (list.size() > 1) {
 					if (ticks <= 0) {

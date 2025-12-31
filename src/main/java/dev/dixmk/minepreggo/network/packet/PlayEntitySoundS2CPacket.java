@@ -60,6 +60,6 @@ public class PlayEntitySoundS2CPacket {
     
 	@SubscribeEvent
 	public static void registerMessage(FMLCommonSetupEvent event) {
-		MinepreggoModPacketHandler.addNetworkMessage(SyncMobEffectPacket.class, SyncMobEffectPacket::encode, SyncMobEffectPacket::new, SyncMobEffectPacket::handle);
+		MinepreggoModPacketHandler.addNetworkMessage(PlayEntitySoundS2CPacket.class, PlayEntitySoundS2CPacket::encode, PlayEntitySoundS2CPacket::new, PlayEntitySoundS2CPacket::handle);
 	}
 }

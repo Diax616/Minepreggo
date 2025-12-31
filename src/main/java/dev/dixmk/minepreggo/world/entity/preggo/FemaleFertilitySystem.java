@@ -59,7 +59,7 @@ public abstract class FemaleFertilitySystem<E extends PreggoMob & IFemaleEntity 
 				if (post.getPostPregnancy() == PostPregnancy.PARTUM) {
 					return post.getPostPartumLactation();
 				}
-				return -1;
+				return null;
 			});
 		
 		if (result.isPresent()) {
@@ -70,11 +70,13 @@ public abstract class FemaleFertilitySystem<E extends PreggoMob & IFemaleEntity 
 		    	return null;
 		    }
 		    
+		    if (preggoMob.level().isClientSide) {
+	        	preggoMob.playSound(SoundEvents.COW_MILK, 0.8F, 0.8F + preggoMob.getRandom().nextFloat() * 0.3F);
+		    }
+		    
 	        if (!preggoMob.level().isClientSide) {    	
 	        	MinepreggoMod.LOGGER.debug("{} {}", mainHandItem, mainHandItem.getCount());
-
-	        	preggoMob.playSound(SoundEvents.COW_MILK, 0.8F, 0.8F + preggoMob.getRandom().nextFloat() * 0.3F);
-	    	
+	
 	            currentMilking = Math.max(0, currentMilking - PregnancySystemHelper.MILKING_VALUE);
 	          
 	            // Brigde Server - Client
@@ -117,14 +119,13 @@ public abstract class FemaleFertilitySystem<E extends PreggoMob & IFemaleEntity 
 	
 	protected void evaluatePostPregnancy() {
 		var result = preggoMob.getPostPregnancyData().map(post -> {
-					if (post.getPostPregnancyTimer() > PregnancySystemHelper.TOTAL_TICKS_TO_RECOVER_FROM_POST_PREGNANCY) {
+					if (post.getPostPregnancyTimer() > MinepreggoModConfig.getTotalTicksOfPostPregnancyPhase()) {
 						post.resetPostPregnancyTimer();					
 						if (post.getPostPregnancy() == PostPregnancy.PARTUM) {				
 							
 							// It uses a EntityDataAccessor like bridge to sync the data between server and client
 							preggoMob.setPostPartumLactation(0);
 						}	
-						preggoMob.tryRemovePostPregnancyPhase();
 						return true;
 					}
 					else {
@@ -134,7 +135,7 @@ public abstract class FemaleFertilitySystem<E extends PreggoMob & IFemaleEntity 
 					if (post.getPostPregnancy() == PostPregnancy.PARTUM) {
 						var lactation = post.getPostPartumLactation();				
 						if (lactation < PregnancySystemHelper.MAX_MILKING_LEVEL) {
-							if (post.getPostPartumLactationTimer() > PregnancySystemHelper.TOTAL_TICKS_POST_PARTUM_LACTATION) {
+							if (post.getPostPartumLactationTimer() > MinepreggoModConfig.getTotalTicksOfMaternityLactation()) {
 								post.resetPostPartumLactationTimer();
 								++lactation;
 								
@@ -165,10 +166,9 @@ public abstract class FemaleFertilitySystem<E extends PreggoMob & IFemaleEntity 
 		});	
 	}
 	
-	// CHECK: It does not sync to client side
 	protected boolean tryStartRandomDiscomfort() {
-        if (randomSource.nextFloat() < 0.001F && !preggoMob.hasEffect(MobEffects.CONFUSION)) {
-        	preggoMob.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 200, 0, true, true, true));                 
+        if (randomSource.nextFloat() < 0.005F && !preggoMob.hasEffect(MobEffects.CONFUSION)) {
+        	preggoMob.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 300, 0, false, true, true));                 	
         	return true;
         }    
         return false;

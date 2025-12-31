@@ -1,10 +1,11 @@
 package dev.dixmk.minepreggo.world.entity.preggo;
 
+import dev.dixmk.minepreggo.world.pregnancy.IPregnant;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.util.RandomSource;
 
-public interface ISimplePregnancy {
+public interface ISimplePregnancy extends IPregnant {
 
 	PregnancyPhase getCurrentPregnancyStage();
 	
@@ -12,7 +13,6 @@ public interface ISimplePregnancy {
 	
 	int getTotalDaysPassed();
 	
-	boolean hasPregnancyPain();
 	void setPregnancyPain(boolean value);
 	
 	int getPregnancyPainTimer();
