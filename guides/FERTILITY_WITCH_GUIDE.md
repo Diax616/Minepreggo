@@ -1,10 +1,12 @@
-# Fertility Witch Guide
+# Fertility Witch Guide (AI-generated content)
 
 This guide explains the Fertility Witch entity, including the potions it throws, how it attracts mobs, and the valuable loot it drops upon defeat.
 
 ## Overview
 
 The Fertility Witch is a dangerous hostile mob that specializes in pregnancy-related potions and effects. It behaves similarly to regular witches but has adapted to throw specialized potions related to fertility and pregnancy. These witches actively seek out pregnant entities and impregnate non-pregnant ones.
+
+<img width="1366" height="768" alt="Minecraft_ Forge 1 20 1 - Singleplayer 1_4_2026 1_27_28 AM" src="https://github.com/user-attachments/assets/6145b776-5d77-432a-b589-d074770ff440" />
 
 ---
 
