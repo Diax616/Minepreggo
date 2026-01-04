@@ -1,8 +1,10 @@
-# Impregnation Potions - Complete Guide
+# Impregnation Potions - (AI-generated content)
 
 ## Overview
 
 Impregnation potions are special drinkable items in the Minepreggo mod that instantly trigger pregnancy in the player or mob that drinks them. Unlike waiting for natural pregnancy triggers, these potions provide immediate and reliable pregnancy initiation. Each potion has different effects depending on its strength level and the type of species it's designed for.
+
+<img width="1366" height="768" alt="Minecraft_ 1 20 1 1_3_2026 4_12_08 PM" src="https://github.com/user-attachments/assets/fc614175-d2b2-4bdf-b0de-85d120861f2b" />
 
 ---
 
