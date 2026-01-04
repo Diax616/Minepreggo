@@ -250,8 +250,6 @@ For reference, here are the time conversions used in the mod:
 
 <img width="1366" height="768" alt="Minecraft_ 1 20 1 1_3_2026 4_50_13 PM" src="https://github.com/user-attachments/assets/0445c975-aee8-427f-9162-af7d5c151315" />
 
-<img width="1366" height="768" alt="Minecraft_ 1 20 1 1_3_2026 4_50_49 PM" src="https://github.com/user-attachments/assets/56f32b64-2c49-44e6-ad14-8c195d6e4199" />
-
 <img width="1366" height="768" alt="Minecraft_ 1 20 1 1_3_2026 4_51_08 PM" src="https://github.com/user-attachments/assets/8b5d24c4-df7b-4d79-8d81-75b9d704e386" />
 
 <img width="1366" height="768" alt="Minecraft_ 1 20 1 1_3_2026 4_52_06 PM" src="https://github.com/user-attachments/assets/b02a56a6-87f7-40a5-8de4-03e82babaaa9" />
