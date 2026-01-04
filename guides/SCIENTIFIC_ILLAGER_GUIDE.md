@@ -1,4 +1,4 @@
-# Scientific Illager Guide
+# Scientific Illager Guide (AI-generated content)
 
 This guide explains the Scientific Illager entity, a unique merchant in the Minepreggo mod who provides specialized trading services and prenatal checkup facilities.
 
@@ -29,6 +29,8 @@ The Scientific Illager can be found in **Scientific Illager Hideout** structures
 - **Terrain:** Generates on surface with terrain adaptation
 - **Frequency:** Rare structures, scattered throughout forest biomes
 - **Type:** Jigsaw structure (complex multi-block generation)
+
+<img width="1366" height="768" alt="Minecraft_ 1 20 1 1_3_2026 4_20_13 PM" src="https://github.com/user-attachments/assets/98e4a38d-8b98-4c7b-806c-5b9a6fc89711" />
 
 ### How to Locate
 
