@@ -1,4 +1,4 @@
-# Farmable Items Guide
+# Farmable Items Guide (AI-generated content)
 
 This guide explains how to obtain three essential farmable items in the Minepreggo mod: Lemons, Chili Peppers, and Cucumbers.
 
@@ -7,6 +7,10 @@ This guide explains how to obtain three essential farmable items in the Minepreg
 ## Overview
 
 These three items are food/crop resources that can be obtained through various methods and are useful for crafting craving foods and trading with villagers. All three items are **compostable**, meaning they can be used in composters to produce bone meal.
+
+<img width="1366" height="768" alt="Minecraft_ Forge 1 20 1 - Singleplayer 1_4_2026 1_17_39 AM" src="https://github.com/user-attachments/assets/5d9d5f0b-b4d6-4898-a5e8-5251a5783be1" />
+
+<img width="1366" height="768" alt="Minecraft_ Forge 1 20 1 - Singleplayer 1_4_2026 1_23_20 AM" src="https://github.com/user-attachments/assets/9b9e0c0e-cbef-4a82-889f-1ac72fd9fa7c" />
 
 ---
 
