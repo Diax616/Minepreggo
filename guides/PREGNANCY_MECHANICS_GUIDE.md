@@ -1,8 +1,7 @@
-# Minepreggo Mod - Pregnancy Mechanics Guide
+# Pregnancy Mechanics Guide (AI-generated content)
 
 ## Overview
 This guide explains how the pregnancy system works in the Minepreggo mod in simple terms. The system has three main phases that players will experience.
-
 ---
 
 ## How Players Become Pregnant
@@ -236,4 +235,30 @@ For reference, here are the time conversions used in the mod:
 6. **Plan Ahead:** Know where you'll give birth safely
 
 ---
+
+<img width="1366" height="768" alt="Minecraft_ 1 20 1 1_3_2026 4_46_54 PM" src="https://github.com/user-attachments/assets/a8f2c24b-8bce-4ffb-ba37-ea5f1c8b9959" />
+
+<img width="1366" height="768" alt="Minecraft_ 1 20 1 1_3_2026 4_47_21 PM" src="https://github.com/user-attachments/assets/b87d6383-701c-4eb6-b1c0-72b1615d7046" />
+
+<img width="1366" height="768" alt="Minecraft_ 1 20 1 1_3_2026 4_47_48 PM" src="https://github.com/user-attachments/assets/2bc1e58b-0c66-4dfb-b3f8-e2a5a165ef5d" />
+
+<img width="1366" height="768" alt="Minecraft_ 1 20 1 1_3_2026 4_48_24 PM" src="https://github.com/user-attachments/assets/734a32e9-8bd5-4af9-845b-510569f1f2e4" />
+
+<img width="1366" height="768" alt="Minecraft_ 1 20 1 1_3_2026 4_48_59 PM" src="https://github.com/user-attachments/assets/b62240cf-b8be-4b25-ab56-69699ee0bf37" />
+
+<img width="1366" height="768" alt="Minecraft_ 1 20 1 1_3_2026 4_49_35 PM" src="https://github.com/user-attachments/assets/d5cc767a-f220-4347-aecb-6f6b0cf4cc5f" />
+
+<img width="1366" height="768" alt="Minecraft_ 1 20 1 1_3_2026 4_50_13 PM" src="https://github.com/user-attachments/assets/0445c975-aee8-427f-9162-af7d5c151315" />
+
+<img width="1366" height="768" alt="Minecraft_ 1 20 1 1_3_2026 4_50_49 PM" src="https://github.com/user-attachments/assets/56f32b64-2c49-44e6-ad14-8c195d6e4199" />
+
+<img width="1366" height="768" alt="Minecraft_ 1 20 1 1_3_2026 4_51_08 PM" src="https://github.com/user-attachments/assets/8b5d24c4-df7b-4d79-8d81-75b9d704e386" />
+
+<img width="1366" height="768" alt="Minecraft_ 1 20 1 1_3_2026 4_52_06 PM" src="https://github.com/user-attachments/assets/b02a56a6-87f7-40a5-8de4-03e82babaaa9" />
+
+<img width="1366" height="768" alt="Minecraft_ 1 20 1 1_3_2026 4_53_18 PM" src="https://github.com/user-attachments/assets/c825347e-ac3d-46b0-840b-5747627a06ec" />
+
+<img width="1366" height="768" alt="Minecraft_ 1 20 1 1_3_2026 4_55_19 PM" src="https://github.com/user-attachments/assets/7c01a819-401a-42c6-b3c8-7855fe7dfb19" />
+
+<img width="1366" height="768" alt="Minecraft_ 1 20 1 1_3_2026 4_55_30 PM" src="https://github.com/user-attachments/assets/fa43235d-6886-4f04-8917-3bb2eae23981" />
 
