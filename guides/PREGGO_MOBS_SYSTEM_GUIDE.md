@@ -1,8 +1,10 @@
-# PreggoMobs System - Complete Guide
+# PreggoMobs System - (AI-generated content)
 
 ## Overview
 
 The PreggoMobs system adds special female creatures to the Minepreggo mod that can become pregnant and have unique interactions. The main creatures are **Zombie Girls** and **Humanoid Creeper Girls**. These mobs have two distinct modes of operation: their normal non-pregnant state and their multi-stage pregnancy system.
+
+<img width="1366" height="768" alt="Minecraft_ 1 20 1 1_3_2026 4_58_37 PM" src="https://github.com/user-attachments/assets/de26c5cf-530e-4c3a-86ad-f2dd84ddb86f" />
 
 ---
 
