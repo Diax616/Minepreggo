@@ -1,6 +1,10 @@
-# Preggomob Taming Guide
+# Preggomob Taming Guide (AI-generated content)
 
 This guide explains how to tame and befriend preggomobs in the Minepreggo mod.
+
+<img width="1366" height="768" alt="Minecraft_ 1 20 1 1_3_2026 4_16_01 PM" src="https://github.com/user-attachments/assets/4d56f324-c496-4477-8168-fea131668d60" />
+
+<img width="1366" height="768" alt="Minecraft_ 1 20 1 1_3_2026 4_16_06 PM" src="https://github.com/user-attachments/assets/c03a829a-be6d-4a03-b85e-02ad298f77d9" />
 
 ---
 
