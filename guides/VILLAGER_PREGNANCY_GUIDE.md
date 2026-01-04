@@ -1,4 +1,4 @@
-# Villager Pregnancy Guide
+# Villager Pregnancy Guide (AI-generated content)
 
 This guide explains how players become pregnant by villagers, the benefits and mechanics of villager pregnancies, and how to spawn baby villagers from the "Baby Villager" item obtained after giving birth.
 
@@ -44,6 +44,12 @@ Villagers can impregnate female players through a special mechanic involving foo
 1. The villager begins moving toward the player
 2. Heart particles appear around both the player and villager
 3. The villager is attracted to you and begins the breeding sequence
+
+<img width="1366" height="768" alt="Minecraft_ 1 20 1 1_3_2026 4_31_03 PM" src="https://github.com/user-attachments/assets/17c779ce-5fc6-4076-b5f1-7431c431deaa" />
+
+<img width="1366" height="768" alt="Minecraft_ 1 20 1 1_3_2026 4_32_07 PM" src="https://github.com/user-attachments/assets/8b5499b4-d349-4db6-910c-5f1f61358097" />
+
+<img width="1366" height="768" alt="Minecraft_ 1 20 1 1_3_2026 4_33_02 PM" src="https://github.com/user-attachments/assets/38990034-30c7-4aba-b2f4-183df858868d" />
 
 ### Step 3: The Breeding Sequence
 
@@ -129,13 +135,15 @@ The following situations **prevent villager impregnation:**
 
 One of the most valuable benefits of villager pregnancies is the trading discount you receive from the father villager:
 
+<img width="1366" height="768" alt="Minecraft_ 1 20 1 1_3_2026 4_32_54 PM" src="https://github.com/user-attachments/assets/801c1478-22f4-4470-a207-cf215b32a709" />
+
 **After Successful Breeding:**
-- The father villager gains **25 Major Positive reputation gossip** with you
+- The father villager gains **15 Major Positive reputation gossip** with you
 - This reputation is permanent and persists between sessions
 
 **When You Become Pregnant:**
 - If the father villager recognizes you are pregnant (you interact with them after becoming pregnant)
-- The villager gains an additional **50 Major Positive reputation gossip**
+- The villager gains an additional **30 Major Positive reputation gossip**
 - This bonus reputation further increases the discount
 
 **Trading Price Reduction:**
