@@ -1,4 +1,4 @@
-# Pregnancy Cravings and Craving Foods Guide
+# Pregnancy Cravings and Craving Foods Guide (AI-generated content)
 
 This guide explains the pregnancy craving system and all the special foods that satisfy different types of cravings in the Minepreggo mod.
 
