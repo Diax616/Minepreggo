@@ -1,4 +1,4 @@
-# Interspecies Pregnancy Guide
+# Interspecies Pregnancy Guide (AI-generated content)
 
 This guide explains interspecies pregnancies in the Minepreggo mod, including the unique effects that occur when a player carries offspring from different creature species, and what happens if the pregnant mother dies.
 
