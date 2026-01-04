@@ -1,4 +1,4 @@
-# Impregnation Potion Brewing Recipes
+# Impregnation Potion Brewing Recipes (AI-generated content)
 
 This guide explains how to brew all types of Impregnation Potions and related potions using a brewing stand.
 
