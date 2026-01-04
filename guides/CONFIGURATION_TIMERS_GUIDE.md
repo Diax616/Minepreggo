@@ -1,6 +1,8 @@
-# Configuration Timers Guide
+# Configuration Timers Guide (AI-generated content)
 
-This guide explains all the configurable timer settings in the Minepreggo mod. These settings control how long various pregnancy-related effects last and can be customized in the mod's configuration file.
+This guide explains all the configurable timer settings in the Minepreggo mod. These settings control how long various pregnancy-related effects last and can be customized in the mod's configuration file. It can use the "configured" mod to modify the .toml files, but it has to close and reopen the game for the changes to take effect.
+
+<img width="1366" height="768" alt="Minecraft_ Forge 1 20 1 1_4_2026 1_11_01 AM" src="https://github.com/user-attachments/assets/c9d4afc2-7f8a-4f1c-bc9e-dc281a2a25e3" />
 
 ---
 
