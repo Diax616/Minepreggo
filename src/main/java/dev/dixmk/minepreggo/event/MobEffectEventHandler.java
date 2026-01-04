@@ -3,14 +3,14 @@ package dev.dixmk.minepreggo.event;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
-import dev.dixmk.minepreggo.world.effect.AbstractPlayerPregnancy;
+import dev.dixmk.minepreggo.world.effect.Impregnantion;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -32,16 +32,16 @@ public class MobEffectEventHandler {
         MobEffect effect = effectInstance.getEffect();
         Level level = entity.level();
         
-    	if (entity instanceof Player player && PregnancySystemHelper.isPregnancyEffect(effect)) {             
-            if (effect instanceof AbstractPlayerPregnancy) {
-            	player.refreshDimensions();
-            }  
+        // Unmark entity for impregnation if Impregnantion effect is removed by other means (like milk)
+        if (!level.isClientSide && (effect == MinepreggoModMobEffects.IMPREGNANTION.get() || effect instanceof Impregnantion)) {
+        	Impregnantion.unmarkForImpregnation(entity);
+        }
+        
+    	if (!level.isClientSide && entity instanceof ServerPlayer player && PregnancySystemHelper.isPregnancyEffect(effect)) {             
             // Only sync from server side to avoid client-side PacketDistributor usage
-        	if (!level.isClientSide) {
-                PregnancySystemHelper.syncRemovedMobEffect(player, effect);
-            	if (effect == MinepreggoModMobEffects.FERTILE.get()) {           		
-            		removeMobAttacks(player);
-            	}
+            PregnancySystemHelper.syncRemovedMobEffect(player, effect);
+        	if (effect == MinepreggoModMobEffects.FERTILE.get()) {           		
+        		removeMobAttacks(player);
         	}
     	}
     	else if (!level.isClientSide && entity instanceof PreggoMob && effect == MobEffects.CONFUSION) {
@@ -61,16 +61,11 @@ public class MobEffectEventHandler {
         Level level = entity.level();
        
         
-        if (entity instanceof Player player && PregnancySystemHelper.isPregnancyEffect(effect)) {
-            if (effect instanceof AbstractPlayerPregnancy) {
-            	player.refreshDimensions();
-            }  
+        if (!level.isClientSide && entity instanceof ServerPlayer player && PregnancySystemHelper.isPregnancyEffect(effect)) {  	
             // Only sync from server side to avoid client-side PacketDistributor usage
-        	if (!level.isClientSide) {
-                PregnancySystemHelper.syncRemovedMobEffect(player, effectInstance.getEffect());
-            	if (effect == MinepreggoModMobEffects.FERTILE.get()) {
-            		removeMobAttacks(player);
-            	}
+            PregnancySystemHelper.syncRemovedMobEffect(player, effectInstance.getEffect());
+        	if (effect == MinepreggoModMobEffects.FERTILE.get()) {
+        		removeMobAttacks(player);
         	}
         }
     	else if (!level.isClientSide && entity instanceof PreggoMob && effect == MobEffects.CONFUSION) {
@@ -85,21 +80,13 @@ public class MobEffectEventHandler {
     	LivingEntity entity = event.getEntity();
         Level level = entity.level();        
          
-        if (entity instanceof Player && PregnancySystemHelper.isPregnancyEffect(effect)) {
-            if (effect instanceof AbstractPlayerPregnancy) {
-            	entity.refreshDimensions();
-            }            	
-            // Only sync from server side to avoid client-side PacketDistributor usage
-        	if (!level.isClientSide) {
-                PregnancySystemHelper.syncNewMobEffect(entity, effectInstance);
-            }
+        if (!level.isClientSide
+        		&& ((entity instanceof ServerPlayer && PregnancySystemHelper.isPregnancyEffect(effect)) || (entity instanceof PreggoMob && effect == MobEffects.CONFUSION))) {          
+        	PregnancySystemHelper.syncNewMobEffect(entity, effectInstance);
         }
-    	else if (!level.isClientSide && entity instanceof PreggoMob && effect == MobEffects.CONFUSION) {
-            PregnancySystemHelper.syncNewMobEffect(entity, effectInstance);
-    	}
     }
     
-    private static void removeMobAttacks(Player player) {
+    private static void removeMobAttacks(ServerPlayer player) {
     	player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap ->
     		cap.getFemaleData().ifPresent(femaleData -> {
     			femaleData.clearMobAttacks();

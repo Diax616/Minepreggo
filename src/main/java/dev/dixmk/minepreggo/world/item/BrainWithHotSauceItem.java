@@ -13,7 +13,7 @@ public class BrainWithHotSauceItem extends AbstractBrain implements IItemCraving
 	@Override
 	@Nonnegative
 	public int getGratification() {
-		return 8;
+		return 9;
 	}
 	
 	@Override
@@ -28,6 +28,6 @@ public class BrainWithHotSauceItem extends AbstractBrain implements IItemCraving
 
 	@Override
 	public @Nonnegative float getPenalty() {
-		return 0.5f;
+		return 0.2f;
 	}
 }

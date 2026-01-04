@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.world.inventory.preggo.RequestSexP2PMenu;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -35,7 +36,7 @@ public record RequestSexP2PC2SPacket(int sourcePlayerId, int targetPlayerId) {
 				final ServerPlayer source = level.getEntity(message.sourcePlayerId) instanceof ServerPlayer s ? s : null;
 				final ServerPlayer target = level.getEntity(message.targetPlayerId) instanceof ServerPlayer t ? t : null;
 						
-				if (source != null && target != null) {
+				if (source != null && target != null && PregnancySystemHelper.canFuck(source, target)) {
 					RequestSexP2PMenu.create(target, sender);
 				}
 			}

@@ -13,12 +13,13 @@ import net.minecraft.client.model.IllagerModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
+import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
 
 @OnlyIn(Dist.CLIENT)
 public class ScientificIllagerRenderer extends IllagerRenderer<ScientificIllager> {
 	
-	private static final ResourceLocation SCIENTIFIC_ILLAGER = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/illager/scientific_illager.png");
+	private static final ResourceLocation SCIENTIFIC_ILLAGER = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/illager/scientific_illager.png");
 	
 	public ScientificIllagerRenderer(EntityRendererProvider.Context context) {		
 		super(context, new IllagerModel<>(context.bakeLayer(ModelLayers.VINDICATOR)), 0.5F);

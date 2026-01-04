@@ -3,8 +3,10 @@ package dev.dixmk.minepreggo.network.packet;
 import java.util.function.Supplier;
 
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
-import dev.dixmk.minepreggo.client.particle.ParticleHelper;
+import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.server.ServerCinematicManager;
+import dev.dixmk.minepreggo.utils.ServerParticleUtil;
+import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobFace;
@@ -13,7 +15,10 @@ import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGi
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamableZombieGirl;
 import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
 import dev.dixmk.minepreggo.world.pregnancy.IFemaleEntity;
+import dev.dixmk.minepreggo.world.pregnancy.IPregnancyEffectsHandler;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -56,7 +61,7 @@ public record RequestSexCinematicP2MC2SPacket(int mobId) {
     }
     
     private static<E extends PreggoMob & ITamablePreggoMob<FemaleEntityImpl> & IFemaleEntity> void init(ServerPlayer source, E preggoMob) {   	
-		if (!PreggoMobHelper.canOwnerActivateSexEvent(source, preggoMob)) {
+    	if (!PreggoMobHelper.canOwnerActivateSexEvent(source, preggoMob)) {
 			return;
 		}
 
@@ -64,13 +69,24 @@ public record RequestSexCinematicP2MC2SPacket(int mobId) {
 				source,
 				preggoMob,
 				() -> {
-					ParticleHelper.spawnRandomlyFromServer(preggoMob, ParticleTypes.HEART);
+					ServerParticleUtil.spawnRandomlyFromServer(preggoMob, ParticleTypes.HEART);
 					preggoMob.setFaceState(PreggoMobFace.BLUSHED);  
 				}, () -> {
 					preggoMob.cleanFaceState();
 					if (!(preggoMob instanceof IPregnancySystemHandler)) {
 						PreggoMobHelper.initPregnancyBySex(preggoMob, source);
+					}	
+					else if (preggoMob instanceof IPregnancySystemHandler pregnancyHandler
+							&& preggoMob instanceof IPregnancyEffectsHandler effectsHandler
+							&& pregnancyHandler.getCurrentPregnancyStage().compareTo(PregnancyPhase.P4) >= 0) {
+						pregnancyHandler.removePregnancySymptom(PregnancySymptom.HORNY);
+						effectsHandler.setHorny(0);		
+						effectsHandler.setHornyTimer(0);
 					}
+					
+					preggoMob.reduceSexualAppetite(5);
+					source.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> cap.getBreedableData().ifPresent(breedableData -> breedableData.reduceSexualAppetite(5)));					
+					PlayerHelper.removeHorny(source);
 				});
 		
 		preggoMob.setCinematicOwner(source);

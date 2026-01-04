@@ -11,6 +11,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.event.entity.living.EnderWomanAngerEvent;
+import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
@@ -450,7 +451,7 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
 
 	@Override
 	protected ResourceLocation getDefaultLootTable() {
-	    return ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "entities/abstract_ender_girl_loot");
+	    return MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "entities/abstract_ender_girl_loot");
 	}
     
     public static boolean isEnderMask(ItemStack imItemStack, Player player, AbstractEnderWoman abstractEnderGirl) {

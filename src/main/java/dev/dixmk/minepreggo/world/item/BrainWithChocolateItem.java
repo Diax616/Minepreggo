@@ -28,6 +28,6 @@ public class BrainWithChocolateItem extends AbstractBrain implements IItemCravin
 
 	@Override
 	public @Nonnegative float getPenalty() {
-		return 0.5f;
+		return 0.2f;
 	}
 }

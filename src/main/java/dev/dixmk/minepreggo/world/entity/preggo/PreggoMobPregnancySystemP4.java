@@ -13,6 +13,7 @@ import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.network.packet.RequestSexM2PC2SPacket;
 import dev.dixmk.minepreggo.world.pregnancy.AbstractPregnancySystem;
 import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
+import dev.dixmk.minepreggo.world.pregnancy.IBreedable;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancyEffectsHandler;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
@@ -196,8 +197,10 @@ public abstract class PreggoMobPregnancySystemP4<E extends PreggoMob
 		if (super.tryInitPregnancySymptom()) {
 			return true;
 		}
-		if (pregnantEntity.getHorny() >= PregnancySystemHelper.ACTIVATE_HORNY_SYMPTOM) {
+		if (pregnantEntity.getHorny() >= PregnancySystemHelper.ACTIVATE_HORNY_SYMPTOM
+				&& !pregnantEntity.getPregnancySymptoms().contains(PregnancySymptom.HORNY)) {
 	    	pregnantEntity.addPregnancySymptom(PregnancySymptom.HORNY);
+	    	pregnantEntity.getGenderedData().setSexualAppetite(IBreedable.MAX_SEXUAL_APPETIVE);
 	    	return true;		
 		}
 		return false;
@@ -252,7 +255,7 @@ public abstract class PreggoMobPregnancySystemP4<E extends PreggoMob
 			return false;
 		}
 		
-		if (sexRequestCooldown < 4800) {
+		if (sexRequestCooldown < 3600) {
 			++sexRequestCooldown;
 			return false;
 		}

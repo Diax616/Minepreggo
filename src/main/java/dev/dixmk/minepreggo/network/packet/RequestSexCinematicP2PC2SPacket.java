@@ -4,8 +4,9 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
-import dev.dixmk.minepreggo.client.particle.ParticleHelper;
 import dev.dixmk.minepreggo.server.ServerCinematicManager;
+import dev.dixmk.minepreggo.utils.ServerParticleUtil;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -37,11 +38,15 @@ public record RequestSexCinematicP2PC2SPacket(UUID targetPlayerUUID) {
                 if (level.getPlayerByUUID(message.targetPlayerUUID) instanceof ServerPlayer target
                 		&& source.distanceToSqr(target) <= 32
                 		&& !ServerCinematicManager.getInstance().isInCinematic(target)) {
-                		      		
+                		      	
+	    				if (!PregnancySystemHelper.canFuck(source, target)) {
+	    					return;
+	    				}
+                	
                 		ServerCinematicManager.getInstance().start(
                 				source,
                 				target,
-                				() -> ParticleHelper.spawnRandomlyFromServer(target, ParticleTypes.HEART),
+                				() -> ServerParticleUtil.spawnRandomlyFromServer(target, ParticleTypes.HEART),
                 				null);
          
                 	 	final int totalOverlayTicks = 120;

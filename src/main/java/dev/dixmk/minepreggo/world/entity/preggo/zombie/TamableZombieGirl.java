@@ -101,11 +101,6 @@ public class TamableZombieGirl extends AbstractTamableZombieGirl<PreggoMobSystem
 	@Override
    	public void aiStep() {
       super.aiStep();
-      
-      if (this.level().isClientSide) {
-    	  return;
-      }
-      
       this.fertilitySystem.onServerTick();
 	}
 

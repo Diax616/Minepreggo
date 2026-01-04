@@ -1,11 +1,8 @@
 package dev.dixmk.minepreggo.client.model.entity.player;
 
-import java.util.UUID;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import dev.dixmk.minepreggo.client.animation.player.BellyAnimationManager;
 import dev.dixmk.minepreggo.client.animation.preggo.BellyInflation;
 import dev.dixmk.minepreggo.client.animation.preggo.FetalMovementIntensity;
 import dev.dixmk.minepreggo.client.jiggle.BellyJigglePhysics;
@@ -13,10 +10,8 @@ import dev.dixmk.minepreggo.client.jiggle.WrapperBoobsJiggle;
 import dev.dixmk.minepreggo.client.jiggle.WrapperButtJiggle;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
-import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.world.entity.AnimationState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -48,7 +43,7 @@ public abstract class AbstractHeavyPregnantBodyModel extends AbstractPregnantBod
 	}
 	
 	@Override
-	protected void animBelly(AbstractClientPlayer entity, float ageInTicks) {      
+	protected void animBellyIdle(AbstractClientPlayer entity, float ageInTicks) {      	
 		entity.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
 			cap.getFemaleData().ifPresent(femaleData -> {		
 				if (entity.hasEffect(MinepreggoModMobEffects.FETAL_MOVEMENT.get()) ) {
@@ -59,16 +54,6 @@ public abstract class AbstractHeavyPregnantBodyModel extends AbstractPregnantBod
 				}
 			})
 		);
-
-		UUID playerId = entity.getUUID(); 
-        if (BellyAnimationManager.getInstance().isAnimating(playerId)) {
-    		AnimationState state = BellyAnimationManager.getInstance().getAnimationState(playerId);
-            AnimationDefinition animation = BellyAnimationManager.getInstance().getCurrentAnimation(playerId);
-            
-            if (state != null && animation != null) {
-                this.animate(state, animation, ageInTicks);
-            }
-        }
 	}
 	
 	@Override

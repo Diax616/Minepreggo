@@ -8,6 +8,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
+import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.inventory.preggo.AbstractRequestSexMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -25,7 +26,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public abstract class AbstractRequestSexScreen 
 	<S extends LivingEntity, T extends LivingEntity, M extends AbstractRequestSexMenu<S, T>> extends AbstractContainerScreen<M> {
 	
-	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/request_sex.png");
+	private static final ResourceLocation TEXTURE = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/request_sex.png");
 	
 	protected final Level level;
 	protected final Player player;

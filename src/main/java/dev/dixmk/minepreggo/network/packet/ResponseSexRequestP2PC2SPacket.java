@@ -2,14 +2,13 @@ package dev.dixmk.minepreggo.network.packet;
 
 import java.util.function.Supplier;
 
+import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
-import dev.dixmk.minepreggo.client.particle.ParticleHelper;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.server.ServerCinematicManager;
+import dev.dixmk.minepreggo.utils.ServerParticleUtil;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.pregnancy.Gender;
-import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
-import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -38,20 +37,23 @@ public record ResponseSexRequestP2PC2SPacket(int sourcePlayerId, int targetPlaye
 	public static void handler(ResponseSexRequestP2PC2SPacket message, Supplier<NetworkEvent.Context> contextSupplier) {
 		NetworkEvent.Context context = contextSupplier.get();
 		context.enqueueWork(() -> {
-			if (context.getDirection().getReceptionSide().isServer()) {	
+			if (context.getDirection().getReceptionSide().isServer()) {									
 				var sender = context.getSender();
 				var level = sender.level();
-				final ServerPlayer target = level.getEntity(message.sourcePlayerId) instanceof ServerPlayer s ? s : null;
-				final ServerPlayer source = level.getEntity(message.targetPlayerId) instanceof ServerPlayer t ? t : null;
+				final ServerPlayer source = level.getEntity(message.sourcePlayerId) instanceof ServerPlayer s ? s : null;
+				final ServerPlayer target = level.getEntity(message.targetPlayerId) instanceof ServerPlayer t ? t : null;
 		
-				if (source == null || target == null || !target.getUUID().equals(sender.getUUID())) return;
-				
-				if (message.accept) {	
-					accept(source, target);
-					return;
+				if (source != null && target != null) {					
+					if (message.accept) {	
+						accept(source, target);
+						return;
+					}
+					else {
+						reject(target);
+					}
 				}
 				else {
-					reject(target);
+					MinepreggoMod.LOGGER.warn("Could not find source or target player for ResponseSexRequestP2PC2SPacket: source id {}, target id {}", message.sourcePlayerId, message.targetPlayerId);
 				}
 			}
 		});
@@ -61,30 +63,32 @@ public record ResponseSexRequestP2PC2SPacket(int sourcePlayerId, int targetPlaye
 	private static void accept(ServerPlayer source, ServerPlayer target) {		
 		source.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(sourceCap -> 
 			target.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(targetCap -> {										
-				Runnable impregnationTask = () -> {
-			
+				Runnable impregnationTask = () -> {			
 					if (sourceCap.getGender() ==  Gender.FEMALE) {						
 						PlayerHelper.tryStartPregnancyBySex(source, target);
-						removeHorny(source);
+						
 					}
 					else if (targetCap.getGender() ==  Gender.FEMALE) {						
 						PlayerHelper.tryStartPregnancyBySex(target, source);
-						removeHorny(target);
 					}
+										
+					sourceCap.getBreedableData().ifPresent(breedableData -> {
+						breedableData.setFertilityRate(0);
+						breedableData.reduceSexualAppetite(5);
+					});
 						
-					var breedableData = sourceCap.getBreedableData();				
-					if (breedableData != null) {
+					targetCap.getBreedableData().ifPresent(breedableData -> {
 						breedableData.setFertilityRate(0);
-					}
-					breedableData = targetCap.getBreedableData();
-					if (breedableData != null) {
-						breedableData.setFertilityRate(0);
-					}
+						breedableData.reduceSexualAppetite(5);
+					});
+					
+					PlayerHelper.removeHorny(source);
+					PlayerHelper.removeHorny(target);
 				};	
 						
-				final Runnable task = () -> {
-					ParticleHelper.spawnRandomlyFromServer(source, ParticleTypes.HEART);
-					ParticleHelper.spawnRandomlyFromServer(target, ParticleTypes.HEART);
+				Runnable task = () -> {
+					ServerParticleUtil.spawnRandomlyFromServer(source, ParticleTypes.HEART);
+					ServerParticleUtil.spawnRandomlyFromServer(target, ParticleTypes.HEART);
 				};
 				
 				MinepreggoModPacketHandler.queueServerWork(20, task);		
@@ -132,24 +136,8 @@ public record ResponseSexRequestP2PC2SPacket(int sourcePlayerId, int targetPlaye
 		);
 	}
 	
-	private static void removeHorny(ServerPlayer source) {
-		source.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
-			cap.getFemaleData().ifPresent(femaleData -> {
-				if (femaleData.isPregnant()
-						&& femaleData.isPregnancySystemInitialized()
-						&& femaleData.getPregnancySystem().getCurrentPregnancyStage().compareTo(PregnancyPhase.P4) >= 0) {				
-					femaleData.getPregnancyEffects().setHorny(0);
-					femaleData.getPregnancySystem().getPregnancySymptoms().remove(PregnancySymptom.HORNY);
-					
-					femaleData.getPregnancyEffects().sync(source);
-					femaleData.getPregnancySystem().sync(source);
-				}
-			})			
-		);
-	}
-	
 	private static void reject(ServerPlayer target) {
-		ParticleHelper.spawnRandomlyFromServer(target, ParticleTypes.SMOKE);			
+		ServerParticleUtil.spawnRandomlyFromServer(target, ParticleTypes.SMOKE);			
 	}
 	
 	@SubscribeEvent

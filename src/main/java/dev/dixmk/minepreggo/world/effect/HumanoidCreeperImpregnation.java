@@ -20,7 +20,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.ai.attributes.AttributeMap;
 
 public class HumanoidCreeperImpregnation extends Impregnantion {
 	
@@ -29,7 +28,7 @@ public class HumanoidCreeperImpregnation extends Impregnantion {
 	}
 
 	@Override
-	public void removeAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {
+	public void applyImpregnationEffect(LivingEntity entity, int amplifier) {
 		if (entity instanceof ServerPlayer serverPlayer) {			
 			if (PlayerHelper.tryStartPregnancyByPotion(serverPlayer, ImmutableTriple.of(Optional.empty(), Species.CREEPER, Creature.HUMANOID), amplifier)) {
 				MinepreggoMod.LOGGER.info("Player {} has become pregnant.", serverPlayer.getName().getString());

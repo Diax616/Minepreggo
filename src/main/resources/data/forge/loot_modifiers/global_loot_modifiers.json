@@ -1,6 +1,9 @@
 {
   "replace": false,
   "entries": [
-    "minepreggo:oak_lemons"
+    "minepreggo:oak_lemons",
+	"minepreggo:villager_brain_loot",
+	"minepreggo:illager_brain_loot",
+	"minepreggo:witch_brain_loot"
   ]
 }

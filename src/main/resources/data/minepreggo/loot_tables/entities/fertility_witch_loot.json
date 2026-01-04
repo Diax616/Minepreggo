@@ -2,7 +2,7 @@
   "type": "minecraft:entity",
   "pools": [
 	{
-	  "rolls": 1,
+	  "rolls": 2,
 	  "entries": [
 		{
 		"type": "minecraft:item",
@@ -25,6 +25,30 @@
 		}],
 		  "conditions": [
 		    { "condition": "minecraft:random_chance", "chance": 0.25 }
+		  ]
+		},
+		
+		{
+		"type": "minecraft:item",
+		"name": "minecraft:potion",
+		"functions": [{
+			"function": "set_nbt",
+			"tag": "{Potion:\"minepreggo:creeper_impregnation_0\"}"
+		}],
+		  "conditions": [
+		    { "condition": "minecraft:random_chance", "chance": 0.25 }
+		  ]
+		},
+		
+		{
+		"type": "minecraft:item",
+		"name": "minecraft:potion",
+		"functions": [{
+			"function": "set_nbt",
+			"tag": "{Potion:\"minepreggo:ender_impregnation_0\"}"
+		}],
+		  "conditions": [
+		    { "condition": "minecraft:random_chance", "chance": 0.1 }
 		  ]
 		},
 		
@@ -57,7 +81,7 @@
 	
     {
       "rolls": 1,  
-	  "bonus_rolls": 0,
+	  "bonus_rolls": 2,
 	  "conditions": [
 	    {
 	      "condition": "minecraft:killed_by_player"
@@ -75,7 +99,7 @@
 		"functions": [
 		{
 			"function": "set_nbt",
-			"tag": "{Potion:\"minepreggo:baby_duplication_2\"}"
+			"tag": "{Potion:\"minepreggo:baby_duplication_4\"}"
 		}]
 		},
 		
@@ -85,7 +109,7 @@
 		"functions": [
 		{
 			"function": "set_nbt",
-			"tag": "{Potion:\"minepreggo:pregnancy_acceleration_2\"}"
+			"tag": "{Potion:\"minepreggo:pregnancy_acceleration_4\"}"
 		}]
 		},
 		
@@ -95,7 +119,17 @@
 		"functions": [
 		{
 			"function": "set_nbt",
-			"tag": "{Potion:\"minepreggo:pregnancy_delay_2\"}"
+			"tag": "{Potion:\"minepreggo:impregnation_4\"}"
+		}]
+		},
+		
+		{
+		"type": "minecraft:item",
+		"name": "minecraft:potion",
+		"functions": [
+		{
+			"function": "set_nbt",
+			"tag": "{Potion:\"minepreggo:pregnancy_delay_4\"}"
 		}]
 		},
 		

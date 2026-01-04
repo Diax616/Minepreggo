@@ -3,8 +3,8 @@ package dev.dixmk.minepreggo.world.item;
 import java.util.function.Consumer;
 
 import dev.dixmk.minepreggo.client.model.armor.ArmorModelHelper;
+import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -41,7 +41,7 @@ public abstract class KneeBraceItem extends ArmorItem {
 
 			@Override
 			public SoundEvent getEquipSound() {
-				return ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("item.armor.equip_leather"));
+				return ForgeRegistries.SOUND_EVENTS.getValue(MinepreggoHelper.withDefaultNamespace("item.armor.equip_leather"));
 			}
 
 			@Override

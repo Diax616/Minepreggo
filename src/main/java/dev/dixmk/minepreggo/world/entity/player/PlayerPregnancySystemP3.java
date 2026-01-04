@@ -149,8 +149,7 @@ public class PlayerPregnancySystemP3 extends PlayerPregnancySystemP2 {
 				&& !pregnancySystem.getPregnancySymptoms().contains(PregnancySymptom.BELLY_RUBS)) {
 			pregnancySystem.addPregnancySymptom(PregnancySymptom.BELLY_RUBS);
 			pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.BELLY_RUBS.get(), -1, 0, false, false, true));
-			pregnancySystem.sync(pregnantEntity);
-			pregnancyEffects.sync(pregnantEntity);	
+			pregnancySystem.sync(pregnantEntity);	
 			MinepreggoMod.LOGGER.debug("Player {} has developed pregnancy symptom: {}, all pregnancy symptom: {}",
 					pregnantEntity.getGameProfile().getName(), PregnancySymptom.BELLY_RUBS, pregnancySystem.getPregnancySymptoms());
 			return true;

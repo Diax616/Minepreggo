@@ -1,6 +1,7 @@
 package dev.dixmk.minepreggo.mixin;
 
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -30,6 +31,14 @@ public class ServerPlayerMixin {
         				&& femaleData.getPostPregnancyData().isEmpty()
         				&& VILLAGER_FOODS.contains(stack.getItem())) {
         	        stack.getOrCreateTag().putUUID("femalePlayerUUID", player.getUUID());
+        		}
+        		else if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {
+        			var pregnancySystem = femaleData.getPregnancySystem();
+        			var phase = pregnancySystem.getCurrentPregnancyStage();
+        			
+        			if (phase.compareTo(PregnancyPhase.P4) >= 0) {
+            	        stack.getOrCreateTag().putUUID("pregnantFemalePlayerUUID", player.getUUID());
+        			}   			
         		}
         	})
         );

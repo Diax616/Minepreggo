@@ -70,13 +70,9 @@ public abstract class FemaleFertilitySystem<E extends PreggoMob & IFemaleEntity 
 		    	return null;
 		    }
 		    
-		    if (preggoMob.level().isClientSide) {
-	        	preggoMob.playSound(SoundEvents.COW_MILK, 0.8F, 0.8F + preggoMob.getRandom().nextFloat() * 0.3F);
-		    }
+        	preggoMob.playSound(SoundEvents.COW_MILK, 0.8F, 0.8F + preggoMob.getRandom().nextFloat() * 0.3F);
 		    
 	        if (!preggoMob.level().isClientSide) {    	
-	        	MinepreggoMod.LOGGER.debug("{} {}", mainHandItem, mainHandItem.getCount());
-	
 	            currentMilking = Math.max(0, currentMilking - PregnancySystemHelper.MILKING_VALUE);
 	          
 	            // Brigde Server - Client
@@ -95,9 +91,7 @@ public abstract class FemaleFertilitySystem<E extends PreggoMob & IFemaleEntity 
 	            if (mainHandItem.isEmpty()) {
 	                source.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
 	            }        
-	            source.getInventory().setChanged();
-	                      
-	        	MinepreggoMod.LOGGER.debug("{} {}", mainHandItem, mainHandItem.getCount());
+	            source.getInventory().setChanged();	                      
 	        }
 	     
 	        return Result.SUCCESS; 
@@ -105,8 +99,6 @@ public abstract class FemaleFertilitySystem<E extends PreggoMob & IFemaleEntity 
 
 		return null;
 	}
-	
-	
 	
 	protected void evaluatePregnancyInitializerTimer() {			    	
         if (preggoMob.getPregnancyInitializerTimer() >= MinepreggoModConfig.getTicksToStartPregnancy()) {

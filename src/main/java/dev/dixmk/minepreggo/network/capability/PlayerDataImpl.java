@@ -1,5 +1,7 @@
 package dev.dixmk.minepreggo.network.capability;
 
+import java.util.Optional;
+
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.network.packet.SyncPlayerDataS2CPacket;
@@ -102,15 +104,25 @@ public class PlayerDataImpl implements IPlayerData {
         return malePlayerData;
     }
 
-    public AbstractBreedableEntity getBreedableData() {  
-    	
-    	AbstractBreedableEntity data = getFemaleData().resolve().orElse(null);
-    		
-    	if (data == null) {
-    		return getMaleData().resolve().orElse(null);
+    public Optional<AbstractBreedableEntity> getBreedableData() {  
+    	if (getGender() == Gender.FEMALE) {
+    		var data = getFemaleData().resolve().orElse(null);  		
+    		if (data == null) {
+    			MinepreggoMod.LOGGER.error("Player is female, but female data is not PRESENT");
+    		}		
+    		return Optional.ofNullable(data);
+    	}    	else if (getGender() == Gender.MALE) {
+    		var data = getMaleData().resolve().orElse(null);  		
+    		if (data == null) {
+    			MinepreggoMod.LOGGER.error("Player is male, but male data is not PRESENT");
+    		}	
+    		return Optional.ofNullable(data);
     	}
+    	
 
-    	return data;
+    	
+    	
+    	return Optional.empty();
     }
     
     

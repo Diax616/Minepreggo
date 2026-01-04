@@ -254,6 +254,7 @@ public class PlayerPregnancySystemImpl implements IPlayerPregnancySystemHandler 
 		if ((this.pregnancySymptomsBitMask & symptom.flag) != 0) {
 			return false;
 		}	
+			
 		this.pregnancySymptomsBitMask |= symptom.flag;
 		this.cachePregnancySymptoms = null;
 		return true;

@@ -8,7 +8,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
-import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.server.ServerPlayerAnimationManager;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import net.minecraft.core.registries.Registries;
@@ -19,7 +18,7 @@ import net.minecraft.world.damagesource.DamageTypes;
 public class Miscarriage extends AbstractPlayerPregnancyPain {
 
 	private static final AttributeModifier ATTACK_SPEED_MODIFIER = new AttributeModifier(ATTACK_SPEED_MODIFIER_UUID, "miscarriage attack speed nerf", -0.5, AttributeModifier.Operation.MULTIPLY_TOTAL);
-	private static final AttributeModifier SPEED_MODIFIER = new AttributeModifier(SPEED_MODIFIER_UUID, "miscarriage speed nerf", -0.3D, AttributeModifier.Operation.MULTIPLY_TOTAL);
+	private static final AttributeModifier SPEED_MODIFIER = new AttributeModifier(SPEED_MODIFIER_UUID, "miscarriage speed nerf", -1, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
 	public Miscarriage() {
 		super(-6750208);
@@ -29,16 +28,12 @@ public class Miscarriage extends AbstractPlayerPregnancyPain {
 	public void addAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {			
 		if (!PlayerHelper.isPlayerValid(entity)) return;
 	
-		if (entity.level().isClientSide) {
-			entity.playSound(MinepreggoModSounds.PLAYER_MISCARRIAGE.get(), 0.8F, 0.8F + entity.getRandom().nextFloat() * 0.3F);
-		}
-		
 		if (!entity.level().isClientSide) {
 	        ServerPlayerAnimationManager.getInstance().triggerAnimation((ServerPlayer) entity, "miscarriage");
 	
 			entity.hurt(new DamageSource(entity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.GENERIC)), 1);
 
-			entity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, -1, 1, false, false));	
+			entity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, -1, 4, false, false));	
 
 			AttributeInstance speedAttr = entity.getAttribute(Attributes.MOVEMENT_SPEED);
 			AttributeInstance attackSpeedAttr = entity.getAttribute(Attributes.ATTACK_SPEED);

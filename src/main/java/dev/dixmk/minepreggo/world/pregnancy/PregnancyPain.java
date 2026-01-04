@@ -16,4 +16,8 @@ public enum PregnancyPain {
 	}
 	
 	public static final String NBT_KEY = "PregnancyPainType";
+	
+	public static boolean isLaborPain(PregnancyPain pain) {
+		return pain == WATER_BREAKING || pain == BIRTH || pain == PREBIRTH || pain == MISCARRIAGE;
+	}
 }

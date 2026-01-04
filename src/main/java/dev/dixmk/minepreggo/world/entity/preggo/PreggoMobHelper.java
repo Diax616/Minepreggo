@@ -20,6 +20,7 @@ import dev.dixmk.minepreggo.init.MinepreggoModItems;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.server.ServerCinematicManager;
 import dev.dixmk.minepreggo.utils.MathHelper;
+import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterPregnantCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
@@ -44,7 +45,6 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -80,6 +80,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class PreggoMobHelper {
 			
 	private PreggoMobHelper() {}
+	
 	
 	// Transfer or Copy Data START
 	public static void copyRotation(@NonNull LivingEntity source, @NonNull LivingEntity target) {		
@@ -217,7 +218,7 @@ public class PreggoMobHelper {
 				    
 		    if (originalItemStack.getCount() != originalCount) {		          
 		    	if (!preggoMob.level().isClientSide) {
-			    	preggoMob.level().playSound(null, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.item.pickup")), SoundSource.AMBIENT, 0.75F, 0.75F);	    	
+			    	preggoMob.level().playSound(null, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(MinepreggoHelper.withDefaultNamespace("entity.item.pickup")), SoundSource.AMBIENT, 0.75F, 0.75F);	    	
 		    	}
 		    	
 		    	if (originalItemStack.isEmpty()) {
@@ -355,7 +356,7 @@ public class PreggoMobHelper {
 
 			preggoMob.setLastPregnancyStage(lastPregnancyStage);	
 			preggoMob.setMapPregnancyPhase(map);	
-			preggoMob.setPregnancyHealth(PregnancySystemHelper.MAX_PREGNANCY_HEALTH);		
+			preggoMob.setPregnancyHealth(PregnancySystemHelper.MAX_PREGNANCY_HEALTH); 
 			preggoMob.setWomb(womb);
 			preggoMob.setDaysToGiveBirth(PregnancySystemHelper.calculateDaysToGiveBirth(preggoMob));	
 			
@@ -412,6 +413,8 @@ public class PreggoMobHelper {
 		
 		final var numOfBabies = IBreedable.calculateNumOfBabiesByFertility(preggoMob.getFertilityRate(), maleData.get().getFertilityRate());
 	
+		MinepreggoMod.LOGGER.debug("Fertility: {}, {}", preggoMob.getFertilityRate(), maleData.get().getFertilityRate());
+		
 		if (numOfBabies == 0) {
 			return false;
 		}
@@ -523,7 +526,7 @@ public class PreggoMobHelper {
                 
     	        if (stack.getDamageValue() >= stack.getMaxDamage()) {
     	            world.playSound(null, preggoMob.blockPosition(), 
-    	                ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.item.break")),
+    	                ForgeRegistries.SOUND_EVENTS.getValue(MinepreggoHelper.withDefaultNamespace("entity.item.break")),
     	                SoundSource.NEUTRAL, 1.0F, 1.0F);
     	        }
                 updateItemHandler(preggoMob, i + 1, stack);
@@ -760,12 +763,18 @@ public class PreggoMobHelper {
 			return false;
 		}
 		
+		Optional<Boolean> result = owner.getCapability(MinepreggoCapabilities.PLAYER_DATA).map(cap -> cap.getBreedableData().map(IBreedable::canFuck)).orElse(Optional.empty());
+		
 		if (PregnancySystemHelper.areHostileMobsNearby(owner, target, 16D)) {
 			MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.sex.message.mobs"));
 			return false;
 		}
 		else if (!tamableTarget.getGenderedData().canFuck()) {
-			MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.sex.message.sexual_appetite", target.getSimpleName()));
+			MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.preggo_mob.sex.message.tiring", target.getSimpleName()));
+			return false;
+		}
+		else if (result.isPresent() && !result.get().booleanValue()) {
+			MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.player.sex.message.tiring"));
 			return false;
 		}
 		else if (owner.distanceToSqr(target) >= 32) {

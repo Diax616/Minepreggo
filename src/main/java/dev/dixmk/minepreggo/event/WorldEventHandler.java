@@ -7,9 +7,12 @@ import java.util.stream.StreamSupport;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
+import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.world.pregnancy.IBreedable;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.event.level.SleepFinishedTimeEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -34,12 +37,14 @@ public class WorldEventHandler {
         final List<IPregnancySystemHandler> pregnantEntities = StreamSupport.stream(level.getAllEntities().spliterator(), false)
                 .flatMap(entity -> {
                     // If the entity itself implements the pregnancy handler, return it directly
-                    if (entity instanceof IPregnancySystemHandler handler) {
+                    if (entity instanceof LivingEntity livingEntity
+                    		&& !livingEntity.hasEffect(MinepreggoModMobEffects.ETERNAL_PREGNANCY.get())
+                    		&& entity instanceof IPregnancySystemHandler handler) {
                         return Stream.of(handler);
                     }
 
                     // If the entity is a player, try to obtain the player's pregnancy system from capability
-                    if (entity instanceof ServerPlayer serverPlayer) { 
+                    if (entity instanceof ServerPlayer serverPlayer && !serverPlayer.hasEffect(MinepreggoModMobEffects.ETERNAL_PREGNANCY.get())) { 
                         var playerDataOpt = serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).resolve();
                         if (playerDataOpt.isPresent()) {
                             var femaleOpt = playerDataOpt.get().getFemaleData().resolve();
@@ -56,6 +61,29 @@ public class WorldEventHandler {
                 })
                 .toList();
 
+        
+        final List<IBreedable> breedableEntities = StreamSupport.stream(level.getAllEntities().spliterator(), false)
+                .flatMap(entity -> {
+                    // If the entity itself implements the pregnancy handler, return it directly
+                    if (entity instanceof IBreedable handler) {
+                        return Stream.of(handler);
+                    }
+
+                    // If the entity is a player, try to obtain the player's pregnancy system from capability
+                    if (entity instanceof ServerPlayer serverPlayer) { 
+                        var playerDataOpt = serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).resolve();
+                        if (playerDataOpt.isPresent()) {
+                            var breedableOpt = playerDataOpt.get().getBreedableData();
+                            if (breedableOpt.isPresent()) {
+                                return Stream.of(breedableOpt.get());
+                            }
+                        }
+                    }
+
+                    return Stream.empty();
+                })
+                .toList();
+           
         pregnantEntities.forEach(pregnantEntity -> {
             // Add the skipped ticks to the pregnancy timer.
         	final var pregnancyTimer = pregnantEntity.getPregnancyTimer();
@@ -74,5 +102,7 @@ public class WorldEventHandler {
             MinepreggoMod.LOGGER.debug("TIME SKIP EVENT: currentPregnanctStage={}, pregnancyTimer={}, ticksSkipped={}, tickResult={}, numOfDaysPassed={}, remainingTicks={}",
                     pregnantEntity.getCurrentPregnancyStage(), pregnancyTimer, ticksSkipped, tickResult, numOfDays, remainingTicks);
         });
+        
+        breedableEntities.forEach(breedableEntity -> breedableEntity.incrementSexualAppetite(10));
     }
 }

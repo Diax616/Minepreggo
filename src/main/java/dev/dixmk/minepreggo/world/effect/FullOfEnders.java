@@ -1,8 +1,10 @@
 package dev.dixmk.minepreggo.world.effect;
 
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
+import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import dev.dixmk.minepreggo.world.pregnancy.Womb;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -30,6 +32,7 @@ public class FullOfEnders extends MobEffect {
 						var pregnancySystem = femaleData.getPregnancySystem();
 						if (serverPlayer.getRandom().nextFloat() < calculateProbabilityToRandomTeleport(pregnancySystem.getCurrentPregnancyStage(), pregnancySystem.getWomb())) {
 							randomTeleport(entity);
+							PregnancySystemHelper.playSoundNearTo(entity, MinepreggoModSounds.getRandomStomachGrowls(entity.getRandom()));
 						}					
 					}
 				})
@@ -63,7 +66,7 @@ public class FullOfEnders extends MobEffect {
 	
 	@Override
 	public boolean isDurationEffectTick(int duration, int amplifier) {
-		return duration % 2400 == 0;
+		return duration % 3600 == 0;
 	}
 	
 	public static float calculateProbabilityToRandomTeleport(PregnancyPhase phase, Womb womb) {

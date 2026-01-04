@@ -1,17 +1,16 @@
-package dev.dixmk.minepreggo.client.particle;
-
-import javax.annotation.Nonnegative;
-
-import org.joml.Vector3f;
+package dev.dixmk.minepreggo.utils;
 
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.network.PacketDistributor;
 
-public class ParticleHelper {
+import javax.annotation.Nonnegative;
+import org.joml.Vector3f;
 
-	private ParticleHelper() {}
+public class ServerParticleUtil {
+
+	private ServerParticleUtil() {}
 	
 	public static void spawnRandomlyFromServer(LivingEntity target, ParticleOptions particle) {		    
 		spawnRandomlyFromServer(target, particle, 10);

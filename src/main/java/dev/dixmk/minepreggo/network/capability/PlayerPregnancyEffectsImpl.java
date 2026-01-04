@@ -11,7 +11,6 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.network.packet.SyncPregnancyEffectsS2CPacket;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
-import dev.dixmk.minepreggo.world.item.IItemCraving;
 import dev.dixmk.minepreggo.world.pregnancy.Craving;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.nbt.CompoundTag;
@@ -71,7 +70,10 @@ public class PlayerPregnancyEffectsImpl implements IPlayerPregnancyEffectsHandle
 		final var tOfSpecies = typeOfCraving.get().getRight();
 		final var items = PregnancySystemHelper.getCravingItems(tOfSpecies, tOfCraving);
 			
-		if (!(items instanceof IItemCraving)) return false;
+		if (items == null) {
+			MinepreggoMod.LOGGER.error("Type of craving: {} for species: {} has no items registered!", tOfCraving, tOfSpecies);
+			return false;
+		}
 		
 		MinepreggoMod.LOGGER.debug("Type of craving: {} for species: {} has items: {}", tOfCraving, tOfSpecies, items);
 		

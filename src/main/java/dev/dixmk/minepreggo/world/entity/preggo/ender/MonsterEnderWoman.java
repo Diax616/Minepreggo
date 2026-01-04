@@ -17,7 +17,7 @@ public class MonsterEnderWoman extends AbstractMonsterEnderWoman {
 		xpReward = 12;
 		setNoAi(false);
 		setMaxUpStep(0.6f);
-		setPersistenceRequired();
+		this.reassessTameGoals();			
 	}
 
 	@Override

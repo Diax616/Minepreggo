@@ -4,17 +4,20 @@
    "package": "dev.dixmk.minepreggo.mixin",
    "compatibilityLevel": "JAVA_17",
    "refmap": "mixins.minepreggo.refmap.json",
-   "mixins": [],
-   "client": [
-	 "PlayerModelMixin",
-	 "AbstractClientPlayerMixin",
+   "mixins": [
+	 "MilkBucketItemMixin",
 	 "PlayerMixin",
 	 "LivingEntityMixin",
-	 "MinecraftMixin",
-	 "MouseHandlerMixin",
-	 "MilkBucketItemMixin",
-	 "CameraMixin",
 	 "ServerPlayerMixin",
 	 "VillagerMixin"
+   ],
+   "client": [
+	 "LivingEntityClientMixin",
+	 "PlayerClientMixin",
+	 "PlayerModelMixin",
+	 "AbstractClientPlayerMixin", 
+	 "MinecraftMixin",
+	 "MouseHandlerMixin",
+	 "CameraMixin"
    ]
 }

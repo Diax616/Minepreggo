@@ -13,6 +13,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
+import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.utils.TagHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
@@ -37,7 +38,6 @@ import net.minecraft.world.entity.MobType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.registries.ForgeRegistries;
 
 
 public abstract class AbstractZombieGirl extends PreggoMob implements Enemy {
@@ -155,7 +155,7 @@ public abstract class AbstractZombieGirl extends PreggoMob implements Enemy {
 	
 	@Override
 	protected ResourceLocation getDefaultLootTable() {
-	    return ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "entities/abstract_zombie_girl_loot");
+	    return MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "entities/abstract_zombie_girl_loot");
 	}
 	
 	@Override
@@ -170,15 +170,14 @@ public abstract class AbstractZombieGirl extends PreggoMob implements Enemy {
 
 	@Override
 	public SoundEvent getHurtSound(DamageSource ds) {
-		return ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.generic.hurt"));
+		return SoundEvents.GENERIC_HURT;
 	}
 
 	@Override
 	public SoundEvent getDeathSound() {
-		return ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.generic.death"));
+		return SoundEvents.GENERIC_DEATH;
 	}
 			
-	
 	protected static class ZombieGirlAttackTurtleEggGoal extends RemoveBlockGoal {
      
 	  public ZombieGirlAttackTurtleEggGoal(AbstractZombieGirl p_34344_, double p_34345_, int p_34346_) {

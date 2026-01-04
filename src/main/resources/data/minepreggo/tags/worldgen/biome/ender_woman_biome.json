@@ -3,6 +3,6 @@
   "values": [
     "#minecraft:is_overworld",
     "#minecraft:is_end",
-    "warped_forest"
+    "minecraft:warped_forest"
   ]
 }

@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.animation.player.BellyAnimationManager;
 import dev.dixmk.minepreggo.client.animation.preggo.BellyAnimation;
+import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
 import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.world.entity.ai.goal.PreggoMobAIHelper;
@@ -698,5 +699,39 @@ public abstract class AbstractTamablePregnantZombieGirl<S extends PreggoMobSyste
 	        this.cachePregnancySymptoms = null; // invalidate
 	    }
 	    super.onSyncedDataUpdated(key);
+	}
+	
+	public static EntityType<? extends AbstractTamablePregnantZombieGirl<?,?>> getEntityType(PregnancyPhase phase) {	
+		switch (phase) {
+		case P0: {
+			return MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P0.get();
+		}
+		case P1: {
+			return MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P1.get();
+		}
+		case P2: {
+			return MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P2.get();
+		}
+		case P3: {
+			return MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P3.get();
+		}
+		case P4: {
+			return MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P4.get();
+		}
+		case P5: {
+			return MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P5.get();
+		}
+		case P6: {
+			return MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P6.get();
+		}
+		case P7: {
+			return MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P7.get();
+		}
+		case P8: {
+			return MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P8.get();
+		}
+		default:
+			throw new IllegalArgumentException("Unexpected value: " + phase);
+		}		
 	}
 }

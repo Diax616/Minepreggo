@@ -8,11 +8,11 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 public abstract class AbstractBreedableEntity implements IBreedable, INBTSerializable<CompoundTag> {
 	protected final Gender gender;
-	protected float fertility = 0.4F;
+	protected float fertility = 0.25F;
 	protected int fertilityRateTimer = 0;
 	
 	protected int sexualAppetiteTimer = 0;
-	protected int sexualAppetite = IBreedable.MAX_SEXUAL_APPETIVE;
+	protected int sexualAppetite = 10;
 	
 	protected AbstractBreedableEntity(Gender gender) {
 		this.gender = gender;
@@ -30,12 +30,12 @@ public abstract class AbstractBreedableEntity implements IBreedable, INBTSeriali
 
 	@Override
 	public void setFertilityRate(float percentage) {
-		this.fertility = Mth.clamp(percentage, 0, 1F);
+		this.fertility = Mth.clamp(percentage, 0, MAX_FERTILITY_RATE);
 	}
 
 	@Override
 	public void incrementFertilityRate(float amount) {
-		this.fertility = Mth.clamp(this.fertility + amount, 0, MAX_FERTILITY_RATE);
+		setFertilityRate(this.fertility + Math.abs(amount));
 	}
 
 	@Override

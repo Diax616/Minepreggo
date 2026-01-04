@@ -6,10 +6,12 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.pregnancy.MapPregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhaseHelper;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffect;
@@ -17,14 +19,20 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
+/**
+ * It apparently works correctly, but I did not test it extensively.
+ * @author DixMK
+ * 
+ */
+
 public class PregnancyAcceleration extends MobEffect {
     
     private static final float[][] PERCETANGES_RANGES = {
-            {0.02f, 0.05f},
-            {0.05f, 0.10f},
-            {0.10f, 0.15f},
             {0.15f, 0.20f},
-            {0.20f, 0.25f}
+            {0.20f, 0.25f},
+            {0.25f, 0.30f},
+            {0.30f, 0.35f},
+            {0.35f, 0.4f}
         };
 	
     public PregnancyAcceleration() {
@@ -37,12 +45,14 @@ public class PregnancyAcceleration extends MobEffect {
         
         if (target instanceof IPregnancySystemHandler handler) {
         	apply(handler, getDaysByAmplifier(target.getRandom(), amplifier));
+        	PregnancySystemHelper.playSoundNearTo(target, MinepreggoModSounds.getRandomStomachGrowls(target.getRandom()));
 
         } else if (target instanceof ServerPlayer serverPlayer) {
             serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap ->
                 cap.getFemaleData().ifPresent(femaleData -> {
                     if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {
                     	apply(femaleData.getPregnancySystem(), getDaysByAmplifier(target.getRandom(), amplifier));
+                    	PregnancySystemHelper.playSoundNearTo(target, MinepreggoModSounds.getRandomStomachGrowls(target.getRandom()));
                     }
                 })
             );

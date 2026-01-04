@@ -20,7 +20,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.ai.attributes.AttributeMap;
 
 public class ZombieImpregnation extends Impregnantion {
 	public ZombieImpregnation() {
@@ -28,7 +27,7 @@ public class ZombieImpregnation extends Impregnantion {
 	}
 
 	@Override
-	public void removeAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {
+	public void applyImpregnationEffect(LivingEntity entity, int amplifier) {
 		if (entity instanceof ServerPlayer serverPlayer) {			
 			if (PlayerHelper.tryStartPregnancyByPotion(serverPlayer, ImmutableTriple.of(Optional.empty(), Species.ZOMBIE, Creature.HUMANOID), amplifier)) {
 				MinepreggoMod.LOGGER.info("Player {} has become pregnant.", serverPlayer.getName().getString());

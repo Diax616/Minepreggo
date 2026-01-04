@@ -41,10 +41,22 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 	}
 
 	public boolean isPlayerValid(ServerPlayer currentPlayer) {
-	    // Check if the stored player is the same instance and has a valid connection
-	    return this.pregnantEntity == currentPlayer && 
-	           this.pregnantEntity.connection != null && 
-	           this.pregnantEntity.connection.connection.isConnected();
+	    // Check if both players are not null
+	    if (this.pregnantEntity == null || currentPlayer == null) {
+	        return false;
+	    }
+	    
+	    // Compare UUIDs instead of object references
+	    // In dedicated servers, the ServerPlayer instance may be different even for the same player
+	    // Using == comparison causes continuous reinitialization
+	    if (!this.pregnantEntity.getUUID().equals(currentPlayer.getUUID())) {
+	        return false;
+	    }
+
+	    // Finally, check if the player is connected
+	    return this.pregnantEntity.connection != null &&
+	    	       this.pregnantEntity.connection.connection != null &&
+	    	       this.pregnantEntity.connection.connection.isConnected();
 	}
 	
 	@Override
@@ -53,7 +65,7 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 			return;
 		}
 		if (!isValid) {
-			MinepreggoMod.LOGGER.warn("PlayerPregnancySystemP0 is not valid for player: {}. Aborting onServerTick. playerData: {}, femaleData: {}, pregnancySystem: {}, pregnancyEffects: {}",
+			MinepreggoMod.LOGGER.warn("PlayerPregnancySystem is not valid for player: {}. Aborting onServerTick. playerData: {}, femaleData: {}, pregnancySystem: {}, pregnancyEffects: {}",
 					pregnantEntity.getGameProfile().getName(), this.playerData != null, this.femaleData != null, this.pregnancySystem != null, this.pregnancyEffects != null);		
 			return;
 		}	
@@ -194,7 +206,7 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 				PlayerHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.LEGS);
 			}
 		}
-		
+	
 		MinepreggoMod.LOGGER.debug("Player {} advanced to next pregnancy phase: {}",
 				pregnantEntity.getGameProfile().getName(), next);	
 	}

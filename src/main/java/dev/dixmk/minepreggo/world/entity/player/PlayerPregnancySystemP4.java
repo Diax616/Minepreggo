@@ -13,6 +13,7 @@ import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.pregnancy.AbstractPregnancySystem;
+import dev.dixmk.minepreggo.world.pregnancy.IBreedable;
 import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
@@ -88,7 +89,7 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 	        	pregnancyEffects.sync(pregnantEntity);
 	        	
 	        	MinepreggoMod.LOGGER.debug("Player {} horny level increased to: {}", 
-	        			pregnantEntity.getGameProfile().getName(), pregnancyEffects.getBellyRubs());
+	        			pregnantEntity.getGameProfile().getName(), pregnancyEffects.getHorny());
 	        }
 	        else {
 	        	pregnancyEffects.incrementHornyTimer();
@@ -126,12 +127,15 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 		} 	
 		if (pregnancyEffects.getHorny() >= PregnancySystemHelper.MAX_HORNY_LEVEL
 				&& !pregnancySystem.getPregnancySymptoms().contains(PregnancySymptom.HORNY)) {
+			
 			pregnancySystem.addPregnancySymptom(PregnancySymptom.HORNY);
 			pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.HORNY.get(), -1, 0, false, false, true));
+			femaleData.setSexualAppetite(IBreedable.MAX_SEXUAL_APPETIVE);
+			
 			pregnancySystem.sync(pregnantEntity);
-			pregnancyEffects.sync(pregnantEntity);	
-			MinepreggoMod.LOGGER.debug("Player {} has developed pregnancy symptom: {}",
-					pregnantEntity.getGameProfile().getName(), PregnancySymptom.HORNY);
+
+			MinepreggoMod.LOGGER.debug("Player {} has developed pregnancy symptom: {}, all pregnancy symptom: {}",
+					pregnantEntity.getGameProfile().getName(), PregnancySymptom.HORNY, pregnancySystem.getPregnancySymptoms());
 			return true;
 		}
 
@@ -290,7 +294,6 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 		pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.MATERNITY.get(), MinepreggoModConfig.getTotalTicksOfPostPregnancyPhase(), 0, false, false, true));
 		pregnantEntity.addEffect(new MobEffectInstance(MobEffects.LUCK, 12000, 0, false, true, true));
 		pregnantEntity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 3600, 0, false, false, true));
-		pregnantEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 3600, 0, false, false, true));
 		
 		removePregnancy();
 		

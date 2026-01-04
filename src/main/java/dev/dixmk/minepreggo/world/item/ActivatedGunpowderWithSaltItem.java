@@ -13,7 +13,7 @@ public class ActivatedGunpowderWithSaltItem extends ActivatedGunpowderItem imple
 	@Override
 	@Nonnegative
 	public int getGratification() {
-		return 4;
+		return 6;
 	}
 	
 	@Override
@@ -28,6 +28,6 @@ public class ActivatedGunpowderWithSaltItem extends ActivatedGunpowderItem imple
 
 	@Override
 	public @Nonnegative float getPenalty() {
-		return 0.3f;
+		return 0.1f;
 	}
 }

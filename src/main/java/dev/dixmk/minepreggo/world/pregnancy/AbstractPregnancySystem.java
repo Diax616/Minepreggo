@@ -12,11 +12,11 @@ import net.minecraft.world.entity.LivingEntity;
 
 public abstract class AbstractPregnancySystem<E extends LivingEntity> {
 
-	protected final E pregnantEntity;
+	protected E pregnantEntity;
 	protected final RandomSource randomSource;
 	
 	private int stomachGrowlCoolDown = 0;
-	protected float stomachGrowlProb = 0.025f;
+	protected float stomachGrowlProb = 0.005f;
 	
 	protected AbstractPregnancySystem(@Nonnull E pregnantEntity) {
 		this.pregnantEntity = pregnantEntity;
@@ -85,6 +85,22 @@ public abstract class AbstractPregnancySystem<E extends LivingEntity> {
 		    }
 		}
 	}
+	
+	public static void spawnParticulesForMiscarriage(ServerLevel serverLevel, LivingEntity target) {	
+		for (ServerPlayer player : serverLevel.getServer().getPlayerList().getPlayers()) {
+		    if (player.distanceToSqr(target) <= 256.0) { // 16 blocks
+				serverLevel.sendParticles(
+						player,
+						ParticleTypes.FALLING_DRIPSTONE_LAVA,
+						true,
+						target.getX(), (target.getY() + target.getBbHeight() * 0.35), target.getZ(),
+						1,
+						0, 0, 0,
+						0.02);
+		    }
+		}
+	}
+	
 	
 	protected boolean tryPlayStomachGrowlsSound() {	
 		if (stomachGrowlCoolDown < 20) {

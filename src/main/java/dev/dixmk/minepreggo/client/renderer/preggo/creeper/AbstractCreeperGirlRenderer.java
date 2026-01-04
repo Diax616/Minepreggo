@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.quadruped.AbstractCreeperGirlModel;
 import dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.creeper.CreeperGirlPowerLayer;
+import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractCreeperGirl;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
@@ -17,7 +18,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 public abstract class AbstractCreeperGirlRenderer
 	<E extends AbstractCreeperGirl, M extends AbstractCreeperGirlModel<E>> extends MobRenderer<E, M>{
 
-	protected static final ResourceLocation CREEPER_GIRL_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/creeper_girl.png");
+	protected static final ResourceLocation CREEPER_GIRL_LOCATION = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/creeper_girl.png");
 
 	protected AbstractCreeperGirlRenderer(EntityRendererProvider.Context context, M main, M armor) {
 		super(context, main, 0.5F);

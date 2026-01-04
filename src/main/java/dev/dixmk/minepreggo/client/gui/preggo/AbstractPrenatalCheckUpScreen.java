@@ -5,6 +5,7 @@ import java.util.Optional;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
+import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.inventory.preggo.AbstractPrenatalCheckUpMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -23,8 +24,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public abstract class AbstractPrenatalCheckUpScreen 
 	<S extends LivingEntity, T extends Mob, C extends AbstractPrenatalCheckUpMenu<S, T>> extends AbstractContainerScreen<C> {
 	
-	private static final ResourceLocation EMERALD_TEXTURE = ResourceLocation.withDefaultNamespace("textures/item/emerald.png");
-	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/prenatal_checkup_menu.png");
+	private static final ResourceLocation EMERALD_TEXTURE = MinepreggoHelper.withDefaultNamespace("textures/item/emerald.png");
+	private static final ResourceLocation TEXTURE = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/prenatal_checkup_menu.png");
 	protected final Level level;
 	protected final Player player;	
 	protected final Optional<T> target;

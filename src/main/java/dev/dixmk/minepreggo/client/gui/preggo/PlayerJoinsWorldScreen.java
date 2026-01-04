@@ -10,6 +10,7 @@ import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.client.gui.component.ToggleableCheckbox;
 import dev.dixmk.minepreggo.network.packet.UpdatePlayerDataC2SPacket;
 import dev.dixmk.minepreggo.network.packet.UpdateShowPlayerMainMenuC2SPacket;
+import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.inventory.preggo.PlayerJoinsWorldMenu;
 import dev.dixmk.minepreggo.world.pregnancy.Gender;
 import net.minecraft.client.gui.GuiGraphics;
@@ -26,7 +27,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class PlayerJoinsWorldScreen extends AbstractContainerScreen<PlayerJoinsWorldMenu> {
-	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/player_main_gui.png");
+	private static final ResourceLocation TEXTURE = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/player_main_gui.png");
 	protected final Level level;
 	protected final Player player;
 	private final List<ToggleableCheckbox> gender = new ArrayList<>();	
@@ -123,7 +124,7 @@ public class PlayerJoinsWorldScreen extends AbstractContainerScreen<PlayerJoinsW
 	@Override
 	public void onClose() {
 		super.onClose();		
-		if (!selected) {
+		if (!selected) {			
 			MinepreggoMod.LOGGER.info("Player {} does not select a gender - defaulting to MALE with custom skin", player.getName().getString());
 			MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdatePlayerDataC2SPacket(player.getUUID(), Gender.MALE, true));
 			MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdateShowPlayerMainMenuC2SPacket(player.getUUID(), false));	

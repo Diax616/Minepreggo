@@ -160,6 +160,7 @@
 	"effect.minepreggo.pregnancy_delay": "Pregnancy Delay",
 	"effect.minepreggo.baby_duplication": "Baby Duplication",
 	"effect.minepreggo.lactation": "Lactation",
+	"effect.minepreggo.belly_rubs": "Belly Rubs",
 	"effect.minepreggo.full_of_creepers": "Full Of Creepers",
 	"effect.minepreggo.full_of_zombies": "Full Of Zombies",
 	"effect.minepreggo.full_of_enders": "Full Of Enders",
@@ -501,8 +502,7 @@
 	"item.minepreggo.chili_poppers": "Chili Poppers",
 	"item.minepreggo.french_fries": "French Fries",
 	"item.minepreggo.candy_apple": "Candy Apple",	
-	
-	
+		
 	"subtitles.entity.pregnant.player.miscarriage": "miscarriage",
 	"subtitles.entity.pregnant.preggo_mob.death": "belly explosion",
 	"subtitles.entity.pregnant.belly.touch": "belly touch", 
@@ -536,6 +536,8 @@
 	"chat.minepreggo.preggo_mob.miscarriage.message.init": "%s feels much pain below her pregnant belly, it's too late!",
 	"chat.minepreggo.preggo_mob.miscarriage.message.warning": "%s feels pain below her pregnant belly, something isn't right...",
 	
+	"chat.minepreggo.preggo_mob.sex.message.tiring": "%s feels too tired to have fun...",
+
 	
 	"chat.minepreggo.player.armor.message.chestplate_does_not_fit.boobs": "Your boobs don't fit in this armor!",
 	
@@ -561,6 +563,12 @@
 	"chat.minepreggo.player.miscarriage.message.start": "You feel much pain below her pregnant belly, it's too late!",
 	"chat.minepreggo.player.miscarriage.message.warning": "You feel pain below her pregnant belly, something isn't right...",
 
+	"chat.minepreggo.player.sex.message.tiring": "You feel too tired to have fun...",
+
+	"chat.minepreggo.player.not_enough_fap.message": "You are 'dry'",
+
+	
+	
 	"chat.minepreggo.scientific_illager.no_pregnant_entities": "There are no pregnant entities to checkup",
 
 	"chat.minepreggo.prenatal_checkup.message.warning": "It is necessary to be at least in the %s stage of pregnancy to perform this prenatal check-up",
@@ -570,7 +578,6 @@
 	"chat.minepreggo.sex.message.distance": "%s's is too far away from you",
 	"chat.minepreggo.sex.message.enough_beds": "There must be a bed to have fun in.",
 	"chat.minepreggo.sex.message.active_cinematic": "%s's is in other cinematic.",
-
 	
 	"chat.minepreggo.preggo_mob.message.same_sex": "<%s> I didn't know you belonged to that 'group', but I don't care if it's you...",
 	"chat.minepreggo.preggo_mob.message.still_not_pregnant": "<%s> When are you gonna make me a mom, %s?",
@@ -593,8 +600,7 @@
 	"book.minepreggo.prenatal_checkup.regular.template.page.3.days_elapsed": "Elapsed: %s\n\n",
 	"book.minepreggo.prenatal_checkup.regular.template.page.3.days_next_phase": "Next Phase: %s\n\n",
 	"book.minepreggo.prenatal_checkup.regular.template.page.3.days_birth": "Birth: %s",
-	
-	
+		
 	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.title": "Prenatal Ultrasound Scan Results",
 	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.1.intro": "       Result\n  Ultrasound Scan\n\n",
 	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.1.babies_inside_belly": "Babies Inside Belly: %s",
@@ -604,7 +610,6 @@
 	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.type_of_species": "Species: %s\n\n",
 	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.type_of_creature": "Creature: %s",
 
-	
 	"book.minepreggo.prenatal_checkup.paternity_test.template.title": "Prenatal Paternity Test Results",
 	"book.minepreggo.prenatal_checkup.paternity_test.template.page.1.intro": "       Result\n   Paternity Test\n\n",
 	"book.minepreggo.prenatal_checkup.paternity_test.template.page.1.number_of_target": "Num Of Targets: %s\n\n",
@@ -621,5 +626,4 @@
 	
 	"key.minepreggo.rub_belly": "Rub Your Pregnant Belly",
 	"key.categories.minepreggo": "Minepreggo Keyboards"
-	
 }

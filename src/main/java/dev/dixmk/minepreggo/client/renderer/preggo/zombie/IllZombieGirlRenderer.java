@@ -3,6 +3,7 @@ package dev.dixmk.minepreggo.client.renderer.preggo.zombie;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.model.entity.preggo.zombie.AbstractZombieGirlModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.zombie.IllZombieGirlP0Model;
+import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.IllZombieGirl;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -13,7 +14,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class IllZombieGirlRenderer extends AbstractMonsterZombieGirlRenderer<IllZombieGirl, IllZombieGirlP0Model> {
 
-	private static final ResourceLocation ILL_ZOMBIE_GIRL = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/ill_zombie_girl_p0.png");
+	private static final ResourceLocation ILL_ZOMBIE_GIRL = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/ill_zombie_girl_p0.png");
 	
 	public IllZombieGirlRenderer(EntityRendererProvider.Context context) {
 		this(context, AbstractZombieGirlModel.LAYER_LOCATION_P0, AbstractZombieGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractZombieGirlModel.LAYER_OUTER_ARMOR_LOCATION);

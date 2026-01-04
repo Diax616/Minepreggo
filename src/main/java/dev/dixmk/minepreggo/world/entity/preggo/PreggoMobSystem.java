@@ -6,7 +6,7 @@ import javax.annotation.Nonnull;
 import org.jetbrains.annotations.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
-import dev.dixmk.minepreggo.client.particle.ParticleHelper;
+import dev.dixmk.minepreggo.utils.ServerParticleUtil;
 import dev.dixmk.minepreggo.network.packet.SexCinematicControlP2MS2CPacket;
 import dev.dixmk.minepreggo.server.ServerCinematicManager;
 import dev.dixmk.minepreggo.world.pregnancy.AbstractBreedableEntity;
@@ -86,14 +86,15 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> {
 		} 
 	}
 	
-	protected void evaluateSexualAppetiteTimer() {
-		if (abstractBreedableEntity.getSexualAppetiteTimer() > totalTicksOfSexualAppetive
-				&& abstractBreedableEntity.getSexualAppetite() < IBreedable.MAX_SEXUAL_APPETIVE) {
-			abstractBreedableEntity.setSexualAppetiteTimer(0);
-			abstractBreedableEntity.incrementSexualAppetite(1);
-		}
-		else {
-			abstractBreedableEntity.incrementSexualAppetiteTimer();
+	protected void evaluateSexualAppetiteTimer() {		
+		if (abstractBreedableEntity.getSexualAppetite() < IBreedable.MAX_SEXUAL_APPETIVE) {
+			if (abstractBreedableEntity.getSexualAppetiteTimer() > totalTicksOfSexualAppetive) {
+				abstractBreedableEntity.setSexualAppetiteTimer(0);
+				abstractBreedableEntity.incrementSexualAppetite(1);
+			}
+			else {
+				abstractBreedableEntity.incrementSexualAppetiteTimer();
+			}
 		}
 	}
 	
@@ -219,14 +220,19 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> {
 	    }
 	        
     	var effects = PotionUtils.getMobEffects(heldStack);
+    	   	
         if (!effects.isEmpty()) { 	
-        	if (level.isClientSide) {
-                preggoMob.playSound(SoundEvents.GENERIC_DRINK, 0.8F, 0.8F + preggoMob.getRandom().nextFloat() * 0.3F);
-        	}
         	
+            preggoMob.playSound(SoundEvents.GENERIC_DRINK, 0.8F, 0.8F + preggoMob.getRandom().nextFloat() * 0.3F);
+      	
         	if (!level.isClientSide) {    
                 for (MobEffectInstance effect : effects) {
-                    preggoMob.addEffect(new MobEffectInstance(effect));
+                    // Handle instant effects separately to ensure applyInstantenousEffect is called
+                    if (effect.getEffect().isInstantenous()) {
+                        effect.getEffect().applyInstantenousEffect(null, null, preggoMob, effect.getAmplifier(), 0.75D);
+                    } else {
+                        preggoMob.addEffect(new MobEffectInstance(effect));
+                    }
                 }
             	ItemHandlerHelper.giveItemToPlayer(source, new ItemStack(Items.GLASS_BOTTLE));
                 heldStack.shrink(1);          
@@ -283,6 +289,6 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> {
 		else 
 			return;
 					
-		ParticleHelper.spawnRandomlyFromServer(preggoMob, particleoptions);
+		ServerParticleUtil.spawnRandomlyFromServer(preggoMob, particleoptions);
 	}
 }

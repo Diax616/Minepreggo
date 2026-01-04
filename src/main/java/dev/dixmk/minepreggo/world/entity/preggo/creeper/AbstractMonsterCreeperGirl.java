@@ -101,7 +101,7 @@ public abstract class AbstractMonsterCreeperGirl extends AbstractCreeperGirl {
 		return null;
 	}
 	
-	public static boolean checkMonsterCreeperGirlSpawnRules(EntityType<? extends AbstractMonsterCreeperGirl> p_219014_, ServerLevelAccessor p_219015_, MobSpawnType p_219016_, BlockPos p_219017_, RandomSource p_219018_) {
+	public static boolean checkSpawnRules(EntityType<? extends AbstractMonsterCreeperGirl> p_219014_, ServerLevelAccessor p_219015_, MobSpawnType p_219016_, BlockPos p_219017_, RandomSource p_219018_) {
 		return p_219015_.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(p_219015_, p_219017_, p_219018_) && checkMobSpawnRules(p_219014_, p_219015_, p_219016_, p_219017_, p_219018_);
 	}
 }

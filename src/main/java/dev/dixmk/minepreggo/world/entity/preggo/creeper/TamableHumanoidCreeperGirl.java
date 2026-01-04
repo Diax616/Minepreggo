@@ -103,11 +103,6 @@ public class TamableHumanoidCreeperGirl extends AbstractTamableHumanoidCreeperGi
 	@Override
    	public void aiStep() {
       super.aiStep();
-      
-      if (this.level().isClientSide) {
-    	  return;
-      }
-      
       fertilitySystem.onServerTick();  
 	}
 	

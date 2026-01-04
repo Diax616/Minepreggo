@@ -13,7 +13,7 @@ public class BrainWithSaltItem extends AbstractBrain implements IItemCraving {
 	@Override
 	@Nonnegative
 	public int getGratification() {
-		return 6;
+		return 7;
 	}
 	
 	@Override
@@ -28,6 +28,6 @@ public class BrainWithSaltItem extends AbstractBrain implements IItemCraving {
 
 	@Override
 	public @Nonnegative float getPenalty() {
-		return 0.5f;
+		return 0.2f;
 	}
 }

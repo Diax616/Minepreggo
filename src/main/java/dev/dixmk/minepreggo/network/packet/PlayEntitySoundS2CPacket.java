@@ -20,7 +20,7 @@ public class PlayEntitySoundS2CPacket {
     private final float volume;
     private final float pitch;
 	
-    public PlayEntitySoundS2CPacket(int entityId, SoundEvent sound, float volume, float pitch) {
+    public PlayEntitySoundS2CPacket(int entityId, SoundEvent sound, float volume, float pitch, int num) {
         this.entityId = entityId;
         this.soundId = ForgeRegistries.SOUND_EVENTS.getKey(sound);
         this.volume = volume;
@@ -46,11 +46,14 @@ public class PlayEntitySoundS2CPacket {
         context.enqueueWork(() -> {   	
             if (context.getDirection().getReceptionSide().isClient()) {  
                 var level = Minecraft.getInstance().level;
-                var entity = level.getEntity(message.entityId);
-                if (entity != null) {
-                    SoundEvent sound = ForgeRegistries.SOUND_EVENTS.getValue(message.soundId);
-                    if (sound != null) {
-                        entity.playSound(sound, message.volume, message.pitch);
+                if (level != null) {
+                    var entity = level.getEntity(message.entityId);
+                    if (entity != null) {
+                        SoundEvent sound = ForgeRegistries.SOUND_EVENTS.getValue(message.soundId);
+                        if (sound != null) {
+                            // Usar playSound en lugar de entity.playSound para que se reproduzca en todos los clientes
+                            level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), sound, entity.getSoundSource(), message.volume, message.pitch);
+                        }
                     }
                 }
             }

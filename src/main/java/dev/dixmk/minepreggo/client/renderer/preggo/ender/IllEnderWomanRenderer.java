@@ -3,6 +3,7 @@ package dev.dixmk.minepreggo.client.renderer.preggo.ender;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.model.entity.preggo.ender.AbstractEnderWomanModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.ender.IllEnderWomanModel;
+import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.IllEnderWoman;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.RenderType;
@@ -15,7 +16,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class IllEnderWomanRenderer extends AbstractMonsterEnderWomanRenderer<IllEnderWoman, IllEnderWomanModel> {
 
-	private static final RenderType ILL_ENDER_EYES = RenderType.eyes(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/ender/ill_ender_woman_eyes.png"));
+	private static final RenderType ILL_ENDER_EYES = RenderType.eyes(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/ender/ill_ender_woman_eyes.png"));
 	
 	public IllEnderWomanRenderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation outter, ModelLayerLocation inner) {
 		super(context, new IllEnderWomanModel(context.bakeLayer(main)), ILL_ENDER_EYES);

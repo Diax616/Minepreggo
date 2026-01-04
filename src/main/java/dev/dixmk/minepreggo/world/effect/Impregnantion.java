@@ -1,6 +1,8 @@
 package dev.dixmk.minepreggo.world.effect;
 
 import java.util.Optional;
+import java.util.UUID;
+import java.util.WeakHashMap;
 
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 
@@ -33,6 +35,9 @@ import net.minecraft.world.entity.ai.attributes.AttributeMap;
 
 public class Impregnantion extends MobEffect {
 	
+	// Map to track entities that should apply the effect when it expires naturally
+	private static final WeakHashMap<UUID, Integer> ENTITIES_TO_IMPREGNATE = new WeakHashMap<>();
+	
 	public Impregnantion() {
 		super(MobEffectCategory.NEUTRAL, -10092442);
 	}
@@ -41,12 +46,53 @@ public class Impregnantion extends MobEffect {
 		super(MobEffectCategory.NEUTRAL, color);		
 	}
 	
+	/**
+	 * Marks an entity to be impregnated when the effect expires naturally.
+	 * This should be called when the effect is about to expire.
+	 */
+	public static void markForImpregnation(LivingEntity entity, int amplifier) {
+		ENTITIES_TO_IMPREGNATE.put(entity.getUUID(), amplifier);
+	}
+	
+	/**
+	 * Removes the impregnation mark from an entity.
+	 * This should be called when the effect is removed by other means (like milk).
+	 */
+	public static void unmarkForImpregnation(LivingEntity entity) {
+		ENTITIES_TO_IMPREGNATE.remove(entity.getUUID());
+	}
+	
+	/**
+	 * Checks if an entity is marked for impregnation.
+	 */
+	public static boolean isMarkedForImpregnation(LivingEntity entity) {
+		return ENTITIES_TO_IMPREGNATE.containsKey(entity.getUUID());
+	}
+	
 	@Override
 	public void removeAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {	
 		if (entity.level().isClientSide) {
 			return;
 		}
 		
+		// Only apply impregnation if entity is marked (effect expired naturally)
+		if (!isMarkedForImpregnation(entity)) {
+			return;
+		}
+		
+		// Get the stored amplifier (in case it's different from the parameter)
+		Integer storedAmplifier = ENTITIES_TO_IMPREGNATE.get(entity.getUUID());
+		if (storedAmplifier != null) {
+			amplifier = storedAmplifier;
+		}
+		
+		// Remove the mark
+		unmarkForImpregnation(entity);
+		
+		applyImpregnationEffect(entity, amplifier);
+	}
+	
+	protected void applyImpregnationEffect(LivingEntity entity, int amplifier) {
 		if (entity instanceof ServerPlayer serverPlayer) {			
 			if (PlayerHelper.tryStartPregnancyByPotion(serverPlayer, ImmutableTriple.of(Optional.empty(), Species.HUMAN, Creature.HUMANOID), amplifier)) {
 				MinepreggoMod.LOGGER.info("Player {} has become pregnant.", serverPlayer.getName().getString());
@@ -91,6 +137,12 @@ public class Impregnantion extends MobEffect {
 		return true;
 	}
 	
+	@Override
+	public void addAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {	
+		if (!entity.level().isClientSide) {
+			markForImpregnation(entity, amplifier);
+		}
+	}
 	
 	protected static<E extends PreggoMob & ITamablePreggoMob<FemaleEntityImpl> & IFemaleEntity & IPregnancySystemHandler> void initPregnancy(PreggoMob source, E target, int amplifier) {
 		PreggoMobHelper.copyRotation(source, target);

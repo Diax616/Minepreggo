@@ -1,5 +1,6 @@
 package dev.dixmk.minepreggo.world.entity.preggo.creeper;
 
+import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobPregnancySystemP0;
@@ -29,5 +30,39 @@ public abstract class AbstractTamablePregnantHumanoidCreeperGirl<S extends Pregn
 			return PregnancySystemHelper.canUseLegging(armor.getItem(), this.getCurrentPregnancyStage());
 		}
 		return true;
+	}
+	
+	public static EntityType<? extends AbstractTamablePregnantHumanoidCreeperGirl<?,?>> getEntityType(PregnancyPhase phase) {	
+		switch (phase) {
+		case P0: {
+			return MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P0.get();
+		}
+		case P1: {
+			return MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P1.get();
+		}
+		case P2: {
+			return MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P2.get();
+		}
+		case P3: {
+			return MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P3.get();
+		}
+		case P4: {
+			return MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P4.get();
+		}
+		case P5: {
+			return MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P5.get();
+		}
+		case P6: {
+			return MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P6.get();
+		}
+		case P7: {
+			return MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P7.get();
+		}
+		case P8: {
+			return MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P8.get();
+		}
+		default:
+			throw new IllegalArgumentException("Unexpected value: " + phase);
+		}		
 	}
 }

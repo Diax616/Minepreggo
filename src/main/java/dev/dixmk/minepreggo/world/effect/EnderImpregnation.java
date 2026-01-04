@@ -10,7 +10,6 @@ import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.AttributeMap;
 
 public class EnderImpregnation extends Impregnantion {
 
@@ -19,7 +18,7 @@ public class EnderImpregnation extends Impregnantion {
 	}
 	
 	@Override
-	public void removeAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {
+	public void applyImpregnationEffect(LivingEntity entity, int amplifier) {
 		if (entity instanceof ServerPlayer serverPlayer) {			
 			if (PlayerHelper.tryStartPregnancyByPotion(serverPlayer, ImmutableTriple.of(Optional.empty(), Species.ENDER, Creature.MONSTER), amplifier)) {
 				MinepreggoMod.LOGGER.info("Player {} has become pregnant.", serverPlayer.getName().getString());

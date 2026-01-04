@@ -28,6 +28,6 @@ public class SourBrainItem extends AbstractBrain implements IItemCraving {
 
 	@Override
 	public @Nonnegative float getPenalty() {
-		return 0.5f;
+		return 0.2f;
 	}
 }

@@ -18,13 +18,17 @@ public class PregnancyP3 extends AbstractPlayerPregnancy<PlayerPregnancySystemP3
 
 	@Override
     protected void ensurePregnancySystemInitialized(ServerPlayer serverPlayer) {
+        PlayerPregnancySystemP3 pregnancySystem = pregnancySystemsCache.get(serverPlayer.getUUID());
+        
         if (pregnancySystem == null) {
-            this.pregnancySystem = new PlayerPregnancySystemP3(serverPlayer);
+            pregnancySystem = new PlayerPregnancySystemP3(serverPlayer);
+            pregnancySystemsCache.put(serverPlayer.getUUID(), pregnancySystem);
             MinepreggoMod.LOGGER.info("Initialized PlayerPregnancySystemP3 for player: {}", serverPlayer.getName().getString());
         }
         else if (!pregnancySystem.isPlayerValid(serverPlayer)) {
-            MinepreggoMod.LOGGER.info("Player reference is stale, reinitializing PlayerPregnancySystemP3");
-            this.pregnancySystem = new PlayerPregnancySystemP3(serverPlayer);
+            MinepreggoMod.LOGGER.info("Player {} reference is stale, reinitializing PlayerPregnancySystemP3", serverPlayer.getGameProfile().getName());
+            pregnancySystem = new PlayerPregnancySystemP3(serverPlayer);
+            pregnancySystemsCache.put(serverPlayer.getUUID(), pregnancySystem);
         }
     } 
 	

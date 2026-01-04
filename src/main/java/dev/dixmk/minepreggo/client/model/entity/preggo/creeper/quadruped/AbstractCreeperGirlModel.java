@@ -1,6 +1,7 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.creeper.quadruped;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
+import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractCreeperGirl;
 import net.minecraft.client.model.CreeperModel;
 import net.minecraft.client.model.HumanoidModel;
@@ -12,10 +13,14 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+/*
+ * Classes that extend this abstract class need to be refactored to reduce code duplication.
+ * 
+ * */
 
 @OnlyIn(Dist.CLIENT)
 public abstract class AbstractCreeperGirlModel<E extends AbstractCreeperGirl> extends CreeperModel<E> {	
@@ -24,11 +29,11 @@ public abstract class AbstractCreeperGirlModel<E extends AbstractCreeperGirl> ex
 	protected final ModelPart belly;
 	protected final ModelPart boobs;
 	
-	public static final ModelLayerLocation LAYER_OUTER_ARMOR_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "creeper_girl_outer_model"), "outer");
+	public static final ModelLayerLocation LAYER_OUTER_ARMOR_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "creeper_girl_outer_model"), "outer");
 	
-	public static final ModelLayerLocation LAYER_ENERGY_ARMOR_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "creeper_girl_energy_armor_model"), "armor");
+	public static final ModelLayerLocation LAYER_ENERGY_ARMOR_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "creeper_girl_energy_armor_model"), "armor");
 
-	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "creeper_girl_model"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "creeper_girl_model"), "main");
 	
 	protected AbstractCreeperGirlModel(ModelPart root) {
 		super(root);

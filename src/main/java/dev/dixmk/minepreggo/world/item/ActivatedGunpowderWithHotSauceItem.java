@@ -13,7 +13,7 @@ public class ActivatedGunpowderWithHotSauceItem extends ActivatedGunpowderItem i
 	@Override
 	@Nonnegative
 	public int getGratification() {
-		return 6;
+		return 8;
 	}
 	
 	@Override
@@ -28,6 +28,6 @@ public class ActivatedGunpowderWithHotSauceItem extends ActivatedGunpowderItem i
 
 	@Override
 	public @Nonnegative float getPenalty() {
-		return 0.3f;
+		return 0.1f;
 	}
 }

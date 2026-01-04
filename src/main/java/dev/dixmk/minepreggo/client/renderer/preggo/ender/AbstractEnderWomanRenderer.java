@@ -3,6 +3,7 @@ package dev.dixmk.minepreggo.client.renderer.preggo.ender;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.model.entity.preggo.ender.AbstractEnderWomanModel;
 import dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.ender.EnderWomanEyesLayer;
+import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractEnderWoman;
 import dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.ender.CarriedBlockLayer;
 
@@ -20,7 +21,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public abstract class AbstractEnderWomanRenderer
 	<E extends AbstractEnderWoman, M extends AbstractEnderWomanModel<E>> extends HumanoidMobRenderer<E, M> {
 	
-	protected static final ResourceLocation ENDER_GIRL_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/ender/ender_woman.png");
+	protected static final ResourceLocation ENDER_GIRL_LOCATION = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/ender/ender_woman.png");
 	private final RandomSource random = RandomSource.create();
 	
 	protected AbstractEnderWomanRenderer(EntityRendererProvider.Context context, M main, RenderType enderEyes) {

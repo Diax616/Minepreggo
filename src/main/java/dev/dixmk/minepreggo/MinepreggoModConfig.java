@@ -321,7 +321,7 @@ public class MinepreggoModConfig {
 
             totalPregnancyDays = builder
                     .comment("Total number of pregnancy days.")
-                    .defineInRange("totalPregnancyDays", 70, 20, Integer.MAX_VALUE);
+                    .defineInRange("totalPregnancyDays", 50, 20, Integer.MAX_VALUE);
             
             totalTickByPregnancyDays = builder
                     .comment("Total ticks per pregnancy day.")
@@ -329,11 +329,11 @@ public class MinepreggoModConfig {
 
             ticksToStartPregnancy = builder
                     .comment("Ticks to start pregnancy after mating.")
-                    .defineInRange("ticksToStartPregnancy", 6000, 100, 24000);
+                    .defineInRange("ticksToStartPregnancy", 4800, 100, 24000);
             
             totalTicksOfMaternityLactation = builder
 					.comment("Total ticks of maternity lactation for preggo mobs and player.")
-					.defineInRange("totalTicksOfMaternityLactation", 24000, 100, Integer.MAX_VALUE);
+					.defineInRange("totalTicksOfMaternityLactation", 1200, 100, Integer.MAX_VALUE);
                    
             totalTicksOfPostPregnancyPhase = builder
             		.comment("Total ticks of post pregnancy phase for preggo mobs and player.")
@@ -345,19 +345,19 @@ public class MinepreggoModConfig {
             
             totalTicksOfCraving = builder
                     .comment("Total ticks of craving for pregnant entities.")
-                    .defineInRange("totalTicksOfCraving", 7200, 100, 24000);
+                    .defineInRange("totalTicksOfCraving", 4800, 100, 24000);
             
             totalTicksOfMilking = builder
                     .comment("total ticks of milking for pregnant entities.")
-                    .defineInRange("totalTicksOfMilking", 7200, 100, 24000);
+                    .defineInRange("totalTicksOfMilking", 3600, 100, 24000);
             
             totalTicksOfBellyRubs = builder
                     .comment("total ticks of belly rubs for pregnant entities.")
-                    .defineInRange("totalTicksOfBellyRubs", 7200, 100, 24000);
+                    .defineInRange("totalTicksOfBellyRubs", 3600, 100, 24000);
             
             totalTicksOfHorny = builder
                     .comment("total ticks of horny for pregnant entities.")
-                    .defineInRange("totalTicksOfHorny", 7200, 100, 24000);
+                    .defineInRange("totalTicksOfHorny", 6000, 100, 24000);
                   
             builder.pop();
         }
@@ -396,11 +396,11 @@ public class MinepreggoModConfig {
             
             babyCreeperGirlProbability = builder
                     .comment("probability of spawning a girl baby creeper.")
-                    .defineInRange("babyCreeperGirlProbability", 0.2, 0.0, 1.0);
+                    .defineInRange("babyCreeperGirlProbability", 0.1, 0.0, 1.0);
 
             babyZombieGirlProbability = builder
                     .comment("probability of spawning a girl baby zombie.")
-                    .defineInRange("babyZombieGirlProbability", 0.3, 0.0, 1.0);
+                    .defineInRange("babyZombieGirlProbability", 0.15, 0.0, 1.0);
             
             builder.pop();
         }
@@ -418,13 +418,13 @@ public class MinepreggoModConfig {
     }
     
     private static void calculateCravingValues() { 	
-    	totalTicksOfCravingP2 = (int) Math.ceil(totalTicksOfCravingP1 * 0.8F);
-    	totalTicksOfCravingP3 = (int) Math.ceil(totalTicksOfCravingP1 * 0.75F);
-    	totalTicksOfCravingP4 = (int) Math.ceil(totalTicksOfCravingP1 * 0.7F);
-    	totalTicksOfCravingP5 = (int) Math.ceil(totalTicksOfCravingP1 * 0.65F);
-    	totalTicksOfCravingP6 = (int) Math.ceil(totalTicksOfCravingP1 * 0.6F);
-    	totalTicksOfCravingP7 = (int) Math.ceil(totalTicksOfCravingP1 * 0.55F);
-    	totalTicksOfCravingP8 = (int) Math.ceil(totalTicksOfCravingP1 * 0.5F);
+    	totalTicksOfCravingP2 = (int) Math.ceil(totalTicksOfCravingP1 * 0.7F);
+    	totalTicksOfCravingP3 = (int) Math.ceil(totalTicksOfCravingP1 * 0.6F);
+    	totalTicksOfCravingP4 = (int) Math.ceil(totalTicksOfCravingP1 * 0.65F);
+    	totalTicksOfCravingP5 = (int) Math.ceil(totalTicksOfCravingP1 * 0.6F);
+    	totalTicksOfCravingP6 = (int) Math.ceil(totalTicksOfCravingP1 * 0.7F);
+    	totalTicksOfCravingP7 = (int) Math.ceil(totalTicksOfCravingP1 * 0.75F);
+    	totalTicksOfCravingP8 = (int) Math.ceil(totalTicksOfCravingP1 * 0.8F);
     }
     
     private static void calculateMilkingValues() { 	

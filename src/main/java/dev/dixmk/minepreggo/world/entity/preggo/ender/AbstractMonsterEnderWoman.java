@@ -44,8 +44,23 @@ public abstract class AbstractMonsterEnderWoman extends AbstractEnderWoman {
 		return false;
 	}
 	
-	public static boolean checkMonsterEnderGirlSpawnRules(EntityType<? extends AbstractMonsterEnderWoman> p_219014_, ServerLevelAccessor p_219015_, MobSpawnType p_219016_, BlockPos p_219017_, RandomSource p_219018_) {
-		return p_219015_.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(p_219015_, p_219017_, p_219018_) && checkMobSpawnRules(p_219014_, p_219015_, p_219016_, p_219017_, p_219018_);
+	public static boolean checkSpawnRules(EntityType<? extends AbstractEnderWoman> p_219014_, ServerLevelAccessor p_219015_, MobSpawnType p_219016_, BlockPos p_219017_, RandomSource p_219018_) {	
+		if (p_219015_.getDifficulty() == Difficulty.PEACEFUL) {
+			return false;
+		}
+		
+	    if (p_219015_.getLevel().dimension() == Level.END) {
+	        var below = p_219015_.getBlockState(p_219017_.below());
+	        
+	        return below.isSolidRender(p_219015_, p_219017_.below()) 
+	               && p_219015_.getBlockState(p_219017_).isAir()
+	               && p_219015_.getBlockState(p_219017_.above()).isAir();
+	    }
+	    else if (p_219015_.getLevel().dimension() == Level.NETHER) {
+			return checkMobSpawnRules(p_219014_, p_219015_, p_219016_, p_219017_, p_219018_);
+	    }
+	      
+		return Monster.isDarkEnoughToSpawn(p_219015_, p_219017_, p_219018_) && checkMobSpawnRules(p_219014_, p_219015_, p_219016_, p_219017_, p_219018_);
 	}
 	
 	@Override

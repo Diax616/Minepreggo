@@ -1,17 +1,22 @@
 package dev.dixmk.minepreggo.client.model.entity.player;
 
+import java.util.UUID;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
+import dev.dixmk.minepreggo.client.animation.player.BellyAnimationManager;
 import dev.dixmk.minepreggo.client.animation.preggo.BellyInflation;
 import dev.dixmk.minepreggo.client.jiggle.BellyJigglePhysics;
 import dev.dixmk.minepreggo.client.jiggle.WrapperBoobsJiggle;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.world.item.IMaternityArmor;
+import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -66,7 +71,8 @@ public abstract class AbstractPregnantBodyModel extends HierarchicalModel<Abstra
 		if (armor.isEmpty()) {
 			bellyJiggle.setupAnim(entity, belly, simpleBellyJiggle);
 			boobsJiggle.setupAnim(entity, boobs, leftBoob, rightBoob);
-			animBelly(entity, ageInTicks);
+			animBellyIdle(entity, ageInTicks);
+			animBellySlapping(entity, ageInTicks);
 			if (!boobs.visible) {
 	    		boobs.visible = true;
 	    	}
@@ -84,10 +90,22 @@ public abstract class AbstractPregnantBodyModel extends HierarchicalModel<Abstra
 		}
 	}
 	
-	protected void animBelly(AbstractClientPlayer entity, float ageInTicks) {
+	protected void animBellyIdle(AbstractClientPlayer entity, float ageInTicks) {
 		entity.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
 			cap.getFemaleData().ifPresent(femaleData -> this.animate(femaleData.getPregnancySystem().bellyAnimationState, bellyInflation.animation, ageInTicks))
 		);
+	}
+	
+	protected void animBellySlapping(AbstractClientPlayer entity, float ageInTicks) {
+		UUID playerId = entity.getUUID(); 
+        if (BellyAnimationManager.getInstance().isAnimating(playerId)) {
+    		AnimationState state = BellyAnimationManager.getInstance().getAnimationState(playerId);
+            AnimationDefinition animation = BellyAnimationManager.getInstance().getCurrentAnimation(playerId);
+            
+            if (state != null && animation != null) {
+                this.animate(state, animation, ageInTicks);
+            }
+        }
 	}
 	
 	@Override

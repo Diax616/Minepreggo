@@ -4,9 +4,12 @@ import java.util.function.Supplier;
 
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamableZombieGirl;
 import dev.dixmk.minepreggo.world.inventory.preggo.RequestSexM2PMenu;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -34,10 +37,15 @@ public record RequestSexM2PC2SPacket(int preggoMobId, int playerId) {
 				var level = sender.level();
 				
 				final PreggoMob source = level.getEntity(message.preggoMobId) instanceof PreggoMob s ? s : null;
-				final Player target = level.getEntity(message.playerId) instanceof Player t ? t : null;
-				
-				if (source != null && target != null && target.getUUID().equals(sender.getUUID()) && source.isOwnedBy(target)) {
-					RequestSexM2PMenu.create(sender, source);			
+				final ServerPlayer target = level.getEntity(message.playerId) instanceof ServerPlayer t ? t : null;
+								
+				if (source != null && target != null) {
+					if (source instanceof AbstractTamableZombieGirl<?> zombieGirl && PregnancySystemHelper.canFuck(target, zombieGirl)) {
+						RequestSexM2PMenu.create(target, zombieGirl);
+					}
+					else if (source instanceof AbstractTamableCreeperGirl<?> creeperGirl && PregnancySystemHelper.canFuck(target, creeperGirl)) {
+						RequestSexM2PMenu.create(target, creeperGirl);
+					}			
 				}
 			}
 		});

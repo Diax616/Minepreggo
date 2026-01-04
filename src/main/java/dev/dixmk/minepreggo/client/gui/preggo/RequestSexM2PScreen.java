@@ -6,6 +6,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.network.packet.ResponseSexRequestM2PC2SPacket;
+import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamableZombieGirl;
@@ -33,19 +34,19 @@ public class RequestSexM2PScreen extends AbstractRequestSexScreen<PreggoMob, Pla
 			if (s instanceof AbstractTamableZombieGirl<?> zombieGirl) {
 				if (zombieGirl instanceof IPregnancySystemHandler pregnancySystemHandler
 						&& pregnancySystemHandler.getPregnancySymptoms().contains(PregnancySymptom.HORNY)) {
-					this.icon = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/expressions/zombie_girl_face_pain1.png");
+					this.icon = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/expressions/zombie_girl_face_pain1.png");
 				}
 				else {			
-					this.icon = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/expressions/zombie_girl_face_horny2.png");
+					this.icon = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/expressions/zombie_girl_face_horny2.png");
 				}
 			}
 			else if (s instanceof AbstractTamableCreeperGirl<?> creeperGirl) {
 				if (creeperGirl instanceof IPregnancySystemHandler pregnancySystemHandler
 						&& pregnancySystemHandler.getPregnancySymptoms().contains(PregnancySymptom.HORNY)) {
-					this.icon = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/creeper_girl_face_pain1.png");
+					this.icon = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/humanoid_creeper_girl_face_pain1.png");
 				}
 				else {			
-					this.icon = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/creeper_girl_face_horny2.png");
+					this.icon = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/humanoid_creeper_girl_face_horny2.png");
 				}
 			}			
 		});

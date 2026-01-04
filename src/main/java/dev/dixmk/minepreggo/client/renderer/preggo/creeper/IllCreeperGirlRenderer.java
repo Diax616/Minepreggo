@@ -3,6 +3,7 @@ package dev.dixmk.minepreggo.client.renderer.preggo.creeper;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.quadruped.AbstractCreeperGirlModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.quadruped.IllCreeperGirlModel;
+import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.IllCreeperGirl;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -13,7 +14,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class IllCreeperGirlRenderer extends AbstractCreeperGirlRenderer<IllCreeperGirl, IllCreeperGirlModel> {
 
-	protected static final ResourceLocation ILL_QUADRUPED_CREEPER_GIRL = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/ill_creeper_girl.png");
+	protected static final ResourceLocation ILL_QUADRUPED_CREEPER_GIRL = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/ill_creeper_girl.png");
 	
 	public IllCreeperGirlRenderer(EntityRendererProvider.Context context) {
 		this(context, AbstractCreeperGirlModel.LAYER_LOCATION, AbstractCreeperGirlModel.LAYER_ENERGY_ARMOR_LOCATION);

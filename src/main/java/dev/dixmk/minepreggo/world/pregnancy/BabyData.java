@@ -134,10 +134,10 @@ public class BabyData {
 		}
     }
     
-    public static @NonNull BabyData create(@NonNull ImmutableTriple<UUID, Species, Creature> mother, RandomSource random) {
+	public static @NonNull BabyData create(UUID mother, ImmutableTriple<Optional<@Nullable UUID>, Species, Creature> father, RandomSource random) {
     	Gender gender = random.nextBoolean() ? Gender.FEMALE : Gender.MALE;
-		return new BabyData(gender, mother.getMiddle(), mother.getRight(), mother.getLeft(), null);
-    }
+		return new BabyData(gender, father.getMiddle(), father.getRight(), mother, null);
+	}
     
     @CheckForNull
     public static ImmutablePair<Species, Creature> getValidSpeciesAndCreatureFromParents(ImmutablePair<Species, Creature> mother, ImmutablePair<Species, Creature> father, RandomSource random) {
@@ -162,7 +162,7 @@ public class BabyData {
             // TODO: Change to weighted random selection for a father that is not HUMAN, do not just duplicate entries to increase chance
             if (fatherSpecies != Species.HUMAN) {
                 candidates.add(ImmutablePair.of(fatherSpecies, fatherCreature));
-                candidates.add(ImmutablePair.of(fatherSpecies, fatherCreature));
+                candidates.add(ImmutablePair.of(fatherSpecies, fatherCreature));             
             }
         } else {
             // Baby is mother's species

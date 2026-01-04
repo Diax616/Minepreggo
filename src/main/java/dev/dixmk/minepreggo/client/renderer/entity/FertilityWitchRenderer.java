@@ -13,11 +13,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
+import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.monster.FertilityWitch;
 
 @OnlyIn(Dist.CLIENT)
 public class FertilityWitchRenderer extends MobRenderer<FertilityWitch, WitchModel<FertilityWitch>> {
-	private static final ResourceLocation WITCH_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/fertility_witch.png");
+	private static final ResourceLocation WITCH_LOCATION = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/fertility_witch.png");
 
 	public FertilityWitchRenderer(EntityRendererProvider.Context context) {
 		super(context, new WitchModel<>(context.bakeLayer(ModelLayers.WITCH)), 0.5F);

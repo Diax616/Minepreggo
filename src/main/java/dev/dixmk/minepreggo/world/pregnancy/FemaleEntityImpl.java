@@ -23,6 +23,7 @@ public class FemaleEntityImpl extends AbstractBreedableEntity implements IFemale
 
 	protected int pregnancyInitializerTimer = 0;
 	protected int postPregnancyTimer = 0;
+	protected int discomfortCooldown = 0;
 	protected boolean pregnant = false;
 
 	protected Optional<PostPregnancyData> postPregnancyData = Optional.empty();
@@ -134,6 +135,18 @@ public class FemaleEntityImpl extends AbstractBreedableEntity implements IFemale
 	@Override
 	public Optional<PostPregnancyData> getPostPregnancyData() {
 		return this.postPregnancyData;
+	}
+	
+	public int getDiscomfortCooldown() {
+		return discomfortCooldown;
+	}
+	
+	public void incrementDiscomfortCooldown() {
+		++this.discomfortCooldown;
+	}
+	
+	public void resetDiscomfortCooldown() {
+		this.discomfortCooldown = 0;
 	}
 	
 	@Override

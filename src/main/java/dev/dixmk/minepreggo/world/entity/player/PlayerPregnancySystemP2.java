@@ -83,7 +83,6 @@ public class PlayerPregnancySystemP2 extends PlayerPregnancySystemP1 {
 			pregnancySystem.addPregnancySymptom(PregnancySymptom.MILKING);
 			pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.LACTATION.get(), -1, 0, false, false, true));
 			pregnancySystem.sync(pregnantEntity);
-			pregnancyEffects.sync(pregnantEntity);	
 			MinepreggoMod.LOGGER.debug("Player {} has developed pregnancy symptom: {}, all pregnancy symptoms: {}",
 					pregnantEntity.getGameProfile().getName(), PregnancySymptom.MILKING, pregnancySystem.getPregnancySymptoms());
 			return true;

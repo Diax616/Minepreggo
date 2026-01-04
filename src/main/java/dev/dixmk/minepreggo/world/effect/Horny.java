@@ -4,10 +4,9 @@ import java.util.List;
 import java.util.UUID;
 
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.utils.ServerParticleUtil;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -74,19 +73,14 @@ public class Horny extends AbstractPlayerPregnancySymptom {
         
         var level = entity.level();
         if (level.isClientSide) return;    
-        trySpawnHeartParticules(level, entity);
+        trySpawnHeartParticules(entity);
         trySearchMobs(level, entity);
 	}
 	
-	private boolean trySpawnHeartParticules(Level level, LivingEntity entity) {
-        if (this.heartsTimer >= 400 && level instanceof ServerLevel serverLevel) {
+	private boolean trySpawnHeartParticules(LivingEntity entity) {
+        if (this.heartsTimer >= 400) {
         	this.heartsTimer = 0;    	
-    		for (ServerPlayer player : serverLevel.getServer().getPlayerList().getPlayers()) {
-    		    if (player.distanceToSqr(entity) <= 512.0) {
-    				serverLevel.sendParticles(player, ParticleTypes.HEART, true, entity.getRandomX(1.0), entity.getRandomY() + 0.5, entity.getRandomZ(1.0),
-    						7, serverLevel.random.nextGaussian() * 0.3, serverLevel.random.nextGaussian() * 0.5, serverLevel.random.nextGaussian() * 0.3, 0.02);
-    		    }
-    		}
+        	ServerParticleUtil.spawnRandomlyFromServer(entity, ParticleTypes.HEART);	
     		return true;
         }
         else {

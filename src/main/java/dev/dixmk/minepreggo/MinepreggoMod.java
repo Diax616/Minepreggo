@@ -216,7 +216,7 @@ public class MinepreggoMod {
 		MinepreggoModMobEffects.REGISTRY.register(modEventBus);
 		MinepreggoModPotions.REGISTRY.register(modEventBus);
 		MinepreggoModVillagerProfessions.REGISTRY.register(modEventBus);
-		MinepreggoLootModifier.GLM.register(modEventBus);
+		MinepreggoLootModifier.REGISTRY.register(modEventBus);
 		MinepreggoModEntityDataSerializers.register();
        	
 		modEventBus.addListener(this::registerLayerDefinitions);	
@@ -237,67 +237,67 @@ public class MinepreggoMod {
         		MinepreggoModEntities.MONSTER_HUMANOID_CREEPER_GIRL.get(),
         		SpawnPlacements.Type.ON_GROUND,
         		Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-        		AbstractMonsterCreeperGirl::checkMonsterCreeperGirlSpawnRules,
+        		AbstractMonsterCreeperGirl::checkSpawnRules,
         		SpawnPlacementRegisterEvent.Operation.OR);
 		event.register(
         		MinepreggoModEntities.MONSTER_HUMANOID_CREEPER_GIRL_P3.get(),
         		SpawnPlacements.Type.ON_GROUND,
         		Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-        		AbstractMonsterCreeperGirl::checkMonsterCreeperGirlSpawnRules,
+        		AbstractMonsterCreeperGirl::checkSpawnRules,
         		SpawnPlacementRegisterEvent.Operation.OR);
 		event.register(
         		MinepreggoModEntities.MONSTER_HUMANOID_CREEPER_GIRL_P5.get(),
         		SpawnPlacements.Type.ON_GROUND,
         		Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-        		AbstractMonsterCreeperGirl::checkMonsterCreeperGirlSpawnRules,
+        		AbstractMonsterCreeperGirl::checkSpawnRules,
         		SpawnPlacementRegisterEvent.Operation.OR);
 		event.register(
         		MinepreggoModEntities.MONSTER_HUMANOID_CREEPER_GIRL_P7.get(),
         		SpawnPlacements.Type.ON_GROUND,
         		Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-        		AbstractMonsterCreeperGirl::checkMonsterCreeperGirlSpawnRules,
+        		AbstractMonsterCreeperGirl::checkSpawnRules,
         		SpawnPlacementRegisterEvent.Operation.OR);
 		event.register(
         		MinepreggoModEntities.MONSTER_ZOMBIE_GIRL.get(),
         		SpawnPlacements.Type.ON_GROUND,
         		Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-        		AbstractMonsterZombieGirl::checkMonsterZombieGirlSpawnRules,
+        		AbstractMonsterZombieGirl::checkSpawnRules,
         		SpawnPlacementRegisterEvent.Operation.OR);
 		event.register(
         		MinepreggoModEntities.MONSTER_ZOMBIE_GIRL_P3.get(),
         		SpawnPlacements.Type.ON_GROUND,
         		Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-        		AbstractMonsterZombieGirl::checkMonsterZombieGirlSpawnRules,
+        		AbstractMonsterZombieGirl::checkSpawnRules,
         		SpawnPlacementRegisterEvent.Operation.OR);
 		event.register(
         		MinepreggoModEntities.MONSTER_ZOMBIE_GIRL_P5.get(),
         		SpawnPlacements.Type.ON_GROUND,
         		Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-        		AbstractMonsterZombieGirl::checkMonsterZombieGirlSpawnRules,
+        		AbstractMonsterZombieGirl::checkSpawnRules,
         		SpawnPlacementRegisterEvent.Operation.OR);
 		event.register(
         		MinepreggoModEntities.MONSTER_ZOMBIE_GIRL_P7.get(),
         		SpawnPlacements.Type.ON_GROUND,
         		Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-        		AbstractMonsterZombieGirl::checkMonsterZombieGirlSpawnRules,
+        		AbstractMonsterZombieGirl::checkSpawnRules,
         		SpawnPlacementRegisterEvent.Operation.OR);			
 		event.register(
         		MinepreggoModEntities.MONSTER_ENDER_WOMAN.get(),
-        		SpawnPlacements.Type.ON_GROUND,
-        		Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-        		AbstractMonsterEnderWoman::checkMonsterEnderGirlSpawnRules,
-        		SpawnPlacementRegisterEvent.Operation.OR);			
+        		SpawnPlacements.Type.NO_RESTRICTIONS,
+        		Heightmap.Types.WORLD_SURFACE,
+        		AbstractMonsterEnderWoman::checkSpawnRules,
+        		SpawnPlacementRegisterEvent.Operation.REPLACE);			
 		event.register(
         		MinepreggoModEntities.MONSTER_CREEPER_GIRL.get(),
         		SpawnPlacements.Type.ON_GROUND,
         		Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-        		AbstractMonsterCreeperGirl::checkMonsterCreeperGirlSpawnRules,
+        		AbstractMonsterCreeperGirl::checkSpawnRules,
         		SpawnPlacementRegisterEvent.Operation.OR);	
 		event.register(
         		MinepreggoModEntities.FERTILITY_WITCH.get(),
         		SpawnPlacements.Type.ON_GROUND,
         		Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-        		Monster::checkAnyLightMonsterSpawnRules,
+        		Monster::checkMonsterSpawnRules,
         		SpawnPlacementRegisterEvent.Operation.OR);
     }
 	
@@ -346,8 +346,6 @@ public class MinepreggoMod {
 	
 	
 	private void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
-		
-		/*Zombie Girl*/
 		event.registerLayerDefinition(AbstractZombieGirlModel.LAYER_LOCATION, AbstractZombieGirlModel::createBodyLayer);
 		event.registerLayerDefinition(AbstractZombieGirlModel.LAYER_LOCATION_P0, AbstractZombieGirlModel::createP0BodyLayer);
 		event.registerLayerDefinition(AbstractZombieGirlModel.LAYER_LOCATION_P1, AbstractZombieGirlModel::createP1BodyLayer);
@@ -361,7 +359,6 @@ public class MinepreggoMod {
 		event.registerLayerDefinition(AbstractZombieGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractZombieGirlModel::createInnerLayer);
 		event.registerLayerDefinition(AbstractZombieGirlModel.LAYER_OUTER_ARMOR_LOCATION, AbstractZombieGirlModel::createOuterLayer);
 		
-		/*Creeper Girl*/
 		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_LOCATION, AbstractHumanoidCreeperGirlModel::createBodyLayer);
 		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_LOCATION_P0, AbstractHumanoidCreeperGirlModel::createP0BodyLayer);
 		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_LOCATION_P1, AbstractHumanoidCreeperGirlModel::createP1BodyLayer);
@@ -384,18 +381,15 @@ public class MinepreggoMod {
 		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_ENERGY_ARMOR_P6_LOCATION, AbstractHumanoidCreeperGirlModel::createP6BodyLayer);
 		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_ENERGY_ARMOR_P7_LOCATION, AbstractHumanoidCreeperGirlModel::createP7BodyLayer);
 		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_ENERGY_ARMOR_P8_LOCATION, AbstractHumanoidCreeperGirlModel::createP8BodyLayer);
-			
-		/*Quadruped*/	
+				
 		event.registerLayerDefinition(AbstractCreeperGirlModel.LAYER_LOCATION, AbstractCreeperGirlModel::createP0BodyLayer);		
 		event.registerLayerDefinition(AbstractCreeperGirlModel.LAYER_OUTER_ARMOR_LOCATION, AbstractCreeperGirlModel::createOuterLayer);
 		event.registerLayerDefinition(AbstractCreeperGirlModel.LAYER_ENERGY_ARMOR_LOCATION, AbstractCreeperGirlModel::createP0BodyLayer);		
 		
-		/*Ender*/
 		event.registerLayerDefinition(AbstractEnderWomanModel.LAYER_LOCATION, AbstractEnderWomanModel::createP0BodyLayer);
 		event.registerLayerDefinition(AbstractEnderWomanModel.LAYER_OUTER_ARMOR_LOCATION, AbstractEnderWomanModel::createOuterLayer);
 		event.registerLayerDefinition(AbstractEnderWomanModel.LAYER_INNER_ARMOR_LOCATION, AbstractEnderWomanModel::createInnerLayer);
 		
-		/*Maternal Armors*/
 		event.registerLayerDefinition(BellyShieldP5Model.LAYER_LOCATION, BellyShieldP5Model::createBodyLayer);
 		event.registerLayerDefinition(BellyShieldP6Model.LAYER_LOCATION, BellyShieldP6Model::createBodyLayer);
 		event.registerLayerDefinition(BellyShieldP7Model.LAYER_LOCATION, BellyShieldP7Model::createBodyLayer);
@@ -407,11 +401,9 @@ public class MinepreggoMod {
 		event.registerLayerDefinition(MaternityChestPlateP4Model.LAYER_LOCATION, MaternityChestPlateP4Model::createBodyLayer);
 		event.registerLayerDefinition(KneeBraceModel.LAYER_LOCATION, KneeBraceModel::createBodyLayer);
 	
-		// Boobs
 		event.registerLayerDefinition(CustomBoobsModel.LAYER_LOCATION, CustomBoobsModel::createBodyLayer);
 		event.registerLayerDefinition(PredefinedBoobsModel.LAYER_LOCATION, PredefinedBoobsModel::createBodyLayer);
 
-		// Pregnant Body
 		event.registerLayerDefinition(CustomPregnantBodyP0Model.LAYER_LOCATION, CustomPregnantBodyP0Model::createBodyLayer);
 		event.registerLayerDefinition(CustomPregnantBodyP1Model.LAYER_LOCATION, CustomPregnantBodyP1Model::createBodyLayer);
 		event.registerLayerDefinition(CustomPregnantBodyP2Model.LAYER_LOCATION, CustomPregnantBodyP2Model::createBodyLayer);
@@ -435,7 +427,6 @@ public class MinepreggoMod {
 	
 	private void clientLoad(FMLClientSetupEvent event) {
 		event.enqueueWork(() -> {
-			/*Zombie Girl*/
 			MenuScreens.register(MinepreggoModMenus.ZOMBIE_GIRL_MAIN_MENU.get(), ZombieGirlMainScreen::new);
 			MenuScreens.register(MinepreggoModMenus.ZOMBIE_GIRL_INVENTORY_MENU.get(), ZombieGirlInventaryScreen::new);
 			MenuScreens.register(MinepreggoModMenus.ZOMBIE_GIRL_P0_MAIN_MENU.get(), ZombieGirlP0MainScreen::new);
@@ -457,7 +448,6 @@ public class MinepreggoMod {
 			MenuScreens.register(MinepreggoModMenus.ZOMBIE_GIRL_P8_MAIN_MENU.get(), ZombieGirlP8MainScreen::new);
 			MenuScreens.register(MinepreggoModMenus.ZOMBIE_GIRL_P8_INVENTORY_MENU.get(), ZombieGirlP8InventaryScreen::new);
 			
-			/*Creeper Girl*/
 			MenuScreens.register(MinepreggoModMenus.CREEPER_GIRL_MAIN_MENU.get(), CreeperGirlMainScreen::new);
 			MenuScreens.register(MinepreggoModMenus.CREEPER_GIRL_INVENTORY_MENU.get(), CreeperGirlInventaryScreen::new);
 			MenuScreens.register(MinepreggoModMenus.CREEPER_GIRL_P0_MAIN_MENU.get(), CreeperGirlP0MainScreen::new);

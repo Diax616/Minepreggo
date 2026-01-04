@@ -22,11 +22,13 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 
 import java.util.UUID;
 
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 
 public class MonsterHumanoidCreeperGirl extends AbstractMonsterHumanoidCreeperGirl {
 
@@ -75,6 +77,22 @@ public class MonsterHumanoidCreeperGirl extends AbstractMonsterHumanoidCreeperGi
 			return InteractionResult.sidedSuccess(this.level().isClientSide());
 
 		return super.mobInteract(sourceentity, hand);	
+	}
+	
+	@Override
+	protected void afterTaming() {
+		if (this.level() instanceof ServerLevel serverLevel) {
+			TamableHumanoidCreeperGirl next = MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(this.getX(), this.getY(), this.getZ()), MobSpawnType.CONVERSION);
+			PreggoMobHelper.copyRotation(this, next);
+			PreggoMobHelper.copyName(this, next);
+			PreggoMobHelper.copyHealth(this, next);
+			PreggoMobHelper.transferSlots(this, next);
+			PreggoMobHelper.syncFromEquipmentSlotToInventory(next);
+			PreggoMobHelper.transferAttackTarget(this, next);
+			PreggoMobHelper.copyOwner(this, next);
+			next.setSavage(false);
+			this.discard();
+		}
 	}
 	
 	@Override

@@ -24,17 +24,19 @@ import com.google.common.collect.Table;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
-import dev.dixmk.minepreggo.client.particle.ParticleHelper;
+import dev.dixmk.minepreggo.utils.ServerParticleUtil;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.init.MinepreggoModSounds;
+import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.network.packet.RemoveMobEffectPacket;
 import dev.dixmk.minepreggo.network.packet.SyncMobEffectPacket;
 import dev.dixmk.minepreggo.utils.MathHelper;
 import dev.dixmk.minepreggo.utils.TagHelper;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
+import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
@@ -52,7 +54,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
@@ -88,9 +92,9 @@ public class PregnancySystemHelper {
 	
 	// Post-Pregnancy Nerf
 	private static final UUID SPEED_MODIFIER_TIRENESS_UUID = UUID.fromString("fa6a4626-c325-4835-8259-69577a99c9c8");
-	private static final AttributeModifier SPEED_MODIFIER_TIRENESS = new AttributeModifier(SPEED_MODIFIER_TIRENESS_UUID, "Tireness speed boost", -0.1, AttributeModifier.Operation.MULTIPLY_BASE);
-	private static final UUID ATTACK_SPEED_MODIFIER_TIRENESS_UUID = UUID.fromString("94d78c8b-0983-4ae4-af65-8e477ee52f2e");
-	private static final AttributeModifier ATTACK_SPEED_MODIFIER_TIRENESS = new AttributeModifier(ATTACK_SPEED_MODIFIER_TIRENESS_UUID, "Tireness attack speed", -0.2, AttributeModifier.Operation.MULTIPLY_BASE);
+	private static final AttributeModifier SPEED_MODIFIER_TIRENESS = new AttributeModifier(SPEED_MODIFIER_TIRENESS_UUID, "Tireness speed boost", -0.1D, AttributeModifier.Operation.MULTIPLY_BASE);
+	private static final UUID MAX_HEALTH_MODIFIER_TIRENESS_UUID = UUID.fromString("94d78c8b-0983-4ae4-af65-8e477ee52f2e");
+	private static final AttributeModifier MAX_HEALTH_MODIFIER_TIRENESS = new AttributeModifier(MAX_HEALTH_MODIFIER_TIRENESS_UUID, "Tireness max health", -0.3D, AttributeModifier.Operation.MULTIPLY_BASE);
 	
 	// Max Levels
 	public static final int MAX_PREGNANCY_HEALTH = 100;
@@ -104,8 +108,8 @@ public class PregnancySystemHelper {
 	public static final int TOTAL_PREGNANCY_DAYS = 70;
 	
 	// Ticks
-	public static final int TOTAL_TICKS_MISCARRIAGE = 1200;
-	public static final int TOTAL_TICKS_MORNING_SICKNESS = 300;
+	public static final int TOTAL_TICKS_MISCARRIAGE = 800;
+	public static final int TOTAL_TICKS_MORNING_SICKNESS = 600;
 	public static final int TOTAL_TICKS_WATER_BREAKING = 1200;	
 	
 	public static final int TOTAL_TICKS_PREBIRTH_P4 = 600;
@@ -133,17 +137,17 @@ public class PregnancySystemHelper {
 	public static final int TOTAL_TICKS_CONTRACTION_P7 = 1400;
 	public static final int TOTAL_TICKS_CONTRACTION_P8 = 1600;
 	
-	public static final int TOTAL_TICKS_FERTILITY_RATE = 6000;
+	public static final int TOTAL_TICKS_FERTILITY_RATE = 4800;
 	
-	public static final int TOTAL_TICKS_SEXUAL_APPETITE_P0 = 4000;
-	public static final int TOTAL_TICKS_SEXUAL_APPETITE_P1 = 3800;
-	public static final int TOTAL_TICKS_SEXUAL_APPETITE_P2 = 3600;
-	public static final int TOTAL_TICKS_SEXUAL_APPETITE_P3 = 3400;
-	public static final int TOTAL_TICKS_SEXUAL_APPETITE_P4 = 3200;
-	public static final int TOTAL_TICKS_SEXUAL_APPETITE_P5 = 3000;
-	public static final int TOTAL_TICKS_SEXUAL_APPETITE_P6 = 2800;
-	public static final int TOTAL_TICKS_SEXUAL_APPETITE_P7 = 2600;
-	public static final int TOTAL_TICKS_SEXUAL_APPETITE_P8 = 2400;
+	public static final int TOTAL_TICKS_SEXUAL_APPETITE_P0 = 2400;
+	public static final int TOTAL_TICKS_SEXUAL_APPETITE_P1 = 2300;
+	public static final int TOTAL_TICKS_SEXUAL_APPETITE_P2 = 2200;
+	public static final int TOTAL_TICKS_SEXUAL_APPETITE_P3 = 2100;
+	public static final int TOTAL_TICKS_SEXUAL_APPETITE_P4 = 2000;
+	public static final int TOTAL_TICKS_SEXUAL_APPETITE_P5 = 1900;
+	public static final int TOTAL_TICKS_SEXUAL_APPETITE_P6 = 1800;
+	public static final int TOTAL_TICKS_SEXUAL_APPETITE_P7 = 1700;
+	public static final int TOTAL_TICKS_SEXUAL_APPETITE_P8 = 1600;
 	
 	
 	public static final int TOTAL_TICKS_CALM_BELLY_RUGGING_DOWN = 120;
@@ -170,7 +174,7 @@ public class PregnancySystemHelper {
 	public static final int ACTIVATE_MILKING_SYMPTOM = 12;
 	public static final int DESACTIVATE_MILKING_SYMPTOM = 8;
 	
-	public static final int BELLY_RUBBING_VALUE = 3;
+	public static final int BELLY_RUBBING_VALUE = 4;
 	public static final int ACTIVATE_BELLY_RUBS_SYMPTOM = 12;
 	public static final int DESACTIVATEL_BELLY_RUBS_SYMPTOM = 8;
 	
@@ -183,17 +187,27 @@ public class PregnancySystemHelper {
 	public static final RandomSource RANDOM_SOURCE = RandomSource.create();
 	
 	public static void applyPostPregnancyNerf(LivingEntity entity) {
-		AttributeInstance speed = entity.getAttribute(Attributes.MOVEMENT_SPEED);
-		AttributeInstance attackSpeed = entity.getAttribute(Attributes.ATTACK_SPEED);	
-		speed.addTransientModifier(SPEED_MODIFIER_TIRENESS);	
-		attackSpeed.addTransientModifier(ATTACK_SPEED_MODIFIER_TIRENESS);	
+		AttributeInstance speedAttr = entity.getAttribute(Attributes.MOVEMENT_SPEED);
+		AttributeInstance maxHealthAttr = entity.getAttribute(Attributes.MAX_HEALTH);			
+
+		if (speedAttr != null && speedAttr.getModifier(SPEED_MODIFIER_TIRENESS_UUID) == null) {
+		    speedAttr.addTransientModifier(SPEED_MODIFIER_TIRENESS);
+		}			
+		if (maxHealthAttr != null && maxHealthAttr.getModifier(MAX_HEALTH_MODIFIER_TIRENESS_UUID) == null) {
+			maxHealthAttr.addTransientModifier(MAX_HEALTH_MODIFIER_TIRENESS);
+		}	
 	}
 	
 	public static void removePostPregnancyNeft(LivingEntity entity) {
-		AttributeInstance speed = entity.getAttribute(Attributes.MOVEMENT_SPEED);
-		AttributeInstance attackSpeed = entity.getAttribute(Attributes.ATTACK_SPEED);	
-		speed.removeModifier(SPEED_MODIFIER_TIRENESS);	
-		attackSpeed.removeModifier(ATTACK_SPEED_MODIFIER_TIRENESS);	
+		AttributeInstance speedAttr = entity.getAttribute(Attributes.MOVEMENT_SPEED);
+		AttributeInstance maxHealthAttr = entity.getAttribute(Attributes.MAX_HEALTH);	
+
+		if (speedAttr != null && speedAttr.getModifier(SPEED_MODIFIER_TIRENESS_UUID) != null) {
+			speedAttr.removeModifier(SPEED_MODIFIER_TIRENESS);
+		}	
+		if (maxHealthAttr != null && maxHealthAttr.getModifier(MAX_HEALTH_MODIFIER_TIRENESS_UUID) != null) {
+			maxHealthAttr.removeModifier(MAX_HEALTH_MODIFIER_TIRENESS);
+		}
 	}
 	
 	private static final ImmutableMap<Species, Item> MILK_ITEM = ImmutableMap.of(
@@ -344,9 +358,6 @@ public class PregnancySystemHelper {
 		return false;
 	}
 	
-	
-	
-	
 	public static boolean hasEnoughBedsForBreeding(LivingEntity source, @Nonnegative int minBedsRequired, @Nonnegative int range) {
 	    Level level = source.level();
 	    AABB searchArea = new AABB(source.blockPosition()).inflate(range);
@@ -407,7 +418,7 @@ public class PregnancySystemHelper {
 							}
 						}
 					
-						ParticleHelper.spawnRandomlyFromServer(target, particle);
+						ServerParticleUtil.spawnRandomlyFromServer(target, particle);
 					}
 					return true;			
 				}
@@ -443,14 +454,6 @@ public class PregnancySystemHelper {
 				new RemoveMobEffectPacket(entity.getId(), effect));
 	}
 	
-	/**
-	 * Syncs the removal of expired pregnancy effects to a specific player.
-	 * This method ensures that when a tracker player starts tracking another player,
-	 * all expired pregnancy effects are properly communicated.
-	 * 
-	 * @param entity the living entity whose expired effects should be synced
-	 * @param trackerPlayer the player who is tracking this entity
-	 */
 	public static void syncExpiredMobEffectsToTracker(LivingEntity entity, ServerPlayer trackerPlayer) {
 		if (!(entity instanceof ServerPlayer trackedPlayer)) {
 			return;
@@ -495,20 +498,28 @@ public class PregnancySystemHelper {
 		return armor instanceof KneeBraceItem;
 	}
 	
+	
+	
 	public static Craving getRandomCraving(RandomSource randomSource) {
-		final float p = randomSource.nextFloat();
-		float a = 0F;
+		// Generate a random value between 0.0 and 1.0
+		final float random = randomSource.nextFloat();
+		float cumulativeProbability = 0.0F;
 		
+		// Iterate through weights and select based on cumulative probability
 		for (final var entry : CRAVING_WEIGHTS.entrySet()) {
-			a += entry.getValue();
-			if (a >= p) {
+			cumulativeProbability += entry.getValue();
+			if (random < cumulativeProbability) {
 				return entry.getKey();
 			}
 		}
 
-		MinepreggoMod.LOGGER.warn("PregnancySystemHelper.getRandomCraving: Weights do not sum to 1. Returning random craving.");	
-		return Craving.values()[randomSource.nextInt(0, Craving.values().length)];
+		// Fallback: This should never happen if weights sum to 1.0
+		// Log warning and return the last craving type
+		MinepreggoMod.LOGGER.warn("PregnancySystemHelper.getRandomCraving: Weights do not sum to 1.0 (sum: {}). Returning fallback craving.", cumulativeProbability);	
+		return Craving.SALTY; // Return most common craving as fallback
 	}
+	
+	
 	
 	public static ItemStack createPrenatalCheckUpResult(PrenatalCheckUpInfo info, PrenatalRegularCheckUpData data, String autor) {
 		ListTag pages = new ListTag();
@@ -749,8 +760,8 @@ public class PregnancySystemHelper {
     	
     	RandomSource randomSource = pregnantEntity.getRandom();
 
-		if ((pregnantEntity.hasEffect(MinepreggoModMobEffects.PREGNANCY_RESISTANCE.get()) && randomSource.nextFloat() < 0.9F)
-				|| (!damagesource.is(DamageTypes.FALL) && !pregnantEntity.getItemBySlot(EquipmentSlot.CHEST).isEmpty() && randomSource.nextFloat() < 0.5)) {
+		if (pregnantEntity.hasEffect(MinepreggoModMobEffects.PREGNANCY_RESISTANCE.get())
+				|| (!damagesource.is(DamageTypes.FALL) && !pregnantEntity.getItemBySlot(EquipmentSlot.CHEST).isEmpty() && randomSource.nextFloat() < 0.7)) {
 			return OptionalInt.empty();
 		}
 		int damage = 0;
@@ -806,4 +817,57 @@ public class PregnancySystemHelper {
 		
 		return p;
     }
+    
+    public static boolean canFuck(ServerPlayer sourcePlayer, ServerPlayer targetPlayer) {
+		final var r1 = sourcePlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).map(cap -> cap.getBreedableData().map(b -> b.canFuck())).orElse(Optional.empty());
+		final var r2 = targetPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).map(cap -> cap.getBreedableData().map(b -> b.canFuck())).orElse(Optional.empty());
+  	
+    	if (r1.isPresent() && r2.isPresent()) {
+			if (!r1.get().booleanValue()) {
+				MessageHelper.sendTo(sourcePlayer, Component.translatable("chat.minepreggo.player.sex.message.tiring"), true);
+				MessageHelper.sendTo(targetPlayer, Component.translatable("chat.minepreggo.preggo_mob.sex.message.tiring", sourcePlayer.getGameProfile().getName()), true);
+				return false;
+			}
+			else if (!r2.get().booleanValue()) {
+				MessageHelper.sendTo(sourcePlayer, Component.translatable("chat.minepreggo.preggo_mob.sex.message.tiring", targetPlayer.getGameProfile().getName()), true);
+				MessageHelper.sendTo(targetPlayer, Component.translatable("chat.minepreggo.player.sex.message.tiring"), true);
+				return false;
+			}
+			return true;
+		}
+		
+		MinepreggoMod.LOGGER.error("Failed to retrieve breedable data for players {} and {}", sourcePlayer.getName().getString(), targetPlayer.getName().getString());
+		return false;
+    }
+    
+    public static<E extends PreggoMob & ITamablePreggoMob<?>> boolean canFuck(ServerPlayer sourcePlayer, E preggoMob) {
+		final var r1 = sourcePlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).map(cap -> cap.getBreedableData().map(b -> b.canFuck())).orElse(Optional.empty());
+  	
+    	if (r1.isPresent()) {
+			if (!r1.get().booleanValue()) {
+				MessageHelper.sendTo(sourcePlayer, Component.translatable("chat.minepreggo.player.sex.message.tiring"), true);
+				return false;
+			}
+			else if (!preggoMob.getGenderedData().canFuck()) {
+				MessageHelper.sendTo(sourcePlayer, Component.translatable("chat.minepreggo.preggo_mob.sex.message.tiring", preggoMob.getSimpleName()), true);
+				return false;
+			}
+			return true;
+		}
+		
+		MinepreggoMod.LOGGER.error("Failed to retrieve breedable data for player {}", sourcePlayer.getName().getString());
+		return false;
+    }
+    
+	public static void playSoundNearTo(LivingEntity entity, SoundEvent soundEvent, float volume) {
+	    if (entity.level() instanceof ServerLevel serverLevel && !serverLevel.isClientSide) {
+	        serverLevel.playSound(null, entity.getX(), entity.getY(), entity.getZ(), 
+	                             soundEvent, entity.getSoundSource(), volume, 
+	                             0.9F + entity.getRandom().nextFloat() * 0.3F);
+	    }
+	}
+	
+	public static void playSoundNearTo(LivingEntity entity, SoundEvent sound) {
+		playSoundNearTo(entity, sound, 0.5f);
+	}
 }

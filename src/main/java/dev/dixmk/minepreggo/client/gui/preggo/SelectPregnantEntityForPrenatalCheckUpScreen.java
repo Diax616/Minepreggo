@@ -20,6 +20,7 @@ import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.client.gui.component.PreggoMobScrollList;
 import dev.dixmk.minepreggo.network.packet.RequestPlayerMedicalCheckUpC2SPacket;
 import dev.dixmk.minepreggo.network.packet.RequestPreggoMobMedicalCheckUpPacket;
+import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractCreeperGirl;
@@ -29,10 +30,10 @@ import dev.dixmk.minepreggo.world.inventory.preggo.SelectPregnantEntityForPrenat
 @OnlyIn(Dist.CLIENT)
 public class SelectPregnantEntityForPrenatalCheckUpScreen extends AbstractContainerScreen<SelectPregnantEntityForPrenatalCheckUpMenu> {
 	
-	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/select_preggo_mob_for_medical_check_up_gui.png");
+	private static final ResourceLocation TEXTURE = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/select_preggo_mob_for_medical_check_up_gui.png");
 
-	private static final ResourceLocation DEFAULT_ICON_CREEPER_GIRL_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/creeper_girl_p0.png");
-	private static final ResourceLocation DEFAULT_ICON_ZOMBIE_GIRL_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/zombie_girl_p0.png");
+	private static final ResourceLocation DEFAULT_ICON_CREEPER_GIRL_TEXTURE = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/humanoid_creeper_girl_p0.png");
+	private static final ResourceLocation DEFAULT_ICON_ZOMBIE_GIRL_TEXTURE = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/zombie_girl_p0.png");
 
 	private final Optional<ScientificIllager> scientificIllager;
 	private final List<? extends LivingEntity> pregnantEntities;

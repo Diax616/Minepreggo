@@ -45,9 +45,6 @@ public class ClientEventHandler {
         cameraOffsetZ += offsetZ;
     }
     
-    /**
-     * Reset camera offset to zero (default position)
-     */
     public static void resetCameraOffset() {
         cameraOffsetX = 0.0;
         cameraOffsetY = 0.0;

@@ -47,7 +47,7 @@ public class TamableHumanoidCreeperGirlP6 extends AbstractTamablePregnantHumanoi
 			
 			@Override
 			protected void initPostMiscarriage() {
-				TamableHumanoidCreeperGirl.onPostPartum(pregnantEntity);
+				TamableHumanoidCreeperGirl.onPostMiscarriage(pregnantEntity);
 			}
 			
 			@Override

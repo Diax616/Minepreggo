@@ -14,7 +14,7 @@ public class FullOfZombies extends MobEffect {
 
 	@Override
 	public void applyEffectTick(LivingEntity entity, int amplifier) {	
-        if (tryBurn(entity) && !entity.getItemBySlot(EquipmentSlot.HEAD).isEmpty()) {
+        if (entity.getItemBySlot(EquipmentSlot.HEAD).isEmpty() && !entity.isOnFire() && tryBurn(entity)) {
          	 entity.setSecondsOnFire(8);
         }    
 	}
@@ -31,5 +31,10 @@ public class FullOfZombies extends MobEffect {
 		}
 
 		return false;
+	}
+	
+	@Override
+	public boolean isDurationEffectTick(int duration, int amplifier) {
+		return true;
 	}
 }

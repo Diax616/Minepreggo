@@ -28,7 +28,7 @@ public class SourActivatedGunpowderItem extends ActivatedGunpowderItem implement
 
 	@Override
 	public @Nonnegative float getPenalty() {
-		return 0.3f;
+		return 0.1f;
 	}
 }
 

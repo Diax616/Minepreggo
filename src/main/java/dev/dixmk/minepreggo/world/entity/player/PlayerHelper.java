@@ -15,12 +15,10 @@ import com.google.common.collect.ImmutableMap;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
-import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.network.capability.FemalePlayerImpl;
-import dev.dixmk.minepreggo.network.packet.PlayEntitySoundS2CPacket;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
@@ -28,6 +26,7 @@ import dev.dixmk.minepreggo.world.item.IMaternityArmor;
 import dev.dixmk.minepreggo.world.pregnancy.IBreedable;
 import dev.dixmk.minepreggo.world.pregnancy.MapPregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import dev.dixmk.minepreggo.world.pregnancy.Womb;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
@@ -50,10 +49,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.network.PacketDistributor;
 
 public class PlayerHelper {
 
@@ -126,7 +125,7 @@ public class PlayerHelper {
 		return PREGNANCY_EFFECTS.get(phase);
 	}
 	
-	public static boolean tryToStartPregnancy(ServerPlayer player) {
+	public static boolean tryToStartPregnancy(ServerPlayer player, boolean forceFather) {
 		var playerDataCap = player.getCapability(MinepreggoCapabilities.PLAYER_DATA).resolve();		
 
 		if (playerDataCap.isEmpty()) {
@@ -143,25 +142,38 @@ public class PlayerHelper {
 				final var lastPregnancyStage = IBreedable.calculateMaxPregnancyPhaseByTotalNumOfBabies(prePregnancyData.fertilizedEggs());
 				final var totalDays = MinepreggoModConfig.getTotalPregnancyDays();
 				final var daysByStage = new MapPregnancyPhase(totalDays, lastPregnancyStage);
+				final var pregnancySystem = femaleData.getPregnancySystem();
 				
-				final var womb = new Womb(
-						ImmutableTriple.of(player.getUUID(), Species.HUMAN, Creature.HUMANOID),
-						ImmutableTriple.of(Optional.ofNullable(prePregnancyData.fatherId()), prePregnancyData.typeOfSpeciesOfFather(), prePregnancyData.typeOfCreatureOfFather()),
-						player.getRandom(),
-						prePregnancyData.fertilizedEggs());
-					
-				femaleData.getPregnancySystem().setMapPregnancyPhase(daysByStage);
-				femaleData.getPregnancySystem().setPregnancyHealth(PregnancySystemHelper.MAX_PREGNANCY_HEALTH);
-				femaleData.getPregnancySystem().setLastPregnancyStage(lastPregnancyStage);
-				femaleData.getPregnancySystem().setDaysToGiveBirth(totalDays);			
-				femaleData.getPregnancySystem().setWomb(womb);	
-				femaleData.getPregnancySystem().setCurrentPregnancyStage(PregnancyPhase.P0);	
+				final Womb womb;
+								
+				if (forceFather) {
+					womb = new Womb(
+							player.getUUID(),
+							ImmutableTriple.of(Optional.ofNullable(prePregnancyData.fatherId()), prePregnancyData.typeOfSpeciesOfFather(), prePregnancyData.typeOfCreatureOfFather()),
+							player.getRandom(),
+							prePregnancyData.fertilizedEggs());				
+				}
+				else {
+					womb = new Womb(
+							ImmutableTriple.of(player.getUUID(), Species.HUMAN, Creature.HUMANOID),
+							ImmutableTriple.of(Optional.ofNullable(prePregnancyData.fatherId()), prePregnancyData.typeOfSpeciesOfFather(), prePregnancyData.typeOfCreatureOfFather()),
+							player.getRandom(),
+							prePregnancyData.fertilizedEggs());
+				}
 				
+				pregnancySystem.setMapPregnancyPhase(daysByStage);
+				pregnancySystem.setPregnancyHealth(PregnancySystemHelper.MAX_PREGNANCY_HEALTH);
+				pregnancySystem.setLastPregnancyStage(lastPregnancyStage);
+				pregnancySystem.setDaysToGiveBirth(totalDays);			
+				pregnancySystem.setWomb(womb);	
+				pregnancySystem.setCurrentPregnancyStage(PregnancyPhase.P0);	
+							
 				femaleData.sync(player);
-				femaleData.getPregnancySystem().sync(player);	
+				pregnancySystem.sync(player);	
 			
 				player.addEffect(new MobEffectInstance(MinepreggoModMobEffects.PREGNANCY_P0.get(), -1, 0, false, false, true));				
-					
+				player.removeEffect(MinepreggoModMobEffects.FERTILE.get());
+				
 				MinepreggoMod.LOGGER.debug("Player {} has become pregnant with {} babies, total days to give birth: {}, pregnancy phases days: {}, womb: {}", 
 						player.getName().getString(), 
 						prePregnancyData.fertilizedEggs(), 
@@ -189,10 +201,11 @@ public class PlayerHelper {
 				&& femaleData.get().getPostPregnancyData().isEmpty()) {	
 			
 			player.removeEffect(MinepreggoModMobEffects.FERTILE.get());
+
 			return femaleData.get().tryImpregnate(numOfBabies, father);
 		}
 		else {
-			MinepreggoMod.LOGGER.error("Player {} is already pregnant or has no FEMALE_DATA={} capability.", player.getName().getString(), femaleData.isEmpty());
+			MinepreggoMod.LOGGER.warn("Player {} is already pregnant or has no FEMALE_DATA={} capability.", player.getName().getString(), femaleData.isEmpty());
 		}
 		
 		return false;
@@ -222,10 +235,33 @@ public class PlayerHelper {
 		return tryToStartPrePregnancy(female, ImmutableTriple.of(Optional.of(male.getUUID()), Species.HUMAN, Creature.HUMANOID), numOfBabies);
 	}
 	
+	
+	public static boolean tryStartPregnancyBySex(ServerPlayer female, Villager villager) {		
+		var femalePlayerCap = female.getCapability(MinepreggoCapabilities.PLAYER_DATA).resolve();
+
+		if (femalePlayerCap.isEmpty()) {
+			return false;
+		}
+		
+		final var femalePlayerData = femalePlayerCap.get().getFemaleData().resolve();
+		
+		if (femalePlayerData.isEmpty()) {
+			return false;
+		}
+		
+		final var numOfBabies = IBreedable.calculateNumOfBabiesByFertility(villager.getRandom().nextFloat(), femalePlayerData.get().getFertilityRate());
+		
+		if (numOfBabies == 0) {
+			return false;
+		}
+			
+		return tryToStartPrePregnancy(female, ImmutableTriple.of(Optional.of(villager.getUUID()), Species.VILLAGER, Creature.HUMANOID), numOfBabies);
+	}
+	
 	public static boolean tryStartPregnancyByPotion(ServerPlayer player, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father, int amplifier) {			
 		final var numOfbabies = IBreedable.calculateNumOfBabiesByPotion(amplifier);
 		if (tryToStartPrePregnancy(player, father, numOfbabies)) {
-			return tryToStartPregnancy(player);
+			return tryToStartPregnancy(player, true);
 		}
 		return false;
 	}
@@ -299,7 +335,7 @@ public class PlayerHelper {
 			}
 		}
 		else {
-			MinepreggoMod.LOGGER.error("Player {} has no PRE_PREGNANCY_DATA={} capability.", serverPlayer.getName().getString(), result.isEmpty());
+			MinepreggoMod.LOGGER.warn("Player {} has no PRE_PREGNANCY_DATA={} capability.", serverPlayer.getName().getString(), result.isEmpty());
 		}
 		
 		return false;
@@ -377,18 +413,39 @@ public class PlayerHelper {
 	public static @Nonnegative int calculateExplosionLevelByPregnancyPhase(PregnancyPhase phase) {
 		int ordinal = phase.ordinal();
 		int maxOrdinal = PregnancyPhase.values().length - 1;
-		int level = (int) Math.round(ordinal * 5.0 / maxOrdinal);
-		return Math.min(level, 5);
+		int level = (int) Math.round(ordinal * 6.0 / maxOrdinal);
+		return Math.min(level, 6);
 	}
 	
-	public static void playSoundNearTo(LivingEntity serverPlayer, SoundEvent sound) {
-		playSoundNearTo(serverPlayer, sound, 0.5f);
+	public static void playSoundNearTo(LivingEntity entity, SoundEvent sound) {
+		playSoundNearTo(entity, sound, 0.5f);
 	}
 	
-	public static void playSoundNearTo(LivingEntity serverPlayer, SoundEvent soundEvent, float sound) {
-		MinepreggoModPacketHandler.INSTANCE.send(
-				PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(
-						serverPlayer.getX(), serverPlayer.getY(), serverPlayer.getZ(), 32, serverPlayer.level().dimension())),
-				new PlayEntitySoundS2CPacket(serverPlayer.getId(), soundEvent, sound, 0.9F + serverPlayer.getRandom().nextFloat() * 0.3F));
+	public static void playSoundNearTo(LivingEntity entity, SoundEvent soundEvent, float volume) {
+	    if (entity.level() instanceof ServerLevel serverLevel && !serverLevel.isClientSide) {
+	        serverLevel.playSound(null, entity.getX(), entity.getY(), entity.getZ(), 
+	                             soundEvent, entity.getSoundSource(), volume, 
+	                             0.9F + entity.getRandom().nextFloat() * 0.3F);
+	    }
+	}
+	
+	public static void removeHorny(ServerPlayer source) {
+		source.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
+			cap.getFemaleData().ifPresent(femaleData -> {
+				if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {								
+					var pregnancySystem = femaleData.getPregnancySystem();					
+					if (pregnancySystem.getCurrentPregnancyStage().compareTo(PregnancyPhase.P4) >= 0) {
+						var pregnancyEffects = femaleData.getPregnancyEffects();						
+						pregnancyEffects.setHorny(0);
+						pregnancyEffects.resetHornyTimer();
+						pregnancySystem.removePregnancySymptom(PregnancySymptom.HORNY);
+						source.removeEffect(MinepreggoModMobEffects.HORNY.get());
+						
+						pregnancyEffects.sync(source);
+						pregnancySystem.sync(source);
+					}
+				}
+			})			
+		);
 	}
 }

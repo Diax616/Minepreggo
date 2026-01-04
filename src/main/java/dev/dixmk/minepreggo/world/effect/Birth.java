@@ -12,6 +12,12 @@ import dev.dixmk.minepreggo.server.ServerPlayerAnimationManager;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import net.minecraft.server.level.ServerPlayer;
 
+/**
+ * It apparently works correctly, but I did not test it extensively.
+ * @author DixMK
+ * 
+ */
+
 public class Birth extends AbstractPlayerPregnancyPain {
 	private static final AttributeModifier ATTACK_SPEED_MODIFIER = new AttributeModifier(ATTACK_SPEED_MODIFIER_UUID, "birth attack speed nerf", -1D, AttributeModifier.Operation.MULTIPLY_TOTAL);
 	private static final AttributeModifier SPEED_MODIFIER = new AttributeModifier(SPEED_MODIFIER_UUID, "birth speed nerf", -1D, AttributeModifier.Operation.MULTIPLY_TOTAL);

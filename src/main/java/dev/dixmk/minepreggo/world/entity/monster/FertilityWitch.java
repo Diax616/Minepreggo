@@ -28,15 +28,31 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.init.MinepreggoModPotions;
+import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableHumanoidCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirl;
 
+
+
+/**
+ * 
+ * Fertility Witch spawn rules have issues, she can spawn in mushroom fields which does no sense, other entities like MonsterZombieGirl, MonsterCreeperGirl even its father class, Witch, 
+ * cannot spawn in mushroom fields. I've deggugged and tested it, but I couldn't find the reason why Fertility Witch can spawn in mushroom fields.
+ * For now, I've created a special tag "hostil.json" in data/minepreggo/tags/worldgen/biome/ which includes all biomes except mushroom fields, and added this tag to the spawn rules of Fertility Witch in 
+ * data/minepreggo/forge/biome_modifier/fertility_witch_biome_modifier.json, so she won't spawn in mushroom fields anymore. But it's not the ideal solution.
+ * 
+ * @author DixMK
+ * 
+ * */
+
+
 public class FertilityWitch extends Witch {
 	
-	private static final List<Potion> HARMUL_IMPREGNATION_POTIONS = List.of(MinepreggoModPotions.ZOMBIE_IMPREGNATION_0.get(), MinepreggoModPotions.CREEPER_IMPREGNATION_0.get(), MinepreggoModPotions.ENDER_IMPREGNATION_0.get());
+	private static final List<Species> HARMFUL_SPECIES = List.of(Species.ZOMBIE, Species.CREEPER, Species.ENDER);
 	
 	private HarmfulPregnancyPotion harmfulPregnancyPotion = null;
 	
@@ -74,7 +90,7 @@ public class FertilityWitch extends Witch {
 
 	@Override
 	protected ResourceLocation getDefaultLootTable() {
-	    return ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "entities/fertility_witch_loot");
+	    return MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "entities/fertility_witch_loot");
 	}
 	
 	public void chooseRandomHarmfulPregnancyPotion() {
@@ -83,17 +99,26 @@ public class FertilityWitch extends Witch {
 	
 	private Potion getRandomHarmfulPregnancyPotion() {
 		if (this.random.nextFloat() < 0.1) {
-			return MinepreggoModPotions.BABY_DUPLICATION_0.get();
+			return MinepreggoModPotions.getRandomBabyDuplicationPotion(random);
 		}
 		
 		if (this.harmfulPregnancyPotion == HarmfulPregnancyPotion.ACCELERATION) {
-			return MinepreggoModPotions.PREGNANCY_ACCELERATION_0.get();
+			return MinepreggoModPotions.getRandomPregnancyAccelerationPotion(random);
 		}
-		return MinepreggoModPotions.PREGNANCY_DELAY_0.get();
+		return MinepreggoModPotions.getRandomPregnancyDelayPotion(random);
 	}
 	
 	private Potion getRandomHarmfulImpregnationPotion() {
-		return HARMUL_IMPREGNATION_POTIONS.get(this.random.nextInt(0, HARMUL_IMPREGNATION_POTIONS.size()));
+		switch (HARMFUL_SPECIES.get(random.nextInt(HARMFUL_SPECIES.size()))) {
+		case ENDER: {
+			return random.nextBoolean() ? MinepreggoModPotions.getRandomEnderImpregnationPotion(random) : MinepreggoModPotions.getRandomHumanoidEnderImpregnationPotion(random);		
+		}
+		case CREEPER: {
+			return random.nextBoolean() ? MinepreggoModPotions.getRandomCreeperImpregnationPotion(random) : MinepreggoModPotions.getRandomHumanoidCreeperImpregnationPotion(random);		
+		}
+		default:
+			return MinepreggoModPotions.getRandomZombieImpregnationPotion(random);
+		}
 	}
 
 	@Override
@@ -119,30 +144,26 @@ public class FertilityWitch extends Witch {
 			}
 			this.setTarget(null);
 		}
-		else if (d3 >= 8D && p_34143_ instanceof Player player && this.random.nextBoolean()) {		
+		else if (d3 >= 6D && p_34143_ instanceof Player player && this.random.nextBoolean()) {		
 			Optional<Boolean> result = player.getCapability(MinepreggoCapabilities.PLAYER_DATA).map(cap -> 
 				cap.getFemaleData().map(femaleData -> femaleData.isPregnant() && femaleData.isPregnancySystemInitialized())
 			).orElse(Optional.empty());
 			
-			if (result.isPresent() && result.get().booleanValue()) {
-				potion = getRandomHarmfulPregnancyPotion();
-			}
-			else if (result.isPresent())  {
-				potion = getRandomHarmfulImpregnationPotion();
+			if (result.isPresent()) {			
+				if (result.get().booleanValue()) {
+					potion = getRandomHarmfulPregnancyPotion();
+				}
+				else {
+					potion = getRandomHarmfulImpregnationPotion();
+				}
 			}
 		}		
-		else if (d3 >= 8D && p_34143_ instanceof PreggoMob preggoMob && this.random.nextBoolean()) {
+		else if (d3 >= 6D && p_34143_ instanceof PreggoMob preggoMob && this.random.nextBoolean()) {
 			Potion result = null;
-			if (preggoMob instanceof TamableZombieGirl) {
-				result = MinepreggoModPotions.IMPREGNATION_POTION_0.get();
+			if (preggoMob instanceof TamableZombieGirl || preggoMob instanceof TamableHumanoidCreeperGirl) {
+				result = MinepreggoModPotions.getRandomImpregnationPotion(random);
 			}
-			else if (preggoMob instanceof TamableHumanoidCreeperGirl) {
-				result = MinepreggoModPotions.IMPREGNATION_POTION_0.get();
-			}
-			else if (preggoMob instanceof AbstractTamablePregnantZombieGirl<?,?>) {
-				result = getRandomHarmfulPregnancyPotion();
-			}
-			else if (preggoMob instanceof AbstractTamablePregnantCreeperGirl<?,?>) {
+			else if (preggoMob instanceof AbstractTamablePregnantZombieGirl<?,?> || preggoMob instanceof AbstractTamablePregnantCreeperGirl<?,?>) {
 				result = getRandomHarmfulPregnancyPotion();
 			}
 			

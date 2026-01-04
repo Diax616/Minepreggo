@@ -11,6 +11,7 @@ import javax.annotation.Nonnegative;
 
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.common.utils.FixedSizeList;
@@ -35,13 +36,13 @@ public class Womb {
 		}
     }
     
-    public Womb (@NonNull ImmutableTriple<UUID, Species, Creature> mother, RandomSource random, @Nonnegative int count) {		
+	public Womb(UUID mother, ImmutableTriple<Optional<@Nullable UUID>, Species, Creature> father, RandomSource random, int count) {
     	int tempCount = Math.min(count, Womb.getMaxNumOfBabies());   	
     	for (int i = 0; i < tempCount; i++) {
-    		addBaby(BabyData.create(mother, random));
+    		addBaby(BabyData.create(mother, father, random));
 		}
-    }
-	
+	}
+
 	public boolean addBaby(@NonNull BabyData babyData) {
 		return babies.add(babyData);
 	}
