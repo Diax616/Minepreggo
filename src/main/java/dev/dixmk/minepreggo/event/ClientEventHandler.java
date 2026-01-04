@@ -123,6 +123,7 @@ public class ClientEventHandler {
             }
         } else {
         	cameraOffsetY = 0;
+        	
         }     
     }
 }
