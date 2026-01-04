@@ -53,12 +53,16 @@ public class Trades {
 					2, new VillagerTrades.ItemListing[]
 					{ new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.CHILI_PEPPER.get(), 4, 25, 10),
 					new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.LEMON.get(), 4, 25, 10),
+					new VillagerTrades.ItemsForEmeralds(Items.COCOA_BEANS, 10, 5, 10),
 					new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.CUCUMBER.get(), 8, 25, 10)},
 					3, new VillagerTrades.ItemListing[] { 
+					new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.CHILI_PEPPER.get(), 6, 41, 10),
 					new VillagerTrades.ItemsForEmeralds(Items.COCOA_BEANS, 15, 10, 10),
+					new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.LEMON.get(), 6, 50, 10),
 					new VillagerTrades.EmeraldForItems(MinepreggoModItems.CUCUMBER.get(), 10, 10, 10)},
 					4, new VillagerTrades.ItemListing[] { 
-					new VillagerTrades.ItemsForEmeralds(Items.COCOA_BEANS, 17, 20, 15)})));	
+					new VillagerTrades.ItemsForEmeralds(Items.COCOA_BEANS, 17, 20, 15),
+					new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.CHOCOLATE_BAR.get(), 9, 3, 20)})));	
 				
 			p_35633_.put(VillagerProfession.BUTCHER, new Int2ObjectOpenHashMap<>(ImmutableMap.of(
 					1, new VillagerTrades.ItemListing[] 
@@ -74,7 +78,7 @@ public class Trades {
 					{ new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.LEMON_ICE_POPSICLES.get(), 10, 24, 10),
 						new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.HOT_CHICKEN.get(), 17, 17, 10),
 						new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.PICKLE.get(), 13, 20, 10),
-						new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.CHOCOLATE_BAR.get(), 10, 5, 10)})));
+						new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.CHOCOLATE_BAR.get(), 10, 5, 20)})));
 			
 			p_35633_.put(MinepreggoModVillagerProfessions.VILLAGER_DOCTOR.get(), new Int2ObjectOpenHashMap<>(ImmutableMap.of(
 					1, new VillagerTrades.ItemListing[]
@@ -84,7 +88,7 @@ public class Trades {
 					{ new PotionsForEmeralds(PotionItemFactory.createSplashPotion(Potions.STRONG_HEALING), 17, 1, 20, 17),
 						new PotionsForEmeralds(PotionItemFactory.createSplashPotion(Potions.HEALING), 16, 1, 20, 17)},
 					3, new VillagerTrades.ItemListing[]
-					{ new PotionsForEmeralds(PotionItemFactory.createSplashPotion(MinepreggoModPotions.IMPREGNATION_POTION_0.get()), 30, 1, 20, 20)},
+					{ new PotionsForEmeralds(PotionItemFactory.createSplashPotion(MinepreggoModPotions.FERTILITY.get()), 10, 1, 20, 20)},
 					4, new VillagerTrades.ItemListing[]
 					{ new PotionsForEmeralds(PotionItemFactory.createSplashPotion(MinepreggoModPotions.PREGNANCY_HEALING.get()), 35, 1, 20, 20)},
 					5, new VillagerTrades.ItemListing[]

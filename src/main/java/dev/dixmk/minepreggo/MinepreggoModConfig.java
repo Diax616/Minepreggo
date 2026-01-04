@@ -317,7 +317,7 @@ public class MinepreggoModConfig {
         final ForgeConfigSpec.IntValue totalTicksOfPostPregnancyPhase;
         
         Common(ForgeConfigSpec.Builder builder) {
-            builder.push("Common"); // category name
+            builder.push("Common");
 
             totalPregnancyDays = builder
                     .comment("Total number of pregnancy days.")
@@ -369,7 +369,7 @@ public class MinepreggoModConfig {
         final ForgeConfigSpec.BooleanValue enableBellySounds;
 
         Client(ForgeConfigSpec.Builder builder) {
-            builder.push("Client"); // category name
+            builder.push("Client");
 
             enablePlayerMoans = builder
                     .comment("Enable or disable player moans. (NOT WORKING)")
@@ -418,13 +418,13 @@ public class MinepreggoModConfig {
     }
     
     private static void calculateCravingValues() { 	
-    	totalTicksOfCravingP2 = (int) Math.ceil(totalTicksOfCravingP1 * 0.7F);
-    	totalTicksOfCravingP3 = (int) Math.ceil(totalTicksOfCravingP1 * 0.6F);
-    	totalTicksOfCravingP4 = (int) Math.ceil(totalTicksOfCravingP1 * 0.65F);
-    	totalTicksOfCravingP5 = (int) Math.ceil(totalTicksOfCravingP1 * 0.6F);
+    	totalTicksOfCravingP2 = (int) Math.ceil(totalTicksOfCravingP1 * 0.9F);
+    	totalTicksOfCravingP3 = (int) Math.ceil(totalTicksOfCravingP1 * 0.85F);
+    	totalTicksOfCravingP4 = (int) Math.ceil(totalTicksOfCravingP1 * 0.8F);
+    	totalTicksOfCravingP5 = (int) Math.ceil(totalTicksOfCravingP1 * 0.75F);
     	totalTicksOfCravingP6 = (int) Math.ceil(totalTicksOfCravingP1 * 0.7F);
-    	totalTicksOfCravingP7 = (int) Math.ceil(totalTicksOfCravingP1 * 0.75F);
-    	totalTicksOfCravingP8 = (int) Math.ceil(totalTicksOfCravingP1 * 0.8F);
+    	totalTicksOfCravingP7 = (int) Math.ceil(totalTicksOfCravingP1 * 0.65F);
+    	totalTicksOfCravingP8 = (int) Math.ceil(totalTicksOfCravingP1 * 0.6F);
     }
     
     private static void calculateMilkingValues() { 	
