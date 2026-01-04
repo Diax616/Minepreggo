@@ -1,4 +1,4 @@
-# Milk and Potion Effect Mechanics Guide
+# Milk and Potion Effect Mechanics Guide (AI-generated content)
 
 This guide explains how milk works in the Minepreggo mod, which effects cannot be removed by milk consumption, and the special properties of breast milk items.
 
