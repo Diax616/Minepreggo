@@ -15,10 +15,10 @@ import dev.dixmk.minepreggo.client.gui.preggo.creeper.AbstractCreeperGirlMainScr
 import dev.dixmk.minepreggo.client.gui.preggo.zombie.AbstractZombieGirlMainScreen;
 import dev.dixmk.minepreggo.client.renderer.entity.layer.player.ClientPlayerHelper;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
-import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
 import dev.dixmk.minepreggo.world.pregnancy.PostPregnancyData;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.network.capability.PlayerPregnancyEffectsImpl;
 
@@ -59,6 +59,7 @@ public class ScreenEventHandler {
 				if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {
 					final var pregnancySystem = femaleData.getPregnancySystem();
 					final var pregnancyEffects = femaleData.getPregnancyEffects();
+					final PregnancyPhase phase = pregnancySystem.getCurrentPregnancyStage();
 					
 					Runnable cravingOverlay = () -> {
 						if (pregnancySystem.getPregnancySymptoms().contains(PregnancySymptom.CRAVING)) {
@@ -66,26 +67,22 @@ public class ScreenEventHandler {
 						}
 					};
 									
-					if (player.hasEffect(MinepreggoModMobEffects.PREGNANCY_P1.get())) {				
+					if (phase == PregnancyPhase.P1) {				
 						renderCravingScreen(gui, 4, 4, 11, pregnancyEffects);	
 						cravingOverlay.run();
 					}	
-					else if (player.hasEffect(MinepreggoModMobEffects.PREGNANCY_P2.get())) {	
+					else if (phase == PregnancyPhase.P2) {	
 						renderCravingScreen(gui, 4, 4, 11, pregnancyEffects);		
 						cravingOverlay.run();	
 						renderMilkingScreen(gui, 14, 4, 11, pregnancyEffects);
 					}
-					else if (player.hasEffect(MinepreggoModMobEffects.PREGNANCY_P3.get())) {	
+					else if (phase == PregnancyPhase.P3) {	
 						renderCravingScreen(gui, 4, 4, 11, pregnancyEffects);		
 						cravingOverlay.run();	
 						renderMilkingScreen(gui, 14, 4, 11, pregnancyEffects);
 						renderBellyRubsScreen(gui, 24, 4, 11, pregnancyEffects);
 					}
-					else if (player.hasEffect(MinepreggoModMobEffects.PREGNANCY_P4.get())
-							|| player.hasEffect(MinepreggoModMobEffects.PREGNANCY_P5.get())
-							|| player.hasEffect(MinepreggoModMobEffects.PREGNANCY_P6.get())
-							|| player.hasEffect(MinepreggoModMobEffects.PREGNANCY_P7.get())
-							|| player.hasEffect(MinepreggoModMobEffects.PREGNANCY_P8.get())) {	
+					else if (phase.compareTo(PregnancyPhase.P4) >= 0) {	
 						renderCravingScreen(gui, 4, 4, 11, pregnancyEffects);		
 						cravingOverlay.run();		
 						renderMilkingScreen(gui, 14, 4, 11, pregnancyEffects);

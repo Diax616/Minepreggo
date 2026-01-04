@@ -1,5 +1,6 @@
 package dev.dixmk.minepreggo.world.pregnancy;
 
+// Order is important here, do not change.
 public enum PregnancyPhase {
 	P0,
     P1,
