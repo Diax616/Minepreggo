@@ -1,4 +1,4 @@
-# Jiggle Physics System
+# Jiggle Physics System (AI-generated content)
 
 This guide explains the jiggle physics system for players in the Minepreggo mod.
 
