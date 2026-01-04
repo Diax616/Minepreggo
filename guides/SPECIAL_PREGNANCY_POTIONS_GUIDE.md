@@ -1,4 +1,4 @@
-# Special Pregnancy Potions Guide
+# Special Pregnancy Potions (AI-generated content)
 
 This guide explains the various pregnancy-related potions that can be thrown by the Fertility Witch and used throughout the Minepreggo mod.
 
