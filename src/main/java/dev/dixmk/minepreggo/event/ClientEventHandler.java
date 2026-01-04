@@ -119,7 +119,7 @@ public class ClientEventHandler {
         if (ClientPlayerHelper.isPlayingBirthAnimation(player)) {
             // Only update offset once when animation starts (if offset is 0)
             if (cameraOffsetY == 0.0) {
-            	cameraOffsetY = -player.getEyeHeight(Pose.SLEEPING) * 4;
+            	cameraOffsetY = -player.getEyeHeight(Pose.SLEEPING) * 6;
             }
         } else {
         	cameraOffsetY = 0;
