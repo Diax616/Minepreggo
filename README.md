@@ -2,7 +2,7 @@
 
 ## Explicit Pregnancy Content
 
-This mod contains explicit pregnancy-related content and mechanics that are ** intended only for people with a pregnancy fetish**.
+This mod contains explicit pregnancy-related content and mechanics that are **intended only for people with a pregnancy fetish**.
 
 **By installing and using this mod, you acknowledge that you have read this warning and understand the nature of the content. DixMK**
 
