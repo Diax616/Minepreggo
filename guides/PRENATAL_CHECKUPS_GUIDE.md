@@ -1,10 +1,12 @@
-# Prenatal Checkups Guide
+# Prenatal Checkups Guide (AI-generated content)
 
 This guide explains how prenatal checkups work in the Minepreggo mod, including how to activate them, who provides them, and what benefits they offer.
 
 ## Overview
 
 Prenatal checkups are special services offered by certain NPCs to help monitor and assess pregnancy. During pregnancy, players and pregnant mobs can visit these NPCs to receive valuable information and items related to their pregnancy status.
+
+<img width="1366" height="768" alt="Minecraft_ Forge 1 20 1 - Singleplayer 1_4_2026 10_55_01 AM" src="https://github.com/user-attachments/assets/cd910f35-5237-4107-8028-313e0c1e2285" />
 
 ---
 
@@ -15,7 +17,12 @@ Prenatal checkups are special services offered by certain NPCs to help monitor a
 Prenatal checkups are offered by two types of NPCs:
 
 1. **Villagers** - Only villagers with the "Doctor" job can only provide this prenatal care service to players. They do not appear naturally; the player must assign them the job using the "Medical Table" block.
+
+<img width="1366" height="768" alt="Minecraft_ 1 20 1 1_3_2026 4_23_21 PM" src="https://github.com/user-attachments/assets/a0b1fb2c-e3e4-4f8c-88ff-9d74fa474514" />
+
 2. **Scientific Illagers** - These special illagers offer prenatal checkup services to both players and pregnant mobs.
+
+<img width="1366" height="768" alt="Minecraft_ 1 20 1 1_3_2026 4_20_33 PM" src="https://github.com/user-attachments/assets/1bdc0df2-6e15-4341-aafb-3162806225ea" />
 
 ---
 
