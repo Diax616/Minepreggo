@@ -106,9 +106,8 @@ public class MonsterZombieGirl extends AbstractMonsterZombieGirl {
 			PreggoMobHelper.copyHealth(this, next);
 			PreggoMobHelper.transferSlots(this, next);
 			PreggoMobHelper.syncFromEquipmentSlotToInventory(next);
-			PreggoMobHelper.transferAttackTarget(this, next);
 			PreggoMobHelper.copyOwner(this, next);
-			next.setSavage(false);
+			next.setSavage(false);		
 			this.discard();
 		}
 	}
