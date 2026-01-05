@@ -296,12 +296,22 @@ public class PlayerEventHandler {
 
 	private static void evalualeFemalePlayerOnTick(ServerPlayer serverPlayer, FemalePlayerImpl femaleData) {
 		if (femaleData.isPregnant()) {	
-			if (!femaleData.isPregnancySystemInitialized()) {
-				if (femaleData.getPregnancyInitializerTimer() > MinepreggoModConfig.getTicksToStartPregnancy()) {
-					PlayerHelper.tryToStartPregnancy(serverPlayer, false);
+			if (!femaleData.isPregnancySystemInitialized()) {						
+				
+				if (femaleData.getPregnancyInitializerTimer() > MinepreggoModConfig.getTicksToStartPregnancy()) {		
+					
+					if (!PlayerHelper.tryToStartPregnancy(serverPlayer, false)) {					
+						throw new IllegalStateException("Failed to initialize pregnancy system for player " + serverPlayer.getName().getString());	
+					}
+					
 					femaleData.setPregnancyInitializerTimer(0);
+					
+					MinepreggoMod.LOGGER.debug("Player {} pregnancy system initialized", serverPlayer.getName().getString());
 				}					
 				else {
+					
+					MinepreggoMod.LOGGER.debug("Player {} pregnancy system not initialized, pregnancy initializer timer: {}", serverPlayer.getName().getString(), femaleData.getPregnancyInitializerTimer());
+					
 					femaleData.incrementPregnancyInitializerTimer();
 					
 					if (!serverPlayer.hasEffect(MobEffects.CONFUSION)) {
@@ -317,7 +327,8 @@ public class PlayerEventHandler {
 					}
 				}
 			}		
-			else {				
+			else {	
+								
 				var phase =	femaleData.getPregnancySystem().getCurrentPregnancyStage();
 				var effetcs = femaleData.getPregnancyEffects();	
 
@@ -584,7 +595,7 @@ public class PlayerEventHandler {
 						&& femaleData.getPostPregnancyData().isEmpty()
 						&& serverPlayer.hasEffect(MinepreggoModMobEffects.FERTILE.get())
 						&& event.getSource().getEntity() instanceof Mob source
-						&& serverPlayer.getRandom().nextBoolean()) {
+						&& serverPlayer.getRandom().nextFloat() < 0.65f) {
 					
 					Species species = null;
 					boolean flag = false;
@@ -698,6 +709,8 @@ public class PlayerEventHandler {
 				if (!PregnancySystemHelper.canFuck(sourcePlayer, targetPlayer)) {
 					return;
 				}
+				
+				MessageHelper.sendTo(sourcePlayer, Component.translatable("chat.minepreggo.player.sex.request_sent", targetPlayer.getDisplayName().getString()), true);
 				RequestSexP2PMenu.create(targetPlayer, sourcePlayer);
 		        event.setCancellationResult(InteractionResult.SUCCESS);
 		        sourcePlayer.swing(InteractionHand.MAIN_HAND);

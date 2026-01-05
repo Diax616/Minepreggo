@@ -36,6 +36,12 @@ public class PlayerPregnancySystemHolder implements INBTSerializable<CompoundTag
 		return isInitialized;
 	}
 	
+	public void reset() {
+		this.isInitialized = false;
+		this.savedData = new CompoundTag();
+		this.lazyValue = createLazy();
+	}
+	
 	@Override
 	public CompoundTag serializeNBT() {
         CompoundTag tag;

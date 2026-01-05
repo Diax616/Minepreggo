@@ -136,7 +136,7 @@ public class PlayerHelper {
 		boolean result = femaleDataOpt.isPresent() && femaleDataOpt.get().isPregnant() && femaleDataOpt.get().getPrePregnancyData().isPresent();
 
 		femaleDataOpt.ifPresent(femaleData -> {	
-			if (!femaleData.isPregnant()) return;
+			if (!femaleData.isPregnant()) return;	
 			
 			femaleData.getPrePregnancyData().ifPresent(prePregnancyData -> {
 				final var lastPregnancyStage = IBreedable.calculateMaxPregnancyPhaseByTotalNumOfBabies(prePregnancyData.fertilizedEggs());
@@ -168,12 +168,11 @@ public class PlayerHelper {
 				pregnancySystem.setWomb(womb);	
 				pregnancySystem.setCurrentPregnancyStage(PregnancyPhase.P0);	
 							
+				player.addEffect(new MobEffectInstance(MinepreggoModMobEffects.PREGNANCY_P0.get(), -1, 0, true, true, true));				
+				
 				femaleData.sync(player);
 				pregnancySystem.sync(player);	
-			
-				player.addEffect(new MobEffectInstance(MinepreggoModMobEffects.PREGNANCY_P0.get(), -1, 0, false, false, true));				
-				player.removeEffect(MinepreggoModMobEffects.FERTILE.get());
-				
+							
 				MinepreggoMod.LOGGER.debug("Player {} has become pregnant with {} babies, total days to give birth: {}, pregnancy phases days: {}, womb: {}", 
 						player.getName().getString(), 
 						prePregnancyData.fertilizedEggs(), 
@@ -211,7 +210,7 @@ public class PlayerHelper {
 		return false;
 	}
 	
-	public static boolean tryStartPregnancyBySex(ServerPlayer female, ServerPlayer male) {		
+	public static boolean tryStartPregnancyBySex(ServerPlayer female, ServerPlayer male) {
 		var femalePlayerCap = female.getCapability(MinepreggoCapabilities.PLAYER_DATA).resolve();
 		var malePlayerCap = male.getCapability(MinepreggoCapabilities.PLAYER_DATA).resolve();
 

@@ -65,11 +65,7 @@ public class SyncMobEffectPacket {
                     if (effect == null) {
                         return;
                     }
-                    if (message.duration <= 0) {
-                        livingEntity.removeEffect(effect);
-                    } else {
-                        livingEntity.addEffect(new MobEffectInstance(effect, message.duration, message.amplifier, message.ambient, message.visible, message.showIcon));
-                    }
+                    livingEntity.addEffect(new MobEffectInstance(effect, message.duration, message.amplifier, message.ambient, message.visible, message.showIcon));
                 }
                 else {
                     MinepreggoMod.LOGGER.warn("SyncMobEffectPacket: Entity with ID {} is not a LivingEntity or does not exist.", message.entityId);

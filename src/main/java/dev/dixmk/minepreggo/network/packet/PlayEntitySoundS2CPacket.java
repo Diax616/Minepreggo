@@ -51,7 +51,6 @@ public class PlayEntitySoundS2CPacket {
                     if (entity != null) {
                         SoundEvent sound = ForgeRegistries.SOUND_EVENTS.getValue(message.soundId);
                         if (sound != null) {
-                            // Usar playSound en lugar de entity.playSound para que se reproduzca en todos los clientes
                             level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), sound, entity.getSoundSource(), message.volume, message.pitch);
                         }
                     }

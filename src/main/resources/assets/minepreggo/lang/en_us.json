@@ -567,7 +567,10 @@
 
 	"chat.minepreggo.player.not_enough_fap.message": "You are 'dry'",
 
+	"chat.minepreggo.player.sex.request_sent": "You have sent a request to %s for some fun",
 	
+	"chat.minepreggo.player.sex.request_reject": "%s has rejected your request for some fun",
+
 	
 	"chat.minepreggo.scientific_illager.no_pregnant_entities": "There are no pregnant entities to checkup",
 

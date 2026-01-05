@@ -1,6 +1,9 @@
 package dev.dixmk.minepreggo.utils;
 
+import dev.dixmk.minepreggo.MinepreggoMod;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class MinepreggoHelper {
 
@@ -44,5 +47,10 @@ public class MinepreggoHelper {
 	@SuppressWarnings("removal")
 	public static ResourceLocation withDefaultNamespace(String path) {
 	    return new ResourceLocation(ResourceLocation.DEFAULT_NAMESPACE, path);
+	}
+
+	public static boolean isFromMinepreggo(MobEffect effect) {
+		ResourceLocation id = ForgeRegistries.MOB_EFFECTS.getKey(effect);
+		return id != null && id.getNamespace().equals(MinepreggoMod.MODID);
 	}
 }

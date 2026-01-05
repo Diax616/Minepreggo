@@ -22,7 +22,6 @@ public class FemaleEntityImpl extends AbstractBreedableEntity implements IFemale
 	}
 
 	protected int pregnancyInitializerTimer = 0;
-	protected int postPregnancyTimer = 0;
 	protected int discomfortCooldown = 0;
 	protected boolean pregnant = false;
 
@@ -79,7 +78,6 @@ public class FemaleEntityImpl extends AbstractBreedableEntity implements IFemale
 			this.pregnant = false;
 			this.prePregnancyData = Optional.empty();
 			this.pregnancyInitializerTimer = 0;
-			this.postPregnancyTimer = 0;
 			return true;
 		}
 		return false;
@@ -96,17 +94,27 @@ public class FemaleEntityImpl extends AbstractBreedableEntity implements IFemale
 	
 	@Override
 	public int getPostPregnancyTimer() {
-		return postPregnancyTimer;
+		return postPregnancyData.map(post -> post.getPostPregnancyTimer()).orElse(0);
 	}
 
 	@Override
 	public void setPostPregnancyTimer(int ticks) {
-		this.postPregnancyTimer = Math.max(0, ticks);	
+		postPregnancyData.ifPresent(post -> post.setPostPregnancyTimer(ticks));
 	}
 
 	@Override
 	public void incrementPostPregnancyTimer() {
-		++this.postPregnancyTimer;	
+		postPregnancyData.ifPresent(post -> post.incrementPostPregnancyTimer());
+	}
+	
+	@Override
+	public int getPostPartumLactation() {
+		return postPregnancyData.map(PostPregnancyData::getPostPartumLactation).orElse(0);
+	}
+
+	@Override
+	public void setPostPartumLactation(int amount) {
+		postPregnancyData.ifPresent(post -> post.setPostPartumlactation(amount));
 	}
 	
 	@Override
@@ -130,7 +138,6 @@ public class FemaleEntityImpl extends AbstractBreedableEntity implements IFemale
 	public Optional<PrePregnancyData> getPrePregnancyData() {
 		return this.prePregnancyData;
 	}
-
 
 	@Override
 	public Optional<PostPregnancyData> getPostPregnancyData() {
@@ -158,7 +165,6 @@ public class FemaleEntityImpl extends AbstractBreedableEntity implements IFemale
 	public CompoundTag serializeNBT() {
 		CompoundTag nbt = super.serializeNBT();
 		nbt.putInt("DataPregnancyInitializerTimer", pregnancyInitializerTimer);
-		nbt.putInt("DataPostPregnancyTimer", postPregnancyTimer);
 		nbt.putBoolean("DataPregnant", pregnant);
 		postPregnancyData.ifPresent(post -> nbt.put("DataPostPregnancyData", post.toNBT()));
 		prePregnancyData.ifPresent(pre -> nbt.put("DataPrePregnancyData", pre.toNBT()));
@@ -168,7 +174,8 @@ public class FemaleEntityImpl extends AbstractBreedableEntity implements IFemale
 	@Override
 	public void deserializeNBT(CompoundTag nbt) {
 		super.deserializeNBT(nbt);
-		pregnant = nbt.getBoolean("DataPregnant");		
+		pregnant = nbt.getBoolean("DataPregnant");	
+		pregnancyInitializerTimer = nbt.getInt("DataPregnancyInitializerTimer");
 		
 	    if (nbt.contains("DataPostPregnancyData", Tag.TAG_COMPOUND)) {
 	    	postPregnancyData = Optional.ofNullable(PostPregnancyData.fromNBT(nbt.getCompound("DataPostPregnancyData")));
@@ -183,15 +190,5 @@ public class FemaleEntityImpl extends AbstractBreedableEntity implements IFemale
 		    	throw new IllegalStateException("Failed to load PrePregnancyData from NBT");
 		    }
 	    }
-	}
-
-	@Override
-	public int getPostPartumLactation() {
-		return this.getPostPregnancyData().map(PostPregnancyData::getPostPartumLactation).orElse(0);
-	}
-
-	@Override
-	public void setPostPartumLactation(int amount) {
-		this.postPregnancyData.ifPresent(post -> post.setPostPartumlactation(amount));
 	}
 }

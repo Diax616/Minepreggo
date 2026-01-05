@@ -58,6 +58,8 @@ public class FemalePlayerImpl extends FemaleEntityImpl implements IFemalePlayer 
 	public boolean tryImpregnate(@Nonnegative int fertilizedEggs, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father) {
 		if (super.tryImpregnate(fertilizedEggs, father)) {
 			attacks.clear();
+			pregnancySystemHolder.reset();
+			pregnancyEffectsHolder.reset();
 			return true;
 		}
 		return false;
@@ -68,16 +70,16 @@ public class FemalePlayerImpl extends FemaleEntityImpl implements IFemalePlayer 
 			return false;
 		}
 		if (!isPregnant()) {
-			final var count = attacks.computeInt(species, (key, newCount) -> ++newCount);		
+			final var count = attacks.merge(species, 1, Integer::sum);
 			switch (species) {
 			case ZOMBIE: {	
-				return count > 30; 
+				return count >= 8; 
 			}
 			case CREEPER: {	
-				return count > 35; 
+				return count >= 2; 
 			}
 			case ENDER: {	
-				return count > 40; 
+				return count >= 10; 
 			}
 			default:
 				return false;
