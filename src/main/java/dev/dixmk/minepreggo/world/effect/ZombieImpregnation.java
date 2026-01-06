@@ -8,7 +8,6 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
-import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.MonsterZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirl;
@@ -47,9 +46,7 @@ public class ZombieImpregnation extends Impregnantion {
 			}
 			else if (entity instanceof TamableZombieGirl zombieGirl && zombieGirl.getPostPregnancyData().isEmpty()) {
 				var nextStage = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
-				initPregnancy(zombieGirl, nextStage, amplifier);
-				PreggoMobHelper.copyOwner(zombieGirl, nextStage);
-				PreggoMobHelper.copyTamableData(zombieGirl, nextStage);
+				initPregnancyInTamable(zombieGirl, nextStage, amplifier);
 			}
 			else {
 				entity.hurt(new DamageSource(entity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.GENERIC)), 1);

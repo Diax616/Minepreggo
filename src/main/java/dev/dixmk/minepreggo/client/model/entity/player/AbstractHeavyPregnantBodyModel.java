@@ -1,15 +1,19 @@
 package dev.dixmk.minepreggo.client.model.entity.player;
 
+import java.util.UUID;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import dev.dixmk.minepreggo.client.animation.preggo.BellyInflation;
 import dev.dixmk.minepreggo.client.animation.preggo.FetalMovementIntensity;
-import dev.dixmk.minepreggo.client.jiggle.BellyJigglePhysics;
-import dev.dixmk.minepreggo.client.jiggle.WrapperBoobsJiggle;
-import dev.dixmk.minepreggo.client.jiggle.WrapperButtJiggle;
+import dev.dixmk.minepreggo.client.jiggle.JigglePhysicsManager;
+import dev.dixmk.minepreggo.client.jiggle.PlayerJiggleData;
+import dev.dixmk.minepreggo.client.jiggle.PlayerJiggleDataFactory;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.world.entity.player.SkinType;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraftforge.api.distmarker.Dist;
@@ -22,24 +26,26 @@ public abstract class AbstractHeavyPregnantBodyModel extends AbstractPregnantBod
 	public final ModelPart leftbutt;
 	public final ModelPart rightbutt;
 	
-	protected final WrapperButtJiggle buttsJiggle;
-	
 	protected final FetalMovementIntensity fetalMovementIntensity;
 	
-	protected AbstractHeavyPregnantBodyModel(ModelPart root, BellyInflation bellyInflation, FetalMovementIntensity fetalMovementIntensity, WrapperBoobsJiggle boobsJiggle, BellyJigglePhysics bellyJiggle, WrapperButtJiggle buttsJiggle) {
-		super(root, bellyInflation, boobsJiggle, bellyJiggle, false);
+	protected AbstractHeavyPregnantBodyModel(ModelPart root, BellyInflation bellyInflation, 
+			FetalMovementIntensity fetalMovementIntensity, 
+			PregnancyPhase pregnancyPhase, 
+			SkinType modelType) {
+		super(root, bellyInflation, pregnancyPhase, modelType, false);
 		this.leftLeg = root.getChild("left_leg");
 		this.rightLeg = root.getChild("right_leg");
 		this.leftbutt = leftLeg.getChild("left_butt");
 		this.rightbutt = rightLeg.getChild("right_butt");	
-		this.buttsJiggle = buttsJiggle;
 		this.fetalMovementIntensity = fetalMovementIntensity;
 	}
 
 	@Override
 	public void setupAnim(AbstractClientPlayer entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {		
 		super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-		buttsJiggle.setupAnim(entity, leftbutt, rightbutt);
+		UUID playerId = entity.getUUID();
+		PlayerJiggleData jiggleData = JigglePhysicsManager.getInstance().getOrCreate(playerId, () -> PlayerJiggleDataFactory.createNonPregnancy());
+		jiggleData.getButtJiggle().ifPresent(jiggle -> jiggle.setupAnim(entity, leftbutt, rightbutt));
 	}
 	
 	@Override

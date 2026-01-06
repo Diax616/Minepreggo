@@ -36,8 +36,6 @@ import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableHumanoidCreeperGi
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirl;
 
-
-
 /**
  * 
  * Fertility Witch spawn rules have issues, she can spawn in mushroom fields which does no sense, other entities like MonsterZombieGirl, MonsterCreeperGirl even its father class, Witch, 
@@ -48,7 +46,6 @@ import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirl;
  * @author DixMK
  * 
  * */
-
 
 public class FertilityWitch extends Witch {
 	
@@ -144,23 +141,29 @@ public class FertilityWitch extends Witch {
 			}
 			this.setTarget(null);
 		}
-		else if (d3 >= 6D && p_34143_ instanceof Player player && this.random.nextBoolean()) {		
-			Optional<Boolean> result = player.getCapability(MinepreggoCapabilities.PLAYER_DATA).map(cap -> 
-				cap.getFemaleData().map(femaleData -> femaleData.isPregnant() && femaleData.isPregnancySystemInitialized())
+		else if (d3 >= 6D && p_34143_ instanceof Player player && this.random.nextFloat() < 0.75f) {		
+			Optional<Integer> result = player.getCapability(MinepreggoCapabilities.PLAYER_DATA).map(cap -> 
+				cap.getFemaleData().map(femaleData -> {
+					if (femaleData.isPregnant()) {
+						return femaleData.isPregnancySystemInitialized() ? 1 : 0;
+					}
+					return -1;
+				})
 			).orElse(Optional.empty());
 			
-			if (result.isPresent()) {			
-				if (result.get().booleanValue()) {
+			if (result.isPresent()) {
+				int r = result.get();
+				if (r == 1) {
 					potion = getRandomHarmfulPregnancyPotion();
 				}
-				else {
+				else if (r == -1) {
 					potion = getRandomHarmfulImpregnationPotion();
 				}
 			}
 		}		
-		else if (d3 >= 6D && p_34143_ instanceof PreggoMob preggoMob && this.random.nextBoolean()) {
+		else if (d3 >= 6D && p_34143_ instanceof PreggoMob preggoMob && this.random.nextFloat() < 0.75f) {
 			Potion result = null;
-			if (preggoMob instanceof TamableZombieGirl || preggoMob instanceof TamableHumanoidCreeperGirl) {
+			if (preggoMob instanceof TamableZombieGirl || preggoMob instanceof TamableHumanoidCreeperGirl) {			
 				result = MinepreggoModPotions.getRandomImpregnationPotion(random);
 			}
 			else if (preggoMob instanceof AbstractTamablePregnantZombieGirl<?,?> || preggoMob instanceof AbstractTamablePregnantCreeperGirl<?,?>) {

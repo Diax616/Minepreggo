@@ -3,20 +3,15 @@ package dev.dixmk.minepreggo.network.packet;
 import java.util.function.Supplier;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class SyncMobEffectPacket {
     private final int entityId;
     private final ResourceLocation effectId;
@@ -74,9 +69,4 @@ public class SyncMobEffectPacket {
         });
         context.setPacketHandled(true);
     }
-    
-	@SubscribeEvent
-	public static void registerMessage(FMLCommonSetupEvent event) {
-		MinepreggoModPacketHandler.addNetworkMessage(SyncMobEffectPacket.class, SyncMobEffectPacket::encode, SyncMobEffectPacket::new, SyncMobEffectPacket::handle);
-	}
 }

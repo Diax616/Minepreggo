@@ -6,4 +6,5 @@ public interface IFemalePlayer extends IFemaleEntity {
 
 	PlayerPregnancySystemImpl getPregnancySystem();	
 	PlayerPregnancyEffectsImpl getPregnancyEffects();
+
 }

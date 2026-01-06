@@ -3,7 +3,6 @@ package dev.dixmk.minepreggo.network.packet;
 import java.util.function.Supplier;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamableZombieGirl;
 import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlMenuHelper;
@@ -11,12 +10,8 @@ import dev.dixmk.minepreggo.world.inventory.preggo.zombie.ZombieGirlMenuHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.TamableAnimal;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.NetworkEvent;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public record RequestPreggoMobInventoryMenuC2SPacket(int x, int y, int z, int preggoMobId) {
 
 	public static RequestPreggoMobInventoryMenuC2SPacket decode(FriendlyByteBuf buffer) {	
@@ -61,10 +56,5 @@ public record RequestPreggoMobInventoryMenuC2SPacket(int x, int y, int z, int pr
 		});
 		
 		context.setPacketHandled(true);
-	}
-	
-	@SubscribeEvent
-	public static void registerMessage(FMLCommonSetupEvent event) {
-		MinepreggoModPacketHandler.addNetworkMessage(RequestPreggoMobInventoryMenuC2SPacket.class, RequestPreggoMobInventoryMenuC2SPacket::encode, RequestPreggoMobInventoryMenuC2SPacket::decode, RequestPreggoMobInventoryMenuC2SPacket::handler);
 	}
 }

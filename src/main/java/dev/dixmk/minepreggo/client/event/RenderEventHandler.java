@@ -1,4 +1,4 @@
-package dev.dixmk.minepreggo.event;
+package dev.dixmk.minepreggo.client.event;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.screens.effect.SexOverlayManager;

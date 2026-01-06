@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.renderer.entity.layer.player.ClientPlayerHelper;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
+import dev.dixmk.minepreggo.world.entity.player.SkinType;
 
 @Mixin(AbstractClientPlayer.class)
 public class AbstractClientPlayerMixin {
@@ -20,7 +21,7 @@ public class AbstractClientPlayerMixin {
     private void changeSkin(CallbackInfoReturnable<ResourceLocation> cir) {
         AbstractClientPlayer player = (AbstractClientPlayer) (Object) this; 
     	player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> {
-    		if (cap.isUsingCustomSkin()) {
+    		if (cap.getSkinType() == SkinType.CUSTOM) {
     			return;
     		}
     		

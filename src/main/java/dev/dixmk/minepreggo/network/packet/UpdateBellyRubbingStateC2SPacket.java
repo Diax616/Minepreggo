@@ -3,7 +3,6 @@ package dev.dixmk.minepreggo.network.packet;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.utils.ServerParticleUtil;
@@ -13,12 +12,8 @@ import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.NetworkEvent;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public record UpdateBellyRubbingStateC2SPacket(UUID target) {
 
 	public static UpdateBellyRubbingStateC2SPacket decode(FriendlyByteBuf buffer) {	
@@ -64,10 +59,5 @@ public record UpdateBellyRubbingStateC2SPacket(UUID target) {
 	       }			
 		});
 		context.setPacketHandled(true);
-	}
-    	
-	@SubscribeEvent
-	public static void registerMessage(FMLCommonSetupEvent event) {
-		MinepreggoModPacketHandler.addNetworkMessage(UpdateBellyRubbingStateC2SPacket.class, UpdateBellyRubbingStateC2SPacket::encode, UpdateBellyRubbingStateC2SPacket::decode, UpdateBellyRubbingStateC2SPacket::handler);
 	}
 }

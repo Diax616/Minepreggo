@@ -3,8 +3,8 @@ package dev.dixmk.minepreggo.client.model.entity.player;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.animation.preggo.BellyInflation;
 import dev.dixmk.minepreggo.client.animation.preggo.FetalMovementIntensity;
-import dev.dixmk.minepreggo.client.jiggle.JigglePhysicsFactory;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
+import dev.dixmk.minepreggo.world.entity.player.SkinType;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -27,9 +27,8 @@ public class PredefinedPregnantBodyP6Model extends AbstractHeavyPregnantBodyMode
 		super(root,
 				BellyInflation.HIGH,
 				FetalMovementIntensity.P6,
-				JigglePhysicsFactory.createHeavyweightBoobs(1.45F, false, false),
-				JigglePhysicsFactory.createBelly(5.75F, PregnancyPhase.P6),
-				JigglePhysicsFactory.createHeavyweightButt(0.0F));
+				PregnancyPhase.P6,
+				SkinType.PREDEFINED);
 		milkingBoobsYPos = -0.6F;
 	}
 	

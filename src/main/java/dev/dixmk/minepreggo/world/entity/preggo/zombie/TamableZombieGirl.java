@@ -191,6 +191,7 @@ public class TamableZombieGirl extends AbstractTamableZombieGirl<PreggoMobSystem
 			PreggoMobHelper.transferAttackTarget(source, zombieGirl);
 					
 			if (!zombieGirl.tryActivatePostPregnancyPhase(PostPregnancy.MISCARRIAGE)) {
+				source.discard();
 				zombieGirl.discard();
 				throw new IllegalStateException("Failed to activate PostPregnancy.MISCARRIAGE phase on TamableZombieGirl after miscarriage");
 			}
@@ -211,6 +212,7 @@ public class TamableZombieGirl extends AbstractTamableZombieGirl<PreggoMobSystem
 			PreggoMobHelper.transferAttackTarget(source, zombieGirl);
 			
 			if (!zombieGirl.tryActivatePostPregnancyPhase(PostPregnancy.PARTUM)) {
+				source.discard();
 				zombieGirl.discard();
 				throw new IllegalStateException("Failed to activate PostPregnancy.PARTUM phase on TamableZombieGirl after postpartum");
 			}

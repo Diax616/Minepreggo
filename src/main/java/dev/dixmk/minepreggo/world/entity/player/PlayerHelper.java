@@ -7,6 +7,7 @@ import java.util.UUID;
 import java.util.function.Predicate;
 
 import javax.annotation.Nonnegative;
+import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -15,10 +16,13 @@ import com.google.common.collect.ImmutableMap;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
+import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.network.capability.FemalePlayerImpl;
+import dev.dixmk.minepreggo.network.packet.RemoveJigglePhysicsS2CPacket;
+import dev.dixmk.minepreggo.network.packet.UpdateJigglePhysicsS2CPacket;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
@@ -53,6 +57,7 @@ import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.network.PacketDistributor;
 
 public class PlayerHelper {
 
@@ -168,7 +173,9 @@ public class PlayerHelper {
 				pregnancySystem.setWomb(womb);	
 				pregnancySystem.setCurrentPregnancyStage(PregnancyPhase.P0);	
 							
-				player.addEffect(new MobEffectInstance(MinepreggoModMobEffects.PREGNANCY_P0.get(), -1, 0, true, true, true));				
+				player.addEffect(new MobEffectInstance(MinepreggoModMobEffects.PREGNANCY_P0.get(), -1, 0, false, false, true));				
+				
+				PlayerHelper.updateJigglePhysics(player, PregnancyPhase.P0, playerDataCap.get().getSkinType());
 				
 				femaleData.sync(player);
 				pregnancySystem.sync(player);	
@@ -366,7 +373,12 @@ public class PlayerHelper {
 		var pos = BlockPos.containing(x, y, z);
 		
 		if (species == Species.ZOMBIE) {
-			entity = MinepreggoModEntities.MONSTER_ZOMBIE_GIRL.get().spawn(serverLevel, pos, MobSpawnType.MOB_SUMMONED);
+			if (random.nextBoolean()) {
+				entity = MinepreggoModEntities.MONSTER_ZOMBIE_GIRL.get().spawn(serverLevel, pos, MobSpawnType.MOB_SUMMONED);
+			}
+			else {
+				entity = EntityType.ZOMBIE.spawn(serverLevel, pos, MobSpawnType.MOB_SUMMONED);
+			}
 		}
 		else if (species == Species.CREEPER) {
 			entity = MinepreggoModEntities.MONSTER_HUMANOID_CREEPER_GIRL.get().spawn(serverLevel, pos, MobSpawnType.MOB_SUMMONED);
@@ -446,5 +458,15 @@ public class PlayerHelper {
 				}
 			})			
 		);
+	}
+	
+	public static void removeJigglePhysics(ServerPlayer player) {
+		MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player), 
+				new RemoveJigglePhysicsS2CPacket(player.getUUID()));
+	}
+	
+	public static void updateJigglePhysics(ServerPlayer player, @Nullable PregnancyPhase phase, SkinType modelType) {		
+		MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player), 
+				new UpdateJigglePhysicsS2CPacket(player.getUUID(), phase, modelType));
 	}
 }

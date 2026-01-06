@@ -29,7 +29,7 @@ public class MinepreggoModPacketHandler {
 	private static int messageID = 0;
 
 	public static <T> void addNetworkMessage(Class<T> messageType, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<NetworkEvent.Context>> messageConsumer) {
-		INSTANCE .registerMessage(messageID, messageType, encoder, decoder, messageConsumer);
+		INSTANCE.registerMessage(messageID, messageType, encoder, decoder, messageConsumer);
 		messageID++;
 	}
 

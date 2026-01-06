@@ -3,17 +3,12 @@ package dev.dixmk.minepreggo.network.packet;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.network.capability.FemalePlayerImpl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.NetworkEvent;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public record ResetPregnancyS2CPacket(UUID playerId) {
 	public static ResetPregnancyS2CPacket decode(FriendlyByteBuf buffer) {	
 		return new ResetPregnancyS2CPacket(
@@ -36,10 +31,5 @@ public record ResetPregnancyS2CPacket(UUID playerId) {
 			}
 		});
 		context.setPacketHandled(true);
-	}
-	
-	@SubscribeEvent
-	public static void registerMessage(FMLCommonSetupEvent event) {
-		MinepreggoModPacketHandler.addNetworkMessage(ResetPregnancyS2CPacket.class, ResetPregnancyS2CPacket::encode, ResetPregnancyS2CPacket::decode, ResetPregnancyS2CPacket::handler);
 	}
 }

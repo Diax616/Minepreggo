@@ -20,13 +20,9 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public record ResponseSexRequestM2PC2SPacket(int preggoMobId, int playerId, boolean accept) {
 
 	public static ResponseSexRequestM2PC2SPacket decode(FriendlyByteBuf buffer) {	
@@ -110,11 +106,5 @@ public record ResponseSexRequestM2PC2SPacket(int preggoMobId, int playerId, bool
 	private static void reject(ServerPlayer target, PreggoMob source) {
 		MessageHelper.sendTo(target, Component.translatable("chat.minepreggo.pregnant.preggo_mob.message.rejection_by_its_owner", source.getSimpleName()));
 		ServerParticleUtil.spawnRandomlyFromServer(target, ParticleTypes.SMOKE);
-	}
-	
-	
-	@SubscribeEvent
-	public static void registerMessage(FMLCommonSetupEvent event) {
-		MinepreggoModPacketHandler.addNetworkMessage(ResponseSexRequestM2PC2SPacket.class, ResponseSexRequestM2PC2SPacket::encode, ResponseSexRequestM2PC2SPacket::decode, ResponseSexRequestM2PC2SPacket::handler);
 	}
 }

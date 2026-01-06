@@ -1,8 +1,8 @@
 package dev.dixmk.minepreggo.client.model.entity.player;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.client.jiggle.JigglePhysicsFactory;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
+import dev.dixmk.minepreggo.world.entity.player.SkinType;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -20,7 +20,7 @@ public class PredefinedBoobsModel extends AbstractBoobsModel {
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "predefined_boobs_model"), "main");
 	
 	public PredefinedBoobsModel(ModelPart root) {
-		super(root, JigglePhysicsFactory.createLightweightBoobs(2.0F, true, true));
+		super(root, SkinType.PREDEFINED);
 	}
 	
 	public static LayerDefinition createBodyLayer() {
@@ -34,5 +34,4 @@ public class PredefinedBoobsModel extends AbstractBoobsModel {
 		leftBoob.addOrReplaceChild("Boob_2_r1", CubeListBuilder.create().texOffs(2, 1).mirror().addBox(-0.9F, -0.2717F, -3.266F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(-0.6F, 0.2F, 0.3F, 0.3491F, -0.1309F, -0.0436F));
 		return LayerDefinition.create(meshdefinition, 64, 32);
 	}
-
 }

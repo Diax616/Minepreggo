@@ -3,17 +3,12 @@ package dev.dixmk.minepreggo.network.packet;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.NetworkEvent;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public record SyncCinematicStateS2CPacket(UUID playerId, boolean cinematic) {
 
 	public static SyncCinematicStateS2CPacket decode(FriendlyByteBuf buffer) {	
@@ -35,10 +30,5 @@ public record SyncCinematicStateS2CPacket(UUID playerId, boolean cinematic) {
 			}
 		});
 		context.setPacketHandled(true);
-	}
-	
-	@SubscribeEvent
-	public static void registerMessage(FMLCommonSetupEvent event) {
-		MinepreggoModPacketHandler.addNetworkMessage(SyncCinematicStateS2CPacket.class, SyncCinematicStateS2CPacket::encode, SyncCinematicStateS2CPacket::decode, SyncCinematicStateS2CPacket::handler);
 	}
 }

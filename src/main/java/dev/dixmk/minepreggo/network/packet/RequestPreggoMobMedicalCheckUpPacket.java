@@ -2,18 +2,13 @@ package dev.dixmk.minepreggo.network.packet;
 
 import java.util.function.Supplier;
 
-import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.inventory.preggo.PreggoMobPrenatalCheckUpMenu;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.NetworkEvent;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public record RequestPreggoMobMedicalCheckUpPacket(int preggoMobId, int scientificIllagerId) {
 
 	public static RequestPreggoMobMedicalCheckUpPacket decode(FriendlyByteBuf buffer) {	
@@ -41,10 +36,5 @@ public record RequestPreggoMobMedicalCheckUpPacket(int preggoMobId, int scientif
             }	
 		});
 		context.setPacketHandled(true);
-	}
-	
-	@SubscribeEvent
-	public static void registerMessage(FMLCommonSetupEvent event) {
-		MinepreggoModPacketHandler.addNetworkMessage(RequestPreggoMobMedicalCheckUpPacket.class, RequestPreggoMobMedicalCheckUpPacket::encode, RequestPreggoMobMedicalCheckUpPacket::decode, RequestPreggoMobMedicalCheckUpPacket::handler);
 	}
 }

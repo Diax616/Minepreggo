@@ -270,6 +270,8 @@ public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
 		pregnancySystem.resetPregnancyPainTimer();
 		pregnancySystem.clearPregnancyPain();
     	
+		PlayerHelper.updateJigglePhysics(pregnantEntity, null, playerData.getSkinType());
+		
     	// tryActivatePostPregnancyPhase only works if isPregnant flag is true
     	femaleData.tryActivatePostPregnancyPhase(PostPregnancy.MISCARRIAGE);
 		femaleData.sync(pregnantEntity);

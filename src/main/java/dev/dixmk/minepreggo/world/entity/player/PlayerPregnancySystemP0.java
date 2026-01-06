@@ -41,19 +41,15 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 	}
 
 	public boolean isPlayerValid(ServerPlayer currentPlayer) {
-	    // Check if both players are not null
 	    if (this.pregnantEntity == null || currentPlayer == null) {
 	        return false;
 	    }
 	    
-	    // Compare UUIDs instead of object references
-	    // In dedicated servers, the ServerPlayer instance may be different even for the same player
-	    // Using == comparison causes continuous reinitialization
 	    if (!this.pregnantEntity.getUUID().equals(currentPlayer.getUUID())) {
 	        return false;
 	    }
 
-	    // Finally, check if the player is connected
+	    // Check if the player is connected
 	    return this.pregnantEntity.connection != null &&
 	    	       this.pregnantEntity.connection.connection != null &&
 	    	       this.pregnantEntity.connection.connection.isConnected();
@@ -190,7 +186,7 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 		pregnancySystem.setCurrentPregnancyStage(next);
 		pregnancySystem.resetPregnancyTimer();
 		pregnancySystem.resetDaysPassed();
-		pregnancySystem.sync(pregnantEntity);
+		pregnancySystem.sync(pregnantEntity);	
 		
 		if (next.compareTo(PregnancyPhase.P0) > 0) {		
 			var chestplate = pregnantEntity.getItemBySlot(EquipmentSlot.CHEST);
@@ -231,12 +227,12 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 		// This pregnancy phase does not miscarriage yet	
 	}
 
-	protected void removePregnancy() {		
+	protected void removePregnancy() {			
 		pregnantEntity.getActiveEffects().forEach(effect -> {
 			var e = effect.getEffect();
 			if (PregnancySystemHelper.isPregnancyEffect(e)) {
 				pregnantEntity.removeEffect(e);
 			}
-		});
+		});	
 	}
 }

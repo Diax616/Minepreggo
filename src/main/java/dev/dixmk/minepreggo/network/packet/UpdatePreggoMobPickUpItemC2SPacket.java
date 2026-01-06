@@ -2,15 +2,10 @@ package dev.dixmk.minepreggo.network.packet;
 
 import java.util.function.Supplier;
 
-import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.NetworkEvent;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public record UpdatePreggoMobPickUpItemC2SPacket(int preggoMobId, boolean canPickUpItem) {
 	
 	public static UpdatePreggoMobPickUpItemC2SPacket decode(FriendlyByteBuf buffer) {	
@@ -36,10 +31,5 @@ public record UpdatePreggoMobPickUpItemC2SPacket(int preggoMobId, boolean canPic
             }
 		});
 		context.setPacketHandled(true);
-	}
-
-	@SubscribeEvent
-	public static void registerMessage(FMLCommonSetupEvent event) {
-		MinepreggoModPacketHandler.addNetworkMessage(UpdatePreggoMobPickUpItemC2SPacket.class, UpdatePreggoMobPickUpItemC2SPacket::encode, UpdatePreggoMobPickUpItemC2SPacket::decode, UpdatePreggoMobPickUpItemC2SPacket::handler);
 	}
 }

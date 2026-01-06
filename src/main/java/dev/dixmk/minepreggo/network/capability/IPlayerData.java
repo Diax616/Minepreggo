@@ -1,12 +1,10 @@
 package dev.dixmk.minepreggo.network.capability;
 
+import dev.dixmk.minepreggo.world.entity.player.SkinType;
 import dev.dixmk.minepreggo.world.pregnancy.Gender;
 import net.minecraftforge.common.util.LazyOptional;
 
 public interface IPlayerData {
-	boolean isUsingCustomSkin();	
-	void setCustomSkin(boolean value);
-
 	boolean canShowMainMenu();
 	void setShowMainMenu(boolean value);
 	
@@ -18,7 +16,10 @@ public interface IPlayerData {
 	
 	boolean isCinamatic();
 	void setCinematic(boolean value);
-
+	
+	SkinType getSkinType();
+	void setSKinType(SkinType skinType);
+	
 	LazyOptional<MalePlayerImpl> getMaleData();	
 	LazyOptional<FemalePlayerImpl> getFemaleData();
 }

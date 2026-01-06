@@ -1,10 +1,11 @@
-package dev.dixmk.minepreggo.event;
+package dev.dixmk.minepreggo.client.event;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.client.animation.player.PlayerAnimationManager;
-import dev.dixmk.minepreggo.client.animation.player.PlayerAnimationManager.PlayerAnimationCache;
 import dev.dixmk.minepreggo.client.animation.player.PlayerAnimationRegistry;
+import dev.dixmk.minepreggo.client.animation.player.PlayerAnimationManager.PlayerAnimationCache;
+import dev.dixmk.minepreggo.client.jiggle.JigglePhysicsManager;
 import dev.dixmk.minepreggo.client.renderer.entity.layer.player.ClientPlayerHelper;
 import dev.dixmk.minepreggo.client.screens.effect.SexOverlayManager;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
@@ -15,14 +16,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.client.event.ViewportEvent;
 
 @Mod.EventBusSubscriber(modid = MinepreggoMod.MODID, value = Dist.CLIENT)
 public class ClientEventHandler {
- 
+    
 	private ClientEventHandler() {}
 	
 	/**
@@ -81,6 +83,29 @@ public class ClientEventHandler {
         }
     }
        
+    /**
+     * Called when a player logs out. Cleans up jiggle physics data for that player.
+     * This prevents memory leaks in multiplayer when players disconnect.
+     */
+    @SubscribeEvent
+    public static void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
+        if (event.getEntity().level().isClientSide) {
+            JigglePhysicsManager.getInstance().remove(event.getEntity().getUUID());
+        }
+    }
+    
+    /**
+     * Called when the player logs in or changes dimensions.
+     * Clears all cached physics data to ensure a clean state.
+     */
+    @SubscribeEvent
+    public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
+        if (event.getEntity().level().isClientSide) {
+            // Clear all cache when logging in to ensure clean state
+            JigglePhysicsManager.getInstance().clearAll();
+        }
+    }
+    
     private static void evaluateBellyRubbingLogic(Player player, PlayerAnimationCache cache) {
     	if (PlayerAnimationRegistry.getInstance().isBellyRubbingAnimation(cache.getCurrentAnimationName())) {
     		player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
@@ -119,7 +144,7 @@ public class ClientEventHandler {
         if (ClientPlayerHelper.isPlayingBirthAnimation(player)) {
             // Only update offset once when animation starts (if offset is 0)
             if (cameraOffsetY == 0.0) {
-            	cameraOffsetY = -player.getEyeHeight(Pose.SLEEPING) * 6;
+            	cameraOffsetY = -player.getEyeHeight(Pose.SLEEPING) * 5.5f;
             }
         } else {
         	cameraOffsetY = 0;
@@ -127,4 +152,3 @@ public class ClientEventHandler {
         }     
     }
 }
-

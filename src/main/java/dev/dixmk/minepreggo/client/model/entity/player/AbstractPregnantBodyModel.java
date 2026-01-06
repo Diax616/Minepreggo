@@ -7,11 +7,14 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import dev.dixmk.minepreggo.client.animation.player.BellyAnimationManager;
 import dev.dixmk.minepreggo.client.animation.preggo.BellyInflation;
-import dev.dixmk.minepreggo.client.jiggle.BellyJigglePhysics;
-import dev.dixmk.minepreggo.client.jiggle.WrapperBoobsJiggle;
+import dev.dixmk.minepreggo.client.jiggle.JigglePhysicsManager;
+import dev.dixmk.minepreggo.client.jiggle.PlayerJiggleData;
+import dev.dixmk.minepreggo.client.jiggle.PlayerJiggleDataFactory;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.world.entity.player.SkinType;
 import dev.dixmk.minepreggo.world.item.IMaternityArmor;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -32,8 +35,9 @@ public abstract class AbstractPregnantBodyModel extends HierarchicalModel<Abstra
 
 	protected final BellyInflation bellyInflation;
 		
-	protected final WrapperBoobsJiggle boobsJiggle;
-	protected final BellyJigglePhysics bellyJiggle;
+	// Pregnancy phase and model type for factory-based jiggle creation
+	protected final PregnancyPhase pregnancyPhase;
+	protected final SkinType modelType;
 
 	protected float milkingBoobsXScale = 1.15F;
 	protected float milkingBoobsYScale = 1.05F;
@@ -42,15 +46,18 @@ public abstract class AbstractPregnantBodyModel extends HierarchicalModel<Abstra
 	
 	private final boolean simpleBellyJiggle;
 	
-	protected AbstractPregnantBodyModel(ModelPart root, BellyInflation bellyInflation, WrapperBoobsJiggle boobsJiggle, BellyJigglePhysics bellyJiggle, boolean simpleBellyJiggle) {
+	protected AbstractPregnantBodyModel(ModelPart root, BellyInflation bellyInflation, 
+			PregnancyPhase pregnancyPhase, 
+			SkinType modelType,
+			boolean simpleBellyJiggle) {		
 		this.root = root;
 		this.body = root.getChild("body");
 		this.boobs = this.body.getChild("boobs");
 		this.rightBoob = this.boobs.getChild("right_boob");
 		this.leftBoob = this.boobs.getChild("left_boob");
 		this.belly = this.body.getChild("belly");
-		this.boobsJiggle = boobsJiggle;
-		this.bellyJiggle = bellyJiggle;
+		this.pregnancyPhase = pregnancyPhase;
+		this.modelType = modelType;
 		this.bellyInflation = bellyInflation;
 		this.simpleBellyJiggle = simpleBellyJiggle;
 	}
@@ -68,9 +75,13 @@ public abstract class AbstractPregnantBodyModel extends HierarchicalModel<Abstra
 		
 		final var armor = entity.getItemBySlot(EquipmentSlot.CHEST);
 			
+		UUID playerId = entity.getUUID();
+		PlayerJiggleData jiggleData = JigglePhysicsManager.getInstance().getOrCreate(playerId, () -> PlayerJiggleDataFactory.create(pregnancyPhase, modelType));
+	
 		if (armor.isEmpty()) {
-			bellyJiggle.setupAnim(entity, belly, simpleBellyJiggle);
-			boobsJiggle.setupAnim(entity, boobs, leftBoob, rightBoob);
+			jiggleData.getBoobsJiggle().setupAnim(entity, boobs, leftBoob, rightBoob);
+			jiggleData.getBellyJiggle().ifPresent(jiggle -> jiggle.setupAnim(entity, belly, simpleBellyJiggle));
+
 			animBellyIdle(entity, ageInTicks);
 			animBellySlapping(entity, ageInTicks);
 			if (!boobs.visible) {
@@ -79,7 +90,8 @@ public abstract class AbstractPregnantBodyModel extends HierarchicalModel<Abstra
 		}
 		else { 		
 			if (armor.getItem() instanceof IMaternityArmor maternityArmor && maternityArmor.areBoobsExposed()) {
-				boobsJiggle.setupAnim(entity, boobs, leftBoob, rightBoob);		
+				jiggleData.getBoobsJiggle().setupAnim(entity, boobs, leftBoob, rightBoob);
+	
 				if (!boobs.visible) {
 		    		boobs.visible = true;
 		    	}

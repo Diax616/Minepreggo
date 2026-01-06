@@ -22,13 +22,9 @@ import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public record RequestSexCinematicP2MC2SPacket(int mobId) {
 	
 	public static RequestSexCinematicP2MC2SPacket decode(FriendlyByteBuf buffer) {	
@@ -100,9 +96,4 @@ public record RequestSexCinematicP2MC2SPacket(int mobId) {
 			PacketDistributor.PLAYER.with(() -> source),
 			new RenderSexOverlayS2CPacket(120, 60));  
     }
-    
-	@SubscribeEvent
-	public static void registerMessage(FMLCommonSetupEvent event) {
-		MinepreggoModPacketHandler.addNetworkMessage(RequestSexCinematicP2MC2SPacket.class, RequestSexCinematicP2MC2SPacket::encode, RequestSexCinematicP2MC2SPacket::decode, RequestSexCinematicP2MC2SPacket::handler);
-	}
 }

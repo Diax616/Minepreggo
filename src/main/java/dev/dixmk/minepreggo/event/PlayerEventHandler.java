@@ -177,7 +177,7 @@ public class PlayerEventHandler {
 	    	
 	    	trackedPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> {	    		
 	            MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> trackerPlayer),
-		                new SyncPlayerDataS2CPacket(trackedPlayer.getUUID(), cap.getGender(), cap.isUsingCustomSkin()));
+		                new SyncPlayerDataS2CPacket(trackedPlayer.getUUID(), cap.getGender(), cap.getSkinType()));
 	           
 	            cap.getFemaleData().ifPresent(femaleData -> {
 		            MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> trackerPlayer),
@@ -600,7 +600,7 @@ public class PlayerEventHandler {
 					Species species = null;
 					boolean flag = false;
 					
-					if (source instanceof Zombie) {
+					if (source instanceof Zombie && !source.isBaby()) {
 						species = Species.ZOMBIE;
 						flag = femaleData.tryImpregnateByHurting(species);
 					}
@@ -627,7 +627,9 @@ public class PlayerEventHandler {
         	player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap ->
         		cap.getFemaleData().ifPresent(femaleData -> {
         			if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {
-                    	ServerPlayerAnimationManager.getInstance().stopAnimation(player);    	
+                    	ServerPlayerAnimationManager.getInstance().stopAnimation(player);             	
+                    	PlayerHelper.removeJigglePhysics(player);
+                    	
         				var pregnancySystem = femaleData.getPregnancySystem();
             			var phase = pregnancySystem.getCurrentPregnancyStage();        			
             			if (player.level() instanceof ServerLevel serverLevel) {		

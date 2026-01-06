@@ -11,6 +11,7 @@ import dev.dixmk.minepreggo.client.gui.component.ToggleableCheckbox;
 import dev.dixmk.minepreggo.network.packet.UpdatePlayerDataC2SPacket;
 import dev.dixmk.minepreggo.network.packet.UpdateShowPlayerMainMenuC2SPacket;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
+import dev.dixmk.minepreggo.world.entity.player.SkinType;
 import dev.dixmk.minepreggo.world.inventory.preggo.PlayerJoinsWorldMenu;
 import dev.dixmk.minepreggo.world.pregnancy.Gender;
 import net.minecraft.client.gui.GuiGraphics;
@@ -99,13 +100,13 @@ public class PlayerJoinsWorldScreen extends AbstractContainerScreen<PlayerJoinsW
 			
 		var button = Button.builder(Component.literal("Ok"), e -> {						
 			if ((female.selected())) {						
-				MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdatePlayerDataC2SPacket(player.getUUID(), Gender.FEMALE, customSkin.selected()));
+				MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdatePlayerDataC2SPacket(player.getUUID(), Gender.FEMALE, customSkin.selected() ? SkinType.CUSTOM : SkinType.PREDEFINED));
 				MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdateShowPlayerMainMenuC2SPacket(player.getUUID(), false));		
 				selected = true;
 				player.closeContainer();		
 			}		
 			else if (male.selected()) {		
-				MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdatePlayerDataC2SPacket(player.getUUID(), Gender.MALE, true));
+				MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdatePlayerDataC2SPacket(player.getUUID(), Gender.MALE, SkinType.CUSTOM));
 				MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdateShowPlayerMainMenuC2SPacket(player.getUUID(), false));		
 				selected = true;
 				player.closeContainer();	
@@ -126,7 +127,7 @@ public class PlayerJoinsWorldScreen extends AbstractContainerScreen<PlayerJoinsW
 		super.onClose();		
 		if (!selected) {			
 			MinepreggoMod.LOGGER.info("Player {} does not select a gender - defaulting to MALE with custom skin", player.getName().getString());
-			MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdatePlayerDataC2SPacket(player.getUUID(), Gender.MALE, true));
+			MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdatePlayerDataC2SPacket(player.getUUID(), Gender.MALE, SkinType.CUSTOM));
 			MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdateShowPlayerMainMenuC2SPacket(player.getUUID(), false));	
 		}
 	}

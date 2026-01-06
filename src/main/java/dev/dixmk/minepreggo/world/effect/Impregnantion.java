@@ -116,15 +116,11 @@ public class Impregnantion extends MobEffect {
 			}
 			else if (entity instanceof TamableHumanoidCreeperGirl creeperGirl && creeperGirl.getPostPregnancyData().isEmpty()) {
 				var nextStage = MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
-				PreggoMobHelper.copyOwner(creeperGirl, nextStage);
-				PreggoMobHelper.copyTamableData(creeperGirl, nextStage);
-				initPregnancy(creeperGirl, nextStage, amplifier);
+				initPregnancyInTamable(creeperGirl, nextStage, amplifier);
 			}
 			else if (entity instanceof TamableZombieGirl zombieGirl && zombieGirl.getPostPregnancyData().isEmpty()) {
 				var nextStage = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
-				PreggoMobHelper.copyOwner(zombieGirl, nextStage);
-				PreggoMobHelper.copyTamableData(zombieGirl, nextStage);
-				initPregnancy(zombieGirl, nextStage, amplifier);
+				initPregnancyInTamable(zombieGirl, nextStage, amplifier);
 			}
 			else {
 				entity.hurt(new DamageSource(entity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.GENERIC)), 1);
@@ -153,6 +149,15 @@ public class Impregnantion extends MobEffect {
 		PreggoMobHelper.transferAttackTarget(source, target);
 		PreggoMobHelper.initPregnancyByPotion(target, ImmutableTriple.of(Optional.empty(), target.getTypeOfSpecies(), target.getTypeOfCreature()), amplifier);
 		source.discard();
+	}
+	
+	protected static
+	<S extends PreggoMob & ITamablePreggoMob<FemaleEntityImpl> & IFemaleEntity,
+	T extends PreggoMob & ITamablePreggoMob<FemaleEntityImpl> & IFemaleEntity & IPregnancySystemHandler> void initPregnancyInTamable(S source, T target, int amplifier) {
+		PreggoMobHelper.copyOwner(source, target);
+		PreggoMobHelper.copyTamableData(source, target);
+		PreggoMobHelper.transferInventory(source, target);
+		initPregnancy(source, target, amplifier);
 	}
 }
 

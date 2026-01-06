@@ -189,7 +189,8 @@ public class TamableHumanoidCreeperGirl extends AbstractTamableHumanoidCreeperGi
 			PreggoMobHelper.transferAttackTarget(source, creeperGirl);	
 			
 			if (!creeperGirl.tryActivatePostPregnancyPhase(PostPregnancy.PARTUM)) {
-                creeperGirl.discard();
+				source.discard();
+				creeperGirl.discard();
 				throw new IllegalStateException("Failed to activate PostPregnancy.PARTUM phase on TamableHumanoidCreeperGirl after giving birth");
 			}
 			
@@ -209,7 +210,8 @@ public class TamableHumanoidCreeperGirl extends AbstractTamableHumanoidCreeperGi
 			PreggoMobHelper.transferAttackTarget(source, creeperGirl);
 			
 			if (!creeperGirl.tryActivatePostPregnancyPhase(PostPregnancy.MISCARRIAGE)) {
-                creeperGirl.discard();
+				source.discard();
+				creeperGirl.discard();
                 throw new IllegalStateException("Failed to activate PostPregnancy.MISCARRIAGE phase on TamableHumanoidCreeperGirl after miscarriage");
 			}
 			

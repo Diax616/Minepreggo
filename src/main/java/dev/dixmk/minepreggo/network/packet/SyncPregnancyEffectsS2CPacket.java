@@ -4,17 +4,12 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.network.capability.PlayerPregnancyEffectsImpl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.NetworkEvent;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public record SyncPregnancyEffectsS2CPacket(UUID targetId, PlayerPregnancyEffectsImpl.ClientData data) {		
 
 	public static SyncPregnancyEffectsS2CPacket decode(FriendlyByteBuf buffer) {		
@@ -49,10 +44,5 @@ public record SyncPregnancyEffectsS2CPacket(UUID targetId, PlayerPregnancyEffect
 			}			
 		});
 		context.setPacketHandled(true);
-	}
-	
-	@SubscribeEvent
-	public static void registerMessage(FMLCommonSetupEvent event) {
-		MinepreggoModPacketHandler.addNetworkMessage(SyncPregnancyEffectsS2CPacket.class, SyncPregnancyEffectsS2CPacket::encode, SyncPregnancyEffectsS2CPacket::decode, SyncPregnancyEffectsS2CPacket::handler);
 	}
 }

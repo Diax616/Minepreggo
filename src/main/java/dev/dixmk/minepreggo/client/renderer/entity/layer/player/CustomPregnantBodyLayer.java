@@ -18,6 +18,7 @@ import dev.dixmk.minepreggo.client.model.entity.player.CustomPregnantBodyP6Model
 import dev.dixmk.minepreggo.client.model.entity.player.CustomPregnantBodyP7Model;
 import dev.dixmk.minepreggo.client.model.entity.player.CustomPregnantBodyP8Model;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
+import dev.dixmk.minepreggo.world.entity.player.SkinType;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -62,7 +63,7 @@ public class CustomPregnantBodyLayer extends AbstractPregnantBodyLayer {
 	    	 
 	
     	player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> {   		
-    		if (!cap.isUsingCustomSkin()) {
+    		if (cap.getSkinType() == SkinType.PREDEFINED) {
     			return;
     		}
     	

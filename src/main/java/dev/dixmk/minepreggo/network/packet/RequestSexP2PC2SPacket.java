@@ -2,17 +2,12 @@ package dev.dixmk.minepreggo.network.packet;
 
 import java.util.function.Supplier;
 
-import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.world.inventory.preggo.RequestSexP2PMenu;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.NetworkEvent;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public record RequestSexP2PC2SPacket(int sourcePlayerId, int targetPlayerId) {
 	
 	public static RequestSexP2PC2SPacket decode(FriendlyByteBuf buffer) {	
@@ -42,10 +37,5 @@ public record RequestSexP2PC2SPacket(int sourcePlayerId, int targetPlayerId) {
 			}
 		});
 		context.setPacketHandled(true);
-	}
-	
-	@SubscribeEvent
-	public static void registerMessage(FMLCommonSetupEvent event) {
-		MinepreggoModPacketHandler.addNetworkMessage(RequestSexP2PC2SPacket.class, RequestSexP2PC2SPacket::encode, RequestSexP2PC2SPacket::decode, RequestSexP2PC2SPacket::handler);
 	}
 }

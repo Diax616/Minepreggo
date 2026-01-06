@@ -1,4 +1,4 @@
-package dev.dixmk.minepreggo.event;
+package dev.dixmk.minepreggo.client.event;
 
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

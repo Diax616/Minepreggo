@@ -5,6 +5,7 @@ import java.util.Optional;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.network.packet.SyncPlayerDataS2CPacket;
+import dev.dixmk.minepreggo.world.entity.player.SkinType;
 import dev.dixmk.minepreggo.world.pregnancy.AbstractBreedableEntity;
 import dev.dixmk.minepreggo.world.pregnancy.Gender;
 import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
@@ -15,23 +16,23 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.network.PacketDistributor;
 
 public class PlayerDataImpl implements IPlayerData {
-	private boolean customSkin = true;
 	private boolean showMainMenu = true; 
 	private boolean cinematic = false;
 	
 	private Gender gender = Gender.UNKNOWN;
+	private SkinType skinType = SkinType.CUSTOM;
 	
 	private LazyOptional<FemalePlayerImpl> femalePlayerData = LazyOptional.empty();
 	private LazyOptional<MalePlayerImpl> malePlayerData = LazyOptional.empty();
+		
+	@Override
+	public SkinType getSkinType() {
+		return skinType;
+	}
 
 	@Override
-	public boolean isUsingCustomSkin() {
-		return this.customSkin;
-	}
-	
-	@Override
-	public void setCustomSkin(boolean value) {
-		this.customSkin = value;
+	public void setSKinType(SkinType skinType) {
+		this.skinType = skinType;	
 	}
 
 	@Override
@@ -138,7 +139,7 @@ public class PlayerDataImpl implements IPlayerData {
     
 	public CompoundTag serializeNBT() {
 		CompoundTag nbt = new CompoundTag();
-		nbt.putBoolean("DataCustomSkin", customSkin);
+		nbt.putString("DataSkinType", skinType.name());
 		nbt.putBoolean("DataShowMainMenu", showMainMenu);	
 		nbt.putString(Gender.NBT_KEY, gender.name());	
 	
@@ -153,7 +154,7 @@ public class PlayerDataImpl implements IPlayerData {
 	}
 	
 	public void deserializeNBT(CompoundTag nbt) {
-		customSkin = nbt.getBoolean("DataCustomSkin");
+		skinType = SkinType.valueOf(nbt.getString("DataSkinType"));
 		showMainMenu = nbt.getBoolean("DataShowMainMenu");		
 		
 	    if (nbt.contains(Gender.NBT_KEY, Tag.TAG_STRING)) {
@@ -185,7 +186,7 @@ public class PlayerDataImpl implements IPlayerData {
 	}
 	
 	public void invalidate() {
-		customSkin = true;
+		skinType = SkinType.CUSTOM;
 		showMainMenu = true; 
 		cinematic = false;
 		gender = Gender.UNKNOWN;
@@ -194,7 +195,7 @@ public class PlayerDataImpl implements IPlayerData {
 	
 	public void sync(ServerPlayer serverPlayer) {
 		MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> serverPlayer),
-				new SyncPlayerDataS2CPacket(serverPlayer.getUUID(), this.gender,  this.customSkin));
+				new SyncPlayerDataS2CPacket(serverPlayer.getUUID(), this.gender,  this.skinType));
 	}
 	
 	public void syncAllClientData(ServerPlayer serverPlayer) {

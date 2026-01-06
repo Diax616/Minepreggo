@@ -38,8 +38,13 @@ public abstract class AbstractZombieGirlInventoryMenu<E extends AbstractTamableZ
 			this.addSlot(new SlotItemHandler(internal, ITamablePreggoMob.CHEST_INVENTORY_SLOT, 8, 26) {
 				@Override
 				public boolean mayPlace(ItemStack itemstack) {	
-					boolean flag = true;
 					var armor = itemstack.getItem();
+					boolean flag = ItemHelper.isChest(armor);			
+					
+					if (!flag) {
+						return false;
+					}
+					
 					if (zombieGirl instanceof IPregnancySystemHandler pregnancySystem) {
 						final var pregnancyPhase = pregnancySystem.getCurrentPregnancyStage();					
 						if (!PregnancySystemHelper.canUseChestplate(armor, pregnancyPhase, false)) {
@@ -65,9 +70,16 @@ public abstract class AbstractZombieGirlInventoryMenu<E extends AbstractTamableZ
 			this.addSlot(new SlotItemHandler(internal, ITamablePreggoMob.LEGS_INVENTORY_SLOT, 8, 44) {
 				@Override
 				public boolean mayPlace(ItemStack itemstack) {
+					var armor = itemstack.getItem();
+					boolean flag = ItemHelper.isLegging(armor);			
+					
+					if (!flag) {
+						return false;
+					}
+					
 					if (zombieGirl instanceof IPregnancySystemHandler pregnancySystem) {
 						final var pregnancyPhase = pregnancySystem.getCurrentPregnancyStage();					
-						if (!PregnancySystemHelper.canUseLegging(itemstack.getItem(), pregnancyPhase)) {
+						if (!PregnancySystemHelper.canUseLegging(armor, pregnancyPhase)) {
 							MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) zombieGirl.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.armor.message.leggings_does_not_fit.p3_to_p8", zombieGirl.getSimpleName()));
 			                return false;
 						}			

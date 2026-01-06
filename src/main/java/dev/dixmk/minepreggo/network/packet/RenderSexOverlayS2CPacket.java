@@ -2,17 +2,12 @@ package dev.dixmk.minepreggo.network.packet;
 
 import java.util.function.Supplier;
 
-import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.client.screens.effect.SexOverlayManager;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.NetworkEvent;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public record RenderSexOverlayS2CPacket(int totalOverlayTicks, int totalPauseTicks) {
 
 	public static RenderSexOverlayS2CPacket decode(FriendlyByteBuf buffer) {	
@@ -30,16 +25,12 @@ public record RenderSexOverlayS2CPacket(int totalOverlayTicks, int totalPauseTic
 		NetworkEvent.Context context = contextSupplier.get();
 		context.enqueueWork(() -> 
 	        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {       
-	        	if (!SexOverlayManager.getInstance().isActive()) {
-	                SexOverlayManager.getInstance().trigger(message.totalOverlayTicks, message.totalPauseTicks);	
+	        	var manager = SexOverlayManager.getInstance();
+	        	if (!manager.isActive()) {
+	        		manager.trigger(message.totalOverlayTicks, message.totalPauseTicks);	
 	        	}
 	        })			
 		);
 		context.setPacketHandled(true);
-	}
-	
-	@SubscribeEvent
-	public static void registerMessage(FMLCommonSetupEvent event) {
-		MinepreggoModPacketHandler.addNetworkMessage(RenderSexOverlayS2CPacket.class, RenderSexOverlayS2CPacket::encode, RenderSexOverlayS2CPacket::decode, RenderSexOverlayS2CPacket::handler);
 	}
 }

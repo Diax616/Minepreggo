@@ -14,13 +14,9 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public record ResponseSexRequestP2PC2SPacket(int sourcePlayerId, int targetPlayerId, boolean accept) {
 
 	public static ResponseSexRequestP2PC2SPacket decode(FriendlyByteBuf buffer) {	
@@ -141,10 +137,4 @@ public record ResponseSexRequestP2PC2SPacket(int sourcePlayerId, int targetPlaye
 		MessageHelper.sendTo(source, Component.translatable("chat.minepreggo.player.sex.request_reject", target.getName().getString()), true);
 		ServerParticleUtil.spawnRandomlyFromServer(target, ParticleTypes.SMOKE);			
 	}
-	
-	@SubscribeEvent
-	public static void registerMessage(FMLCommonSetupEvent event) {
-		MinepreggoModPacketHandler.addNetworkMessage(ResponseSexRequestP2PC2SPacket.class, ResponseSexRequestP2PC2SPacket::encode, ResponseSexRequestP2PC2SPacket::decode, ResponseSexRequestP2PC2SPacket::handler);
-	}
-	
 }

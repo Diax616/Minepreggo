@@ -5,18 +5,13 @@ import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
 
-import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.client.animation.player.PlayerAnimationManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.NetworkEvent;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public record UpdatePlayerAnimationS2CPacket(UUID playerId, @Nullable String animationName, int animationTick, boolean isPlaying) {
 
     public static UpdatePlayerAnimationS2CPacket decode(FriendlyByteBuf buf) {
@@ -51,9 +46,4 @@ public record UpdatePlayerAnimationS2CPacket(UUID playerId, @Nullable String ani
         });
 		context.setPacketHandled(true);
     }
-    
-	@SubscribeEvent
-	public static void registerMessage(FMLCommonSetupEvent event) {
-		MinepreggoModPacketHandler.addNetworkMessage(UpdatePlayerAnimationS2CPacket.class, UpdatePlayerAnimationS2CPacket::encode, UpdatePlayerAnimationS2CPacket::decode, UpdatePlayerAnimationS2CPacket::handle);
-	}
 }

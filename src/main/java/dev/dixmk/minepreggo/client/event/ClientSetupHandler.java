@@ -1,4 +1,4 @@
-package dev.dixmk.minepreggo.event;
+package dev.dixmk.minepreggo.client.event;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.renderer.entity.layer.player.CustomPregnantBodyLayer;
@@ -9,16 +9,15 @@ import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraftforge.api.distmarker.Dist;
-
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = MinepreggoMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-public class ClientSetup {
-	
-	private ClientSetup() {}
+public class ClientSetupHandler {
+
+	private ClientSetupHandler() {}
 	
     @SubscribeEvent
     public static void onRegisterRenderers(EntityRenderersEvent.AddLayers event) {
@@ -44,5 +43,5 @@ public class ClientSetup {
             playerRenderer.addLayer(new CustomPregnantBodyLayer(playerRenderer, event.getEntityModels()));
             playerRenderer.addLayer(new PredefinedPregnantBodyLayer(playerRenderer, event.getEntityModels()));
         }
-    }
+    }	
 }

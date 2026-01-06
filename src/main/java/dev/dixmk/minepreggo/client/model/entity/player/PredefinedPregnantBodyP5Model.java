@@ -1,8 +1,8 @@
 package dev.dixmk.minepreggo.client.model.entity.player;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.client.jiggle.JigglePhysicsFactory;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
+import dev.dixmk.minepreggo.world.entity.player.SkinType;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.client.animation.preggo.BellyInflation;
 import dev.dixmk.minepreggo.client.animation.preggo.FetalMovementIntensity;
@@ -26,9 +26,8 @@ public class PredefinedPregnantBodyP5Model extends AbstractHeavyPregnantBodyMode
 		super(root,
 				BellyInflation.MEDIUM,
 				FetalMovementIntensity.P5,
-				JigglePhysicsFactory.createHeavyweightBoobs(1.55F, false, false),
-				JigglePhysicsFactory.createBelly(5.5F, PregnancyPhase.P5),
-				JigglePhysicsFactory.createHeavyweightButt(0.0F));
+				PregnancyPhase.P5,
+				SkinType.PREDEFINED);
 		milkingBoobsYPos = -0.54F;
 	}
 	

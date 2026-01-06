@@ -26,4 +26,9 @@ public class WrapperButtJiggle {
     public void setupAnim(LivingEntity entity, ModelPart leftButt, ModelPart rightButt) {       
     	ButtJigglePhysics.setupAnim(entity, leftButtockJiggle, rightButtockJiggle, leftButt, rightButt);
     }
+    
+    public void reset() {
+    	leftButtockJiggle.reset();
+    	rightButtockJiggle.reset();
+    }
 }

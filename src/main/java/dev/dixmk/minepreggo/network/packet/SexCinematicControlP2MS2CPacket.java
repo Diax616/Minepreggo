@@ -3,16 +3,11 @@ package dev.dixmk.minepreggo.network.packet;
 import java.util.function.Supplier;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.client.CinematicManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.NetworkEvent;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public record SexCinematicControlP2MS2CPacket(boolean start, int mobEntityId) {
 	
 	public static SexCinematicControlP2MS2CPacket decode(FriendlyByteBuf buffer) {	
@@ -41,10 +36,5 @@ public record SexCinematicControlP2MS2CPacket(boolean start, int mobEntityId) {
             }	  
 		});
 		context.setPacketHandled(true);
-	}
-	
-	@SubscribeEvent
-	public static void registerMessage(FMLCommonSetupEvent event) {
-		MinepreggoModPacketHandler.addNetworkMessage(SexCinematicControlP2MS2CPacket.class, SexCinematicControlP2MS2CPacket::encode, SexCinematicControlP2MS2CPacket::decode, SexCinematicControlP2MS2CPacket::handler);
 	}
 }

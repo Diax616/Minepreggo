@@ -283,6 +283,8 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 	protected void initPostPartum() {
     	MessageHelper.sendTo(pregnantEntity, Component.translatable("chat.minepreggo.player.birth.message.post", Integer.toString(pregnancySystem.getWomb().getNumOfBabies())));	
     	
+		PlayerHelper.updateJigglePhysics(pregnantEntity, null, playerData.getSkinType());
+    	
     	// tryActivatePostPregnancyPhase only works if isPregnant flag is true
     	femaleData.tryActivatePostPregnancyPhase(PostPregnancy.PARTUM);
 		femaleData.sync(pregnantEntity);

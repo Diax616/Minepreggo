@@ -2,8 +2,8 @@ package dev.dixmk.minepreggo.client.model.entity.player;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.animation.preggo.BellyInflation;
-import dev.dixmk.minepreggo.client.jiggle.JigglePhysicsFactory;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
+import dev.dixmk.minepreggo.world.entity.player.SkinType;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -25,8 +25,8 @@ public class PredefinedPregnantBodyP0Model extends AbstractPregnantBodyModel {
 	public PredefinedPregnantBodyP0Model(ModelPart root) {
 		super(root,
 				BellyInflation.LOW,
-				JigglePhysicsFactory.createLightweightBoobs(2.0F, true, true),
-				JigglePhysicsFactory.createBelly(6.5F, PregnancyPhase.P0),
+				PregnancyPhase.P0,
+				SkinType.PREDEFINED,
 				true);
 	}
 	

@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import dev.dixmk.minepreggo.event.ClientEventHandler;
+import dev.dixmk.minepreggo.client.event.ClientEventHandler;
 import net.minecraft.client.Camera;
 import net.minecraft.world.phys.Vec3;
 

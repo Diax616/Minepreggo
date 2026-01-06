@@ -41,7 +41,7 @@ public class OakLeavesLemonsModifier extends LootModifier {
                         }
                     }        
                     if (context.getRandom().nextFloat() < chance) {
-                        generatedLoot.add(new ItemStack(MinepreggoModItems.LEMON.get(), 2 + context.getRandom().nextInt(4)));
+                        generatedLoot.add(new ItemStack(MinepreggoModItems.LEMON.get(), 1 + context.getRandom().nextInt(3)));
                     }   		
             	}	
             }

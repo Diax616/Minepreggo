@@ -6,27 +6,24 @@ import java.util.function.Supplier;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
+import dev.dixmk.minepreggo.world.entity.player.SkinType;
 import dev.dixmk.minepreggo.world.pregnancy.Gender;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-public record UpdatePlayerDataC2SPacket(UUID source, Gender gender, boolean customSkin) {
+public record UpdatePlayerDataC2SPacket(UUID source, Gender gender, SkinType skinType) {
 	public static UpdatePlayerDataC2SPacket decode(FriendlyByteBuf buffer) {	
 		return new UpdatePlayerDataC2SPacket(
 				buffer.readUUID(),
 				buffer.readEnum(Gender.class),
-				buffer.readBoolean());
+				buffer.readEnum(SkinType.class));
 	}
 	
 	public static void encode(UpdatePlayerDataC2SPacket message, FriendlyByteBuf buffer) {
 		buffer.writeUUID(message.source);
 		buffer.writeEnum(message.gender);
-		buffer.writeBoolean(message.customSkin);
+		buffer.writeEnum(message.skinType);
 	}
 	
 	public static void handler(UpdatePlayerDataC2SPacket message, Supplier<NetworkEvent.Context> contextSupplier) {
@@ -37,20 +34,16 @@ public record UpdatePlayerDataC2SPacket(UUID source, Gender gender, boolean cust
 				
 				serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> {
 					cap.setGender(message.gender);
-					cap.setCustomSkin(message.customSkin);
+					cap.setSKinType(message.skinType);
 				});
 				
-				MinepreggoMod.LOGGER.info("Updating player data for {}: gender={}, customSkin={}",
-						serverPlayer.getDisplayName().getString(), message.gender, message.customSkin);
+				MinepreggoMod.LOGGER.debug("Updating player data for {}: gender={}, customSkin={}",
+						serverPlayer.getDisplayName().getString(), message.gender, message.skinType);
 						
-        		MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> serverPlayer), new SyncPlayerDataS2CPacket(message.source, message.gender, message.customSkin));
+        		MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> serverPlayer),
+        				new SyncPlayerDataS2CPacket(message.source, message.gender, message.skinType));
 			}			
 		});
 		context.setPacketHandled(true);
-	}
-	
-	@SubscribeEvent
-	public static void registerMessage(FMLCommonSetupEvent event) {
-		MinepreggoModPacketHandler.addNetworkMessage(UpdatePlayerDataC2SPacket.class, UpdatePlayerDataC2SPacket::encode, UpdatePlayerDataC2SPacket::decode, UpdatePlayerDataC2SPacket::handler);
 	}
 }

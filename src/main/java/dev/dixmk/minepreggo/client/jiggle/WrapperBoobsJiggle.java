@@ -39,4 +39,9 @@ public class WrapperBoobsJiggle {
     	leftBoobJiggle.useAxisZ(axisZ);
     	rightBoobJiggle.useAxisZ(axisZ);
     }
+    
+    public void reset() {
+    	leftBoobJiggle.reset();
+    	rightBoobJiggle.reset();
+    }
 }

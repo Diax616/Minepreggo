@@ -1,10 +1,15 @@
 package dev.dixmk.minepreggo.client.model.entity.player;
 
+import java.util.UUID;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import dev.dixmk.minepreggo.client.jiggle.WrapperBoobsJiggle;
+import dev.dixmk.minepreggo.client.jiggle.JigglePhysicsManager;
+import dev.dixmk.minepreggo.client.jiggle.PlayerJiggleData;
+import dev.dixmk.minepreggo.client.jiggle.PlayerJiggleDataFactory;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.world.entity.player.SkinType;
 import dev.dixmk.minepreggo.world.item.IMaternityArmor;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -20,20 +25,20 @@ public abstract class AbstractBoobsModel extends HierarchicalModel<AbstractClien
 	public final ModelPart boobs;
 	public final ModelPart rightBoob;
 	public final ModelPart leftBoob;
-	protected final WrapperBoobsJiggle boobsJiggle;
+	protected final SkinType modelType;
 	
 	protected float milkingBoobsXScale = 1.15F;
 	protected float milkingBoobsYScale = 1.05F;
 	protected float milkingBoobsZScale = 1.25F;
 	protected float milkingBoobsYPos = -0.42F;
 	
-	protected AbstractBoobsModel(ModelPart root, WrapperBoobsJiggle boobsJiggle) {
+	protected AbstractBoobsModel(ModelPart root, SkinType modelType) {
 		this.root = root;
 		this.body = root.getChild("body");
 		this.boobs = this.body.getChild("boobs");
 		this.rightBoob = this.boobs.getChild("right_boob");
 		this.leftBoob = this.boobs.getChild("left_boob");
-		this.boobsJiggle = boobsJiggle;
+		this.modelType = modelType;
 	}
 	
 	@Override
@@ -44,9 +49,8 @@ public abstract class AbstractBoobsModel extends HierarchicalModel<AbstractClien
 	@Override
 	public void setupAnim(AbstractClientPlayer entity, float limbSwing, float limbSwingAmount, 
             float ageInTicks, float netHeadYaw, float headPitch) {	      
-		
 		this.root.getAllParts().forEach(ModelPart::resetPose);
-			
+
 		final var armor = entity.getItemBySlot(EquipmentSlot.CHEST);	
 		if (armor.isEmpty()) {
 			animBoobs(entity);
@@ -66,9 +70,12 @@ public abstract class AbstractBoobsModel extends HierarchicalModel<AbstractClien
 		this.body.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 	
-	private void animBoobs(AbstractClientPlayer entity) {
-		boobsJiggle.setupAnim(entity, boobs, leftBoob, rightBoob);
-		
+	private void animBoobs(AbstractClientPlayer entity) {	
+		UUID playerId = entity.getUUID();
+		PlayerJiggleData jiggleData = JigglePhysicsManager.getInstance().getOrCreate(playerId, PlayerJiggleDataFactory::createNonPregnancy);
+
+		jiggleData.getBoobsJiggle().setupAnim(entity, boobs, leftBoob, rightBoob);
+	
 		if (entity.hasEffect(MinepreggoModMobEffects.LACTATION.get())) {
 			boobs.y -= 0.42F;		
 			boobs.xScale = 1.4F;
