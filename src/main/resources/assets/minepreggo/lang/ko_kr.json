@@ -2,8 +2,8 @@
 	"entity.minecraft.villager.minepreggo.doctor": "의사",
 
 	"gui.minepreggo.preggo_mob_inventory.tooltip_inventory": "인벤토리",
-	"gui.minepreggo.preggo_mob_main.label_state": "State:",
-	"gui.minepreggo.preggo_mob_main.label_phase": "Phase:",
+	"gui.minepreggo.preggo_mob_main.label_state": "상태:",
+	"gui.minepreggo.preggo_mob_main.label_phase": "단계:",
 	"gui.minepreggo.preggo_mob_main.label_not_pregnant": "임신하지 않음",
 	"gui.minepreggo.preggo_mob_main.label_craving": "갈망:",
 	"gui.minepreggo.preggo_mob_main.label_none": "없음",
@@ -14,7 +14,7 @@
 	"gui.minepreggo.creeper_girl_main.checkbox_fight_and_explode": "싸우고 추궁",
 
 	"gui.minepreggo.scientific_illager.label_medical_checkup": "임신한 개체",
-	"gui.minepreggo.scientific_illager.tooltip_make_medical_checkup": "의료 검사 만들기",
+	"gui.minepreggo.scientific_illager.tooltip_make_medical_checkup": "의료 검사 하기",
 
 	"gui.minepreggo.player_main_menu.label.title": "Minepreggo",
 	"gui.minepreggo.player_main_menu.checkbox.custom_skin": "커스텀",
@@ -31,25 +31,25 @@
 
 	"gui.minepreggo.medical_checkup.label.inventory": "인벤토리",
 
-	"gui.minepreggo.preggo_mob_inventory.tooltip_sex": "재미있게 하고 싶나요?",
+	"gui.minepreggo.preggo_mob_inventory.tooltip_sex": "즐기고 싶나요?",
 	"gui.minepreggo.preggo_mob_inventory.tooltip_checkbox_break": "그녀가 부드럽게 막도록 허용하라",
 	"gui.minepreggo.preggo_mob_inventory.tooltip_checkbox_pickup": "그녀가 아이템을 줍게 허용하기",
 
-	"gui.minepreggo.preggo_mob_main.checkbox_follow": "팔로우",
-	"gui.minepreggo.preggo_mob_main.checkbox_wait": "기다림",
-	"gui.minepreggo.preggo_mob_main.checkbox_break": "Break",
-	"gui.minepreggo.preggo_mob_main.checkbox_pickup": "PickUp",
+	"gui.minepreggo.preggo_mob_main.checkbox_follow": "따라오기",
+	"gui.minepreggo.preggo_mob_main.checkbox_wait": "기다리기",
+	"gui.minepreggo.preggo_mob_main.checkbox_break": "막기",
+	"gui.minepreggo.preggo_mob_main.checkbox_pickup": "아이템 줍기",
 
 	"gui.minepreggo.sex_request.button.yeah": "응",
 	"gui.minepreggo.sex_request.button.nope": "아니요",
 	"gui.minepreggo.sex_request.button.later": "나중에",
 	"gui.minepreggo.sex_request.button.now": "지금",
 
-	"gui.minepreggo.sex_request.label.message": "재미있게 놀고 싶나요?",
+	"gui.minepreggo.sex_request.label.message": "즐기고 싶나요?",
 	"gui.minepreggo.sex_request.label.requestor": "From: %s",
 
 	"gui.minepreggo.sex_request.preggo_mob.horny.label.message.1": "언제 다시 즐거울 수 있을까?",
-	"gui.minepreggo.sex_request.preggo_mob.horny.label.message.2": "오늘 밤 재미있게 놀 수 있을까요?",
+	"gui.minepreggo.sex_request.preggo_mob.horny.label.message.2": "오늘 밤 즐기면서 놀 수 있을까요?",
 	"gui.minepreggo.sex_request.preggo_mob.horny.label.message.3": "오늘 밤 우리 아이들을 '흔들' 수 있을까요?",
 
 	"entity.minepreggo.monster_zombie_girl": "몬스터 좀비 걸",
@@ -174,11 +174,11 @@
 	"item.minecraft.potion.effect.zombie_impregnation_2": "좀비 임신의 물약",
 	"item.minecraft.potion.effect.zombie_impregnation_3": "좀비 임신의 물약",
 	"item.minecraft.potion.effect.zombie_impregnation_4": "좀비 임신의 물약",
-	"item.minecraft.potion.effect.creeper_impregnation_0": "크리퍼 임잉 물약",
-	"item.minecraft.potion.effect.creeper_impregnation_1": "크리퍼 임신 물약",
-	"item.minecraft.potion.effect.creeper_impregnation_2": "크리퍼 임신 물약",
-	"item.minecraft.potion.effect.creeper_impregnation_3": "크리퍼 임신 물약",
-	"item.minecraft.potion.effect.creeper_impregnation_4": "크리퍼 임신 물약",
+	"item.minecraft.potion.effect.creeper_impregnation_0": "크리퍼 임신의 물약",
+	"item.minecraft.potion.effect.creeper_impregnation_1": "크리퍼 임신의 물약",
+	"item.minecraft.potion.effect.creeper_impregnation_2": "크리퍼 임신의 물약",
+	"item.minecraft.potion.effect.creeper_impregnation_3": "크리퍼 임신의 물약",
+	"item.minecraft.potion.effect.creeper_impregnation_4": "크리퍼 임신의 물약",
 	"item.minecraft.potion.effect.villager_impregnation_0": "주민 임신의 물약",
 	"item.minecraft.potion.effect.villager_impregnation_1": "주민 임신의 물약",
 	"item.minecraft.potion.effect.villager_impregnation_2": "주민 임신의 물약",
@@ -189,31 +189,31 @@
 	"item.minecraft.potion.effect.impregnation_2": "임신의 물약",
 	"item.minecraft.potion.effect.impregnation_3": "임신의 물약",
 	"item.minecraft.potion.effect.impregnation_4": "임신의 물약",
-	"item.minecraft.potion.effect.humanoid_creeper_impregnation_0": "휴머노이드 크리퍼 임신 물약",
-	"item.minecraft.potion.effect.humanoid_creeper_impregnation_1": "휴머노이드 크리퍼 임신 물약",
-	"item.minecraft.potion.effect.humanoid_creeper_impregnation_2": "휴머노이드 크리퍼 임신 물약",
-	"item.minecraft.potion.effect.humanoid_creeper_impregnation_3": "휴머노이드 크리퍼 임신 물약",
-	"item.minecraft.potion.effect.humanoid_creeper_impregnation_4": "휴머노이드 크리퍼 임신 물약",
+	"item.minecraft.potion.effect.humanoid_creeper_impregnation_0": "휴머노이드 크리퍼 임신의 물약",
+	"item.minecraft.potion.effect.humanoid_creeper_impregnation_1": "휴머노이드 크리퍼 임신의 물약",
+	"item.minecraft.potion.effect.humanoid_creeper_impregnation_2": "휴머노이드 크리퍼 임신의 물약",
+	"item.minecraft.potion.effect.humanoid_creeper_impregnation_3": "휴머노이드 크리퍼 임신의 물약",
+	"item.minecraft.potion.effect.humanoid_creeper_impregnation_4": "휴머노이드 크리퍼 임신의 물약",
 	"item.minecraft.potion.effect.ender_impregnation_0": "엔더 임신의 물약",
 	"item.minecraft.potion.effect.ender_impregnation_1": "엔더 임신의 물약",
 	"item.minecraft.potion.effect.ender_impregnation_2": "엔더 임신의 물약",
 	"item.minecraft.potion.effect.ender_impregnation_3": "엔더 임신의 물약",
 	"item.minecraft.potion.effect.ender_impregnation_4": "엔더 임신의 물약",
-	"item.minecraft.potion.effect.humanoid_ender_impregnation_0": "휴머노이드 엔더 임신 물약",
-	"item.minecraft.potion.effect.humanoid_ender_impregnation_1": "휴머노이드 엔더 임신 물약",
-	"item.minecraft.potion.effect.humanoid_ender_impregnation_2": "휴머노이드 엔더 임신 물약",
-	"item.minecraft.potion.effect.humanoid_ender_impregnation_3": "휴머노이드 엔더 임신 물약",
-	"item.minecraft.potion.effect.humanoid_ender_impregnation_4": "휴머노이드 엔더 임신 물약",
+	"item.minecraft.potion.effect.humanoid_ender_impregnation_0": "휴머노이드 엔더 임신의 물약",
+	"item.minecraft.potion.effect.humanoid_ender_impregnation_1": "휴머노이드 엔더 임신의 물약",
+	"item.minecraft.potion.effect.humanoid_ender_impregnation_2": "휴머노이드 엔더 임신의 물약",
+	"item.minecraft.potion.effect.humanoid_ender_impregnation_3": "휴머노이드 엔더 임신의 물약",
+	"item.minecraft.potion.effect.humanoid_ender_impregnation_4": "휴머노이드 엔더 임신의 물약",
 	"item.minecraft.potion.effect.pregnancy_delay_4": "임신 지연의 물약",
 	"item.minecraft.potion.effect.pregnancy_delay_3": "임신 지연의 물약",
 	"item.minecraft.potion.effect.pregnancy_delay_2": "임신 지연의 물약",
 	"item.minecraft.potion.effect.pregnancy_delay_1": "임신 지연의 물약",
 	"item.minecraft.potion.effect.pregnancy_delay_0": "임신 지연의 물약",
-	"item.minecraft.potion.effect.baby_duplication_0": "아기 복제 물약",
-	"item.minecraft.potion.effect.baby_duplication_1": "아기 복제 물약",
-	"item.minecraft.potion.effect.baby_duplication_2": "아기 복제 물약",
-	"item.minecraft.potion.effect.baby_duplication_3": "아기 복제 물약",
-	"item.minecraft.potion.effect.baby_duplication_4": "아기 복제 물약",
+	"item.minecraft.potion.effect.baby_duplication_0": "아기 복제의 물약",
+	"item.minecraft.potion.effect.baby_duplication_1": "아기 복제의 물약",
+	"item.minecraft.potion.effect.baby_duplication_2": "아기 복제의 물약",
+	"item.minecraft.potion.effect.baby_duplication_3": "아기 복제의 물약",
+	"item.minecraft.potion.effect.baby_duplication_4": "아기 복제의 물약",
 	"item.minecraft.potion.effect.pregnancy_acceleration_0": "임신 가속화의 물약",
 	"item.minecraft.potion.effect.pregnancy_acceleration_1": "임신 가속화의 물약",
 	"item.minecraft.potion.effect.pregnancy_acceleration_2": "임신 가속화의 물약",
@@ -457,6 +457,7 @@
 	"item.minepreggo.zombie_life_substance": "좀비 생명 물질",
 	"item.minepreggo.creeper_life_substance": "크리퍼 생명 물질",
 	"item.minepreggo.ender_life_substance": "엔더 생명 물질",
+	"item.minepreggo.villager_life_substance": "주민 생명 물질",
 
 
 	"item.minepreggo.villager_brain": "주민의 뇌",
@@ -496,7 +497,7 @@
 	"item.minepreggo.chocolate_bar": "초콜릿 바",
 	"item.minepreggo.pickle": "피클",
 	"item.minepreggo.hot_chicken": "핫 치킨",
-	"item.minepreggo.lemon_drop": "레몬 캔디",
+	"item.minepreggo.lemon_drops": "레몬 캔디",
 	"item.minepreggo.chili_poppers": "고추",
 	"item.minepreggo.french_fries": "계란 후라이",
 	"item.minepreggo.candy_apple": "캔디 애플",
@@ -522,7 +523,7 @@
 	"chat.minepreggo.preggo_mob.armor.message.chestplate_does_not_fit.p7": "%s의 배는 이 갑옷을 입기엔 너무 무겁다...",
 	"chat.minepreggo.preggo_mob.armor.message.chestplate_does_not_fit.p8": "%s의 배는 갑옷의 경계 밖입니다...",
 
-	"chat.minepreggo.preggo_mob.armor.message.leggings_does_not_fit": "%s의 엉덩이는 이 갑옷을 입기엔 너무 커...",
+	"chat.minepreggo.preggo_mob.armor.message.leggings_does_not_fit.p3_to_p8": "%s의 엉덩이는 이 갑옷을 입기엔 너무 커...",
 	"chat.minepreggo.preggo_mob.armor.message.lactating": "%s의 젖 수유 가슴이 이 갑옷에 맞지 않습니다",
 
 	"chat.minepreggo.preggo_mob.birth.message.pre": "%s의 아기들이 나오고 싶어 해, 그녀는 일어설 수 없어!",
@@ -547,7 +548,7 @@
 	"chat.minepreggo.player.armor.message.chestplate_does_not_fit.p7": "그렇게 무거운 배는 이 갑옷을 감당할 수 없어!",
 	"chat.minepreggo.player.armor.message.chestplate_does_not_fit.p8": "이 갑옷이 이 배에 맞을 거라고 정말 생각해?",
 
-	"chat.minepreggo.player.armor.message.leggings_does_not_fit": "네 엉덩이랑 엉덩이는 이 갑옷에 맞기엔 너무 커",
+	"chat.minepreggo.player.armor.message.leggings_does_not_fit.p3_to_p8": "네 엉덩이랑 엉덩이는 이 갑옷에 맞기엔 너무 커",
 	"chat.minepreggo.player.armor.message.lactating": "네 젖 젖 젖은 가슴이 이 갑옷에 맞지 않아",
 
 	"chat.minepreggo.player.birth.message.pre": "네 아기들이 지금 나오고 싶어 해, 움직일 수 없어!",
@@ -560,23 +561,23 @@
 	"chat.minepreggo.player.miscarriage.message.start": "임신한 배 아래에서 많은 고통을 느껴, 이미 늦었어!",
 	"chat.minepreggo.player.miscarriage.message.warning": "임신한 배 아래에서 통증이 느껴진다면, 뭔가 이상하다...",
 
-	"chat.minepreggo.player.sex.message.tiring": "너무 피곤해서 재미없어...",
+	"chat.minepreggo.player.sex.message.tiring": "너무 피곤해서 즐겁지 않아...",
 
 	"chat.minepreggo.player.not_enough_fap.message": "당신은 '건조'합니다.",
 
-	"chat.minepreggo.player.sex.request_sent": "재미를 위해 %s에 요청을 보냈습니다",
+	"chat.minepreggo.player.sex.request_sent": "를 위해 %s에 요청을 보냈습니다",
 
-	"chat.minepreggo.player.sex.request_reject": "%s가 재미 요청을 거절했습니다",
+	"chat.minepreggo.player.sex.request_reject": "%s가 즐김 요청을 거절했습니다",
 
 
 	"chat.minepreggo.scientific_illager.no_pregnant_entities": "확인할 임신한 개체가 없습니다",
 
-	"chat.minepreggo.prenatal_checkup.message.warning": "이 산전 검진을 하려면 최소 임신 % 단계에 있어야 합니다.",
+	"chat.minepreggo.prenatal_checkup.message.warning": "이 산전 검진을 하려면 최소 임신 %s 단계에 있어야 합니다.",
 
 	"chat.minepreggo.sex.message.mobs": "너비 적대 몹들이 있습니다",
 	"chat.minepreggo.sex.message.sexual_appetite": "%s는 너와 즐거운 시간을 보낼 만큼 성욕이 충분하지 않다",
 	"chat.minepreggo.sex.message.distance": "%s는 너와 너무 멀리 떨어져 있어",
-	"chat.minepreggo.sex.message.enough_beds": "재미있게 놀 수 있는 침대가 있어야 해.",
+	"chat.minepreggo.sex.message.enough_beds": "즐겁게 놀 수 있는 침대가 있어야 해.",
 	"chat.minepreggo.sex.message.active_cinematic": "%s는 다른 시네마틱에 있습니다.",
 
 	"chat.minepreggo.preggo_mob.message.same_sex": "<%s> 네가 그 '그룹'에 속한 줄 몰랐는데, 네가 아니든 상관없어...",
@@ -622,8 +623,8 @@
 	"book.minepreggo.prenatal_checkup.paternity_test.template.page.default.name": "이름: %s\n\n",
 	"book.minepreggo.prenatal_checkup.paternity_test.template.page.default.result": "결과: %s",
 	"book.minepreggo.prenatal_checkup.paternity_test.template.page.default.result.positive": "그가 바로 아버지입니다!",
-	"book.minepreggo.prenatal_checkup.paternity_test.template.page.default.result.negative": "그는 아버지가 아니다!",
+	"book.minepreggo.prenatal_checkup.paternity_test.template.page.default.result.negative": "그는 아버지가 아다!",
 
-	"key.minepreggo.rub_belly": "임신한 배를 문지르세요",
+	"key.minepreggo.rub_belly": "임신한 배 문지르기",
 	"key.categories.minepreggo": "Minepreggo 키보드"
 }
