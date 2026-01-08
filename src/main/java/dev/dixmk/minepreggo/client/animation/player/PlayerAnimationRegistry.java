@@ -28,8 +28,6 @@ public class PlayerAnimationRegistry {
 
     private final Map<String, PlayerAnimation> animations = new HashMap<>();
 
-    private static final String RUBBING_BELLY_ANIM = "rubbing_belly_p";
-
     public void register(PlayerAnimation animation) {
         animations.put(animation.getName(), animation);
     }
@@ -38,15 +36,7 @@ public class PlayerAnimationRegistry {
     public PlayerAnimation getAnimation(String name) {
         return animations.get(name);
     }
-
-    public String getBellyRubbingAnimationName(PregnancyPhase phase) {
-        return RUBBING_BELLY_ANIM + phase.ordinal();
-    }
-
-    public boolean isBellyRubbingAnimation(String name) {
-        return name != null && name.startsWith(RUBBING_BELLY_ANIM);
-    }
-
+    
     public void init() {
 		birthAnim();
 		preBirth();
@@ -222,7 +212,10 @@ public class PlayerAnimationRegistry {
 	}
 	
 	private void rubbingBelly() {
-		PlayerAnimation rubbingBellyP0 = new PlayerAnimation(getBellyRubbingAnimationName(PregnancyPhase.P0), 240, true);
+		
+		var manager = CommonPlayerAnimationRegistry.getInstance();
+		
+		PlayerAnimation rubbingBellyP0 = new PlayerAnimation(manager.getBellyRubbingAnimationName(PregnancyPhase.P0), 240, true);
 		
 		rubbingBellyP0.addPartAnimation("right_arm", (part, continuousAnimationTick) -> {		
 			part.xRot = MathHelper.animateBetweenAnglesMth(-28.9360F, -31.2482F, continuousAnimationTick, 0.085F);
@@ -231,7 +224,7 @@ public class PlayerAnimationRegistry {
 		});
 		registerAndSync(rubbingBellyP0);
 		
-		PlayerAnimation rubbingBellyP1 = new PlayerAnimation(getBellyRubbingAnimationName(PregnancyPhase.P1), 240, true);
+		PlayerAnimation rubbingBellyP1 = new PlayerAnimation(manager.getBellyRubbingAnimationName(PregnancyPhase.P1), 240, true);
 		
 		rubbingBellyP1.addPartAnimation("right_arm", (part, continuousAnimationTick) -> {		
 			part.xRot = MathHelper.animateBetweenAnglesMth(-30.9360F, -33.2482F, continuousAnimationTick, 0.085F);
@@ -240,7 +233,7 @@ public class PlayerAnimationRegistry {
 		});
 		registerAndSync(rubbingBellyP1);
 		
-		PlayerAnimation rubbingBellyP2 = new PlayerAnimation(getBellyRubbingAnimationName(PregnancyPhase.P2), 240, true);
+		PlayerAnimation rubbingBellyP2 = new PlayerAnimation(manager.getBellyRubbingAnimationName(PregnancyPhase.P2), 240, true);
 		
 		rubbingBellyP2.addPartAnimation("right_arm", (part, continuousAnimationTick) -> {		
 			part.xRot = MathHelper.animateBetweenAnglesMth(-72.1763F, -76.0995F, continuousAnimationTick, 0.085F);
@@ -256,7 +249,7 @@ public class PlayerAnimationRegistry {
 		
 		registerAndSync(rubbingBellyP2);
 			
-		PlayerAnimation rubbingBellyP3 = new PlayerAnimation(getBellyRubbingAnimationName(PregnancyPhase.P3), 240, true);
+		PlayerAnimation rubbingBellyP3 = new PlayerAnimation(manager.getBellyRubbingAnimationName(PregnancyPhase.P3), 240, true);
 		
 		rubbingBellyP3.addPartAnimation("right_arm", (part, continuousAnimationTick) -> {		
 			part.xRot = MathHelper.animateBetweenAnglesMth(-39.6041F, -60.8900F, continuousAnimationTick, 0.085F);
@@ -272,7 +265,7 @@ public class PlayerAnimationRegistry {
 		
 		registerAndSync(rubbingBellyP3);	
 		
-		PlayerAnimation rubbingBellyP4 = new PlayerAnimation(getBellyRubbingAnimationName(PregnancyPhase.P4), 240, true);
+		PlayerAnimation rubbingBellyP4 = new PlayerAnimation(manager.getBellyRubbingAnimationName(PregnancyPhase.P4), 240, true);
 		
 		rubbingBellyP4.addPartAnimation("right_arm", (part, continuousAnimationTick) -> {		
 			part.xRot = MathHelper.animateBetweenAnglesMth(-39.6041F, -60.8900F, continuousAnimationTick, 0.085F);
@@ -288,7 +281,7 @@ public class PlayerAnimationRegistry {
 		
 		registerAndSync(rubbingBellyP4);	
 		
-		PlayerAnimation rubbingBellyP5 = new PlayerAnimation(getBellyRubbingAnimationName(PregnancyPhase.P5), 240, true);
+		PlayerAnimation rubbingBellyP5 = new PlayerAnimation(manager.getBellyRubbingAnimationName(PregnancyPhase.P5), 240, true);
 		
 		rubbingBellyP5.addPartAnimation("right_arm", (part, continuousAnimationTick) -> {		
 			part.xRot = MathHelper.animateBetweenAnglesMth(-40.1427F, -60.7642F, continuousAnimationTick, 0.085F);
@@ -305,7 +298,7 @@ public class PlayerAnimationRegistry {
 		registerAndSync(rubbingBellyP5);
 		
 		
-		PlayerAnimation rubbingBellyP6 = new PlayerAnimation(getBellyRubbingAnimationName(PregnancyPhase.P6), 240, true);
+		PlayerAnimation rubbingBellyP6 = new PlayerAnimation(manager.getBellyRubbingAnimationName(PregnancyPhase.P6), 240, true);
 		
 		rubbingBellyP6.addPartAnimation("right_arm", (part, continuousAnimationTick) -> {		
 			part.xRot = MathHelper.animateBetweenAnglesMth(-40.1427F, -60.7642F, continuousAnimationTick, 0.085F);
@@ -322,7 +315,7 @@ public class PlayerAnimationRegistry {
 		registerAndSync(rubbingBellyP6);
 		
 	
-		PlayerAnimation rubbingBellyP7 = new PlayerAnimation(getBellyRubbingAnimationName(PregnancyPhase.P7), 240, true);
+		PlayerAnimation rubbingBellyP7 = new PlayerAnimation(manager.getBellyRubbingAnimationName(PregnancyPhase.P7), 240, true);
 		
 		rubbingBellyP7.addPartAnimation("right_arm", (part, continuousAnimationTick) -> {		
 			part.xRot = MathHelper.animateBetweenAnglesMth(-40.4606F, -60.4489F, continuousAnimationTick, 0.085F);
@@ -339,7 +332,7 @@ public class PlayerAnimationRegistry {
 		registerAndSync(rubbingBellyP7);
 
 		
-		PlayerAnimation rubbingBellyP8 = new PlayerAnimation(getBellyRubbingAnimationName(PregnancyPhase.P8), 240, true);
+		PlayerAnimation rubbingBellyP8 = new PlayerAnimation(manager.getBellyRubbingAnimationName(PregnancyPhase.P8), 240, true);
 		
 		rubbingBellyP8.addPartAnimation("right_arm", (part, continuousAnimationTick) -> {		
 			part.xRot = MathHelper.animateBetweenAnglesMth(-40.4606F, -60.4489F, continuousAnimationTick, 0.085F);

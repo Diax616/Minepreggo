@@ -81,7 +81,7 @@ public abstract class AbstractCreeperGirlInventoryMenu<E extends AbstractTamable
 					if (creeperGirl instanceof IPregnancySystemHandler pregnancySystem) {
 						final var pregnancyPhase = pregnancySystem.getCurrentPregnancyStage();					
 						if (!PregnancySystemHelper.canUseLegging(armor, pregnancyPhase)) {
-							MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) creeperGirl.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.armor.message.leggings_does_not_fit.p3_to_p8", creeperGirl.getSimpleName()));
+							MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) creeperGirl.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.armor.message.leggings_does_not_fit", creeperGirl.getSimpleName()));
 							flag = false;
 						}			
 					}												

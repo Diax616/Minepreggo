@@ -38,8 +38,8 @@ public class PredefinedPregnantBodyP0Model extends AbstractPregnantBodyModel {
 		PartDefinition rightBoob = boobs.addOrReplaceChild("right_boob", CubeListBuilder.create(), PartPose.offset(-1.5F, 0.0F, 0.0F));
 		rightBoob.addOrReplaceChild("Boob_1_r1", CubeListBuilder.create().texOffs(14, 1).addBox(-2.0F, -0.2717F, -3.266F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.1F)), PartPose.offsetAndRotation(0.5F, 0.2F, 0.3F, 0.3491F, 0.1309F, 0.0436F));
 		PartDefinition leftBoob = boobs.addOrReplaceChild("left_boob", CubeListBuilder.create(), PartPose.offset(1.5F, 0.0F, 0.0F));
-		leftBoob.addOrReplaceChild("Boob_2_r1", CubeListBuilder.create().texOffs(2, 1).mirror().addBox(-0.9F, -0.2717F, -3.266F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.1F)).mirror(false), PartPose.offsetAndRotation(-0.5F, 0.2F, 0.3F, 0.3491F, -0.1309F, -0.0436F));
-		body.addOrReplaceChild("belly", CubeListBuilder.create().texOffs(2, 8).addBox(-3.0F, -0.5F, -0.95F, 6.0F, 5.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 7.0F, -1.5F));
+		leftBoob.addOrReplaceChild("Boob_2_r1", CubeListBuilder.create().texOffs(2, 1).mirror().addBox(-0.9F, -0.2717F, -3.266F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.1F)).mirror(false), PartPose.offsetAndRotation(-0.5F, 0.2F, 0.3F, 0.3491F, -0.1309F, -0.0436F));		
+		body.addOrReplaceChild("belly", CubeListBuilder.create().texOffs(2, 8).addBox(-3.0F, -0.5F, -0.85F, 6.0F, 5.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 7.0F, -1.5F));
 		return LayerDefinition.create(meshdefinition, 64, 32);
 	}
 }

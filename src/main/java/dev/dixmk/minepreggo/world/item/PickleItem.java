@@ -10,7 +10,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.pregnancy.Craving;
 import net.minecraft.world.food.FoodProperties;
 
-public class PickleItem extends Item implements IItemCraving {
+public class PickleItem extends Item implements ICravingItem {
 	public PickleItem() {
 		super(new Item.Properties().stacksTo(64).rarity(Rarity.COMMON).food((new FoodProperties.Builder()).nutrition(2).saturationMod(0.1f).build()));
 	}

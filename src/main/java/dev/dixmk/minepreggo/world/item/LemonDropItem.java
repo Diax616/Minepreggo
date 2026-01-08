@@ -8,8 +8,8 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 
-public class LemonDropsItem extends Item implements IItemCraving {
-	public LemonDropsItem() {
+public class LemonDropItem extends Item implements ICravingItem {
+	public LemonDropItem() {
 		super(new Item.Properties().stacksTo(64).rarity(Rarity.COMMON).food((new FoodProperties.Builder()).nutrition(2).saturationMod(0.1f).alwaysEat().build()));
 	}
 

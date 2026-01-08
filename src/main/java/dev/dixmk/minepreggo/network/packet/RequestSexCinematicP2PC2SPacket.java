@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.server.ServerCinematicManager;
+import dev.dixmk.minepreggo.server.ServerTaskQueueManager;
 import dev.dixmk.minepreggo.utils.ServerParticleUtil;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.core.particles.ParticleTypes;
@@ -53,8 +54,8 @@ public record RequestSexCinematicP2PC2SPacket(UUID targetPlayerUUID) {
                         
                         sendOverlayPacket(source, totalOverlayTicks, totalPauseTicks); 
                         sendOverlayPacket(target, totalOverlayTicks, totalPauseTicks);
-    					                    
-    					MinepreggoModPacketHandler.queueServerWork(totalOverlayTicks + totalPauseTicks, () -> {
+    					          
+                        ServerTaskQueueManager.getInstance().queueTask(totalOverlayTicks + totalPauseTicks, () -> {
     	                    if (ServerCinematicManager.getInstance().isInCinematic(source) || ServerCinematicManager.getInstance().isInCinematic(target)) {        		
     	                    		ServerCinematicManager.getInstance().end(source);	                   		
     	                            sendControlPacket(source, false);

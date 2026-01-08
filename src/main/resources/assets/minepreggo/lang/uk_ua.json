@@ -492,7 +492,7 @@
 	"item.minepreggo.chocolate_bar": "Шоколадний батончик",
 	"item.minepreggo.pickle": "Солений огірок",
 	"item.minepreggo.hot_chicken": "Гаряча курка",
-	"item.minepreggo.lemon_drops": "Лимонні краплі",
+	"item.minepreggo.lemon_drop": "Лимонні краплі",
 	"item.minepreggo.chili_poppers": "Чилі попперс",
 	"item.minepreggo.french_fries": "Картопля фрі",
 	"item.minepreggo.candy_apple": "Цукеркове яблуко",
@@ -518,7 +518,7 @@
 	"chat.minepreggo.preggo_mob.armor.message.chestplate_does_not_fit.p7": "Живіт у %s занадто важкий, щоб носити цю броню...",
 	"chat.minepreggo.preggo_mob.armor.message.chestplate_does_not_fit.p8": "Живіт у %s виходить за межі...",
 
-	"chat.minepreggo.preggo_mob.armor.message.leggings_does_not_fit.p3_to_p8": "Стегна %s занадто великі, щоб носити цей обладунок...",
+	"chat.minepreggo.preggo_mob.armor.message.leggings_does_not_fit": "Стегна %s занадто великі, щоб носити цей обладунок...",
 	"chat.minepreggo.preggo_mob.armor.message.lactating": "Груди %s, що годують грудьми, не поміщаються в цей обладунок",
 
 	"chat.minepreggo.preggo_mob.birth.message.pre": "Діти %s хочуть вийти, вона не може встати!",
@@ -543,7 +543,7 @@
 	"chat.minepreggo.player.armor.message.chestplate_does_not_fit.p7": "Такий важкий живіт не поміститься в цю броню!",
 	"chat.minepreggo.player.armor.message.chestplate_does_not_fit.p8": "Ви справді думаєте, що ця броня поміститься в цей живіт?",
 
-	"chat.minepreggo.player.armor.message.leggings_does_not_fit.p3_to_p8": "Ваші сідниці та стегна занадто великі, щоб поміститися в цю броню",
+	"chat.minepreggo.player.armor.message.leggings_does_not_fit": "Ваші сідниці та стегна занадто великі, щоб поміститися в цю броню",
 	"chat.minepreggo.player.armor.message.lactating": "Ваші груди, що годують грудьми, не поміщаються в цю броню",
 
 	"chat.minepreggo.player.birth.message.pre": "Ваші діти Хочу вийти зараз, ти не можеш рухатися!",

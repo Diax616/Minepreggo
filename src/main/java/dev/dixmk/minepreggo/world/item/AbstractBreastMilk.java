@@ -42,7 +42,6 @@ public abstract class AbstractBreastMilk extends Item {
 
 	@Override
 	public ItemStack finishUsingItem(ItemStack itemstack, Level level, LivingEntity entity) {
-		super.finishUsingItem(itemstack, level, entity);
 		if (!level.isClientSide) {
 			if (entity instanceof Player player && player.getCapability(MinepreggoCapabilities.PLAYER_DATA).isPresent()) {	
 				player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> {			
@@ -63,18 +62,16 @@ public abstract class AbstractBreastMilk extends Item {
 				});		
 			}
 			else {
-				entity.curePotionEffects(itemstack);
+				entity.getActiveEffects().stream().toList().forEach(effectInstance -> 
+					entity.removeEffect(effectInstance.getEffect())
+				);
 			}
 		}	
 		
-		ItemStack retval = new ItemStack(Items.GLASS_BOTTLE);
-		if (itemstack.isEmpty()) {
-			return retval;
-		} else {
-			if (entity instanceof Player player && !player.getAbilities().instabuild && !player.getInventory().add(retval)) {
-				player.drop(retval, false);
-			}
-			return itemstack;
+		if (entity instanceof Player player && !player.getAbilities().instabuild) {
+			itemstack.shrink(1);
 		}
+
+		return itemstack.isEmpty() ? new ItemStack(Items.GLASS_BOTTLE) : itemstack;		
 	}
 }

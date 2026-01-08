@@ -10,8 +10,11 @@ import java.util.Map;
 //If server/common code needs animation metadata, use AnimationInfo instead.
 
 public class CommonPlayerAnimationRegistry {
+	
     private final Map<String, AnimationInfo> animations = new HashMap<>();
 
+    private static final String RUBBING_BELLY_ANIM = "rubbing_belly_p";    
+    
     private CommonPlayerAnimationRegistry() {}
 
     private static class Holder {
@@ -35,10 +38,14 @@ public class CommonPlayerAnimationRegistry {
     }
 
     public String getBellyRubbingAnimationName(PregnancyPhase phase) {
-        return "rubbing_belly_p" + phase.ordinal();
+        return RUBBING_BELLY_ANIM + phase.ordinal();
     }
 
     public boolean isBellyRubbingAnimation(String name) {
-        return name != null && name.startsWith("rubbing_belly_p");
+        return name != null && name.startsWith(RUBBING_BELLY_ANIM);
+    }
+
+    public boolean isLaborAnimation(String name) {
+    	return name != null && (name.equals("birth") || name.equals("miscarriage") || name.equals("water_breaking") || name.equals("prebirth"));
     }
 }

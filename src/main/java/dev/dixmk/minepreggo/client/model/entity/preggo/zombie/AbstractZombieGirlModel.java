@@ -87,8 +87,8 @@ public abstract class AbstractZombieGirlModel<E extends AbstractZombieGirl> exte
 		PartDefinition rightBoob = boobs.addOrReplaceChild("right_boob", CubeListBuilder.create(), PartPose.offset(-2.0F, 0.0F, 0.0F));
 		rightBoob.addOrReplaceChild("rightBoobCube_r1", CubeListBuilder.create().texOffs(18, 66).addBox(-2.0F, -0.2717F, -3.266F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.1F)), PartPose.offsetAndRotation(1.0F, 0.2F, 0.1F, 0.3491F, 0.1309F, 0.0436F));
 		PartDefinition leftBoob = boobs.addOrReplaceChild("left_boob", CubeListBuilder.create(), PartPose.offset(2.0F, 0.0F, 0.0F));
-		leftBoob.addOrReplaceChild("letfBoobCube_r1", CubeListBuilder.create().texOffs(18, 66).mirror().addBox(-0.9F, -0.2717F, -3.266F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.1F)).mirror(false), PartPose.offsetAndRotation(-1.0F, 0.2F, 0.1F, 0.3491F, -0.1309F, -0.0436F));
-		body.addOrReplaceChild("belly", CubeListBuilder.create().texOffs(20, 26).addBox(-3.0F, -0.25F, -1.15F, 6.0F, 5.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 6.75F, -1.5F));
+		leftBoob.addOrReplaceChild("letfBoobCube_r1", CubeListBuilder.create().texOffs(18, 66).mirror().addBox(-0.9F, -0.2717F, -3.266F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.1F)).mirror(false), PartPose.offsetAndRotation(-1.0F, 0.2F, 0.1F, 0.3491F, -0.1309F, -0.0436F));		
+		body.addOrReplaceChild("belly", CubeListBuilder.create().texOffs(20, 25).addBox(-3.0F, -0.25F, -0.85F, 6.0F, 5.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 6.75F, -1.5F));
 		return LayerDefinition.create(meshdefinition, 64, 96);
 	}
 	
@@ -295,7 +295,7 @@ public abstract class AbstractZombieGirlModel<E extends AbstractZombieGirl> exte
 	
     // Inner armor (leggings layer)
     public static LayerDefinition createInnerLayer() {
-        MeshDefinition mesh = HumanoidModel.createMesh(new CubeDeformation(0.35F), 0.0F);
+        MeshDefinition mesh = HumanoidModel.createMesh(new CubeDeformation(0.51F), 0.0F);
         PartDefinition partdefinition = mesh.getRoot();
         PartDefinition body = partdefinition.getChild("body");
         body.addOrReplaceChild("boobs", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));

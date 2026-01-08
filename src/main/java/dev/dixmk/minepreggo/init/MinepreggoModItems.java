@@ -41,7 +41,7 @@ import dev.dixmk.minepreggo.world.item.HotSauceItem;
 import dev.dixmk.minepreggo.world.item.HumanBreastMilkBottleItem;
 import dev.dixmk.minepreggo.world.item.CreeperLifeSubstanceItem;
 import dev.dixmk.minepreggo.world.item.KneeBraceItem;
-import dev.dixmk.minepreggo.world.item.LemonDropsItem;
+import dev.dixmk.minepreggo.world.item.LemonDropItem;
 import dev.dixmk.minepreggo.world.item.LemonIceCreamItem;
 import dev.dixmk.minepreggo.world.item.LemonIcePopsiclesItem;
 import dev.dixmk.minepreggo.world.item.LemonItem;
@@ -122,7 +122,7 @@ public class MinepreggoModItems {
 	public static final RegistryObject<Item> HOT_SAUCE = REGISTRY.register("hot_sauce", HotSauceItem::new);
 	public static final RegistryObject<Item> PICKLE = REGISTRY.register("pickle", PickleItem::new);
 	public static final RegistryObject<Item> SALTY_WATER_BOTTLE = REGISTRY.register("salty_water_bottle", SaltyWaterBottleItem::new);
-	public static final RegistryObject<Item> LEMON_DROPS = REGISTRY.register("lemon_drops", LemonDropsItem::new);
+	public static final RegistryObject<Item> LEMON_DROP = REGISTRY.register("lemon_drop", LemonDropItem::new);
 	public static final RegistryObject<Item> CHILI_POPPERS = REGISTRY.register("chili_poppers", ChiliPoppersItem::new);
 	public static final RegistryObject<Item> FRENCH_FRIES = REGISTRY.register("french_fries", FrenchFriesItem::new);
 	public static final RegistryObject<Item> CANDY_APPLE = REGISTRY.register("candy_apple", CandyAppleItem::new);

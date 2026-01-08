@@ -100,14 +100,10 @@ minecraft {
         client {
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
             property 'forge.enabledGameTestNamespaces', mod_id
-            //property 'mixin.env.remapRefMap', 'true'
-            //property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
         }
 
         server {
             property 'forge.enabledGameTestNamespaces', mod_id
-            //property 'mixin.env.remapRefMap', 'true'
-            //property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
             args '--nogui'
         }
 
@@ -141,17 +137,6 @@ repositories {
     // flatDir {
     //     dir 'libs'
     // }
-    
-    /*
-    maven {
-        name = 'GeckoLib'
-        url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
-        content {
-                includeGroupByRegex("software\\.bernie.*")
-                includeGroup("com.eliotlash.mclib")
-        }    
-	}
-	*/
 }
 
 dependencies {
@@ -176,9 +161,6 @@ dependencies {
     // For more info:
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
-
-	//implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${minecraft_version}:${geckolib_version}")
-	//implementation("com.eliotlash.mclib:mclib:20")
 	
 	implementation "org.spongepowered:mixin:0.8.5"
 	
@@ -196,7 +178,9 @@ tasks.named('processResources', ProcessResources).configure {
             loader_version_range: loader_version_range,
             mod_id: mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
             mod_authors: mod_authors, mod_description: mod_description,
-            mod_russian_translation_author: mod_russian_translation_author, mod_ukrainian_translation_author: mod_ukrainian_translation_author,
+            mod_russian_translation_author: mod_russian_translation_author,
+            mod_ukrainian_translation_author: mod_ukrainian_translation_author,
+            mod_south_korean_translation_author: mod_south_korean_translation_author
     ]
     inputs.properties replaceProperties
 

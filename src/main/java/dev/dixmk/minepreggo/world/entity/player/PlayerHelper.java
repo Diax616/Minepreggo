@@ -109,7 +109,73 @@ public class PlayerHelper {
 			PregnancyPhase.P7, MinepreggoModMobEffects.PREGNANCY_P7.get(),
 			PregnancyPhase.P8, MinepreggoModMobEffects.PREGNANCY_P8.get()
 			);
+
+	private static final String FEMALE_PLAYER_ID = "femalePlayerUUID";
+	private static final String PREGNANT_FEMALE_PLAYER_ID = "pregnantFemalePlayerUUID";
 	
+	public static boolean containsAnyFemalePlayerIdTag(ItemStack stack) {
+		if (stack.isEmpty()) {
+			return false;
+		}
+		var tag = stack.getTag();
+		return tag != null && (tag.hasUUID(FEMALE_PLAYER_ID) || tag.hasUUID(PREGNANT_FEMALE_PLAYER_ID));
+	}
+	
+	@Nullable
+	public static UUID getFemalePlayerIdTag(ItemStack stack) {
+		if (stack.isEmpty()) {
+			return null;
+		}
+		var tag = stack.getTag();
+		return tag != null && tag.hasUUID(FEMALE_PLAYER_ID) ? tag.getUUID(FEMALE_PLAYER_ID) : null;
+	}
+
+	@Nullable
+	public static UUID getPregnantFemalePlayerIdTag(ItemStack stack) {
+		if (stack.isEmpty()) {
+			return null;
+		}
+		var tag = stack.getTag();
+		return tag != null && tag.hasUUID(PREGNANT_FEMALE_PLAYER_ID) ? tag.getUUID(PREGNANT_FEMALE_PLAYER_ID) : null;
+	}	
+	
+	public static boolean removeAnyFemalePlayerIdTag(ItemStack stack) {
+		if (stack.isEmpty()) {
+			return false;
+		}
+		var tag = stack.getTag();
+		if (tag != null) {
+			boolean removed = false;
+			if (tag.hasUUID(FEMALE_PLAYER_ID)) {
+				tag.remove(FEMALE_PLAYER_ID);
+				removed = true;
+			}
+			if (tag.hasUUID(PREGNANT_FEMALE_PLAYER_ID)) {
+				tag.remove(PREGNANT_FEMALE_PLAYER_ID);
+				removed = true;
+			}
+			return removed;
+		}
+		
+		return false;
+	}
+	
+	public static void addFemalePlayerIdTag(ItemStack stack, UUID femalePlayerId) {
+		if (stack.isEmpty()) {
+			return;
+		}
+		var tag = stack.getOrCreateTag();
+		tag.putUUID(FEMALE_PLAYER_ID, femalePlayerId);
+	}
+	
+	public static void addPregnantFemalePlayerIdTag(ItemStack stack, UUID pregnantFemalePlayerId) {
+		if (stack.isEmpty()) {
+			return;
+		}
+		var tag = stack.getOrCreateTag();
+		tag.putUUID(PREGNANT_FEMALE_PLAYER_ID, pregnantFemalePlayerId);
+	}
+
 	public static int maxJumps(PregnancyPhase phase) {
 		return MAX_JUMPS.getInt(phase.compareTo(PregnancyPhase.P3) <= -1 ? PregnancyPhase.P3 : phase);
 	}

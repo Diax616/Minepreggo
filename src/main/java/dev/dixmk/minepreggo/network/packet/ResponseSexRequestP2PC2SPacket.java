@@ -7,6 +7,7 @@ import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.server.ServerCinematicManager;
+import dev.dixmk.minepreggo.server.ServerTaskQueueManager;
 import dev.dixmk.minepreggo.utils.ServerParticleUtil;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.pregnancy.Gender;
@@ -92,8 +93,10 @@ public record ResponseSexRequestP2PC2SPacket(int sourcePlayerId, int targetPlaye
 			);
 		};
 		
-		MinepreggoModPacketHandler.queueServerWork(20, task);		
-		MinepreggoModPacketHandler.queueServerWork(40, task);
+		var manager = ServerTaskQueueManager.getInstance();
+			
+		manager.queueTask(20, task);		
+		manager.queueTask(40, task);
 		
 		ServerCinematicManager.getInstance().start(target, source, task, end);
 	
@@ -118,7 +121,7 @@ public record ResponseSexRequestP2PC2SPacket(int sourcePlayerId, int targetPlaye
     			new RenderSexOverlayS2CPacket(overlayTicks, overlayPauseTicks)
     		); 
         
-		MinepreggoModPacketHandler.queueServerWork(overlayTicks * 2 + overlayPauseTicks, () -> {
+        manager.queueTask(overlayTicks * 2 + overlayPauseTicks, () -> {
 			ServerCinematicManager.getInstance().end(source);
 			ServerCinematicManager.getInstance().end(target);
 			

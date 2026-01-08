@@ -3,6 +3,7 @@ package dev.dixmk.minepreggo.client.model.armor;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
@@ -20,8 +21,8 @@ public class ArmorModelHelper {
 	
 	private static final Map<String, HumanoidModel<LivingEntity>> MODEL_CACHE = new HashMap<>();
 	
-	private static HumanoidModel<LivingEntity> getOrCreateModel(String key, ModelSupplier supplier) {
-		return MODEL_CACHE.computeIfAbsent(key, k -> supplier.create());
+	private static HumanoidModel<LivingEntity> getOrCreateModel(String key, Supplier<HumanoidModel<LivingEntity>> supplier) {
+		return MODEL_CACHE.computeIfAbsent(key, k -> supplier.get());
 	}
 	
 	public static HumanoidModel<LivingEntity> createHumanoidKneeBraceArmorModel (LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {	

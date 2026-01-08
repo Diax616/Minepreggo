@@ -3,11 +3,11 @@ package dev.dixmk.minepreggo.client.event;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.client.animation.player.PlayerAnimationManager;
-import dev.dixmk.minepreggo.client.animation.player.PlayerAnimationRegistry;
 import dev.dixmk.minepreggo.client.animation.player.PlayerAnimationManager.PlayerAnimationCache;
 import dev.dixmk.minepreggo.client.jiggle.JigglePhysicsManager;
 import dev.dixmk.minepreggo.client.renderer.entity.layer.player.ClientPlayerHelper;
 import dev.dixmk.minepreggo.client.screens.effect.SexOverlayManager;
+import dev.dixmk.minepreggo.common.animation.CommonPlayerAnimationRegistry;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.network.packet.UpdateBellyRubbingStateC2SPacket;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
@@ -107,7 +107,7 @@ public class ClientEventHandler {
     }
     
     private static void evaluateBellyRubbingLogic(Player player, PlayerAnimationCache cache) {
-    	if (PlayerAnimationRegistry.getInstance().isBellyRubbingAnimation(cache.getCurrentAnimationName())) {
+    	if (CommonPlayerAnimationRegistry.getInstance().isBellyRubbingAnimation(cache.getCurrentAnimationName())) {
     		player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
     			cap.getFemaleData().ifPresent(femaleData -> {
     				if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {

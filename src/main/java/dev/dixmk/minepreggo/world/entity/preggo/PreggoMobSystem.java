@@ -9,6 +9,8 @@ import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.utils.ServerParticleUtil;
 import dev.dixmk.minepreggo.network.packet.SexCinematicControlP2MS2CPacket;
 import dev.dixmk.minepreggo.server.ServerCinematicManager;
+import dev.dixmk.minepreggo.world.item.AbstractBreastMilk;
+import dev.dixmk.minepreggo.world.item.ItemHelper;
 import dev.dixmk.minepreggo.world.pregnancy.AbstractBreedableEntity;
 import dev.dixmk.minepreggo.world.pregnancy.IBreedable;
 import net.minecraft.core.particles.ParticleOptions;
@@ -20,6 +22,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionUtils;
@@ -164,6 +167,12 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> {
 			return InteractionResult.sidedSuccess(level.isClientSide);
 		}
 		
+		result = evaluateMilk(level, source);
+		
+		if (result != null) {
+			return InteractionResult.sidedSuccess(level.isClientSide);
+		}
+		
 		return InteractionResult.PASS;
 	}
 	
@@ -172,7 +181,8 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> {
 				&& !preggoMob.isAggressive()
 				&& !preggoMob.isSavage()
 				&& !preggoMob.isFood(source.getMainHandItem())
-				&& !source.getMainHandItem().is(Items.POTION);
+				&& !source.getMainHandItem().is(Items.POTION)
+				&& !ItemHelper.isMilk(source.getMainHandItem());
 	}
 
 	@Nullable
@@ -234,8 +244,8 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> {
                         preggoMob.addEffect(new MobEffectInstance(effect));
                     }
                 }
-            	ItemHandlerHelper.giveItemToPlayer(source, new ItemStack(Items.GLASS_BOTTLE));
-                heldStack.shrink(1);          
+                heldStack.shrink(1);
+            	ItemHandlerHelper.giveItemToPlayer(source, new ItemStack(Items.GLASS_BOTTLE));                         
         	}                         
             return Result.SUCCESS;
         }
@@ -243,6 +253,32 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> {
 	    return null;
 	}
 
+	protected @Nullable Result evaluateMilk(Level level, Player source) {
+	    ItemStack heldStack = source.getMainHandItem();
+	    
+	    if (!ItemHelper.isMilk(heldStack)) {
+	    	return null;
+	    }
+	    
+        preggoMob.playSound(SoundEvents.GENERIC_DRINK, 0.8F, 0.8F + preggoMob.getRandom().nextFloat() * 0.3F);
+
+    	if (!level.isClientSide) {   
+    		Item temp = heldStack.getItem();
+    		heldStack.finishUsingItem(level, preggoMob);
+    		heldStack.shrink(1);
+    		if (temp instanceof AbstractBreastMilk) {
+    			ItemHandlerHelper.giveItemToPlayer(source, new ItemStack(Items.GLASS_BOTTLE));	
+    		}
+    		else if (temp == Items.MILK_BUCKET) {
+    			ItemHandlerHelper.giveItemToPlayer(source, new ItemStack(Items.BUCKET));	
+    		}
+    	}
+
+    	return Result.SUCCESS;
+	}
+	
+	
+	
 	// Cinematic START
     public void setCinematicOwner(ServerPlayer player) { 
     	this.cinematicOwner = player;

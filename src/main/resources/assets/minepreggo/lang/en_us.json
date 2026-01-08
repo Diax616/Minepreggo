@@ -498,7 +498,7 @@
 	"item.minepreggo.chocolate_bar": "Chocolate Bar",
 	"item.minepreggo.pickle": "Pickle",
 	"item.minepreggo.hot_chicken": "Hot Chicken",
-	"item.minepreggo.lemon_drops": "Lemon Drops",
+	"item.minepreggo.lemon_drop": "Lemon Drop",
 	"item.minepreggo.chili_poppers": "Chili Poppers",
 	"item.minepreggo.french_fries": "French Fries",
 	"item.minepreggo.candy_apple": "Candy Apple",	
@@ -524,7 +524,7 @@
 	"chat.minepreggo.preggo_mob.armor.message.chestplate_does_not_fit.p7": "%s's belly is too heavy to wear this armor...",
 	"chat.minepreggo.preggo_mob.armor.message.chestplate_does_not_fit.p8": "%s's belly is out of bounds...",
 	
-	"chat.minepreggo.preggo_mob.armor.message.leggings_does_not_fit.p3_to_p8": "%s's hips are too big to wear this armor...",
+	"chat.minepreggo.preggo_mob.armor.message.leggings_does_not_fit": "%s's hips are too big to wear this armor...",
 	"chat.minepreggo.preggo_mob.armor.message.lactating": "%s's lactating boobs don't fit in this armor",
 	
 	"chat.minepreggo.preggo_mob.birth.message.pre": "%s's babies wanna come out, she can't stand up!",
@@ -550,7 +550,7 @@
 	"chat.minepreggo.player.armor.message.chestplate_does_not_fit.p7": "A belly that heavy couldn't fit this armor!",
 	"chat.minepreggo.player.armor.message.chestplate_does_not_fit.p8": "Do you really think this armor could fit this belly?",
 	
-	"chat.minepreggo.player.armor.message.leggings_does_not_fit.p3_to_p8": "Your butt and hips are too big to fit this armor",
+	"chat.minepreggo.player.armor.message.leggings_does_not_fit": "Your butt and hips are too big to fit this armor",
 	"chat.minepreggo.player.armor.message.lactating": "Your lactating boobs don't fit in this armor",
 
 	"chat.minepreggo.player.birth.message.pre": "Your babies wanna come out now, You can't move!",

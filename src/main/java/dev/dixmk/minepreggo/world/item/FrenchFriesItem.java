@@ -8,7 +8,7 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 
-public class FrenchFriesItem extends Item implements IItemCraving {
+public class FrenchFriesItem extends Item implements ICravingItem {
 	public FrenchFriesItem() {
 		super(new Item.Properties().stacksTo(64).rarity(Rarity.COMMON).food((new FoodProperties.Builder()).nutrition(4).saturationMod(0.1f).alwaysEat().build()));
 	}

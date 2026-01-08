@@ -110,7 +110,7 @@ public abstract class KneeBraceItem extends ArmorItem {
 
 		@Override
 		public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
-			return "minepreggo:textures/models/armor/golden_knee_brace_layer_2.png";
+			return "minepreggo:textures/models/armor/gold_knee_brace_layer_2.png";
 		}
 	}
 	

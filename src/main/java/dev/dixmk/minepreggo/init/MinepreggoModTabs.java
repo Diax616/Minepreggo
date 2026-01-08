@@ -31,7 +31,7 @@ public class MinepreggoModTabs {
                 output.accept(MinepreggoModItems.SALTY_WATER_BOTTLE.get());
                 output.accept(MinepreggoModItems.HOT_CHICKEN.get());
                 output.accept(MinepreggoModItems.HOT_SAUCE.get());
-                output.accept(MinepreggoModItems.LEMON_DROPS.get());
+                output.accept(MinepreggoModItems.LEMON_DROP.get());
                 output.accept(MinepreggoModItems.CHILI_POPPERS.get());
                 output.accept(MinepreggoModItems.FRENCH_FRIES.get());
                 output.accept(MinepreggoModItems.CANDY_APPLE.get());

@@ -10,7 +10,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.pregnancy.Craving;
 import net.minecraft.world.food.FoodProperties;
 
-public class HotChickenItem extends Item implements IItemCraving {
+public class HotChickenItem extends Item implements ICravingItem {
 	public HotChickenItem() {
 		super(new Item.Properties().stacksTo(64).rarity(Rarity.COMMON).food((new FoodProperties.Builder()).nutrition(8).saturationMod(0.4f).meat().build()));
 	}

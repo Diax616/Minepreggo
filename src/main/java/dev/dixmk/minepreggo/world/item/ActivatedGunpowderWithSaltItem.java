@@ -5,7 +5,7 @@ import javax.annotation.Nonnegative;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.pregnancy.Craving;
 
-public class ActivatedGunpowderWithSaltItem extends ActivatedGunpowderItem implements IItemCraving {
+public class ActivatedGunpowderWithSaltItem extends ActivatedGunpowderItem implements ICravingItem {
 	public ActivatedGunpowderWithSaltItem() {
 		super();
 	}

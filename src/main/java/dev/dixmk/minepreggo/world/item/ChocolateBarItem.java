@@ -10,7 +10,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.pregnancy.Craving;
 import net.minecraft.world.food.FoodProperties;
 
-public class ChocolateBarItem extends Item implements IItemCraving {
+public class ChocolateBarItem extends Item implements ICravingItem {
 	public ChocolateBarItem() {
 		super(new Item.Properties().stacksTo(64).rarity(Rarity.COMMON).food((new FoodProperties.Builder()).nutrition(4).saturationMod(0.2f).build()));
 	}

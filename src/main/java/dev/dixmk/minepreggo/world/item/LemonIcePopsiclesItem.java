@@ -15,7 +15,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.pregnancy.Craving;
 import net.minecraft.world.entity.LivingEntity;
 
-public class LemonIcePopsiclesItem extends Item implements IItemCraving {
+public class LemonIcePopsiclesItem extends Item implements ICravingItem {
 	public LemonIcePopsiclesItem() {
 		super(new Item.Properties().stacksTo(64).rarity(Rarity.COMMON).food((new FoodProperties.Builder()).nutrition(2).saturationMod(0.1f).alwaysEat().build()));
 	}

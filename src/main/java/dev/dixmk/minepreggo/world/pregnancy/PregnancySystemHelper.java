@@ -14,7 +14,6 @@ import java.util.stream.StreamSupport;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnegative;
-import javax.annotation.Nullable;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -231,7 +230,7 @@ public class PregnancySystemHelper {
 			Species.HUMAN,	ImmutableMap.of(
 					Craving.SALTY, List.of(MinepreggoModItems.PICKLE.get(), MinepreggoModItems.FRENCH_FRIES.get()), 
 					Craving.SWEET, List.of(MinepreggoModItems.CHOCOLATE_BAR.get(), MinepreggoModItems.CANDY_APPLE.get()), 
-					Craving.SOUR, List.of(MinepreggoModItems.LEMON_ICE_POPSICLES.get(), MinepreggoModItems.LEMON_ICE_CREAM.get(), MinepreggoModItems.LEMON_DROPS.get()),
+					Craving.SOUR, List.of(MinepreggoModItems.LEMON_ICE_POPSICLES.get(), MinepreggoModItems.LEMON_ICE_CREAM.get(), MinepreggoModItems.LEMON_DROP.get()),
 					Craving.SPICY, List.of(MinepreggoModItems.HOT_CHICKEN.get(), MinepreggoModItems.CHILI_POPPERS.get()))	
 	);
 	
@@ -488,17 +487,16 @@ public class PregnancySystemHelper {
 		return armor instanceof IMaternityArmor maternityArmor && pregnancyPhase.compareTo(maternityArmor.getMinPregnancyPhaseAllowed()) <= 0;
 	}
 
-	public static boolean canUseLegging(Item armor, @Nullable PregnancyPhase pregnancyPhase) {	
+	public static boolean canUseLegging(Item armor, PregnancyPhase pregnancyPhase) {	
 		if (!ItemHelper.isLegging(armor)) {
 			return false;
 		}		
-		if (pregnancyPhase == null) {
+		else if (armor instanceof KneeBraceItem) {
 			return true;
 		}		
-		return armor instanceof KneeBraceItem;
+
+		return pregnancyPhase == PregnancyPhase.P0;
 	}
-	
-	
 	
 	public static Craving getRandomCraving(RandomSource randomSource) {
 		// Generate a random value between 0.0 and 1.0

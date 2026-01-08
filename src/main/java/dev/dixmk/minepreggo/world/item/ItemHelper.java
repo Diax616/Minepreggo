@@ -4,6 +4,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public class ItemHelper {
 
@@ -44,5 +45,14 @@ public class ItemHelper {
 	
 	public static boolean isChest(Item item) {
 		return item instanceof ArmorItem armorItem && armorItem.getEquipmentSlot() == EquipmentSlot.CHEST;
+	}
+	
+	public static boolean isMilk(ItemStack item) {
+		if (item == null) return false;	
+		return isMilk(item.getItem());
+	}
+	
+	public static boolean isMilk(Item item) {
+    	return item == Items.MILK_BUCKET || item instanceof AbstractBreastMilk;
 	}
 }

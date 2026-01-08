@@ -13,7 +13,7 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem.Result;
-import dev.dixmk.minepreggo.world.item.IItemCraving;
+import dev.dixmk.minepreggo.world.item.ICravingItem;
 import dev.dixmk.minepreggo.world.pregnancy.AbstractPregnancySystem;
 import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancyEffectsHandler;
@@ -276,7 +276,7 @@ public abstract class PreggoMobPregnancySystemP1<
 	    
 	    if (currentCraving > PregnancySystemHelper.DESACTIVATE_CRAVING_SYMPTOM && pregnantEntity.isFood(mainHandItem)) {    	
 	    	
-	    	if (!pregnantEntity.isValidCraving(mainHandItem.getItem()) || !(mainHandItem.getItem() instanceof IItemCraving)) {
+	    	if (!pregnantEntity.isValidCraving(mainHandItem.getItem()) || !(mainHandItem.getItem() instanceof ICravingItem)) {
 	    		return Result.ANGRY;
 	    	}
 	    	    	
@@ -288,7 +288,7 @@ public abstract class PreggoMobPregnancySystemP1<
 	            	source.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
 	            }        
 	            source.getInventory().setChanged();    		  		
-	    		pregnantEntity.setCraving(currentCraving - ((IItemCraving)mainHandItem.getItem()).getGratification());    
+	    		pregnantEntity.setCraving(currentCraving - ((ICravingItem)mainHandItem.getItem()).getGratification());    
 	    	}
             
             return Result.SUCCESS; 

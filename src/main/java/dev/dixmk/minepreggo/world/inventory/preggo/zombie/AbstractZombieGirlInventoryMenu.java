@@ -80,7 +80,7 @@ public abstract class AbstractZombieGirlInventoryMenu<E extends AbstractTamableZ
 					if (zombieGirl instanceof IPregnancySystemHandler pregnancySystem) {
 						final var pregnancyPhase = pregnancySystem.getCurrentPregnancyStage();					
 						if (!PregnancySystemHelper.canUseLegging(armor, pregnancyPhase)) {
-							MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) zombieGirl.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.armor.message.leggings_does_not_fit.p3_to_p8", zombieGirl.getSimpleName()));
+							MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) zombieGirl.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.armor.message.leggings_does_not_fit", zombieGirl.getSimpleName()));
 			                return false;
 						}			
 					}												

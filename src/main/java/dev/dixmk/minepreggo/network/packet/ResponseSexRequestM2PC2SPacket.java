@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.server.ServerCinematicManager;
+import dev.dixmk.minepreggo.server.ServerTaskQueueManager;
 import dev.dixmk.minepreggo.utils.ServerParticleUtil;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
@@ -70,9 +71,12 @@ public record ResponseSexRequestM2PC2SPacket(int preggoMobId, int playerId, bool
 	}
 	
 	private static<E extends PreggoMob & ITamablePreggoMob<?> & IPregnancySystemHandler & IPregnancyEffectsHandler> void accept(ServerPlayer target, E source) {
-		MinepreggoModPacketHandler.queueServerWork(20, () -> ServerParticleUtil.spawnRandomlyFromServer(target, ParticleTypes.HEART));
-		MinepreggoModPacketHandler.queueServerWork(40, () -> ServerParticleUtil.spawnRandomlyFromServer(target, ParticleTypes.HEART));
-		MinepreggoModPacketHandler.queueServerWork(60, () -> ServerParticleUtil.spawnRandomlyFromServer(target, ParticleTypes.HEART));			
+		
+		var manager =  ServerTaskQueueManager.getInstance();
+		
+		manager.queueTask(20, () -> ServerParticleUtil.spawnRandomlyFromServer(target, ParticleTypes.HEART));
+		manager.queueTask(40, () -> ServerParticleUtil.spawnRandomlyFromServer(target, ParticleTypes.HEART));
+		manager.queueTask(60, () -> ServerParticleUtil.spawnRandomlyFromServer(target, ParticleTypes.HEART));			
 			
 		ServerCinematicManager.getInstance().start(
 				target,

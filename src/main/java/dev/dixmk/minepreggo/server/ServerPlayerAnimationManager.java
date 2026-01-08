@@ -8,13 +8,9 @@ import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.network.packet.UpdatePlayerAnimationS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
-@Mod.EventBusSubscriber
 public class ServerPlayerAnimationManager {
     
 	private ServerPlayerAnimationManager() {}
@@ -27,21 +23,18 @@ public class ServerPlayerAnimationManager {
         return Holder.INSTANCE;
     }
 
-    @SubscribeEvent
-    public static void onServerTick(TickEvent.ServerTickEvent event) {
-        if (event.phase != TickEvent.Phase.END) return;
-            
-        ServerPlayerAnimationManager.getInstance().tickCounter++;
-        if (ServerPlayerAnimationManager.getInstance().tickCounter >= ServerPlayerAnimationManager.SYNC_INTERVAL) {     	
-        	ServerPlayerAnimationManager.getInstance().tickCounter = 0;
-        	ServerPlayerAnimationManager.getInstance().syncAnimations();
+    public void onServerTick() {      
+    	var instance = ServerPlayerAnimationManager.getInstance();
+    	instance.tickCounter++;
+        if (instance.tickCounter >= ServerPlayerAnimationManager.SYNC_INTERVAL) {     	
+        	instance.tickCounter = 0;
+        	instance.syncAnimations();
         }
     }
     
-	private static final int SYNC_INTERVAL = 20; // Sync every 20 ticks (1 second)
+	private static final int SYNC_INTERVAL = 20;
     private final Map<UUID, AnimationState> lastSyncedState = new HashMap<>();
     private int tickCounter = 0;
-
 
     private void syncAnimations() {
         // Periodic sync to ensure all clients stay synchronized

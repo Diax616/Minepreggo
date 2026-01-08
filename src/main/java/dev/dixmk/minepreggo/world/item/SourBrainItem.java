@@ -5,7 +5,7 @@ import javax.annotation.Nonnegative;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.pregnancy.Craving;
 
-public class SourBrainItem extends AbstractBrain implements IItemCraving {
+public class SourBrainItem extends AbstractBrain implements ICravingItem {
 	public SourBrainItem() {
 		super();
 	}

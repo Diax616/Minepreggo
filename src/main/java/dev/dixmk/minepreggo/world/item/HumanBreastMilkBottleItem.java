@@ -11,14 +11,19 @@ public class HumanBreastMilkBottleItem extends AbstractBreastMilk {
 	public HumanBreastMilkBottleItem() {
 		super(3);
 	}
-
 	
 	@Override
 	public ItemStack finishUsingItem(ItemStack itemstack, Level world, LivingEntity entity) {		
-		if (entity instanceof Player && !entity.level().isClientSide) {
-			entity.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 60, 0, false, true));
-		}
-		return super.finishUsingItem(itemstack, world, entity);
+		var result = super.finishUsingItem(itemstack, world, entity);
+		if (!entity.level().isClientSide) {
+			if (entity instanceof Player) {
+				entity.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 120, 0, false, true, true));
+			}
+			else {
+				entity.heal(2f);
+			}		
+		}	
+		return result;
 	}
 }
 

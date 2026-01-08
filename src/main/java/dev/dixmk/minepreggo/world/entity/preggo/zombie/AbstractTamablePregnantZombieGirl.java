@@ -43,6 +43,8 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -245,10 +247,16 @@ public abstract class AbstractTamablePregnantZombieGirl<S extends PreggoMobSyste
 	
 	@Override
 	protected boolean canReplaceCurrentItem(ItemStack p_21428_, ItemStack p_21429_) {	
-		if (!(PregnancySystemHelper.canUseChestplate(p_21428_.getItem(), this.getCurrentPregnancyStage(), false) && PreggoMobHelper.canUseChestPlateInLactation((IPregnancySystemHandler) this, p_21428_.getItem()))
-					|| !PregnancySystemHelper.canUseLegging(p_21428_.getItem(), this.getCurrentPregnancyStage())) {
-			return false;
+		final var slot = LivingEntity.getEquipmentSlotForItem(p_21428_);				
+		final var armor = p_21428_.getItem();
+		
+		if (slot == EquipmentSlot.CHEST) {
+			return PregnancySystemHelper.canUseChestplate(armor, this.getCurrentPregnancyStage(), false) && PreggoMobHelper.canUseChestPlateInLactation((IPregnancySystemHandler) this, armor);
+		}
+		else if (slot == EquipmentSlot.LEGS) {
+			return PregnancySystemHelper.canUseLegging(armor, this.getCurrentPregnancyStage());
 		}	
+		
 		return super.canReplaceCurrentItem(p_21428_, p_21429_);
 	}
 	

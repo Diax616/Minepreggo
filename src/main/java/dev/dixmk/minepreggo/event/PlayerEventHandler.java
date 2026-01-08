@@ -22,7 +22,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.inventory.preggo.PlayerJoinsWorldMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.RequestSexP2PMenu;
 import dev.dixmk.minepreggo.world.item.CumSpecimenTubeItem;
-import dev.dixmk.minepreggo.world.item.IItemCraving;
+import dev.dixmk.minepreggo.world.item.ICravingItem;
 import dev.dixmk.minepreggo.world.pregnancy.Gender;
 import dev.dixmk.minepreggo.world.pregnancy.IBreedable;
 import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
@@ -49,6 +49,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -64,6 +65,7 @@ import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent.ItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -434,7 +436,7 @@ public class PlayerEventHandler {
 						&& femaleData.getPregnancySystem().getCurrentPregnancyStage().compareTo(PregnancyPhase.P1) >= 0
 						&& femaleData.getPregnancyEffects().isValidCraving(mainHandItem)) {
 			
-					if (!(mainHandItem instanceof IItemCraving itemCraving)) {
+					if (!(mainHandItem instanceof ICravingItem itemCraving)) {
 						MinepreggoMod.LOGGER.debug("Item used is not an IItemCraving: {}", mainHandItem);
 						return;
 					}
@@ -680,8 +682,8 @@ public class PlayerEventHandler {
                        			removeArmorAndDamagePregnantPlayer(player, slot, newArmor);
         					}
         				}
-        				else if (slot == EquipmentSlot.LEGS && femaleData.getPregnancySystem().getCurrentPregnancyStage().compareTo(PregnancyPhase.P3) >= 0 && !PregnancySystemHelper.canUseLegging(item, femaleData.getPregnancySystem().getCurrentPregnancyStage())) {
-                   			MessageHelper.sendTo(player, Component.translatable("chat.minepreggo.preggo_mob.armor.message.leggings_does_not_fit.p3_to_p8"), true);
+        				else if (slot == EquipmentSlot.LEGS && !PregnancySystemHelper.canUseLegging(item, femaleData.getPregnancySystem().getCurrentPregnancyStage())) {
+                   			MessageHelper.sendTo(player, Component.translatable("chat.minepreggo.player.armor.message.leggings_does_not_fit"), true);
                    			removeArmorAndDamagePregnantPlayer(player, slot, newArmor);
         				}
 	               	}		
@@ -720,7 +722,19 @@ public class PlayerEventHandler {
 			}
 		}
 	}
-		
+	
+    @SubscribeEvent
+    public static void onItemPickup(ItemPickupEvent event) {
+        if (event.getEntity().level().isClientSide) {
+        	return;
+        }
+ 
+        ItemStack stack = event.getStack();
+        if (Villager.FOOD_POINTS.containsKey(stack.getItem())) {
+            PlayerHelper.removeAnyFemalePlayerIdTag(stack);
+        }
+    }
+
 	@SubscribeEvent
 	public static void onPlayerQuit(PlayerEvent.PlayerLoggedOutEvent event) {
 	    if (event.getEntity() instanceof ServerPlayer player) {

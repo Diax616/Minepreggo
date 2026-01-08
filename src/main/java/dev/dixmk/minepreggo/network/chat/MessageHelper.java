@@ -65,7 +65,7 @@ public class MessageHelper {
 		ServerPlayer serverPlayer;
 		String message;
 		if (preggoMob.isOwnedBy(owner) && (message = PREGGO_MOB_ARMOR_MESSAGES.get(pregnancyPhase)) != null && (serverPlayer = asServerPlayer(owner)) != null) {
-			sendTo(serverPlayer, Component.translatable(message));		
+			sendTo(serverPlayer, Component.translatable(message, preggoMob.getSimpleName()));		
 			return true;
 		}				
 		return false;
