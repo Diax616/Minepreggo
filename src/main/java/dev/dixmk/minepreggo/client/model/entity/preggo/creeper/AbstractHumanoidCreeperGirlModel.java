@@ -178,9 +178,9 @@ public abstract class AbstractHumanoidCreeperGirlModel<E extends AbstractCreeper
 		belly.addOrReplaceChild("right_kick", CubeListBuilder.create().texOffs(20, 87).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.2F)), PartPose.offset(0.5F, 4.0F, -3.1F));
 		belly.addOrReplaceChild("left_kick", CubeListBuilder.create().texOffs(20, 87).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.2F)), PartPose.offset(0.5F, 2.9F, -3.0F));
 		PartDefinition rightLeg = partdefinition.getChild("right_leg");	
-		PartDefinition leftLeg = partdefinition.getChild("left_leg");
-		rightLeg.addOrReplaceChild("right_butt", CubeListBuilder.create().texOffs(32, 66).addBox(-2.0F, -0.85F, -0.75F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.5F)), PartPose.offset(0.1F, 0.5F, 2.0F));
-		leftLeg.addOrReplaceChild("left_butt", CubeListBuilder.create().texOffs(32, 66).addBox(-2.0F, -0.85F, -0.75F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.5F)), PartPose.offset(-0.1F, 0.5F, 2.0F));
+		PartDefinition leftLeg = partdefinition.getChild("left_leg");		
+		rightLeg.addOrReplaceChild("right_butt", CubeListBuilder.create().texOffs(32, 66).addBox(-2.0F, -0.85F, -0.75F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.5F)), PartPose.offset(0.1F, 0.3F, 2.0F));
+		leftLeg.addOrReplaceChild("left_butt", CubeListBuilder.create().texOffs(32, 66).addBox(-2.0F, -0.85F, -0.75F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.5F)), PartPose.offset(-0.1F, 0.3F, 2.0F));
 		return LayerDefinition.create(meshdefinition, 64, 96);
 	}
 		
