@@ -7,7 +7,10 @@ import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.effect.Impregnantion;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -15,7 +18,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fml.common.Mod;
+
+
 
 @Mod.EventBusSubscriber(modid = MinepreggoMod.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class MobEffectEventHandler {
@@ -83,6 +89,28 @@ public class MobEffectEventHandler {
             PregnancySystemHelper.syncRemovedMobEffect(entity, effect);
             MinepreggoMod.LOGGER.debug("Expired mob effect {} from preggo mob {}", effect.getDescriptionId(), entity.getDisplayName().getString());
     	}
+    }
+
+    @SubscribeEvent
+    public static void onEffectApplicable(MobEffectEvent.Applicable event) {
+        MobEffectInstance effectInstance = event.getEffectInstance();      
+        MobEffect effect = effectInstance.getEffect();
+        if (effect.isInstantenous()) {
+            return;
+        }
+        
+        LivingEntity entity = event.getEntity();
+        Level level = entity.level();
+        
+        if (level.isClientSide) {
+            return;
+        }
+        
+        if (effect == MinepreggoModMobEffects.ETERNAL_PREGNANCY.get() && !PregnancySystemHelper.canHaveEternalPregnancy(entity)) {
+            event.setResult(Event.Result.DENY);
+            entity.hurt(new DamageSource(entity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.MAGIC)), 1);
+            MinepreggoMod.LOGGER.debug("Prevented mob effect {} from being applied to entity {} due to incompatibility", effect.getDescriptionId(), entity.getDisplayName().getString());
+        }
     }
 
     @SubscribeEvent

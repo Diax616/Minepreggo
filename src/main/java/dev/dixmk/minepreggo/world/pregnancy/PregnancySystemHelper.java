@@ -868,4 +868,20 @@ public class PregnancySystemHelper {
 	public static void playSoundNearTo(LivingEntity entity, SoundEvent sound) {
 		playSoundNearTo(entity, sound, 0.5f);
 	}
+	
+	public static boolean canHaveEternalPregnancy(LivingEntity entity) {
+        if (entity instanceof ServerPlayer serverPlayer) {          	
+    		Optional<Boolean> result = serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).map(cap -> {	
+    			var femaleDataOpt = cap.getFemaleData().resolve();
+    			if (femaleDataOpt.isPresent()) {
+    				var femaleData = femaleDataOpt.get();				
+    				return femaleData.isPregnant() && femaleData.isPregnancySystemInitialized();
+    			}
+    			return false;
+    		});		
+    		return result.isPresent() && result.get().booleanValue();
+        }
+		
+		return entity instanceof IPregnancySystemHandler;
+	}
 }
