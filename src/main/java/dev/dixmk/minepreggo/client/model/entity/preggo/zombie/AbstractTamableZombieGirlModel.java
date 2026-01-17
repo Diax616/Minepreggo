@@ -1,15 +1,14 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.zombie;
 
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamableZombieGirl;
-import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class AbstractTamableZombieGirlModel<E extends AbstractTamableZombieGirl<?>> extends AbstractZombieGirlModel<E> {
+public abstract class AbstractTamableZombieGirlModel<E extends AbstractTamableZombieGirl> extends AbstractZombieGirlModel<E> {
 
-	protected AbstractTamableZombieGirlModel(ModelPart root, HierarchicalModel<E> animator) {
+	protected AbstractTamableZombieGirlModel(ModelPart root, ZombieGirlAnimator<E> animator) {
 		super(root, animator);
 		this.belly.visible = false;
 	}

@@ -6,8 +6,7 @@ import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.network.capability.FemalePlayerImpl;
 import dev.dixmk.minepreggo.network.capability.PlayerDataImpl;
-import dev.dixmk.minepreggo.network.capability.PlayerPregnancyEffectsImpl;
-import dev.dixmk.minepreggo.network.capability.PlayerPregnancySystemImpl;
+import dev.dixmk.minepreggo.network.capability.PlayerPregnancyDataImpl;
 import dev.dixmk.minepreggo.world.pregnancy.AbstractPregnancySystem;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
@@ -20,8 +19,7 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 	
 	protected PlayerDataImpl playerData = null;
 	protected FemalePlayerImpl femaleData = null;
-	protected PlayerPregnancySystemImpl pregnancySystem = null;
-	protected PlayerPregnancyEffectsImpl pregnancyEffects = null;
+	protected PlayerPregnancyDataImpl pregnancySystem = null;
 	
 	private final boolean isValid;
 	
@@ -32,12 +30,11 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 			this.playerData = cap;				
 			cap.getFemaleData().ifPresent(f -> {
 				this.femaleData = f;
-				this.pregnancySystem = f.getPregnancySystem();
-				this.pregnancyEffects = f.getPregnancyEffects();
+				this.pregnancySystem = f.getPregnancyData();
 			});	
 		});	
 		
-		this.isValid = this.playerData != null && this.pregnancySystem != null && this.pregnancyEffects != null;
+		this.isValid = this.playerData != null && this.pregnancySystem != null;
 	}
 
 	public boolean isPlayerValid(ServerPlayer currentPlayer) {
@@ -61,8 +58,8 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 			return;
 		}
 		if (!isValid) {
-			MinepreggoMod.LOGGER.warn("PlayerPregnancySystem is not valid for player: {}. Aborting onServerTick. playerData: {}, femaleData: {}, pregnancySystem: {}, pregnancyEffects: {}",
-					pregnantEntity.getGameProfile().getName(), this.playerData != null, this.femaleData != null, this.pregnancySystem != null, this.pregnancyEffects != null);		
+			MinepreggoMod.LOGGER.warn("PlayerPregnancySystem is not valid for player: {}. Aborting onServerTick. playerData: {}, femaleData: {}, pregnancySystem: {}",
+					pregnantEntity.getGameProfile().getName(), this.playerData != null, this.femaleData != null, this.pregnancySystem != null);		
 			return;
 		}	
 		evaluatePregnancySystem();
@@ -186,7 +183,7 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 		pregnancySystem.setCurrentPregnancyStage(next);
 		pregnancySystem.resetPregnancyTimer();
 		pregnancySystem.resetDaysPassed();
-		pregnancySystem.sync(pregnantEntity);	
+		pregnancySystem.syncState(pregnantEntity);	
 		
 		if (next.compareTo(PregnancyPhase.P0) > 0) {		
 			var chestplate = pregnantEntity.getItemBySlot(EquipmentSlot.CHEST);

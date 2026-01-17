@@ -8,8 +8,9 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.pregnancy.IBreedable;
-import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
+import dev.dixmk.minepreggo.world.pregnancy.IPregnancyData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
@@ -34,13 +35,13 @@ public class WorldEventHandler {
         long currentTick = currentWorldTime % 24000L; 
         long ticksSkipped = 24000L - currentTick;
 
-        final List<IPregnancySystemHandler> pregnantEntities = StreamSupport.stream(level.getAllEntities().spliterator(), false)
+        final List<IPregnancyData> pregnantEntities = StreamSupport.stream(level.getAllEntities().spliterator(), false)
                 .flatMap(entity -> {
                     // If the entity itself implements the pregnancy handler, return it directly
                     if (entity instanceof LivingEntity livingEntity
                     		&& !livingEntity.hasEffect(MinepreggoModMobEffects.ETERNAL_PREGNANCY.get())
-                    		&& entity instanceof IPregnancySystemHandler handler) {
-                        return Stream.of(handler);
+                    		&& entity instanceof ITamablePregnantPreggoMob handler) {
+                        return Stream.of(handler.getPregnancyData());
                     }
 
                     // If the entity is a player, try to obtain the player's pregnancy system from capability
@@ -50,8 +51,8 @@ public class WorldEventHandler {
                             var femaleOpt = playerDataOpt.get().getFemaleData().resolve();
                             if (femaleOpt.isPresent()) {
                                 var femaleData = femaleOpt.get();
-                                if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {
-                                    return Stream.of(IPregnancySystemHandler.class.cast(femaleData.getPregnancySystem()));
+                                if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
+                                    return Stream.of(IPregnancyData.class.cast(femaleData.getPregnancyData()));
                                 }
                             }
                         }

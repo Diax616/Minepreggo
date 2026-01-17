@@ -18,7 +18,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class AbstractZombieGirlMainScreen
-	<E extends AbstractTamableZombieGirl<?>, G extends AbstractZombieGirlMainMenu<E>> extends AbstractPreggoMobMainScreen<E, G> {
+	<E extends AbstractTamableZombieGirl, G extends AbstractZombieGirlMainMenu<E>> extends AbstractPreggoMobMainScreen<E, G> {
 	
 	protected static final ImmutableMap<Craving, ResourceLocation> CRAVING_ICONS = ImmutableMap.of(
 			Craving.SALTY, MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/brain_with_salt.png"), 

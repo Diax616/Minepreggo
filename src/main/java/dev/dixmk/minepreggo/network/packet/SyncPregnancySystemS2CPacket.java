@@ -5,18 +5,18 @@ import java.util.function.Supplier;
 
 import dev.dixmk.minepreggo.client.jiggle.JigglePhysicsManager;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
-import dev.dixmk.minepreggo.network.capability.PlayerPregnancySystemImpl;
+import dev.dixmk.minepreggo.network.capability.PlayerPregnancyDataImpl;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
-public record SyncPregnancySystemS2CPacket(UUID targetId, PlayerPregnancySystemImpl.ClientData data) {
+public record SyncPregnancySystemS2CPacket(UUID targetId, PlayerPregnancyDataImpl.PlayerStateData data) {
 
 	public static SyncPregnancySystemS2CPacket decode(FriendlyByteBuf buffer) {	
 		return new SyncPregnancySystemS2CPacket(
 				buffer.readUUID(),
-				PlayerPregnancySystemImpl.ClientData.decode(buffer));
+				PlayerPregnancyDataImpl.PlayerStateData.decode(buffer));
 	}
 	
 	public static void encode(SyncPregnancySystemS2CPacket message, FriendlyByteBuf buffer) {	
@@ -32,11 +32,11 @@ public record SyncPregnancySystemS2CPacket(UUID targetId, PlayerPregnancySystemI
 				if (target != null) {
 					target.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> {
 						cap.getFemaleData().ifPresent(femaleData -> {
-							var pregnancySystem = femaleData.getPregnancySystem();
+							var pregnancySystem = femaleData.getPregnancyData();
 							var previousPhase = pregnancySystem.getCurrentPregnancyStage();
 							var newPhase = message.data.currentPregnancyPhase();
 							
-							pregnancySystem.setPregnancySymptoms(PregnancySymptom.fromBitMask(message.data.pregnancySymptoms()));
+							pregnancySystem.getPregnancySymptoms().setPregnancySymptoms(PregnancySymptom.fromBitMask(message.data.pregnancySymptoms()));
 							pregnancySystem.setPregnancyPain(message.data.pregnancyPain());
 							pregnancySystem.setCurrentPregnancyStage(newPhase);
 							

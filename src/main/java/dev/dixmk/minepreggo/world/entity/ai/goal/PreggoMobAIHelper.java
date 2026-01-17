@@ -1,13 +1,13 @@
 package dev.dixmk.minepreggo.world.entity.ai.goal;
 
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamableZombieGirl;
-import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.ai.goal.FleeSunGoal;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
@@ -31,7 +31,7 @@ public class PreggoMobAIHelper {
 
 	private PreggoMobAIHelper() {}
 	
-	public static<T extends AbstractTamableZombieGirl<?>> void setTamableZombieGirlGoals(T zombieGirl) {
+	public static<T extends AbstractTamableZombieGirl> void setTamableZombieGirlGoals(T zombieGirl) {
 		setBasicPreggoMobGoals(zombieGirl);
 		
 		zombieGirl.goalSelector.addGoal(1, new RestrictSunGoal(zombieGirl));
@@ -42,7 +42,7 @@ public class PreggoMobAIHelper {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
-				&& (zombieGirl.isSavage() || !zombieGirl.isTame());
+				&& (zombieGirl.getTamableData().isSavage() || !zombieGirl.isTame());
 			}
 		});
 		
@@ -50,7 +50,7 @@ public class PreggoMobAIHelper {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
-				&& !zombieGirl.isWaiting();
+				&& !zombieGirl.getTamableData().isWaiting();
 			}
 		});
 		
@@ -58,7 +58,7 @@ public class PreggoMobAIHelper {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
-				&& !zombieGirl.isWaiting();
+				&& !zombieGirl.getTamableData().isWaiting();
 			}
 		});
 
@@ -66,7 +66,7 @@ public class PreggoMobAIHelper {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
-				&& !zombieGirl.isWaiting()
+				&& !zombieGirl.getTamableData().isWaiting()
 				&& !zombieGirl.isOnFire();				
 			}
 
@@ -81,7 +81,7 @@ public class PreggoMobAIHelper {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
-				&& !zombieGirl.isWaiting()
+				&& !zombieGirl.getTamableData().isWaiting()
 				&& !zombieGirl.isOnFire();				
 			}
 
@@ -96,7 +96,7 @@ public class PreggoMobAIHelper {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
-				&& !zombieGirl.isWaiting()
+				&& !zombieGirl.getTamableData().isWaiting()
 				&& !zombieGirl.isOnFire();				
 			}
 
@@ -108,20 +108,20 @@ public class PreggoMobAIHelper {
 		});	
 	}
 		
-	public static<T extends AbstractTamablePregnantZombieGirl<?,?>> void setTamablePregnantZombieGirlGoals(T zombieGirl) {
+	public static<T extends AbstractTamablePregnantZombieGirl> void setTamablePregnantZombieGirlGoals(T zombieGirl) {
 		setBasicPregnantPreggoMobGoals(zombieGirl);	
-		
+
 		zombieGirl.goalSelector.addGoal(1, new RestrictSunGoal(zombieGirl) {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
-				&& !zombieGirl.isIncapacitated();			
+				&& !zombieGirl.getPregnancyData().isIncapacitated();			
 			}
 
 			@Override
 			public boolean canContinueToUse() {
 				return super.canContinueToUse() 
-				&& !zombieGirl.isIncapacitated();	
+				&& !zombieGirl.getPregnancyData().isIncapacitated();	
 			}
 		});
 
@@ -129,13 +129,13 @@ public class PreggoMobAIHelper {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
-				&& !zombieGirl.isIncapacitated();			
+				&& !zombieGirl.getPregnancyData().isIncapacitated();			
 			}
 
 			@Override
 			public boolean canContinueToUse() {
 				return super.canContinueToUse() 
-				&& !zombieGirl.isIncapacitated();	
+				&& !zombieGirl.getPregnancyData().isIncapacitated();	
 			}
 		});
 	
@@ -143,14 +143,14 @@ public class PreggoMobAIHelper {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
-				&& (zombieGirl.isSavage() || !zombieGirl.isTame())
-				&& !zombieGirl.isIncapacitated();
+				&& (zombieGirl.getTamableData().isSavage() || !zombieGirl.isTame())
+				&& !zombieGirl.getPregnancyData().isIncapacitated();
 			}
 
 			@Override
 			public boolean canContinueToUse() {
 				return super.canContinueToUse() 
-				&& !zombieGirl.isIncapacitated();
+				&& !zombieGirl.getPregnancyData().isIncapacitated();
 			}
 		});
 		zombieGirl.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(zombieGirl, IronGolem.class, false, false){
@@ -158,14 +158,14 @@ public class PreggoMobAIHelper {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
-				&& !zombieGirl.isIncapacitated()
-				&& !zombieGirl.isWaiting();
+				&& !zombieGirl.getPregnancyData().isIncapacitated()
+				&& !zombieGirl.getTamableData().isWaiting();
 			}
 
 			@Override
 			public boolean canContinueToUse() {
 				return super.canContinueToUse() 
-				&& !zombieGirl.isIncapacitated();
+				&& !zombieGirl.getPregnancyData().isIncapacitated();
 			}
 		});
 	
@@ -173,14 +173,14 @@ public class PreggoMobAIHelper {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
-				&& !zombieGirl.isIncapacitated()
-				&& !zombieGirl.isWaiting();
+				&& !zombieGirl.getPregnancyData().isIncapacitated()
+				&& !zombieGirl.getTamableData().isWaiting();
 			}
 
 			@Override
 			public boolean canContinueToUse() {
 				return super.canContinueToUse() 
-				&& !zombieGirl.isIncapacitated();
+				&& !zombieGirl.getPregnancyData().isIncapacitated();
 			}
 		});
 
@@ -226,35 +226,33 @@ public class PreggoMobAIHelper {
 		});	
 	}
 	
-	
-	
-	public static<T extends AbstractTamablePregnantCreeperGirl<?,?>> void setTamablePregnantCreeperGirlGoals(T creeperGirl) {
+	public static<T extends AbstractTamablePregnantCreeperGirl> void setTamablePregnantCreeperGirlGoals(T creeperGirl) {
 		setBasicPregnantPreggoMobGoals(creeperGirl);
 		
 		creeperGirl.goalSelector.addGoal(2, new AvoidEntityGoal<>(creeperGirl, Ocelot.class, 6F, 1, 1.2) {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
-				&& !creeperGirl.isIncapacitated();
+				&& !creeperGirl.getPregnancyData().isIncapacitated();
 			}
 					
 			@Override
 			public boolean canContinueToUse() {
 				return super.canContinueToUse() 
-				&& !creeperGirl.isIncapacitated();
+				&& !creeperGirl.getPregnancyData().isIncapacitated();
 			}	
 		});
 		creeperGirl.goalSelector.addGoal(2, new AvoidEntityGoal<>(creeperGirl, Cat.class, 6F, 1, 1.2) {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
-				&& !creeperGirl.isIncapacitated();
+				&& !creeperGirl.getPregnancyData().isIncapacitated();
 			}
 					
 			@Override
 			public boolean canContinueToUse() {
 				return super.canContinueToUse() 
-				&& !creeperGirl.isIncapacitated();
+				&& !creeperGirl.getPregnancyData().isIncapacitated();
 			}	
 		});
 		
@@ -263,7 +261,7 @@ public class PreggoMobAIHelper {
 		creeperGirl.goalSelector.addGoal(6, new PregnantPreggoMobFollowOwnerGoal<>(creeperGirl, 1.2D, 6F, 2F, false));	
 	}	
 	
-	public static<T extends AbstractTamableCreeperGirl<?>> void setTamableCreeperGirlGoals(T creeperGirl) {
+	public static<T extends AbstractTamableCreeperGirl> void setTamableCreeperGirlGoals(T creeperGirl) {
 		setBasicPreggoMobGoals(creeperGirl);
 		
 		creeperGirl.goalSelector.addGoal(2, new AvoidEntityGoal<>(creeperGirl, Ocelot.class, 6F, 1, 1.2));
@@ -273,7 +271,7 @@ public class PreggoMobAIHelper {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
-				&& !creeperGirl.isWaiting();				
+				&& !creeperGirl.getTamableData().isWaiting();				
 			}
 		});
 		
@@ -281,7 +279,7 @@ public class PreggoMobAIHelper {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
-				&& !creeperGirl.isWaiting();			
+				&& !creeperGirl.getTamableData().isWaiting();			
 			}
 		});
 		
@@ -289,13 +287,13 @@ public class PreggoMobAIHelper {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
-				&& !creeperGirl.isWaiting();		
+				&& !creeperGirl.getTamableData().isWaiting();		
 			}
 		});
 	}
 	
 	private static<T extends PreggoMob & ITamablePreggoMob<?>> void setBasicPreggoMobGoals(T preggoMob) {	
-		
+
 		preggoMob.targetSelector.addGoal(2, new HurtByTargetGoal(preggoMob));	
 		
 		preggoMob.targetSelector.addGoal(4, new BreakBlocksToFollowOwnerGoal<>(preggoMob, 2, 7));	
@@ -306,7 +304,7 @@ public class PreggoMobAIHelper {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
-				&& (preggoMob.isSavage() || !preggoMob.isTame());	
+				&& (preggoMob.getTamableData().isSavage() || !preggoMob.isTame());	
 			}
 		});
 				
@@ -316,7 +314,7 @@ public class PreggoMobAIHelper {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
-				&& (preggoMob.isSavage() || !preggoMob.isTame());		
+				&& (preggoMob.getTamableData().isSavage() || !preggoMob.isTame());		
 			}
 		});	
 		
@@ -324,7 +322,7 @@ public class PreggoMobAIHelper {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
-				&& !preggoMob.isWaiting()
+				&& !preggoMob.getTamableData().isWaiting()
 				&& !PreggoMobHelper.hasValidTarget(preggoMob);
 			}
 			
@@ -339,26 +337,26 @@ public class PreggoMobAIHelper {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
-				&& (preggoMob.isSavage() || !preggoMob.isTame());		
+				&& (preggoMob.getTamableData().isSavage() || !preggoMob.isTame());		
 			}
 		});
 		
 		preggoMob.goalSelector.addGoal(11, new FloatGoal(preggoMob));
 	}
 	
-	private static<T extends PreggoMob & ITamablePreggoMob<?> & IPregnancySystemHandler> void setBasicPregnantPreggoMobGoals(T preggoMob) {	
+	private static<T extends PreggoMob & ITamablePregnantPreggoMob> void setBasicPregnantPreggoMobGoals(T preggoMob) {	
 		
 		preggoMob.targetSelector.addGoal(2, new HurtByTargetGoal(preggoMob) {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
-				&& !preggoMob.isIncapacitated();
+				&& !preggoMob.getPregnancyData().isIncapacitated();
 			}
 
 			@Override
 			public boolean canContinueToUse() {
 				return super.canContinueToUse()
-				&& !preggoMob.isIncapacitated();
+				&& !preggoMob.getPregnancyData().isIncapacitated();
 			}
 		});
 		
@@ -367,13 +365,13 @@ public class PreggoMobAIHelper {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
-				&& !preggoMob.isIncapacitated();
+				&& !preggoMob.getPregnancyData().isIncapacitated();
 			}
 
 			@Override
 			public boolean canContinueToUse() {
 				return super.canContinueToUse()
-				&& !preggoMob.isIncapacitated();
+				&& !preggoMob.getPregnancyData().isIncapacitated();
 			}
 		});	
 
@@ -382,13 +380,13 @@ public class PreggoMobAIHelper {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
-				&& !preggoMob.isIncapacitated();
+				&& !preggoMob.getPregnancyData().isIncapacitated();
 			}
 
 			@Override
 			public boolean canContinueToUse() {
 				return super.canContinueToUse()
-				&& !preggoMob.isIncapacitated();
+				&& !preggoMob.getPregnancyData().isIncapacitated();
 			}
 		});
 		
@@ -396,14 +394,14 @@ public class PreggoMobAIHelper {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
-				&& (preggoMob.isSavage() || !preggoMob.isTame())		
-				&& !preggoMob.isIncapacitated();
+				&& (preggoMob.getTamableData().isSavage() || !preggoMob.isTame())		
+				&& !preggoMob.getPregnancyData().isIncapacitated();
 			}
 
 			@Override
 			public boolean canContinueToUse() {
 				return super.canContinueToUse() 
-				&& !preggoMob.isIncapacitated();
+				&& !preggoMob.getPregnancyData().isIncapacitated();
 			}
 		});
 		
@@ -411,13 +409,13 @@ public class PreggoMobAIHelper {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 	
-				&& !preggoMob.isIncapacitated();
+				&& !preggoMob.getPregnancyData().isIncapacitated();
 			}
 			
 			@Override
 			public boolean canContinueToUse() {
 				return super.canContinueToUse() 
-				&& !preggoMob.isIncapacitated();
+				&& !preggoMob.getPregnancyData().isIncapacitated();
 			}
 		});
 		
@@ -425,14 +423,14 @@ public class PreggoMobAIHelper {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
-				&& (preggoMob.isSavage() || !preggoMob.isTame())		
-				&& !preggoMob.isIncapacitated();
+				&& (preggoMob.getTamableData().isSavage() || !preggoMob.isTame())		
+				&& !preggoMob.getPregnancyData().isIncapacitated();
 			}
 
 			@Override
 			public boolean canContinueToUse() {
 				return super.canContinueToUse() 
-				&& !preggoMob.isIncapacitated();
+				&& !preggoMob.getPregnancyData().isIncapacitated();
 			}
 		});	
 		
@@ -442,8 +440,8 @@ public class PreggoMobAIHelper {
 			public boolean canUse() {
 				return super.canUse() 
 				&& !PreggoMobHelper.hasValidTarget(preggoMob)
-				&& !preggoMob.isWaiting()
-				&& !preggoMob.isIncapacitated();
+				&& !preggoMob.getTamableData().isWaiting()
+				&& !preggoMob.getPregnancyData().isIncapacitated();
 				
 			}
 
@@ -451,7 +449,7 @@ public class PreggoMobAIHelper {
 			public boolean canContinueToUse() {
 				return super.canContinueToUse() 
 				&& !PreggoMobHelper.isTargetStillValid(preggoMob)
-				&& !preggoMob.isIncapacitated();
+				&& !preggoMob.getPregnancyData().isIncapacitated();
 			}
 		});			
 
@@ -459,14 +457,14 @@ public class PreggoMobAIHelper {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
-				&& (preggoMob.isSavage() || !preggoMob.isTame())		
-				&& !preggoMob.isIncapacitated();
+				&& (preggoMob.getTamableData().isSavage() || !preggoMob.isTame())		
+				&& !preggoMob.getPregnancyData().isIncapacitated();
 			}
 
 			@Override
 			public boolean canContinueToUse() {
 				return super.canContinueToUse() 
-				&& !preggoMob.isIncapacitated();
+				&& !preggoMob.getPregnancyData().isIncapacitated();
 			}
 		});
 		
@@ -474,7 +472,7 @@ public class PreggoMobAIHelper {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
-				&& !preggoMob.isIncapacitated();
+				&& !preggoMob.getPregnancyData().isIncapacitated();
 			}
 		});
 	}

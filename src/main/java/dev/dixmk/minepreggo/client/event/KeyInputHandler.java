@@ -25,8 +25,8 @@ public class KeyInputHandler {
     	if (MinepreggoModKeyMappings.RUB_BELLY_KEY.consumeClick()) {        
         	player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
         		cap.getFemaleData().ifPresent(femaleData -> {
-        			if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {
-        				final var pain = femaleData.getPregnancySystem().getPregnancyPain();
+        			if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
+        				final var pain = femaleData.getPregnancyData().getPregnancyPain();
         				if (pain != null && pain.incapacitate) {
         					return;
         				}
@@ -35,7 +35,7 @@ public class KeyInputHandler {
             				MinepreggoModPacketHandler.INSTANCE.sendToServer(new StopPlayerAnimationC2SPacket(player.getUUID()));
         				}
         				else {
-            				MinepreggoModPacketHandler.INSTANCE.sendToServer(new RequestBellyRubbingAnimationC2SPacket(player.getUUID(), femaleData.getPregnancySystem().getCurrentPregnancyStage()));
+            				MinepreggoModPacketHandler.INSTANCE.sendToServer(new RequestBellyRubbingAnimationC2SPacket(player.getUUID(), femaleData.getPregnancyData().getCurrentPregnancyStage()));
         				}
         			}
         		})

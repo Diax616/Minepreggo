@@ -19,8 +19,8 @@ public abstract class LivingEntityMixin {
     	if ((LivingEntity.class.cast(this)) instanceof Player player) {
     		player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
 	    		cap.getFemaleData().ifPresent(femaleData -> {
-	    			if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {
-	    				var phase = femaleData.getPregnancySystem().getCurrentPregnancyStage();
+	    			if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
+	    				var phase = femaleData.getPregnancyData().getCurrentPregnancyStage();
 	    				if (phase.compareTo(PregnancyPhase.P3) >= 0) {  
 	    					cir.setReturnValue(cir.getReturnValue() * PlayerHelper.maxJumpStrength(phase));
 	    				}

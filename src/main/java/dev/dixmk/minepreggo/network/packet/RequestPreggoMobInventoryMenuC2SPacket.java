@@ -40,11 +40,11 @@ public record RequestPreggoMobInventoryMenuC2SPacket(int x, int y, int z, int pr
     			if (!world.hasChunkAt(new BlockPos(message.x, message.y, message.z))) return;
     						
     			if (world.getEntity(message.preggoMobId) instanceof TamableAnimal tamableAnimal) {			
-    				if (tamableAnimal instanceof AbstractTamableCreeperGirl<?> creeperGirl) {
+    				if (tamableAnimal instanceof AbstractTamableCreeperGirl creeperGirl) {
     					CreeperGirlMenuHelper.showInventoryMenu(serverPlayer, creeperGirl);
     					MinepreggoMod.LOGGER.debug("INVENTARY CREEPER GIRL: id={}, class={}", creeperGirl.getId(), creeperGirl.getClass().getSimpleName());
     				}	
-    				else if (tamableAnimal instanceof AbstractTamableZombieGirl<?> zombieGirl) {
+    				else if (tamableAnimal instanceof AbstractTamableZombieGirl zombieGirl) {
     					ZombieGirlMenuHelper.showInventoryMenu(serverPlayer, zombieGirl);
     					MinepreggoMod.LOGGER.debug("INVENTARY ZOMBIE GIRL: id={}, class={}", zombieGirl.getId(), zombieGirl.getClass().getSimpleName());
     				}

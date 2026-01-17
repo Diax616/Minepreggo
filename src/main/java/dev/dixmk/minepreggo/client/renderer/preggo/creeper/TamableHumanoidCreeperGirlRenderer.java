@@ -1,9 +1,14 @@
 package dev.dixmk.minepreggo.client.renderer.preggo.creeper;
 
+import javax.annotation.Nullable;
+
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractHumanoidCreeperGirlModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.TamableHumanoidCreeperGirlModel;
+import dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.creeper.HumanoidTamableCreeperGirlExpressionLayer;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableHumanoidCreeperGirl;
+import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
 import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -24,4 +29,26 @@ public class TamableHumanoidCreeperGirlRenderer extends AbstractTamableHumanoidC
 	public ResourceLocation getTextureLocation(TamableHumanoidCreeperGirl p_115812_) {
 		return CREEPER_GIRL_LOCATION;
 	}
+	
+	@Override
+	protected void addFacialExpresions() {
+		this.addLayer(new HumanoidTamableCreeperGirlExpressionLayer<>(this) {
+			@Override
+			public @Nullable RenderType renderType(TamableHumanoidCreeperGirl creeperGirl) {	
+				var result = super.renderType(creeperGirl);
+				if (result != null) {
+					return result;
+				}
+				PostPregnancy post = creeperGirl.getSyncedPostPregnancy().orElse(null);
+				if (post == PostPregnancy.MISCARRIAGE) {
+					return POST_MISCARRIAGE;
+				}
+				else if (post == PostPregnancy.PARTUM) {
+					return POST_PARTUM;
+				}
+				return null;
+			}
+		});
+	}
 }
+

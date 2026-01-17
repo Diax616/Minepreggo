@@ -7,14 +7,11 @@ import org.jetbrains.annotations.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
-import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem.Result;
-import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
-import dev.dixmk.minepreggo.world.pregnancy.IPregnancyEffectsHandler;
-import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
+import dev.dixmk.minepreggo.world.pregnancy.SyncedSetPregnancySymptom;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -23,9 +20,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.items.ItemHandlerHelper;
-
-public abstract class PreggoMobPregnancySystemP2<E extends PreggoMob
-	& ITamablePreggoMob<FemaleEntityImpl> & IPregnancySystemHandler & IPregnancyEffectsHandler> extends PreggoMobPregnancySystemP1<E> {
+																																																																																																														
+public abstract class PreggoMobPregnancySystemP2
+	<E extends PreggoMob & ITamablePregnantPreggoMob> extends PreggoMobPregnancySystemP1<E> {
 	
 	protected @Nonnegative int totalTicksOfMilking = MinepreggoModConfig.getTotalTicksOfMilkingP2();
 
@@ -67,13 +64,14 @@ public abstract class PreggoMobPregnancySystemP2<E extends PreggoMob
 	}
 	
 	protected void evaluateMilkingTimer() {
-		if (pregnantEntity.getMilking() < PregnancySystemHelper.MAX_MILKING_LEVEL) {
-	        if (pregnantEntity.getMilkingTimer() >= totalTicksOfMilking) {
-	        	pregnantEntity.incrementMilking();
-	        	pregnantEntity.resetMilkingTimer();
+		final var pregnancyData = pregnantEntity.getPregnancyData();
+		if (pregnancyData.getMilking() < PregnancySystemHelper.MAX_MILKING_LEVEL) {
+	        if (pregnancyData.getMilkingTimer() >= totalTicksOfMilking) {
+	        	pregnancyData.incrementMilking();
+	        	pregnancyData.resetMilkingTimer();
 	        }
 	        else {
-	        	pregnantEntity.incrementMilkingTimer();
+	        	pregnancyData.incrementMilkingTimer();
 	        }
 		}	
 	}
@@ -83,13 +81,14 @@ public abstract class PreggoMobPregnancySystemP2<E extends PreggoMob
 		if (super.tryInitPregnancySymptom()) {
 			return true;
 		}
-		if (pregnantEntity.getMilking() >= PregnancySystemHelper.ACTIVATE_MILKING_SYMPTOM
-				&& !pregnantEntity.getPregnancySymptoms().contains(PregnancySymptom.MILKING)) {
+		final var pregnancyData = pregnantEntity.getPregnancyData();
+		if (pregnancyData.getMilking() >= PregnancySystemHelper.ACTIVATE_MILKING_SYMPTOM
+				&& !pregnancyData.getSyncedPregnancySymptoms().containsPregnancySymptom(PregnancySymptom.MILKING)) {
 	    	
-			pregnantEntity.addPregnancySymptom(PregnancySymptom.MILKING);
+			pregnancyData.getSyncedPregnancySymptoms().addPregnancySymptom(PregnancySymptom.MILKING);
 		
 			MinepreggoMod.LOGGER.debug("Player {} has developed pregnancy symptom: {}, all pregnancy symptoms: {}",
-					pregnantEntity.getSimpleName(), PregnancySymptom.MILKING, pregnantEntity.getPregnancySymptoms());
+					pregnantEntity.getSimpleName(), PregnancySymptom.MILKING, pregnancyData.getSyncedPregnancySymptoms().toSet());
 	    	
 	    	return true;		
 		}
@@ -97,29 +96,26 @@ public abstract class PreggoMobPregnancySystemP2<E extends PreggoMob
 	}
 	
 	@Override
-	protected void evaluatePregnancySymptoms() {		
-		pregnantEntity.getPregnancySymptoms().forEach(symptom -> {
-			if (symptom == PregnancySymptom.CRAVING && pregnantEntity.getCraving() <= PregnancySystemHelper.DESACTIVATE_CRAVING_SYMPTOM) {
-				pregnantEntity.removePregnancySymptom(PregnancySymptom.CRAVING);
-				pregnantEntity.clearTypeOfCraving();
-			}
-			else if (symptom == PregnancySymptom.MILKING && pregnantEntity.getMilking() <= PregnancySystemHelper.DESACTIVATE_MILKING_SYMPTOM) {
-				pregnantEntity.removePregnancySymptom(PregnancySymptom.MILKING);
-				pregnantEntity.removeEffect(MinepreggoModMobEffects.LACTATION.get());
-			}
-		});
+	protected void evaluatePregnancySymptoms() {
+		super.evaluatePregnancySymptoms();
+		final var pregnancyData = pregnantEntity.getPregnancyData();
+		SyncedSetPregnancySymptom pregnancySymptoms = pregnancyData.getSyncedPregnancySymptoms();	
+		if (pregnancySymptoms.containsPregnancySymptom(PregnancySymptom.MILKING)
+				&& pregnancyData.getMilking() <= PregnancySystemHelper.DESACTIVATE_MILKING_SYMPTOM) {
+			pregnancySymptoms.removePregnancySymptom(PregnancySymptom.MILKING);
+		}
 	}
 	
 	@Override
 	public boolean canBeAngry() {
-		return super.canBeAngry() || pregnantEntity.getMilking() >= PregnancySystemHelper.MAX_MILKING_LEVEL;
+		return super.canBeAngry() || pregnantEntity.getPregnancyData().getMilking() >= PregnancySystemHelper.MAX_MILKING_LEVEL;
 	}
 	
 	@Nullable
 	public Result evaluateMilking(Level level, Player source) {
-			
+		final var pregnancyData = pregnantEntity.getPregnancyData();
 	    var mainHandItem = source.getMainHandItem();
-	    var currentMilking = pregnantEntity.getMilking();
+	    var currentMilking = pregnancyData.getMilking();
 		
 	    if (currentMilking < PregnancySystemHelper.MILKING_VALUE || mainHandItem.isEmpty() || mainHandItem.getItem() != Items.GLASS_BOTTLE) {   
 	    	return null;
@@ -131,7 +127,7 @@ public abstract class PreggoMobPregnancySystemP2<E extends PreggoMob
         	MinepreggoMod.LOGGER.debug("{} {}", mainHandItem, mainHandItem.getCount());
 	
             currentMilking = Math.max(0, currentMilking - PregnancySystemHelper.MILKING_VALUE);
-            pregnantEntity.setMilking(currentMilking);               
+            pregnancyData.setMilking(currentMilking);               
             var milkItem = PregnancySystemHelper.getMilkItem(pregnantEntity.getTypeOfSpecies());
            
             if (milkItem != null) {
@@ -147,10 +143,11 @@ public abstract class PreggoMobPregnancySystemP2<E extends PreggoMob
             }        
             source.getInventory().setChanged();
             
-	    	
-            if (pregnantEntity.getPregnancySymptoms().contains(PregnancySymptom.MILKING)
+    		SyncedSetPregnancySymptom pregnancySymptoms = pregnancyData.getSyncedPregnancySymptoms();	
+
+            if (pregnancySymptoms.containsPregnancySymptom(PregnancySymptom.MILKING)
             		&& currentMilking <= PregnancySystemHelper.DESACTIVATE_MILKING_SYMPTOM) {
-    	    	pregnantEntity.removePregnancySymptom(PregnancySymptom.MILKING);
+            	pregnancySymptoms.removePregnancySymptom(PregnancySymptom.MILKING);
             } 
             
         	MinepreggoMod.LOGGER.debug("{} {}", mainHandItem, mainHandItem.getCount());

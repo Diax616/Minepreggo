@@ -195,9 +195,6 @@ public class BabyData {
 				", fatherId = " + Boolean.toString(fatherId.isPresent()) + " ]";
     }
 
-	/**
-	 * Creates a duplicate of the given BabyData instance.
-	 */
 	public static BabyData duplicate(BabyData original) {
 		return new BabyData(
 			original.gender,

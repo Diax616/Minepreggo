@@ -23,7 +23,7 @@ public class TamableHumanoidCreeperGirlP4Renderer extends AbstractTamableHumanoi
 
 	@Override
 	public ResourceLocation getTextureLocation(TamableHumanoidCreeperGirlP4 entity) {
-		if (entity.getBodyState() == PreggoMobBody.NAKED) {
+		if (entity.getTamableData().getBodyState() == PreggoMobBody.NAKED) {
 			return CREEPER_GIRL_P4_LOCATION.getRight();
 		}
 		return CREEPER_GIRL_P4_LOCATION.getLeft();

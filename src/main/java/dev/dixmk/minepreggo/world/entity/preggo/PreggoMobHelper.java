@@ -30,11 +30,8 @@ import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractZombieGirl;
 import dev.dixmk.minepreggo.world.item.IFemaleArmor;
 import dev.dixmk.minepreggo.world.item.IMaternityArmor;
 import dev.dixmk.minepreggo.world.item.ItemHelper;
-import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
 import dev.dixmk.minepreggo.world.pregnancy.IBreedable;
 import dev.dixmk.minepreggo.world.pregnancy.IFemaleEntity;
-import dev.dixmk.minepreggo.world.pregnancy.IPregnancyEffectsHandler;
-import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.pregnancy.MapPregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
@@ -104,45 +101,22 @@ public class PreggoMobHelper {
 			target.setCustomName(source.getCustomName());
 	}
 	
-	public static void copyTamableData(@NonNull ITamablePreggoMob<FemaleEntityImpl> source, @NonNull ITamablePreggoMob<FemaleEntityImpl> target) {
-		target.setFullness(source.getFullness());
-		target.setHungryTimer(source.getHungryTimer());
-		target.setWaiting(source.isWaiting());
-		target.setAngry(source.isAngry());
-		target.setSavage(source.isSavage());	
+	public static<E extends PreggoMob & ITamablePreggoMob<IFemaleEntity>> void copyTamableData(@NonNull E source, @NonNull E target) {		
 		target.setBreakBlocks(source.canBreakBlocks());
-		target.setPickUpItems(source.canPickUpItems());		
-		target.setFaceState(source.getFaceState());
-		target.setBodyState(source.getBodyState());			
+		target.setCanPickUpLoot(source.canPickUpLoot());	
+		target.getTamableData().deserializeNBT(source.getTamableData().serializeNBT());
 		target.getGenderedData().deserializeNBT(source.getGenderedData().serializeNBT());
 	}
 	
-	public static<E extends IPregnancySystemHandler & IPregnancyEffectsHandler> void transferPregnancyData(@NonNull E source, @NonNull E target) {
-		target.resetDaysPassed();
-		target.resetPregnancyTimer();
+	public static<E extends PreggoMob & ITamablePregnantPreggoMob> void transferPregnancyData(@NonNull E source, @NonNull E target) {
+		var targetPregnancyData = target.getPregnancyData();
+		targetPregnancyData.deserializeNBT(source.getPregnancyData().serializeNBT());
 		
-		target.setMapPregnancyPhase(source.getMapPregnancyPhase());
-		target.setWomb(source.getWomb());
-		
-		target.setDaysToGiveBirth(source.getDaysToGiveBirth());
-		target.setPregnancyHealth(source.getPregnancyHealth());
-		target.setPregnancyPain(source.getPregnancyPain());
-		target.setPregnancySymptoms(source.getPregnancySymptoms());
-		target.setPregnancyPainTimer(source.getPregnancyPainTimer());
-		target.setLastPregnancyStage(source.getLastPregnancyStage());
-		
-		target.setCraving(source.getCraving());
-		target.setCravingTimer(source.getCravingTimer());
-		target.setTypeOfCraving(source.getTypeOfCraving());
-		target.setMilking(source.getMilking());
-		target.setMilkingTimer(source.getMilkingTimer());
-		target.setBellyRubs(source.getBellyRubs());
-		target.setBellyRubsTimer(source.getBellyRubsTimer());
-		target.setHorny(source.getHorny());
-		target.setHornyTimer(source.getHornyTimer());
+		targetPregnancyData.resetDaysPassed();
+		targetPregnancyData.resetPregnancyTimer();
 	}
 		
-	public static<E extends PreggoMob & ITamablePreggoMob<FemaleEntityImpl> & IPregnancySystemHandler & IPregnancyEffectsHandler> void transferAllData(@NonNull E source, @NonNull E target) {
+	public static<E extends PreggoMob & ITamablePregnantPreggoMob> void transferAllData(@NonNull E source, @NonNull E target) {
 		copyRotation(source, target);
 		copyOwner(source, target);
 		copyHealth(source, target);
@@ -335,17 +309,18 @@ public class PreggoMobHelper {
 	
 	
 	// Pregnancy START
-	public static<E extends PreggoMob & IFemaleEntity & ITamablePreggoMob<?> & IPregnancySystemHandler> boolean initPregnancy(@NonNull E preggoMob) {				
-		
-		final boolean result = preggoMob.isPregnant() && preggoMob.getPrePregnancyData().isPresent();
+	public static<E extends PreggoMob & ITamablePregnantPreggoMob> boolean initPregnancy(@NonNull E preggoMob) {					
+		final IFemaleEntity femaleData = preggoMob.getGenderedData();
+		final boolean result = femaleData.isPregnant() && femaleData.getPrePregnancyData().isPresent();
 		
 		if (!result) {
 			MinepreggoMod.LOGGER.warn("CANNOT INIT PREGNANCY: class={}, isPregnant={}, hasPrePregnancyData={}",
-					preggoMob.getClass().getSimpleName(), preggoMob.isPregnant(), preggoMob.getPrePregnancyData().isPresent());
+					preggoMob.getClass().getSimpleName(), femaleData.isPregnant(), femaleData.getPrePregnancyData().isPresent());
 			return result;
 		}
 		
-		preggoMob.getPrePregnancyData().ifPresent(prePregnancyData -> {
+		femaleData.getPrePregnancyData().ifPresent(prePregnancyData -> {
+			final ITamablePregnantPreggoMobData pregnancyData = preggoMob.getPregnancyData();
 			final var numOfBabies = prePregnancyData.fertilizedEggs();
 			final PregnancyPhase lastPregnancyStage = IBreedable.calculateMaxPregnancyPhaseByTotalNumOfBabies(numOfBabies);
 			final int totalDays = MinepreggoModConfig.getTotalPregnancyDays();
@@ -354,13 +329,13 @@ public class PreggoMobHelper {
 			final var map = new MapPregnancyPhase(totalDays, lastPregnancyStage);
 			final var womb = new Womb(mother, father, preggoMob.getRandom(), numOfBabies);
 
-			preggoMob.setLastPregnancyStage(lastPregnancyStage);	
-			preggoMob.setMapPregnancyPhase(map);	
-			preggoMob.setPregnancyHealth(PregnancySystemHelper.MAX_PREGNANCY_HEALTH); 
-			preggoMob.setWomb(womb);
-			preggoMob.setDaysToGiveBirth(PregnancySystemHelper.calculateDaysToGiveBirth(preggoMob));	
+			pregnancyData.setLastPregnancyStage(lastPregnancyStage);	
+			pregnancyData.setMapPregnancyPhase(map);	
+			pregnancyData.setPregnancyHealth(PregnancySystemHelper.MAX_PREGNANCY_HEALTH); 
+			pregnancyData.setWomb(womb);
+			pregnancyData.setDaysToGiveBirth(PregnancySystemHelper.calculateDaysToGiveBirth(pregnancyData));	
 			
-			preggoMob.resetDaysPassed();
+			pregnancyData.resetDaysPassed();
 			
 			MinepreggoMod.LOGGER.debug("INIT PREGNANCY: class={}, lastPregnancyStage={}, totalDays={}, daysByStage={}, womb={}",
 					preggoMob.getClass().getSimpleName(), lastPregnancyStage, totalDays, map, womb);
@@ -369,17 +344,20 @@ public class PreggoMobHelper {
 		return result;
 	}
 	
-	public static<E extends PreggoMob & IFemaleEntity & ITamablePreggoMob<FemaleEntityImpl> & IPregnancySystemHandler> void initDefaultPregnancy(@NonNull E preggoMob) {				
-		final var numOfBabies =	IBreedable.calculateNumOfBabiesByMaxPregnancyStage(preggoMob.getLastPregnancyStage());
-		preggoMob.tryImpregnate(numOfBabies, ImmutableTriple.of(Optional.empty(), preggoMob.getTypeOfSpecies(), preggoMob.getTypeOfCreature()));	
+	public static<E extends PreggoMob & ITamablePregnantPreggoMob> void initDefaultPregnancy(@NonNull E preggoMob) {				
+		final IFemaleEntity femaleData = preggoMob.getGenderedData();
+		final ITamablePregnantPreggoMobData pregnancyData = preggoMob.getPregnancyData();
+		final var numOfBabies =	IBreedable.calculateNumOfBabiesByMaxPregnancyStage(pregnancyData.getLastPregnancyStage());
+		femaleData.tryImpregnate(numOfBabies, ImmutableTriple.of(Optional.empty(), preggoMob.getTypeOfSpecies(), preggoMob.getTypeOfCreature()));	
 		initPregnancy(preggoMob);
 	}
 	
-	public static<E extends PreggoMob & ITamablePreggoMob<FemaleEntityImpl> & IFemaleEntity> boolean initPrePregnancy(@NonNull E preggoMob, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father, @Nonnegative int fertilizedEggs) {	
-		return preggoMob.tryImpregnate(fertilizedEggs, father);
+	public static <E extends PreggoMob & ITamablePreggoMob<IFemaleEntity>> boolean initPrePregnancy(@NonNull E preggoMob, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father, @Nonnegative int fertilizedEggs) {	
+		final IFemaleEntity femaleData = preggoMob.getGenderedData();
+		return femaleData.tryImpregnate(fertilizedEggs, father);
 	}
 	
-	public static<E extends PreggoMob & ITamablePreggoMob<FemaleEntityImpl> & IFemaleEntity & IPregnancySystemHandler> boolean initPregnancyByPotion(@NonNull E preggoMob, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father, @Nonnegative int amplifier) {	
+	public static <E extends PreggoMob & ITamablePregnantPreggoMob> boolean initPregnancyByPotion(@NonNull E preggoMob, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father, @Nonnegative int amplifier) {	
 		final int numOfBabies = IBreedable.calculateNumOfBabiesByPotion(amplifier);	
 		final var r1 = initPrePregnancy(preggoMob, father, numOfBabies);	
 		final var r2 = initPregnancy(preggoMob);
@@ -392,7 +370,7 @@ public class PreggoMobHelper {
 		return r1 && r2;
 	}
 	
-	public static<E extends PreggoMob & ITamablePreggoMob<FemaleEntityImpl> & IFemaleEntity> boolean initPregnancyBySex(@NonNull E preggoMob, @NonNull ServerPlayer serverPlayer) {	
+	public static <E extends PreggoMob & ITamablePreggoMob<IFemaleEntity>> boolean initPregnancyBySex(@NonNull E preggoMob, @NonNull ServerPlayer serverPlayer) {	
 		if (!preggoMob.isOwnedBy(serverPlayer)) {
 			MinepreggoMod.LOGGER.debug("CANNOT INIT PREGNANCY BY SEX : class={}, playerId={}, ownerId={}",
 					preggoMob.getClass().getSimpleName(), serverPlayer.getUUID(), preggoMob.getOwnerUUID());
@@ -411,9 +389,10 @@ public class PreggoMobHelper {
 			return false;
 		}
 		
-		final var numOfBabies = IBreedable.calculateNumOfBabiesByFertility(preggoMob.getFertilityRate(), maleData.get().getFertilityRate());
-	
-		MinepreggoMod.LOGGER.debug("Fertility: {}, {}", preggoMob.getFertilityRate(), maleData.get().getFertilityRate());
+		final IFemaleEntity femaleData = preggoMob.getGenderedData();
+		final var numOfBabies = IBreedable.calculateNumOfBabiesByFertility(femaleData.getFertilityRate(), maleData.get().getFertilityRate());
+
+		MinepreggoMod.LOGGER.debug("Fertility: {}, {}", femaleData.getFertilityRate(), maleData.get().getFertilityRate());
 		
 		if (numOfBabies == 0) {
 			return false;
@@ -422,16 +401,16 @@ public class PreggoMobHelper {
 		return initPrePregnancy(preggoMob, ImmutableTriple.of(Optional.of(serverPlayer.getUUID()), Species.HUMAN, Creature.HUMANOID), numOfBabies);
 	}
 	
-	private static<E extends PreggoMob & ITamablePreggoMob<?> & IPregnancySystemHandler> float getSpawnProbabilityBasedPregnancy(@NonNull E preggoMob, float t0, float k, float pMin, float pMax) {	
-		return PregnancySystemHelper.getSpawnProbabilityBasedPregnancy(preggoMob, t0, k, pMin, pMax);
+	private static<E extends PreggoMob & ITamablePregnantPreggoMob> float getSpawnProbabilityBasedPregnancy(@NonNull E preggoMob, float t0, float k, float pMin, float pMax) {	
+		return PregnancySystemHelper.getSpawnProbabilityBasedPregnancy(preggoMob.getPregnancyData(), t0, k, pMin, pMax);
 	}
 	// Pregnancy END
 	
 	
 	// Armor START
 	
-	public static boolean canUseChestPlateInLactation(ITamablePreggoMob<FemaleEntityImpl> preggoMob, Item armor) {
-		var result = preggoMob.getGenderedData().getPostPregnancyData().map(post -> 
+	public static boolean canUseChestPlateInLactation(IFemaleEntity preggoMob, Item armor) {
+		var result = preggoMob.getPostPregnancyData().map(post -> 
 				post.getPostPartumLactation() < PregnancySystemHelper.ACTIVATE_MILKING_SYMPTOM
 			);	
 		if (result.isPresent() && !result.get().booleanValue()) {
@@ -440,8 +419,9 @@ public class PreggoMobHelper {
 		return true;
 	}
 	
-	public static boolean canUseChestPlateInLactation(IPregnancySystemHandler preggoMob, Item armor) {
-		if (!preggoMob.getPregnancySymptoms().contains(PregnancySymptom.MILKING)) {
+	public static<E extends PreggoMob & ITamablePregnantPreggoMob> boolean canUseChestPlateInLactation(E preggoMob, Item armor) {
+		final ITamablePregnantPreggoMobData pregnancyData = preggoMob.getPregnancyData();
+		if (!pregnancyData.getSyncedPregnancySymptoms().containsPregnancySymptom(PregnancySymptom.MILKING)) {
 			return true;
 		}
 		return armor instanceof IMaternityArmor maternityArmor && maternityArmor.areBoobsExposed();
@@ -659,10 +639,10 @@ public class PreggoMobHelper {
 		}
 	}
 		
-	public static void spawnBabyAndFetusZombies(@NonNull AbstractTamablePregnantZombieGirl<?,?> zombieGirl) {		
-
-		final var numOfBabies = zombieGirl.getWomb().getNumOfBabies();
-		final var pregnancyStage = zombieGirl.getCurrentPregnancyStage();
+	public static void spawnBabyAndFetusZombies(@NonNull AbstractTamablePregnantZombieGirl zombieGirl) {		
+		final var pregnancyData = zombieGirl.getPregnancyData();
+		final var numOfBabies = pregnancyData.getWomb().getNumOfBabies();
+		final var pregnancyStage = pregnancyData.getCurrentPregnancyStage();
 
 		if (pregnancyStage.ordinal() >= 3) {
 			final var alive = getSpawnProbabilityBasedPregnancy(zombieGirl, 0.6F, 0.3F, 0.2F, 0.95F);
@@ -674,10 +654,10 @@ public class PreggoMobHelper {
 		}
 	}
 	
-	public static void spawnBabyAndFetusCreepers(@NonNull AbstractTamablePregnantCreeperGirl<?,?> creeperGirl) {
-		
-		final var numOfBabies = creeperGirl.getWomb().getNumOfBabies();
-		final var pregnancyStage = creeperGirl.getCurrentPregnancyStage();
+	public static void spawnBabyAndFetusCreepers(@NonNull AbstractTamablePregnantCreeperGirl creeperGirl) {
+		final ITamablePregnantPreggoMobData pregnancyData = creeperGirl.getPregnancyData();
+		final var numOfBabies = pregnancyData.getWomb().getNumOfBabies();
+		final var pregnancyStage = pregnancyData.getCurrentPregnancyStage();
 		
 		if (pregnancyStage.ordinal() >= 3) {
 			final var alive = getSpawnProbabilityBasedPregnancy(creeperGirl, 0.6F, 0.3F, 0.15F, 0.8F);
@@ -736,7 +716,7 @@ public class PreggoMobHelper {
 	// Spawn Babies END
 	
 	// Client Data START
-	public static PregnancySystemHelper.PrenatalRegularCheckUpData createRegularPrenatalCheckUpData(IPregnancySystemHandler ps) {
+	public static PregnancySystemHelper.PrenatalRegularCheckUpData createRegularPrenatalCheckUpData(ITamablePregnantPreggoMobData ps) {
 		return new PregnancySystemHelper.PrenatalRegularCheckUpData(
 				ps.getCurrentPregnancyStage(),
 				ps.getLastPregnancyStage(),
@@ -748,7 +728,7 @@ public class PreggoMobHelper {
 				);
 	}
 	
-	public static PregnancySystemHelper.PrenatalUltrasoundScanData createUltrasoundScanPrenatalCheckUpData(Species motherSpecies, IPregnancySystemHandler ps) {
+	public static PregnancySystemHelper.PrenatalUltrasoundScanData createUltrasoundScanPrenatalCheckUpData(Species motherSpecies, ITamablePregnantPreggoMobData ps) {
 		return new PregnancySystemHelper.PrenatalUltrasoundScanData(
 				motherSpecies,
 				ps.getWomb()	
@@ -800,7 +780,7 @@ public class PreggoMobHelper {
 	}
 	
 	public static boolean canActivateSexEvent(ServerPlayer owner, PreggoMob target) {		
-		if (!(target instanceof ITamablePreggoMob<?>) && !(target instanceof IPregnancySystemHandler)) {
+		if (!(target instanceof ITamablePreggoMob<?>)) {
 			return false;
 		}
 		

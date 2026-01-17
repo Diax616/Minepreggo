@@ -36,6 +36,8 @@ import dev.dixmk.minepreggo.utils.TagHelper;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMobData;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
@@ -336,7 +338,7 @@ public class PregnancySystemHelper {
 			}		
 		}
 
-		return entity instanceof PreggoMob p && p instanceof IPregnancySystemHandler;
+		return entity instanceof PreggoMob p && p instanceof ITamablePregnantPreggoMob;
 	}
 	
 	
@@ -395,22 +397,26 @@ public class PregnancySystemHelper {
 	public static boolean tryRubBelly(ServerPlayer source, ServerPlayer target, Level level) {
 		Optional<Boolean> result = target.getCapability(MinepreggoCapabilities.PLAYER_DATA).map(cap -> 
 			cap.getFemaleData().map(femaleData -> {
-				if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized() && canTouchBelly(source, target)) {
+				if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized() && canTouchBelly(source, target)) {
 					
 					if (!level.isClientSide) {
 										
 						PlayerHelper.playSoundNearTo(target, MinepreggoModSounds.BELLY_TOUCH.get(), 0.6f);
 						
-						final var pregnancySystem = femaleData.getPregnancySystem();
-						final var isFather = femaleData.getFather() != null && femaleData.getFather().equals(source.getUUID());
+						final var pregnancySystem = femaleData.getPregnancyData();
+						final var isFather = femaleData.getPrePregnancyData().isPresent() && femaleData.getPrePregnancyData().get().fatherId().equals(source.getUUID());
+						
+						
 						ParticleOptions particle = isFather ? ParticleTypes.HEART : ParticleTypes.SMOKE;
 
 						playSlappingBellyAnimation(source, target);
 								
 						if (pregnancySystem.getCurrentPregnancyStage().compareTo(PregnancyPhase.P3) >= 0) {				
-							if (femaleData.getPregnancyEffects().getBellyRubs() >= BELLY_RUBBING_VALUE) {
-								femaleData.getPregnancyEffects().decrementBellyRubs(isFather ? BELLY_RUBBING_VALUE : 1);
-								femaleData.getPregnancyEffects().sync(target);			
+							var pregnancyData = femaleData.getPregnancyData();
+							
+							if (pregnancyData.getBellyRubs() >= BELLY_RUBBING_VALUE) {
+								pregnancyData.decrementBellyRubs(isFather ? BELLY_RUBBING_VALUE : 1);
+								pregnancyData.syncEffect(target);			
 							}
 							else {
 								particle = ParticleTypes.ANGRY_VILLAGER;
@@ -658,11 +664,11 @@ public class PregnancySystemHelper {
     }
 	
 	
-    public static int calculateDaysToGiveBirth(@NonNull IPregnancySystemHandler h) {
+    public static int calculateDaysToGiveBirth(@NonNull ITamablePregnantPreggoMobData h) {
         return h.getTotalDaysOfPregnancy() - calculateTotalDaysPassedFromPhaseP0(h);
     }
     
-    public static int calculateTotalDaysPassedFromPhaseP0(@NonNull IPregnancySystemHandler h) {   	
+    public static int calculateTotalDaysPassedFromPhaseP0(@NonNull IPregnancyData h) {   	
     	var map = h.getMapPregnancyPhase();
     	final PregnancyPhase currentPhase = h.getCurrentPregnancyStage();
     	
@@ -681,7 +687,7 @@ public class PregnancySystemHelper {
     	return totalDaysPassed + h.getDaysPassed();
     } 
     
-    public static int calculateDaysToNextPhase(@NonNull IPregnancySystemHandler h) {
+    public static int calculateDaysToNextPhase(@NonNull IPregnancyData h) {
 		return h.getDaysByCurrentStage() - h.getDaysPassed();
     }
    
@@ -795,15 +801,15 @@ public class PregnancySystemHelper {
     	playSlappingBellyAnimation((LivingEntity) source, (LivingEntity) target);
     }
     
-    public static void playSlappingBellyAnimation(Player source, AbstractTamablePregnantZombieGirl<?,?> target) {
+    public static void playSlappingBellyAnimation(Player source, AbstractTamablePregnantZombieGirl target) {
     	playSlappingBellyAnimation((LivingEntity) source, (LivingEntity) target);
     }
     
-    public static void playSlappingBellyAnimation(Player source, AbstractTamablePregnantCreeperGirl<?,?> target) {
+    public static void playSlappingBellyAnimation(Player source, AbstractTamablePregnantCreeperGirl target) {
     	playSlappingBellyAnimation((LivingEntity) source, (LivingEntity) target);
     }
     
-    public static float getSpawnProbabilityBasedPregnancy(IPregnancySystemHandler handler, float t0, float k, float pMin, float pMax) {
+    public static float getSpawnProbabilityBasedPregnancy(IPregnancyData handler, float t0, float k, float pMin, float pMax) {
 		final int totalDays = handler.getTotalDaysOfPregnancy();
 		final int totalDaysPassed = PregnancySystemHelper.calculateTotalDaysPassedFromPhaseP0(handler);
 		
@@ -875,13 +881,13 @@ public class PregnancySystemHelper {
     			var femaleDataOpt = cap.getFemaleData().resolve();
     			if (femaleDataOpt.isPresent()) {
     				var femaleData = femaleDataOpt.get();				
-    				return femaleData.isPregnant() && femaleData.isPregnancySystemInitialized();
+    				return femaleData.isPregnant() && femaleData.isPregnancyDataInitialized();
     			}
     			return false;
     		});		
     		return result.isPresent() && result.get().booleanValue();
         }
 		
-		return entity instanceof IPregnancySystemHandler;
+		return entity instanceof ITamablePregnantPreggoMob;
 	}
 }

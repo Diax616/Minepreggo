@@ -104,7 +104,7 @@ public abstract class AbstractPregnantBodyModel extends HierarchicalModel<Abstra
 	
 	protected void animBellyIdle(AbstractClientPlayer entity, float ageInTicks) {
 		entity.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
-			cap.getFemaleData().ifPresent(femaleData -> this.animate(femaleData.getPregnancySystem().bellyAnimationState, bellyInflation.animation, ageInTicks))
+			cap.getFemaleData().ifPresent(femaleData -> this.animate(femaleData.getPregnancyData().bellyAnimationState, bellyInflation.animation, ageInTicks))
 		);
 	}
 	

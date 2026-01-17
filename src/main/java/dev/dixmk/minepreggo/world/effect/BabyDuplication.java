@@ -7,11 +7,12 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantHumanoidCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.world.pregnancy.IBreedable;
-import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
+import dev.dixmk.minepreggo.world.pregnancy.IPregnancyData;
 import dev.dixmk.minepreggo.world.pregnancy.MapPregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
@@ -43,13 +44,14 @@ public class BabyDuplication extends MobEffect {
             return;
         }
             
-        if (target instanceof IPregnancySystemHandler handler) {
+        if (target instanceof ITamablePregnantPreggoMob tamablePregnantPreggoMob) {
+        	var pregnancyData = tamablePregnantPreggoMob.getPregnancyData();
         	PregnancySystemHelper.playSoundNearTo(target, MinepreggoModSounds.getRandomStomachGrowls(target.getRandom()));         	
-        	var newPhase = apply(handler, getExtraBabiesByAmplifier(amplifier), target.getRandom());
-        	if (newPhase != null && newPhase != handler.getCurrentPregnancyStage()) {    		
-        		if (target instanceof AbstractTamablePregnantZombieGirl<?,?> zombieGirl && target.level() instanceof ServerLevel serverLevel) {
+        	var newPhase = apply(pregnancyData, getExtraBabiesByAmplifier(amplifier), target.getRandom());
+        	if (newPhase != null && newPhase != pregnancyData.getCurrentPregnancyStage()) {    		
+        		if (target instanceof AbstractTamablePregnantZombieGirl zombieGirl && target.level() instanceof ServerLevel serverLevel) {
         			var nextPhase = AbstractTamablePregnantZombieGirl.getEntityType(newPhase);   			
-        			var newZombieGirl = (AbstractTamablePregnantZombieGirl<?,?>) nextPhase.spawn(serverLevel, BlockPos.containing(target.getX(), target.getY(), target.getZ()), MobSpawnType.CONVERSION);
+        			var newZombieGirl = (AbstractTamablePregnantZombieGirl) nextPhase.spawn(serverLevel, BlockPos.containing(target.getX(), target.getY(), target.getZ()), MobSpawnType.CONVERSION);
         			if (newZombieGirl != null) {
         				PreggoMobHelper.transferAllData(zombieGirl, newZombieGirl);
         				zombieGirl.discard();
@@ -58,9 +60,9 @@ public class BabyDuplication extends MobEffect {
         				MinepreggoMod.LOGGER.warn("Failed to duplicate babies for zombie girl entity conversion.");
         			}
         		}
-        		else if (target instanceof AbstractTamablePregnantHumanoidCreeperGirl<?,?> creeperGirl && target.level() instanceof ServerLevel serverLevel) {
+        		else if (target instanceof AbstractTamablePregnantHumanoidCreeperGirl creeperGirl && target.level() instanceof ServerLevel serverLevel) {
         			var nextPhase = AbstractTamablePregnantHumanoidCreeperGirl.getEntityType(newPhase);   			
-        			var newCreeperGirl = (AbstractTamablePregnantHumanoidCreeperGirl<?,?>) nextPhase.spawn(serverLevel, BlockPos.containing(target.getX(), target.getY(), target.getZ()), MobSpawnType.CONVERSION);
+        			var newCreeperGirl = (AbstractTamablePregnantHumanoidCreeperGirl) nextPhase.spawn(serverLevel, BlockPos.containing(target.getX(), target.getY(), target.getZ()), MobSpawnType.CONVERSION);
         			if (newCreeperGirl != null) {
         				PreggoMobHelper.transferAllData(creeperGirl, newCreeperGirl);
         				creeperGirl.discard();
@@ -74,15 +76,15 @@ public class BabyDuplication extends MobEffect {
         else if (target instanceof ServerPlayer player) {
             player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap ->
                 cap.getFemaleData().ifPresent(femaleData -> {
-                    if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {
-                    	var pregnancySystem = femaleData.getPregnancySystem();
+                    if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
+                    	var pregnancySystem = femaleData.getPregnancyData();
                     	var oldPhase = pregnancySystem.getCurrentPregnancyStage(); 	
                     	var newPhase = apply(pregnancySystem, getExtraBabiesByAmplifier(amplifier), player.getRandom());
                     	if (newPhase != null && newPhase != oldPhase) {
                         	PregnancySystemHelper.playSoundNearTo(target, MinepreggoModSounds.getRandomStomachGrowls(target.getRandom()));
                     		player.removeEffect(PlayerHelper.getPregnancyEffects(oldPhase));
                     		player.addEffect(new MobEffectInstance(PlayerHelper.getPregnancyEffects(newPhase), -1, 0, false, false, true));	
-                    		pregnancySystem.sync(player);
+                    		pregnancySystem.syncState(player);
                     	}
                     }
                 })
@@ -91,7 +93,7 @@ public class BabyDuplication extends MobEffect {
     }
     
     @CheckForNull
-    private static PregnancyPhase apply(IPregnancySystemHandler handler, int numOfTargetBabies, RandomSource random) {
+    private static PregnancyPhase apply(IPregnancyData handler, int numOfTargetBabies, RandomSource random) {
         var womb = handler.getWomb();
         var numOfBabies = womb.getNumOfBabies();
         if (numOfBabies < IBreedable.MAX_NUMBER_OF_BABIES) {

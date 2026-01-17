@@ -6,7 +6,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
-public abstract class AbstractZombieGirlMainMenu<E extends AbstractTamableZombieGirl<?>> extends AbstractPreggoMobMainMenu<E> {	
+public abstract class AbstractZombieGirlMainMenu<E extends AbstractTamableZombieGirl> extends AbstractPreggoMobMainMenu<E> {	
 	
 	protected AbstractZombieGirlMainMenu(MenuType<?> menuType, int id, Inventory inv, FriendlyByteBuf extraData, Class<E> zombieGirlClass) {
 		super(menuType, id, inv, extraData, zombieGirlClass);	

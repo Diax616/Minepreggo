@@ -5,7 +5,6 @@ import dev.dixmk.minepreggo.client.model.entity.preggo.PregnantFemaleHumanoidMod
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractZombieGirl;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
-import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -17,11 +16,6 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-/*
- * Classes that extend this abstract class need to be refactored to reduce code duplication.
- * 
- * */
 
 @OnlyIn(Dist.CLIENT)
 public abstract class AbstractZombieGirlModel<E extends AbstractZombieGirl> extends PregnantFemaleHumanoidModel<E> {
@@ -41,9 +35,9 @@ public abstract class AbstractZombieGirlModel<E extends AbstractZombieGirl> exte
 	public static final ModelLayerLocation LAYER_LOCATION_P8 = new ModelLayerLocation(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "zombie_girl_p8_model"), "main");
 
 	protected final ModelPart root;
-	protected final HierarchicalModel<E> animator;
+	protected final ZombieGirlAnimator<E> animator;
 	
-	protected AbstractZombieGirlModel(ModelPart root, HierarchicalModel<E> animator) {
+	protected AbstractZombieGirlModel(ModelPart root, ZombieGirlAnimator<E> animator) {
 		super(root);
 		this.root = root;
 		this.animator = animator;

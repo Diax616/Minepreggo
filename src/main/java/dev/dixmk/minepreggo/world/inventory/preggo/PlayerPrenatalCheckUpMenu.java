@@ -71,7 +71,7 @@ public abstract class PlayerPrenatalCheckUpMenu<T extends Mob> extends AbstractP
 			return null;
 		}
 		
-		final var pregnancySystem = femaleData.get().getPregnancySystem();	
+		final var pregnancySystem = femaleData.get().getPregnancyData();	
 		String playerName = player.getName().getString();
 		LocalDateTime date = LocalDateTime.now();
 		String autor = target.get().getName().getString();
@@ -141,7 +141,7 @@ public abstract class PlayerPrenatalCheckUpMenu<T extends Mob> extends AbstractP
 			this.source.ifPresent(p -> 
 				p.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
 					cap.getFemaleData().ifPresent(femaleData -> 
-						this.motherPregnancyPhase =	femaleData.getPregnancySystem().getCurrentPregnancyStage()
+						this.motherPregnancyPhase =	femaleData.getPregnancyData().getCurrentPregnancyStage()
 					)
 				)
 			);
@@ -246,7 +246,7 @@ public abstract class PlayerPrenatalCheckUpMenu<T extends Mob> extends AbstractP
 			this.source.ifPresent(p -> 
 				p.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
 					cap.getFemaleData().ifPresent(femaleData -> 
-						this.motherPregnancyPhase =	femaleData.getPregnancySystem().getCurrentPregnancyStage()
+						this.motherPregnancyPhase =	femaleData.getPregnancyData().getCurrentPregnancyStage()
 					)
 				)
 			);	

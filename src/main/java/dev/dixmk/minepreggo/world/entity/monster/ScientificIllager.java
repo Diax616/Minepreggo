@@ -76,13 +76,13 @@ import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.world.entity.npc.Trades;
+import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.IllHumanoidCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.IllCreeperGirl;
 import dev.dixmk.minepreggo.world.inventory.preggo.PlayerPrenatalCheckUpMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.SelectPregnantEntityForPrenatalCheckUpMenu;
 import dev.dixmk.minepreggo.world.pregnancy.IObstetrician;
-import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.pregnancy.PrenatalCheckupCostHolder;
 import dev.dixmk.minepreggo.world.pregnancy.PrenatalCheckupCostHolder.PrenatalCheckupCost;
 import io.netty.buffer.Unpooled;
@@ -223,14 +223,14 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
     	
 		final var blockPos = serverPlayer.blockPosition();
 		final var scientificIllagerId = this.getId();   		
-		final List<Integer> list = serverPlayer.level().getEntitiesOfClass(PreggoMob.class, new AABB(blockPos).inflate(16D), e -> e.isOwnedBy(serverPlayer) && e instanceof IPregnancySystemHandler)
+		final List<Integer> list = serverPlayer.level().getEntitiesOfClass(PreggoMob.class, new AABB(blockPos).inflate(16D), e -> e.isOwnedBy(serverPlayer) && e instanceof ITamablePregnantPreggoMob)
 					.stream()
 					.map(e -> e.getId())
 					.collect(Collectors.toCollection(ArrayList::new));
 		
 		serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 			  		 		 		   		    		
 			cap.getFemaleData().ifPresent(femaleData -> {
-        		if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {
+        		if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
             		list.add(serverPlayer.getId());		
         		}
 			}) 		

@@ -15,12 +15,12 @@ import dev.dixmk.minepreggo.client.gui.preggo.creeper.AbstractCreeperGirlMainScr
 import dev.dixmk.minepreggo.client.gui.preggo.zombie.AbstractZombieGirlMainScreen;
 import dev.dixmk.minepreggo.client.renderer.entity.layer.player.ClientPlayerHelper;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
+import dev.dixmk.minepreggo.network.capability.PlayerPregnancyDataImpl;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
+import dev.dixmk.minepreggo.world.pregnancy.IPostPregnancyDataHolder;
 import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
-import dev.dixmk.minepreggo.world.pregnancy.PostPregnancyData;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
-import dev.dixmk.minepreggo.network.capability.PlayerPregnancyEffectsImpl;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -56,38 +56,37 @@ public class ScreenEventHandler {
 				RenderSystem.setShaderColor(1, 1, 1, 1);
 				final int w = event.getWindow().getGuiScaledWidth();
 				final var gui = event.getGuiGraphics();
-				if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {
-					final var pregnancySystem = femaleData.getPregnancySystem();
-					final var pregnancyEffects = femaleData.getPregnancyEffects();
+				if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
+					final var pregnancySystem = femaleData.getPregnancyData();
 					final PregnancyPhase phase = pregnancySystem.getCurrentPregnancyStage();
 					
 					Runnable cravingOverlay = () -> {
-						if (pregnancySystem.getPregnancySymptoms().contains(PregnancySymptom.CRAVING)) {
-							renderCravingChoosenScreen(gui, w, player.getSkinTextureLocation(), pregnancyEffects);
+						if (pregnancySystem.getPregnancySymptoms().containsPregnancySymptom(PregnancySymptom.CRAVING)) {
+							renderCravingChoosenScreen(gui, w, player.getSkinTextureLocation(), pregnancySystem);
 						}
 					};
 									
 					if (phase == PregnancyPhase.P1) {				
-						renderCravingScreen(gui, 4, 4, 11, pregnancyEffects);	
+						renderCravingScreen(gui, 4, 4, 11, pregnancySystem);	
 						cravingOverlay.run();
 					}	
 					else if (phase == PregnancyPhase.P2) {	
-						renderCravingScreen(gui, 4, 4, 11, pregnancyEffects);		
+						renderCravingScreen(gui, 4, 4, 11, pregnancySystem);		
 						cravingOverlay.run();	
-						renderMilkingScreen(gui, 14, 4, 11, pregnancyEffects);
+						renderMilkingScreen(gui, 14, 4, 11, pregnancySystem);
 					}
 					else if (phase == PregnancyPhase.P3) {	
-						renderCravingScreen(gui, 4, 4, 11, pregnancyEffects);		
+						renderCravingScreen(gui, 4, 4, 11, pregnancySystem);		
 						cravingOverlay.run();	
-						renderMilkingScreen(gui, 14, 4, 11, pregnancyEffects);
-						renderBellyRubsScreen(gui, 24, 4, 11, pregnancyEffects);
+						renderMilkingScreen(gui, 14, 4, 11, pregnancySystem);
+						renderBellyRubsScreen(gui, 24, 4, 11, pregnancySystem);
 					}
 					else if (phase.compareTo(PregnancyPhase.P4) >= 0) {	
-						renderCravingScreen(gui, 4, 4, 11, pregnancyEffects);		
+						renderCravingScreen(gui, 4, 4, 11, pregnancySystem);		
 						cravingOverlay.run();		
-						renderMilkingScreen(gui, 14, 4, 11, pregnancyEffects);
-						renderBellyRubsScreen(gui, 24, 4, 11, pregnancyEffects);
-						renderHornyScreen(gui, 34, 4, 11, pregnancyEffects);
+						renderMilkingScreen(gui, 14, 4, 11, pregnancySystem);
+						renderBellyRubsScreen(gui, 24, 4, 11, pregnancySystem);
+						renderHornyScreen(gui, 34, 4, 11, pregnancySystem);
 					}
 				}
 				else {
@@ -103,7 +102,7 @@ public class ScreenEventHandler {
 		);
 	}
 	
-	private static void renderCravingScreen(GuiGraphics gui, int top, int init, int diff, @NonNull PlayerPregnancyEffectsImpl pregnancyEffects) {
+	private static void renderCravingScreen(GuiGraphics gui, int top, int init, int diff, @NonNull PlayerPregnancyDataImpl pregnancyEffects) {
 		int pos;
 		final int craving = pregnancyEffects.getCraving();	
 		for (int i = 0, oddValue = 1, evenValue = 2 ; i < 10; i++, oddValue +=2, evenValue += 2) {
@@ -116,7 +115,7 @@ public class ScreenEventHandler {
 		}	
 	}
 	
-	private static void renderCravingChoosenScreen(GuiGraphics gui, int w, ResourceLocation playerIcon, @NonNull PlayerPregnancyEffectsImpl pregnancyEffects) {		
+	private static void renderCravingChoosenScreen(GuiGraphics gui, int w, ResourceLocation playerIcon, @NonNull PlayerPregnancyDataImpl pregnancyEffects) {		
 		final var pair = pregnancyEffects.getTypeOfCravingBySpecies();	
 		if (pair == null) {
 			return;
@@ -160,7 +159,7 @@ public class ScreenEventHandler {
 		}
 	}
 	
-	private static void renderMilkingScreen(GuiGraphics gui, int top, int init, int diff, @NonNull PlayerPregnancyEffectsImpl pregnancyEffects) {
+	private static void renderMilkingScreen(GuiGraphics gui, int top, int init, int diff, @NonNull PlayerPregnancyDataImpl pregnancyEffects) {
 		int pos;
 		final int milking = pregnancyEffects.getMilking();	
 		for (int i = 0, oddValue = 1, evenValue = 2 ; i < 10; i++, oddValue +=2, evenValue += 2) {
@@ -174,7 +173,7 @@ public class ScreenEventHandler {
 		}
 	}
 	
-	private static void renderPostPartumLactationScreen(GuiGraphics gui, int top, int init, int diff, @NonNull PostPregnancyData postPregnancyData) {
+	private static void renderPostPartumLactationScreen(GuiGraphics gui, int top, int init, int diff, @NonNull IPostPregnancyDataHolder postPregnancyData) {
 		if (postPregnancyData.getPostPregnancy() == PostPregnancy.PARTUM) {
 			int pos;
 			final var lactation = postPregnancyData.getPostPartumLactation();
@@ -189,7 +188,7 @@ public class ScreenEventHandler {
 		}
 	}
 	
-	private static void renderBellyRubsScreen(GuiGraphics gui, int top, int init, int diff,  @NonNull PlayerPregnancyEffectsImpl pregnancyEffects) {
+	private static void renderBellyRubsScreen(GuiGraphics gui, int top, int init, int diff,  @NonNull PlayerPregnancyDataImpl pregnancyEffects) {
 		int pos;
 		final int bellyRubs = pregnancyEffects.getBellyRubs();	
 		for (int i = 0, oddValue = 1, evenValue = 2 ; i < 10; i++, oddValue +=2, evenValue += 2) {
@@ -202,7 +201,7 @@ public class ScreenEventHandler {
 		}
 	}
 	
-	private static void renderHornyScreen(GuiGraphics gui, int top, int init, int diff, @NonNull PlayerPregnancyEffectsImpl pregnancyEffects) {
+	private static void renderHornyScreen(GuiGraphics gui, int top, int init, int diff, @NonNull PlayerPregnancyDataImpl pregnancyEffects) {
 		int pos; 
 		final int horny = pregnancyEffects.getHorny();
 		for (int i = 0, oddValue = 1, evenValue = 2 ; i < 10; i++, oddValue +=2, evenValue += 2) {

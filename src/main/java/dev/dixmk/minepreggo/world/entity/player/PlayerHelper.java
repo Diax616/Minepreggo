@@ -213,7 +213,7 @@ public class PlayerHelper {
 				final var lastPregnancyStage = IBreedable.calculateMaxPregnancyPhaseByTotalNumOfBabies(prePregnancyData.fertilizedEggs());
 				final var totalDays = MinepreggoModConfig.getTotalPregnancyDays();
 				final var daysByStage = new MapPregnancyPhase(totalDays, lastPregnancyStage);
-				final var pregnancySystem = femaleData.getPregnancySystem();
+				final var pregnancySystem = femaleData.getPregnancyData();
 				
 				final Womb womb;
 								
@@ -244,7 +244,7 @@ public class PlayerHelper {
 				PlayerHelper.updateJigglePhysics(player, PregnancyPhase.P0, playerDataCap.get().getSkinType());
 				
 				femaleData.sync(player);
-				pregnancySystem.sync(player);	
+				pregnancySystem.syncState(player);	
 							
 				MinepreggoMod.LOGGER.debug("Player {} has become pregnant with {} babies, total days to give birth: {}, pregnancy phases days: {}, womb: {}", 
 						player.getName().getString(), 
@@ -509,17 +509,15 @@ public class PlayerHelper {
 	public static void removeHorny(ServerPlayer source) {
 		source.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
 			cap.getFemaleData().ifPresent(femaleData -> {
-				if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {								
-					var pregnancySystem = femaleData.getPregnancySystem();					
-					if (pregnancySystem.getCurrentPregnancyStage().compareTo(PregnancyPhase.P4) >= 0) {
-						var pregnancyEffects = femaleData.getPregnancyEffects();						
-						pregnancyEffects.setHorny(0);
-						pregnancyEffects.resetHornyTimer();
-						pregnancySystem.removePregnancySymptom(PregnancySymptom.HORNY);
+				if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {								
+					var pregnancyData = femaleData.getPregnancyData();					
+					if (pregnancyData.getCurrentPregnancyStage().compareTo(PregnancyPhase.P4) >= 0) {
+						pregnancyData.setHorny(0);
+						pregnancyData.resetHornyTimer();
+						pregnancyData.getPregnancySymptoms().removePregnancySymptom(PregnancySymptom.HORNY);
 						source.removeEffect(MinepreggoModMobEffects.HORNY.get());
-						
-						pregnancyEffects.sync(source);
-						pregnancySystem.sync(source);
+						pregnancyData.syncState(source);
+						pregnancyData.syncEffect(source);
 					}
 				}
 			})			

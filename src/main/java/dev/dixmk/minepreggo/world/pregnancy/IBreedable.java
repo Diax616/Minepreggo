@@ -4,9 +4,11 @@ import javax.annotation.Nonnegative;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
+import net.minecraftforge.common.util.INBTSerializable;
 
-public interface IBreedable {
+public interface IBreedable extends INBTSerializable<CompoundTag> {
 
 	public static final int MAX_NUMBER_OF_BABIES = 5;
 	public static final float MAX_FERTILITY_RATE = 1.0f;

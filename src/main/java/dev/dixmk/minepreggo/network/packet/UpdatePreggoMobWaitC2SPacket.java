@@ -27,7 +27,7 @@ public record UpdatePreggoMobWaitC2SPacket(int preggoMobId, boolean isWaiting) {
     			var world = serverPlayer.level();
     			
     			if (world.getEntity(message.preggoMobId) instanceof ITamablePreggoMob<?> mob) {
-    				mob.setWaiting(message.isWaiting);	
+    				mob.getTamableData().setWaiting(message.isWaiting);
     			}
             }
 		});

@@ -15,7 +15,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class TamablePregnantZombieGirlExpressionLayer 
-	<E extends AbstractTamablePregnantZombieGirl<?,?>, M extends AbstractTamablePregnantZombieGirlModel<E>> extends TamableZombieGirlExpressionLayer<E, M> {
+	<E extends AbstractTamablePregnantZombieGirl, M extends AbstractTamablePregnantZombieGirlModel<E>> extends TamableZombieGirlExpressionLayer<E, M> {
 
 	protected static final RenderType ANGRY1 = RenderType.entityCutoutNoCull(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/expressions/zombie_girl_face_angry1.png"));
 	protected static final RenderType HORNY2 = RenderType.entityCutoutNoCull(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/expressions/zombie_girl_face_horny2.png"));
@@ -32,7 +32,8 @@ public class TamablePregnantZombieGirlExpressionLayer
 	@Override
 	public @Nullable RenderType renderType(E zombieGirl) {		
 		
-		final var pain = zombieGirl.getPregnancyPain();
+		final var pregnancyData = zombieGirl.getPregnancyData();
+		final var pain = pregnancyData.getPregnancyPain();
 		
 		if (zombieGirl.isOnFire() || pain == PregnancyPain.WATER_BREAKING) {
 			return SURPRISED2;
@@ -63,16 +64,18 @@ public class TamablePregnantZombieGirlExpressionLayer
 			}
 		}
 		
-		if (!zombieGirl.getPregnancySymptoms().isEmpty()) {
+		var tamableData = zombieGirl.getTamableData();
+		
+		if (!pregnancyData.getSyncedPregnancySymptoms().isEmpty()) {
 			return SAD1;
 		}
-		else if (zombieGirl.getFaceState() == PreggoMobFace.BLUSHED) {
+		else if (tamableData.getFaceState() == PreggoMobFace.BLUSHED) {
 			return HORNY2;
 		}
-		else if (zombieGirl.isWaiting()) {
+		else if (tamableData.isWaiting()) {
 			return SAD2;
 		}
-		else if (zombieGirl.isSavage()) {
+		else if (tamableData.isSavage()) {
 			return SAD3;
 		}
 

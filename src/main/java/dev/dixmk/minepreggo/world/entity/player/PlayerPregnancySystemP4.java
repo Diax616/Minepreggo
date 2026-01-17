@@ -82,17 +82,17 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 	}
 	
 	protected void evaluateHornyTimer() {   				
-		if (pregnancyEffects.getHorny() < PregnancySystemHelper.MAX_HORNY_LEVEL) {
-	        if (pregnancyEffects.getHornyTimer() >= totalTicksOfHorny) {
-	        	pregnancyEffects.incrementHorny();
-	        	pregnancyEffects.resetHornyTimer();
-	        	pregnancyEffects.sync(pregnantEntity);
+		if (pregnancySystem.getHorny() < PregnancySystemHelper.MAX_HORNY_LEVEL) {
+	        if (pregnancySystem.getHornyTimer() >= totalTicksOfHorny) {
+	        	pregnancySystem.incrementHorny();
+	        	pregnancySystem.resetHornyTimer();
+	        	pregnancySystem.syncEffect(pregnantEntity);
 	        	
 	        	MinepreggoMod.LOGGER.debug("Player {} horny level increased to: {}", 
-	        			pregnantEntity.getGameProfile().getName(), pregnancyEffects.getHorny());
+	        			pregnantEntity.getGameProfile().getName(), pregnancySystem.getHorny());
 	        }
 	        else {
-	        	pregnancyEffects.incrementHornyTimer();
+	        	pregnancySystem.incrementHornyTimer();
 	        }
 		}	
 	}
@@ -110,7 +110,7 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 			PlayerHelper.playSoundNearTo(pregnantEntity, MinepreggoModSounds.PLAYER_CONTRACTION.get());			
 			pregnancySystem.setPregnancyPain(PregnancyPain.CONTRACTION);
 			pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.CONTRACTION.get(), totalTicksOfFetalMovement, 0, false, false, true));
-			pregnancySystem.sync(pregnantEntity);	
+			pregnancySystem.syncState(pregnantEntity);	
 			PlayerHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.CHEST);
 			MinepreggoMod.LOGGER.debug("Player {} has developed pregnancy pain: {}",
 					pregnantEntity.getGameProfile().getName(), pregnancySystem.getPregnancyPain());
@@ -125,14 +125,14 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 		if (super.tryInitPregnancySymptom()) {
 			return true;
 		} 	
-		if (pregnancyEffects.getHorny() >= PregnancySystemHelper.MAX_HORNY_LEVEL
-				&& !pregnancySystem.getPregnancySymptoms().contains(PregnancySymptom.HORNY)) {
+		if (pregnancySystem.getHorny() >= PregnancySystemHelper.MAX_HORNY_LEVEL
+				&& !pregnancySystem.getPregnancySymptoms().containsPregnancySymptom(PregnancySymptom.HORNY)) {
 			
-			pregnancySystem.addPregnancySymptom(PregnancySymptom.HORNY);
+			pregnancySystem.getPregnancySymptoms().addPregnancySymptom(PregnancySymptom.HORNY);
 			pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.HORNY.get(), -1, 0, false, false, true));
 			femaleData.setSexualAppetite(IBreedable.MAX_SEXUAL_APPETIVE);
 			
-			pregnancySystem.sync(pregnantEntity);
+			pregnancySystem.syncState(pregnantEntity);
 
 			MinepreggoMod.LOGGER.debug("Player {} has developed pregnancy symptom: {}, all pregnancy symptom: {}",
 					pregnantEntity.getGameProfile().getName(), PregnancySymptom.HORNY, pregnancySystem.getPregnancySymptoms());
@@ -151,7 +151,7 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 		pregnancySystem.setPregnancyPain(PregnancyPain.PREBIRTH);
 		pregnancySystem.resetPregnancyPainTimer();
 		pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.PREBIRTH.get(), totalTicksOfPreBirth, 0, false, false, true));
-		pregnancySystem.sync(pregnantEntity);
+		pregnancySystem.syncState(pregnantEntity);
 		MinepreggoMod.LOGGER.debug("Player {} has started labor.", pregnantEntity.getGameProfile().getName());
 	}
 	
@@ -240,7 +240,7 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 		pregnancySystem.resetPregnancyPainTimer();
 		pregnancySystem.setPregnancyPain(PregnancyPain.WATER_BREAKING);
 		pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.WATER_BREAKING.get(), PregnancySystemHelper.TOTAL_TICKS_WATER_BREAKING, 0, false, false, true));
-		pregnancySystem.sync(pregnantEntity);
+		pregnancySystem.syncState(pregnantEntity);
 		MinepreggoMod.LOGGER.debug("Player {} water has broken.", pregnantEntity.getGameProfile().getName());
 	}
 	
@@ -268,7 +268,7 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 				pregnantEntity.removeEffect(MinepreggoModMobEffects.CONTRACTION.get());
 				pregnancySystem.clearPregnancyPain();
 				pregnancySystem.resetPregnancyPainTimer();
-				pregnancySystem.sync(pregnantEntity);
+				pregnancySystem.syncState(pregnantEntity);
 				
 				MinepreggoMod.LOGGER.debug("Player {} pregnancy pain cleared: {}",
 						pregnantEntity.getGameProfile().getName(), PregnancyPain.CONTRACTION.name());

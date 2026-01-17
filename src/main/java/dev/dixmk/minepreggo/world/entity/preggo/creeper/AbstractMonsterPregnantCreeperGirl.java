@@ -1,8 +1,7 @@
 package dev.dixmk.minepreggo.world.entity.preggo.creeper;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
+import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.utils.MathHelper;
-import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.ISimplePregnancy;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
@@ -29,7 +28,6 @@ import net.minecraft.world.entity.animal.Cat;
 import net.minecraft.world.entity.animal.Ocelot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistries;
 
 public abstract class AbstractMonsterPregnantCreeperGirl extends AbstractMonsterCreeperGirl implements ISimplePregnancy {
 	private static final EntityDataAccessor<Boolean> DATA_HAS_PREGNANCY_PAIN = SynchedEntityData.defineId(AbstractMonsterPregnantCreeperGirl.class, EntityDataSerializers.BOOLEAN);
@@ -45,7 +43,7 @@ public abstract class AbstractMonsterPregnantCreeperGirl extends AbstractMonster
 		this.maxPregnanctStage = PregnancySystemHelper.calculateRandomMinPhaseToGiveBirthFrom(currentPregnancyStage, random);
 		this.totalDaysPassed = ISimplePregnancy.getRandomTotalDaysPassed(currentPregnancyStage, this.maxPregnanctStage, this.getRandom());
 		this.setExplosionByCurrentPregnancyStage();
-		this.pregnancyPainProbability = MathHelper.sigmoid(0.1F, 0.4F, 0.1F, Mth.clamp(this.getTotalDaysPassed() /(float) PregnancySystemHelper.TOTAL_PREGNANCY_DAYS , 0, 1), 0.6F);
+		this.pregnancyPainProbability = MathHelper.sigmoid(0.05F, 0.1F, 0.1F, Mth.clamp(this.getTotalDaysPassed() /(float) PregnancySystemHelper.TOTAL_PREGNANCY_DAYS , 0, 1), 0.6F);
 	}
 
 	@Override
@@ -74,7 +72,7 @@ public abstract class AbstractMonsterPregnantCreeperGirl extends AbstractMonster
 	
 	@Override
 	public SoundEvent getDeathSound() {
-		return ForgeRegistries.SOUND_EVENTS.getValue(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "preggo_death"));
+		return MinepreggoModSounds.PREGNANT_PREGGO_MOB_DEATH.get();
 	}
 	
 	protected void setExplosionByCurrentPregnancyStage() {	

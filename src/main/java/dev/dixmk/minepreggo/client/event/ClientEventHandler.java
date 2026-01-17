@@ -110,8 +110,8 @@ public class ClientEventHandler {
     	if (CommonPlayerAnimationRegistry.getInstance().isBellyRubbingAnimation(cache.getCurrentAnimationName())) {
     		player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
     			cap.getFemaleData().ifPresent(femaleData -> {
-    				if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {
-    					var phase = femaleData.getPregnancySystem().getCurrentPregnancyStage();
+    				if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
+    					var phase = femaleData.getPregnancyData().getCurrentPregnancyStage();
     					if (phase.compareTo(PregnancyPhase.P2) > 0
     							&& cache.getContinuousAnimationTick() % PregnancySystemHelper.TOTAL_TICKS_CALM_BELLY_RUGGING_DOWN == 0) {					
     						MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdateBellyRubbingStateC2SPacket(player.getUUID()));

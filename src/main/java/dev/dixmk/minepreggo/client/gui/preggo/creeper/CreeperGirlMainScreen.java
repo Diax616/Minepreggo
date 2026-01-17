@@ -14,10 +14,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class CreeperGirlMainScreen extends AbstractCreeperGirlMainScreen<TamableHumanoidCreeperGirl, CreeperGirlMainMenu> {
 
+	protected final boolean pregnant;
+	
 	public CreeperGirlMainScreen(CreeperGirlMainMenu container, Inventory inventory, Component text) {
 		super(container, inventory, text);
 		this.imageWidth = 187;
 		this.imageHeight = 103;
+		this.pregnant = container.pregnant.orElse(false);
 	}
 
 
@@ -36,6 +39,6 @@ public class CreeperGirlMainScreen extends AbstractCreeperGirlMainScreen<Tamable
 
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {	
-		this.preggoMob.ifPresent(creeperGirl -> ScreenHelper.renderDefaultPreggoLabelMainGUI(guiGraphics, this.font, creeperGirl));
+		this.preggoMob.ifPresent(creeperGirl -> ScreenHelper.renderDefaultPreggoLabelMainGUI(guiGraphics, this.font, creeperGirl, this.pregnant));
 	}
 }

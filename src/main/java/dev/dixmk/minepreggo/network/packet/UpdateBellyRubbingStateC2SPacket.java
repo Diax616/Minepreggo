@@ -36,22 +36,21 @@ public record UpdateBellyRubbingStateC2SPacket(UUID target) {
 	           
 	   	        target.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
    	        	cap.getFemaleData().ifPresent(femaleData -> {
-   	        		if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {
-   	        			var system = femaleData.getPregnancySystem();
-   	        			var effect = femaleData.getPregnancyEffects();	  
-   	        			var bellyRubs = effect.getBellyRubs();
+   	        		if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
+   	        			var system = femaleData.getPregnancyData();
+   	        			var bellyRubs = system.getBellyRubs();
    	        			if (system.getCurrentPregnancyStage().compareTo(PregnancyPhase.P2) > 0 && bellyRubs > 0) {
    	        				bellyRubs -= PregnancySystemHelper.BELLY_RUBBING_VALUE;
-   	        				effect.setBellyRubs(bellyRubs);
+   	        				system.setBellyRubs(bellyRubs);
    	        				
    	        				ServerParticleUtil.spawnRandomlyFromServer(target, ParticleTypes.HEART);
    	        				
-   	        				if (system.getPregnancySymptoms().contains(PregnancySymptom.BELLY_RUBS) && bellyRubs <= PregnancySystemHelper.DESACTIVATEL_BELLY_RUBS_SYMPTOM) {
-   	        					system.removePregnancySymptom(PregnancySymptom.BELLY_RUBS);
+   	        				if (system.getPregnancySymptoms().containsPregnancySymptom((PregnancySymptom.BELLY_RUBS)) && bellyRubs <= PregnancySystemHelper.DESACTIVATEL_BELLY_RUBS_SYMPTOM) {
+   	        					system.getPregnancySymptoms().removePregnancySymptom(PregnancySymptom.BELLY_RUBS);
    	        					target.removeEffect(MinepreggoModMobEffects.BELLY_RUBS.get());
-   	        					system.sync(target);
+   	        					system.syncState(target);
    	        				}
-   	        				effect.sync(target);
+   	        				system.syncEffect(target);
    	        			}    			
    	        		}
    	        	})	

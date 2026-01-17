@@ -12,7 +12,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class AbstractCreeperGirlInventaryScreen<E extends AbstractTamableCreeperGirl<?>,
+public abstract class AbstractCreeperGirlInventaryScreen<E extends AbstractTamableCreeperGirl,
 	C extends AbstractCreeperGirlInventoryMenu<E>> extends AbstractPreggoMobInventaryScreen<E, C> {
 
 	protected static final ResourceLocation CREEPER_GIRL_INVENTARY_TEXTURE = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/creeper_girl_inventory.png");	

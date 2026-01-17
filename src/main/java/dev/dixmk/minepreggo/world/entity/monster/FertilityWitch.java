@@ -145,7 +145,7 @@ public class FertilityWitch extends Witch {
 			Optional<Integer> result = player.getCapability(MinepreggoCapabilities.PLAYER_DATA).map(cap -> 
 				cap.getFemaleData().map(femaleData -> {
 					if (femaleData.isPregnant()) {
-						return femaleData.isPregnancySystemInitialized() ? 1 : 0;
+						return femaleData.isPregnancyDataInitialized() ? 1 : 0;
 					}
 					return -1;
 				})
@@ -166,7 +166,7 @@ public class FertilityWitch extends Witch {
 			if (preggoMob instanceof TamableZombieGirl || preggoMob instanceof TamableHumanoidCreeperGirl) {			
 				result = MinepreggoModPotions.getRandomImpregnationPotion(random);
 			}
-			else if (preggoMob instanceof AbstractTamablePregnantZombieGirl<?,?> || preggoMob instanceof AbstractTamablePregnantCreeperGirl<?,?>) {
+			else if (preggoMob instanceof AbstractTamablePregnantZombieGirl || preggoMob instanceof AbstractTamablePregnantCreeperGirl) {
 				result = getRandomHarmfulPregnancyPotion();
 			}
 			

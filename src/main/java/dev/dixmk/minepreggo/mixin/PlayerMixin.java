@@ -46,7 +46,7 @@ public abstract class PlayerMixin extends Entity {
     	Player player = Player.class.cast(this);
 		player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
 			cap.getFemaleData().ifPresent(femaleData -> {
-				if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {			
+				if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {			
 					if (player.hasEffect(MinepreggoModMobEffects.MISCARRIAGE.get()) ||
 							player.hasEffect(MinepreggoModMobEffects.PREBIRTH.get()) || 
 							player.hasEffect(MinepreggoModMobEffects.BIRTH.get())) {
@@ -63,9 +63,9 @@ public abstract class PlayerMixin extends Entity {
 
     	player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
     		cap.getFemaleData().ifPresent(femaleData -> {
-    			if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {
+    			if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
     				EntityDimensions vanillaDimensions = cir.getReturnValue();
-    		        float newWidth = WIDTH.getFloat(femaleData.getPregnancySystem().getCurrentPregnancyStage());
+    		        float newWidth = WIDTH.getFloat(femaleData.getPregnancyData().getCurrentPregnancyStage());
 
     				if (newWidth != 0) {		            
     		            cir.setReturnValue(EntityDimensions.scalable(newWidth, vanillaDimensions.height));  
@@ -81,8 +81,8 @@ public abstract class PlayerMixin extends Entity {
         
         player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
             cap.getFemaleData().ifPresent(femaleData -> {
-                if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {
-                    PregnancyPhase currentPhase = femaleData.getPregnancySystem().getCurrentPregnancyStage();
+                if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
+                    PregnancyPhase currentPhase = femaleData.getPregnancyData().getCurrentPregnancyStage();
                     
                     // Check if pregnancy phase has changed
                     if (minepreggo$lastPregnancyPhase != currentPhase) {

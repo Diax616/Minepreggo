@@ -101,7 +101,7 @@ public class VillagerMixin {
         		if (serverPlayer.isCrouching()) {
 	        		Optional<Boolean> result = serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).map(cap -> 
 			        				cap.getFemaleData().map(femaleData -> {
-			        					return femaleData.isPregnant() && femaleData.isPregnancySystemInitialized();
+			        					return femaleData.isPregnant() && femaleData.isPregnancyDataInitialized();
 			        				})
 			        			).orElse(Optional.empty());
 	        		
@@ -122,7 +122,7 @@ public class VillagerMixin {
 	                    			if (!villagerCap.doesVillagerKnowPlayerIsPregnant()
 	                    					&& motherId.equals(serverPlayer.getUUID())
 	                    					&& femaleData.isPregnant()
-	                    					&& femaleData.isPregnancySystemInitialized()) {
+	                    					&& femaleData.isPregnancyDataInitialized()) {
 	        							villager.getGossips().add(serverPlayer.getUUID(), GossipType.MAJOR_POSITIVE, 50);
 	        							villagerCap.setVillagerKnowIsPlayerIsPregnant(true);
 	                    			}

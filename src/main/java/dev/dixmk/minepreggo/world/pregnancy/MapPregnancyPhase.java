@@ -19,7 +19,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 
 public class MapPregnancyPhase {
-	protected static final ImmutableMap<PregnancyPhase, List<ImmutablePair<PregnancyPhase, Float>>> PREGNANCY_PHASES_WEIGHTS = ImmutableMap.of(
+	private static final ImmutableMap<PregnancyPhase, List<ImmutablePair<PregnancyPhase, Float>>> PREGNANCY_PHASES_WEIGHTS = ImmutableMap.of(
 			PregnancyPhase.P4, List.of(
 					ImmutablePair.of(PregnancyPhase.P0, 0.05F),
 					ImmutablePair.of(PregnancyPhase.P1, 0.2F),

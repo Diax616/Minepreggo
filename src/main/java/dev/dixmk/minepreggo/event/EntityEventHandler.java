@@ -45,10 +45,10 @@ public class EntityEventHandler {
     public static void onFinalizeSpawn(MobSpawnEvent.FinalizeSpawn event) {
         var mob = event.getEntity();
            
-        if (mob instanceof AbstractTamablePregnantCreeperGirl<?,?> creeperGirl && event.getSpawnType() != MobSpawnType.CONVERSION) {  	
+        if (mob instanceof AbstractTamablePregnantCreeperGirl creeperGirl && event.getSpawnType() != MobSpawnType.CONVERSION) {  	
         	PreggoMobHelper.initDefaultPregnancy(creeperGirl);
         }
-        else if (mob instanceof AbstractTamablePregnantZombieGirl<?,?> zombieGirl && event.getSpawnType() != MobSpawnType.CONVERSION) {  	
+        else if (mob instanceof AbstractTamablePregnantZombieGirl zombieGirl && event.getSpawnType() != MobSpawnType.CONVERSION) {  	
         	PreggoMobHelper.initDefaultPregnancy(zombieGirl);
         }
         else if (mob instanceof AbstractMonsterHumanoidCreeperGirl) {  	

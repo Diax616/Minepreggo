@@ -8,14 +8,12 @@ import dev.dixmk.minepreggo.server.ServerCinematicManager;
 import dev.dixmk.minepreggo.server.ServerTaskQueueManager;
 import dev.dixmk.minepreggo.utils.ServerParticleUtil;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobFace;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
-import dev.dixmk.minepreggo.world.pregnancy.IPregnancyEffectsHandler;
-import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
@@ -53,10 +51,10 @@ public record ResponseSexRequestM2PC2SPacket(int preggoMobId, int playerId, bool
 					// TODO: Sex event requested by a PreggoMob can only happen if the PreggoMob is pregnant, but She can't request if she's not pregnant. It should allow even if not pregnant.  
 					if (message.accept) {																
 						if (PreggoMobHelper.canActivateSexEvent(target, source)) {			
-							if (source instanceof AbstractTamablePregnantZombieGirl<?,?> zombieGirl) {
+							if (source instanceof AbstractTamablePregnantZombieGirl zombieGirl) {
 								accept(target, zombieGirl);
 							}
-							else if (source instanceof AbstractTamablePregnantCreeperGirl<?,?> creeperGirl) {
+							else if (source instanceof AbstractTamablePregnantCreeperGirl creeperGirl) {
 								accept(target, creeperGirl);
 							}
 						}	
@@ -70,7 +68,7 @@ public record ResponseSexRequestM2PC2SPacket(int preggoMobId, int playerId, bool
 		context.setPacketHandled(true);
 	}
 	
-	private static<E extends PreggoMob & ITamablePreggoMob<?> & IPregnancySystemHandler & IPregnancyEffectsHandler> void accept(ServerPlayer target, E source) {
+	private static<E extends PreggoMob & ITamablePregnantPreggoMob> void accept(ServerPlayer target, E source) {
 		
 		var manager =  ServerTaskQueueManager.getInstance();
 		
@@ -83,12 +81,13 @@ public record ResponseSexRequestM2PC2SPacket(int preggoMobId, int playerId, bool
 				source,
 				() -> {
 					ServerParticleUtil.spawnRandomlyFromServer(source, ParticleTypes.HEART);
-					source.setFaceState(PreggoMobFace.BLUSHED);  
+					source.getTamableData().setFaceState(PreggoMobFace.BLUSHED);  
 				}, () -> {
-					source.cleanFaceState();
-					source.setHorny(0);
-					source.removePregnancySymptom(PregnancySymptom.HORNY);
-					source.setHornyTimer(0);
+					source.getTamableData().cleanFaceState();
+					var pregnancyData = source.getPregnancyData();
+					pregnancyData.setHorny(0);
+					pregnancyData.getSyncedPregnancySymptoms().removePregnancySymptom(PregnancySymptom.HORNY);
+					pregnancyData.setHornyTimer(0);
 					source.getGenderedData().setSexualAppetite(0);
 					PlayerHelper.removeHorny(target);
 				});

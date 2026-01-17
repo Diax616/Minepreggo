@@ -3,13 +3,10 @@ package dev.dixmk.minepreggo.world.entity.preggo;
 import javax.annotation.Nonnull;
 
 import dev.dixmk.minepreggo.MinepreggoModConfig;
-import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
-import dev.dixmk.minepreggo.world.pregnancy.IPregnancyEffectsHandler;
-import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 
-public abstract class PreggoMobPregnancySystemP6<E extends PreggoMob
-	& ITamablePreggoMob<FemaleEntityImpl> & IPregnancySystemHandler & IPregnancyEffectsHandler> extends PreggoMobPregnancySystemP5<E> {
+public abstract class PreggoMobPregnancySystemP6
+	<E extends PreggoMob & ITamablePregnantPreggoMob> extends PreggoMobPregnancySystemP5<E> {
 
 	protected PreggoMobPregnancySystemP6(@Nonnull E preggoMob) {
 		super(preggoMob);

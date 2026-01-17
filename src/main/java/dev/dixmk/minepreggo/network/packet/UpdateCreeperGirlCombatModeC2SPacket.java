@@ -39,11 +39,11 @@ public record UpdateCreeperGirlCombatModeC2SPacket(int x, int y, int z, CombatMo
 				// security measure to prevent arbitrary chunk generation
 				if (!world.hasChunkAt(new BlockPos(message.x, message.y, message.z))) return;
 					
-				if (!world.isClientSide() && world.getEntity(message.creeperGirlId) instanceof AbstractTamableCreeperGirl<?> creeperGirl) {
-					final var oldCombatMode = creeperGirl.getcombatMode();		
-					creeperGirl.setcombatMode(message.combatMode);
+				if (!world.isClientSide() && world.getEntity(message.creeperGirlId) instanceof AbstractTamableCreeperGirl creeperGirl) {
+					final var oldCombatMode = creeperGirl.getCombatMode();		
+					creeperGirl.setCombatMode(message.combatMode);
 					MinepreggoMod.LOGGER.debug("CHANGING CREEPER GIRL COMBAT MODE: id={}, class={}, oldCombatMode={}, newCombatMode={}",
-							creeperGirl.getId(), creeperGirl.getClass().getSimpleName(), oldCombatMode, creeperGirl.getcombatMode());
+							creeperGirl.getId(), creeperGirl.getClass().getSimpleName(), oldCombatMode, creeperGirl.getCombatMode());
 				}	
 			}
 		});

@@ -18,7 +18,7 @@ import dev.dixmk.minepreggo.network.packet.SyncPlayerLactationS2CPacket;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
-import dev.dixmk.minepreggo.world.pregnancy.PostPregnancyData;
+import dev.dixmk.minepreggo.world.pregnancy.IPostPregnancyDataHolder;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -31,27 +31,17 @@ import net.minecraftforge.network.PacketDistributor;
 
 public class FemalePlayerImpl extends FemaleEntityImpl implements IFemalePlayer {
 
-	private PlayerPregnancySystemHolder pregnancySystemHolder = new PlayerPregnancySystemHolder();
-	private PlayerPregnancyEffectsHolder pregnancyEffectsHolder = new PlayerPregnancyEffectsHolder();
+	private PlayerPregnancyDataHolder pregnancySystemHolder = new PlayerPregnancyDataHolder();
 	
 	private final Object2IntMap<Species> attacks = new Object2IntOpenHashMap<>(3);
 	
-	public boolean isPregnancySystemInitialized() {
+	public boolean isPregnancyDataInitialized() {
 		return pregnancySystemHolder.isInitialized();
 	}
 	
-	public boolean isPregnancyEfectsInitialized() {
-		return pregnancyEffectsHolder.isInitialized();
-	}
-	
 	@Override
-	public PlayerPregnancySystemImpl getPregnancySystem() {
+	public PlayerPregnancyDataImpl getPregnancyData() {
 		return pregnancySystemHolder.getValue();
-	}
-	
-	@Override
-	public PlayerPregnancyEffectsImpl getPregnancyEffects() {
-		return pregnancyEffectsHolder.getValue();
 	}
 	
 	@Override
@@ -59,7 +49,6 @@ public class FemalePlayerImpl extends FemaleEntityImpl implements IFemalePlayer 
 		if (super.tryImpregnate(fertilizedEggs, father)) {
 			attacks.clear();
 			pregnancySystemHolder.reset();
-			pregnancyEffectsHolder.reset();
 			return true;
 		}
 		return false;
@@ -97,10 +86,7 @@ public class FemalePlayerImpl extends FemaleEntityImpl implements IFemalePlayer 
 		CompoundTag nbt = super.serializeNBT();	
 		if (pregnancySystemHolder.isInitialized()) {
 			nbt.put("PlayerPregnancySystem", pregnancySystemHolder.serializeNBT());
-		}	
-		if (pregnancyEffectsHolder.isInitialized()) {
-			nbt.put("PlayerPregnancyEffects", pregnancyEffectsHolder.serializeNBT());
-		}	
+		}		
 		if (!attacks.isEmpty()) {
 			ListTag list = new ListTag();
 			attacks.forEach((species, count) -> {
@@ -121,9 +107,6 @@ public class FemalePlayerImpl extends FemaleEntityImpl implements IFemalePlayer 
 		if (nbt.contains("PlayerPregnancySystem", Tag.TAG_COMPOUND)) {
 			pregnancySystemHolder.deserializeNBT(nbt.getCompound("PlayerPregnancySystem"));
 		}	
-		if (nbt.contains("PlayerPregnancyEffects", Tag.TAG_COMPOUND)) {
-			pregnancyEffectsHolder.deserializeNBT(nbt.getCompound("PlayerPregnancyEffects"));
-		}
 		if (nbt.contains("attacksCount", Tag.TAG_LIST)) {
 			attacks.clear();
 			ListTag list = nbt.getList("attacksCount", Tag.TAG_COMPOUND);
@@ -135,8 +118,7 @@ public class FemalePlayerImpl extends FemaleEntityImpl implements IFemalePlayer 
 	}
 	
 	public void resetPregnancy() {
-		pregnancySystemHolder = new PlayerPregnancySystemHolder();
-		pregnancyEffectsHolder = new PlayerPregnancyEffectsHolder();
+		pregnancySystemHolder = new PlayerPregnancyDataHolder();
 	}
 	
 	public void resetPregnancyOnClient(ServerPlayer serverPlayer) {
@@ -155,7 +137,7 @@ public class FemalePlayerImpl extends FemaleEntityImpl implements IFemalePlayer 
 	
 	public void syncLactation(ServerPlayer serverPlayer) {
 		MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> serverPlayer),
-				new SyncPlayerLactationS2CPacket(serverPlayer.getUUID(), this.postPregnancyData.map(PostPregnancyData::getPostPartumLactation).orElse(0)));
+				new SyncPlayerLactationS2CPacket(serverPlayer.getUUID(), this.postPregnancyData.map(IPostPregnancyDataHolder::getPostPartumLactation).orElse(0)));
 	}
 
 	// TODO: It does not validate if the data is valid for player's current state, it could cause inconsistencies.
@@ -175,36 +157,38 @@ public class FemalePlayerImpl extends FemaleEntityImpl implements IFemalePlayer 
 	 * so this method is called after those events to ensure symptoms are properly removed when their conditions are no longer met.
 	 * It needs to be reworked in the future.
 	 * */
+	
 	public void evaluatePregnancySymptom(ServerPlayer pregnantEntity) {
-		if (isPregnant() && isPregnancySystemInitialized()) {
-			var pregnancySystem = getPregnancySystem();
-			var pregnancyEffects = getPregnancyEffects();
-			pregnancySystem.getPregnancySymptoms().forEach(symptom -> {					
+		if (isPregnant() && isPregnancyDataInitialized()) {
+			var pregnancySystem = getPregnancyData();
+	
+			pregnancySystem.getPregnancySymptoms().toSet().forEach(symptom -> {					
 				boolean flag = false;		
-				if (symptom == PregnancySymptom.CRAVING && pregnancyEffects.getCraving() <= PregnancySystemHelper.DESACTIVATE_CRAVING_SYMPTOM) {
-					getPregnancyEffects().clearTypeOfCravingBySpecies();
+				if (symptom == PregnancySymptom.CRAVING && pregnancySystem.getCraving() <= PregnancySystemHelper.DESACTIVATE_CRAVING_SYMPTOM) {
+					pregnancySystem.clearTypeOfCravingBySpecies();
 					pregnantEntity.removeEffect(MinepreggoModMobEffects.CRAVING.get());
 					flag = true;
 				}
-				else if (symptom == PregnancySymptom.MILKING && pregnancyEffects.getMilking() <= PregnancySystemHelper.DESACTIVATE_MILKING_SYMPTOM) {
+				else if (symptom == PregnancySymptom.MILKING && pregnancySystem.getMilking() <= PregnancySystemHelper.DESACTIVATE_MILKING_SYMPTOM) {
 					pregnantEntity.removeEffect(MinepreggoModMobEffects.LACTATION.get());
 					flag = true;
 				}
-				else if (symptom == PregnancySymptom.BELLY_RUBS && pregnancyEffects.getBellyRubs() <= PregnancySystemHelper.DESACTIVATEL_BELLY_RUBS_SYMPTOM) {
+				else if (symptom == PregnancySymptom.BELLY_RUBS && pregnancySystem.getBellyRubs() <= PregnancySystemHelper.DESACTIVATEL_BELLY_RUBS_SYMPTOM) {
 					pregnantEntity.removeEffect(MinepreggoModMobEffects.BELLY_RUBS.get());
 					flag = true;
 				}
 						
 				if (flag) {
-					pregnancySystem.removePregnancySymptom(symptom);
-					pregnancySystem.sync(pregnantEntity);
-					pregnancyEffects.sync(pregnantEntity);
+					
+					pregnancySystem.getPregnancySymptoms().removePregnancySymptom(symptom);				
+					pregnancySystem.syncState(pregnantEntity);
+					pregnancySystem.syncEffect(pregnantEntity);
 					MinepreggoMod.LOGGER.debug("Player {} pregnancy symptom cleared: {}",
 							pregnantEntity.getGameProfile().getName(), symptom);
 				}
 			});	
 		}
 	}
-
-	public static record ClientData(boolean pregnant, @Nullable PostPregnancyData postPregnancy, float fertility) {}
+	
+	public static record ClientData(boolean pregnant, @Nullable IPostPregnancyDataHolder postPregnancy, float fertility) {}
 }

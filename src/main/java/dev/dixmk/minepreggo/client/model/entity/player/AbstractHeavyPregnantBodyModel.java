@@ -53,10 +53,10 @@ public abstract class AbstractHeavyPregnantBodyModel extends AbstractPregnantBod
 		entity.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
 			cap.getFemaleData().ifPresent(femaleData -> {		
 				if (entity.hasEffect(MinepreggoModMobEffects.FETAL_MOVEMENT.get()) ) {
-					this.animate(femaleData.getPregnancySystem().bellyAnimationState, fetalMovementIntensity.animation, ageInTicks);
+					this.animate(femaleData.getPregnancyData().bellyAnimationState, fetalMovementIntensity.animation, ageInTicks);
 				}		
 				else {
-					this.animate(femaleData.getPregnancySystem().bellyAnimationState, bellyInflation.animation, ageInTicks);
+					this.animate(femaleData.getPregnancyData().bellyAnimationState, bellyInflation.animation, ageInTicks);
 				}
 			})
 		);

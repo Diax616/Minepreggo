@@ -8,15 +8,13 @@ import dev.dixmk.minepreggo.server.ServerCinematicManager;
 import dev.dixmk.minepreggo.utils.ServerParticleUtil;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobFace;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamableZombieGirl;
-import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
 import dev.dixmk.minepreggo.world.pregnancy.IFemaleEntity;
-import dev.dixmk.minepreggo.world.pregnancy.IPregnancyEffectsHandler;
-import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import net.minecraft.core.particles.ParticleTypes;
@@ -44,10 +42,10 @@ public record RequestSexCinematicP2MC2SPacket(int mobId) {
                 var level = source.level();
                 		
                 if (level.getEntity(message.mobId) instanceof PreggoMob preggoMob) {      		  
-                	if (preggoMob instanceof AbstractTamableCreeperGirl<?> creeperGirl) {
+                	if (preggoMob instanceof AbstractTamableCreeperGirl creeperGirl) {
                 		init(source, creeperGirl);
                 	}
-                	else if (preggoMob instanceof AbstractTamableZombieGirl<?> zombieGirl) {
+                	else if (preggoMob instanceof AbstractTamableZombieGirl zombieGirl) {
                 		init(source, zombieGirl);
                 	}
                 } 
@@ -56,7 +54,7 @@ public record RequestSexCinematicP2MC2SPacket(int mobId) {
 		context.setPacketHandled(true);
     }
     
-    private static<E extends PreggoMob & ITamablePreggoMob<FemaleEntityImpl> & IFemaleEntity> void init(ServerPlayer source, E preggoMob) {   	
+    private static<E extends PreggoMob & ITamablePreggoMob<IFemaleEntity>> void init(ServerPlayer source, E preggoMob) {   	
     	if (!PreggoMobHelper.canOwnerActivateSexEvent(source, preggoMob)) {
 			return;
 		}
@@ -66,21 +64,20 @@ public record RequestSexCinematicP2MC2SPacket(int mobId) {
 				preggoMob,
 				() -> {
 					ServerParticleUtil.spawnRandomlyFromServer(preggoMob, ParticleTypes.HEART);
-					preggoMob.setFaceState(PreggoMobFace.BLUSHED);  
+					preggoMob.getTamableData().setFaceState(PreggoMobFace.BLUSHED);  
 				}, () -> {
-					preggoMob.cleanFaceState();
-					if (!(preggoMob instanceof IPregnancySystemHandler)) {
+					preggoMob.getTamableData().cleanFaceState();
+					if (!(preggoMob instanceof ITamablePregnantPreggoMob)) {
 						PreggoMobHelper.initPregnancyBySex(preggoMob, source);
 					}	
-					else if (preggoMob instanceof IPregnancySystemHandler pregnancyHandler
-							&& preggoMob instanceof IPregnancyEffectsHandler effectsHandler
-							&& pregnancyHandler.getCurrentPregnancyStage().compareTo(PregnancyPhase.P4) >= 0) {
-						pregnancyHandler.removePregnancySymptom(PregnancySymptom.HORNY);
-						effectsHandler.setHorny(0);		
-						effectsHandler.setHornyTimer(0);
+					else if (preggoMob instanceof ITamablePregnantPreggoMob pregnancyHandler && pregnancyHandler.getPregnancyData().getCurrentPregnancyStage().compareTo(PregnancyPhase.P4) >= 0) {
+						var pregnancyData =	pregnancyHandler.getPregnancyData();
+						pregnancyData.getSyncedPregnancySymptoms().removePregnancySymptom(PregnancySymptom.HORNY);
+						pregnancyData.setHorny(0);		
+						pregnancyData.setHornyTimer(0);
 					}
 					
-					preggoMob.reduceSexualAppetite(5);
+					preggoMob.getGenderedData().reduceSexualAppetite(5);
 					source.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> cap.getBreedableData().ifPresent(breedableData -> breedableData.reduceSexualAppetite(5)));					
 					PlayerHelper.removeHorny(source);
 				});

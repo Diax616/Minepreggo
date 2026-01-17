@@ -7,11 +7,11 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.network.packet.ResponseSexRequestM2PC2SPacket;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamableZombieGirl;
 import dev.dixmk.minepreggo.world.inventory.preggo.RequestSexM2PMenu;
-import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -31,18 +31,18 @@ public class RequestSexM2PScreen extends AbstractRequestSexScreen<PreggoMob, Pla
 	public RequestSexM2PScreen(RequestSexM2PMenu container, Inventory inventory, Component text) {
 		super(container, inventory, text);	
 		source.ifPresent(s -> {	
-			if (s instanceof AbstractTamableZombieGirl<?> zombieGirl) {
-				if (zombieGirl instanceof IPregnancySystemHandler pregnancySystemHandler
-						&& pregnancySystemHandler.getPregnancySymptoms().contains(PregnancySymptom.HORNY)) {
+			if (s instanceof AbstractTamableZombieGirl zombieGirl) {
+				if (zombieGirl instanceof ITamablePregnantPreggoMob pregnancySystemHandler
+						&& pregnancySystemHandler.getPregnancyData().getPregnancySymptoms().containsPregnancySymptom(PregnancySymptom.HORNY)) {
 					this.icon = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/expressions/zombie_girl_face_pain1.png");
 				}
 				else {			
 					this.icon = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/expressions/zombie_girl_face_horny2.png");
 				}
 			}
-			else if (s instanceof AbstractTamableCreeperGirl<?> creeperGirl) {
-				if (creeperGirl instanceof IPregnancySystemHandler pregnancySystemHandler
-						&& pregnancySystemHandler.getPregnancySymptoms().contains(PregnancySymptom.HORNY)) {
+			else if (s instanceof AbstractTamableCreeperGirl creeperGirl) {
+				if (creeperGirl instanceof ITamablePregnantPreggoMob pregnancySystemHandler
+						&& pregnancySystemHandler.getPregnancyData().getPregnancySymptoms().containsPregnancySymptom(PregnancySymptom.HORNY)) {
 					this.icon = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/humanoid_creeper_girl_face_pain1.png");
 				}
 				else {			

@@ -3,6 +3,7 @@ package dev.dixmk.minepreggo.network.packet;
 import java.util.function.Supplier;
 
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -25,8 +26,8 @@ public record UpdatePreggoMobPickUpItemC2SPacket(int preggoMobId, boolean canPic
             if (context.getDirection().getReceptionSide().isServer()) {
     			var serverPlayer = context.getSender();			
     			var world = serverPlayer.level();  			
-    			if (world.getEntity(message.preggoMobId) instanceof ITamablePreggoMob mob) {
-    				mob.setPickUpItems(message.canPickUpItem);
+    			if (world.getEntity(message.preggoMobId) instanceof PreggoMob preggoMob && preggoMob instanceof ITamablePreggoMob<?>) {
+    				preggoMob.setCanPickUpLoot(message.canPickUpItem);
     			}
             }
 		});

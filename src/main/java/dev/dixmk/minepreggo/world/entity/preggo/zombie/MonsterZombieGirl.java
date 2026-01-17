@@ -107,7 +107,7 @@ public class MonsterZombieGirl extends AbstractMonsterZombieGirl {
 			PreggoMobHelper.transferSlots(this, next);
 			PreggoMobHelper.syncFromEquipmentSlotToInventory(next);
 			PreggoMobHelper.copyOwner(this, next);
-			next.setSavage(false);		
+			next.getTamableData().setSavage(false);		
 			this.discard();
 		}
 	}
@@ -141,11 +141,6 @@ public class MonsterZombieGirl extends AbstractMonsterZombieGirl {
 	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
 		this.setBaby(compound.getBoolean("IsBaby"));
-	}
-
-	@Override
-	public EntityDimensions getDimensions(Pose p_33597_) {
-		return super.getDimensions(p_33597_).scale(1F);
 	}
 	
 	public static AttributeSupplier.Builder createAttributes() {

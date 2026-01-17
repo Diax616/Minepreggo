@@ -33,7 +33,7 @@ public class BreakBlocksToFollowOwnerGoal<E extends PreggoMob & ITamablePreggoMo
 
     @Override
     public boolean canUse() {
-        if (!this.tamable.isTame() || !this.tamable.canBreakBlocks() || this.tamable.isWaiting() ||  this.tamable.getOwner() == null) {
+        if (!this.tamable.isTame() || !this.tamable.canBreakBlocks() || this.tamable.getTamableData().isWaiting() ||  this.tamable.getOwner() == null) {
             return false;
         }
              

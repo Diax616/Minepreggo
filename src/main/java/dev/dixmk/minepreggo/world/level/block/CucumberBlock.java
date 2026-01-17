@@ -1,4 +1,4 @@
-package dev.dixmk.minepreggo.block;
+package dev.dixmk.minepreggo.world.level.block;
 
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
 import net.minecraft.core.BlockPos;

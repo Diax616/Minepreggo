@@ -1,4 +1,4 @@
-package dev.dixmk.minepreggo.block;
+package dev.dixmk.minepreggo.world.level.block;
 
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.block.state.BlockState;

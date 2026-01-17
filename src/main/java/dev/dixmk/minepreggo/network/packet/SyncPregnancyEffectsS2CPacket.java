@@ -5,15 +5,15 @@ import java.util.function.Supplier;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
-import dev.dixmk.minepreggo.network.capability.PlayerPregnancyEffectsImpl;
+import dev.dixmk.minepreggo.network.capability.PlayerPregnancyDataImpl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
-public record SyncPregnancyEffectsS2CPacket(UUID targetId, PlayerPregnancyEffectsImpl.ClientData data) {		
+public record SyncPregnancyEffectsS2CPacket(UUID targetId, PlayerPregnancyDataImpl.PlayerEffectData data) {		
 
 	public static SyncPregnancyEffectsS2CPacket decode(FriendlyByteBuf buffer) {		
-		return new SyncPregnancyEffectsS2CPacket(buffer.readUUID(), PlayerPregnancyEffectsImpl.ClientData.decode(buffer));
+		return new SyncPregnancyEffectsS2CPacket(buffer.readUUID(), PlayerPregnancyDataImpl.PlayerEffectData.decode(buffer));
 	}
 	
 	public static void encode(SyncPregnancyEffectsS2CPacket message, FriendlyByteBuf buffer) {	
@@ -29,7 +29,7 @@ public record SyncPregnancyEffectsS2CPacket(UUID targetId, PlayerPregnancyEffect
 				if (player.getUUID().equals(message.targetId)) {					
 					player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
 						cap.getFemaleData().ifPresent(femaleData -> {
-							var pregnancyEffects = femaleData.getPregnancyEffects();											
+							var pregnancyEffects = femaleData.getPregnancyData();											
 							pregnancyEffects.setCraving(message.data.craving());
 							pregnancyEffects.setMilking(message.data.milking());
 							pregnancyEffects.setBellyRubs(message.data.bellyRubs());

@@ -29,10 +29,10 @@ public class ServerPlayerMixin {
         			PlayerHelper.addFemalePlayerIdTag(stack, player.getUUID());
         		}
         		else if (femaleData.isPregnant()
-        				&& femaleData.isPregnancySystemInitialized()
+        				&& femaleData.isPregnancyDataInitialized()
         				&& Villager.FOOD_POINTS.containsKey(stack.getItem())) {
         			
-        			var pregnancySystem = femaleData.getPregnancySystem();
+        			var pregnancySystem = femaleData.getPregnancyData();
         			var phase = pregnancySystem.getCurrentPregnancyStage();
         			
         			if (phase.compareTo(PregnancyPhase.P4) >= 0) {

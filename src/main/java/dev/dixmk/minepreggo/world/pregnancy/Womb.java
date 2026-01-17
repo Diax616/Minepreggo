@@ -23,7 +23,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.util.RandomSource;
 
 public class Womb {
-	FixedSizeList<BabyData> babies = new FixedSizeList<>(IBreedable.MAX_NUMBER_OF_BABIES);
+	private FixedSizeList<BabyData> babies = new FixedSizeList<>(IBreedable.MAX_NUMBER_OF_BABIES);
 	
 	private static final String NBT_KEY = "DataWomb";
 	

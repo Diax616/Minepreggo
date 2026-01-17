@@ -27,7 +27,7 @@ public class CreeperGirlMenuHelper {
 
 	private CreeperGirlMenuHelper() {}
 	
-	public static<E extends AbstractTamableCreeperGirl<?>> void showInventoryMenu(@NonNull ServerPlayer serverPlayer, @NonNull E creeperGirl) {			
+	public static<E extends AbstractTamableCreeperGirl> void showInventoryMenu(@NonNull ServerPlayer serverPlayer, @NonNull E creeperGirl) {			
 		final var creeperGirlId = creeperGirl.getId();
 		final var creeperGirlClass = creeperGirl.getClass();
  		final var blockPos = serverPlayer.blockPosition();
@@ -85,9 +85,12 @@ public class CreeperGirlMenuHelper {
 	}
 	
 	
-	public static<E extends AbstractTamableCreeperGirl<?>> void showMainMenu(@NonNull ServerPlayer serverPlayer, @NonNull E creeperGirl) {			
+	public static<E extends AbstractTamableCreeperGirl> void showMainMenu(@NonNull ServerPlayer serverPlayer, @NonNull E creeperGirl) {			
 		final var blockPos = serverPlayer.blockPosition();	
 		final var creeperGirlId = creeperGirl.getId();
+		final var canPickUpLoot = creeperGirl.canPickUpLoot();
+		final var canBreakBlocks = creeperGirl.canBreakBlocks();
+		final var combatMode = creeperGirl.getCombatMode();
 		final var creeperGirlClass = creeperGirl.getClass();
 		
 		NetworkHooks.openScreen(serverPlayer,new MenuProvider() {
@@ -101,8 +104,12 @@ public class CreeperGirlMenuHelper {
                 FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
                 packetBuffer.writeBlockPos(blockPos);
                 packetBuffer.writeVarInt(creeperGirlId);
+                packetBuffer.writeBoolean(canPickUpLoot);
+                packetBuffer.writeBoolean(canBreakBlocks);
+                packetBuffer.writeEnum(combatMode);
                 
                 if (creeperGirlClass == TamableHumanoidCreeperGirl.class) {
+                	packetBuffer.writeBoolean(creeperGirl.getGenderedData().isPregnant());
                 	return new CreeperGirlMainMenu(id, inventory, packetBuffer);
                 }
                 else if (creeperGirlClass == TamableHumanoidCreeperGirlP0.class) {
@@ -139,7 +146,15 @@ public class CreeperGirlMenuHelper {
         } , buf -> {		  	
 			buf.writeBlockPos(blockPos);
 		    buf.writeVarInt(creeperGirlId);
+		    buf.writeBoolean(canPickUpLoot);
+		    buf.writeBoolean(canBreakBlocks);
+		    buf.writeEnum(combatMode);
+            
+		    if (creeperGirlClass == TamableHumanoidCreeperGirl.class) {
+				buf.writeBoolean(creeperGirl.getGenderedData().isPregnant());
+		    }
 		});		
+		
 	}
 	
 	

@@ -9,7 +9,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class AbstractTamableZombieGirlRenderer
-	<E extends AbstractTamableZombieGirl<?>, M extends AbstractTamableZombieGirlModel<E>> extends AbstractZombieGirlRenderer<E, M> {
+	<E extends AbstractTamableZombieGirl, M extends AbstractTamableZombieGirlModel<E>> extends AbstractZombieGirlRenderer<E, M> {
 
 	protected AbstractTamableZombieGirlRenderer(Context context, M main, M inner, M outter) {
 		super(context, main, inner, outter);

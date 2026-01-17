@@ -89,7 +89,7 @@ public class MonsterHumanoidCreeperGirl extends AbstractMonsterHumanoidCreeperGi
 			PreggoMobHelper.transferSlots(this, next);
 			PreggoMobHelper.syncFromEquipmentSlotToInventory(next);
 			PreggoMobHelper.copyOwner(this, next);
-			next.setSavage(false);
+			next.getTamableData().setSavage(false);
 			this.discard();
 		}
 	}

@@ -3,7 +3,7 @@ package dev.dixmk.minepreggo.world.effect;
 import javax.annotation.Nullable;
 
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
-import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
+import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
@@ -19,8 +19,8 @@ public class PregnancyHealing extends MobEffect {
 	
 	@Override
 	public void applyInstantenousEffect(@Nullable Entity p_19462_, @Nullable Entity p_19463_, LivingEntity p_19464_, int p_19465_, double p_19466_) { 
-		if (p_19464_ instanceof IPregnancySystemHandler p) {		
-			p.setPregnancyHealth(PregnancySystemHelper.MAX_PREGNANCY_HEALTH);
+		if (p_19464_ instanceof ITamablePregnantPreggoMob p) {		
+			p.getPregnancyData().setPregnancyHealth(PregnancySystemHelper.MAX_PREGNANCY_HEALTH);
 		}
 		
 		else if (p_19464_ instanceof ServerPlayer player) {										
@@ -29,7 +29,7 @@ public class PregnancyHealing extends MobEffect {
 					if (!femaleData.isPregnant()) {
 						return;
 					}	
-					femaleData.getPregnancySystem().setPregnancyHealth(PregnancySystemHelper.MAX_PREGNANCY_HEALTH);
+					femaleData.getPregnancyData().setPregnancyHealth(PregnancySystemHelper.MAX_PREGNANCY_HEALTH);
 				})
 			);			
 		}

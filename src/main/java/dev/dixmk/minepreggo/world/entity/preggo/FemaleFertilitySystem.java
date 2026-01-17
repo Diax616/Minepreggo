@@ -3,7 +3,6 @@ package dev.dixmk.minepreggo.world.entity.preggo;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem.Result;
-import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
 import dev.dixmk.minepreggo.world.pregnancy.IFemaleEntity;
 import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
@@ -18,7 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public abstract class FemaleFertilitySystem<E extends PreggoMob & IFemaleEntity & ITamablePreggoMob<FemaleEntityImpl>> extends FertilitySystem<E> {
+public abstract class FemaleFertilitySystem<E extends PreggoMob & ITamablePreggoMob<IFemaleEntity> & IPostPregnancyEntity> extends FertilitySystem<E> {
 
 	protected int discomfortTick = 0;
 	
@@ -28,7 +27,7 @@ public abstract class FemaleFertilitySystem<E extends PreggoMob & IFemaleEntity 
 
 	@Override
 	protected void evaluateFertilitySystem() {
-		if (preggoMob.isPregnant()) {			
+		if (preggoMob.getGenderedData().isPregnant()) {			
 			if (!isExperiencingDiscomfort()) {			
 				if (discomfortTick > 20) {
 					tryStartRandomDiscomfort();
@@ -54,8 +53,10 @@ public abstract class FemaleFertilitySystem<E extends PreggoMob & IFemaleEntity 
 	}
 	
 	protected Result evaluatePostPartumLactation(Player source) {
-	    
-		var result = preggoMob.getPostPregnancyData().map(post -> {
+	    	
+		final var femaleData = preggoMob.getGenderedData();
+		
+		var result = femaleData.getPostPregnancyData().map(post -> {
 				if (post.getPostPregnancy() == PostPregnancy.PARTUM) {
 					return post.getPostPartumLactation();
 				}
@@ -64,7 +65,7 @@ public abstract class FemaleFertilitySystem<E extends PreggoMob & IFemaleEntity 
 		
 		if (result.isPresent()) {
 		    var mainHandItem = source.getMainHandItem();
-		    int currentMilking = result.get();
+		    final int currentMilking = result.get();
 			
 		    if (currentMilking < PregnancySystemHelper.MILKING_VALUE || mainHandItem.isEmpty() || mainHandItem.getItem() != Items.GLASS_BOTTLE) {   
 		    	return null;
@@ -73,11 +74,9 @@ public abstract class FemaleFertilitySystem<E extends PreggoMob & IFemaleEntity 
         	preggoMob.playSound(SoundEvents.COW_MILK, 0.8F, 0.8F + preggoMob.getRandom().nextFloat() * 0.3F);
 		    
 	        if (!preggoMob.level().isClientSide) {    	
-	            currentMilking = Math.max(0, currentMilking - PregnancySystemHelper.MILKING_VALUE);
-	          
-	            // Brigde Server - Client
-	            preggoMob.setPostPartumLactation(currentMilking);               
-	            	          
+	        	       
+	        	femaleData.getPostPregnancyData().ifPresent(post -> post.decrementPostPartumLactation(PregnancySystemHelper.MILKING_VALUE));
+	            
 	            var milkItem = PregnancySystemHelper.getMilkItem(preggoMob.getTypeOfSpecies());
 	           
 	            if (milkItem != null) {
@@ -101,54 +100,48 @@ public abstract class FemaleFertilitySystem<E extends PreggoMob & IFemaleEntity 
 	}
 	
 	protected void evaluatePregnancyInitializerTimer() {			    	
-        if (preggoMob.getPregnancyInitializerTimer() >= MinepreggoModConfig.getTicksToStartPregnancy()) {
+		final var femaleData = preggoMob.getGenderedData();
+		if (femaleData.getPregnancyInitializerTimer() >= MinepreggoModConfig.getTicksToStartPregnancy()) {
         	startPregnancy();
         	preggoMob.discard();
         } else {
-        	preggoMob.incrementPregnancyInitializerTimer();
+        	femaleData.incrementPregnancyInitializerTimer();
         } 
 	}
 	
 	protected void evaluatePostPregnancy() {
-		var result = preggoMob.getPostPregnancyData().map(post -> {
+		final var femaleData = preggoMob.getFemalePreggoMob();
+		
+		var result = femaleData.getSyncedPostPregnancyData().map(post -> {
 					if (post.getPostPregnancyTimer() > MinepreggoModConfig.getTotalTicksOfPostPregnancyPhase()) {
 						post.resetPostPregnancyTimer();					
-						if (post.getPostPregnancy() == PostPregnancy.PARTUM) {				
-							
-							// It uses a EntityDataAccessor like bridge to sync the data between server and client
-							preggoMob.setPostPartumLactation(0);
-						}	
 						return true;
 					}
 					else {
 						post.incrementPostPregnancyTimer();
 					}
 					
-					if (post.getPostPregnancy() == PostPregnancy.PARTUM) {
-						var lactation = post.getPostPartumLactation();				
-						if (lactation < PregnancySystemHelper.MAX_MILKING_LEVEL) {
-							if (post.getPostPartumLactationTimer() > MinepreggoModConfig.getTotalTicksOfMaternityLactation()) {
-								post.resetPostPartumLactationTimer();
-								++lactation;
-								
-								// It uses a EntityDataAccessor like bridge to sync the data between server and client
-								preggoMob.setPostPartumLactation(lactation);
-								
-								if (lactation >= PregnancySystemHelper.ACTIVATE_MILKING_SYMPTOM) {
-									PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(preggoMob, EquipmentSlot.CHEST);
-								}						
-							}
-							else {
-								post.incrementPostPartumLactationTimer();
-							}
+					if (post.getPostPregnancy() == PostPregnancy.PARTUM && post.getPostPartumLactation() < PregnancySystemHelper.MAX_MILKING_LEVEL) {
+						if (post.getPostPartumLactationTimer() > MinepreggoModConfig.getTotalTicksOfMaternityLactation()) {
+							post.resetPostPartumLactationTimer();
+							post.incrementPostPartumLactation();
+							
+							MinepreggoMod.LOGGER.debug("Increased milking level to {} for entity {} using {}", post.getPostPartumLactation(), preggoMob.getDisplayName().getString(), post.getClass().getSimpleName());
+							
+							if (post.getPostPartumLactation() >= PregnancySystemHelper.ACTIVATE_MILKING_SYMPTOM) {
+								PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(preggoMob, EquipmentSlot.CHEST);
+							}						
+						}
+						else {
+							post.incrementPostPartumLactationTimer();
 						}
 					}
 					return false;
 				});
 		
 		result.ifPresent(isEnd -> {
-			if (isEnd) {
-				if (!preggoMob.tryRemovePostPregnancyPhase()) {
+			if (isEnd) {					
+				if (!femaleData.tryRemovePostPregnancyPhase()) {
 					MinepreggoMod.LOGGER.error("Failed to remove post pregnancy phase from entity {}", preggoMob.getDisplayName().getString());
 				}
 				else {

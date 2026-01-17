@@ -7,18 +7,16 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem.Result;
-import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
-import dev.dixmk.minepreggo.world.pregnancy.IPregnancyEffectsHandler;
-import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
+import dev.dixmk.minepreggo.world.pregnancy.SyncedSetPregnancySymptom;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
-public abstract class PreggoMobPregnancySystemP3 <E extends PreggoMob
-	& ITamablePreggoMob<FemaleEntityImpl> & IPregnancySystemHandler & IPregnancyEffectsHandler> extends PreggoMobPregnancySystemP2<E> {
+public abstract class PreggoMobPregnancySystemP3 
+	<E extends PreggoMob & ITamablePregnantPreggoMob> extends PreggoMobPregnancySystemP2<E> {
 
 	protected @Nonnegative int totalTicksOfBellyRubs = MinepreggoModConfig.getTotalTicksOfBellyRubsP3();
 	protected @Nonnegative float fetalMovementProb = PregnancySystemHelper.LOW_PREGNANCY_PAIN_PROBABILITY;
@@ -49,32 +47,27 @@ public abstract class PreggoMobPregnancySystemP3 <E extends PreggoMob
 	}
 	
 	protected void evaluateBellyRubsTimer() {
-		if (pregnantEntity.getBellyRubs() < PregnancySystemHelper.MAX_BELLY_RUBBING_LEVEL) {
-	        if (pregnantEntity.getBellyRubsTimer() >= totalTicksOfBellyRubs) {
-	        	pregnantEntity.incrementBellyRubs();
-	        	pregnantEntity.resetBellyRubsTimer();
+		final var pregnancyData = pregnantEntity.getPregnancyData();
+		if (pregnancyData.getBellyRubs() < PregnancySystemHelper.MAX_BELLY_RUBBING_LEVEL) {
+	        if (pregnancyData.getBellyRubsTimer() >= totalTicksOfBellyRubs) {
+	        	pregnancyData.incrementBellyRubs();
+	        	pregnancyData.resetBellyRubsTimer();
 	        }
 	        else {
-	        	pregnantEntity.incrementBellyRubsTimer();
+	        	pregnancyData.incrementBellyRubsTimer();
 	        }
 		}	
 	}
 	
 	@Override
-	protected void evaluatePregnancySymptoms() {		
-		pregnantEntity.getPregnancySymptoms().forEach(symptom -> {
-			if (symptom == PregnancySymptom.CRAVING && pregnantEntity.getCraving() <= PregnancySystemHelper.DESACTIVATE_CRAVING_SYMPTOM) {
-				pregnantEntity.removePregnancySymptom(PregnancySymptom.CRAVING);
-				pregnantEntity.clearTypeOfCraving();
-			}
-			else if (symptom == PregnancySymptom.MILKING && pregnantEntity.getMilking() <= PregnancySystemHelper.DESACTIVATE_MILKING_SYMPTOM) {
-				pregnantEntity.removePregnancySymptom(PregnancySymptom.MILKING);
-				pregnantEntity.removeEffect(MinepreggoModMobEffects.LACTATION.get());
-			}
-			else if (symptom == PregnancySymptom.BELLY_RUBS && pregnantEntity.getBellyRubs() <= PregnancySystemHelper.DESACTIVATEL_BELLY_RUBS_SYMPTOM) {
-				pregnantEntity.removePregnancySymptom(PregnancySymptom.BELLY_RUBS);
-			}
-		});
+	protected void evaluatePregnancySymptoms() {	
+		super.evaluatePregnancySymptoms();
+		final var pregnancyData = pregnantEntity.getPregnancyData();
+		SyncedSetPregnancySymptom pregnancySymptoms = pregnancyData.getSyncedPregnancySymptoms();	
+		if (pregnancySymptoms.containsPregnancySymptom(PregnancySymptom.BELLY_RUBS)
+				&& pregnancyData.getBellyRubs() <= PregnancySystemHelper.DESACTIVATEL_BELLY_RUBS_SYMPTOM) {
+			pregnancySymptoms.removePregnancySymptom(PregnancySymptom.BELLY_RUBS);
+		}
 	}
 	
 	@Override
@@ -82,13 +75,14 @@ public abstract class PreggoMobPregnancySystemP3 <E extends PreggoMob
 		if (super.tryInitPregnancySymptom()) {
 			return true;
 		}
-		if (pregnantEntity.getBellyRubs() >= PregnancySystemHelper.ACTIVATE_BELLY_RUBS_SYMPTOM
-				&& !pregnantEntity.getPregnancySymptoms().contains(PregnancySymptom.BELLY_RUBS)) {
-	    	pregnantEntity.addPregnancySymptom(PregnancySymptom.BELLY_RUBS);
+		final var pregnancyData = pregnantEntity.getPregnancyData();
+		SyncedSetPregnancySymptom pregnancySymptoms = pregnancyData.getSyncedPregnancySymptoms();	
+		if (pregnancyData.getBellyRubs() >= PregnancySystemHelper.ACTIVATE_BELLY_RUBS_SYMPTOM
+				&& !pregnancySymptoms.containsPregnancySymptom(PregnancySymptom.BELLY_RUBS)) {
+			pregnancySymptoms.addPregnancySymptom(PregnancySymptom.BELLY_RUBS);
 	    	
 			MinepreggoMod.LOGGER.debug("Player {} has developed pregnancy symptom: {}, all pregnancy symptoms: {}",
-					pregnantEntity.getSimpleName(), PregnancySymptom.BELLY_RUBS, pregnantEntity.getPregnancySymptoms());
-			
+					pregnantEntity.getSimpleName(), PregnancySymptom.BELLY_RUBS, pregnancySymptoms.toSet());	
 	    	return true;		
 		}
 		return false;
@@ -100,14 +94,15 @@ public abstract class PreggoMobPregnancySystemP3 <E extends PreggoMob
 			return true;
 		}	
 		
+		final var pregnancyData = pregnantEntity.getPregnancyData();
 		float newFetalMovementProb = fetalMovementProb;	
 		if (this.pregnantEntity.hasEffect(MinepreggoModMobEffects.ETERNAL_PREGNANCY.get())) {
 			newFetalMovementProb *= 5f;
 		}
 		
 		if (randomSource.nextFloat() < newFetalMovementProb) {
-			pregnantEntity.setPregnancyPain(PregnancyPain.FETAL_MOVEMENT);
-			pregnantEntity.resetPregnancyPainTimer();
+			pregnancyData.setPregnancyPain(PregnancyPain.FETAL_MOVEMENT);
+			pregnancyData.resetPregnancyPainTimer();
 			PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.CHEST);				
 			return true;
 		}     
@@ -117,34 +112,37 @@ public abstract class PreggoMobPregnancySystemP3 <E extends PreggoMob
 	@Override
 	protected void evaluatePregnancyPains() {
 		super.evaluatePregnancyPains();
-		if (pregnantEntity.getPregnancyPain() == PregnancyPain.FETAL_MOVEMENT) {
-			if (pregnantEntity.getPregnancyPainTimer() >= totalTicksOfFetalMovement) {
-				pregnantEntity.clearPregnancyPain();	
-				pregnantEntity.resetPregnancyPainTimer();
+		final var pregnancyData = pregnantEntity.getPregnancyData();
+		if (pregnancyData.getPregnancyPain() == PregnancyPain.FETAL_MOVEMENT) {
+			if (pregnancyData.getPregnancyPainTimer() >= totalTicksOfFetalMovement) {
+				pregnancyData.clearPregnancyPain();	
+				pregnancyData.resetPregnancyPainTimer();
 			}
 			else {
-				pregnantEntity.incrementPregnancyPainTimer();
+				pregnancyData.incrementPregnancyPainTimer();
 			}
 		}
 	}
 	
 	@Override
 	public boolean canBeAngry() {
-		return super.canBeAngry() || pregnantEntity.getBellyRubs() >= PregnancySystemHelper.MAX_BELLY_RUBBING_LEVEL;
+		return super.canBeAngry() || pregnantEntity.getPregnancyData().getBellyRubs() >= PregnancySystemHelper.MAX_BELLY_RUBBING_LEVEL;
 	}
 	
 	@Override
 	protected Result evaluateBellyRubs(Level level, Player source) {		
 		super.evaluateBellyRubs(level, source);	
-		var currentBellyRubs = pregnantEntity.getBellyRubs();
+		final var pregnancyData = pregnantEntity.getPregnancyData();
+		var currentBellyRubs = pregnancyData.getBellyRubs();
 		if (currentBellyRubs > 0) {			
-			if (!level.isClientSide) {   	
+			if (!level.isClientSide) { 
+				SyncedSetPregnancySymptom pregnancySymptoms = pregnancyData.getSyncedPregnancySymptoms();	
 				currentBellyRubs = Math.max(0, currentBellyRubs - PregnancySystemHelper.BELLY_RUBBING_VALUE);			
-				pregnantEntity.setBellyRubs(currentBellyRubs);
+				pregnancyData.setBellyRubs(currentBellyRubs);
 							
-				if (pregnantEntity.getPregnancySymptoms().contains(PregnancySymptom.BELLY_RUBS)
+				if (pregnancySymptoms.containsPregnancySymptom(PregnancySymptom.BELLY_RUBS)
 						&& currentBellyRubs <= PregnancySystemHelper.DESACTIVATEL_BELLY_RUBS_SYMPTOM) {									
-					pregnantEntity.removePregnancySymptom(PregnancySymptom.BELLY_RUBS);							
+					pregnancySymptoms.removePregnancySymptom(PregnancySymptom.BELLY_RUBS);							
 				}	
 			}						
 			return Result.SUCCESS;

@@ -27,9 +27,11 @@ public class ZombieGirlMenuHelper {
 
 	private ZombieGirlMenuHelper() {}
 	
-	public static<E extends AbstractTamableZombieGirl<?>> void showMainMenu(@NonNull ServerPlayer serverPlayer, @NonNull E zombieGirl) {
+	public static<E extends AbstractTamableZombieGirl> void showMainMenu(@NonNull ServerPlayer serverPlayer, @NonNull E zombieGirl) {
 		final var zombieGirlId = zombieGirl.getId();
 		final var zombieGirlClass = zombieGirl.getClass();
+		final var canPickUpLoot = zombieGirl.canPickUpLoot();
+		final var canBreakBlocks = zombieGirl.canBreakBlocks();
 		final var bPos = serverPlayer.blockPosition();
 			
 		NetworkHooks.openScreen(serverPlayer,new MenuProvider() {
@@ -43,8 +45,11 @@ public class ZombieGirlMenuHelper {
                 FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
                 packetBuffer.writeBlockPos(bPos);
                 packetBuffer.writeVarInt(zombieGirlId);
+                packetBuffer.writeBoolean(canPickUpLoot);
+                packetBuffer.writeBoolean(canBreakBlocks);
                 
                 if (zombieGirlClass == TamableZombieGirl.class) {
+                	packetBuffer.writeBoolean(zombieGirl.getGenderedData().isPregnant());
                 	return new ZombieGirlMainMenu(id, inventory, packetBuffer);
                 }
                 else if (zombieGirlClass == TamableZombieGirlP0.class) {
@@ -81,10 +86,16 @@ public class ZombieGirlMenuHelper {
         }, buf -> {    
 			buf.writeBlockPos(bPos);
 		    buf.writeVarInt(zombieGirlId);
+		    buf.writeBoolean(canPickUpLoot);
+		    buf.writeBoolean(canBreakBlocks);
+		    
+		    if (zombieGirlClass == TamableZombieGirl.class) {
+		    	buf.writeBoolean(zombieGirl.getGenderedData().isPregnant());
+		    }
 		});
 	}
 	
-	public static<E extends AbstractTamableZombieGirl<?>> void showInventoryMenu(@NonNull ServerPlayer serverPlayer, @NonNull E zombieGirl) {
+	public static<E extends AbstractTamableZombieGirl> void showInventoryMenu(@NonNull ServerPlayer serverPlayer, @NonNull E zombieGirl) {
 		final var zombieGirlId = zombieGirl.getId();
 		final var zombieGirlClass = zombieGirl.getClass();
 		final var bPos = serverPlayer.blockPosition();

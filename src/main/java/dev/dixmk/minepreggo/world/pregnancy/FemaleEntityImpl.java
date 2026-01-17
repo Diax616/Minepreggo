@@ -3,17 +3,16 @@ package dev.dixmk.minepreggo.world.pregnancy;
 import java.util.Optional;
 import java.util.UUID;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnegative;
 
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.jetbrains.annotations.Nullable;
 
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-
 
 public class FemaleEntityImpl extends AbstractBreedableEntity implements IFemaleEntity {
 
@@ -25,13 +24,16 @@ public class FemaleEntityImpl extends AbstractBreedableEntity implements IFemale
 	protected int discomfortCooldown = 0;
 	protected boolean pregnant = false;
 
-	protected Optional<PostPregnancyData> postPregnancyData = Optional.empty();
+	protected Optional<IPostPregnancyDataHolder> postPregnancyData = Optional.empty();
 	protected Optional<PrePregnancyData> prePregnancyData = Optional.empty(); 
 	
-	// ???????????? TODO: Remove or rework this shit
-	@Override
-	public boolean canGetPregnant() {
-		return this.gender == Gender.FEMALE;
+    protected IPostPregnancyDataHolder createPostPregnancyData(PostPregnancy postPregnancy) {
+        return new PostPregnancyData(postPregnancy);
+    }
+	
+    @CheckForNull
+    protected IPostPregnancyDataHolder createPostPregnancyData(CompoundTag nbt, String key) {
+	    return PostPregnancyData.fromNBT(nbt.getCompound(key));
 	}
 
 	@Override
@@ -66,22 +68,17 @@ public class FemaleEntityImpl extends AbstractBreedableEntity implements IFemale
 		return false;
 	}
 
-	@Override
-	public @Nullable PostPregnancy getPostPregnancyPhase() {
-		return postPregnancyData.map(PostPregnancyData::getPostPregnancy).orElse(null);		
-	}
-
-	@Override
-	public boolean tryActivatePostPregnancyPhase(@NonNull PostPregnancy postPregnancy) {
-		if (pregnant) {
-			this.postPregnancyData = Optional.of(new PostPregnancyData(postPregnancy));
-			this.pregnant = false;
-			this.prePregnancyData = Optional.empty();
-			this.pregnancyInitializerTimer = 0;
-			return true;
-		}
-		return false;
-	}
+    @Override
+    public boolean tryActivatePostPregnancyPhase(@NonNull PostPregnancy postPregnancy) {
+        if (pregnant) {
+            this.postPregnancyData = Optional.of(createPostPregnancyData(postPregnancy));
+            this.pregnant = false;
+            this.prePregnancyData = Optional.empty();
+            this.pregnancyInitializerTimer = 0;
+            return true;
+        }
+        return false;
+    }
 
 	@Override
 	public boolean tryRemovePostPregnancyPhase() {
@@ -93,31 +90,6 @@ public class FemaleEntityImpl extends AbstractBreedableEntity implements IFemale
 	}
 	
 	@Override
-	public int getPostPregnancyTimer() {
-		return postPregnancyData.map(post -> post.getPostPregnancyTimer()).orElse(0);
-	}
-
-	@Override
-	public void setPostPregnancyTimer(int ticks) {
-		postPregnancyData.ifPresent(post -> post.setPostPregnancyTimer(ticks));
-	}
-
-	@Override
-	public void incrementPostPregnancyTimer() {
-		postPregnancyData.ifPresent(post -> post.incrementPostPregnancyTimer());
-	}
-	
-	@Override
-	public int getPostPartumLactation() {
-		return postPregnancyData.map(PostPregnancyData::getPostPartumLactation).orElse(0);
-	}
-
-	@Override
-	public void setPostPartumLactation(int amount) {
-		postPregnancyData.ifPresent(post -> post.setPostPartumlactation(amount));
-	}
-	
-	@Override
 	public boolean tryCancelPregnancy() {
 		if (this.isPregnant()) {
 			this.pregnant = false;
@@ -125,24 +97,15 @@ public class FemaleEntityImpl extends AbstractBreedableEntity implements IFemale
 		}
 		return false;
 	}
-
-	@Override
-	public @Nullable UUID getFather() {
-		if (this.prePregnancyData.isPresent()) {
-			return this.prePregnancyData.get().fatherId();
-		}
-		return null;
-	}
 	
 	@Override
 	public Optional<PrePregnancyData> getPrePregnancyData() {
 		return this.prePregnancyData;
 	}
 
-	@Override
-	public Optional<PostPregnancyData> getPostPregnancyData() {
-		return this.postPregnancyData;
-	}
+    public Optional<IPostPregnancyDataHolder> getPostPregnancyData() {
+        return this.postPregnancyData;
+    }
 	
 	public int getDiscomfortCooldown() {
 		return discomfortCooldown;
@@ -157,11 +120,6 @@ public class FemaleEntityImpl extends AbstractBreedableEntity implements IFemale
 	}
 	
 	@Override
-	public boolean hasNaturalPregnancy() {
-		return this.getFather() != null;
-	}
-	
-	@Override
 	public CompoundTag serializeNBT() {
 		CompoundTag nbt = super.serializeNBT();
 		nbt.putInt("DataPregnancyInitializerTimer", pregnancyInitializerTimer);
@@ -172,23 +130,23 @@ public class FemaleEntityImpl extends AbstractBreedableEntity implements IFemale
 	}
 	
 	@Override
-	public void deserializeNBT(CompoundTag nbt) {
+	public void deserializeNBT(CompoundTag nbt) throws IllegalStateException {
 		super.deserializeNBT(nbt);
 		pregnant = nbt.getBoolean("DataPregnant");	
 		pregnancyInitializerTimer = nbt.getInt("DataPregnancyInitializerTimer");
-		
-	    if (nbt.contains("DataPostPregnancyData", Tag.TAG_COMPOUND)) {
-	    	postPregnancyData = Optional.ofNullable(PostPregnancyData.fromNBT(nbt.getCompound("DataPostPregnancyData")));
-		    if (postPregnancyData.isEmpty()) {
-		    	throw new IllegalStateException("Failed to load PostPregnancyData from NBT");
-		    }
-	    }
 
 	    if (nbt.contains("DataPrePregnancyData", Tag.TAG_COMPOUND)) {
 		    prePregnancyData = Optional.ofNullable(PrePregnancyData.fromNBT(nbt.getCompound("DataPrePregnancyData")));
 		    if (prePregnancyData.isEmpty()) {
 		    	throw new IllegalStateException("Failed to load PrePregnancyData from NBT");
 		    }
+	    }
+	    
+	    if (nbt.contains("DataPostPregnancyData", Tag.TAG_COMPOUND)) {
+			postPregnancyData = Optional.ofNullable(createPostPregnancyData(nbt, "DataPostPregnancyData"));		    	
+			if (postPregnancyData.isEmpty()) {
+	    		throw new IllegalStateException("Failed to load PostPregnancyData from NBT");
+	    	}
 	    }
 	}
 }

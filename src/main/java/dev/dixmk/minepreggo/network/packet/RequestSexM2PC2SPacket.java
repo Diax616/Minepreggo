@@ -35,10 +35,10 @@ public record RequestSexM2PC2SPacket(int preggoMobId, int playerId) {
 				final ServerPlayer target = level.getEntity(message.playerId) instanceof ServerPlayer t ? t : null;
 								
 				if (source != null && target != null) {
-					if (source instanceof AbstractTamableZombieGirl<?> zombieGirl && PregnancySystemHelper.canFuck(target, zombieGirl)) {
+					if (source instanceof AbstractTamableZombieGirl zombieGirl && PregnancySystemHelper.canFuck(target, zombieGirl)) {
 						RequestSexM2PMenu.create(target, zombieGirl);
 					}
-					else if (source instanceof AbstractTamableCreeperGirl<?> creeperGirl && PregnancySystemHelper.canFuck(target, creeperGirl)) {
+					else if (source instanceof AbstractTamableCreeperGirl creeperGirl && PregnancySystemHelper.canFuck(target, creeperGirl)) {
 						RequestSexM2PMenu.create(target, creeperGirl);
 					}			
 				}

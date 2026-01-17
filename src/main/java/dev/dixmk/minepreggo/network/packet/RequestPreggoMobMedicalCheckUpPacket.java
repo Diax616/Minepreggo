@@ -3,9 +3,9 @@ package dev.dixmk.minepreggo.network.packet;
 import java.util.function.Supplier;
 
 import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
+import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.inventory.preggo.PreggoMobPrenatalCheckUpMenu;
-import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -30,7 +30,7 @@ public record RequestPreggoMobMedicalCheckUpPacket(int preggoMobId, int scientif
     			var serverPlayer = context.getSender();					
     			final PreggoMob preggoMob = serverPlayer.level().getEntity(message.preggoMobId) instanceof PreggoMob preg ? preg : null;
     			final ScientificIllager scientificIllager = serverPlayer.level().getEntity(message.scientificIllagerId) instanceof ScientificIllager sci ? sci : null;
-    			if (preggoMob != null && scientificIllager != null && preggoMob instanceof IPregnancySystemHandler) {  					
+    			if (preggoMob != null && scientificIllager != null && preggoMob instanceof ITamablePregnantPreggoMob) {  					
         			PreggoMobPrenatalCheckUpMenu.showPrenatalCheckUpMenu(serverPlayer, preggoMob, scientificIllager);
     			}
             }	

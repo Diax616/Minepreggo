@@ -27,7 +27,7 @@ public record SyncPlayerLactationS2CPacket(UUID source, int postPartumLactation)
 				final Player target = Minecraft.getInstance().player.level().getPlayerByUUID(message.source);
 				if (target == null) return;
 				target.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
-					cap.getFemaleData().ifPresent(femaleData -> femaleData.getPostPregnancyData().ifPresent(post -> post.setPostPartumlactation(message.postPartumLactation)))
+					cap.getFemaleData().ifPresent(femaleData -> femaleData.getPostPregnancyData().ifPresent(post -> post.setPostPartumLactation(message.postPartumLactation)))
 				);			
 			}			
 		});

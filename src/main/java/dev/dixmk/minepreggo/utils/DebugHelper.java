@@ -21,13 +21,12 @@ import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP4;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP5;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP6;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP7;
-import dev.dixmk.minepreggo.world.pregnancy.IPregnancyEffectsHandler;
-import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 
 public class DebugHelper {
 
 	private DebugHelper() {}
 	
+	/*
 	public static<E extends PreggoMob & ITamablePreggoMob<?>> void showBasicInfo(E preggoMob) {
 		MinepreggoMod.LOGGER.debug("BASIC INFO: id={} class={}, hungry={}, hungryTimer={}, isAngry={}",
 				preggoMob.getId(), preggoMob.getClass().getSimpleName(), preggoMob.getFullness(), preggoMob.getHungryTimer(), 
@@ -156,4 +155,5 @@ public class DebugHelper {
 			DebugHelper.showBasicInfo(z);	
 		}	
 	}
+	*/
 }

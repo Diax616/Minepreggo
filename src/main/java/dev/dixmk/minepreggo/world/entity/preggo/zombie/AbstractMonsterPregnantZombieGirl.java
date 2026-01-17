@@ -1,8 +1,7 @@
 package dev.dixmk.minepreggo.world.entity.preggo.zombie;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
+import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.utils.MathHelper;
-import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.ISimplePregnancy;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
@@ -30,7 +29,6 @@ import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistries;
 
 public abstract class AbstractMonsterPregnantZombieGirl extends AbstractMonsterZombieGirl implements ISimplePregnancy {
 
@@ -46,7 +44,7 @@ public abstract class AbstractMonsterPregnantZombieGirl extends AbstractMonsterZ
 		this.currentPregnanctStage = currentPregnancyStage;
 		this.maxPregnanctStage = PregnancySystemHelper.calculateRandomMinPhaseToGiveBirthFrom(currentPregnancyStage, random);
 		this.totalDaysPassed = ISimplePregnancy.getRandomTotalDaysPassed(currentPregnancyStage, this.maxPregnanctStage, this.getRandom());
-		this.pregnancyPainProbability = MathHelper.sigmoid(0.1F, 0.4F, 0.1F, Mth.clamp(this.getTotalDaysPassed() /(float) PregnancySystemHelper.TOTAL_PREGNANCY_DAYS , 0, 1), 0.6F);
+		this.pregnancyPainProbability = MathHelper.sigmoid(0.05F, 0.1F, 0.1F, Mth.clamp(this.getTotalDaysPassed() /(float) PregnancySystemHelper.TOTAL_PREGNANCY_DAYS , 0, 1), 0.6F);
 	}
 
 	@Override
@@ -77,12 +75,6 @@ public abstract class AbstractMonsterPregnantZombieGirl extends AbstractMonsterZ
 		super.die(source);			
 		PreggoMobHelper.spawnBabyAndFetusZombies(this);
 	}
-	
-	@Override
-	public SoundEvent getDeathSound() {
-		return ForgeRegistries.SOUND_EVENTS.getValue(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "preggo_death"));
-	}
-	
 	
 	@Override
 	public boolean hasCustomHeadAnimation() {
@@ -118,6 +110,11 @@ public abstract class AbstractMonsterPregnantZombieGirl extends AbstractMonsterZ
 			return true;
 		}
 		return false;
+	}
+	
+	@Override
+	public SoundEvent getDeathSound() {
+		return MinepreggoModSounds.PREGNANT_PREGGO_MOB_DEATH.get();
 	}
 	
 	@Override

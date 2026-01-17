@@ -10,7 +10,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 
-public abstract class AbstractPregnancySystem<E extends LivingEntity> {
+public abstract class AbstractPregnancySystem<E extends LivingEntity> implements IPregnancySystem {
 
 	protected E pregnantEntity;
 	protected final RandomSource randomSource;
@@ -32,8 +32,6 @@ public abstract class AbstractPregnancySystem<E extends LivingEntity> {
 	protected abstract void evaluatePregnancyTimer();
 	
 	protected abstract void evaluateMiscarriage(ServerLevel serverLevel);
-	
-	public abstract void onServerTick();
 	
 	public abstract boolean isMiscarriageActive();
 	
