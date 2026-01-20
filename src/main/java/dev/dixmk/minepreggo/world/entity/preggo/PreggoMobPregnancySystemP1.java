@@ -244,6 +244,7 @@ public abstract class PreggoMobPregnancySystemP1
 	
 	@Override
 	protected void startMiscarriage() {
+		tryHurt();
 		final var pregnancyData = pregnantEntity.getPregnancyData();
 		pregnancyData.setPregnancyPain(PregnancyPain.MISCARRIAGE);
 		pregnancyData.resetPregnancyPainTimer();

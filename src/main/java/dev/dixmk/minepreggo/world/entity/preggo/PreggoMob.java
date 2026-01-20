@@ -38,6 +38,8 @@ public abstract class PreggoMob extends TamableAnimal {
 	
 	public abstract boolean hasCustomHeadAnimation();
 	
+	public abstract boolean hasJigglePhysics();
+	
 	protected void afterTaming() {
 		
 	}
@@ -126,5 +128,13 @@ public abstract class PreggoMob extends TamableAnimal {
 			this.remove(Entity.RemovalReason.KILLED);
 			this.dropExperience();
 		}
+	}
+	
+	@Override
+	public void remove(RemovalReason reason) {
+		if (!this.level().isClientSide && this.hasJigglePhysics()) {
+			PreggoMobHelper.removeJigglePhysics(this);
+		}
+		super.remove(reason);
 	}
 }

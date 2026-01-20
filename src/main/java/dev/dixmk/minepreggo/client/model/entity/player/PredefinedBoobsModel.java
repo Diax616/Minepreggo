@@ -16,7 +16,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class PredefinedBoobsModel extends AbstractBoobsModel {
-	
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "predefined_boobs_model"), "main");
 	
 	public PredefinedBoobsModel(ModelPart root) {

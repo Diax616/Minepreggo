@@ -23,11 +23,7 @@ public class PredefinedPregnantBodyP3Model extends AbstractHeavyPregnantBodyMode
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "predefined_pregnant_body_p3_model"), "main");
 	
 	public PredefinedPregnantBodyP3Model(ModelPart root) {
-		super(root,
-				BellyInflation.MEDIUM,
-				FetalMovementIntensity.P3,
-				PregnancyPhase.P3,
-				SkinType.PREDEFINED);
+		super(root, BellyInflation.MEDIUM, FetalMovementIntensity.P3, PregnancyPhase.P3, SkinType.PREDEFINED);
 		milkingBoobsYPos = -0.46F;
 	}
 	
@@ -40,7 +36,7 @@ public class PredefinedPregnantBodyP3Model extends AbstractHeavyPregnantBodyMode
 		belly.addOrReplaceChild("front_kick", CubeListBuilder.create().texOffs(27, 13).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.1F)), PartPose.offset(2.5F, 3.8F, -2.5F));
 		belly.addOrReplaceChild("right_kick", CubeListBuilder.create().texOffs(27, 7).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.2F)), PartPose.offset(0.5F, 5.0F, -2.1F));
 		belly.addOrReplaceChild("left_kick", CubeListBuilder.create().texOffs(27, 7).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.2F)), PartPose.offset(0.5F, 3.9F, -2.0F));
-		PartDefinition boobs = body.addOrReplaceChild("boobs", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 2.0F, -2.0F, -0.3316F, 0.0F, 0.0F));
+		PartDefinition boobs = body.addOrReplaceChild("boobs", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 2.1F, -2.0F, -0.3316F, 0.0F, 0.0F));
 		PartDefinition rightBoob = boobs.addOrReplaceChild("right_boob", CubeListBuilder.create(), PartPose.offset(-1.5F, 0.0F, 0.0F));
 		rightBoob.addOrReplaceChild("rightBoobCube_r1", CubeListBuilder.create().texOffs(14, 1).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.3F)), PartPose.offsetAndRotation(-0.5336F, 1.7279F, -0.8635F, 0.3491F, 0.1745F, 0.0436F));
 		PartDefinition leftBoob = boobs.addOrReplaceChild("left_boob", CubeListBuilder.create(), PartPose.offset(1.5F, 0.0F, 0.0F));

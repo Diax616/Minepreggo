@@ -606,7 +606,6 @@
 		
 	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.title": "Prenatal Ultrasound Scan Results",
 	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.1.intro": "       Result\n  Ultrasound Scan\n\n",
-	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.1.babies_inside_belly": "Babies Inside Belly: %s",
 
 	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.default.title": "     Baby State\n\n",
 	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.gender": "Gender: %s\n\n",
@@ -628,5 +627,11 @@
 	"book.minepreggo.prenatal_checkup.paternity_test.template.page.default.result.negative": "He IS NOT the father!",
 	
 	"key.minepreggo.rub_belly": "Rub Your Pregnant Belly",
-	"key.categories.minepreggo": "Minepreggo Keyboards"
+	"key.categories.minepreggo": "Minepreggo Keyboards",
+	
+	"death.attack.belly_burst": "%1$s's pregnant belly burst",
+	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.1.womb_size_state": "Womb Size State: %s\n\n",
+	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.1.womb_size_state.overloaded": "Overloaded",
+	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.1.womb_size_state.normal": "Normal",
+	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.1.babies_inside_belly": "Babies Inside Belly: %s\n\n"
 }

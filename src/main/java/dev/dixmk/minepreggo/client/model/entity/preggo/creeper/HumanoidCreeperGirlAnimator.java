@@ -111,7 +111,7 @@ public abstract class HumanoidCreeperGirlAnimator<E extends AbstractCreeperGirl>
   		@Override
   		protected void animateBelly(E creeperGirl, float ageInTicks) {
   		    if (creeperGirl.getItemBySlot(EquipmentSlot.CHEST).isEmpty()) {
-  				if (fetalMovementIntensity != null && creeperGirl.isIncapacitated()) {
+  				if (fetalMovementIntensity != null && creeperGirl.getPregnancyData().isIncapacitated()) {
   			    	this.animate(creeperGirl.loopAnimationState, fetalMovementIntensity.animation, ageInTicks);		    
   		    	}
   		    	else {
@@ -122,7 +122,7 @@ public abstract class HumanoidCreeperGirlAnimator<E extends AbstractCreeperGirl>
 
   		@Override
   		protected void animatePregnancyPain(E creeperGirl, float ageInTicks) {
-  			if (creeperGirl.isIncapacitated()) {
+  			if (creeperGirl.getPregnancyData().isIncapacitated()) {
   			    this.animate(creeperGirl.loopAnimationState, HumanoidCreeperGirlAnimation.CONTRACTION2, ageInTicks);	
   			}
   			else if (creeperGirl.isPassenger()) {

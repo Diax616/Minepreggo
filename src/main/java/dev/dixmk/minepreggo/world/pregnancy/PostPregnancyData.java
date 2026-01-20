@@ -6,7 +6,7 @@ import javax.annotation.Nonnegative;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 
-public class PostPregnancyData implements IPostPregnancyDataHolder {
+public class PostPregnancyData implements IPostPregnancyData {
 	private static final String NBT_KEY = "NBTPostPregnancyData";
 	
 	private final PostPregnancy postPregnancy;

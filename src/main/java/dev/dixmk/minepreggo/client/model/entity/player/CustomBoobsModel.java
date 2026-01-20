@@ -15,14 +15,11 @@ import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-/*
- * It does not work in multiplayer, it has to be reworked to support it properly.
- * */
-
 @OnlyIn(Dist.CLIENT)
 public class CustomBoobsModel extends AbstractBoobsModel {
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "custom_boobs_model"), "main");
-
+	public static final float ORIGINAL_Y_POS = 1.5F;
+	
 	public CustomBoobsModel(ModelPart root) {
 		super(root, SkinType.CUSTOM);
 	}

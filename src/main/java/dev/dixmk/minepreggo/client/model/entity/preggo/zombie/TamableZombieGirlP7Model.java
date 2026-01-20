@@ -3,6 +3,7 @@ package dev.dixmk.minepreggo.client.model.entity.preggo.zombie;
 import dev.dixmk.minepreggo.client.animation.preggo.BellyInflation;
 import dev.dixmk.minepreggo.client.animation.preggo.FetalMovementIntensity;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP7;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -11,6 +12,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class TamableZombieGirlP7Model extends AbstractTamablePregnantZombieGirlModel<TamableZombieGirlP7> {
 	
 	public TamableZombieGirlP7Model(ModelPart root) {
-		super(root, new ZombieGirlAnimator.TamablePregnantZombieGirlAnimator<>(root, BellyInflation.HIGH, FetalMovementIntensity.P7));
+		super(root, new ZombieGirlAnimator.TamablePregnantZombieGirlAnimator<>(root, BellyInflation.HIGH, FetalMovementIntensity.P7), PregnancyPhase.P7, false);
 	}
 }

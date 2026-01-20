@@ -16,8 +16,6 @@ import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 
@@ -29,12 +27,12 @@ import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.init.MinepreggoModPotions;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableHumanoidCreeperGirl;
-import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirl;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
 
 /**
  * 
@@ -51,8 +49,6 @@ public class FertilityWitch extends Witch {
 	
 	private static final List<Species> HARMFUL_SPECIES = List.of(Species.ZOMBIE, Species.CREEPER, Species.ENDER);
 	
-	private HarmfulPregnancyPotion harmfulPregnancyPotion = null;
-	
 	public FertilityWitch(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.FERTILITY_WITCH.get(), world);
 	}
@@ -62,22 +58,6 @@ public class FertilityWitch extends Witch {
 		setMaxUpStep(0.6f);
 		xpReward = 0;
 		setNoAi(false);
-	}
-
-	@Override
-	public void addAdditionalSaveData(CompoundTag compound) {
-		super.addAdditionalSaveData(compound);
-		if (this.harmfulPregnancyPotion != null) {
-			compound.putString("harmfulPregnancyPotion", harmfulPregnancyPotion.name());
-		}
-	}
-	
-	@Override
-	public void readAdditionalSaveData(CompoundTag compound) {
-		super.readAdditionalSaveData(compound);	
-		if (compound.contains("harmfulPregnancyPotion", Tag.TAG_STRING)) {
-			harmfulPregnancyPotion = HarmfulPregnancyPotion.valueOf(compound.getString("harmfulPregnancyPotion"));
-		}
 	}
 	
 	@Override
@@ -90,19 +70,11 @@ public class FertilityWitch extends Witch {
 	    return MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "entities/fertility_witch_loot");
 	}
 	
-	public void chooseRandomHarmfulPregnancyPotion() {
-		this.harmfulPregnancyPotion = this.random.nextBoolean() ? HarmfulPregnancyPotion.DELAY : HarmfulPregnancyPotion.ACCELERATION;
-	}
-	
 	private Potion getRandomHarmfulPregnancyPotion() {
-		if (this.random.nextFloat() < 0.1) {
+		if (this.random.nextFloat() < 0.25) {
 			return MinepreggoModPotions.getRandomBabyDuplicationPotion(random);
 		}
-		
-		if (this.harmfulPregnancyPotion == HarmfulPregnancyPotion.ACCELERATION) {
-			return MinepreggoModPotions.getRandomPregnancyAccelerationPotion(random);
-		}
-		return MinepreggoModPotions.getRandomPregnancyDelayPotion(random);
+		return MinepreggoModPotions.getRandomPregnancyAccelerationPotion(random);
 	}
 	
 	private Potion getRandomHarmfulImpregnationPotion() {
@@ -121,10 +93,7 @@ public class FertilityWitch extends Witch {
 	@Override
 	public void performRangedAttack(LivingEntity p_34143_, float p_34144_) {
 		if (this.isDrinkingPotion()) return;
-			
-		if (this.harmfulPregnancyPotion == null) 
-			chooseRandomHarmfulPregnancyPotion();
-		
+					
 		Vec3 vec3 = p_34143_.getDeltaMovement();
 		double d0 = p_34143_.getX() + vec3.x - this.getX();
 		double d1 = p_34143_.getEyeY() - 1.1 - this.getY();
@@ -141,11 +110,14 @@ public class FertilityWitch extends Witch {
 			}
 			this.setTarget(null);
 		}
-		else if (d3 >= 6D && p_34143_ instanceof Player player && this.random.nextFloat() < 0.75f) {		
+		else if (d3 > 3D && p_34143_ instanceof Player player) {		
 			Optional<Integer> result = player.getCapability(MinepreggoCapabilities.PLAYER_DATA).map(cap -> 
 				cap.getFemaleData().map(femaleData -> {
 					if (femaleData.isPregnant()) {
-						return femaleData.isPregnancyDataInitialized() ? 1 : 0;
+						if (femaleData.isPregnancyDataInitialized()) {
+							return PregnancyPain.isLaborPain(femaleData.getPregnancyData().getPregnancyPain()) ? 2 : 1;
+						}	
+						return 0;
 					}
 					return -1;
 				})
@@ -161,18 +133,14 @@ public class FertilityWitch extends Witch {
 				}
 			}
 		}		
-		else if (d3 >= 6D && p_34143_ instanceof PreggoMob preggoMob && this.random.nextFloat() < 0.75f) {
-			Potion result = null;
+		else if (d3 > 3D && p_34143_ instanceof PreggoMob preggoMob) {
 			if (preggoMob instanceof TamableZombieGirl || preggoMob instanceof TamableHumanoidCreeperGirl) {			
-				result = MinepreggoModPotions.getRandomImpregnationPotion(random);
+				potion = MinepreggoModPotions.getRandomImpregnationPotion(random);
 			}
-			else if (preggoMob instanceof AbstractTamablePregnantZombieGirl || preggoMob instanceof AbstractTamablePregnantCreeperGirl) {
-				result = getRandomHarmfulPregnancyPotion();
-			}
-			
-			if (result != null) {
-				potion = result;
-			}
+			else if (preggoMob instanceof ITamablePregnantPreggoMob tamablePregnantPreggoMob
+					&& !PregnancyPain.isLaborPain(tamablePregnantPreggoMob.getPregnancyData().getPregnancyPain())) {
+				potion = getRandomHarmfulPregnancyPotion();
+			} 		
 		}	
 		else if (p_34143_.getHealth() >= 8.0F && !p_34143_.hasEffect(MobEffects.POISON)) {
 			potion = Potions.POISON;
@@ -190,10 +158,5 @@ public class FertilityWitch extends Witch {
 		}
 
 		this.level().addFreshEntity(thrownpotion);
-	}
-	
-	private enum HarmfulPregnancyPotion {
-		DELAY,
-		ACCELERATION
 	}
 }

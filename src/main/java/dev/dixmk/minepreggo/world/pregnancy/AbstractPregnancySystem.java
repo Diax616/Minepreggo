@@ -5,9 +5,12 @@ import javax.annotation.Nonnull;
 import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.LivingEntity;
 
 public abstract class AbstractPregnancySystem<E extends LivingEntity> implements IPregnancySystem {
@@ -16,7 +19,10 @@ public abstract class AbstractPregnancySystem<E extends LivingEntity> implements
 	protected final RandomSource randomSource;
 	
 	private int stomachGrowlCoolDown = 0;
-	protected float stomachGrowlProb = 0.005f;
+	protected float stomachGrowlProb = 0.01f;
+	
+	private int pregnancyPainCoolDown = 0;
+	protected float pregnancyHurtProb = 0.1f;
 	
 	protected AbstractPregnancySystem(@Nonnull E pregnantEntity) {
 		this.pregnantEntity = pregnantEntity;
@@ -99,7 +105,6 @@ public abstract class AbstractPregnancySystem<E extends LivingEntity> implements
 		}
 	}
 	
-	
 	protected boolean tryPlayStomachGrowlsSound() {	
 		if (stomachGrowlCoolDown < 20) {
 			++stomachGrowlCoolDown;
@@ -111,5 +116,34 @@ public abstract class AbstractPregnancySystem<E extends LivingEntity> implements
 			return true;
 		}	
 		return false;
+	}
+	
+	protected boolean tryHurt() {	
+		if (pregnantEntity.getHealth() >= 1.5f) {
+			pregnantEntity.hurt(new DamageSource(pregnantEntity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.GENERIC)), 1);
+			return true;
+		}
+		return false;
+	}
+	
+	protected boolean tryHurtByCooldown(int coolDownTicks) {	
+		if (pregnantEntity.getHealth() <= 1.5f) {
+			return false;
+		}
+		
+		if (pregnancyPainCoolDown < coolDownTicks) {
+			++pregnancyPainCoolDown;
+			return false;
+		}
+		pregnancyPainCoolDown = 0;	
+		if (randomSource.nextFloat() < pregnancyHurtProb) {
+			pregnantEntity.hurt(new DamageSource(pregnantEntity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.GENERIC)), 1);
+			return true;
+		}	
+		return false;
+	}
+	
+	protected boolean tryHurtByCooldown() {	
+		return tryHurtByCooldown(60);
 	}
 }

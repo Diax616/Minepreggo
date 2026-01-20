@@ -33,12 +33,12 @@ public class TamableZombieGirlP4 extends AbstractTamablePregnantZombieGirl {
 	}
 
 	@Override
-	protected ITamablePreggoMobSystem createTamableSystem() {
+	protected ITamablePreggoMobSystem createTamablePreggoMobSystem() {
 		return new PregnantPreggoMobSystemP2<>(this, MinepreggoModConfig.getTotalTicksOfHungryP4(), PregnancySystemHelper.TOTAL_TICKS_SEXUAL_APPETITE_P4);
 	}
 	
 	@Override
-	protected IFemaleEntity createFemaleEntity() {
+	protected IFemaleEntity createFemaleEntityData() {
 		return new FemaleEntityImpl();
 	}
 	

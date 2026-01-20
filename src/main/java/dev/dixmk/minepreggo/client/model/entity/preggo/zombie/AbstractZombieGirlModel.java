@@ -1,11 +1,15 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.zombie;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import dev.dixmk.minepreggo.MinepreggoMod;
+import dev.dixmk.minepreggo.client.jiggle.EntityJiggleDataFactory;
 import dev.dixmk.minepreggo.client.model.entity.preggo.PregnantFemaleHumanoidModel;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractZombieGirl;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
-import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -36,16 +40,26 @@ public abstract class AbstractZombieGirlModel<E extends AbstractZombieGirl> exte
 
 	protected final ModelPart root;
 	protected final ZombieGirlAnimator<E> animator;
+	protected final EntityJiggleDataFactory.JigglePositionConfig jiggleConfig;
+	protected final @Nullable PregnancyPhase pregnancyPhase;
+	protected final boolean simpleBellyJiggle;
 	
-	protected AbstractZombieGirlModel(ModelPart root, ZombieGirlAnimator<E> animator) {
+	protected AbstractZombieGirlModel(ModelPart root, ZombieGirlAnimator<E> animator, @Nullable PregnancyPhase pregnancyPhase, boolean simpleBellyJiggle) {
 		super(root);
 		this.root = root;
 		this.animator = animator;
+		this.pregnancyPhase = pregnancyPhase;
+		this.simpleBellyJiggle = simpleBellyJiggle;
+		this.jiggleConfig = this.createJiggleConfig();
 	}
 
+	protected abstract @Nonnull EntityJiggleDataFactory.JigglePositionConfig createJiggleConfig();
+	
 	@Override
 	public void setupAnim(E entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		this.tryHideBoobs(entity, PregnancySystemHelper::shouldBoobsBeHidden);	
+		animator.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);			
+		updateJiggle(entity, pregnancyPhase, jiggleConfig, simpleBellyJiggle);
 	}
 	
 	protected static void createBasicBodyLayer(PartDefinition partdefinition, float extraLeftArmRotationY, float extraRightArmRotationY) {
@@ -142,7 +156,7 @@ public abstract class AbstractZombieGirlModel<E extends AbstractZombieGirl> exte
 		PartDefinition partdefinition = meshdefinition.getRoot();
 		createBasicBodyLayer(partdefinition, -0.0872665F, 0.0872665F);
 		PartDefinition body = partdefinition.getChild("body");
-		PartDefinition boobs = body.addOrReplaceChild("boobs", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 1.5F, -2.55F, -0.2967F, 0.0F, 0.0F));
+		PartDefinition boobs = body.addOrReplaceChild("boobs", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 1.1F, -2.55F, -0.2967F, 0.0F, 0.0F));
 		PartDefinition rightBoob = boobs.addOrReplaceChild("right_boob", CubeListBuilder.create(), PartPose.offset(-2.0F, 0.0F, 0.55F));
 		rightBoob.addOrReplaceChild("rightBoobCube_r1", CubeListBuilder.create().texOffs(18, 66).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.4F)), PartPose.offsetAndRotation(-0.0336F, 2.3279F, -1.3635F, 0.3491F, 0.1745F, 0.0436F));
 		PartDefinition leftBoob = boobs.addOrReplaceChild("left_boob", CubeListBuilder.create(), PartPose.offset(2.0F, 0.0F, 0.55F));
@@ -165,7 +179,7 @@ public abstract class AbstractZombieGirlModel<E extends AbstractZombieGirl> exte
 		PartDefinition partdefinition = meshdefinition.getRoot();
 		createBasicBodyLayer(partdefinition, -0.2181662F, 0.2181662F);
 		PartDefinition body = partdefinition.getChild("body");
-		PartDefinition boobs = body.addOrReplaceChild("boobs", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 0.9F, -1.8F, -0.3229F, 0.0F, 0.0F));
+		PartDefinition boobs = body.addOrReplaceChild("boobs", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 1.3F, -1.7F, -0.3229F, 0.0F, 0.0F));
 		PartDefinition rightBoob = boobs.addOrReplaceChild("right_boob", CubeListBuilder.create(), PartPose.offset(-2.0F, 0.5F, 0.0F));
 		rightBoob.addOrReplaceChild("rightBoobCube_r1", CubeListBuilder.create().texOffs(16, 65).addBox(-2.5F, -1.5F, -2.7F, 4.0F, 3.0F, 4.0F, new CubeDeformation(0.3F)), PartPose.offsetAndRotation(0.0664F, 1.7279F, -0.9635F, 0.3491F, 0.1745F, 0.0436F));
 		PartDefinition leftBoob = boobs.addOrReplaceChild("left_boob", CubeListBuilder.create(), PartPose.offset(2.0F, 0.5F, 0.0F));
@@ -286,24 +300,4 @@ public abstract class AbstractZombieGirlModel<E extends AbstractZombieGirl> exte
 		.texOffs(46, 75).addBox(-2.0F, -0.85F, -0.05F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.7F)), PartPose.offset(-0.1F, 0.3F, 2.3F));
 		return LayerDefinition.create(meshdefinition, 64, 96);
 	}
-	
-    // Inner armor (leggings layer)
-    public static LayerDefinition createInnerLayer() {
-        MeshDefinition mesh = HumanoidModel.createMesh(new CubeDeformation(0.51F), 0.0F);
-        PartDefinition partdefinition = mesh.getRoot();
-        PartDefinition body = partdefinition.getChild("body");
-        body.addOrReplaceChild("boobs", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-        body.addOrReplaceChild("belly", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));       
-        return LayerDefinition.create(mesh, 64, 32);
-    }
-
-    // Outer armor (chestplate, helmet, boots)
-    public static LayerDefinition createOuterLayer() {
-        MeshDefinition mesh = HumanoidModel.createMesh(new CubeDeformation(0.85F), 0.0F);
-        PartDefinition partdefinition = mesh.getRoot();
-        PartDefinition body = partdefinition.getChild("body");
-        body.addOrReplaceChild("boobs", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-        body.addOrReplaceChild("belly", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));       
-        return LayerDefinition.create(mesh, 64, 32);
-    }
 }

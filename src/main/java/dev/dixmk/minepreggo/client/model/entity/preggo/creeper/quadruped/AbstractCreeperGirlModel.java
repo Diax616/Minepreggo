@@ -1,8 +1,18 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.creeper.quadruped;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import org.apache.commons.lang3.tuple.ImmutablePair;
+
 import dev.dixmk.minepreggo.MinepreggoMod;
+import dev.dixmk.minepreggo.client.jiggle.EntityJiggleData;
+import dev.dixmk.minepreggo.client.jiggle.EntityJiggleDataFactory;
+import dev.dixmk.minepreggo.client.jiggle.JigglePhysicsManager;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractCreeperGirl;
+import dev.dixmk.minepreggo.world.item.IMaternityArmor;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import net.minecraft.client.model.CreeperModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -14,35 +24,69 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-/*
- * Classes that extend this abstract class need to be refactored to reduce code duplication.
- * 
- * */
-
 @OnlyIn(Dist.CLIENT)
 public abstract class AbstractCreeperGirlModel<E extends AbstractCreeperGirl> extends CreeperModel<E> {	
-	protected final ModelPart hat;
-	protected final ModelPart head;
-	protected final ModelPart belly;
-	protected final ModelPart boobs;
-	
 	public static final ModelLayerLocation LAYER_OUTER_ARMOR_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "creeper_girl_outer_model"), "outer");
-	
 	public static final ModelLayerLocation LAYER_ENERGY_ARMOR_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "creeper_girl_energy_armor_model"), "armor");
-
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "creeper_girl_model"), "main");
 	
-	protected AbstractCreeperGirlModel(ModelPart root) {
+	public final ModelPart hat;
+	public final ModelPart head;
+	public final ModelPart belly;
+	public final ModelPart boobs;
+	public final ModelPart leftBoob;
+	public final ModelPart rightBoob;
+	protected final EntityJiggleDataFactory.JigglePositionConfig jiggleConfig;
+	protected final @Nullable ImmutablePair<PregnancyPhase, Boolean> pregnancyPhaseAndSimpleBellyJiggle;
+	
+	protected AbstractCreeperGirlModel(ModelPart root, @Nullable ImmutablePair<PregnancyPhase, Boolean> pregnancyPhaseAndSimpleBellyJiggle) {
 		super(root);
 		this.hat = root().getChild("hat");
 		this.head = root().getChild("head");	
 		var body = root().getChild("body");	
 		this.belly = body.getChild("belly");
 		this.boobs = body.getChild("boobs");
+		this.leftBoob = boobs.getChild("left_boob");
+		this.rightBoob = boobs.getChild("right_boob");
+		this.pregnancyPhaseAndSimpleBellyJiggle = pregnancyPhaseAndSimpleBellyJiggle;
+		this.jiggleConfig = createJiggleConfig();
 	}
+	
+	protected void updateJiggle(E entity) {
+		if (entity.isBaby()) {
+			return;
+		}
+		
+		final PregnancyPhase pregnancyPhase;
+		final boolean simpleBellyJiggle;
+		
+		if (pregnancyPhaseAndSimpleBellyJiggle != null) {
+			pregnancyPhase = pregnancyPhaseAndSimpleBellyJiggle.getLeft();
+			simpleBellyJiggle = pregnancyPhaseAndSimpleBellyJiggle.getRight();
+		}
+		else {
+			pregnancyPhase = null;
+			simpleBellyJiggle = false;
+		}
+
+		final var armor = entity.getItemBySlot(EquipmentSlot.CHEST);
+		EntityJiggleData jiggleData = JigglePhysicsManager.getInstance().getOrCreate(entity, () -> EntityJiggleDataFactory.create(jiggleConfig, pregnancyPhase));
+		if (armor.isEmpty()) {
+			jiggleData.getBoobsJiggle().setupAnim(entity, boobs, leftBoob, rightBoob);			
+			jiggleData.getBellyJiggle().ifPresent(jiggle -> jiggle.setupAnim(entity, belly, simpleBellyJiggle));
+		}
+		else { 		
+			if (armor.getItem() instanceof IMaternityArmor maternityArmor && maternityArmor.areBoobsExposed()) {
+				jiggleData.getBoobsJiggle().setupAnim(entity, boobs, leftBoob, rightBoob);
+			}
+		}
+	}
+	
+	protected abstract @Nonnull EntityJiggleDataFactory.JigglePositionConfig createJiggleConfig();
 	
 	protected static void createBasicBodyLayer(PartDefinition partdefinition) {	
 		partdefinition.addOrReplaceChild("head", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -7.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 3.0F, 0.0F));
@@ -86,13 +130,15 @@ public abstract class AbstractCreeperGirlModel<E extends AbstractCreeperGirl> ex
     public static LayerDefinition createOuterLayer() {
         MeshDefinition mesh = HumanoidModel.createMesh(new CubeDeformation(0.85F), 0.0F);
         PartDefinition partdefinition = mesh.getRoot();
-        partdefinition.getChild("body").addOrReplaceChild("boobs", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-        partdefinition.getChild("body").addOrReplaceChild("belly", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-
+        PartDefinition body = partdefinition.getChild("body");
+        PartDefinition boobs = body.addOrReplaceChild("boobs", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+        boobs.addOrReplaceChild("left_boob", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+        boobs.addOrReplaceChild("right_boob", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F)); 
+        body.addOrReplaceChild("belly", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
         return LayerDefinition.create(mesh, 64, 32);
     }
     
-	protected void moveHead(E entity, float netHeadYaw, float headPitch) {
+	protected void moveHead(float netHeadYaw, float headPitch) {
 		this.head.yRot = netHeadYaw * (Mth.PI / 180F);
 		this.head.xRot = headPitch * (Mth.PI / 180F);
 		this.hat.copyFrom(this.head);

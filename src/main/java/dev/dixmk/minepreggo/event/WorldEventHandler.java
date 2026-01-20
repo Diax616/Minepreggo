@@ -25,9 +25,8 @@ public class WorldEventHandler {
 
     @SubscribeEvent
     public static void onSleepFinished(SleepFinishedTimeEvent event) {
-       ServerLevel level = (ServerLevel) event.getLevel();
-        
-        if (level.isClientSide) {
+
+        if (!(event.getLevel() instanceof ServerLevel level) || level.isClientSide) {
             return;
         }
 

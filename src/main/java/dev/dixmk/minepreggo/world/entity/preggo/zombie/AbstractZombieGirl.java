@@ -44,8 +44,7 @@ public abstract class AbstractZombieGirl extends PreggoMob implements Enemy {
 	
 	protected AbstractZombieGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_, Creature typeOfCreature) {
 	      super(p_21803_, p_21804_, Species.ZOMBIE, typeOfCreature);
-	      this.reassessTameGoals();	     
-		}
+	}
 	
 	@Override
 	public MobType getMobType() {
@@ -55,6 +54,11 @@ public abstract class AbstractZombieGirl extends PreggoMob implements Enemy {
 	@Override
 	public @NonNull Species getTypeOfSpecies() {
 		return Species.ZOMBIE;
+	}
+	
+	@Override
+	public boolean hasJigglePhysics() {
+		return true;
 	}
 	
 	protected boolean isSunSensitive() {
@@ -88,7 +92,7 @@ public abstract class AbstractZombieGirl extends PreggoMob implements Enemy {
 	
 	@Override
 	public boolean isFood(ItemStack stack) {
-		return stack.is(TagHelper.ZOMBIE_GIRL_FOOD);
+		return stack.is(TagHelper.ZOMBIE_FOOD);
 	}
 	
 	@Override

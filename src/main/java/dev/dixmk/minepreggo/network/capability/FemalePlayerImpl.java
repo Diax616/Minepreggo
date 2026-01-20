@@ -12,13 +12,13 @@ import org.jetbrains.annotations.Nullable;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
-import dev.dixmk.minepreggo.network.packet.ResetPregnancyS2CPacket;
-import dev.dixmk.minepreggo.network.packet.SyncFemalePlayerDataS2CPacket;
-import dev.dixmk.minepreggo.network.packet.SyncPlayerLactationS2CPacket;
+import dev.dixmk.minepreggo.network.packet.s2c.ResetPregnancyS2CPacket;
+import dev.dixmk.minepreggo.network.packet.s2c.SyncFemalePlayerDataS2CPacket;
+import dev.dixmk.minepreggo.network.packet.s2c.SyncPlayerLactationS2CPacket;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
-import dev.dixmk.minepreggo.world.pregnancy.IPostPregnancyDataHolder;
+import dev.dixmk.minepreggo.world.pregnancy.IPostPregnancyData;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -137,7 +137,7 @@ public class FemalePlayerImpl extends FemaleEntityImpl implements IFemalePlayer 
 	
 	public void syncLactation(ServerPlayer serverPlayer) {
 		MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> serverPlayer),
-				new SyncPlayerLactationS2CPacket(serverPlayer.getUUID(), this.postPregnancyData.map(IPostPregnancyDataHolder::getPostPartumLactation).orElse(0)));
+				new SyncPlayerLactationS2CPacket(serverPlayer.getUUID(), this.postPregnancyData.map(IPostPregnancyData::getPostPartumLactation).orElse(0)));
 	}
 
 	// TODO: It does not validate if the data is valid for player's current state, it could cause inconsistencies.
@@ -190,5 +190,5 @@ public class FemalePlayerImpl extends FemaleEntityImpl implements IFemalePlayer 
 		}
 	}
 	
-	public static record ClientData(boolean pregnant, @Nullable IPostPregnancyDataHolder postPregnancy, float fertility) {}
+	public static record ClientData(boolean pregnant, @Nullable IPostPregnancyData postPregnancy, float fertility) {}
 }

@@ -19,15 +19,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class CustomPregnantBodyP6Model extends AbstractHeavyPregnantBodyModel {
-	
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "custom_pregnant_body_p6_model"), "main");
-	
+
 	public CustomPregnantBodyP6Model(ModelPart root) {
-		super(root,
-				BellyInflation.HIGH,
-				FetalMovementIntensity.P6,
-				PregnancyPhase.P6,
-				SkinType.CUSTOM);
+		super(root, BellyInflation.HIGH, FetalMovementIntensity.P6, PregnancyPhase.P6, SkinType.CUSTOM);
 		milkingBoobsYPos = -0.6F;
 	}
 	

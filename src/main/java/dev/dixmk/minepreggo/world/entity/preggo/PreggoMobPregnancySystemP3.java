@@ -120,6 +120,7 @@ public abstract class PreggoMobPregnancySystemP3
 			}
 			else {
 				pregnancyData.incrementPregnancyPainTimer();
+				tryHurtByCooldown();
 			}
 		}
 	}

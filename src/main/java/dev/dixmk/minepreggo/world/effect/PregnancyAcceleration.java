@@ -2,7 +2,6 @@ package dev.dixmk.minepreggo.world.effect;
 
 import javax.annotation.Nullable;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
@@ -20,20 +19,14 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
-/**
- * It apparently works correctly, but I did not test it extensively.
- * @author DixMK
- * 
- */
-
 public class PregnancyAcceleration extends MobEffect {
     
     private static final float[][] PERCETANGES_RANGES = {
-            {0.15f, 0.20f},
-            {0.20f, 0.25f},
-            {0.25f, 0.30f},
-            {0.30f, 0.35f},
-            {0.35f, 0.4f}
+            {0.25f, 0.3f},
+            {0.3f, 0.35f},
+            {0.35f, 0.4f},
+            {0.4f, 0.45f},
+            {0.45f, 0.5f}
         };
 	
     public PregnancyAcceleration() {
@@ -84,12 +77,8 @@ public class PregnancyAcceleration extends MobEffect {
         MapPregnancyPhase map = handler.getMapPregnancyPhase();
         PregnancyPhase current = handler.getCurrentPregnancyStage();
        
-        MinepreggoMod.LOGGER.debug("Accelerating pregnancy by {} days", days);
-
         int applied = PregnancyPhaseHelper.consumeDaysFromMap(map, current, days);
      
-        MinepreggoMod.LOGGER.debug("Pregnancy acceleration applied days: {}. New map: {}", applied, map);
-
         if (applied > 0) {
             int currentDaysToBirth = handler.getDaysToGiveBirth();
             handler.setDaysToGiveBirth(Math.max(0, currentDaysToBirth - applied));

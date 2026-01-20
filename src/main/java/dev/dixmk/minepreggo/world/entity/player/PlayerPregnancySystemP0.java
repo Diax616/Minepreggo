@@ -42,6 +42,14 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 	        return false;
 	    }
 	    
+	    if (this.pregnantEntity.isRemoved() || currentPlayer.isRemoved()) {
+	        return false;
+	    }
+	    
+	    if (!this.pregnantEntity.isAlive() || !currentPlayer.isAlive()) {
+	        return false;
+	    }
+	    
 	    if (!this.pregnantEntity.getUUID().equals(currentPlayer.getUUID())) {
 	        return false;
 	    }
@@ -179,12 +187,14 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 		
 		pregnantEntity.removeEffect(PlayerHelper.getPregnancyEffects(pregnancySystem.getCurrentPregnancyStage()));
 		pregnantEntity.addEffect(new MobEffectInstance(PlayerHelper.getPregnancyEffects(next), -1, 0, false, false, true));
+
+		PlayerHelper.updateJigglePhysics(pregnantEntity, playerData.getSkinType(), next);
 		
 		pregnancySystem.setCurrentPregnancyStage(next);
 		pregnancySystem.resetPregnancyTimer();
 		pregnancySystem.resetDaysPassed();
-		pregnancySystem.syncState(pregnantEntity);	
-		
+		pregnancySystem.syncState(pregnantEntity);		
+			
 		if (next.compareTo(PregnancyPhase.P0) > 0) {		
 			var chestplate = pregnantEntity.getItemBySlot(EquipmentSlot.CHEST);
 			var legginds = pregnantEntity.getItemBySlot(EquipmentSlot.LEGS);
@@ -199,7 +209,7 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 				PlayerHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.LEGS);
 			}
 		}
-	
+		
 		MinepreggoMod.LOGGER.debug("Player {} advanced to next pregnancy phase: {}",
 				pregnantEntity.getGameProfile().getName(), next);	
 	}

@@ -27,7 +27,7 @@ public abstract class AbstractCreeperGirlInventoryMenu<E extends AbstractTamable
 			this.addSlot(new SlotItemHandler(internal, ITamablePreggoMob.FOOD_INVENTORY_SLOT, 113, 62) {
 				@Override
 				public boolean mayPlace(ItemStack itemstack) {
-					return itemstack.is(TagHelper.CREEPER_GIRL_FOOD);
+					return itemstack.is(TagHelper.CREEPER_FOOD);
 				}
 			});
 			

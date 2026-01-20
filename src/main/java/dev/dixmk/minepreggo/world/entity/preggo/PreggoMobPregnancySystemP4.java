@@ -10,7 +10,7 @@ import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
-import dev.dixmk.minepreggo.network.packet.RequestSexM2PC2SPacket;
+import dev.dixmk.minepreggo.network.packet.c2s.RequestSexM2PC2SPacket;
 import dev.dixmk.minepreggo.world.pregnancy.AbstractPregnancySystem;
 import dev.dixmk.minepreggo.world.pregnancy.IBreedable;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
@@ -69,8 +69,18 @@ public abstract class PreggoMobPregnancySystemP4
 			return;
 		}
 		
-		if (canAdvanceNextPregnancyPhase() && hasToGiveBirth()) {
-			breakWater();
+		if (canAdvanceNextPregnancyPhase() && hasToGiveBirth()) {		
+			if (pregnantEntity.getPregnancyData().getWomb().isWombOverloaded()) {
+				if (pregnantEntity.isAlive()) {
+					PregnancySystemHelper.tornWomb(pregnantEntity);
+				}
+				else {
+					MinepreggoMod.LOGGER.debug("PreggoMob {} has a torn womb but is dead, skipping torn womb handling.", pregnantEntity.getDisplayName().getString());
+				}
+			} 
+			else {
+				breakWater();
+			}
 			return;
 		}
 		
@@ -83,9 +93,9 @@ public abstract class PreggoMobPregnancySystemP4
 	protected void evaluateBirth(ServerLevel serverLevel) {		
 		final var pregnancyData = pregnantEntity.getPregnancyData();
 		final var pain = pregnancyData.getPregnancyPain();
-		
 		if (pain == PregnancyPain.PREBIRTH) {		
 			if (pregnancyData.getPregnancyPainTimer() >= totalTicksOfPreBirth) {
+				tryHurt();
 				pregnancyData.setPregnancyPain(PregnancyPain.BIRTH);
 				pregnantEntity.getTamableData().setBodyState(PreggoMobBody.NAKED);
 				pregnancyData.resetPregnancyPainTimer();   		
@@ -135,12 +145,14 @@ public abstract class PreggoMobPregnancySystemP4
 			}	
 			else {
 				pregnancyData.incrementPregnancyPainTimer();
+				tryHurtByCooldown();
 			}
 		}
 	}
 	
 	@Override
 	protected void startLabor() {
+		tryHurt();
 		final var pregnancyData = pregnantEntity.getPregnancyData();
 		pregnancyData.setPregnancyPain(PregnancyPain.PREBIRTH);
 		pregnancyData.resetPregnancyPainTimer();
@@ -164,6 +176,7 @@ public abstract class PreggoMobPregnancySystemP4
 	
 	@Override
 	protected void breakWater() {
+		tryHurt();
 		final var pregnancyData = pregnantEntity.getPregnancyData();
 		pregnancyData.resetPregnancyPainTimer();
 		pregnancyData.setPregnancyPain(PregnancyPain.WATER_BREAKING);
@@ -238,6 +251,7 @@ public abstract class PreggoMobPregnancySystemP4
 			}
 			else {
 				pregnancyData.incrementPregnancyPainTimer();
+				tryHurtByCooldown();
 			}
 		}
 	}

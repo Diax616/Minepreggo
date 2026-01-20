@@ -6,28 +6,20 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class BellyJigglePhysics extends AbstractJigglePhysics {
+public class BellyJigglePhysics extends AbstractJigglePhysics<BellyJigglePhysics.JigglePhysicsConfig> {
     private float rotationVelocity = 0.0f;
     private float rotation = 0.0f;
 	
     private double previousPlayerX = 0.0;
     private double previousPlayerZ = 0.0;
     private float movementIntensity = 0.0f;
-    
-    private final float rotationSpring;
-    private final float rotationDamping;
-    private final float maxRotation;
-    
-    private final float movementMultiplier;
-    private final float movementDecay;
 	
-	protected BellyJigglePhysics(Builder builder) {
-		super(builder.springStrength, builder.damping, builder.gravity, builder.maxDisplacement, builder.additionalYPos);
-		rotationSpring = builder.rotationSpring;
-		rotationDamping = builder.rotationDamping;
-		maxRotation = builder.maxRotation;
-		movementMultiplier = builder.movementMultiplier;
-		movementDecay = builder.movementDecay;
+	protected BellyJigglePhysics(JigglePhysicsConfig config) {
+		super(config);
+	}
+	
+	public BellyJigglePhysics(Builder builder) {
+		this(new JigglePhysicsConfig(builder));
 	}
 
 	public static BellyJigglePhysics.Builder builder() {
@@ -48,33 +40,33 @@ public class BellyJigglePhysics extends AbstractJigglePhysics {
         
         // Update movement intensity with decay
         if (isMoving && horizontalMovement > 0.001f) {
-            movementIntensity = Math.min(1.0f, movementIntensity + horizontalMovement * movementMultiplier);
+            movementIntensity = Math.min(1.0f, movementIntensity + horizontalMovement * config.movementMultiplier);
         } else {
-            movementIntensity *= movementDecay;
+            movementIntensity *= config.movementDecay;
         }
         
         // Apply forces to vertical position
-        float springForce = -position * springStrength;
-        float gravityForce = gravity * Math.signum(velocity);
+        float springForce = -position * config.springStrength;
+        float gravityForce = config.gravity * Math.signum(velocity);
         float movementForce = movementIntensity * 0.05f * (float) Math.sin(System.currentTimeMillis() * 0.01);
         
         // Update velocity with player movement influence
         velocity += springForce - (playerVelocityY * 0.1f) - gravityForce + movementForce;
-        velocity *= damping;
+        velocity *= config.damping;
         
         // Update position
         position += velocity * deltaTime;
-        position = Math.max(-maxDisplacement, Math.min(maxDisplacement, position));
+        position = Math.max(-config.maxDisplacement, Math.min(config.maxDisplacement, position));
         
         // Calculate rotation based on velocity and movement
         float targetRotation = velocity * 0.5f + (movementIntensity * 0.2f * (float) Math.cos(System.currentTimeMillis() * 0.008));
-        float rotationSpringForce = (targetRotation - rotation) * rotationSpring;
+        float rotationSpringForce = (targetRotation - rotation) * config.rotationSpring;
         
         rotationVelocity += rotationSpringForce;
-        rotationVelocity *= rotationDamping;
+        rotationVelocity *= config.rotationDamping;
         
         rotation += rotationVelocity * deltaTime;
-        rotation = Math.max(-maxRotation, Math.min(maxRotation, rotation));
+        rotation = Math.max(-config.maxRotation, Math.min(config.maxRotation, rotation));
     }
     
     public float getRotation() {
@@ -99,12 +91,12 @@ public class BellyJigglePhysics extends AbstractJigglePhysics {
 				
 		if (!simple) {
 			this.update((float) entity.getY(), entity.getX(), entity.getZ(), deltaTime, entity.walkAnimation.isMoving());
-			bellyModel.y = this.additionalYPos + this.getOffset();	
+			bellyModel.y = config.originalYPos + this.getOffset();	
 			bellyModel.yRot = this.getRotation();
 		}
 		else {
 			this.update((float) entity.getY(), deltaTime);
-			bellyModel.y = this.additionalYPos + this.getOffset();	
+			bellyModel.y = config.originalYPos + this.getOffset();	
 		}
 	}
     
@@ -115,7 +107,7 @@ public class BellyJigglePhysics extends AbstractJigglePhysics {
     	private float damping = 0.85f;
     	private float gravity = 0.02f;
     	private float maxDisplacement = 0.3f;
-        protected float additionalYPos = 2.0f;
+        protected float originalYPos = 2.0f;
         
         private float rotationSpring = 0.2f;
         private float rotationDamping = 0.88f;
@@ -144,8 +136,8 @@ public class BellyJigglePhysics extends AbstractJigglePhysics {
     		return this;
     	}
     	
-    	public Builder additionalYPos(float additionalYPos) {
-    		this.additionalYPos = additionalYPos;
+    	public Builder originalYPos(float originalYPos) {
+    		this.originalYPos = originalYPos;
     		return this;
     	}
 	
@@ -178,5 +170,23 @@ public class BellyJigglePhysics extends AbstractJigglePhysics {
         	this.movementDecay = movementDecay;
         	return this;
         }       
+    }
+    
+    @OnlyIn(Dist.CLIENT)
+    public static class JigglePhysicsConfig extends AbstractJigglePhysics.AbstractJigglePhysicsConfig {
+        public final float rotationSpring;
+        public final float rotationDamping;
+        public final float maxRotation;
+        public final float movementMultiplier;
+        public final float movementDecay;
+
+        public JigglePhysicsConfig(Builder builder) {
+            super(builder.springStrength, builder.damping, builder.gravity, builder.maxDisplacement, builder.originalYPos);
+            this.rotationSpring = builder.rotationSpring;
+            this.rotationDamping = builder.rotationDamping;
+            this.maxRotation = builder.maxRotation;
+            this.movementMultiplier = builder.movementMultiplier;
+            this.movementDecay = builder.movementDecay;
+        }
     }
 }

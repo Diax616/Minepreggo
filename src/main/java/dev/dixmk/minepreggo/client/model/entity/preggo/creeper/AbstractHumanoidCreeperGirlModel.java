@@ -1,9 +1,14 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.creeper;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import dev.dixmk.minepreggo.MinepreggoMod;
+import dev.dixmk.minepreggo.client.jiggle.EntityJiggleDataFactory;
 import dev.dixmk.minepreggo.client.model.entity.preggo.PregnantFemaleHumanoidModel;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractCreeperGirl;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -47,16 +52,26 @@ public abstract class AbstractHumanoidCreeperGirlModel<E extends AbstractCreeper
 
 	protected final ModelPart root;
 	protected final HumanoidCreeperGirlAnimator<E> animator;
+	protected final EntityJiggleDataFactory.JigglePositionConfig jiggleConfig;
+	protected final @Nullable PregnancyPhase pregnancyPhase;
+	protected final boolean simpleBellyJiggle;
 	
-	protected AbstractHumanoidCreeperGirlModel(ModelPart root, HumanoidCreeperGirlAnimator<E> animator) {
+	protected AbstractHumanoidCreeperGirlModel(ModelPart root, HumanoidCreeperGirlAnimator<E> animator, @Nullable PregnancyPhase pregnancyPhase, boolean simpleBellyJiggle) {
 		super(root);
 		this.root = root;
 		this.animator = animator;
+		this.pregnancyPhase = pregnancyPhase;
+		this.simpleBellyJiggle = simpleBellyJiggle;
+		this.jiggleConfig = this.createJiggleConfig();
 	}
+	
+	protected abstract @Nonnull EntityJiggleDataFactory.JigglePositionConfig createJiggleConfig();
 	
 	@Override
 	public void setupAnim(E entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		this.tryHideBoobs(entity, PregnancySystemHelper::shouldBoobsBeHidden);
+		animator.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);			
+		updateJiggle(entity, pregnancyPhase, jiggleConfig, simpleBellyJiggle);
 	}
 
 	protected static void createBasicBodyLayer(PartDefinition partdefinition, float extraLeftArmRotationZ, float extraRightArmRotationZ) {	

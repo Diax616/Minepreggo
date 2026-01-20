@@ -6,9 +6,9 @@ import javax.annotation.Nonnull;
 import org.jetbrains.annotations.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
-import dev.dixmk.minepreggo.utils.ServerParticleUtil;
-import dev.dixmk.minepreggo.network.packet.SexCinematicControlP2MS2CPacket;
+import dev.dixmk.minepreggo.network.packet.s2c.SexCinematicControlP2MS2CPacket;
 import dev.dixmk.minepreggo.server.ServerCinematicManager;
+import dev.dixmk.minepreggo.server.ServerParticleHelper;
 import dev.dixmk.minepreggo.world.item.AbstractBreastMilk;
 import dev.dixmk.minepreggo.world.item.ItemHelper;
 import dev.dixmk.minepreggo.world.pregnancy.IBreedable;
@@ -326,6 +326,6 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> impleme
 		else 
 			return;
 					
-		ServerParticleUtil.spawnRandomlyFromServer(preggoMob, particleoptions);
+		ServerParticleHelper.spawnRandomlyFromServer(preggoMob, particleoptions);
 	}
 }

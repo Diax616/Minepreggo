@@ -21,10 +21,10 @@ public abstract class AbstractTamablePregnantHumanoidCreeperGirl extends Abstrac
 	protected boolean canReplaceArmorBasedInPregnancyPhase(ItemStack armor) {	
 		final var slot = LivingEntity.getEquipmentSlotForItem(armor);				
 		if (slot == EquipmentSlot.CHEST) {
-			return PregnancySystemHelper.canUseChestplate(armor.getItem(), this.tamablePregnantPreggoMobData.getCurrentPregnancyStage(), false) && PreggoMobHelper.canUseChestPlateInLactation(this, armor.getItem());
+			return PregnancySystemHelper.canUseChestplate(armor.getItem(), this.pregnancyData.getCurrentPregnancyStage(), false) && PreggoMobHelper.canUseChestPlateInLactation(this, armor.getItem());
 		}
 		else if (slot == EquipmentSlot.LEGS) {
-			return PregnancySystemHelper.canUseLegging(armor.getItem(), this.tamablePregnantPreggoMobData.getCurrentPregnancyStage());
+			return PregnancySystemHelper.canUseLegging(armor.getItem(), this.pregnancyData.getCurrentPregnancyStage());
 		}
 		return true;
 	}

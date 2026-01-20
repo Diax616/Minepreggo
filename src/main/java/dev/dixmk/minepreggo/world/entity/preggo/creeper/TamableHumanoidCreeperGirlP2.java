@@ -33,12 +33,12 @@ public class TamableHumanoidCreeperGirlP2 extends AbstractTamablePregnantHumanoi
 	}
 	
 	@Override
-	protected ITamablePreggoMobSystem createTamableSystem() {
+	protected ITamablePreggoMobSystem createTamablePreggoMobSystem() {
 		return new PregnantPreggoMobSystemP2<>(this, MinepreggoModConfig.getTotalTicksOfHungryP2(), PregnancySystemHelper.TOTAL_TICKS_SEXUAL_APPETITE_P2);
 	}
 	
 	@Override
-	protected IFemaleEntity createFemaleEntity() {
+	protected IFemaleEntity createFemaleEntityData() {
 		return new FemaleEntityImpl();
 	}
 	

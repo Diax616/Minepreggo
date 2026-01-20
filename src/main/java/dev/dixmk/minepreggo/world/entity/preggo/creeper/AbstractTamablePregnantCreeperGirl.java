@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 
 import dev.dixmk.minepreggo.client.animation.player.BellyAnimationManager;
 import dev.dixmk.minepreggo.client.animation.preggo.BellyAnimation;
+import dev.dixmk.minepreggo.init.MinepreggoModDamageSources;
 import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.world.entity.ai.goal.PreggoMobAIHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
@@ -13,7 +14,9 @@ import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMobData;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.TamablePregnantPreggoMobDataImpl;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -28,7 +31,7 @@ public abstract class AbstractTamablePregnantCreeperGirl extends AbstractTamable
 	
     private static final TamablePregnantPreggoMobDataImpl.DataAccessor<AbstractTamablePregnantCreeperGirl> DATA_HOLDER = new TamablePregnantPreggoMobDataImpl.DataAccessor<>(AbstractTamablePregnantCreeperGirl.class);
 
-	protected final ITamablePregnantPreggoMobData tamablePregnantPreggoMobData;
+	protected final ITamablePregnantPreggoMobData pregnancyData;
 	
 	protected final IPreggoMobPregnancySystem pregnancySystem;
 
@@ -36,7 +39,7 @@ public abstract class AbstractTamablePregnantCreeperGirl extends AbstractTamable
 	
 	protected AbstractTamablePregnantCreeperGirl(EntityType<? extends AbstractTamableCreeperGirl> p_21803_, Level p_21804_, Creature typeOfCreature, PregnancyPhase currentPregnancyStage) {
 		super(p_21803_, p_21804_, typeOfCreature);
-		this.tamablePregnantPreggoMobData = new TamablePregnantPreggoMobDataImpl<>(DATA_HOLDER, this, currentPregnancyStage);		
+		this.pregnancyData = new TamablePregnantPreggoMobDataImpl<>(DATA_HOLDER, this, currentPregnancyStage);		
 		this.pregnancySystem = createPregnancySystem();
 	}
 	
@@ -44,7 +47,7 @@ public abstract class AbstractTamablePregnantCreeperGirl extends AbstractTamable
 	
 	@Override
 	public ITamablePregnantPreggoMobData getPregnancyData() {
-		return tamablePregnantPreggoMobData;
+		return pregnancyData;
 	}
 	
 	@Override
@@ -56,13 +59,15 @@ public abstract class AbstractTamablePregnantCreeperGirl extends AbstractTamable
 	@Override
 	public void addAdditionalSaveData(CompoundTag compoundTag) {
 		super.addAdditionalSaveData(compoundTag);
-		compoundTag.put("PregnantTamableData", this.tamablePregnantPreggoMobData.serializeNBT());
+		compoundTag.put("PregnantTamableData", this.pregnancyData.serializeNBT());
 	}
 	
 	@Override
 	public void readAdditionalSaveData(CompoundTag compoundTag) {
 		super.readAdditionalSaveData(compoundTag);	
-		this.tamablePregnantPreggoMobData.deserializeNBT(compoundTag.getCompound("PregnantTamableData"));
+		if (compoundTag.contains("PregnantTamableData")) {
+			this.pregnancyData.deserializeNBT(compoundTag.getCompound("PregnantTamableData"));
+		}
 	}
 	
 	@Override
@@ -72,7 +77,7 @@ public abstract class AbstractTamablePregnantCreeperGirl extends AbstractTamable
 			public boolean canUse() {				
 				return super.canUse() 
 				&& canExplode()
-				&& !tamablePregnantPreggoMobData.isIncapacitated();								
+				&& !pregnancyData.isIncapacitated();								
 			}
 		});
 		PreggoMobAIHelper.setTamablePregnantCreeperGirlGoals(this);
@@ -80,14 +85,18 @@ public abstract class AbstractTamablePregnantCreeperGirl extends AbstractTamable
 	
 	@Override
 	public boolean hasCustomHeadAnimation() {
-		return super.hasCustomHeadAnimation() || this.tamablePregnantPreggoMobData.getPregnancyPain() != null;
+		return super.hasCustomHeadAnimation() || this.pregnancyData.getPregnancyPain() != null;
 	}
 	
 	@Override
 	public void die(DamageSource source) {
 		super.die(source);		
 		if (!this.level().isClientSide) {
-			PreggoMobHelper.spawnBabyAndFetusCreepers(this);
+			boolean bellyBurst = source.is(MinepreggoModDamageSources.BELLY_BURST);
+			if (bellyBurst) {
+				PregnancySystemHelper.deathByBellyBurst(this, (ServerLevel) this.level());
+			}
+			PreggoMobHelper.spawnBabyAndFetusCreepers(this, bellyBurst);
 		}
 	}
 	

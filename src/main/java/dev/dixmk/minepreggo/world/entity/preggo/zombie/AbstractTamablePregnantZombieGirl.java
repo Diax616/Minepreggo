@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 
 import dev.dixmk.minepreggo.client.animation.player.BellyAnimationManager;
 import dev.dixmk.minepreggo.client.animation.preggo.BellyAnimation;
+import dev.dixmk.minepreggo.init.MinepreggoModDamageSources;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.world.entity.ai.goal.PreggoMobAIHelper;
@@ -15,6 +16,8 @@ import dev.dixmk.minepreggo.world.entity.preggo.TamablePregnantPreggoMobDataImpl
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -32,7 +35,7 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 
     private static final TamablePregnantPreggoMobDataImpl.DataAccessor<AbstractTamablePregnantZombieGirl> DATA_HOLDER = new TamablePregnantPreggoMobDataImpl.DataAccessor<>(AbstractTamablePregnantZombieGirl.class);
 
-	protected final ITamablePregnantPreggoMobData tamablePregnantPreggoMobData;
+	protected final ITamablePregnantPreggoMobData pregnancyData;
 	
 	protected final IPreggoMobPregnancySystem pregnancySystem;
 	
@@ -40,7 +43,7 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 	
 	protected AbstractTamablePregnantZombieGirl(EntityType<? extends AbstractTamablePregnantZombieGirl> p_21803_, Level p_21804_, PregnancyPhase currentPregnancyStage) {
 		super(p_21803_, p_21804_);
-		this.tamablePregnantPreggoMobData = new TamablePregnantPreggoMobDataImpl<>(DATA_HOLDER, this, currentPregnancyStage);		
+		this.pregnancyData = new TamablePregnantPreggoMobDataImpl<>(DATA_HOLDER, this, currentPregnancyStage);		
 		this.pregnancySystem = createPregnancySystem();
 	}
 	
@@ -55,13 +58,15 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 	@Override
 	public void addAdditionalSaveData(CompoundTag compoundTag) {
 		super.addAdditionalSaveData(compoundTag);
-		compoundTag.put("PregnantTamableData", this.tamablePregnantPreggoMobData.serializeNBT());
+		compoundTag.put("PregnantTamableData", this.pregnancyData.serializeNBT());
 	}
 	
 	@Override
 	public void readAdditionalSaveData(CompoundTag compoundTag) {
 		super.readAdditionalSaveData(compoundTag);	
-		this.tamablePregnantPreggoMobData.deserializeNBT(compoundTag.getCompound("PregnantTamableData"));
+		if (compoundTag.contains("PregnantTamableData", Tag.TAG_COMPOUND)) {
+			this.pregnancyData.deserializeNBT(compoundTag.getCompound("PregnantTamableData"));
+		}
 	}
 	
 	@Override
@@ -69,7 +74,7 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 		this.goalSelector.addGoal(8, new AbstractZombieGirl.ZombieGirlAttackTurtleEggGoal(this, 1.0D, 3){
 			@Override
 			public boolean canUse() {
-				return super.canUse() && !tamablePreggoMobData.isWaiting() && !tamablePregnantPreggoMobData.isIncapacitated();
+				return super.canUse() && !tamablePreggoMobData.isWaiting() && !pregnancyData.isIncapacitated();
 			}
 		});	
 		PreggoMobAIHelper.setTamablePregnantZombieGirlGoals(this);
@@ -82,14 +87,18 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 	
 	@Override
 	public boolean hasCustomHeadAnimation() {
-		return super.hasCustomHeadAnimation() || this.tamablePregnantPreggoMobData.getPregnancyPain() != null;
+		return super.hasCustomHeadAnimation() || this.pregnancyData.getPregnancyPain() != null;
 	}
 	
 	@Override
 	public void die(DamageSource source) {
 		super.die(source);		
 		if (!this.level().isClientSide) {
-			PreggoMobHelper.spawnBabyAndFetusZombies(this);
+			boolean bellyBurst = source.is(MinepreggoModDamageSources.BELLY_BURST);
+			if (bellyBurst) {
+				PregnancySystemHelper.deathByBellyBurst(this, (ServerLevel) this.level());
+			}
+			PreggoMobHelper.spawnBabyAndFetusZombies(this, bellyBurst);
 		}
 	}
 	
@@ -126,10 +135,10 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 		final var armor = p_21428_.getItem();
 		
 		if (slot == EquipmentSlot.CHEST) {
-			return PregnancySystemHelper.canUseChestplate(armor, this.tamablePregnantPreggoMobData.getCurrentPregnancyStage(), false) && PreggoMobHelper.canUseChestPlateInLactation(this, armor);
+			return PregnancySystemHelper.canUseChestplate(armor, this.pregnancyData.getCurrentPregnancyStage(), false) && PreggoMobHelper.canUseChestPlateInLactation(this, armor);
 		}
 		else if (slot == EquipmentSlot.LEGS) {
-			return PregnancySystemHelper.canUseLegging(armor, this.tamablePregnantPreggoMobData.getCurrentPregnancyStage());
+			return PregnancySystemHelper.canUseLegging(armor, this.pregnancyData.getCurrentPregnancyStage());
 		}	
 		
 		return super.canReplaceCurrentItem(p_21428_, p_21429_);
@@ -169,7 +178,7 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 	
 	@Override
 	public ITamablePregnantPreggoMobData getPregnancyData() {
-		return this.tamablePregnantPreggoMobData;
+		return this.pregnancyData;
 	}
 	
 	public static EntityType<? extends AbstractTamablePregnantZombieGirl> getEntityType(PregnancyPhase phase) {	

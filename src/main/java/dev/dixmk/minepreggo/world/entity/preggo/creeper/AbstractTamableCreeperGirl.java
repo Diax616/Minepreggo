@@ -55,9 +55,9 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 	
     private static final TamablePreggoMobDataImpl.DataAccessor<AbstractTamableCreeperGirl> DATA_HOLDER = new TamablePreggoMobDataImpl.DataAccessor<>(AbstractTamableCreeperGirl.class);
 	
-	protected final ITamablePreggoMobSystem tamablePreggoMobSystem;
+	protected final ITamablePreggoMobSystem preggoMobSystem;
 	
-	protected final IFemaleEntity femaleEntity;
+	protected final IFemaleEntity femaleEntityData;
 
 	protected final ITamablePreggoMobData tamablePreggoMobData = new TamablePreggoMobDataImpl<>(DATA_HOLDER, this);
 	
@@ -67,8 +67,8 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 	protected AbstractTamableCreeperGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_, Creature typeOfCreature) {
 	      super(p_21803_, p_21804_, typeOfCreature);
 	      this.reassessTameGoals();	   
-	      this.femaleEntity = createFemaleEntity();
-	      this.tamablePreggoMobSystem = createTamableSystem();
+	      this.femaleEntityData = createFemaleEntityData();
+	      this.preggoMobSystem = createTamablePreggoMobSystem();
 	      
 	      if (this.getTamableData() == null) {
 	    	  MinepreggoMod.LOGGER.error("TamablePreggoMobData is null for entity {}", this);
@@ -78,9 +78,9 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 	      }
 	}
 		 
-	protected abstract @Nonnull ITamablePreggoMobSystem createTamableSystem();
+	protected abstract @Nonnull ITamablePreggoMobSystem createTamablePreggoMobSystem();
 	
-	protected abstract @Nonnull IFemaleEntity createFemaleEntity();
+	protected abstract @Nonnull IFemaleEntity createFemaleEntityData();
 	
 	@Override
 	public void setBreakBlocks(boolean breakBlocks) {
@@ -102,18 +102,21 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
 		compound.put("InventoryCustom", inventory.serializeNBT());
-		compound.put("defaultFemaleEntityImpl", this.femaleEntity.serializeNBT());
+		compound.put("defaultFemaleEntityImpl", this.femaleEntityData.serializeNBT());
 		compound.put("TamableData", tamablePreggoMobData.serializeNBT());
 	}	
 	
 	@Override
 	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
-		Tag inventoryCustom = compound.get("InventoryCustom");
-		if (inventoryCustom instanceof CompoundTag inventoryTag)
-			inventory.deserializeNBT(inventoryTag);	
-		femaleEntity.deserializeNBT(compound.getCompound("defaultFemaleEntityImpl"));
-		tamablePreggoMobData.deserializeNBT(compound.getCompound("TamableData"));
+		if (compound.get("InventoryCustom") instanceof CompoundTag inventoryTag)
+			inventory.deserializeNBT(inventoryTag);		
+		if (compound.contains("defaultFemaleEntityImpl", Tag.TAG_COMPOUND)) {
+			femaleEntityData.deserializeNBT(compound.getCompound("defaultFemaleEntityImpl"));
+		}
+		if (compound.contains("TamableData", Tag.TAG_COMPOUND)) {
+			tamablePreggoMobData.deserializeNBT(compound.getCompound("TamableData"));
+		}
 	}
 	
 	@Override
@@ -153,7 +156,7 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
       this.updateSwingTime();   
       
       if (this.isAlive()) {
-          this.tamablePreggoMobSystem.onServerTick();
+          this.preggoMobSystem.onServerTick();
       }
 	}
 
@@ -225,7 +228,7 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 		if (retval == InteractionResult.SUCCESS || retval == InteractionResult.CONSUME) {
 			return retval;
 		}		
-		if (tamablePreggoMobSystem.canOwnerAccessGUI(sourceentity)) {			
+		if (preggoMobSystem.canOwnerAccessGUI(sourceentity)) {			
 			if (!this.level().isClientSide && sourceentity instanceof ServerPlayer serverPlayer) {
 				CreeperGirlMenuHelper.showMainMenu(serverPlayer, this);			
 				
@@ -236,7 +239,7 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 			return InteractionResult.sidedSuccess(this.level().isClientSide);
 		}
 		else {			
-			return tamablePreggoMobSystem.onRightClick(sourceentity);
+			return preggoMobSystem.onRightClick(sourceentity);
 		}	
 	}
 	
@@ -251,7 +254,7 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 			
 		if (this.level().isClientSide) return;
 				
-		tamablePreggoMobSystem.cinematicTick();
+		preggoMobSystem.cinematicTick();
 				
 		if (this.isPowered()) {		
 			if (this.poweredTimer > 24000) {
@@ -306,17 +309,17 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 	
 	@Override
 	public void setCinematicOwner(ServerPlayer player) {
-		this.tamablePreggoMobSystem.setCinematicOwner(player);
+		this.preggoMobSystem.setCinematicOwner(player);
 	}
 
 	@Override
 	public void setCinematicEndTime(long time) {
-		this.tamablePreggoMobSystem.setCinematicEndTime(time);
+		this.preggoMobSystem.setCinematicEndTime(time);
 	}
 		
 	@Override
 	public IFemaleEntity getGenderedData() {
-		return femaleEntity;
+		return femaleEntityData;
 	}
 	
 	@Override

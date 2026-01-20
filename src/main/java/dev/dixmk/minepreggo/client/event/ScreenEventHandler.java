@@ -17,7 +17,7 @@ import dev.dixmk.minepreggo.client.renderer.entity.layer.player.ClientPlayerHelp
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.network.capability.PlayerPregnancyDataImpl;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
-import dev.dixmk.minepreggo.world.pregnancy.IPostPregnancyDataHolder;
+import dev.dixmk.minepreggo.world.pregnancy.IPostPregnancyData;
 import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
@@ -173,7 +173,7 @@ public class ScreenEventHandler {
 		}
 	}
 	
-	private static void renderPostPartumLactationScreen(GuiGraphics gui, int top, int init, int diff, @NonNull IPostPregnancyDataHolder postPregnancyData) {
+	private static void renderPostPartumLactationScreen(GuiGraphics gui, int top, int init, int diff, @NonNull IPostPregnancyData postPregnancyData) {
 		if (postPregnancyData.getPostPregnancy() == PostPregnancy.PARTUM) {
 			int pos;
 			final var lactation = postPregnancyData.getPostPartumLactation();

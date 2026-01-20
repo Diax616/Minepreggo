@@ -58,7 +58,7 @@ public abstract class ZombieGirlAnimator<T extends AbstractZombieGirl> extends P
 		public BasicZombieGirlAnimator(ModelPart root) {
 			super(root);
 		}
-
+	
 		@Override
 		protected void animateBelly(AbstractZombieGirl zombieGirl, float ageInTicks) {}
 
@@ -110,7 +110,7 @@ public abstract class ZombieGirlAnimator<T extends AbstractZombieGirl> extends P
 		@Override
 		protected void animateBelly(E zombieGirl, float ageInTicks) {
 		    if (zombieGirl.getItemBySlot(EquipmentSlot.CHEST).isEmpty()) {
-				if (fetalMovementIntensity != null && zombieGirl.isIncapacitated()) {
+				if (fetalMovementIntensity != null && zombieGirl.getPregnancyData().isIncapacitated()) {
 			    	this.animate(zombieGirl.loopAnimationState, fetalMovementIntensity.animation, ageInTicks);		    
 		    	}
 		    	else {
@@ -121,7 +121,7 @@ public abstract class ZombieGirlAnimator<T extends AbstractZombieGirl> extends P
 
 		@Override
 		protected void animatePregnancyPain(E zombieGirl, float ageInTicks) {
-			if (zombieGirl.isIncapacitated()) {
+			if (zombieGirl.getPregnancyData().isIncapacitated()) {
 			    this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.CONTRACTION2, ageInTicks);	
 			}
 			else if (zombieGirl.isPassenger()) {

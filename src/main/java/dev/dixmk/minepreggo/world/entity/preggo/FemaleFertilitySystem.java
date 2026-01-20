@@ -110,7 +110,7 @@ public abstract class FemaleFertilitySystem<E extends PreggoMob & ITamablePreggo
 	}
 	
 	protected void evaluatePostPregnancy() {
-		final var femaleData = preggoMob.getFemalePreggoMob();
+		final var femaleData = preggoMob.getSyncedFemaleEntity();
 		
 		var result = femaleData.getSyncedPostPregnancyData().map(post -> {
 					if (post.getPostPregnancyTimer() > MinepreggoModConfig.getTotalTicksOfPostPregnancyPhase()) {

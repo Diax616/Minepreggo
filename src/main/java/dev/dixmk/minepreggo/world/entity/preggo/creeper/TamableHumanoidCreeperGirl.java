@@ -18,8 +18,8 @@ import java.util.OptionalInt;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.world.entity.preggo.FemaleFertilitySystem;
-import dev.dixmk.minepreggo.world.entity.preggo.FemalePreggoMobImpl;
-import dev.dixmk.minepreggo.world.entity.preggo.IFemalePreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.SyncedFemaleEntityImpl;
+import dev.dixmk.minepreggo.world.entity.preggo.ISyncedFemaleEntity;
 import dev.dixmk.minepreggo.world.entity.preggo.IPostPregnancyEntity;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMobSystem;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
@@ -67,13 +67,13 @@ public class TamableHumanoidCreeperGirl extends AbstractTamableHumanoidCreeperGi
 	}
 	
 	@Override
-	protected ITamablePreggoMobSystem createTamableSystem() {
+	protected ITamablePreggoMobSystem createTamablePreggoMobSystem() {
 		return new PreggoMobSystem<>(this, MinepreggoModConfig.getTotalTicksOfHungryP0(), PregnancySystemHelper.TOTAL_TICKS_SEXUAL_APPETITE_P0);
 	}
 
 	@Override
-	protected IFemaleEntity createFemaleEntity() {
-		return new FemalePreggoMobImpl<>(DATA_HOLDER, this);
+	protected IFemaleEntity createFemaleEntityData() {
+		return new SyncedFemaleEntityImpl<>(DATA_HOLDER, this);
 	}
 	
 	@Override
@@ -155,7 +155,7 @@ public class TamableHumanoidCreeperGirl extends AbstractTamableHumanoidCreeperGi
 	}
 
 	@Override
-	public IFemalePreggoMob<?> getFemalePreggoMob() {
-		return (FemalePreggoMobImpl<?>) this.femaleEntity;
+	public ISyncedFemaleEntity<?> getSyncedFemaleEntity() {
+		return (SyncedFemaleEntityImpl<?>) this.femaleEntityData;
 	}
 }

@@ -1,22 +1,24 @@
 package dev.dixmk.minepreggo.world.pregnancy;
 
 import java.util.Collection;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import com.google.common.collect.ImmutableMap;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.util.RandomSource;
 
 public class MapPregnancyPhase {
 	private static final ImmutableMap<PregnancyPhase, List<ImmutablePair<PregnancyPhase, Float>>> PREGNANCY_PHASES_WEIGHTS = ImmutableMap.of(
@@ -62,20 +64,25 @@ public class MapPregnancyPhase {
 					ImmutablePair.of(PregnancyPhase.P8, 0.15F))
 			);
 	
-	private static final String NBT_KEY = "DataMapPregnancyPhase";
+	private static final int DEFAULT_INT_VALUE = -145328;
 	
-	private	Map<PregnancyPhase, Integer> daysByPregnancyPhase;
+	private static final String NBT_KEY = "DataMapPregnancyPhase";
+	private static final String NBT_KEY_ORIGINAL = "OriginalDataMapPregnancyPhase";
+	
+	private Object2IntMap<PregnancyPhase> daysByPregnancyPhase;
+	private final ImmutableMap<PregnancyPhase, Integer> originalDaysByPregnancyPhase;
 	
     public MapPregnancyPhase(@Nonnegative int totalDays, PregnancyPhase lastPregnancyPhase) {	
 		PregnancyPhase last = lastPregnancyPhase;
 		
-		if (last.ordinal() < 4) {
+		if (last.compareTo(PregnancyPhase.P4) < 0) {
 			last = PregnancyPhase.P4;
 		}
     	
 		final var weights = PREGNANCY_PHASES_WEIGHTS.get(last);
 		
-		this.daysByPregnancyPhase = new EnumMap<>(PregnancyPhase.class);
+		this.daysByPregnancyPhase = new Object2IntOpenHashMap<>();
+		this.daysByPregnancyPhase.defaultReturnValue(DEFAULT_INT_VALUE);
 		
 		int total = 0;
 		for (final var pair : weights) {		
@@ -88,10 +95,16 @@ public class MapPregnancyPhase {
 		if (rest > 0) {
 			daysByPregnancyPhase.computeIfPresent(last, (key, value) -> value + rest);
 		}
+		
+		originalDaysByPregnancyPhase = ImmutableMap.copyOf(daysByPregnancyPhase);
+    }
+	
+    private MapPregnancyPhase(@Nonnull Object2IntMap<PregnancyPhase> daysByPregnancyPhase, @Nonnull ImmutableMap<PregnancyPhase, Integer> originalDaysByPregnancyPhase) {
+		this.daysByPregnancyPhase = daysByPregnancyPhase;
+		this.originalDaysByPregnancyPhase = originalDaysByPregnancyPhase;
+		this.daysByPregnancyPhase.defaultReturnValue(DEFAULT_INT_VALUE);
     }
     
-    private MapPregnancyPhase() {}
-	
     public Set<PregnancyPhase> getPregnancyPhases() {
 		return daysByPregnancyPhase.keySet();
 	}
@@ -101,7 +114,8 @@ public class MapPregnancyPhase {
     }
     
     public int getDaysByPregnancyPhase(PregnancyPhase phase) {
-    	return daysByPregnancyPhase.getOrDefault(phase, 0);
+    	var days = daysByPregnancyPhase.getInt(phase);
+    	return days != DEFAULT_INT_VALUE ? days : 0;
     }
     
     public boolean containsPregnancyPhase(PregnancyPhase phase) {
@@ -114,7 +128,7 @@ public class MapPregnancyPhase {
     
     public boolean addPregnancyPhase(int days) {
 		for (PregnancyPhase phase : PregnancyPhase.values()) {
-			if (daysByPregnancyPhase.putIfAbsent(phase, days) != null) {
+			if (daysByPregnancyPhase.putIfAbsent(phase, days) == DEFAULT_INT_VALUE) {
 				return true;
 			}
 		}
@@ -122,9 +136,17 @@ public class MapPregnancyPhase {
 	}
     
     public boolean modifyDaysByPregnancyPhase(PregnancyPhase phase, @Nonnegative int days) {
-		return daysByPregnancyPhase.computeIfPresent(phase, (key, value) -> days) != null;
+		return daysByPregnancyPhase.computeIntIfPresent(phase, (key, value) -> days) != DEFAULT_INT_VALUE;
+	}
+
+    public void resetToOriginal() {
+		daysByPregnancyPhase = new Object2IntOpenHashMap<>(originalDaysByPregnancyPhase);
 	}
     
+    public @Nonnull ImmutableMap<PregnancyPhase, Integer> getOriginalMap() {
+		return originalDaysByPregnancyPhase;
+    }
+       
     @Override
     public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -134,38 +156,88 @@ public class MapPregnancyPhase {
 		return sb.toString();
 	}
     
-    
     public CompoundTag toNBT() {
     	CompoundTag nbt = new CompoundTag();
-		ListTag list = new ListTag();
+		ListTag current = new ListTag();
+		ListTag original = new ListTag();
+		
 		daysByPregnancyPhase.forEach((key, value) -> {		
 			CompoundTag pair = new CompoundTag();
 		    pair.putString("pregnancyPhase", key.name());
 		    pair.putInt("days", value);
-			list.add(pair);
+		    current.add(pair);
 		});
-		nbt.put(NBT_KEY, list);
+		
+		originalDaysByPregnancyPhase.forEach((key, value) -> {		
+			CompoundTag pair = new CompoundTag();
+		    pair.putString("originalPregnancyPhase", key.name());
+		    pair.putInt("originalDays", value);
+		    original.add(pair);
+		});
+			
+		nbt.put(NBT_KEY, current);
+		nbt.put(NBT_KEY_ORIGINAL, original);
+		
 		return nbt;
     }
     
     @CheckForNull
-    public static MapPregnancyPhase fromNBT(CompoundTag nbt) {
-    	if (nbt.contains(NBT_KEY, Tag.TAG_LIST)) {
-        	ListTag list = nbt.getList(NBT_KEY, Tag.TAG_COMPOUND);	        	
-    		Map<PregnancyPhase, Integer> map = new EnumMap<>(PregnancyPhase.class);
-    	    for (var t : list) {
+    public static MapPregnancyPhase fromNBT(CompoundTag nbt) {	
+    	if (nbt.contains(NBT_KEY, Tag.TAG_LIST) && nbt.contains(NBT_KEY_ORIGINAL, Tag.TAG_LIST)) {	
+        	ListTag current = nbt.getList(NBT_KEY, Tag.TAG_COMPOUND);	
+        	ListTag original = nbt.getList(NBT_KEY_ORIGINAL, Tag.TAG_COMPOUND);
+        	Object2IntMap<PregnancyPhase> map = new Object2IntOpenHashMap<>();
+        	Object2IntMap<PregnancyPhase> originalMap = new Object2IntOpenHashMap<>();
+    	    for (var t : current) {
     	        CompoundTag pair = (CompoundTag) t;
     	        PregnancyPhase key = PregnancyPhase.valueOf(pair.getString("pregnancyPhase"));
     	        int value = pair.getInt("days");
     	        map.put(key, value);
-    	    }
-    	    MapPregnancyPhase temp = new MapPregnancyPhase();
-    	    temp.daysByPregnancyPhase = map;
-    		return temp;
+    	    }  
+    	    for (var t : original) {
+		        CompoundTag pair = (CompoundTag) t;
+		        PregnancyPhase key = PregnancyPhase.valueOf(pair.getString("originalPregnancyPhase"));
+		        int value = pair.getInt("originalDays");
+		        originalMap.put(key, value);
+		    }
+    	    return new MapPregnancyPhase(map, ImmutableMap.copyOf(originalMap));
     	}	
     	else {
     		MinepreggoMod.LOGGER.error("{} is not present in nbt", NBT_KEY);
     	}
     	return null;
+    }
+    
+    public static int calculateRandomTotalDaysElapsed(PregnancyPhase currentPregnancyStage, PregnancyPhase maxPregnancyStage, RandomSource random) {
+        PregnancyPhase last = maxPregnancyStage;
+        if (last.ordinal() < 4) {
+            last = PregnancyPhase.P4;
+        }
+        var weights = PREGNANCY_PHASES_WEIGHTS.get(last);
+        int totalDays = PregnancySystemHelper.DEFAULT_TOTAL_PREGNANCY_DAYS;
+
+        Object2IntMap<PregnancyPhase> daysByPhase = new Object2IntOpenHashMap<>();
+        int total = 0;
+        for (var pair : weights) {
+            int days = Math.round(totalDays * pair.getRight());
+            daysByPhase.put(pair.getLeft(), days);
+            total += days;
+        }
+        int rest = totalDays - total;
+        if (rest > 0) {
+            daysByPhase.computeIfPresent(last, (key, value) -> value + rest);
+        }
+        
+        int elapsed = 0;
+        for (PregnancyPhase phase : PregnancyPhase.values()) {
+            if (phase.ordinal() < currentPregnancyStage.ordinal()) {
+                elapsed += daysByPhase.getOrDefault(phase, 0);
+            } else if (phase == currentPregnancyStage) {
+                int phaseDays = daysByPhase.getOrDefault(phase, 0);
+                elapsed += random.nextInt(phaseDays + 1);
+                break;
+            }
+        }
+        return elapsed;
     }
 }

@@ -4,6 +4,7 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
+import dev.dixmk.minepreggo.init.MinepreggoModDamageSources;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.init.MinepreggoModSounds;
@@ -11,10 +12,10 @@ import dev.dixmk.minepreggo.network.capability.FemalePlayerImpl;
 import dev.dixmk.minepreggo.network.capability.IMalePlayer;
 import dev.dixmk.minepreggo.network.capability.MalePlayerImpl;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
-import dev.dixmk.minepreggo.network.packet.SyncFemalePlayerDataS2CPacket;
-import dev.dixmk.minepreggo.network.packet.SyncMobEffectPacket;
-import dev.dixmk.minepreggo.network.packet.SyncPlayerDataS2CPacket;
-import dev.dixmk.minepreggo.network.packet.SyncPregnancySystemS2CPacket;
+import dev.dixmk.minepreggo.network.packet.s2c.SyncFemalePlayerDataS2CPacket;
+import dev.dixmk.minepreggo.network.packet.s2c.SyncMobEffectS2CPacket;
+import dev.dixmk.minepreggo.network.packet.s2c.SyncPlayerDataS2CPacket;
+import dev.dixmk.minepreggo.network.packet.s2c.SyncPregnancySystemS2CPacket;
 import dev.dixmk.minepreggo.server.ServerCinematicManager;
 import dev.dixmk.minepreggo.server.ServerPlayerAnimationManager;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
@@ -31,6 +32,7 @@ import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Position;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -78,20 +80,29 @@ public class PlayerEventHandler {
 
 	private PlayerEventHandler() {}
 	
-	// SYCN CAPABILITIES ON PLAYER LOGIN/RESPAWN/DIMENSION CHANGE START
 	@SubscribeEvent
 	public static void onPlayerLoggedInSync(PlayerEvent.PlayerLoggedInEvent event) {
-		if (event.getEntity() instanceof ServerPlayer serverPlayer && !serverPlayer.level().isClientSide) {	
-			serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(c -> {			
+		if (event.getEntity() instanceof ServerPlayer serverPlayer && !serverPlayer.level().isClientSide) {
+			ServerPlayerAnimationManager.getInstance().stopAnimation(serverPlayer);
+			serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(c -> {
 				c.syncAllClientData(serverPlayer);
 				if (c.canShowMainMenu()) {
 					showPlayerMainMenu(serverPlayer);
 				}
-			});		
+			});
 		}
 	}
+
+	// TODO: If player has an animation playing when disconnecting, the animation won't play next time they log in. Capability data does not save the animation state.
+	@SubscribeEvent
+	public static void onPlayerQuit(PlayerEvent.PlayerLoggedOutEvent event) {
+	    if (event.getEntity() instanceof ServerPlayer player) {
+	    	ServerCinematicManager.getInstance().end(player);
+	    	ServerPlayerAnimationManager.getInstance().stopAnimation(player);
+	    	PlayerHelper.removeJigglePhysics(player);
+	    }
+	}
 		
-	 // FIXME: If a player before of logging out was in a cinematic or animation, after logging back in, the cinematic does not end properly or the animation does not play again.
 	@SubscribeEvent
 	public static void onPlayerJoinWorld(EntityJoinLevelEvent event) {	
 		if (event.getEntity() instanceof ServerPlayer serverPlayer && !serverPlayer.level().isClientSide) {	
@@ -107,6 +118,11 @@ public class PlayerEventHandler {
 	@SubscribeEvent
 	public static void onPlayerRespawnedSync(PlayerEvent.PlayerRespawnEvent event) {
 		if (event.getEntity() instanceof ServerPlayer serverPlayer && !serverPlayer.level().isClientSide) {	
+				
+	        if (!serverPlayer.isAlive() || serverPlayer.getHealth() <= 0) {
+	            serverPlayer.setHealth(serverPlayer.getMaxHealth());
+	        }
+					
 			serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> {
 				cap.syncAllClientData(serverPlayer);			
 				if (cap.canShowMainMenu()) {
@@ -147,28 +163,33 @@ public class PlayerEventHandler {
 	}
 	
 	@SubscribeEvent
-	public static void clonePlayer(PlayerEvent.Clone event) {
+	public static void clonePlayer(PlayerEvent.Clone event) {	
         final var originalPlayer = event.getOriginal();
-        originalPlayer.revive();
- 
+
+        if (!event.isWasDeath()) {
+            originalPlayer.revive();
+        }
+
         final var newPlayer = event.getEntity();
         
         var origialPlayerData = originalPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).resolve();
         var newPlayerData = newPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).resolve();
         
-        if (origialPlayerData.isEmpty() || newPlayerData.isEmpty()) return;    
-        
+        if (origialPlayerData.isEmpty() || newPlayerData.isEmpty()) return;
+
+        if (event.isWasDeath()) {
+            newPlayerData.get().resetToDefault();
+        } else {
+            newPlayerData.get().deserializeNBT(origialPlayerData.get().serializeNBT());
+        }
+
         if (newPlayer instanceof ServerPlayer serverPlayer && !serverPlayer.level().isClientSide) {
-        	newPlayerData.ifPresent(c -> {
-				c.syncAllClientData(serverPlayer);			
-				if (c.canShowMainMenu()) {
-					showPlayerMainMenu(serverPlayer);
-				}
-        	});
-        	
-            if (!event.isWasDeath()) {    	
-            	newPlayerData.get().deserializeNBT(origialPlayerData.get().serializeNBT());
-            } 
+            newPlayerData.ifPresent(c -> {
+                c.syncAllClientData(serverPlayer);
+                if (c.canShowMainMenu()) {
+                    showPlayerMainMenu(serverPlayer);
+                }
+            });
         }     
 	}
 	
@@ -196,7 +217,7 @@ public class PlayerEventHandler {
 	            
 	            effects.forEach(effect -> 
 	            	MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> trackerPlayer),
-	            			new SyncMobEffectPacket(trackedPlayer.getId(), effect))
+	            			new SyncMobEffectS2CPacket(trackedPlayer.getId(), effect))
 	            );
 	            
 	            // Sync expired/removed pregnancy effects to ensure proper state synchronization
@@ -204,7 +225,7 @@ public class PlayerEventHandler {
 	    	});
 	    }
 	}	
-	// SYCN CAPABILITIES ON PLAYER LOGIN/RESPAWN/DIMENSION CHANGE END
+
 	
 	// PREGNANCY EFFECTS IN PLAYER HANDLING START
 	@SubscribeEvent
@@ -223,7 +244,7 @@ public class PlayerEventHandler {
 					if (phase.compareTo(PregnancyPhase.P3) >= 0) {	
 						pregnancyData.incrementNumOfJumps();			
 						if (pregnancyData.getNumOfJumps() >= PlayerHelper.maxJumps(phase)) {
-							serverPlayer.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 260, 0, true, true, true));
+							serverPlayer.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 260, 0, false, true, true));
 							pregnancyData.resetNumOfJumps();
 						}					
 					}
@@ -421,11 +442,7 @@ public class PlayerEventHandler {
 	@SubscribeEvent
 	public static void onUseItemFinish(LivingEntityUseItemEvent.Finish event) {	
 	
-		if (!(event.getEntity() instanceof ServerPlayer player)) return;		
-		
-		if (player.level().isClientSide) {
-			return;
-		}
+		if (!(event.getEntity() instanceof ServerPlayer player) || player.level().isClientSide) return;		
 			
 		player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 		
 			cap.getFemaleData().ifPresent(femaleData -> {			
@@ -621,38 +638,6 @@ public class PlayerEventHandler {
 		);
 	}
 	
-    @SubscribeEvent
-    public static void onLivingDeath(LivingDeathEvent event) {
-        if (event.getEntity() instanceof ServerPlayer player && !player.level().isClientSide) {
-        	player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap ->
-        		cap.getFemaleData().ifPresent(femaleData -> {
-        			if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
-                    	ServerPlayerAnimationManager.getInstance().stopAnimation(player);             	
-                    	PlayerHelper.removeJigglePhysics(player);
-                    	
-        				var pregnancySystem = femaleData.getPregnancyData();
-            			var phase = pregnancySystem.getCurrentPregnancyStage();        			
-            			if (player.level() instanceof ServerLevel serverLevel) {		
-            				double x = player.getX();
-            				double y = player.getY() + player.getBbHeight() / 2F;
-            				double z = player.getZ();		
-            				if (player.hasEffect(MinepreggoModMobEffects.FULL_OF_CREEPERS.get()) && phase.compareTo(PregnancyPhase.P3) >= 0) {
-            					serverLevel.explode(player, x, y, z, PlayerHelper.calculateExplosionLevelByPregnancyPhase(phase), ExplosionInteraction.MOB);
-            				}
-                			if (phase.compareTo(PregnancyPhase.P3) >= 0) {
-                    			float alive = PregnancySystemHelper.getSpawnProbabilityBasedPregnancy(pregnancySystem, 0.6F, 0.3F, 0.15F, 0.8F);
-                    			PlayerHelper.spawnBabiesOrFetuses(serverLevel, x, y, z, alive, pregnancySystem.getWomb(), player.getRandom());
-                			}
-                			else {
-                				PlayerHelper.spawnFetuses(serverLevel, x, y, z, 0.85f, pregnancySystem.getWomb(), player.getRandom());
-                			}
-            			}
-        			}
-        		})
-        	);
-        }
-    }
-	
 	// TODO: It does not completely prevent a pregnant player from using valid armor, Search a solution using Mixin, setItemSlot from LivingEntity does not work, it crashes the game.
     @SubscribeEvent
     public static void onEquipmentChange(LivingEquipmentChangeEvent event) {
@@ -722,6 +707,49 @@ public class PlayerEventHandler {
 	}
 	
     @SubscribeEvent
+    public static void onLivingDeath(LivingDeathEvent event) {
+    	var entity = event.getEntity();
+    	
+    	if (entity.level().isClientSide) {
+			return;
+		}
+    	
+    	if (entity instanceof ServerPlayer player) {
+        	player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap ->
+        		cap.getFemaleData().ifPresent(femaleData -> {
+        			if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
+                    	ServerPlayerAnimationManager.getInstance().stopAnimation(player);             	
+                    	PlayerHelper.removeJigglePhysics(player);
+                    	boolean explode = false;
+                    	Position deathPos = entity.position();
+                    	
+            			if (player.level() instanceof ServerLevel serverLevel) {	
+                        	if (event.getSource().is(MinepreggoModDamageSources.BELLY_BURST)) {
+                        		PregnancySystemHelper.deathByBellyBurst(entity, serverLevel);
+                        		PlayerHelper.playSoundNearTo(player, MinepreggoModSounds.PREGNANT_PREGGO_MOB_DEATH.get(), 0.8f);
+                        		explode = true;
+                        	}
+
+            				var pregnancySystem = femaleData.getPregnancyData();
+                			var phase = pregnancySystem.getCurrentPregnancyStage();  		
+            				if (player.hasEffect(MinepreggoModMobEffects.FULL_OF_CREEPERS.get()) && phase.compareTo(PregnancyPhase.P3) >= 0 && !explode) {
+            					serverLevel.explode(player, deathPos.x(), deathPos.y(), deathPos.z(), PlayerHelper.calculateExplosionLevelByPregnancyPhase(phase), ExplosionInteraction.MOB);
+            				}
+                			if (phase.compareTo(PregnancyPhase.P3) >= 0) {
+                    			float alive = PregnancySystemHelper.getSpawnProbabilityBasedPregnancy(pregnancySystem, 0.6F, 0.3F, 0.1F, 0.3F);
+                    			PregnancySystemHelper.spawnBabiesOrFetuses(serverLevel, deathPos, alive, 0.35f, pregnancySystem.getWomb(), player.getRandom());
+                			}
+                			else {
+                				PregnancySystemHelper.spawnFetuses(serverLevel, deathPos, 0.85f, pregnancySystem.getWomb(), player.getRandom());
+                			}
+            			}
+        			}
+        		})
+        	);
+        }
+    }   
+	
+    @SubscribeEvent
     public static void onItemPickup(ItemPickupEvent event) {
         if (event.getEntity().level().isClientSide) {
         	return;
@@ -732,13 +760,6 @@ public class PlayerEventHandler {
             PlayerHelper.removeAnyFemalePlayerIdTag(stack);
         }
     }
-
-	@SubscribeEvent
-	public static void onPlayerQuit(PlayerEvent.PlayerLoggedOutEvent event) {
-	    if (event.getEntity() instanceof ServerPlayer player) {
-	    	ServerCinematicManager.getInstance().end(player);
-	    }
-	}
 	
 	private static void showPlayerMainMenu(ServerPlayer serverPlayer) {
 		BlockPos bpos = BlockPos.containing(serverPlayer.getX(), serverPlayer.getY(), serverPlayer.getZ());	

@@ -10,10 +10,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
-import dev.dixmk.minepreggo.network.packet.SyncPregnancyEffectsS2CPacket;
-import dev.dixmk.minepreggo.network.packet.SyncPregnancySystemS2CPacket;
+import dev.dixmk.minepreggo.network.packet.s2c.SyncPregnancyEffectsS2CPacket;
+import dev.dixmk.minepreggo.network.packet.s2c.SyncPregnancySystemS2CPacket;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.pregnancy.Craving;
 import dev.dixmk.minepreggo.world.pregnancy.MapPregnancyPhase;
@@ -46,7 +45,7 @@ public class PlayerPregnancyDataImpl implements IPlayerPregnancyDataHandler {
 	private PregnancyPhase lastPregnancyPhase = PregnancyPhase.P4;
 	
 	private Optional<PregnancyPain> currentPregnancyPain = Optional.empty();
-	private MapPregnancyPhase daysByPregnancyPhase = new MapPregnancyPhase(MinepreggoModConfig.getTotalPregnancyDays(), lastPregnancyPhase);
+	private MapPregnancyPhase daysByPregnancyPhase = new MapPregnancyPhase(PregnancySystemHelper.DEFAULT_TOTAL_PREGNANCY_DAYS, lastPregnancyPhase);
 	private Womb babiesInsideWomb = Womb.empty();
 	private SetPregnancySymptom setPregnancySymptom = new SetPregnancySymptom();
 	
@@ -641,14 +640,14 @@ public class PlayerPregnancyDataImpl implements IPlayerPregnancyDataHandler {
 	    }
 	}
 	
-	public @NonNull PlayerPregnancyDataImpl.PlayerStateData createPlayerStateData() {
+	public PlayerPregnancyDataImpl.PlayerStateData createPlayerStateData() {
 		return new PlayerStateData(
 				this.currentPregnancyPhase,
 				this.currentPregnancyPain.orElse(null),
 				this.setPregnancySymptom.getBitmask());
 	}
 	
-	public @NonNull PlayerPregnancyDataImpl.PlayerEffectData createPlayerEffectData() {
+	public PlayerPregnancyDataImpl.PlayerEffectData createPlayerEffectData() {
 		return new PlayerEffectData(
 				this.craving,
 				this.milking,

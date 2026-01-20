@@ -1,17 +1,17 @@
 package dev.dixmk.minepreggo.world.entity.preggo.zombie;
 
+import dev.dixmk.minepreggo.init.MinepreggoModDamageSources;
 import dev.dixmk.minepreggo.init.MinepreggoModSounds;
-import dev.dixmk.minepreggo.utils.MathHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.ISimplePregnancy;
+import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.IMonsterPreggoMobPregnancyData;
+import dev.dixmk.minepreggo.world.entity.preggo.IMonsterPregnantPreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.MonsterPregnantPreggoMobDataImpl;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.goal.FleeSunGoal;
@@ -30,55 +30,56 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-public abstract class AbstractMonsterPregnantZombieGirl extends AbstractMonsterZombieGirl implements ISimplePregnancy {
+public abstract class AbstractMonsterPregnantZombieGirl extends AbstractMonsterZombieGirl implements IMonsterPregnantPreggoMob {
 
-	private static final EntityDataAccessor<Boolean> DATA_HAS_PREGNANCY_PAIN = SynchedEntityData.defineId(AbstractMonsterPregnantZombieGirl.class, EntityDataSerializers.BOOLEAN);
-	private int pregnancyPainTimer = 0;
-	private final PregnancyPhase currentPregnanctStage;
-	private final PregnancyPhase maxPregnanctStage;
-	private int totalDaysPassed;
-	private final float pregnancyPainProbability;
+	private static final MonsterPregnantPreggoMobDataImpl.DataAccessor<AbstractMonsterPregnantZombieGirl> DATA_ACCESOR = new MonsterPregnantPreggoMobDataImpl.DataAccessor<>(AbstractMonsterPregnantZombieGirl.class);
+	private final IMonsterPreggoMobPregnancyData pregnancyDataImpl;
 	
 	protected AbstractMonsterPregnantZombieGirl(EntityType<? extends AbstractMonsterZombieGirl> p_21803_, Level p_21804_, PregnancyPhase currentPregnancyStage) {
 		super(p_21803_, p_21804_);
-		this.currentPregnanctStage = currentPregnancyStage;
-		this.maxPregnanctStage = PregnancySystemHelper.calculateRandomMinPhaseToGiveBirthFrom(currentPregnancyStage, random);
-		this.totalDaysPassed = ISimplePregnancy.getRandomTotalDaysPassed(currentPregnancyStage, this.maxPregnanctStage, this.getRandom());
-		this.pregnancyPainProbability = MathHelper.sigmoid(0.05F, 0.1F, 0.1F, Mth.clamp(this.getTotalDaysPassed() /(float) PregnancySystemHelper.TOTAL_PREGNANCY_DAYS , 0, 1), 0.6F);
+		pregnancyDataImpl = new MonsterPregnantPreggoMobDataImpl<>(DATA_ACCESOR, this, currentPregnancyStage);
 	}
 
 	@Override
-	public boolean isIncapacitated() {
-		return this.entityData.get(DATA_HAS_PREGNANCY_PAIN);
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		DATA_ACCESOR.defineSynchedData(this);
 	}
 	
 	@Override
-	protected void defineSynchedData() {
-		super.defineSynchedData();
-		this.entityData.define(DATA_HAS_PREGNANCY_PAIN, false);
+	public IMonsterPreggoMobPregnancyData getPregnancyData() {
+		return this.pregnancyDataImpl;
 	}
 	
 	@Override
 	public void addAdditionalSaveData(CompoundTag compoundTag) {
 		super.addAdditionalSaveData(compoundTag);
-		compoundTag.putBoolean("DataHasPregnancyPain", this.getEntityData().get(DATA_HAS_PREGNANCY_PAIN));
+		compoundTag.put("MonsterPregnantPreggoMobData", pregnancyDataImpl.serializeNBT());
 	}
 	
 	@Override
 	public void readAdditionalSaveData(CompoundTag compoundTag) {
 		super.readAdditionalSaveData(compoundTag);	
-		this.entityData.set(DATA_HAS_PREGNANCY_PAIN, compoundTag.getBoolean("DataHasPregnancyPain"));
+		if (compoundTag.contains("MonsterPregnantPreggoMobData")) {
+			pregnancyDataImpl.deserializeNBT(compoundTag.getCompound("MonsterPregnantPreggoMobData"));
+		}
 	}
 	
 	@Override
 	public void die(DamageSource source) {
-		super.die(source);			
-		PreggoMobHelper.spawnBabyAndFetusZombies(this);
+		super.die(source);		
+		if (!this.level().isClientSide) {
+			boolean bellyBurst = source.is(MinepreggoModDamageSources.BELLY_BURST);
+			if (bellyBurst) {
+				PregnancySystemHelper.deathByBellyBurst(this, (ServerLevel) this.level());
+			}
+			PreggoMobHelper.spawnBabyAndFetusZombies(this);
+		}
 	}
 	
 	@Override
 	public boolean hasCustomHeadAnimation() {
-		return this.isIncapacitated();
+		return this.pregnancyDataImpl.isIncapacitated();
 	}
 	
 	@Override
@@ -89,27 +90,29 @@ public abstract class AbstractMonsterPregnantZombieGirl extends AbstractMonsterZ
     	  return;
       }
 
-      if (this.isIncapacitated()) {   	  
-    	  final var timer = this.getPregnancyPainTimer();
-    	  if (timer > 100) {
-    		  this.setPregnancyPainTimer(0);
-    		  this.setPregnancyPain(false);
+      if (this.pregnancyDataImpl.isIncapacitated()) {   	  
+    	  final var timer = this.pregnancyDataImpl.getPregnancyPainTimer();
+    	  if (timer > 120) {
+    		  this.pregnancyDataImpl.setPregnancyPainTimer(0);
+    		  this.pregnancyDataImpl.setPregnancyPain(false);
     	  }
     	  else {
-        	  this.setPregnancyPainTimer(timer + 1);
+        	  this.pregnancyDataImpl.setPregnancyPainTimer(timer + 1);
     	  }
       }  
 	}
 	
 	@Override
 	public boolean hurt(DamageSource damagesource, float amount) {	
-		if (super.hurt(damagesource, amount) && !this.isIncapacitated() && !this.level().isClientSide()) {		
-			if (this.getRandom().nextFloat() < pregnancyPainProbability) {
-				this.setPregnancyPain(true);
-			}			
-			return true;
+		var result = super.hurt(damagesource, amount);
+		if (!this.level().isClientSide
+				&& result
+				&& !this.pregnancyDataImpl.isIncapacitated()
+				&& this.getRandom().nextFloat() < pregnancyDataImpl.getPregnancyPainProbability()) {		
+			this.pregnancyDataImpl.setPregnancyPain(true);	
+			PlayerHelper.playSoundNearTo(this, MinepreggoModSounds.getRandomStomachGrowls(random));
 		}
-		return false;
+		return result;
 	}
 	
 	@Override
@@ -119,8 +122,8 @@ public abstract class AbstractMonsterPregnantZombieGirl extends AbstractMonsterZ
 	
 	@Override
 	protected boolean canReplaceCurrentItem(ItemStack p_21428_, ItemStack p_21429_) {	
-		if (!PregnancySystemHelper.canUseChestplate(p_21428_.getItem(), this.getCurrentPregnancyStage())
-					|| !PregnancySystemHelper.canUseLegging(p_21428_.getItem(), this.getCurrentPregnancyStage())) {
+		if (!PregnancySystemHelper.canUseChestplate(p_21428_.getItem(), this.pregnancyDataImpl.getCurrentPregnancyPhase())
+					|| !PregnancySystemHelper.canUseLegging(p_21428_.getItem(), this.pregnancyDataImpl.getCurrentPregnancyPhase())) {
 			return false;
 		}	
 		return super.canReplaceCurrentItem(p_21428_, p_21429_);
@@ -131,154 +134,124 @@ public abstract class AbstractMonsterPregnantZombieGirl extends AbstractMonsterZ
 		this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.2, false) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() && !isIncapacitated();		
+				return super.canUse() && !pregnancyDataImpl.isIncapacitated();		
 			}			
 			@Override
 			public boolean canContinueToUse() {
-				return super.canContinueToUse() && !isIncapacitated();			   
+				return super.canContinueToUse() && !pregnancyDataImpl.isIncapacitated();			   
 			}
 		});	
 		this.targetSelector.addGoal(1, new HurtByTargetGoal(this) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() && !isIncapacitated();		
+				return super.canUse() && !pregnancyDataImpl.isIncapacitated();		
 			}			
 			@Override
 			public boolean canContinueToUse() {
-				return super.canContinueToUse() && !isIncapacitated();			   
+				return super.canContinueToUse() && !pregnancyDataImpl.isIncapacitated();			   
 			}
 		}.setAlertOthers(AbstractMonsterZombieGirl.class));	
 		this.goalSelector.addGoal(2, new RestrictSunGoal(this) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() && !isIncapacitated();		
+				return super.canUse() && !pregnancyDataImpl.isIncapacitated();		
 			}		
 			@Override
 			public boolean canContinueToUse() {
-				return super.canContinueToUse() && !isIncapacitated();			   
+				return super.canContinueToUse() && !pregnancyDataImpl.isIncapacitated();			   
 			}
 		});
 		this.goalSelector.addGoal(2, new FleeSunGoal(this, 1.1D) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() && !isIncapacitated();		
+				return super.canUse() && !pregnancyDataImpl.isIncapacitated();		
 			}
 			@Override
 			public boolean canContinueToUse() {
-				return super.canContinueToUse() && !isIncapacitated();			   
+				return super.canContinueToUse() && !pregnancyDataImpl.isIncapacitated();			   
 			}
 		});			
 	    this.goalSelector.addGoal(6, new MoveThroughVillageGoal(this, 1.0D, true, 4, () -> false) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() && !isIncapacitated();		
+				return super.canUse() && !pregnancyDataImpl.isIncapacitated();		
 			}
 			@Override
 			public boolean canContinueToUse() {
-				return super.canContinueToUse() && !isIncapacitated();			   
+				return super.canContinueToUse() && !pregnancyDataImpl.isIncapacitated();			   
 			}
 	    });
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, false, false) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() && !isIncapacitated();		
+				return super.canUse() && !pregnancyDataImpl.isIncapacitated();		
 			}
 			@Override
 			public boolean canContinueToUse() {
-				return super.canContinueToUse() && !isIncapacitated();			   
+				return super.canContinueToUse() && !pregnancyDataImpl.isIncapacitated();			   
 			}
 		});
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false, false) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() && !isIncapacitated();		
+				return super.canUse() && !pregnancyDataImpl.isIncapacitated();		
 			}
 			@Override
 			public boolean canContinueToUse() {
-				return super.canContinueToUse() && !isIncapacitated();			   
+				return super.canContinueToUse() && !pregnancyDataImpl.isIncapacitated();			   
 			}
 		});
 		this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, IronGolem.class, false, false) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() && !isIncapacitated();		
+				return super.canUse() && !pregnancyDataImpl.isIncapacitated();		
 			}
 			@Override
 			public boolean canContinueToUse() {
-				return super.canContinueToUse() && !isIncapacitated();			   
+				return super.canContinueToUse() && !pregnancyDataImpl.isIncapacitated();			   
 			}
 		});
 		this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, Turtle.class, 10, true, false, Turtle.BABY_ON_LAND_SELECTOR) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() && !isIncapacitated();		
+				return super.canUse() && !pregnancyDataImpl.isIncapacitated();		
 			}
 			@Override
 			public boolean canContinueToUse() {
-				return super.canContinueToUse() && !isIncapacitated();			   
+				return super.canContinueToUse() && !pregnancyDataImpl.isIncapacitated();			   
 			}
 		});	
 		this.goalSelector.addGoal(7, new AbstractZombieGirl.ZombieGirlAttackTurtleEggGoal(this, 1.0, 3) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() && !isIncapacitated();		
+				return super.canUse() && !pregnancyDataImpl.isIncapacitated();		
 			}
 			@Override
 			public boolean canContinueToUse() {
-				return super.canContinueToUse() && !isIncapacitated();			   
+				return super.canContinueToUse() && !pregnancyDataImpl.isIncapacitated();			   
 			}
 		});
 		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8F) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() && !isIncapacitated();		
+				return super.canUse() && !pregnancyDataImpl.isIncapacitated();		
 			}
 		});
 		this.goalSelector.addGoal(9, new WaterAvoidingRandomStrollGoal(this, 1.0) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() && !isIncapacitated();		
+				return super.canUse() && !pregnancyDataImpl.isIncapacitated();		
 			}
 			@Override
 			public boolean canContinueToUse() {
-				return super.canContinueToUse() && !isIncapacitated();			   
+				return super.canContinueToUse() && !pregnancyDataImpl.isIncapacitated();			   
 			}
 		});
 		this.goalSelector.addGoal(10, new RandomLookAroundGoal(this) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() && !isIncapacitated();		
+				return super.canUse() && !pregnancyDataImpl.isIncapacitated();		
 			}
 		});
-	}
-	
-	@Override
-	public void setPregnancyPain(boolean value) {
-		this.entityData.set(DATA_HAS_PREGNANCY_PAIN, value);
-	}
-	
-	@Override
-	public int getPregnancyPainTimer() {
-		return this.pregnancyPainTimer;
-	}
-
-	@Override
-	public void setPregnancyPainTimer(int tick) {
-		this.pregnancyPainTimer = tick;
-	}
-	
-	@Override
-	public PregnancyPhase getCurrentPregnancyStage() {
-		return currentPregnanctStage;
-	}
-
-	@Override
-	public PregnancyPhase getLastPregnancyStage() {
-		return maxPregnanctStage;
-	}
-
-	@Override
-	public int getTotalDaysPassed() {
-		return totalDaysPassed;
 	}
 }

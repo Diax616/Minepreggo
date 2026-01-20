@@ -9,7 +9,7 @@ import dev.dixmk.minepreggo.client.renderer.entity.layer.player.ClientPlayerHelp
 import dev.dixmk.minepreggo.client.screens.effect.SexOverlayManager;
 import dev.dixmk.minepreggo.common.animation.CommonPlayerAnimationRegistry;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
-import dev.dixmk.minepreggo.network.packet.UpdateBellyRubbingStateC2SPacket;
+import dev.dixmk.minepreggo.network.packet.c2s.UpdateBellyRubbingStateC2SPacket;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.client.Minecraft;
@@ -90,7 +90,7 @@ public class ClientEventHandler {
     @SubscribeEvent
     public static void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
         if (event.getEntity().level().isClientSide) {
-            JigglePhysicsManager.getInstance().remove(event.getEntity().getUUID());
+            JigglePhysicsManager.getInstance().removeJigglePhysics(event.getEntity());
         }
     }
     
@@ -102,7 +102,7 @@ public class ClientEventHandler {
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity().level().isClientSide) {
             // Clear all cache when logging in to ensure clean state
-            JigglePhysicsManager.getInstance().clearAll();
+            JigglePhysicsManager.getInstance().clearJigglePhysics();
         }
     }
     

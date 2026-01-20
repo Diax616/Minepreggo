@@ -63,8 +63,7 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
       super(p_21803_, p_21804_, Species.CREEPER, typeOfCreature);
       this.reassessTameGoals();	    
 	}
-	
-	
+		
 	public void setCombatMode(CombatMode value) {
 		this.combatMode = value;
 		if (value == CombatMode.EXPLODE)
@@ -75,6 +74,10 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 		return combatMode;
 	}
 	
+	@Override
+	public boolean hasJigglePhysics() {
+		return true;
+	}
 	
 	@Override
 	public boolean canBeLeashed(Player p_21813_) {
@@ -98,7 +101,7 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 	
 	@Override
 	public boolean isFood(ItemStack stack) {
-		return stack.is(TagHelper.CREEPER_GIRL_FOOD);
+		return stack.is(TagHelper.CREEPER_FOOD);
 	}
 	
 	@Override

@@ -27,7 +27,7 @@ public abstract class AbstractZombieGirlInventoryMenu<E extends AbstractTamableZ
 			this.addSlot(new SlotItemHandler(internal, ITamablePreggoMob.FOOD_INVENTORY_SLOT, 113, 62) {
 				@Override
 				public boolean mayPlace(ItemStack itemstack) {
-					return itemstack.is(TagHelper.ZOMBIE_GIRL_FOOD);
+					return itemstack.is(TagHelper.ZOMBIE_FOOD);
 				}
 			});
 			

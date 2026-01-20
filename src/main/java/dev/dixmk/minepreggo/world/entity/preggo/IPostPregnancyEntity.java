@@ -7,7 +7,7 @@ import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
 
 public interface IPostPregnancyEntity {
 
-	IFemalePreggoMob<?> getFemalePreggoMob();
+	ISyncedFemaleEntity<?> getSyncedFemaleEntity();
 	
 	Optional<PostPregnancy> getSyncedPostPregnancy();
 	

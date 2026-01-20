@@ -23,14 +23,16 @@ import com.google.common.collect.Table;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
-import dev.dixmk.minepreggo.utils.ServerParticleUtil;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
+import dev.dixmk.minepreggo.init.MinepreggoModDamageSources;
+import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
-import dev.dixmk.minepreggo.network.packet.RemoveMobEffectPacket;
-import dev.dixmk.minepreggo.network.packet.SyncMobEffectPacket;
+import dev.dixmk.minepreggo.network.packet.s2c.RemoveMobEffectS2CPacket;
+import dev.dixmk.minepreggo.network.packet.s2c.SyncMobEffectS2CPacket;
+import dev.dixmk.minepreggo.server.ServerParticleHelper;
 import dev.dixmk.minepreggo.utils.MathHelper;
 import dev.dixmk.minepreggo.utils.TagHelper;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
@@ -49,8 +51,10 @@ import dev.dixmk.minepreggo.world.item.KneeBraceItem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Position;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -64,17 +68,21 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.Level.ExplosionInteraction;
 import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -91,13 +99,11 @@ public class PregnancySystemHelper {
 
 	private PregnancySystemHelper() {}
 	
-	// Post-Pregnancy Nerf
 	private static final UUID SPEED_MODIFIER_TIRENESS_UUID = UUID.fromString("fa6a4626-c325-4835-8259-69577a99c9c8");
 	private static final AttributeModifier SPEED_MODIFIER_TIRENESS = new AttributeModifier(SPEED_MODIFIER_TIRENESS_UUID, "Tireness speed boost", -0.1D, AttributeModifier.Operation.MULTIPLY_BASE);
 	private static final UUID MAX_HEALTH_MODIFIER_TIRENESS_UUID = UUID.fromString("94d78c8b-0983-4ae4-af65-8e477ee52f2e");
 	private static final AttributeModifier MAX_HEALTH_MODIFIER_TIRENESS = new AttributeModifier(MAX_HEALTH_MODIFIER_TIRENESS_UUID, "Tireness max health", -0.3D, AttributeModifier.Operation.MULTIPLY_BASE);
 	
-	// Max Levels
 	public static final int MAX_PREGNANCY_HEALTH = 100;
 	public static final int MAX_PREGNANCY_FERTILITY = 100;
 	public static final int MAX_CRAVING_LEVEL = 20;
@@ -105,10 +111,8 @@ public class PregnancySystemHelper {
 	public static final int MAX_BELLY_RUBBING_LEVEL = 20;
 	public static final int MAX_HORNY_LEVEL = 20;
 	
-	// Days
-	public static final int TOTAL_PREGNANCY_DAYS = 70;
+	public static final int DEFAULT_TOTAL_PREGNANCY_DAYS = 70;
 	
-	// Ticks
 	public static final int TOTAL_TICKS_MISCARRIAGE = 800;
 	public static final int TOTAL_TICKS_MORNING_SICKNESS = 600;
 	public static final int TOTAL_TICKS_WATER_BREAKING = 1200;	
@@ -150,10 +154,8 @@ public class PregnancySystemHelper {
 	public static final int TOTAL_TICKS_SEXUAL_APPETITE_P7 = 1700;
 	public static final int TOTAL_TICKS_SEXUAL_APPETITE_P8 = 1600;
 	
-	
 	public static final int TOTAL_TICKS_CALM_BELLY_RUGGING_DOWN = 120;
 	
-	// Probabilities
 	public static final float LOW_PREGNANCY_PAIN_PROBABILITY = 0.001F;
 	public static final float MEDIUM_PREGNANCY_PAIN_PROBABILITY = 0.00125F;
 	public static final float HIGH_PREGNANCY_PAIN_PROBABILITY = 0.0015F;
@@ -166,7 +168,6 @@ public class PregnancySystemHelper {
 	public static final float MEDIUM_ANGER_PROBABILITY = 0.0075F;
 	public static final float HIGH_ANGER_PROBABILITY = 0.01F;
 	
-	// Pregnancy Symptoms
 	public static final int CRAVING_VALUE = 4;
 	public static final int ACTIVATE_CRAVING_SYMPTOM = 16;
 	public static final int DESACTIVATE_CRAVING_SYMPTOM = 2;
@@ -179,11 +180,9 @@ public class PregnancySystemHelper {
 	public static final int ACTIVATE_BELLY_RUBS_SYMPTOM = 12;
 	public static final int DESACTIVATEL_BELLY_RUBS_SYMPTOM = 8;
 	
-	public static final int ACTIVATE_HORNY_SYMPTOM = 17;
-		
-	public static final int NATURAL_PREGNANCY_INITIALIZER_TIME = 10000;
+	public static final int ACTIVATE_HORNY_SYMPTOM = 17;	
 	
-	static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+	private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 	
 	public static final RandomSource RANDOM_SOURCE = RandomSource.create();
 	
@@ -423,7 +422,7 @@ public class PregnancySystemHelper {
 							}
 						}
 					
-						ServerParticleUtil.spawnRandomlyFromServer(target, particle);
+						ServerParticleHelper.spawnRandomlyFromServer(target, particle);
 					}
 					return true;			
 				}
@@ -451,12 +450,12 @@ public class PregnancySystemHelper {
     
 	public static void syncNewMobEffect(LivingEntity entity, MobEffectInstance effect) {
 		MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity),
-				new SyncMobEffectPacket(entity.getId(), effect));
+				new SyncMobEffectS2CPacket(entity.getId(), effect));
 	}
 	
 	public static void syncRemovedMobEffect(LivingEntity entity, MobEffect effect) {
 		MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity),
-				new RemoveMobEffectPacket(entity.getId(), effect));
+				new RemoveMobEffectS2CPacket(entity.getId(), effect));
 	}
 	
 	public static void syncExpiredMobEffectsToTracker(LivingEntity entity, ServerPlayer trackerPlayer) {
@@ -471,7 +470,7 @@ public class PregnancySystemHelper {
 				// If the tracked player doesn't have this effect, sync its removal
 				if (!trackedPlayer.hasEffect(effect)) {
 					MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> trackerPlayer),
-							new RemoveMobEffectPacket(trackedPlayer.getId(), effect));
+							new RemoveMobEffectS2CPacket(trackedPlayer.getId(), effect));
 				}
 			});
 	}
@@ -505,7 +504,6 @@ public class PregnancySystemHelper {
 	}
 	
 	public static Craving getRandomCraving(RandomSource randomSource) {
-		// Generate a random value between 0.0 and 1.0
 		final float random = randomSource.nextFloat();
 		float cumulativeProbability = 0.0F;
 		
@@ -518,9 +516,8 @@ public class PregnancySystemHelper {
 		}
 
 		// Fallback: This should never happen if weights sum to 1.0
-		// Log warning and return the last craving type
 		MinepreggoMod.LOGGER.warn("PregnancySystemHelper.getRandomCraving: Weights do not sum to 1.0 (sum: {}). Returning fallback craving.", cumulativeProbability);	
-		return Craving.SALTY; // Return most common craving as fallback
+		return Craving.SALTY;
 	}
 	
 	
@@ -568,7 +565,10 @@ public class PregnancySystemHelper {
 	    		.append(Component.translatable("book.minepreggo.prenatal_checkup.default.template.page.1.price", Integer.toString(info.price)))
 	    		.append(Component.translatable("book.minepreggo.prenatal_checkup.default.template.page.1.date", info.date.format(DATE_FORMAT)))
 				.append(Component.translatable("book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.1.babies_inside_belly", Integer.toString(data.babiesInsideWomb.getNumOfBabies())))
-				);
+				.append(Component.translatable("book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.1.womb_size_state", data.babiesInsideWomb.isWombOverloaded()
+						? Component.translatable("book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.1.womb_size_state.overloaded").getString()
+						: Component.translatable("book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.1.womb_size_state.normal").getString()))
+	    		);
 
 		data.babiesInsideWomb().forEach(babyData -> 
 			components.add((Component.translatable("book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.default.title").withStyle(ChatFormatting.BOLD, ChatFormatting.ITALIC))
@@ -649,8 +649,8 @@ public class PregnancySystemHelper {
 	
 	// Pregnancy Calculates	START	
 	public static PregnancyPhase calculateMinPhaseToGiveBirth(PregnancyPhase currentPregnancyStage) {
-		if (currentPregnancyStage.compareTo(PregnancyPhase.P4) >= 1) {
-			return PregnancyPhase.values()[Math.min(currentPregnancyStage.ordinal() + 1, PregnancyPhase.values().length - 1)];
+		if (currentPregnancyStage.compareTo(PregnancyPhase.P5) >= 0) {
+			return PregnancyPhase.values()[Math.min(currentPregnancyStage.ordinal(), PregnancyPhase.values().length)];
 		}	
 		return PregnancyPhase.P4;
 	}
@@ -889,5 +889,144 @@ public class PregnancySystemHelper {
         }
 		
 		return entity instanceof ITamablePregnantPreggoMob;
+	}
+	
+    
+	public static final int MAX_NUMBER_OF_BABIES = 8;
+	
+	private static final ImmutableMap<PregnancyPhase, int[]> PHASE_TO_BABY_COUNT_MAP = ImmutableMap.of(
+	   	PregnancyPhase.P4, new int[] {1},
+	   	PregnancyPhase.P5, new int[] {2,3},
+	   	PregnancyPhase.P6, new int[] {4,5},
+	   	PregnancyPhase.P7, new int[] {6,7},
+	   	PregnancyPhase.P8, new int[] {8}
+	   );
+
+	@CheckForNull
+	public static int[] getPossibleNumOfBabiesForPhase(PregnancyPhase phase) {
+		return PHASE_TO_BABY_COUNT_MAP.get(phase);
+	}
+	
+   public static PregnancyPhase getMinPhaseForNumOfBabies(int numOfBabies) {
+       for (var pair : PHASE_TO_BABY_COUNT_MAP.entrySet()) {
+           int[] range = pair.getValue();     
+           if ((range.length == 1 && numOfBabies == range[0]) || (range.length == 2 && numOfBabies >= range[0] && numOfBabies <= range[1])) {
+			   return pair.getKey();
+		   }
+       }
+       return PregnancyPhase.P8;
+   }
+
+   public static int calculateNumOfBabiesByPotion(@Nonnegative int amplifier) {
+       int[] numOfBabies;
+       switch (Math.abs(amplifier)) {
+           case 0:
+               numOfBabies = PHASE_TO_BABY_COUNT_MAP.get(PregnancyPhase.P4); break;
+           case 1:
+               numOfBabies = PHASE_TO_BABY_COUNT_MAP.get(PregnancyPhase.P5); break;
+           case 2:
+               numOfBabies = PHASE_TO_BABY_COUNT_MAP.get(PregnancyPhase.P6); break;
+           case 3:
+               numOfBabies = PHASE_TO_BABY_COUNT_MAP.get(PregnancyPhase.P7); break;
+           default:
+               numOfBabies = PHASE_TO_BABY_COUNT_MAP.get(PregnancyPhase.P8); break;
+       }
+       
+       if (numOfBabies == null) {
+		   return 1;
+	   }
+       
+       return numOfBabies[RANDOM_SOURCE.nextInt(numOfBabies.length)];
+   }
+
+   public static int calculateNumOfBabiesByFertility(@Nonnegative float maleFertility, @Nonnegative float femaleFertility) {
+       float averageFertility = (maleFertility + femaleFertility) * 0.5f;
+       int numOfBabies = Math.round(averageFertility / IBreedable.MAX_FERTILITY_RATE * MAX_NUMBER_OF_BABIES);
+       return Mth.clamp(numOfBabies, 0, MAX_NUMBER_OF_BABIES);
+   }
+
+   public static PregnancyPhase calculateMaxPregnancyPhaseByTotalNumOfBabies(@Nonnegative int numOfBabies) {
+       return getMinPhaseForNumOfBabies(numOfBabies);
+   }
+
+   public static OptionalInt calculateRandomNumOfBabiesByMaxPregnancyPhase(@NonNull PregnancyPhase lastPregnancyPhase, RandomSource random) {
+	   int[] numOfBabies = PHASE_TO_BABY_COUNT_MAP.get(lastPregnancyPhase);
+	   if (numOfBabies != null) {
+		   return OptionalInt.of(numOfBabies[random.nextInt(numOfBabies.length)]);
+	   }
+	   return OptionalInt.empty();
+   }
+   
+   
+	private static boolean spawnBaby(ServerLevel serverLevel, Position pos, Species species, float maxHealthPercentage, RandomSource random) {		
+		Mob entity = null;
+		BlockPos blockPos = BlockPos.containing(pos);
+
+		if (species == Species.ZOMBIE) {
+			if (random.nextBoolean()) {
+				entity = MinepreggoModEntities.MONSTER_ZOMBIE_GIRL.get().spawn(serverLevel, blockPos, MobSpawnType.MOB_SUMMONED);
+			}
+			else {
+				entity = EntityType.ZOMBIE.spawn(serverLevel, blockPos, MobSpawnType.MOB_SUMMONED);
+			}
+		}
+		else if (species == Species.CREEPER) {
+			entity = MinepreggoModEntities.MONSTER_HUMANOID_CREEPER_GIRL.get().spawn(serverLevel, blockPos, MobSpawnType.MOB_SUMMONED);
+		}
+		else if (species == Species.VILLAGER) {
+			entity = EntityType.VILLAGER.spawn(serverLevel, blockPos, MobSpawnType.MOB_SUMMONED);
+		}
+
+		if (entity != null) {
+			entity.setBaby(true);
+			entity.setYRot(random.nextFloat() * 360F);	
+			int maxHealth = (int) (entity.getMaxHealth() * Mth.clamp(maxHealthPercentage, 0.1f, 1.0f));
+			entity.setHealth(random.nextInt(1, Math.max(2, maxHealth)));	
+			return true;
+		}
+		return false;
+	}
+	
+	private static boolean spawnFetus(ServerLevel serverLevel, Position pos, Species species, Creature creature) {
+		var deadBabyItem = PregnancySystemHelper.getDeadBabyItem(species, creature);
+		if (deadBabyItem == null) {
+			MinepreggoMod.LOGGER.warn("Failed to spawn fetus item for species {} and creature {}", species, creature);
+			return false;
+		}
+
+		ItemEntity entityToSpawn = new ItemEntity(serverLevel, pos.x(), pos.y(), pos.z(), new ItemStack(deadBabyItem));
+		entityToSpawn.setPickUpDelay(10);
+		serverLevel.addFreshEntity(entityToSpawn);
+		return true;
+	}
+	
+	public static void spawnBabiesOrFetuses(ServerLevel serverLevel, Position pos, float alive, float maxHealthPercentage, Womb womb, RandomSource random) {	
+		womb.forEach(babyData -> {
+			boolean spawned = false;
+			if (random.nextFloat() < alive) {
+				spawned = spawnBaby(serverLevel, pos, babyData.typeOfSpecies, maxHealthPercentage, random);
+			}
+			if (!spawned) {
+				spawnFetus(serverLevel, pos, babyData.typeOfSpecies, babyData.typeOfCreature);
+			}
+		});
+	}
+	
+	public static void spawnFetuses(ServerLevel serverLevel, Position pos, float prob, Womb womb, RandomSource random) {
+		womb.forEach(babyData -> {
+			if (random.nextFloat() < prob) {
+				spawnFetus(serverLevel, pos, babyData.typeOfSpecies, babyData.typeOfCreature);
+			}
+		});
+	}
+	
+    public static void deathByBellyBurst(LivingEntity entity, ServerLevel serverLevel) {
+		PlayerHelper.playSoundNearTo(entity, MinepreggoModSounds.getRandomStomachGrowls(entity.getRandom()));
+		serverLevel.explode(entity, entity.getX(), entity.getY(), entity.getZ(), 1, ExplosionInteraction.MOB);
+		ServerParticleHelper.startBloodRainAtEntity(serverLevel, entity);
+    }
+    
+	public static void tornWomb(LivingEntity entity) {
+		entity.hurt(new DamageSource(entity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(MinepreggoModDamageSources.BELLY_BURST)), Float.MAX_VALUE);
 	}
 }

@@ -5,11 +5,12 @@ import java.util.UUID;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
+import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.animation.player.BellyAnimationManager;
 import dev.dixmk.minepreggo.client.animation.preggo.BellyInflation;
 import dev.dixmk.minepreggo.client.jiggle.JigglePhysicsManager;
-import dev.dixmk.minepreggo.client.jiggle.PlayerJiggleData;
-import dev.dixmk.minepreggo.client.jiggle.PlayerJiggleDataFactory;
+import dev.dixmk.minepreggo.client.jiggle.EntityJiggleData;
+import dev.dixmk.minepreggo.client.jiggle.EntityJiggleDataFactory;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.world.entity.player.SkinType;
@@ -34,10 +35,8 @@ public abstract class AbstractPregnantBodyModel extends HierarchicalModel<Abstra
 	public final ModelPart leftBoob;
 
 	protected final BellyInflation bellyInflation;
-		
-	// Pregnancy phase and model type for factory-based jiggle creation
 	protected final PregnancyPhase pregnancyPhase;
-	protected final SkinType modelType;
+	protected final SkinType skinType;
 
 	protected float milkingBoobsXScale = 1.15F;
 	protected float milkingBoobsYScale = 1.05F;
@@ -46,10 +45,9 @@ public abstract class AbstractPregnantBodyModel extends HierarchicalModel<Abstra
 	
 	private final boolean simpleBellyJiggle;
 	
-	protected AbstractPregnantBodyModel(ModelPart root, BellyInflation bellyInflation, 
-			PregnancyPhase pregnancyPhase, 
-			SkinType modelType,
-			boolean simpleBellyJiggle) {		
+	protected final EntityJiggleDataFactory.JigglePositionConfig jiggleConfig;
+	
+	protected AbstractPregnantBodyModel(ModelPart root, BellyInflation bellyInflation, PregnancyPhase pregnancyPhase, boolean simpleBellyJiggle, SkinType skintype, EntityJiggleDataFactory.JigglePositionConfig jiggleConfig) {		
 		this.root = root;
 		this.body = root.getChild("body");
 		this.boobs = this.body.getChild("boobs");
@@ -57,11 +55,28 @@ public abstract class AbstractPregnantBodyModel extends HierarchicalModel<Abstra
 		this.leftBoob = this.boobs.getChild("left_boob");
 		this.belly = this.body.getChild("belly");
 		this.pregnancyPhase = pregnancyPhase;
-		this.modelType = modelType;
 		this.bellyInflation = bellyInflation;
 		this.simpleBellyJiggle = simpleBellyJiggle;
+		this.skinType = skintype;
+		this.jiggleConfig = jiggleConfig;	
+		
+		var manager = JigglePhysicsManager.getInstance();
+		String key = manager.getConfigKey(skinType, pregnancyPhase);
+		
+		if (key == null) {
+			throw new IllegalStateException("Jiggle config key cannot be null for skin type: " + skinType + " and pregnancy phase: " + pregnancyPhase);
+		}
+
+		if (!manager.hasConfig(key)) {
+			MinepreggoMod.LOGGER.debug("Registering jiggle config for AbstractPregnantBodyModel with key: {}, config: {}", key, this.jiggleConfig);
+			manager.putConfig(key, this.jiggleConfig);
+		}
 	}
 	
+	protected AbstractPregnantBodyModel(ModelPart root, BellyInflation bellyInflation, PregnancyPhase pregnancyPhase, boolean simpleBellyJiggle, SkinType skinType) {		
+		this(root, bellyInflation, pregnancyPhase, simpleBellyJiggle, skinType, EntityJiggleDataFactory.JigglePositionConfig.boobsAndBelly(root.getChild("body").getChild("boobs").y, root.getChild("body").getChild("belly").y));
+	}
+
 	@Override
 	public void setupAnim(AbstractClientPlayer entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {		
 		this.root.getAllParts().forEach(ModelPart::resetPose);
@@ -74,10 +89,8 @@ public abstract class AbstractPregnantBodyModel extends HierarchicalModel<Abstra
 		} 
 		
 		final var armor = entity.getItemBySlot(EquipmentSlot.CHEST);
-			
-		UUID playerId = entity.getUUID();
-		PlayerJiggleData jiggleData = JigglePhysicsManager.getInstance().getOrCreate(playerId, () -> PlayerJiggleDataFactory.create(pregnancyPhase, modelType));
-	
+		EntityJiggleData jiggleData = JigglePhysicsManager.getInstance().getOrCreate(entity, () -> EntityJiggleDataFactory.create(jiggleConfig, pregnancyPhase));
+		
 		if (armor.isEmpty()) {
 			jiggleData.getBoobsJiggle().setupAnim(entity, boobs, leftBoob, rightBoob);
 			jiggleData.getBellyJiggle().ifPresent(jiggle -> jiggle.setupAnim(entity, belly, simpleBellyJiggle));

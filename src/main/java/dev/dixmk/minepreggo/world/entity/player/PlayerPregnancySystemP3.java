@@ -92,6 +92,7 @@ public class PlayerPregnancySystemP3 extends PlayerPregnancySystemP2 {
 						pregnantEntity.getGameProfile().getName(), PregnancyPain.FETAL_MOVEMENT.name());
 			} else {
 				pregnancySystem.incrementPregnancyPainTimer();
+				tryHurtByCooldown();
 			}
 		}
 	}

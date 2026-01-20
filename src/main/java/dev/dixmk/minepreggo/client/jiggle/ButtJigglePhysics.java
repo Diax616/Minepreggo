@@ -6,10 +6,14 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class ButtJigglePhysics extends AbstractJigglePhysics {
+public class ButtJigglePhysics extends AbstractJigglePhysics<ButtJigglePhysics.JigglePhysicsConfig> {
 
+	public ButtJigglePhysics(JigglePhysicsConfig jigglePhysicsConfig) {
+		super(jigglePhysicsConfig);
+	}
+	
 	public ButtJigglePhysics(Builder builder) {
-		super(builder.springStrength, builder.damping, builder.gravity, builder.maxDisplacement, builder.additionalYPos);
+		this(new JigglePhysicsConfig(builder));
 	}
 	
 	public static ButtJigglePhysics.Builder builder() {
@@ -19,9 +23,13 @@ public class ButtJigglePhysics extends AbstractJigglePhysics {
     public static void setupAnim(LivingEntity entity, ButtJigglePhysics leftButtJiggle, ButtJigglePhysics rightButtJiggle, ModelPart leftButt, ModelPart rightButt) {       
         float deltaTime = 0.05f; 
         leftButtJiggle.update((float)entity.getY(), deltaTime);
-        leftButt.y = leftButtJiggle.additionalYPos + leftButtJiggle.getOffset();      
+        
+        leftButt.y = leftButtJiggle.config.originalYPos + leftButtJiggle.getOffset();      
+        
         rightButtJiggle.update((float)entity.getY(), deltaTime);
-        rightButt.y = rightButtJiggle.additionalYPos + rightButtJiggle.getOffset();
+        rightButt.y = rightButtJiggle.getOffset();
+    
+        rightButt.y = rightButtJiggle.config.originalYPos + rightButtJiggle.getOffset();
     }
 	
     @OnlyIn(Dist.CLIENT)
@@ -30,7 +38,7 @@ public class ButtJigglePhysics extends AbstractJigglePhysics {
     	private float damping = 0.85f;
     	private float gravity = 0.02f;
     	private float maxDisplacement = 0.3f;
-    	private float additionalYPos = 2.0f;
+    	private float originalYPos = 2.0f;
         
     	public Builder springStrength(float springStrength) {
     		this.springStrength = springStrength;
@@ -52,8 +60,8 @@ public class ButtJigglePhysics extends AbstractJigglePhysics {
     		return this;
     	}
     	
-    	public Builder additionalYPos(float additionalYPos) {
-    		this.additionalYPos = additionalYPos;
+    	public Builder originalYPos(float originalYPos) {
+    		this.originalYPos = originalYPos;
     		return this;
     	}
     	
@@ -61,4 +69,11 @@ public class ButtJigglePhysics extends AbstractJigglePhysics {
     		return new ButtJigglePhysics(this);
     	}
     }
+    
+    @OnlyIn(Dist.CLIENT)
+    public static class JigglePhysicsConfig extends AbstractJigglePhysics.AbstractJigglePhysicsConfig {
+		public JigglePhysicsConfig(Builder builder) {
+			super(builder.springStrength, builder.damping, builder.gravity, builder.maxDisplacement, builder.originalYPos);
+		}
+	}
 }

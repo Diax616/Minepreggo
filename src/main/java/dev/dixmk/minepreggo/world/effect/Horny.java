@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
-import dev.dixmk.minepreggo.utils.ServerParticleUtil;
+import dev.dixmk.minepreggo.server.ServerParticleHelper;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.LivingEntity;
@@ -80,7 +80,7 @@ public class Horny extends AbstractPlayerPregnancySymptom {
 	private boolean trySpawnHeartParticules(LivingEntity entity) {
         if (this.heartsTimer >= 400) {
         	this.heartsTimer = 0;    	
-        	ServerParticleUtil.spawnRandomlyFromServer(entity, ParticleTypes.HEART);	
+        	ServerParticleHelper.spawnRandomlyFromServer(entity, ParticleTypes.HEART);	
     		return true;
         }
         else {

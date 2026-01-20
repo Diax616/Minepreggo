@@ -1,0 +1,6 @@
+{
+  "message_id": "belly_burst",
+  "exhaustion": 1.0,
+  "scaling": "when_caused_by_living_non_player",
+  "effects": "hurt"
+}

@@ -22,6 +22,7 @@ import dev.dixmk.minepreggo.world.inventory.preggo.zombie.ZombieGirlMenuHelper;
 import dev.dixmk.minepreggo.world.pregnancy.IFemaleEntity;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
@@ -61,7 +62,7 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	
 	protected final ITamablePreggoMobSystem tamablePreggoMobSystem;
 	
-	protected final IFemaleEntity femaleEntity;
+	protected final IFemaleEntity femaleEntityData;
 
 	protected final ITamablePreggoMobData tamablePreggoMobData = new TamablePreggoMobDataImpl<>(DATA_HOLDER, this);
 	
@@ -70,13 +71,13 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	protected AbstractTamableZombieGirl(EntityType<? extends AbstractZombieGirl> p_21803_, Level p_21804_) {
 	      super(p_21803_, p_21804_, Creature.HUMANOID);
 	      this.reassessTameGoals();	 
-	      this.femaleEntity = createFemaleEntity();
-	      this.tamablePreggoMobSystem = createTamableSystem();
+	      this.femaleEntityData = createFemaleEntityData();
+	      this.tamablePreggoMobSystem = createTamablePreggoMobSystem();
 	}
 
-	protected abstract @Nonnull ITamablePreggoMobSystem createTamableSystem();
+	protected abstract @Nonnull ITamablePreggoMobSystem createTamablePreggoMobSystem();
 	
-	protected abstract @Nonnull IFemaleEntity createFemaleEntity();
+	protected abstract @Nonnull IFemaleEntity createFemaleEntityData();
 	
 	@Override
 	public void setBreakBlocks(boolean breakBlocks) {
@@ -98,7 +99,7 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
 		compound.put("InventoryCustom", inventory.serializeNBT());
-		compound.put("defaultFemaleEntityImpl", this.femaleEntity.serializeNBT());
+		compound.put("defaultFemaleEntityImpl", this.femaleEntityData.serializeNBT());
 		compound.put("TamableData", tamablePreggoMobData.serializeNBT());
 	}
 	
@@ -107,8 +108,13 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 		super.readAdditionalSaveData(compound);
 		if (compound.get("InventoryCustom") instanceof CompoundTag inventoryTag)	
 			inventory.deserializeNBT(inventoryTag);		
-		femaleEntity.deserializeNBT(compound.getCompound("defaultFemaleEntityImpl"));
-		tamablePreggoMobData.deserializeNBT(compound.getCompound("TamableData"));
+		
+		if (compound.contains("defaultFemaleEntityImpl", Tag.TAG_COMPOUND)) {
+			femaleEntityData.deserializeNBT(compound.getCompound("defaultFemaleEntityImpl"));
+		}
+		if (compound.contains("TamableData", Tag.TAG_COMPOUND)) {
+			tamablePreggoMobData.deserializeNBT(compound.getCompound("TamableData"));
+		}
 	}
 
 	@Override
@@ -304,7 +310,7 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 		
 	@Override
 	public IFemaleEntity getGenderedData() {
-		return femaleEntity;
+		return femaleEntityData;
 	}
 	
 	@Override

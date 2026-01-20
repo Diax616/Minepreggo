@@ -255,6 +255,7 @@ public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
 	
 	@Override
 	protected void startMiscarriage() {
+		tryHurt();
 		MessageHelper.sendTo(pregnantEntity, Component.translatable("chat.minepreggo.player.miscarriage.message.init", pregnantEntity.getDisplayName().getString()));
 		pregnancySystem.resetPregnancyPainTimer();
 		pregnancySystem.setPregnancyPain(PregnancyPain.MISCARRIAGE);
@@ -270,7 +271,7 @@ public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
 		pregnancySystem.resetPregnancyPainTimer();
 		pregnancySystem.clearPregnancyPain();
     	
-		PlayerHelper.updateJigglePhysics(pregnantEntity, null, playerData.getSkinType());
+		PlayerHelper.updateJigglePhysics(pregnantEntity, playerData.getSkinType(), null);
 		
     	// tryActivatePostPregnancyPhase only works if isPregnant flag is true
     	femaleData.tryActivatePostPregnancyPhase(PostPregnancy.MISCARRIAGE);

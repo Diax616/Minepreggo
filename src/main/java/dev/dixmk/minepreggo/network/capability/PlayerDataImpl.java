@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
-import dev.dixmk.minepreggo.network.packet.SyncPlayerDataS2CPacket;
+import dev.dixmk.minepreggo.network.packet.s2c.SyncPlayerDataS2CPacket;
 import dev.dixmk.minepreggo.world.entity.player.SkinType;
 import dev.dixmk.minepreggo.world.pregnancy.AbstractBreedableEntity;
 import dev.dixmk.minepreggo.world.pregnancy.Gender;
@@ -212,4 +212,15 @@ public class PlayerDataImpl implements IPlayerData {
 			
 		});
 	}
+	
+	/**
+     * Resetea todos los datos del capability a su estado base
+     */
+    public void resetToDefault() {
+        skinType = SkinType.CUSTOM;
+        showMainMenu = true;
+        cinematic = false;
+        gender = Gender.UNKNOWN;
+        invalidateGenderData();
+    }
 }

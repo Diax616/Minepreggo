@@ -72,9 +72,21 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 			}
 			return;
 		}
-		
-		if (canAdvanceNextPregnancyPhase() && hasToGiveBirth()) {
-			breakWater();
+				
+		if (canAdvanceNextPregnancyPhase() && hasToGiveBirth()) {			
+			if (pregnancySystem.getWomb().isWombOverloaded()) {
+				if (pregnantEntity.isAlive()) {
+					MinepreggoMod.LOGGER.debug("Player {} is alive, tearing womb.", pregnantEntity.getGameProfile().getName());
+					PregnancySystemHelper.tornWomb(pregnantEntity);
+				}
+				else {
+					MinepreggoMod.LOGGER.debug("Player {} is dead", pregnantEntity.getGameProfile().getName());
+				}
+			}
+			else {
+				breakWater();
+			}
+
 			return;
 		}
 		
@@ -145,8 +157,8 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 
 	@Override
 	protected void startLabor() {
+		tryHurt();
 		PlayerHelper.playSoundNearTo(pregnantEntity, MinepreggoModSounds.getRandomPregnancyPain(randomSource));
-
 		MessageHelper.sendTo(pregnantEntity, Component.translatable("chat.minepreggo.player.birth.message.pre", pregnantEntity.getDisplayName().getString()), true);
 		pregnancySystem.setPregnancyPain(PregnancyPain.PREBIRTH);
 		pregnancySystem.resetPregnancyPainTimer();
@@ -163,10 +175,9 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 			if (pregnancySystem.getPregnancyPainTimer() >= totalTicksOfPreBirth) {
 				pregnancySystem.setPregnancyPain(PregnancyPain.BIRTH);
 				pregnantEntity.removeEffect(MinepreggoModMobEffects.PREBIRTH.get());
+				tryHurt();
 				pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.BIRTH.get(), totalTicksOfBirth, 0, false, false, true));
-
 				PlayerHelper.playSoundNearTo(pregnantEntity, MinepreggoModSounds.PLAYER_BIRTH.get());
-				
 				pregnancySystem.resetPregnancyPainTimer();
 				PlayerHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.CHEST);
 				PlayerHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.LEGS);
@@ -216,6 +227,7 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 			else {
 				pregnancySystem.incrementPregnancyPainTimer();
 				tryPlayPushSound();
+				tryHurtByCooldown();
 			}
 		}
 	}
@@ -234,8 +246,8 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 	
 	@Override
 	protected void breakWater() {	
+		tryHurt();
 		PlayerHelper.playSoundNearTo(pregnantEntity, MinepreggoModSounds.getRandomPregnancyPain(randomSource));
-	
 		MessageHelper.sendTo(pregnantEntity, Component.translatable("chat.minepreggo.player.birth.message.start", pregnantEntity.getDisplayName().getString()), true);
 		pregnancySystem.resetPregnancyPainTimer();
 		pregnancySystem.setPregnancyPain(PregnancyPain.WATER_BREAKING);
@@ -274,6 +286,7 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 						pregnantEntity.getGameProfile().getName(), PregnancyPain.CONTRACTION.name());
 			} else {
 				pregnancySystem.incrementPregnancyPainTimer();
+				tryHurtByCooldown();
 			}
 		}
 	}
@@ -283,7 +296,7 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 	protected void initPostPartum() {
     	MessageHelper.sendTo(pregnantEntity, Component.translatable("chat.minepreggo.player.birth.message.post", Integer.toString(pregnancySystem.getWomb().getNumOfBabies())));	
     	
-		PlayerHelper.updateJigglePhysics(pregnantEntity, null, playerData.getSkinType());
+		PlayerHelper.updateJigglePhysics(pregnantEntity, playerData.getSkinType(), null);
     	
     	// tryActivatePostPregnancyPhase only works if isPregnant flag is true
     	femaleData.tryActivatePostPregnancyPhase(PostPregnancy.PARTUM);

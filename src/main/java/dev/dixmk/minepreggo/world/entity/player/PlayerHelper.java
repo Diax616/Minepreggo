@@ -18,16 +18,14 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
-import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.network.capability.FemalePlayerImpl;
-import dev.dixmk.minepreggo.network.packet.RemoveJigglePhysicsS2CPacket;
-import dev.dixmk.minepreggo.network.packet.UpdateJigglePhysicsS2CPacket;
+import dev.dixmk.minepreggo.network.packet.s2c.RemovePlayerJigglePhysicsS2CPacket;
+import dev.dixmk.minepreggo.network.packet.s2c.SyncJigglePhysicsS2CPacket;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.item.IMaternityArmor;
-import dev.dixmk.minepreggo.world.pregnancy.IBreedable;
 import dev.dixmk.minepreggo.world.pregnancy.MapPregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
@@ -39,20 +37,14 @@ import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -210,7 +202,7 @@ public class PlayerHelper {
 			if (!femaleData.isPregnant()) return;	
 			
 			femaleData.getPrePregnancyData().ifPresent(prePregnancyData -> {
-				final var lastPregnancyStage = IBreedable.calculateMaxPregnancyPhaseByTotalNumOfBabies(prePregnancyData.fertilizedEggs());
+				final var lastPregnancyStage = PregnancySystemHelper.calculateMaxPregnancyPhaseByTotalNumOfBabies(prePregnancyData.fertilizedEggs());
 				final var totalDays = MinepreggoModConfig.getTotalPregnancyDays();
 				final var daysByStage = new MapPregnancyPhase(totalDays, lastPregnancyStage);
 				final var pregnancySystem = femaleData.getPregnancyData();
@@ -241,7 +233,7 @@ public class PlayerHelper {
 							
 				player.addEffect(new MobEffectInstance(MinepreggoModMobEffects.PREGNANCY_P0.get(), -1, 0, false, false, true));				
 				
-				PlayerHelper.updateJigglePhysics(player, PregnancyPhase.P0, playerDataCap.get().getSkinType());
+				PlayerHelper.updateJigglePhysics(player, playerDataCap.get().getSkinType(), PregnancyPhase.P0);
 				
 				femaleData.sync(player);
 				pregnancySystem.syncState(player);	
@@ -298,7 +290,7 @@ public class PlayerHelper {
 			return false;
 		}
 		
-		final var numOfBabies = IBreedable.calculateNumOfBabiesByFertility(malePlayerData.get().getFertilityRate(), femalePlayerData.get().getFertilityRate());
+		final var numOfBabies = PregnancySystemHelper.calculateNumOfBabiesByFertility(malePlayerData.get().getFertilityRate(), femalePlayerData.get().getFertilityRate());
 		
 		if (numOfBabies == 0) {
 			return false;
@@ -321,7 +313,7 @@ public class PlayerHelper {
 			return false;
 		}
 		
-		final var numOfBabies = IBreedable.calculateNumOfBabiesByFertility(villager.getRandom().nextFloat(), femalePlayerData.get().getFertilityRate());
+		final var numOfBabies = PregnancySystemHelper.calculateNumOfBabiesByFertility(villager.getRandom().nextFloat(), femalePlayerData.get().getFertilityRate());
 		
 		if (numOfBabies == 0) {
 			return false;
@@ -331,7 +323,7 @@ public class PlayerHelper {
 	}
 	
 	public static boolean tryStartPregnancyByPotion(ServerPlayer player, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father, int amplifier) {			
-		final var numOfbabies = IBreedable.calculateNumOfBabiesByPotion(amplifier);
+		final var numOfbabies = PregnancySystemHelper.calculateNumOfBabiesByPotion(amplifier);
 		if (tryToStartPrePregnancy(player, father, numOfbabies)) {
 			return tryToStartPregnancy(player, true);
 		}
@@ -339,7 +331,7 @@ public class PlayerHelper {
 	}
 		
 	public static boolean tryStartPregnancyByMobAttack(ServerPlayer female, Species species) {
-		return tryToStartPrePregnancy(female, ImmutableTriple.of(Optional.empty(), species, Creature.MONSTER), female.getRandom().nextInt(1, IBreedable.MAX_NUMBER_OF_BABIES + 1));
+		return tryToStartPrePregnancy(female, ImmutableTriple.of(Optional.empty(), species, Creature.MONSTER), female.getRandom().nextInt(1, PregnancySystemHelper.MAX_NUMBER_OF_BABIES + 1));
 	}
 
 	public static boolean isPlayerValid(LivingEntity entity) {
@@ -432,61 +424,6 @@ public class PlayerHelper {
 		return removeEffects(player, predicate);
 	}
 	
-	private static boolean spawnBaby(ServerLevel serverLevel, double x, double y, double z, Species species, RandomSource random) {		
-		final var minHealth = 5;
-		final var maxHealth = 10;
-		Mob entity = null;
-		var pos = BlockPos.containing(x, y, z);
-		
-		if (species == Species.ZOMBIE) {
-			if (random.nextBoolean()) {
-				entity = MinepreggoModEntities.MONSTER_ZOMBIE_GIRL.get().spawn(serverLevel, pos, MobSpawnType.MOB_SUMMONED);
-			}
-			else {
-				entity = EntityType.ZOMBIE.spawn(serverLevel, pos, MobSpawnType.MOB_SUMMONED);
-			}
-		}
-		else if (species == Species.CREEPER) {
-			entity = MinepreggoModEntities.MONSTER_HUMANOID_CREEPER_GIRL.get().spawn(serverLevel, pos, MobSpawnType.MOB_SUMMONED);
-		}
-		else if (species == Species.VILLAGER) {
-			entity = EntityType.VILLAGER.spawn(serverLevel, pos, MobSpawnType.MOB_SUMMONED);
-		}
-
-		if (entity != null) {
-			entity.setBaby(true);
-			entity.setYRot(random.nextFloat() * 360F);	
-			entity.setHealth(random.nextInt(minHealth, maxHealth));	
-			return true;
-		}
-		return false;
-	}
-	
-	private static boolean spawnFetus(ServerLevel serverLevel, double x, double y, double z, Species species, Creature creature) {
-		var deadBabyItem = PregnancySystemHelper.getDeadBabyItem(species, creature);
-		if (deadBabyItem == null) return false;
-		ItemEntity entityToSpawn = new ItemEntity(serverLevel, x, y, z, new ItemStack(deadBabyItem));
-		entityToSpawn.setPickUpDelay(10);
-		serverLevel.addFreshEntity(entityToSpawn);
-		return true;
-	}
-	
-	public static void spawnBabiesOrFetuses(ServerLevel serverLevel, double x, double y, double z, float alive, Womb womb, RandomSource random) {
-		womb.forEach(babyData -> {
-			if (random.nextFloat() < alive && !spawnBaby(serverLevel, x, y, z, babyData.typeOfSpecies, random)) {
-				spawnFetus(serverLevel, x, y, z, babyData.typeOfSpecies, babyData.typeOfCreature);
-			}
-		});
-	}
-	
-	public static void spawnFetuses(ServerLevel serverLevel, double x, double y, double z, float prob, Womb womb, RandomSource random) {
-		womb.forEach(babyData -> {
-			if (random.nextFloat() < prob) {
-				spawnFetus(serverLevel, x, y, z, babyData.typeOfSpecies, babyData.typeOfCreature);
-			}
-		});
-	}
-	
 	public static @Nonnegative int calculateExplosionLevelByPregnancyPhase(PregnancyPhase phase) {
 		int ordinal = phase.ordinal();
 		int maxOrdinal = PregnancyPhase.values().length - 1;
@@ -526,11 +463,11 @@ public class PlayerHelper {
 	
 	public static void removeJigglePhysics(ServerPlayer player) {
 		MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player), 
-				new RemoveJigglePhysicsS2CPacket(player.getUUID()));
+				new RemovePlayerJigglePhysicsS2CPacket(player.getUUID()));
 	}
 	
-	public static void updateJigglePhysics(ServerPlayer player, @Nullable PregnancyPhase phase, SkinType modelType) {		
+	public static void updateJigglePhysics(ServerPlayer player, SkinType skinType, @Nullable PregnancyPhase phase) {		
 		MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player), 
-				new UpdateJigglePhysicsS2CPacket(player.getUUID(), phase, modelType));
+				new SyncJigglePhysicsS2CPacket(player.getUUID(), skinType, phase));
 	}
 }

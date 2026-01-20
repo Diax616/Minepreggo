@@ -14,7 +14,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class IllCreeperGirlRenderer extends AbstractCreeperGirlRenderer<IllCreeperGirl, IllCreeperGirlModel> {
 
-	protected static final ResourceLocation ILL_QUADRUPED_CREEPER_GIRL = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/ill_creeper_girl.png");
+	protected static final ResourceLocation ILL_CREEPER_GIRL = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/monster/ill_creeper_girl.png");
 	
 	public IllCreeperGirlRenderer(EntityRendererProvider.Context context) {
 		this(context, AbstractCreeperGirlModel.LAYER_LOCATION, AbstractCreeperGirlModel.LAYER_ENERGY_ARMOR_LOCATION);
@@ -26,6 +26,6 @@ public class IllCreeperGirlRenderer extends AbstractCreeperGirlRenderer<IllCreep
 	
 	@Override
 	public ResourceLocation getTextureLocation(IllCreeperGirl p_115812_) {
-		return ILL_QUADRUPED_CREEPER_GIRL;
+		return ILL_CREEPER_GIRL;
 	}
 }

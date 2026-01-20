@@ -22,7 +22,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class HumanoidCreeperGirlPowerLayer
 	<E extends AbstractCreeperGirl, M extends AbstractHumanoidCreeperGirlModel<E>> extends EnergySwirlLayer<E, M> {
 
-	private static final ResourceLocation POWER_LOCATION = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/creeper_girl_armor.png");
+	private static final ResourceLocation POWER_LOCATION = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/armor.png");
 	private final M model;
 	
 	public HumanoidCreeperGirlPowerLayer(RenderLayerParent<E, M> p_174471_, EntityModelSet p_174472_, M main) {

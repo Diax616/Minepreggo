@@ -23,11 +23,7 @@ public class CustomPregnantBodyP8Model extends AbstractHeavyPregnantBodyModel {
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "custom_pregnant_body_p8_model"), "main");
 	
 	public CustomPregnantBodyP8Model(ModelPart root) {
-		super(root,
-				BellyInflation.HIGH,
-				FetalMovementIntensity.P8,
-				PregnancyPhase.P8,
-				SkinType.CUSTOM);
+		super(root, BellyInflation.HIGH, FetalMovementIntensity.P8, PregnancyPhase.P8, SkinType.CUSTOM);
 		milkingBoobsYPos = -0.78F;
 	}
 	

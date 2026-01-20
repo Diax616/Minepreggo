@@ -12,11 +12,9 @@ public class MinepreggoModConfig {
 	
 	private MinepreggoModConfig() {}
 	
-    public static final ForgeConfigSpec COMMON_SPEC;
     public static final ForgeConfigSpec CLIENT_SPEC;
     public static final ForgeConfigSpec SERVER_SPEC;
  
-    static final Common COMMON;
     static final Client CLIENT;
     static final Server SERVER;
     
@@ -72,7 +70,7 @@ public class MinepreggoModConfig {
     private static boolean enablePreggoMobsMoans;  
     private static boolean enablePlayerMoans;
     private static boolean enableBellySounds;
-    
+
     public static int getTotalPregnancyDays() {
     	return totalPregnancyDays;
     }
@@ -258,13 +256,7 @@ public class MinepreggoModConfig {
                 new ForgeConfigSpec.Builder().configure(Client::new);     
         CLIENT_SPEC = client.getRight();
         CLIENT = client.getLeft();
-    	
-        final Pair<Common, ForgeConfigSpec> common = 
-            new ForgeConfigSpec.Builder().configure(Common::new);
-        COMMON_SPEC = common.getRight();
-        COMMON = common.getLeft();
-        
-        
+   
         final Pair<Server, ForgeConfigSpec> server = 
                 new ForgeConfigSpec.Builder().configure(Server::new);
         SERVER_SPEC = server.getRight();
@@ -273,38 +265,63 @@ public class MinepreggoModConfig {
     
 
     @SubscribeEvent
-    static void onLoad(final ModConfigEvent.Loading event) {  	
-    	  	
-        if (event.getConfig().getSpec() == COMMON_SPEC) {
-        	totalTickByPregnancyDays = COMMON.totalTickByPregnancyDays.get();
-        	totalPregnancyDays = COMMON.totalPregnancyDays.get();
-        	ticksToStartPregnancy = COMMON.ticksToStartPregnancy.get();    
-        	totalTicksOfMaternityLactation = COMMON.totalTicksOfMaternityLactation.get();
-        	totalTicksOfPostPregnancyPhase = COMMON.totalTicksOfPostPregnancyPhase.get();
-        	totalTicksOfHungryP0 = COMMON.totalTicksOfHungry.get();
-        	totalTicksOfCravingP1 = COMMON.totalTicksOfCraving.get();
-        	totalTicksOfMilkingP2 = COMMON.totalTicksOfMilking.get();
-        	totalTicksOfBellyRubsP3 = COMMON.totalTicksOfBellyRubs.get();
-        	totalTicksOfHornyP4 = COMMON.totalTicksOfHorny.get();
-        	
-        	calculateHungryValues();
-        	calculateCravingValues();
-        	calculateMilkingValues();
-        	calculateBellyRubsValues();
-        	calculateHornyValues();      	
-        }
-        else if (event.getConfig().getSpec() == CLIENT_SPEC) {
+    static void onLoad(final ModConfigEvent.Loading event) {  		  	
+    	if (event.getConfig().getSpec() == CLIENT_SPEC) {
         	enablePlayerMoans = CLIENT.enablePlayerMoans.get();
         	enablePreggoMobsMoans = CLIENT.enablePreggoMobsMoans.get();
         	enableBellySounds = CLIENT.enableBellySounds.get();
         }
         else if (event.getConfig().getSpec() == SERVER_SPEC) {
         	babyCreeperGirlProbability = (float) SERVER.babyCreeperGirlProbability.get().doubleValue();
-        	babyZombieGirlProbability = (float) SERVER.babyZombieGirlProbability.get().doubleValue();    
+        	babyZombieGirlProbability = (float) SERVER.babyZombieGirlProbability.get().doubleValue(); 
+        	
+        	totalTickByPregnancyDays = SERVER.totalTickByPregnancyDays.get();
+        	totalPregnancyDays = SERVER.totalPregnancyDays.get();
+        	ticksToStartPregnancy = SERVER.ticksToStartPregnancy.get();    
+        	totalTicksOfMaternityLactation = SERVER.totalTicksOfMaternityLactation.get();
+        	totalTicksOfPostPregnancyPhase = SERVER.totalTicksOfPostPregnancyPhase.get();
+        	totalTicksOfHungryP0 = SERVER.totalTicksOfHungry.get();
+        	totalTicksOfCravingP1 = SERVER.totalTicksOfCraving.get();
+        	totalTicksOfMilkingP2 = SERVER.totalTicksOfMilking.get();
+        	totalTicksOfBellyRubsP3 = SERVER.totalTicksOfBellyRubs.get();
+        	totalTicksOfHornyP4 = SERVER.totalTicksOfHorny.get();
+        	
+        	calculateHungryValues();
+        	calculateCravingValues();
+        	calculateMilkingValues();
+        	calculateBellyRubsValues();
+        	calculateHornyValues();    
         }
     }
-    
-    static class Common {  	
+  
+    static class Client {
+        final ForgeConfigSpec.BooleanValue enablePlayerMoans;
+        final ForgeConfigSpec.BooleanValue enablePreggoMobsMoans;
+        final ForgeConfigSpec.BooleanValue enableBellySounds;
+
+        Client(ForgeConfigSpec.Builder builder) {
+            builder.push("Client");
+
+            enablePlayerMoans = builder
+                    .comment("Enable or disable player moans. (NOT WORKING)")
+                    .define("enablePlayerMoans", true);
+
+            enablePreggoMobsMoans = builder
+                    .comment("Enable or disable pregnant mobs moans. (NOT WORKING)")
+                    .define("enablePreggoMobsMoans", true);
+
+            enableBellySounds = builder
+                    .comment("Enable or disable belly sounds. (NOT WORKING)")
+                    .define("enableBellySounds", true);
+            
+            builder.pop();
+        }
+    }
+        
+    static class Server {
+        final ForgeConfigSpec.DoubleValue babyCreeperGirlProbability;   
+        final ForgeConfigSpec.DoubleValue babyZombieGirlProbability;
+ 
         final ForgeConfigSpec.IntValue totalPregnancyDays;
         final ForgeConfigSpec.IntValue ticksToStartPregnancy;
         final ForgeConfigSpec.IntValue totalTickByPregnancyDays;
@@ -316,9 +333,17 @@ public class MinepreggoModConfig {
         final ForgeConfigSpec.IntValue totalTicksOfMaternityLactation;
         final ForgeConfigSpec.IntValue totalTicksOfPostPregnancyPhase;
         
-        Common(ForgeConfigSpec.Builder builder) {
-            builder.push("Common");
+        Server(ForgeConfigSpec.Builder builder) {
+            builder.push("Server");
+            
+            babyCreeperGirlProbability = builder
+                    .comment("probability of spawning a girl baby creeper.")
+                    .defineInRange("babyCreeperGirlProbability", 0.1, 0.0, 1.0);
 
+            babyZombieGirlProbability = builder
+                    .comment("probability of spawning a girl baby zombie.")
+                    .defineInRange("babyZombieGirlProbability", 0.15, 0.0, 1.0);
+            
             totalPregnancyDays = builder
                     .comment("Total number of pregnancy days.")
                     .defineInRange("totalPregnancyDays", 50, 20, Integer.MAX_VALUE);
@@ -358,49 +383,6 @@ public class MinepreggoModConfig {
             totalTicksOfHorny = builder
                     .comment("total ticks of horny for pregnant entities.")
                     .defineInRange("totalTicksOfHorny", 6000, 100, 24000);
-                  
-            builder.pop();
-        }
-    }
-    
-    static class Client {
-        final ForgeConfigSpec.BooleanValue enablePlayerMoans;
-        final ForgeConfigSpec.BooleanValue enablePreggoMobsMoans;
-        final ForgeConfigSpec.BooleanValue enableBellySounds;
-
-        Client(ForgeConfigSpec.Builder builder) {
-            builder.push("Client");
-
-            enablePlayerMoans = builder
-                    .comment("Enable or disable player moans. (NOT WORKING)")
-                    .define("enablePlayerMoans", true);
-
-            enablePreggoMobsMoans = builder
-                    .comment("Enable or disable pregnant mobs moans. (NOT WORKING)")
-                    .define("enablePreggoMobsMoans", true);
-
-            enableBellySounds = builder
-                    .comment("Enable or disable belly sounds. (NOT WORKING)")
-                    .define("enableBellySounds", true);
-            
-            builder.pop();
-        }
-    }
-        
-    static class Server {
-        final ForgeConfigSpec.DoubleValue babyCreeperGirlProbability;   
-        final ForgeConfigSpec.DoubleValue babyZombieGirlProbability;
- 
-        Server(ForgeConfigSpec.Builder builder) {
-            builder.push("Server");
-            
-            babyCreeperGirlProbability = builder
-                    .comment("probability of spawning a girl baby creeper.")
-                    .defineInRange("babyCreeperGirlProbability", 0.1, 0.0, 1.0);
-
-            babyZombieGirlProbability = builder
-                    .comment("probability of spawning a girl baby zombie.")
-                    .defineInRange("babyZombieGirlProbability", 0.15, 0.0, 1.0);
             
             builder.pop();
         }

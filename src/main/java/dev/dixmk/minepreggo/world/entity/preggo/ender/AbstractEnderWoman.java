@@ -11,7 +11,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.event.entity.living.EnderWomanAngerEvent;
+import dev.dixmk.minepreggo.init.MinepreggoModItems;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
+import dev.dixmk.minepreggo.utils.TagHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
@@ -109,6 +111,11 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
 	}
     
 	@Override
+	public boolean hasJigglePhysics() {
+		return true;
+	}
+	
+	@Override
 	public boolean removeWhenFarAway(double p_27598_) {
 		return !this.isTame();
 	}
@@ -121,6 +128,16 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
 	@Override
 	protected boolean shouldDespawnInPeaceful() {
 		return !this.isTame();
+	}
+	
+	@Override
+	public boolean isFoodToTame(ItemStack stack) {
+		return stack.is(MinepreggoModItems.REFINED_CHORUS_SHARDS.get()) || stack.is(MinepreggoModItems.ENDER_SLIME_JELLY.get());
+	}
+	
+	@Override
+	public boolean isFood(ItemStack stack) {
+		return stack.is(TagHelper.ENDER_FOOD);
 	}
 
 	@Override
@@ -274,12 +291,10 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
         return true;
     }
 
-    
     protected boolean shouldRandomlyTeleport() {
     	return true;
     }
-    
-    
+      
     @SuppressWarnings("deprecation")
 	@Override
     protected void customServerAiStep() {
@@ -471,7 +486,7 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
         this.targetSelector.addGoal(1, new AbstractEnderWoman.EnderWomanLookForPlayerGoal(this, this::isAngryAt));
         this.targetSelector.addGoal(4, new ResetUniversalAngerTargetGoal<>(this, false));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Endermite.class, true, false));
-		this.goalSelector.addGoal(8, new AbstractEnderWoman.EnderWomanTeleportToTargetGoal(this, 400F, 25F));
+		this.goalSelector.addGoal(5, new AbstractEnderWoman.EnderWomanTeleportToTargetGoal(this, 400F, 25F));
     }
     
     protected static AttributeSupplier.Builder createBasicAttributes(double movementSpeed) {

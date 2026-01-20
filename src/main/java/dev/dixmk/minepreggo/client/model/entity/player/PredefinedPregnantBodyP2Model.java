@@ -22,11 +22,7 @@ public class PredefinedPregnantBodyP2Model extends AbstractPregnantBodyModel {
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "predefined_pregnant_body_p2_model"), "main");
 	
 	public PredefinedPregnantBodyP2Model(ModelPart root) {
-		super(root,
-				BellyInflation.LOW,
-				PregnancyPhase.P2,
-				SkinType.PREDEFINED,
-				true);
+		super(root, BellyInflation.LOW, PregnancyPhase.P2, true, SkinType.PREDEFINED);
 	}
 	
 	public static LayerDefinition createBodyLayer() {
@@ -34,7 +30,7 @@ public class PredefinedPregnantBodyP2Model extends AbstractPregnantBodyModel {
 		PartDefinition partdefinition = meshdefinition.getRoot();
 		PartDefinition body = partdefinition.addOrReplaceChild("body", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
 		body.addOrReplaceChild("belly", CubeListBuilder.create().texOffs(1, 10).addBox(-3.0F, 0.5F, -3.0F, 6.0F, 6.0F, 3.0F, new CubeDeformation(0.3F)), PartPose.offset(0.0F, 5.0F, -2.0F));
-		PartDefinition boobs = body.addOrReplaceChild("boobs", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 2.0F, -2.0F, -0.3142F, 0.0F, 0.0F));
+		PartDefinition boobs = body.addOrReplaceChild("boobs", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 2.1F, -2.0F, -0.3142F, 0.0F, 0.0F));
 		PartDefinition rightBoob = boobs.addOrReplaceChild("right_boob", CubeListBuilder.create(), PartPose.offset(-1.5F, 0.0F, 0.0F));
 		rightBoob.addOrReplaceChild("Boob_1_r1", CubeListBuilder.create().texOffs(13, 1).addBox(-2.0F, -0.2717F, -3.266F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.2F)), PartPose.offsetAndRotation(0.4F, 0.1F, 0.3F, 0.3491F, 0.1309F, 0.0436F));
 		PartDefinition leftBoob = boobs.addOrReplaceChild("left_boob", CubeListBuilder.create(), PartPose.offset(1.5F, 0.0F, 0.0F));
