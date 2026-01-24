@@ -1,7 +1,10 @@
 package dev.dixmk.minepreggo.world.entity.preggo.creeper;
 
+import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModDamageSources;
 import dev.dixmk.minepreggo.init.MinepreggoModSounds;
+import dev.dixmk.minepreggo.world.entity.BellyPartFactory;
+import dev.dixmk.minepreggo.world.entity.BellyPartManager;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.IMonsterPreggoMobPregnancyData;
@@ -36,7 +39,7 @@ public abstract class AbstractMonsterPregnantCreeperGirl extends AbstractMonster
 	protected AbstractMonsterPregnantCreeperGirl(EntityType<? extends AbstractMonsterCreeperGirl> p_21803_, Level p_21804_, Creature typeOfCreature, PregnancyPhase currentPregnancyStage) {
 		super(p_21803_, p_21804_, typeOfCreature);
 		pregnancyDataImpl = new MonsterPregnantPreggoMobDataImpl<>(DATA_ACCESOR, this, currentPregnancyStage);
-		this.setExplosionByCurrentPregnancyStage();
+		this.setExplosionByCurrentPregnancyStage();	
 	}
 	
 	@Override
@@ -123,7 +126,7 @@ public abstract class AbstractMonsterPregnantCreeperGirl extends AbstractMonster
    	public void tick() {
       super.tick();
          
-      if (this.level().isClientSide()) {
+      if (this.level().isClientSide) {
     	  return;
       }
 
@@ -137,6 +140,19 @@ public abstract class AbstractMonsterPregnantCreeperGirl extends AbstractMonster
     		  pregnancyDataImpl.setPregnancyPainTimer(timer + 1);
     	  }
       }  
+      
+      if (MinepreggoModConfig.isBellyColisionsEnable() && pregnancyDataImpl.getCurrentPregnancyPhase().compareTo(PregnancyPhase.P5) >= 0) {
+    	  BellyPartManager.getInstance().onServerTick(this, () -> BellyPartFactory.createHumanoidBellyPart(this, pregnancyDataImpl.getCurrentPregnancyPhase()));
+      }
+	}
+	
+	@Override
+	public boolean causeFallDamage(float pFallDistance, float pMultiplier, DamageSource pSource) {
+		PregnancyPhase currentPregnancyPhase = this.pregnancyDataImpl.getCurrentPregnancyPhase();
+		if (currentPregnancyPhase.compareTo(PregnancyPhase.P3) >= 0) {
+			return super.causeFallDamage(pFallDistance, pMultiplier * PregnancySystemHelper.calculateExtraFallDamageMultiplier(currentPregnancyPhase), pSource);
+		}
+		return super.causeFallDamage(pFallDistance, pMultiplier, pSource);
 	}
 	
 	@Override
@@ -236,4 +252,3 @@ public abstract class AbstractMonsterPregnantCreeperGirl extends AbstractMonster
 		});	
 	}
 }
-

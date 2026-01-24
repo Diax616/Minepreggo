@@ -22,10 +22,10 @@ import net.minecraft.world.entity.LivingEntity;
 public class PregnancyAcceleration extends MobEffect {
     
     private static final float[][] PERCETANGES_RANGES = {
-            {0.25f, 0.3f},
+            {0.1f, 0.2f},
+            {0.2f, 0.3f},
             {0.3f, 0.35f},
-            {0.35f, 0.4f},
-            {0.4f, 0.45f},
+            {0.35f, 0.45f},
             {0.45f, 0.5f}
         };
 	
@@ -75,7 +75,7 @@ public class PregnancyAcceleration extends MobEffect {
     
     private static void apply(IPregnancyData handler, int days) {
         MapPregnancyPhase map = handler.getMapPregnancyPhase();
-        PregnancyPhase current = handler.getCurrentPregnancyStage();
+        PregnancyPhase current = handler.getCurrentPregnancyPhase();
        
         int applied = PregnancyPhaseHelper.consumeDaysFromMap(map, current, days);
      

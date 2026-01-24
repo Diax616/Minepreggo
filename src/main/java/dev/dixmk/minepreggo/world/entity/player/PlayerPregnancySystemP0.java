@@ -7,6 +7,7 @@ import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.network.capability.FemalePlayerImpl;
 import dev.dixmk.minepreggo.network.capability.PlayerDataImpl;
 import dev.dixmk.minepreggo.network.capability.PlayerPregnancyDataImpl;
+import dev.dixmk.minepreggo.world.entity.BellyPartManager;
 import dev.dixmk.minepreggo.world.pregnancy.AbstractPregnancySystem;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
@@ -181,16 +182,16 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 
 	@Override
 	protected void advanceToNextPregnancyPhase() {		
-		final var previousStage = pregnancySystem.getCurrentPregnancyStage();
+		final var previousStage = pregnancySystem.getCurrentPregnancyPhase();
 		final var phases = PregnancyPhase.values();	
 		final var next = phases[Math.min(previousStage.ordinal() + 1, phases.length - 1)];
 		
-		pregnantEntity.removeEffect(PlayerHelper.getPregnancyEffects(pregnancySystem.getCurrentPregnancyStage()));
+		pregnantEntity.removeEffect(PlayerHelper.getPregnancyEffects(pregnancySystem.getCurrentPregnancyPhase()));
 		pregnantEntity.addEffect(new MobEffectInstance(PlayerHelper.getPregnancyEffects(next), -1, 0, false, false, true));
 
 		PlayerHelper.updateJigglePhysics(pregnantEntity, playerData.getSkinType(), next);
 		
-		pregnancySystem.setCurrentPregnancyStage(next);
+		pregnancySystem.setCurrentPregnancyPhase(next);
 		pregnancySystem.resetPregnancyTimer();
 		pregnancySystem.resetDaysPassed();
 		pregnancySystem.syncState(pregnantEntity);		
@@ -208,6 +209,11 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 					&& !PregnancySystemHelper.canUseLegging(legginds.getItem(), next)) {
 				PlayerHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.LEGS);
 			}
+		}
+		
+		if (MinepreggoModConfig.isBellyColisionsEnable()
+				&& next.compareTo(PregnancyPhase.P5) >= 0) {
+			BellyPartManager.getInstance().create(pregnantEntity, next);
 		}
 		
 		MinepreggoMod.LOGGER.debug("Player {} advanced to next pregnancy phase: {}",
@@ -241,5 +247,14 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 				pregnantEntity.removeEffect(e);
 			}
 		});	
+		
+		pregnantEntity.removeEffect(MinepreggoModMobEffects.ETERNAL_PREGNANCY.get());
+		pregnantEntity.removeEffect(MinepreggoModMobEffects.ZERO_GRAVITY_BELLY.get());
+		
+		if (MinepreggoModConfig.isBellyColisionsEnable()) {
+			BellyPartManager.getInstance().remove(pregnantEntity);
+		}
+		 
+		MinepreggoMod.LOGGER.debug("Pregnancy removed for player {}", pregnantEntity.getGameProfile().getName());
 	}
 }

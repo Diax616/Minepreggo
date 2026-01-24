@@ -58,7 +58,7 @@ public class PreggoMobPrenatalCheckUpMenu extends AbstractPrenatalCheckUpMenu<Pr
 				s = preggoMob;		
 				if (preggoMob instanceof ITamablePregnantPreggoMob pregSystem) {
 					ps = pregSystem;
-					this.motherPregnancyPhase = pregSystem.getPregnancyData().getCurrentPregnancyStage();
+					this.motherPregnancyPhase = pregSystem.getPregnancyData().getCurrentPregnancyPhase();
 				}	
 			}	
 				

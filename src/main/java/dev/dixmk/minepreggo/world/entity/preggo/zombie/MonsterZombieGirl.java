@@ -88,7 +88,6 @@ public class MonsterZombieGirl extends AbstractMonsterZombieGirl {
 		if (DATA_BABY_ID.equals(p_34307_)) {
 			this.refreshDimensions();
 		}
-
 		super.onSyncedDataUpdated(p_34307_);
 	}
 	

@@ -81,6 +81,13 @@ public class IllCreeperGirl extends AbstractMonsterQuadrupedCreeperGirl implemen
 	}
 	
 	@Override
+	public void onFinalizeSpawnWithOwner() {
+		if (this.random.nextFloat() < 0.15F) {
+			this.setPower(true);
+		}
+	}
+	
+	@Override
 	protected void registerGoals() {	
 		IllHumanoidCreeperGirl.addDefaultGoals(this);
 	}
@@ -94,7 +101,7 @@ public class IllCreeperGirl extends AbstractMonsterQuadrupedCreeperGirl implemen
 	public ItemStack getPickResult() {
 	    return ItemStack.EMPTY;
 	}
-	
+
 	public static AttributeSupplier.Builder createAttributes() {
 		return AbstractMonsterQuadrupedCreeperGirl.getBasicAttributes(0.25);
 	}

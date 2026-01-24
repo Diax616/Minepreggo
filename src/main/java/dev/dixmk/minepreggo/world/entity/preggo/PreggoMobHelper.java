@@ -23,6 +23,7 @@ import dev.dixmk.minepreggo.network.packet.s2c.RemovePreggoMobJigglePhysicsS2CPa
 import dev.dixmk.minepreggo.server.ServerCinematicManager;
 import dev.dixmk.minepreggo.utils.MathHelper;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
+import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterPregnantCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
@@ -125,6 +126,7 @@ public class PreggoMobHelper {
 		copyHealth(source, target);
 		copyName(source, target);
 		copyTamableData(source, target);
+		LivingEntityHelper.copyMobEffects(source, target);
 		transferInventory(source, target);
 		transferPregnancyData(source, target);
 	}
@@ -639,7 +641,7 @@ public class PreggoMobHelper {
 		}
 		
 		final var pregnancyData = zombieGirl.getPregnancyData();
-		final var pregnancyStage = pregnancyData.getCurrentPregnancyStage();
+		final var pregnancyStage = pregnancyData.getCurrentPregnancyPhase();
 
 		if (pregnancyStage.ordinal() >= 3) {
 			final var alive = getSpawnProbabilityBasedPregnancy(zombieGirl, 0.6F, 0.3F, 0.1F, 0.15F);
@@ -657,7 +659,7 @@ public class PreggoMobHelper {
 		}
 		
 		final var pregnancyData = creeperGirl.getPregnancyData();
-		final var pregnancyStage = pregnancyData.getCurrentPregnancyStage();
+		final var pregnancyStage = pregnancyData.getCurrentPregnancyPhase();
 		
 		if (pregnancyStage.ordinal() >= 3) {
 			final var alive = getSpawnProbabilityBasedPregnancy(creeperGirl, 0.6F, 0.3F, 0.1F, 0.15F);
@@ -725,7 +727,7 @@ public class PreggoMobHelper {
 	// Client Data START
 	public static PregnancySystemHelper.PrenatalRegularCheckUpData createRegularPrenatalCheckUpData(ITamablePregnantPreggoMobData ps) {
 		return new PregnancySystemHelper.PrenatalRegularCheckUpData(
-				ps.getCurrentPregnancyStage(),
+				ps.getCurrentPregnancyPhase(),
 				ps.getLastPregnancyStage(),
 				ps.getPregnancyHealth(),
 				ps.getWomb().getNumOfBabies(),

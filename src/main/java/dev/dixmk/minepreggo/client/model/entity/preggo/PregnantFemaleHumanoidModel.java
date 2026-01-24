@@ -1,13 +1,11 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo;
 
+import java.util.List;
 import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
-
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import dev.dixmk.minepreggo.client.jiggle.EntityJiggleData;
 import dev.dixmk.minepreggo.client.jiggle.EntityJiggleDataFactory;
@@ -43,16 +41,24 @@ public class PregnantFemaleHumanoidModel<E extends PreggoMob> extends HumanoidMo
 		this.rightBoob = this.boobs.getChild("right_boob");
 		this.leftBoob = this.boobs.getChild("left_boob");
 	}
+
+	public void setAllInvisibleLessHead() {
+		this.hat.visible = false;
+		this.body.visible = false;
+		this.rightArm.visible = false;
+		this.leftArm.visible = false;
+		this.rightLeg.visible = false;
+		this.leftLeg.visible = false;
+	}
 	
 	@Override
-	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		head.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		hat.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		body.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		rightArm.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		leftArm.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		rightLeg.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		leftLeg.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+	protected Iterable<ModelPart> headParts() {
+		return List.of(this.head, this.hat);
+	}
+	
+	@Override
+	protected Iterable<ModelPart> bodyParts() {
+		return List.of(this.body, this.rightArm, this.leftArm, this.rightLeg, this.leftLeg);
 	}
 	
 	protected void moveHead(E entity, float netHeadYaw, float headPitch) {

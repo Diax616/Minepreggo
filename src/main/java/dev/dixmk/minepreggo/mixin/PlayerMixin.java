@@ -33,12 +33,12 @@ public abstract class PlayerMixin extends Entity {
 	private PregnancyPhase minepreggo$lastPregnancyPhase = null;
 	
 	private static final Object2FloatMap<PregnancyPhase> WIDTH = Object2FloatMaps.unmodifiable(new Object2FloatOpenHashMap<>(ImmutableMap.of(
-			PregnancyPhase.P3, 0.65F,
-			PregnancyPhase.P4, 0.7F,
-			PregnancyPhase.P5, 0.75F,
-			PregnancyPhase.P6, 0.8F,
-			PregnancyPhase.P7, 0.85F,
-			PregnancyPhase.P8, 0.9F
+			PregnancyPhase.P3, 0.625F,
+			PregnancyPhase.P4, 0.625F,
+			PregnancyPhase.P5, 0.65F,
+			PregnancyPhase.P6, 0.65F,
+			PregnancyPhase.P7, 0.7F,
+			PregnancyPhase.P8, 0.7F
 	)));
     
     @Inject(method = "jumpFromGround", at = @At("HEAD"), cancellable = true)
@@ -65,7 +65,7 @@ public abstract class PlayerMixin extends Entity {
     		cap.getFemaleData().ifPresent(femaleData -> {
     			if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
     				EntityDimensions vanillaDimensions = cir.getReturnValue();
-    		        float newWidth = WIDTH.getFloat(femaleData.getPregnancyData().getCurrentPregnancyStage());
+    		        float newWidth = WIDTH.getFloat(femaleData.getPregnancyData().getCurrentPregnancyPhase());
 
     				if (newWidth != 0) {		            
     		            cir.setReturnValue(EntityDimensions.scalable(newWidth, vanillaDimensions.height));  
@@ -82,7 +82,7 @@ public abstract class PlayerMixin extends Entity {
         player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
             cap.getFemaleData().ifPresent(femaleData -> {
                 if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
-                    PregnancyPhase currentPhase = femaleData.getPregnancyData().getCurrentPregnancyStage();
+                    PregnancyPhase currentPhase = femaleData.getPregnancyData().getCurrentPregnancyPhase();
                     
                     // Check if pregnancy phase has changed
                     if (minepreggo$lastPregnancyPhase != currentPhase) {

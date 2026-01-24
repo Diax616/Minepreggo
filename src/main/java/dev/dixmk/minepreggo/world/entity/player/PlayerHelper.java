@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nullable;
 
@@ -31,9 +32,6 @@ import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import dev.dixmk.minepreggo.world.pregnancy.Womb;
-import it.unimi.dsi.fastutil.objects.Object2FloatMap;
-import it.unimi.dsi.fastutil.objects.Object2FloatMaps;
-import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -56,21 +54,12 @@ public class PlayerHelper {
 	private PlayerHelper() {}
 
 	private static final Object2IntMap<PregnancyPhase> MAX_JUMPS = Object2IntMaps.unmodifiable(new Object2IntOpenHashMap<>(ImmutableMap.of(
-			PregnancyPhase.P3, 40,
-			PregnancyPhase.P4, 35,
-			PregnancyPhase.P5, 30,
-			PregnancyPhase.P6, 25,
-			PregnancyPhase.P7, 20,
-			PregnancyPhase.P8, 15
-			)));
-	
-	private static final Object2FloatMap<PregnancyPhase> MAX_JUMP_STRENGTH = Object2FloatMaps.unmodifiable(new Object2FloatOpenHashMap<>(ImmutableMap.of(
-			PregnancyPhase.P3,0.955F,
-			PregnancyPhase.P4, 0.945F,
-			PregnancyPhase.P5, 0.935F,
-			PregnancyPhase.P6, 0.925F,
-			PregnancyPhase.P7, 0.915F,
-			PregnancyPhase.P8, 0.9F
+			PregnancyPhase.P3, 45,
+			PregnancyPhase.P4, 40,
+			PregnancyPhase.P5, 35,
+			PregnancyPhase.P6, 30,
+			PregnancyPhase.P7, 25,
+			PregnancyPhase.P8, 20
 			)));
 	
 	private static final Object2IntMap<PregnancyPhase> SPRINTING_TIMERS = Object2IntMaps.unmodifiable(new Object2IntOpenHashMap<>(ImmutableMap.of(
@@ -172,10 +161,6 @@ public class PlayerHelper {
 		return MAX_JUMPS.getInt(phase.compareTo(PregnancyPhase.P3) <= -1 ? PregnancyPhase.P3 : phase);
 	}
 	
-	public static float maxJumpStrength(PregnancyPhase phase) {
-		return MAX_JUMP_STRENGTH.getFloat(phase.compareTo(PregnancyPhase.P4) <= -1 ? PregnancyPhase.P4 : phase);
-	}
-
 	public static int sprintingTimer(PregnancyPhase phase) {
 		return SPRINTING_TIMERS.getInt(phase.compareTo(PregnancyPhase.P3) <= -1 ? PregnancyPhase.P3 : phase);
 	}
@@ -229,7 +214,7 @@ public class PlayerHelper {
 				pregnancySystem.setLastPregnancyStage(lastPregnancyStage);
 				pregnancySystem.setDaysToGiveBirth(totalDays);			
 				pregnancySystem.setWomb(womb);	
-				pregnancySystem.setCurrentPregnancyStage(PregnancyPhase.P0);	
+				pregnancySystem.setCurrentPregnancyPhase(PregnancyPhase.P0);	
 							
 				player.addEffect(new MobEffectInstance(MinepreggoModMobEffects.PREGNANCY_P0.get(), -1, 0, false, false, true));				
 				
@@ -367,42 +352,40 @@ public class PlayerHelper {
 		return species == Species.HUMAN || species == Species.ZOMBIE || species == Species.CREEPER;
 	}
 	
-	public static boolean addInterspeciesPregnancy(ServerPlayer serverPlayer) {	
+	@CheckForNull
+	static Species addInterspeciesPregnancy(ServerPlayer serverPlayer) {	
 		var result = serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).map(cap -> cap.getFemaleData().map(FemalePlayerImpl::getPrePregnancyData)).orElse(Optional.empty()).orElse(Optional.empty());
 			
 		if (result.isPresent()) {
 			var pre = result.get();	
 			switch (pre.typeOfSpeciesOfFather()){
-			case ZOMBIE: {			
-				if (!serverPlayer.hasEffect(MinepreggoModMobEffects.FULL_OF_ZOMBIES.get())) {
-					serverPlayer.addEffect(new MobEffectInstance(MinepreggoModMobEffects.FULL_OF_ZOMBIES.get(), -1, 0, false, false, true));
-					return true;
+				case ZOMBIE: {			
+					if (!serverPlayer.hasEffect(MinepreggoModMobEffects.FULL_OF_ZOMBIES.get())) {
+						serverPlayer.addEffect(new MobEffectInstance(MinepreggoModMobEffects.FULL_OF_ZOMBIES.get(), -1, 0, false, false, true));
+						return Species.ZOMBIE;
+					}
+					break;
 				}
-				break;
-			}
-			case CREEPER: {		
-				if (!serverPlayer.hasEffect(MinepreggoModMobEffects.FULL_OF_CREEPERS.get())) {
-					serverPlayer.addEffect(new MobEffectInstance(MinepreggoModMobEffects.FULL_OF_CREEPERS.get(), -1, 0, false, false, true));
-					return true;
+				case CREEPER: {		
+					if (!serverPlayer.hasEffect(MinepreggoModMobEffects.FULL_OF_CREEPERS.get())) {
+						serverPlayer.addEffect(new MobEffectInstance(MinepreggoModMobEffects.FULL_OF_CREEPERS.get(), -1, 0, false, false, true));
+						return Species.CREEPER;
+					}
+					break;
 				}
-				break;
-			}
-			case ENDER: {	
-				if (!serverPlayer.hasEffect(MinepreggoModMobEffects.FULL_OF_ENDERS.get())) {
-					serverPlayer.addEffect(new MobEffectInstance(MinepreggoModMobEffects.FULL_OF_ENDERS.get(), -1, 0, false, false, true));
-					return true;
+				case ENDER: {	
+					if (!serverPlayer.hasEffect(MinepreggoModMobEffects.FULL_OF_ENDERS.get())) {
+						serverPlayer.addEffect(new MobEffectInstance(MinepreggoModMobEffects.FULL_OF_ENDERS.get(), -1, 0, false, false, true));
+						return Species.ENDER;
+					}
+					break;
 				}
-				break;
-			}
 			default:
-				return false;
+				break;
 			}
-		}
-		else {
-			MinepreggoMod.LOGGER.warn("Player {} has no PRE_PREGNANCY_DATA={} capability.", serverPlayer.getName().getString(), result.isEmpty());
 		}
 		
-		return false;
+		return null;
 	}
 	
 	public static List<MobEffect> removeEffects(LivingEntity entity, Predicate<MobEffect> predicate) {
@@ -448,7 +431,7 @@ public class PlayerHelper {
 			cap.getFemaleData().ifPresent(femaleData -> {
 				if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {								
 					var pregnancyData = femaleData.getPregnancyData();					
-					if (pregnancyData.getCurrentPregnancyStage().compareTo(PregnancyPhase.P4) >= 0) {
+					if (pregnancyData.getCurrentPregnancyPhase().compareTo(PregnancyPhase.P4) >= 0) {
 						pregnancyData.setHorny(0);
 						pregnancyData.resetHornyTimer();
 						pregnancyData.getPregnancySymptoms().removePregnancySymptom(PregnancySymptom.HORNY);

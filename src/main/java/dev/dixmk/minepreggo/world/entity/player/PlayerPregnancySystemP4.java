@@ -115,18 +115,23 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 			return true;
 		}	
 			
-		if (hasToGiveBirth()
-				&& !pregnantEntity.hasEffect(MinepreggoModMobEffects.ETERNAL_PREGNANCY.get())
-				&& randomSource.nextFloat() < contractionProb) {
+		if (hasToGiveBirth() && !pregnantEntity.hasEffect(MinepreggoModMobEffects.ETERNAL_PREGNANCY.get())) {
+			float newContractionProb = contractionProb;
 			
-			PlayerHelper.playSoundNearTo(pregnantEntity, MinepreggoModSounds.PLAYER_CONTRACTION.get());			
-			pregnancySystem.setPregnancyPain(PregnancyPain.CONTRACTION);
-			pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.CONTRACTION.get(), totalTicksOfFetalMovement, 0, false, false, true));
-			pregnancySystem.syncState(pregnantEntity);	
-			PlayerHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.CHEST);
-			MinepreggoMod.LOGGER.debug("Player {} has developed pregnancy pain: {}",
-					pregnantEntity.getGameProfile().getName(), pregnancySystem.getPregnancyPain());
-			return true;
+			if (this.isMovingRidingSaddledHorse()) {
+				newContractionProb *= (pregnancySystem.getCurrentPregnancyPhase().ordinal() + 4);
+			}
+			
+			if (randomSource.nextFloat() < newContractionProb) {
+				PlayerHelper.playSoundNearTo(pregnantEntity, MinepreggoModSounds.PLAYER_CONTRACTION.get());			
+				pregnancySystem.setPregnancyPain(PregnancyPain.CONTRACTION);
+				pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.CONTRACTION.get(), totalTicksOfFetalMovement, 0, false, false, true));
+				pregnancySystem.syncState(pregnantEntity);	
+				PlayerHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.CHEST);
+				MinepreggoMod.LOGGER.debug("Player {} has developed pregnancy pain: {}",
+						pregnantEntity.getGameProfile().getName(), pregnancySystem.getPregnancyPain());
+				return true;
+			}
 		}
 		
 		return false;
@@ -198,7 +203,7 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 	        	MinepreggoMod.LOGGER.debug("Player {} is giving birth to {} babies.", pregnantEntity.getDisplayName().getString(), aliveBabiesItemStacks.size());
 	        	
 	        	if (aliveBabiesItemStacks.isEmpty()) {
-					MinepreggoMod.LOGGER.error("Failed to get baby item for pregnancy system {} birth.", pregnancySystem.getCurrentPregnancyStage());
+					MinepreggoMod.LOGGER.error("Failed to get baby item for pregnancy system {} birth.", pregnancySystem.getCurrentPregnancyPhase());
 				}
 	        	
 	        	// TODO: Babies itemstacks are only removed if player's hands are empty. It should handle stacking unless itemstack is a baby item.
@@ -258,7 +263,7 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 	
 	@Override
 	protected boolean hasToGiveBirth() {
-		return pregnancySystem.getLastPregnancyStage() == pregnancySystem.getCurrentPregnancyStage();
+		return pregnancySystem.getLastPregnancyStage() == pregnancySystem.getCurrentPregnancyPhase();
 	}
 	
 	@Override

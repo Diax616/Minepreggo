@@ -166,12 +166,12 @@ public class PlayerPregnancyDataImpl implements IPlayerPregnancyDataHandler {
 	}
 
 	@Override
-	public PregnancyPhase getCurrentPregnancyStage() {
+	public PregnancyPhase getCurrentPregnancyPhase() {
 		return this.currentPregnancyPhase;
 	}
 
 	@Override
-	public void setCurrentPregnancyStage(PregnancyPhase stage) {
+	public void setCurrentPregnancyPhase(PregnancyPhase stage) {
 		this.currentPregnancyPhase = stage;
 	}
 
@@ -595,7 +595,7 @@ public class PlayerPregnancyDataImpl implements IPlayerPregnancyDataHandler {
 		pregnancyTimer = nbt.getInt("DataPregnancyTimer");
 			
 	    if (nbt.contains(PregnancyPhase.CURRENT_PHASE_NBT_KEY, Tag.TAG_STRING)) {
-	        setCurrentPregnancyStage(PregnancyPhase.valueOf(nbt.getString(PregnancyPhase.CURRENT_PHASE_NBT_KEY)));
+	        setCurrentPregnancyPhase(PregnancyPhase.valueOf(nbt.getString(PregnancyPhase.CURRENT_PHASE_NBT_KEY)));
 	    }
 	    if (nbt.contains(PregnancyPhase.LAST_PHASE_NBT_KEY, Tag.TAG_STRING)) {
 	        setLastPregnancyStage(PregnancyPhase.valueOf(nbt.getString(PregnancyPhase.LAST_PHASE_NBT_KEY)));

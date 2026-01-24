@@ -192,7 +192,7 @@ public class ScreenHelper {
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_state"), 75, 22, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_pregnant"), 107, 22, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_phase"), 75, 37, -12829636, false);
-		guiGraphics.drawString(font, p0.getPregnancyData().getCurrentPregnancyStage().toString(), 107, 37, -12829636, false);
+		guiGraphics.drawString(font, p0.getPregnancyData().getCurrentPregnancyPhase().toString(), 107, 37, -12829636, false);
 	}
 	
 	public static<E extends PreggoMob & ITamablePregnantPreggoMob> void renderP1LabelMainGUI(GuiGraphics guiGraphics, Font font, E p1) {	
@@ -200,7 +200,7 @@ public class ScreenHelper {
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_state"), 75, 22, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_pregnant"), 107, 22, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_phase"), 75, 37, -12829636, false);
-		guiGraphics.drawString(font, p1.getPregnancyData().getCurrentPregnancyStage().toString(), 107, 37, -12829636, false);
+		guiGraphics.drawString(font, p1.getPregnancyData().getCurrentPregnancyPhase().toString(), 107, 37, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_craving"), 75, 51, -12829636, false);
 		
 		if (p1.getPregnancyData().getTypeOfCraving() == null) {
@@ -211,7 +211,7 @@ public class ScreenHelper {
 	public static<E extends PreggoMob & ITamablePregnantPreggoMob> void renderP2LabelMainGUI(GuiGraphics guiGraphics, Font font, E p2) {
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_phase"), 77, 31, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_state"), 77, 17, -12829636, false);
-		guiGraphics.drawString(font, p2.getPregnancyData().getCurrentPregnancyStage().toString(), 109, 31, -12829636, false);
+		guiGraphics.drawString(font, p2.getPregnancyData().getCurrentPregnancyPhase().toString(), 109, 31, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_pregnant"), 109, 17, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_craving"), 77, 45, -12829636, false);
 		
@@ -224,7 +224,7 @@ public class ScreenHelper {
 	
 	public static<E extends PreggoMob & ITamablePregnantPreggoMob> void renderP3LabelMainGUI(GuiGraphics guiGraphics, Font font, E p3) {
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_phase"), 75, 31, -12829636, false);
-		guiGraphics.drawString(font, p3.getPregnancyData().getCurrentPregnancyStage().toString(), 107, 31, -12829636, false);
+		guiGraphics.drawString(font, p3.getPregnancyData().getCurrentPregnancyPhase().toString(), 107, 31, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_state"), 75, 17, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_pregnant"), 107, 17, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_craving"), 75, 45, -12829636, false);
@@ -241,7 +241,7 @@ public class ScreenHelper {
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_phase"), 74, 35, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_craving"), 74, 51, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_state"), 74, 19, -12829636, false);
-		guiGraphics.drawString(font, p4.getPregnancyData().getCurrentPregnancyStage().toString(), 107, 35, -12829636, false);	
+		guiGraphics.drawString(font, p4.getPregnancyData().getCurrentPregnancyPhase().toString(), 107, 35, -12829636, false);	
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_pregnant"), 106, 19, -12829636, false);
 		
 		if (p4.getPregnancyData().getTypeOfCraving() == null) {

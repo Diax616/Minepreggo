@@ -47,13 +47,32 @@ public abstract class AbstractHumanoidCreeperGirlExpressionFacialLayer
 	public void render(PoseStack poseStack, MultiBufferSource p_117350_, int p_117351_, E p_117352_, float p_117353_,
 			float p_117354_, float p_117355_, float p_117356_, float p_117357_, float p_117358_) {		
 		
-		if (p_117352_.isInvisible()) return;
+		if (p_117352_.isInvisible())
+			return;
 		
 		final var face = renderType(p_117352_);
-		if (face != null) {
-			poseStack.pushPose();	
-			getParentModel().head.render(poseStack, p_117350_.getBuffer(face), p_117351_, LivingEntityRenderer.getOverlayCoords(p_117352_, 0.0F));
-			poseStack.popPose();
+		if (face != null) {	
+			var model = this.getParentModel();	
+			if (model.young) {
+				model.setAllInvisibleLessHead();				
+				model.renderToBuffer(
+						poseStack, 
+						p_117350_.getBuffer(face), 
+						p_117351_, 
+						LivingEntityRenderer.getOverlayCoords(p_117352_, 0.0F),
+						1.0F, 1.0F, 1.0F, 1.0F
+					);
+				model.setAllVisible(true);
+			}
+			else {
+				model.head.render(
+						poseStack, 
+						p_117350_.getBuffer(face), 
+						p_117351_, 
+						LivingEntityRenderer.getOverlayCoords(p_117352_, 0.0F),
+						1.0F, 1.0F, 1.0F, 1.0F
+					);
+			}	
 		}
 	}
 	

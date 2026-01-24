@@ -118,7 +118,7 @@ public abstract class PreggoMobPregnancySystemP4
 	        	MinepreggoMod.LOGGER.debug("PreggoMob {} is giving birth to {} babies.", pregnantEntity.getDisplayName().getString(), aliveBabiesItemStacks.size());
 	        	
 	        	if (aliveBabiesItemStacks.isEmpty()) {
-					MinepreggoMod.LOGGER.error("Failed to get baby item for pregnancy system {} birth.", pregnancyData.getCurrentPregnancyStage());
+					MinepreggoMod.LOGGER.error("Failed to get baby item for pregnancy system {} birth.", pregnancyData.getCurrentPregnancyPhase());
 				}
 	        	
 	        	// TODO: Babies itemstacks are only removed if player's hands are empty. It should handle stacking unless itemstack is a baby item.
@@ -192,7 +192,7 @@ public abstract class PreggoMobPregnancySystemP4
 	@Override
 	protected boolean hasToGiveBirth() {
 		final var pregnancyData = pregnantEntity.getPregnancyData();
-		return pregnancyData.getLastPregnancyStage() == pregnancyData.getCurrentPregnancyStage();
+		return pregnancyData.getLastPregnancyStage() == pregnancyData.getCurrentPregnancyPhase();
 	}
 	
 	@Override

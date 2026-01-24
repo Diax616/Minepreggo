@@ -39,7 +39,7 @@ public record UpdateBellyRubbingStateC2SPacket(UUID target) {
    	        		if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
    	        			var system = femaleData.getPregnancyData();
    	        			var bellyRubs = system.getBellyRubs();
-   	        			if (system.getCurrentPregnancyStage().compareTo(PregnancyPhase.P2) > 0 && bellyRubs > 0) {
+   	        			if (system.getCurrentPregnancyPhase().compareTo(PregnancyPhase.P2) > 0 && bellyRubs > 0) {
    	        				bellyRubs -= PregnancySystemHelper.BELLY_RUBBING_VALUE;
    	        				system.setBellyRubs(bellyRubs);
    	        				

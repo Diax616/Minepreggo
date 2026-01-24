@@ -17,6 +17,7 @@ import java.util.OptionalInt;
 
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
+import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.FemaleFertilitySystem;
 import dev.dixmk.minepreggo.world.entity.preggo.SyncedFemaleEntityImpl;
 import dev.dixmk.minepreggo.world.entity.preggo.ISyncedFemaleEntity;
@@ -45,6 +46,7 @@ public class TamableHumanoidCreeperGirl extends AbstractTamableHumanoidCreeperGi
 				PreggoMobHelper.copyTamableData(preggoMob, creeperGirl);				
 				PreggoMobHelper.transferInventory(preggoMob, creeperGirl);					
 				PreggoMobHelper.transferAttackTarget(preggoMob, creeperGirl);
+				LivingEntityHelper.copyMobEffects(preggoMob, creeperGirl);
 				PreggoMobHelper.initPregnancy(creeperGirl);
 			}			
 		}
@@ -98,7 +100,7 @@ public class TamableHumanoidCreeperGirl extends AbstractTamableHumanoidCreeperGi
 	}
 	
 	public static AttributeSupplier.Builder createAttributes() {
-		return getBasicAttributes(0.24);
+		return createBasicAttributes(0.24);
 	}
 	
 	public static<E extends AbstractTamablePregnantCreeperGirl> void onPostPartum(E source) {
@@ -108,7 +110,8 @@ public class TamableHumanoidCreeperGirl extends AbstractTamableHumanoidCreeperGi
 			PreggoMobHelper.copyOwner(source, creeperGirl);
 			PreggoMobHelper.copyHealth(source, creeperGirl);
 			PreggoMobHelper.copyName(source, creeperGirl);
-			PreggoMobHelper.copyTamableData(source, creeperGirl);		
+			PreggoMobHelper.copyTamableData(source, creeperGirl);	
+			LivingEntityHelper.copyMobEffects(source, creeperGirl);
 			PreggoMobHelper.transferInventory(source, creeperGirl);
 			PreggoMobHelper.transferAttackTarget(source, creeperGirl);	
 			creeperGirl.getTamableData().setBodyState(null);
@@ -130,7 +133,8 @@ public class TamableHumanoidCreeperGirl extends AbstractTamableHumanoidCreeperGi
 			PreggoMobHelper.copyOwner(source, creeperGirl);
 			PreggoMobHelper.copyHealth(source, creeperGirl);
 			PreggoMobHelper.copyName(source, creeperGirl);
-			PreggoMobHelper.copyTamableData(source, creeperGirl);		
+			PreggoMobHelper.copyTamableData(source, creeperGirl);	
+			LivingEntityHelper.copyMobEffects(source, creeperGirl);
 			PreggoMobHelper.transferInventory(source, creeperGirl);
 			PreggoMobHelper.transferAttackTarget(source, creeperGirl);
 			

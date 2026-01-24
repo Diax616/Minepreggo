@@ -23,9 +23,22 @@ public class PlayerPregnancySystemP3 extends PlayerPregnancySystemP2 {
 
 	public PlayerPregnancySystemP3(@NonNull ServerPlayer player) {
 		super(player);
-		
-		PlayerHelper.addInterspeciesPregnancy(player);
-		
+		var pregnancyType = PlayerHelper.addInterspeciesPregnancy(player);
+		if (pregnancyType != null) {
+			switch(pregnancyType) {
+				case ZOMBIE:
+					fetalMovementProb *= 1.4f;
+					break;
+				case CREEPER:
+					fetalMovementProb *= 1.8f;
+					break;
+				case ENDER:
+					fetalMovementProb *= 2.2f;
+					break;
+				default:
+					break;
+			}
+		}	
 		addNewValidPregnancySymptoms(PregnancySymptom.BELLY_RUBS);
 	}
 
@@ -107,6 +120,9 @@ public class PlayerPregnancySystemP3 extends PlayerPregnancySystemP2 {
 		
 		if (this.pregnantEntity.hasEffect(MinepreggoModMobEffects.ETERNAL_PREGNANCY.get())) {
 			newFetalMovementProb *= 5f;
+		}
+		if (this.isMovingRidingSaddledHorse()) {		
+			newFetalMovementProb *= (pregnancySystem.getCurrentPregnancyPhase().ordinal() + 2);
 		}
 		
 		if (randomSource.nextFloat() < newFetalMovementProb) {

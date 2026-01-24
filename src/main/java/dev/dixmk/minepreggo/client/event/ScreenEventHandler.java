@@ -58,7 +58,7 @@ public class ScreenEventHandler {
 				final var gui = event.getGuiGraphics();
 				if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
 					final var pregnancySystem = femaleData.getPregnancyData();
-					final PregnancyPhase phase = pregnancySystem.getCurrentPregnancyStage();
+					final PregnancyPhase phase = pregnancySystem.getCurrentPregnancyPhase();
 					
 					Runnable cravingOverlay = () -> {
 						if (pregnancySystem.getPregnancySymptoms().containsPregnancySymptom(PregnancySymptom.CRAVING)) {

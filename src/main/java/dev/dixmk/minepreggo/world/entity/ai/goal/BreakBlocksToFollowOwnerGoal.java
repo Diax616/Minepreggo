@@ -20,7 +20,7 @@ public class BreakBlocksToFollowOwnerGoal<E extends PreggoMob & ITamablePreggoMo
     private BlockPos targetBlockPos;
     private BlockPos currentColumnBase; // Track which column we're working on
     private boolean columnCleared; // Track if vertical column is cleared
-    private static final int BREAK_DURATION = 20; // Ticks to break a block
+    private static final int BREAK_DURATION = 10; // Ticks to break a block
     private static final int HORIZONTAL_RANGE = 2; // How many blocks horizontally to check/break
     
     

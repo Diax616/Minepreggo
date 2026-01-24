@@ -1,12 +1,9 @@
 package dev.dixmk.minepreggo.client.renderer.preggo.creeper;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractHumanoidCreeperGirlModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.MonsterHumanoidCreeperGirlModel;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.MonsterHumanoidCreeperGirl;
 import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -21,14 +18,6 @@ public class MonsterHumanoidCreeperGirlRenderer extends AbstractHumanoidMonsterC
 	
 	public MonsterHumanoidCreeperGirlRenderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter, ModelLayerLocation armor) {
 		super(context, new MonsterHumanoidCreeperGirlModel(context.bakeLayer(main)), new MonsterHumanoidCreeperGirlModel(context.bakeLayer(inner)), new MonsterHumanoidCreeperGirlModel(context.bakeLayer(outter)), new MonsterHumanoidCreeperGirlModel(context.bakeLayer(armor)));
-	}
-	
-	@Override
-	public void render(MonsterHumanoidCreeperGirl p_115455_, float p_115456_, float p_115457_, PoseStack p_115458_, MultiBufferSource p_115459_, int p_115460_) {
-		if (p_115455_.isBaby()) {
-			p_115458_.scale(0.575F, 0.575F, 0.575F);
-		}				
-		super.render(p_115455_, p_115456_, p_115457_, p_115458_, p_115459_, p_115460_);
 	}
 
 	@Override

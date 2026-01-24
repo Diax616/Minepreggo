@@ -141,7 +141,7 @@ public abstract class PlayerPrenatalCheckUpMenu<T extends Mob> extends AbstractP
 			this.source.ifPresent(p -> 
 				p.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
 					cap.getFemaleData().ifPresent(femaleData -> 
-						this.motherPregnancyPhase =	femaleData.getPregnancyData().getCurrentPregnancyStage()
+						this.motherPregnancyPhase =	femaleData.getPregnancyData().getCurrentPregnancyPhase()
 					)
 				)
 			);
@@ -246,7 +246,7 @@ public abstract class PlayerPrenatalCheckUpMenu<T extends Mob> extends AbstractP
 			this.source.ifPresent(p -> 
 				p.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
 					cap.getFemaleData().ifPresent(femaleData -> 
-						this.motherPregnancyPhase =	femaleData.getPregnancyData().getCurrentPregnancyStage()
+						this.motherPregnancyPhase =	femaleData.getPregnancyData().getCurrentPregnancyPhase()
 					)
 				)
 			);	

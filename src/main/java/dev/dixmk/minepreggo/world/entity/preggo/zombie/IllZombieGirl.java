@@ -3,6 +3,7 @@ package dev.dixmk.minepreggo.world.entity.preggo.zombie;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.world.entity.monster.Ill;
 import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
+import dev.dixmk.minepreggo.world.item.ItemHelper;
 import net.minecraftforge.network.PlayMessages;
 
 import net.minecraft.world.level.Level;
@@ -17,6 +18,7 @@ import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.server.level.ServerLevel;
@@ -65,6 +67,17 @@ public class IllZombieGirl extends AbstractMonsterZombieGirl implements Ill {
     	this.setTame(false);
 		this.setOwnerUUID(null);
 		Ill.removeBehaviourGoals(this);
+	}
+	
+	@Override
+	public void onFinalizeSpawnWithOwner() {
+		var helmet = new ItemStack(ItemHelper.getRandomHelmet(this.random));
+		helmet.setDamageValue(this.random.nextInt(helmet.getMaxDamage() / 2));
+		var axe = new ItemStack(ItemHelper.getRandomAxe(this.random));
+		axe.setDamageValue(this.random.nextInt(axe.getMaxDamage() / 2));
+		
+		this.setItemSlot(EquipmentSlot.HEAD, helmet);
+		this.setItemSlot(EquipmentSlot.MAINHAND, axe);
 	}
 	
 	@Override

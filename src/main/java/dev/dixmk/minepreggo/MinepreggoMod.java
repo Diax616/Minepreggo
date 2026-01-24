@@ -191,6 +191,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.monster.Monster;
@@ -540,6 +541,8 @@ public class MinepreggoMod {
 
 		event.registerEntityRenderer(MinepreggoModEntities.MONSTER_ENDER_WOMAN.get(), MonsterlEnderWomanRenderer::new);	
 		event.registerEntityRenderer(MinepreggoModEntities.MONSTER_CREEPER_GIRL.get(), MonsterCreeperGirlRenderer::new);
+	
+		event.registerEntityRenderer(MinepreggoModEntities.BELLY_PART.get(), NoopRenderer::new);
 	}
 	
 	private void registerCapabilities(RegisterCapabilitiesEvent event) {

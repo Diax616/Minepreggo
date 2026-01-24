@@ -214,7 +214,7 @@ public abstract class PreggoMobPregnancySystemP1
 
 		if (pregnancyData.getPregnancyPain() == PregnancyPain.MISCARRIAGE) return;
 
-		PregnancySystemHelper.getPregnancyDamage(pregnantEntity, pregnancyData.getCurrentPregnancyStage(), damagesource).ifPresent(damage -> {
+		PregnancySystemHelper.calculatePregnancyDamage(pregnantEntity, pregnancyData.getCurrentPregnancyPhase(), damagesource).ifPresent(damage -> {
 			pregnancyData.reducePregnancyHealth(damage);
 			var currentPregnancyHealth = pregnancyData.getPregnancyHealth();
 

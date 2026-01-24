@@ -8,6 +8,7 @@ import org.apache.commons.lang3.tuple.ImmutableTriple;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
+import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
@@ -146,6 +147,7 @@ public class Impregnantion extends MobEffect {
 		PreggoMobHelper.transferSlots(source, target);
 		PreggoMobHelper.syncFromEquipmentSlotToInventory(target);
 		PreggoMobHelper.transferAttackTarget(source, target);
+		LivingEntityHelper.copyMobEffects(source, target);
 		PreggoMobHelper.initPregnancyByPotion(target, ImmutableTriple.of(Optional.empty(), target.getTypeOfSpecies(), target.getTypeOfCreature()), amplifier);
 		source.discard();
 	}

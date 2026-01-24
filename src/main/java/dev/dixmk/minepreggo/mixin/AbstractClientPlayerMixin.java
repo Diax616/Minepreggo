@@ -28,7 +28,7 @@ public class AbstractClientPlayerMixin {
     		cap.getFemaleData().ifPresent(femaleData -> { 	
     			final Pair<ResourceLocation, ResourceLocation> textures;	
     			if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
-        			final var pregnancyPhase =  femaleData.getPregnancyData().getCurrentPregnancyStage();
+        			final var pregnancyPhase =  femaleData.getPregnancyData().getCurrentPregnancyPhase();
     				textures = ClientPlayerHelper.getPredefinedPlayerTextures("player1", pregnancyPhase);
         			if (textures == null) {
         	        	MinepreggoMod.LOGGER.error("{} in pregnancy phase {} does not have a valid texture", player.getDisplayName().getString(), pregnancyPhase);

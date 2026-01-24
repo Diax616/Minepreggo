@@ -1,6 +1,10 @@
 package dev.dixmk.minepreggo.world.effect;
 
+import java.util.Optional;
+import java.util.OptionalInt;
+
 import dev.dixmk.minepreggo.MinepreggoMod;
+import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.player.PlayerPregnancySystemP2;
 import net.minecraft.server.level.ServerPlayer;
@@ -8,6 +12,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 
 public class PregnancyP2 extends AbstractPlayerPregnancy<PlayerPregnancySystemP2> {
 	
@@ -32,7 +37,7 @@ public class PregnancyP2 extends AbstractPlayerPregnancy<PlayerPregnancySystemP2
 		super.addAttributeModifiers(entity, p_19479_, p_19480_);
 		if (!PlayerHelper.isPlayerValid(entity)) return;
 		
-		if (!entity.level().isClientSide) {
+		if (!entity.level().isClientSide && !entity.hasEffect(MinepreggoModMobEffects.ZERO_GRAVITY_BELLY.get())) {
 			entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, -1, 0, false, false));			
 		}
 	}
@@ -47,4 +52,19 @@ public class PregnancyP2 extends AbstractPlayerPregnancy<PlayerPregnancySystemP2
 			entity.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);
 		}
     }
+
+	@Override
+	Optional<AttributeModifier> getSpeedModifier() {
+		return Optional.empty();
+	}
+
+	@Override
+	Optional<AttributeModifier> getAttackSpeedModifier() {
+		return Optional.empty();
+	}
+
+	@Override
+	OptionalInt getMovementSpeedNerfAmplifier() {
+		return OptionalInt.of(0);
+	}
 }

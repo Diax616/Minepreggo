@@ -87,6 +87,7 @@ import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -103,6 +104,72 @@ public class PregnancySystemHelper {
 	private static final AttributeModifier SPEED_MODIFIER_TIRENESS = new AttributeModifier(SPEED_MODIFIER_TIRENESS_UUID, "Tireness speed boost", -0.1D, AttributeModifier.Operation.MULTIPLY_BASE);
 	private static final UUID MAX_HEALTH_MODIFIER_TIRENESS_UUID = UUID.fromString("94d78c8b-0983-4ae4-af65-8e477ee52f2e");
 	private static final AttributeModifier MAX_HEALTH_MODIFIER_TIRENESS = new AttributeModifier(MAX_HEALTH_MODIFIER_TIRENESS_UUID, "Tireness max health", -0.3D, AttributeModifier.Operation.MULTIPLY_BASE);
+	
+	private static final UUID GRAVITY_MODIFIER_UUID = UUID.fromString("b5b377cf-2343-4d56-945f-6ffc5566ee8c");
+	private static final UUID KNOCKBACK_RESISTANCE_MODIFIER_UUID = UUID.fromString("c42b03bc-a474-4309-84f6-49e765f278e6");
+	
+	private static final ImmutableMap<PregnancyPhase, AttributeModifier> GRAVITY_MODIFIER_MAP = ImmutableMap.of(
+			PregnancyPhase.P2, new AttributeModifier(GRAVITY_MODIFIER_UUID, "extra weight p2", 0.1D, AttributeModifier.Operation.MULTIPLY_BASE),
+			PregnancyPhase.P3, new AttributeModifier(GRAVITY_MODIFIER_UUID, "extra weight p3", 0.125D, AttributeModifier.Operation.MULTIPLY_BASE),
+			PregnancyPhase.P4, new AttributeModifier(GRAVITY_MODIFIER_UUID, "extra weight p4", 0.15D, AttributeModifier.Operation.MULTIPLY_BASE),
+			PregnancyPhase.P5, new AttributeModifier(GRAVITY_MODIFIER_UUID, "extra weight p5", 0.175D, AttributeModifier.Operation.MULTIPLY_BASE),
+			PregnancyPhase.P6, new AttributeModifier(GRAVITY_MODIFIER_UUID, "extra weight p6", 0.2D, AttributeModifier.Operation.MULTIPLY_BASE),
+			PregnancyPhase.P7, new AttributeModifier(GRAVITY_MODIFIER_UUID, "extra weight p7", 0.225D, AttributeModifier.Operation.MULTIPLY_BASE),
+			PregnancyPhase.P8, new AttributeModifier(GRAVITY_MODIFIER_UUID, "extra weight p8", 0.25D, AttributeModifier.Operation.MULTIPLY_BASE)
+	);
+	
+	private static final ImmutableMap<PregnancyPhase, AttributeModifier> KNOCKBACK_RESISTANCE_MAP = ImmutableMap.of(
+			PregnancyPhase.P4, new AttributeModifier(KNOCKBACK_RESISTANCE_MODIFIER_UUID, "buff knockback resistance p4", 0.05D, AttributeModifier.Operation.ADDITION),
+			PregnancyPhase.P5, new AttributeModifier(KNOCKBACK_RESISTANCE_MODIFIER_UUID, "buff knockback resistance p5", 0.1D, AttributeModifier.Operation.ADDITION),
+			PregnancyPhase.P6, new AttributeModifier(KNOCKBACK_RESISTANCE_MODIFIER_UUID, "buff knockback resistance p6", 0.15D, AttributeModifier.Operation.ADDITION),
+			PregnancyPhase.P7, new AttributeModifier(KNOCKBACK_RESISTANCE_MODIFIER_UUID, "buff knockback resistance p7", 0.2D, AttributeModifier.Operation.ADDITION),
+			PregnancyPhase.P8, new AttributeModifier(KNOCKBACK_RESISTANCE_MODIFIER_UUID, "buff knockback resistance p8", 0.25D, AttributeModifier.Operation.ADDITION)
+	);
+	
+	public static boolean applyGravityModifier(LivingEntity entity, PregnancyPhase pregnancyPhase) {
+		AttributeInstance gravityAttr = entity.getAttribute(ForgeMod.ENTITY_GRAVITY.get());
+		if (gravityAttr != null) {
+			AttributeModifier gravityModifier = GRAVITY_MODIFIER_MAP.get(pregnancyPhase);
+			if (gravityModifier != null && gravityAttr.getModifier(GRAVITY_MODIFIER_UUID) == null) {
+			    gravityAttr.addPermanentModifier(gravityModifier);
+			    return true;
+			}
+		}			
+		return false;
+	}
+	
+	public static boolean removeGravityModifier(LivingEntity entity) {
+		AttributeInstance gravityAttr = entity.getAttribute(ForgeMod.ENTITY_GRAVITY.get());
+		if (gravityAttr != null && gravityAttr.getModifier(GRAVITY_MODIFIER_UUID) != null) {
+			gravityAttr.removeModifier(GRAVITY_MODIFIER_UUID);
+			return true;
+		}	
+		return false;
+	}
+	
+	public static boolean applyKnockbackResistanceModifier(LivingEntity entity, PregnancyPhase pregnancyPhase) {
+		AttributeInstance knockbackResistAttr = entity.getAttribute(Attributes.KNOCKBACK_RESISTANCE);
+		if (knockbackResistAttr != null) {
+			AttributeModifier knockbackResistModifier = KNOCKBACK_RESISTANCE_MAP.get(pregnancyPhase);
+			if (knockbackResistModifier != null && knockbackResistAttr.getModifier(KNOCKBACK_RESISTANCE_MODIFIER_UUID) == null) {
+				MinepreggoMod.LOGGER.debug("Applying knockback resistance modifier: {} to entity: {}", knockbackResistModifier.getAmount(), entity.getId());
+				knockbackResistAttr.addPermanentModifier(knockbackResistModifier);
+			    return true;
+			}
+		}	
+		
+		MinepreggoMod.LOGGER.debug("Failed to apply knockback resistance modifier to entity: {}", entity.getId());
+		return false;
+	}
+	
+	public static boolean removeKnockbackResistanceModifier(LivingEntity entity) {
+		AttributeInstance knockbackResistAttr = entity.getAttribute(Attributes.KNOCKBACK_RESISTANCE);
+		if (knockbackResistAttr != null && knockbackResistAttr.getModifier(KNOCKBACK_RESISTANCE_MODIFIER_UUID) != null) {
+			knockbackResistAttr.removeModifier(KNOCKBACK_RESISTANCE_MODIFIER_UUID);
+			return true;
+		}	
+		return false;
+	}
 	
 	public static final int MAX_PREGNANCY_HEALTH = 100;
 	public static final int MAX_PREGNANCY_FERTILITY = 100;
@@ -156,17 +223,17 @@ public class PregnancySystemHelper {
 	
 	public static final int TOTAL_TICKS_CALM_BELLY_RUGGING_DOWN = 120;
 	
-	public static final float LOW_PREGNANCY_PAIN_PROBABILITY = 0.001F;
-	public static final float MEDIUM_PREGNANCY_PAIN_PROBABILITY = 0.00125F;
-	public static final float HIGH_PREGNANCY_PAIN_PROBABILITY = 0.0015F;
+	public static final float LOW_PREGNANCY_PAIN_PROBABILITY = 0.015F;
+	public static final float MEDIUM_PREGNANCY_PAIN_PROBABILITY = 0.02F;
+	public static final float HIGH_PREGNANCY_PAIN_PROBABILITY = 0.025F;
 	
-	public static final float LOW_MORNING_SICKNESS_PROBABILITY = 0.001F;
-	public static final float MEDIUM_MORNING_SICKNESS_PROBABILITY = 0.0015F;
-	public static final float HIGH_MORNING_SICKNESS_PROBABILITY = 0.002F;
+	public static final float LOW_MORNING_SICKNESS_PROBABILITY = 0.0075F;
+	public static final float MEDIUM_MORNING_SICKNESS_PROBABILITY = 0.01F;
+	public static final float HIGH_MORNING_SICKNESS_PROBABILITY = 0.0125F;
 	
-	public static final float LOW_ANGER_PROBABILITY = 0.005F;
-	public static final float MEDIUM_ANGER_PROBABILITY = 0.0075F;
-	public static final float HIGH_ANGER_PROBABILITY = 0.01F;
+	public static final float LOW_ANGER_PROBABILITY = 0.0075F;
+	public static final float MEDIUM_ANGER_PROBABILITY = 0.0125F;
+	public static final float HIGH_ANGER_PROBABILITY = 0.0175F;
 	
 	public static final int CRAVING_VALUE = 4;
 	public static final int ACTIVATE_CRAVING_SYMPTOM = 16;
@@ -410,7 +477,7 @@ public class PregnancySystemHelper {
 
 						playSlappingBellyAnimation(source, target);
 								
-						if (pregnancySystem.getCurrentPregnancyStage().compareTo(PregnancyPhase.P3) >= 0) {				
+						if (pregnancySystem.getCurrentPregnancyPhase().compareTo(PregnancyPhase.P3) >= 0) {				
 							var pregnancyData = femaleData.getPregnancyData();
 							
 							if (pregnancyData.getBellyRubs() >= BELLY_RUBBING_VALUE) {
@@ -670,7 +737,7 @@ public class PregnancySystemHelper {
     
     public static int calculateTotalDaysPassedFromPhaseP0(@NonNull IPregnancyData h) {   	
     	var map = h.getMapPregnancyPhase();
-    	final PregnancyPhase currentPhase = h.getCurrentPregnancyStage();
+    	final PregnancyPhase currentPhase = h.getCurrentPregnancyPhase();
     	
     	final var totalDaysPassed = StreamSupport.stream(Arrays.spliterator(PregnancyPhase.values()), false)
     			.filter(phase -> phase.compareTo(currentPhase) <= -1)
@@ -757,8 +824,8 @@ public class PregnancySystemHelper {
     }
     
     
-    public static OptionalInt getPregnancyDamage(LivingEntity pregnantEntity, PregnancyPhase phase, DamageSource damagesource) {
-    	if (phase == PregnancyPhase.P0) {
+    public static OptionalInt calculatePregnancyDamage(LivingEntity pregnantEntity, PregnancyPhase phase, DamageSource damagesource) {
+    	if (phase == PregnancyPhase.P0 || damagesource.is(MinepreggoModDamageSources.PREGNANCY_PAIN)) {
     		return OptionalInt.empty();
     	}
     	
@@ -875,7 +942,7 @@ public class PregnancySystemHelper {
 		playSoundNearTo(entity, sound, 0.5f);
 	}
 	
-	public static boolean canHaveEternalPregnancy(LivingEntity entity) {
+	public static boolean canHavePregnancyEffects(LivingEntity entity) {
         if (entity instanceof ServerPlayer serverPlayer) {          	
     		Optional<Boolean> result = serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).map(cap -> {	
     			var femaleDataOpt = cap.getFemaleData().resolve();
@@ -891,7 +958,6 @@ public class PregnancySystemHelper {
 		return entity instanceof ITamablePregnantPreggoMob;
 	}
 	
-    
 	public static final int MAX_NUMBER_OF_BABIES = 8;
 	
 	private static final ImmutableMap<PregnancyPhase, int[]> PHASE_TO_BABY_COUNT_MAP = ImmutableMap.of(
@@ -1028,5 +1094,17 @@ public class PregnancySystemHelper {
     
 	public static void tornWomb(LivingEntity entity) {
 		entity.hurt(new DamageSource(entity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(MinepreggoModDamageSources.BELLY_BURST)), Float.MAX_VALUE);
+	}
+	
+	public static void applyDamageByPregnancyPain(LivingEntity entity, int damage) {
+		entity.hurt(new DamageSource(entity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(MinepreggoModDamageSources.PREGNANCY_PAIN)), damage);
+	}
+	
+	public static boolean canMountEntity(PregnancyPhase pregnancyPhase) {
+		return pregnancyPhase.compareTo(PregnancyPhase.P4) <= 0;
+	}
+	
+	public static float calculateExtraFallDamageMultiplier(PregnancyPhase pregnancyPhase) {
+		return MathHelper.sigmoid(1f, 1.6f, 1f, pregnancyPhase.ordinal(), PregnancyPhase.values().length * 0.5f);
 	}
 }

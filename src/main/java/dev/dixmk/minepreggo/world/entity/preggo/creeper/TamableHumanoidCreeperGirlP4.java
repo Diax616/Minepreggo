@@ -66,6 +66,6 @@ public class TamableHumanoidCreeperGirlP4 extends AbstractTamablePregnantHumanoi
 	}
 	
 	public static AttributeSupplier.Builder createAttributes() {
-		return AbstractTamableHumanoidCreeperGirl.getBasicAttributes(0.22);
+		return AbstractTamableHumanoidCreeperGirl.createBasicAttributes(0.22);
 	}
 }

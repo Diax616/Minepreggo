@@ -226,7 +226,7 @@ public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
 				&& !pregnancySystem.getPregnancySymptoms().containsPregnancySymptom(PregnancySymptom.CRAVING)) {
 			pregnancySystem.getPregnancySymptoms().addPregnancySymptom(PregnancySymptom.CRAVING);
 			
-			if (pregnancySystem.getCurrentPregnancyStage().compareTo(PregnancyPhase.P3) >= 0 && randomSource.nextDouble() < 0.3f) {
+			if (pregnancySystem.getCurrentPregnancyPhase().compareTo(PregnancyPhase.P3) >= 0 && randomSource.nextDouble() < 0.3f) {
 				var fatherSpecies = femaleData.getPrePregnancyData().map(data -> data.typeOfSpeciesOfFather());
 				if (!fatherSpecies.isEmpty() && !PlayerHelper.isValidCravingBySpecies(fatherSpecies.get())) {
 					fatherSpecies = Optional.of(Species.HUMAN);

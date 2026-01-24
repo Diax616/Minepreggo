@@ -2,11 +2,14 @@ package dev.dixmk.minepreggo.world.entity.preggo.zombie;
 
 import javax.annotation.Nonnull;
 
+import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.client.animation.player.BellyAnimationManager;
 import dev.dixmk.minepreggo.client.animation.preggo.BellyAnimation;
 import dev.dixmk.minepreggo.init.MinepreggoModDamageSources;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.init.MinepreggoModSounds;
+import dev.dixmk.minepreggo.world.entity.BellyPartFactory;
+import dev.dixmk.minepreggo.world.entity.BellyPartManager;
 import dev.dixmk.minepreggo.world.entity.ai.goal.PreggoMobAIHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.IPreggoMobPregnancySystem;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
@@ -126,7 +129,13 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 		super.tick();	
 		if (this.level().isClientSide && !this.bellyAnimationState.isStarted()) {
 			this.bellyAnimationState.start(this.tickCount);
-		}		
+		}	
+		
+		if (!this.level().isClientSide
+				&& MinepreggoModConfig.isBellyColisionsEnable()
+				&& pregnancyData.getCurrentPregnancyPhase().compareTo(PregnancyPhase.P5) >= 0) {
+			BellyPartManager.getInstance().onServerTick(this, () -> BellyPartFactory.createHumanoidBellyPart(this, pregnancyData.getCurrentPregnancyPhase()));
+		}	
 	}
 	
 	@Override
@@ -135,10 +144,10 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 		final var armor = p_21428_.getItem();
 		
 		if (slot == EquipmentSlot.CHEST) {
-			return PregnancySystemHelper.canUseChestplate(armor, this.pregnancyData.getCurrentPregnancyStage(), false) && PreggoMobHelper.canUseChestPlateInLactation(this, armor);
+			return PregnancySystemHelper.canUseChestplate(armor, this.pregnancyData.getCurrentPregnancyPhase(), false) && PreggoMobHelper.canUseChestPlateInLactation(this, armor);
 		}
 		else if (slot == EquipmentSlot.LEGS) {
-			return PregnancySystemHelper.canUseLegging(armor, this.pregnancyData.getCurrentPregnancyStage());
+			return PregnancySystemHelper.canUseLegging(armor, this.pregnancyData.getCurrentPregnancyPhase());
 		}	
 		
 		return super.canReplaceCurrentItem(p_21428_, p_21429_);
@@ -179,6 +188,15 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 	@Override
 	public ITamablePregnantPreggoMobData getPregnancyData() {
 		return this.pregnancyData;
+	}
+	
+	@Override
+	public boolean causeFallDamage(float pFallDistance, float pMultiplier, DamageSource pSource) {
+		PregnancyPhase currentPregnancyPhase = this.pregnancyData.getCurrentPregnancyPhase();
+		if (currentPregnancyPhase.compareTo(PregnancyPhase.P3) >= 0) {
+			return super.causeFallDamage(pFallDistance, pMultiplier * PregnancySystemHelper.calculateExtraFallDamageMultiplier(currentPregnancyPhase), pSource);
+		}
+		return super.causeFallDamage(pFallDistance, pMultiplier, pSource);
 	}
 	
 	public static EntityType<? extends AbstractTamablePregnantZombieGirl> getEntityType(PregnancyPhase phase) {	

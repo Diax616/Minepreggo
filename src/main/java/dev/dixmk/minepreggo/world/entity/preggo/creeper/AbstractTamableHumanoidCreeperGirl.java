@@ -18,7 +18,7 @@ public abstract class AbstractTamableHumanoidCreeperGirl extends AbstractTamable
 		super(p_21803_, p_21804_, Creature.HUMANOID);
 	}
 
-	public static AttributeSupplier.Builder getBasicAttributes(double movementSpeed) {
+	public static AttributeSupplier.Builder createBasicAttributes(double movementSpeed) {
 		return Mob.createMobAttributes()
 				.add(Attributes.MAX_HEALTH, 22D)
 				.add(Attributes.ATTACK_DAMAGE, 2D)

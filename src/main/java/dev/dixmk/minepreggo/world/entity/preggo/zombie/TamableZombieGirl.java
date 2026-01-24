@@ -17,6 +17,7 @@ import java.util.OptionalInt;
 
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
+import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.FemaleFertilitySystem;
 import dev.dixmk.minepreggo.world.entity.preggo.SyncedFemaleEntityImpl;
 import dev.dixmk.minepreggo.world.entity.preggo.ISyncedFemaleEntity;
@@ -111,6 +112,7 @@ public class TamableZombieGirl extends AbstractTamableZombieGirl implements IPos
 			PreggoMobHelper.copyHealth(source, zombieGirl);
 			PreggoMobHelper.copyName(source, zombieGirl);
 			PreggoMobHelper.copyTamableData(source, zombieGirl);	
+			LivingEntityHelper.copyMobEffects(source, zombieGirl);
 			PreggoMobHelper.transferInventory(source, zombieGirl);
 			PreggoMobHelper.transferAttackTarget(source, zombieGirl);
 							
@@ -132,6 +134,7 @@ public class TamableZombieGirl extends AbstractTamableZombieGirl implements IPos
 			PreggoMobHelper.copyHealth(source, zombieGirl);
 			PreggoMobHelper.copyName(source, zombieGirl);
 			PreggoMobHelper.copyTamableData(source, zombieGirl);
+			LivingEntityHelper.copyMobEffects(source, zombieGirl);
 			PreggoMobHelper.transferInventory(source, zombieGirl);
 			PreggoMobHelper.transferAttackTarget(source, zombieGirl);
 			zombieGirl.getTamableData().setBodyState(null);

@@ -36,7 +36,7 @@ public record SyncPregnancySystemS2CPacket(UUID targetId, PlayerPregnancyDataImp
 							
 							pregnancySystem.getPregnancySymptoms().setPregnancySymptoms(PregnancySymptom.fromBitMask(message.data.pregnancySymptoms()));
 							pregnancySystem.setPregnancyPain(message.data.pregnancyPain());
-							pregnancySystem.setCurrentPregnancyStage(newPhase);						
+							pregnancySystem.setCurrentPregnancyPhase(newPhase);						
 						});
 					});
 				}	

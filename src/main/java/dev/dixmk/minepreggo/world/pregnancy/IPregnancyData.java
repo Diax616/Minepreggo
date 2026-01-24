@@ -45,8 +45,8 @@ public interface IPregnancyData extends IPregnant {
 	PregnancyPhase getLastPregnancyStage();
 	void setLastPregnancyStage(PregnancyPhase stage);
 
-	PregnancyPhase getCurrentPregnancyStage();
-	void setCurrentPregnancyStage(PregnancyPhase stage);
+	PregnancyPhase getCurrentPregnancyPhase();
+	void setCurrentPregnancyPhase(PregnancyPhase stage);
 	
 	SetPregnancySymptom getPregnancySymptoms();
 	void setPregnancySymptoms(SetPregnancySymptom symptoms);

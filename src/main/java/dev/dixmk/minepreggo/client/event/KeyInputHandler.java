@@ -35,7 +35,7 @@ public class KeyInputHandler {
             				MinepreggoModPacketHandler.INSTANCE.sendToServer(new StopPlayerAnimationC2SPacket(player.getUUID()));
         				}
         				else {
-            				MinepreggoModPacketHandler.INSTANCE.sendToServer(new RequestBellyRubbingAnimationC2SPacket(player.getUUID(), femaleData.getPregnancyData().getCurrentPregnancyStage()));
+            				MinepreggoModPacketHandler.INSTANCE.sendToServer(new RequestBellyRubbingAnimationC2SPacket(player.getUUID(), femaleData.getPregnancyData().getCurrentPregnancyPhase()));
         				}
         			}
         		})

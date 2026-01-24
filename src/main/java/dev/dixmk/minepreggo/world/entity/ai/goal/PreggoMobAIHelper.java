@@ -296,7 +296,7 @@ public class PreggoMobAIHelper {
 
 		preggoMob.targetSelector.addGoal(2, new HurtByTargetGoal(preggoMob));	
 		
-		preggoMob.targetSelector.addGoal(4, new BreakBlocksToFollowOwnerGoal<>(preggoMob, 2, 7));	
+		preggoMob.targetSelector.addGoal(4, new BreakBlocksToFollowOwnerGoal<>(preggoMob, 2, 5));	
 			
 		preggoMob.goalSelector.addGoal(5, new MeleeAttackGoal(preggoMob, 1.2D, false));
 			

@@ -64,12 +64,9 @@ public class WorldEventHandler {
         
         final List<IBreedable> breedableEntities = StreamSupport.stream(level.getAllEntities().spliterator(), false)
                 .flatMap(entity -> {
-                    // If the entity itself implements the pregnancy handler, return it directly
                     if (entity instanceof IBreedable handler) {
                         return Stream.of(handler);
                     }
-
-                    // If the entity is a player, try to obtain the player's pregnancy system from capability
                     if (entity instanceof ServerPlayer serverPlayer) { 
                         var playerDataOpt = serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).resolve();
                         if (playerDataOpt.isPresent()) {
@@ -100,9 +97,9 @@ public class WorldEventHandler {
             }
             
             MinepreggoMod.LOGGER.debug("TIME SKIP EVENT: currentPregnanctStage={}, pregnancyTimer={}, ticksSkipped={}, tickResult={}, numOfDaysPassed={}, remainingTicks={}",
-                    pregnantEntity.getCurrentPregnancyStage(), pregnancyTimer, ticksSkipped, tickResult, numOfDays, remainingTicks);
+                    pregnantEntity.getCurrentPregnancyPhase(), pregnancyTimer, ticksSkipped, tickResult, numOfDays, remainingTicks);
         });
         
-        breedableEntities.forEach(breedableEntity -> breedableEntity.incrementSexualAppetite(10));
+        breedableEntities.forEach(breedableEntity -> breedableEntity.incrementSexualAppetite(4));
     }
 }

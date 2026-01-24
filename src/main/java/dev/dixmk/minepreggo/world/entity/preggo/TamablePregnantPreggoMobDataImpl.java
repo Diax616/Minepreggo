@@ -241,7 +241,7 @@ public class TamablePregnantPreggoMobDataImpl<E extends PreggoMob & ITamablePreg
 	}
 
 	@Override
-	public void setCurrentPregnancyStage(PregnancyPhase stage) {
+	public void setCurrentPregnancyPhase(PregnancyPhase stage) {
 		// Not needed here, each class has a fixed current pregnancy stage 
 	}
 
@@ -371,7 +371,7 @@ public class TamablePregnantPreggoMobDataImpl<E extends PreggoMob & ITamablePreg
 	}
 	
 	@Override
-	public PregnancyPhase getCurrentPregnancyStage() {
+	public PregnancyPhase getCurrentPregnancyPhase() {
 		return this.currentPregnancyPhase;
 	}
 

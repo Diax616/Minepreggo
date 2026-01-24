@@ -75,6 +75,13 @@ public class IllHumanoidCreeperGirl extends AbstractMonsterHumanoidCreeperGirl i
 	}
 	
 	@Override
+	public void onFinalizeSpawnWithOwner() {
+		if (this.random.nextFloat() < 0.15F) {
+			this.setPower(true);
+		}
+	}
+	
+	@Override
 	public void die(DamageSource source) {
 		super.die(source);
 		if (this.getOwner() instanceof ScientificIllager owner && owner.isAlive() && !this.level().isClientSide) {

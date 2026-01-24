@@ -72,7 +72,7 @@ public class CustomPregnantBodyLayer extends AbstractPregnantBodyLayer {
     	        final VertexConsumer playerVertexConsumer = buffer.getBuffer(RenderType.entityCutoutNoCull(player.getSkinTextureLocation()));       
     	       
     	        if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
-        	        final var pregnancyPhase = femaleData.getPregnancyData().getCurrentPregnancyStage();	        
+        	        final var pregnancyPhase = femaleData.getPregnancyData().getCurrentPregnancyPhase();	        
   	      	
         	        Consumer<AbstractPregnantBodyModel> renderBellyAndBoobs = model -> {
         	        	model.setupAnim(player, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);

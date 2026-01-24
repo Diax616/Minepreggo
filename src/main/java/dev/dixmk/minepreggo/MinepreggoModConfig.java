@@ -67,6 +67,8 @@ public class MinepreggoModConfig {
     private static float babyCreeperGirlProbability;
     private static float babyZombieGirlProbability;
 
+    private static boolean enableBellyColisions;
+    
     private static boolean enablePreggoMobsMoans;  
     private static boolean enablePlayerMoans;
     private static boolean enableBellySounds;
@@ -239,6 +241,10 @@ public class MinepreggoModConfig {
     	return babyZombieGirlProbability;
     }
     
+    public static boolean isBellyColisionsEnable() {
+		return enableBellyColisions;
+	}
+    
     public static boolean isPlayerMoansEnable() {
     	return enablePlayerMoans;
     }
@@ -265,7 +271,7 @@ public class MinepreggoModConfig {
     
 
     @SubscribeEvent
-    static void onLoad(final ModConfigEvent.Loading event) {  		  	
+    static void onLoad(ModConfigEvent.Loading event) {  		  	
     	if (event.getConfig().getSpec() == CLIENT_SPEC) {
         	enablePlayerMoans = CLIENT.enablePlayerMoans.get();
         	enablePreggoMobsMoans = CLIENT.enablePreggoMobsMoans.get();
@@ -285,6 +291,7 @@ public class MinepreggoModConfig {
         	totalTicksOfMilkingP2 = SERVER.totalTicksOfMilking.get();
         	totalTicksOfBellyRubsP3 = SERVER.totalTicksOfBellyRubs.get();
         	totalTicksOfHornyP4 = SERVER.totalTicksOfHorny.get();
+        	enableBellyColisions = SERVER.enableBellyColisions.get();
         	
         	calculateHungryValues();
         	calculateCravingValues();
@@ -295,45 +302,47 @@ public class MinepreggoModConfig {
     }
   
     static class Client {
-        final ForgeConfigSpec.BooleanValue enablePlayerMoans;
-        final ForgeConfigSpec.BooleanValue enablePreggoMobsMoans;
-        final ForgeConfigSpec.BooleanValue enableBellySounds;
-
-        Client(ForgeConfigSpec.Builder builder) {
+    	private final ForgeConfigSpec.BooleanValue enablePlayerMoans;
+    	private final ForgeConfigSpec.BooleanValue enablePreggoMobsMoans;
+    	private final ForgeConfigSpec.BooleanValue enableBellySounds;
+	
+    	private Client(ForgeConfigSpec.Builder builder) {
             builder.push("Client");
 
             enablePlayerMoans = builder
                     .comment("Enable or disable player moans. (NOT WORKING)")
-                    .define("enablePlayerMoans", true);
+                    .define("enablePlayerMoans", false);
 
             enablePreggoMobsMoans = builder
                     .comment("Enable or disable pregnant mobs moans. (NOT WORKING)")
-                    .define("enablePreggoMobsMoans", true);
+                    .define("enablePreggoMobsMoans", false);
 
             enableBellySounds = builder
                     .comment("Enable or disable belly sounds. (NOT WORKING)")
-                    .define("enableBellySounds", true);
+                    .define("enableBellySounds", false);
             
             builder.pop();
         }
     }
         
     static class Server {
-        final ForgeConfigSpec.DoubleValue babyCreeperGirlProbability;   
-        final ForgeConfigSpec.DoubleValue babyZombieGirlProbability;
+        private final ForgeConfigSpec.DoubleValue babyCreeperGirlProbability;   
+        private final ForgeConfigSpec.DoubleValue babyZombieGirlProbability;
  
-        final ForgeConfigSpec.IntValue totalPregnancyDays;
-        final ForgeConfigSpec.IntValue ticksToStartPregnancy;
-        final ForgeConfigSpec.IntValue totalTickByPregnancyDays;
-        final ForgeConfigSpec.IntValue totalTicksOfHungry;
-        final ForgeConfigSpec.IntValue totalTicksOfCraving;
-        final ForgeConfigSpec.IntValue totalTicksOfMilking;
-        final ForgeConfigSpec.IntValue totalTicksOfBellyRubs;
-        final ForgeConfigSpec.IntValue totalTicksOfHorny;
-        final ForgeConfigSpec.IntValue totalTicksOfMaternityLactation;
-        final ForgeConfigSpec.IntValue totalTicksOfPostPregnancyPhase;
+        private final ForgeConfigSpec.IntValue totalPregnancyDays;
+        private final ForgeConfigSpec.IntValue ticksToStartPregnancy;
+        private final ForgeConfigSpec.IntValue totalTickByPregnancyDays;
+        private final ForgeConfigSpec.IntValue totalTicksOfHungry;
+        private final ForgeConfigSpec.IntValue totalTicksOfCraving;
+        private final ForgeConfigSpec.IntValue totalTicksOfMilking;
+        private final ForgeConfigSpec.IntValue totalTicksOfBellyRubs;
+        private final ForgeConfigSpec.IntValue totalTicksOfHorny;
+        private final ForgeConfigSpec.IntValue totalTicksOfMaternityLactation;
+        private final ForgeConfigSpec.IntValue totalTicksOfPostPregnancyPhase;
         
-        Server(ForgeConfigSpec.Builder builder) {
+        private final ForgeConfigSpec.BooleanValue enableBellyColisions;
+        
+        private Server(ForgeConfigSpec.Builder builder) {
             builder.push("Server");
             
             babyCreeperGirlProbability = builder
@@ -383,6 +392,10 @@ public class MinepreggoModConfig {
             totalTicksOfHorny = builder
                     .comment("total ticks of horny for pregnant entities.")
                     .defineInRange("totalTicksOfHorny", 6000, 100, 24000);
+            
+            enableBellyColisions = builder
+            		.comment("Enable or disable belly collisions with blocks and entities. (EXPERIMENTAL)")
+					.define("enableBellyColisions", false);
             
             builder.pop();
         }

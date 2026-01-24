@@ -80,7 +80,7 @@ public abstract class AbstractPreggoMobInventaryMenu
 					
 					if (mob instanceof ITamablePregnantPreggoMob tamablePregnantPreggoMob) {
 						final var pregnancyData = tamablePregnantPreggoMob.getPregnancyData();
-						final var pregnancyPhase = pregnancyData.getCurrentPregnancyStage();					
+						final var pregnancyPhase = pregnancyData.getCurrentPregnancyPhase();					
 						if (!PregnancySystemHelper.canUseChestplate(armor, pregnancyPhase, false)) {
 							MessageHelper.warnFittedArmor((Player) mob.getOwner(), mob, pregnancyPhase);
 			                flag = false;
@@ -113,7 +113,7 @@ public abstract class AbstractPreggoMobInventaryMenu
 					
 					if (mob instanceof ITamablePregnantPreggoMob tamablePregnantPreggoMob) {
 						final var pregnancyData = tamablePregnantPreggoMob.getPregnancyData();
-						final var pregnancyPhase = pregnancyData.getCurrentPregnancyStage();					
+						final var pregnancyPhase = pregnancyData.getCurrentPregnancyPhase();					
 						if (!PregnancySystemHelper.canUseLegging(armor, pregnancyPhase)) {
 							MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) mob.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.armor.message.leggings_does_not_fit", mob.getSimpleName()));
 			                return false;

@@ -2,10 +2,13 @@ package dev.dixmk.minepreggo.world.entity.preggo.creeper;
 
 import javax.annotation.Nonnull;
 
+import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.client.animation.player.BellyAnimationManager;
 import dev.dixmk.minepreggo.client.animation.preggo.BellyAnimation;
 import dev.dixmk.minepreggo.init.MinepreggoModDamageSources;
 import dev.dixmk.minepreggo.init.MinepreggoModSounds;
+import dev.dixmk.minepreggo.world.entity.BellyPartFactory;
+import dev.dixmk.minepreggo.world.entity.BellyPartManager;
 import dev.dixmk.minepreggo.world.entity.ai.goal.PreggoMobAIHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.IPreggoMobPregnancySystem;
@@ -136,7 +139,13 @@ public abstract class AbstractTamablePregnantCreeperGirl extends AbstractTamable
 		super.tick();	
 		if (this.level().isClientSide && !this.bellyAnimationState.isStarted()) {
 			this.bellyAnimationState.start(this.tickCount);
-		}		
+		}	
+		
+		if (!this.level().isClientSide
+				&& MinepreggoModConfig.isBellyColisionsEnable()
+				&& pregnancyData.getCurrentPregnancyPhase().compareTo(PregnancyPhase.P5) >= 0) {
+			BellyPartManager.getInstance().onServerTick(this, () -> BellyPartFactory.createHumanoidBellyPart(this, pregnancyData.getCurrentPregnancyPhase()));
+		}
 	}
 	
 	@Override
@@ -155,7 +164,6 @@ public abstract class AbstractTamablePregnantCreeperGirl extends AbstractTamable
 		}
 	}
 	
-	
 	@Override
 	public boolean doHurtTarget(Entity target) {		
 		boolean result = super.doHurtTarget(target);	
@@ -163,6 +171,15 @@ public abstract class AbstractTamablePregnantCreeperGirl extends AbstractTamable
 			this.setTarget(null);		
 		}
 		return result;
+	}
+	
+	@Override
+	public boolean causeFallDamage(float pFallDistance, float pMultiplier, DamageSource pSource) {
+		PregnancyPhase currentPregnancyPhase = this.pregnancyData.getCurrentPregnancyPhase();
+		if (currentPregnancyPhase.compareTo(PregnancyPhase.P3) >= 0) {
+			return super.causeFallDamage(pFallDistance, pMultiplier * PregnancySystemHelper.calculateExtraFallDamageMultiplier(currentPregnancyPhase), pSource);
+		}
+		return super.causeFallDamage(pFallDistance, pMultiplier, pSource);
 	}
 }
 

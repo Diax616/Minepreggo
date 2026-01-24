@@ -33,7 +33,7 @@ public abstract class PreggoMobPregnancySystemP0
 			var leggings = pregnantEntity.getItemBySlot(EquipmentSlot.LEGS);
 			var phases = PregnancyPhase.values();
 			var pregnancyData = pregnantEntity.getPregnancyData();
-			var current = pregnancyData.getCurrentPregnancyStage();
+			var current = pregnancyData.getCurrentPregnancyPhase();
 			var next = phases[Math.min(current.ordinal() + 1, phases.length - 1)];
 			
 			
@@ -50,7 +50,7 @@ public abstract class PreggoMobPregnancySystemP0
 			advanceToNextPregnancyPhase();
 			
 			pregnantEntity.discard();
-			MinepreggoMod.LOGGER.debug("Pregnancy phase advanced from {} for entity {}", pregnancyData.getCurrentPregnancyStage(), pregnantEntity.getSimpleName());
+			MinepreggoMod.LOGGER.debug("Pregnancy phase advanced from {} for entity {}", pregnancyData.getCurrentPregnancyPhase(), pregnantEntity.getSimpleName());
 			return;
 		}
 		

@@ -72,7 +72,7 @@ public record RequestSexCinematicP2MC2SPacket(int mobId) {
 					if (!(preggoMob instanceof ITamablePregnantPreggoMob)) {
 						PreggoMobHelper.initPregnancyBySex(preggoMob, source);
 					}	
-					else if (preggoMob instanceof ITamablePregnantPreggoMob pregnancyHandler && pregnancyHandler.getPregnancyData().getCurrentPregnancyStage().compareTo(PregnancyPhase.P4) >= 0) {
+					else if (preggoMob instanceof ITamablePregnantPreggoMob pregnancyHandler && pregnancyHandler.getPregnancyData().getCurrentPregnancyPhase().compareTo(PregnancyPhase.P4) >= 0) {
 						var pregnancyData =	pregnancyHandler.getPregnancyData();
 						pregnancyData.getSyncedPregnancySymptoms().removePregnancySymptom(PregnancySymptom.HORNY);
 						pregnancyData.setHorny(0);		

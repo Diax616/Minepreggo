@@ -55,8 +55,8 @@ public class BabyDuplication extends MobEffect {
         	var newPhase = apply(pregnancyData, getExtraBabiesByAmplifier(amplifier, random), random);
         	PregnancySystemHelper.playSoundNearTo(target, MinepreggoModSounds.getRandomStomachGrowls(target.getRandom()));         	
 
-        	if (newPhase != pregnancyData.getCurrentPregnancyStage()) {    		
-        		MinepreggoMod.LOGGER.debug("BabyDuplication Effect: Entity {} advanced from phase {} to {}", target.getDisplayName().getString(), pregnancyData.getCurrentPregnancyStage(), newPhase);
+        	if (newPhase != pregnancyData.getCurrentPregnancyPhase()) {    		
+        		MinepreggoMod.LOGGER.debug("BabyDuplication Effect: Entity {} advanced from phase {} to {}", target.getDisplayName().getString(), pregnancyData.getCurrentPregnancyPhase(), newPhase);
         		
         		if (target instanceof AbstractTamablePregnantZombieGirl zombieGirl && target.level() instanceof ServerLevel serverLevel) {
         			var nextPhase = AbstractTamablePregnantZombieGirl.getEntityType(newPhase);   			
@@ -78,7 +78,7 @@ public class BabyDuplication extends MobEffect {
                     if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
                     	var pregnancySystem = femaleData.getPregnancyData();
                     	var random = player.getRandom();
-                    	var oldPhase = pregnancySystem.getCurrentPregnancyStage(); 	
+                    	var oldPhase = pregnancySystem.getCurrentPregnancyPhase(); 	
                     	var newPhase = apply(pregnancySystem, getExtraBabiesByAmplifier(amplifier, random), random);
                     	PregnancySystemHelper.playSoundNearTo(target, MinepreggoModSounds.getRandomStomachGrowls(target.getRandom()));
         	
@@ -113,7 +113,7 @@ public class BabyDuplication extends MobEffect {
         }       
         
         MapPregnancyPhase currentMap = handler.getMapPregnancyPhase();
-        PregnancyPhase oldCurrentPhase = handler.getCurrentPregnancyStage();
+        PregnancyPhase oldCurrentPhase = handler.getCurrentPregnancyPhase();
         
         int oldDaysPassed = handler.getDaysPassed();
         var originalMap = currentMap.getOriginalMap();
@@ -166,12 +166,12 @@ public class BabyDuplication extends MobEffect {
             }
         }
         if (newCurrentPhase != null) {
-            handler.setCurrentPregnancyStage(newCurrentPhase);
+            handler.setCurrentPregnancyPhase(newCurrentPhase);
             handler.setDaysPassed(newDaysPassed);
             temp = newCurrentPhase;
         } else {
             // If not found, set to last phase and max days
-            handler.setCurrentPregnancyStage(newLastPregnancyPhase);    
+            handler.setCurrentPregnancyPhase(newLastPregnancyPhase);    
             handler.setDaysPassed(newMap.getDaysByPregnancyPhase(newLastPregnancyPhase));
             temp = newLastPregnancyPhase;
         }
@@ -188,7 +188,7 @@ public class BabyDuplication extends MobEffect {
             int totalConsumed = distributeOverloadDaysProportionally(handler, newMap, oldCurrentPhase, numOfTargetBabies);
 
             PregnancyPhase finalPhase = calculateCurrentPhaseAfterOverload(handler, newMap, totalDaysElapsed + totalConsumed);
-            handler.setCurrentPregnancyStage(finalPhase);
+            handler.setCurrentPregnancyPhase(finalPhase);
             
             MinepreggoMod.LOGGER.debug("After overload advancement: moved to phase {} (total consumed: {} days)", finalPhase, totalConsumed);
             

@@ -7,9 +7,9 @@
    "mixins": [
 	 "MilkBucketItemMixin",
 	 "PlayerMixin",
-	 "LivingEntityMixin",
 	 "ServerPlayerMixin",
-	 "VillagerMixin"
+	 "VillagerMixin",
+	 "EntityMixin"
    ],
    "client": [
 	 "LivingEntityClientMixin",

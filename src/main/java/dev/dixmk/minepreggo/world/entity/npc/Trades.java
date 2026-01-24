@@ -88,11 +88,11 @@ public class Trades {
 					{ new PotionsForEmeralds(PotionItemFactory.createSplashPotion(Potions.STRONG_HEALING), 17, 1, 20, 17),
 						new PotionsForEmeralds(PotionItemFactory.createSplashPotion(Potions.HEALING), 16, 1, 20, 17)},
 					3, new VillagerTrades.ItemListing[]
-					{ new PotionsForEmeralds(PotionItemFactory.createSplashPotion(MinepreggoModPotions.FERTILITY.get()), 10, 1, 20, 20)},
+					{ new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.ZERO_GRAVITY_BELLY.get()), 15, 1, 20, 15)},
 					4, new VillagerTrades.ItemListing[]
-					{ new PotionsForEmeralds(PotionItemFactory.createSplashPotion(MinepreggoModPotions.PREGNANCY_HEALING.get()), 35, 1, 20, 20)},
+					{ new PotionsForEmeralds(PotionItemFactory.createSplashPotion(MinepreggoModPotions.PREGNANCY_HEALING.get()), 20, 1, 20, 20)},
 					5, new VillagerTrades.ItemListing[]
-					{ new PotionsForEmeralds(PotionItemFactory.createSplashPotion(MinepreggoModPotions.PREGNANCY_RESISTANCE.get()), 40, 1, 20, 25)}))); 
+					{ new PotionsForEmeralds(PotionItemFactory.createSplashPotion(MinepreggoModPotions.PREGNANCY_RESISTANCE.get()), 25, 1, 20, 25)}))); 
 		});
 		
 		@CheckForNull
@@ -135,6 +135,7 @@ public class Trades {
 						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.ZOMBIE_IMPREGNATION_0.get()), 15, 1, 10, 0),
 						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.PREGNANCY_RESISTANCE.get()), 27, 1, 10, 0),
 						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.PREGNANCY_HEALING.get()), 27, 1, 10, 0),
+						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.ZERO_GRAVITY_BELLY.get()), 20, 1, 10, 0),
 						new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.VILLAGER_BRAIN.get(), 12, 24, 10, 0),
 						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_HUMAN_FETUS.get(), 2, 30, 10),
 						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_ZOMBIE_FETUS.get(), 3, 30, 10),
@@ -155,6 +156,7 @@ public class Trades {
 						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.CREEPER_IMPREGNATION_1.get()), 35, 1, 10, 0),
 						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.PREGNANCY_ACCELERATION_1.get()), 27, 1, 10, 0),
 						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.PREGNANCY_HEALING.get()), 27, 1, 10, 0),
+						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.ZERO_GRAVITY_BELLY.get()), 20, 1, 10, 0),
 						new EnchantBookForBaby(Species.HUMAN),
 						new EnchantBookForBaby(Species.CREEPER),
 						new EnchantBookForBaby(Species.ZOMBIE),
@@ -178,6 +180,7 @@ public class Trades {
 						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.IMPREGNATION_POTION_2.get()), 36, 1, 15, 0),
 						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.PREGNANCY_ACCELERATION_3.get()), 27, 1, 20, 0),
 						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.PREGNANCY_RESISTANCE.get()), 27, 1, 25, 0),
+						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.ZERO_GRAVITY_BELLY.get()), 20, 1, 10, 0),
 						new EnchantBookForBaby(Species.HUMAN),
 						new EnchantBookForBaby(Species.CREEPER),
 						new EnchantBookForBaby(Species.ZOMBIE),

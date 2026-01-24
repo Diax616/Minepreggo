@@ -1,8 +1,12 @@
 package dev.dixmk.minepreggo.world.effect;
 
+import java.util.Optional;
+import java.util.OptionalInt;
+
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.world.entity.player.PlayerPregnancySystemP1;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 
 public class PregnancyP1 extends AbstractPlayerPregnancy<PlayerPregnancySystemP1> {
 
@@ -20,5 +24,20 @@ public class PregnancyP1 extends AbstractPlayerPregnancy<PlayerPregnancySystemP1
             pregnancySystem = new PlayerPregnancySystemP1(serverPlayer);
             pregnancySystemsCache.put(serverPlayer.getUUID(), pregnancySystem);
         }
-    } 
+    }
+
+	@Override
+	Optional<AttributeModifier> getSpeedModifier() {
+		return Optional.empty();
+	}
+
+	@Override
+	Optional<AttributeModifier> getAttackSpeedModifier() {
+		return Optional.empty();
+	}
+
+	@Override
+	OptionalInt getMovementSpeedNerfAmplifier() {
+		return OptionalInt.empty();
+	} 
 }

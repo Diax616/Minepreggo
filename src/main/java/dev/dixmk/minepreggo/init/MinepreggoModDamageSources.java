@@ -14,4 +14,6 @@ public class MinepreggoModDamageSources {
     public static final DeferredRegister<DamageType> REGISTRY = DeferredRegister.create(Registries.DAMAGE_TYPE, MinepreggoMod.MODID);
 
     public static final ResourceKey<DamageType> BELLY_BURST = ResourceKey.create(Registries.DAMAGE_TYPE, MinepreggoHelper.fromThisMod("belly_burst"));
+    public static final ResourceKey<DamageType> PREGNANCY_PAIN = ResourceKey.create(Registries.DAMAGE_TYPE, MinepreggoHelper.fromThisMod("pregnancy_pain"));
+
 }
