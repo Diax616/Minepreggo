@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
-import dev.dixmk.minepreggo.network.packet.SyncPlayerDataS2CPacket;
+import dev.dixmk.minepreggo.network.packet.s2c.SyncPlayerDataS2CPacket;
 import dev.dixmk.minepreggo.world.entity.player.SkinType;
 import dev.dixmk.minepreggo.world.pregnancy.AbstractBreedableEntity;
 import dev.dixmk.minepreggo.world.pregnancy.Gender;
@@ -203,9 +203,8 @@ public class PlayerDataImpl implements IPlayerData {
 		getFemaleData().ifPresent(cap -> {
 			cap.sync(serverPlayer);		
 			
-			if (cap.isPregnant() && cap.isPregnancySystemInitialized()) {
-				cap.getPregnancySystem().sync(serverPlayer);
-				cap.getPregnancyEffects().sync(serverPlayer);
+			if (cap.isPregnant() && cap.isPregnancyDataInitialized()) {
+				cap.getPregnancyData().syncState(serverPlayer);
 			}
 			else if (cap.getPostPregnancyData().isPresent() && cap.getPostPregnancyData().get().getPostPregnancy() == PostPregnancy.PARTUM) {
 				cap.syncLactation(serverPlayer);
@@ -213,4 +212,15 @@ public class PlayerDataImpl implements IPlayerData {
 			
 		});
 	}
+	
+	/**
+     * Resetea todos los datos del capability a su estado base
+     */
+    public void resetToDefault() {
+        skinType = SkinType.CUSTOM;
+        showMainMenu = true;
+        cinematic = false;
+        gender = Gender.UNKNOWN;
+        invalidateGenderData();
+    }
 }

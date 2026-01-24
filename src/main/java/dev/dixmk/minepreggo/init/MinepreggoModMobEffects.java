@@ -40,6 +40,7 @@ import dev.dixmk.minepreggo.world.effect.PregnancyP8;
 import dev.dixmk.minepreggo.world.effect.PregnancyResistance;
 import dev.dixmk.minepreggo.world.effect.VillagerImpregnation;
 import dev.dixmk.minepreggo.world.effect.WaterBreaking;
+import dev.dixmk.minepreggo.world.effect.ZeroGravityBelly;
 import dev.dixmk.minepreggo.world.effect.ZombieImpregnation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraftforge.registries.DeferredRegister;
@@ -98,4 +99,6 @@ public class MinepreggoModMobEffects {
 	public static final RegistryObject<MobEffect> MISCARRIAGE = REGISTRY.register("miscarriage", Miscarriage::new);
 	public static final RegistryObject<MobEffect> MORNING_SICKNESS = REGISTRY.register("morning_sickness", MorningSickness::new);
 	public static final RegistryObject<MobEffect> PREBIRTH = REGISTRY.register("prebirth", PreBirth::new);
+
+	public static final RegistryObject<MobEffect> ZERO_GRAVITY_BELLY = REGISTRY.register("zero_gravity_belly", ZeroGravityBelly::new);
 }

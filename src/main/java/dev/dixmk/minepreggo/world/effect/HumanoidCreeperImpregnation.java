@@ -44,7 +44,7 @@ public class HumanoidCreeperImpregnation extends Impregnantion {
 				var nextStage = MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
 				initPregnancy(creeperGirl, nextStage, amplifier);
 			}		
-			else if (entity instanceof TamableHumanoidCreeperGirl creeperGirl && creeperGirl.getPostPregnancyData().isEmpty()) {
+			else if (entity instanceof TamableHumanoidCreeperGirl creeperGirl && creeperGirl.getGenderedData().getPostPregnancyData().isEmpty()) {
 				var nextStage = MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
 				initPregnancyInTamable(creeperGirl, nextStage, amplifier);
 			}

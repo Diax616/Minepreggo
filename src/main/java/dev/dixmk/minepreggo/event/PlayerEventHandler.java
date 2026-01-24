@@ -1,9 +1,12 @@
 package dev.dixmk.minepreggo.event;
 
+import java.util.Optional;
+
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
+import dev.dixmk.minepreggo.init.MinepreggoModDamageSources;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.init.MinepreggoModSounds;
@@ -11,12 +14,14 @@ import dev.dixmk.minepreggo.network.capability.FemalePlayerImpl;
 import dev.dixmk.minepreggo.network.capability.IMalePlayer;
 import dev.dixmk.minepreggo.network.capability.MalePlayerImpl;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
-import dev.dixmk.minepreggo.network.packet.SyncFemalePlayerDataS2CPacket;
-import dev.dixmk.minepreggo.network.packet.SyncMobEffectPacket;
-import dev.dixmk.minepreggo.network.packet.SyncPlayerDataS2CPacket;
-import dev.dixmk.minepreggo.network.packet.SyncPregnancySystemS2CPacket;
+import dev.dixmk.minepreggo.network.packet.s2c.SyncFemalePlayerDataS2CPacket;
+import dev.dixmk.minepreggo.network.packet.s2c.SyncMobEffectS2CPacket;
+import dev.dixmk.minepreggo.network.packet.s2c.SyncPlayerDataS2CPacket;
+import dev.dixmk.minepreggo.network.packet.s2c.SyncPregnancySystemS2CPacket;
 import dev.dixmk.minepreggo.server.ServerCinematicManager;
 import dev.dixmk.minepreggo.server.ServerPlayerAnimationManager;
+import dev.dixmk.minepreggo.world.entity.BellyPartFactory;
+import dev.dixmk.minepreggo.world.entity.BellyPartManager;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.inventory.preggo.PlayerJoinsWorldMenu;
@@ -31,6 +36,7 @@ import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Position;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -59,10 +65,12 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level.ExplosionInteraction;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
+import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.ItemPickupEvent;
@@ -78,20 +86,33 @@ public class PlayerEventHandler {
 
 	private PlayerEventHandler() {}
 	
-	// SYCN CAPABILITIES ON PLAYER LOGIN/RESPAWN/DIMENSION CHANGE START
 	@SubscribeEvent
 	public static void onPlayerLoggedInSync(PlayerEvent.PlayerLoggedInEvent event) {
-		if (event.getEntity() instanceof ServerPlayer serverPlayer && !serverPlayer.level().isClientSide) {	
-			serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(c -> {			
+		if (event.getEntity() instanceof ServerPlayer serverPlayer && !serverPlayer.level().isClientSide) {
+			ServerPlayerAnimationManager.getInstance().stopAnimation(serverPlayer);
+			serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(c -> {
 				c.syncAllClientData(serverPlayer);
 				if (c.canShowMainMenu()) {
 					showPlayerMainMenu(serverPlayer);
 				}
-			});		
+			});
 		}
 	}
+
+	// TODO: If player has an animation playing when disconnecting, the animation won't play next time they log in. Capability data does not save the animation state.
+	@SubscribeEvent
+	public static void onPlayerQuit(PlayerEvent.PlayerLoggedOutEvent event) {
+	    if (event.getEntity() instanceof ServerPlayer player) {
+	    	ServerCinematicManager.getInstance().end(player);
+	    	ServerPlayerAnimationManager.getInstance().stopAnimation(player);
+	    	PlayerHelper.removeJigglePhysics(player);
+	    	
+	        if (MinepreggoModConfig.isBellyColisionsEnable()) {
+	        	BellyPartManager.getInstance().remove(event.getEntity());
+	        }
+	    }
+	}
 		
-	 // FIXME: If a player before of logging out was in a cinematic or animation, after logging back in, the cinematic does not end properly or the animation does not play again.
 	@SubscribeEvent
 	public static void onPlayerJoinWorld(EntityJoinLevelEvent event) {	
 		if (event.getEntity() instanceof ServerPlayer serverPlayer && !serverPlayer.level().isClientSide) {	
@@ -107,6 +128,15 @@ public class PlayerEventHandler {
 	@SubscribeEvent
 	public static void onPlayerRespawnedSync(PlayerEvent.PlayerRespawnEvent event) {
 		if (event.getEntity() instanceof ServerPlayer serverPlayer && !serverPlayer.level().isClientSide) {	
+				
+	        if (!serverPlayer.isAlive() || serverPlayer.getHealth() <= 0) {
+	            serverPlayer.setHealth(serverPlayer.getMaxHealth());
+	        }
+					
+	        if (MinepreggoModConfig.isBellyColisionsEnable()) {
+	        	BellyPartManager.getInstance().remove(event.getEntity());
+	        }
+
 			serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> {
 				cap.syncAllClientData(serverPlayer);			
 				if (cap.canShowMainMenu()) {
@@ -121,8 +151,8 @@ public class PlayerEventHandler {
 				
 				MinepreggoMod.LOGGER.debug("Player {} returned from The End conquest, re-applying pregnancy effects", serverPlayer.getName().getString());			
 				cap.getFemaleData().ifPresent(femaleData -> {
-					if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {
-						var phase = femaleData.getPregnancySystem().getCurrentPregnancyStage();
+					if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
+						var phase = femaleData.getPregnancyData().getCurrentPregnancyPhase();
 						var effect = PlayerHelper.getPregnancyEffects(phase);
 						if (!serverPlayer.hasEffect(effect)) {
 							serverPlayer.addEffect(new MobEffectInstance(effect, -1, 0, false, false, true));
@@ -147,28 +177,33 @@ public class PlayerEventHandler {
 	}
 	
 	@SubscribeEvent
-	public static void clonePlayer(PlayerEvent.Clone event) {
+	public static void clonePlayer(PlayerEvent.Clone event) {	
         final var originalPlayer = event.getOriginal();
-        originalPlayer.revive();
- 
+
+        if (!event.isWasDeath()) {
+            originalPlayer.revive();
+        }
+
         final var newPlayer = event.getEntity();
         
         var origialPlayerData = originalPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).resolve();
         var newPlayerData = newPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).resolve();
         
-        if (origialPlayerData.isEmpty() || newPlayerData.isEmpty()) return;    
-        
+        if (origialPlayerData.isEmpty() || newPlayerData.isEmpty()) return;
+
+        if (event.isWasDeath()) {
+            newPlayerData.get().resetToDefault();
+        } else {
+            newPlayerData.get().deserializeNBT(origialPlayerData.get().serializeNBT());
+        }
+
         if (newPlayer instanceof ServerPlayer serverPlayer && !serverPlayer.level().isClientSide) {
-        	newPlayerData.ifPresent(c -> {
-				c.syncAllClientData(serverPlayer);			
-				if (c.canShowMainMenu()) {
-					showPlayerMainMenu(serverPlayer);
-				}
-        	});
-        	
-            if (!event.isWasDeath()) {    	
-            	newPlayerData.get().deserializeNBT(origialPlayerData.get().serializeNBT());
-            } 
+            newPlayerData.ifPresent(c -> {
+                c.syncAllClientData(serverPlayer);
+                if (c.canShowMainMenu()) {
+                    showPlayerMainMenu(serverPlayer);
+                }
+            });
         }     
 	}
 	
@@ -186,7 +221,7 @@ public class PlayerEventHandler {
 			                new SyncFemalePlayerDataS2CPacket(trackedPlayer.getUUID(), femaleData.createClientData()));
               
 			        MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> trackerPlayer),
-			        		new SyncPregnancySystemS2CPacket(trackedPlayer.getUUID(), femaleData.getPregnancySystem().createClientData()));
+			        		new SyncPregnancySystemS2CPacket(trackedPlayer.getUUID(), femaleData.getPregnancyData().createPlayerStateData()));
 	            });
 	            
 	            // Sync active pregnancy effects
@@ -196,7 +231,7 @@ public class PlayerEventHandler {
 	            
 	            effects.forEach(effect -> 
 	            	MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> trackerPlayer),
-	            			new SyncMobEffectPacket(trackedPlayer.getId(), effect))
+	            			new SyncMobEffectS2CPacket(trackedPlayer.getId(), effect))
 	            );
 	            
 	            // Sync expired/removed pregnancy effects to ensure proper state synchronization
@@ -204,7 +239,7 @@ public class PlayerEventHandler {
 	    	});
 	    }
 	}	
-	// SYCN CAPABILITIES ON PLAYER LOGIN/RESPAWN/DIMENSION CHANGE END
+
 	
 	// PREGNANCY EFFECTS IN PLAYER HANDLING START
 	@SubscribeEvent
@@ -217,14 +252,14 @@ public class PlayerEventHandler {
 		
 		serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
 			cap.getFemaleData().ifPresent(femaleData -> {			
-				if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {
-					var phase = femaleData.getPregnancySystem().getCurrentPregnancyStage();			
+				if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
+					var pregnancyData = femaleData.getPregnancyData();
+					var phase = pregnancyData.getCurrentPregnancyPhase();			
 					if (phase.compareTo(PregnancyPhase.P3) >= 0) {	
-						var effects = femaleData.getPregnancyEffects();
-						effects.incrementNumOfJumps();			
-						if (effects.getNumOfJumps() >= PlayerHelper.maxJumps(phase)) {
-							serverPlayer.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 260, 0, true, true, true));
-							effects.resetNumOfJumps();
+						pregnancyData.incrementNumOfJumps();			
+						if (pregnancyData.getNumOfJumps() >= PlayerHelper.maxJumps(phase)) {
+							serverPlayer.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 260, 0, false, true, true));
+							pregnancyData.resetNumOfJumps();
 						}					
 					}
 				}			
@@ -239,8 +274,8 @@ public class PlayerEventHandler {
 		if (event.player.level().isClientSide) {		
 			event.player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap ->
 				cap.getFemaleData().ifPresent(femaleData -> {			
-					if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {
-						var system = femaleData.getPregnancySystem();
+					if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
+						var system = femaleData.getPregnancyData();
 						if (!system.bellyAnimationState.isStarted()) {
 							system.bellyAnimationState.start(event.player.tickCount);
 						}
@@ -251,7 +286,7 @@ public class PlayerEventHandler {
 		}
 		
 		if (!(event.player instanceof ServerPlayer serverPlayer)) return;
-		
+				
 		serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> {			
 			cap.getBreedableData().ifPresent(breedableData -> {
 				if (breedableData.getSexualAppetite() < IBreedable.MAX_SEXUAL_APPETIVE) {				
@@ -298,7 +333,7 @@ public class PlayerEventHandler {
 
 	private static void evalualeFemalePlayerOnTick(ServerPlayer serverPlayer, FemalePlayerImpl femaleData) {
 		if (femaleData.isPregnant()) {	
-			if (!femaleData.isPregnancySystemInitialized()) {						
+			if (!femaleData.isPregnancyDataInitialized()) {						
 				
 				if (femaleData.getPregnancyInitializerTimer() > MinepreggoModConfig.getTicksToStartPregnancy()) {		
 					
@@ -321,7 +356,7 @@ public class PlayerEventHandler {
 							femaleData.incrementDiscomfortCooldown();
 						}	
 						else {
-							if(serverPlayer.getRandom().nextFloat() < 0.005F) {				
+							if(serverPlayer.getRandom().nextFloat() < 0.01F) {				
 								serverPlayer.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 260, 0, false, true, true));			
 							}	
 							femaleData.resetDiscomfortCooldown();
@@ -330,27 +365,31 @@ public class PlayerEventHandler {
 				}
 			}		
 			else {	
-								
-				var phase =	femaleData.getPregnancySystem().getCurrentPregnancyStage();
-				var effetcs = femaleData.getPregnancyEffects();	
+							
+				var pregnancyData = femaleData.getPregnancyData();
+				var phase =	pregnancyData.getCurrentPregnancyPhase();
 
 				if (phase.compareTo(PregnancyPhase.P3) >= 0 && serverPlayer.isSprinting()) {
-					if (effetcs.getSprintingTimer() > PlayerHelper.sprintingTimer(phase)) {
-						effetcs.resetSprintingTimer();
+					if (pregnancyData.getSprintingTimer() > PlayerHelper.sprintingTimer(phase)) {
+						pregnancyData.resetSprintingTimer();
 						serverPlayer.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 260, 0, false, true, true));
 					}
 					else {
-						effetcs.incrementSprintingTimer();
+						pregnancyData.incrementSprintingTimer();
 					}
 				}
 				else if (phase.compareTo(PregnancyPhase.P4) >= 0 && serverPlayer.isShiftKeyDown()) {
-					if (effetcs.getSneakingTimer() > PlayerHelper.sneakingTimer(phase)) {
-						effetcs.resetSneakingTimer();
+					if (pregnancyData.getSneakingTimer() > PlayerHelper.sneakingTimer(phase)) {
+						pregnancyData.resetSneakingTimer();
 						serverPlayer.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 260, 0, false, true, true));
 					}
 					else {
-						effetcs.incrementSneakingTimer();
+						pregnancyData.incrementSneakingTimer();
 					}
+				}
+				
+				if (MinepreggoModConfig.isBellyColisionsEnable() && phase.compareTo(PregnancyPhase.P5) >= 0) {
+					BellyPartManager.getInstance().onServerTick(serverPlayer, () -> BellyPartFactory.createHumanoidBellyPart(serverPlayer, phase));
 				}
 			}	
 		}
@@ -398,7 +437,7 @@ public class PlayerEventHandler {
 						
 						if (post.getPostPartumLactationTimer() > MinepreggoModConfig.getTotalTicksOfMaternityLactation()) {
 							post.resetPostPartumLactationTimer();
-							post.incrementPostPartumLactation(1);
+							post.incrementPostPartumLactation();
 							
 							if (post.getPostPartumLactation() >= PregnancySystemHelper.ACTIVATE_MILKING_SYMPTOM
 									&& !serverPlayer.hasEffect(MinepreggoModMobEffects.LACTATION.get())) {
@@ -421,38 +460,34 @@ public class PlayerEventHandler {
 	@SubscribeEvent
 	public static void onUseItemFinish(LivingEntityUseItemEvent.Finish event) {	
 	
-		if (!(event.getEntity() instanceof ServerPlayer player)) return;		
-		
-		if (player.level().isClientSide) {
-			return;
-		}
+		if (!(event.getEntity() instanceof ServerPlayer player) || player.level().isClientSide) return;		
 			
 		player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 		
 			cap.getFemaleData().ifPresent(femaleData -> {			
 				final var mainHandItem = event.getItem().getItem();
 	
-				if (femaleData.isPregnant() 
-						&& femaleData.isPregnancySystemInitialized() 
-						&& femaleData.getPregnancySystem().getCurrentPregnancyStage().compareTo(PregnancyPhase.P1) >= 0
-						&& femaleData.getPregnancyEffects().isValidCraving(mainHandItem)) {
-			
-					if (!(mainHandItem instanceof ICravingItem itemCraving)) {
-						MinepreggoMod.LOGGER.debug("Item used is not an IItemCraving: {}", mainHandItem);
-						return;
-					}
+				if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
+					var pregnancyData = femaleData.getPregnancyData();
 					
-					int gratification = itemCraving.getSpeciesType() != Species.HUMAN ? (int) (itemCraving.getGratification() * itemCraving.getPenalty()) : itemCraving.getGratification();
-					MinepreggoMod.LOGGER.debug("Player {} satisfied craving with item: {} by {}", player.getName().getString(), mainHandItem, gratification);
-					femaleData.getPregnancyEffects().decrementCraving(gratification);
-					femaleData.getPregnancyEffects().sync(player);
-					
-					if (PregnancyPain.isLaborPain(femaleData.getPregnancySystem().getPregnancyPain())) {
-						/*
-						 * Force re-evaluation of pregnancy symptoms after craving gratification, 
-						 * the currect pregnancy system does not evaluate symptoms if player is in birth, prebirt, waterbreaking, etc,
-						 * so this method ensures that craving symptom is removed when its condition is no longer met.
-						 * */
-						femaleData.evaluatePregnancySymptom(player);
+					if (pregnancyData.getCurrentPregnancyPhase().compareTo(PregnancyPhase.P1) >= 0 && pregnancyData.isValidCraving(mainHandItem)) {
+						if (!(mainHandItem instanceof ICravingItem itemCraving)) {
+							MinepreggoMod.LOGGER.debug("Item used is not an IItemCraving: {}", mainHandItem);
+							return;
+						}
+						
+						int gratification = itemCraving.getSpeciesType() != Species.HUMAN ? (int) (itemCraving.getGratification() * itemCraving.getPenalty()) : itemCraving.getGratification();
+						MinepreggoMod.LOGGER.debug("Player {} satisfied craving with item: {} by {}", player.getName().getString(), mainHandItem, gratification);
+						pregnancyData.decrementCraving(gratification);
+						pregnancyData.syncEffect(player);
+						
+						if (PregnancyPain.isLaborPain(femaleData.getPregnancyData().getPregnancyPain())) {
+							/*
+							 * Force re-evaluation of pregnancy symptoms after craving gratification, 
+							 * the currect pregnancy system does not evaluate symptoms if player is in birth, prebirt, waterbreaking, etc,
+							 * so this method ensures that craving symptom is removed when its condition is no longer met.
+							 * */
+							femaleData.evaluatePregnancySymptom(player);
+						}
 					}
 				}
 			})
@@ -472,9 +507,8 @@ public class PlayerEventHandler {
 			var itemstack = event.getItemStack();
 			if (cap.getGender() == Gender.FEMALE) {
 				cap.getFemaleData().ifPresent(femaleData -> {
-					if (femaleData.isPregnant() 
-							&& femaleData.isPregnancySystemInitialized()) {	
-						var pregnancySystem = femaleData.getPregnancySystem();	
+					if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {	
+						var pregnancySystem = femaleData.getPregnancyData();	
 						var pain = pregnancySystem.getPregnancyPain();
 						if (pain != null && (pain == PregnancyPain.BIRTH || pain == PregnancyPain.MISCARRIAGE)) {
 							event.setCanceled(true);
@@ -482,13 +516,13 @@ public class PlayerEventHandler {
 						}
 						
 						if (itemstack.is(Items.GLASS_BOTTLE) 
-								&& pregnancySystem.getCurrentPregnancyStage().compareTo(PregnancyPhase.P2) >= 0
-								&& femaleData.getPregnancyEffects().getMilking() >= PregnancySystemHelper.MILKING_VALUE) {
+								&& pregnancySystem.getCurrentPregnancyPhase().compareTo(PregnancyPhase.P2) >= 0
+								&& pregnancySystem.getMilking() >= PregnancySystemHelper.MILKING_VALUE) {
 							
 							PlayerHelper.playSoundNearTo(serverPlayer, SoundEvents.COW_MILK, 0.7f);
 							
-							femaleData.getPregnancyEffects().decrementMilking(PregnancySystemHelper.MILKING_VALUE);
-							femaleData.getPregnancyEffects().sync(serverPlayer);
+							pregnancySystem.decrementMilking(PregnancySystemHelper.MILKING_VALUE);
+							pregnancySystem.syncEffect(serverPlayer);
 							
 							itemstack.shrink(1);
 							
@@ -498,9 +532,9 @@ public class PlayerEventHandler {
 				            serverPlayer.getInventory().setChanged();
 												
 							ItemHandlerHelper.giveItemToPlayer(serverPlayer, new ItemStack(MinepreggoModItems.HUMAN_BREAST_MILK_BOTTLE.get()));								
-							MinepreggoMod.LOGGER.debug("Player {} milked. Current milking value: {}", serverPlayer.getName().getString(), femaleData.getPregnancyEffects().getMilking());	
+							MinepreggoMod.LOGGER.debug("Player {} milked. Current milking value: {}", serverPlayer.getName().getString(), pregnancySystem.getMilking());	
 						
-							if (PregnancyPain.isLaborPain(femaleData.getPregnancySystem().getPregnancyPain())) {
+							if (PregnancyPain.isLaborPain(femaleData.getPregnancyData().getPregnancyPain())) {
 								/*
 								 * Force re-evaluation of pregnancy symptoms after craving gratification, 
 								 * the currect pregnancy system does not evaluate symptoms if player is in birth, prebirt, waterbreaking, etc,
@@ -516,21 +550,20 @@ public class PlayerEventHandler {
 									&& itemstack.is(Items.GLASS_BOTTLE)
 									&& post.getPostPartumLactation() >= PregnancySystemHelper.MILKING_VALUE) {						
 								PlayerHelper.playSoundNearTo(serverPlayer, SoundEvents.COW_MILK, 0.7f);					
-								femaleData.getPregnancyEffects().decrementMilking(PregnancySystemHelper.MILKING_VALUE);							
 								itemstack.shrink(1);	
 					            if (itemstack.isEmpty()) {
 					            	serverPlayer.setItemInHand(event.getHand(), ItemStack.EMPTY);
 					            }        
 					            serverPlayer.getInventory().setChanged();	
 								ItemHandlerHelper.giveItemToPlayer(serverPlayer, new ItemStack(MinepreggoModItems.HUMAN_BREAST_MILK_BOTTLE.get()));								
-								post.decrementPostPartumlactation(PregnancySystemHelper.MILKING_VALUE);
+								post.decrementPostPartumLactation(PregnancySystemHelper.MILKING_VALUE);
 									
 								if (post.getPostPartumLactation() <= PregnancySystemHelper.DESACTIVATE_MILKING_SYMPTOM) {
 									serverPlayer.removeEffect(MinepreggoModMobEffects.LACTATION.get());
 								}
 										
 								femaleData.syncLactation(serverPlayer);
-								MinepreggoMod.LOGGER.debug("Player {} milked. Current milking value: {}", serverPlayer.getName().getString(), femaleData.getPregnancyEffects().getMilking());								
+								MinepreggoMod.LOGGER.debug("Player {} milked. Current milking value: {}", serverPlayer.getName().getString(), post.getPostPartumLactation());								
 							}
 						});
 					}
@@ -570,11 +603,11 @@ public class PlayerEventHandler {
 			
 		serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
 			cap.getFemaleData().ifPresent(femaleData -> {		
-				if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {
-					var pregnancySystem = femaleData.getPregnancySystem();
+				if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
+					var pregnancySystem = femaleData.getPregnancyData();
 					if (pregnancySystem.getPregnancyPain() != PregnancyPain.MISCARRIAGE) {
 											
-						PregnancySystemHelper.getPregnancyDamage(serverPlayer, pregnancySystem.getCurrentPregnancyStage(), event.getSource()).ifPresent(damage -> {
+						PregnancySystemHelper.calculatePregnancyDamage(serverPlayer, pregnancySystem.getCurrentPregnancyPhase(), event.getSource()).ifPresent(damage -> {
 														
 							pregnancySystem.reducePregnancyHealth(damage);
 							final var health = pregnancySystem.getPregnancyHealth();
@@ -584,7 +617,7 @@ public class PlayerEventHandler {
 								pregnancySystem.resetPregnancyPainTimer();
 								pregnancySystem.setPregnancyPain(PregnancyPain.MISCARRIAGE);
 								serverPlayer.addEffect(new MobEffectInstance(MinepreggoModMobEffects.MISCARRIAGE.get(), PregnancySystemHelper.TOTAL_TICKS_MISCARRIAGE, 0, false, false, true));
-								pregnancySystem.sync(serverPlayer);
+								pregnancySystem.syncState(serverPlayer);
 								MinepreggoMod.LOGGER.debug("Miscarriage just started");										
 							}
 							else if (health < 40 && serverPlayer.getRandom().nextBoolean()) {
@@ -623,38 +656,6 @@ public class PlayerEventHandler {
 		);
 	}
 	
-    @SubscribeEvent
-    public static void onLivingDeath(LivingDeathEvent event) {
-        if (event.getEntity() instanceof ServerPlayer player && !player.level().isClientSide) {
-        	player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap ->
-        		cap.getFemaleData().ifPresent(femaleData -> {
-        			if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {
-                    	ServerPlayerAnimationManager.getInstance().stopAnimation(player);             	
-                    	PlayerHelper.removeJigglePhysics(player);
-                    	
-        				var pregnancySystem = femaleData.getPregnancySystem();
-            			var phase = pregnancySystem.getCurrentPregnancyStage();        			
-            			if (player.level() instanceof ServerLevel serverLevel) {		
-            				double x = player.getX();
-            				double y = player.getY() + player.getBbHeight() / 2F;
-            				double z = player.getZ();		
-            				if (player.hasEffect(MinepreggoModMobEffects.FULL_OF_CREEPERS.get()) && phase.compareTo(PregnancyPhase.P3) >= 0) {
-            					serverLevel.explode(player, x, y, z, PlayerHelper.calculateExplosionLevelByPregnancyPhase(phase), ExplosionInteraction.MOB);
-            				}
-                			if (phase.compareTo(PregnancyPhase.P3) >= 0) {
-                    			float alive = PregnancySystemHelper.getSpawnProbabilityBasedPregnancy(pregnancySystem, 0.6F, 0.3F, 0.15F, 0.8F);
-                    			PlayerHelper.spawnBabiesOrFetuses(serverLevel, x, y, z, alive, pregnancySystem.getWomb(), player.getRandom());
-                			}
-                			else {
-                				PlayerHelper.spawnFetuses(serverLevel, x, y, z, 0.85f, pregnancySystem.getWomb(), player.getRandom());
-                			}
-            			}
-        			}
-        		})
-        	);
-        }
-    }
-	
 	// TODO: It does not completely prevent a pregnant player from using valid armor, Search a solution using Mixin, setItemSlot from LivingEntity does not work, it crashes the game.
     @SubscribeEvent
     public static void onEquipmentChange(LivingEquipmentChangeEvent event) {
@@ -671,10 +672,10 @@ public class PlayerEventHandler {
 	               	var item = newArmor.getItem();
 	                var slot = event.getSlot(); 
 	                     
-        			if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {
+        			if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
         				if (slot == EquipmentSlot.CHEST) {
-        					if (!PregnancySystemHelper.canUseChestplate(item, femaleData.getPregnancySystem().getCurrentPregnancyStage())) {               					
-            					MessageHelper.warnFittedArmor(player, femaleData.getPregnancySystem().getCurrentPregnancyStage());
+        					if (!PregnancySystemHelper.canUseChestplate(item, femaleData.getPregnancyData().getCurrentPregnancyPhase())) {               					
+            					MessageHelper.warnFittedArmor(player, femaleData.getPregnancyData().getCurrentPregnancyPhase());
             					removeArmorAndDamagePregnantPlayer(player, slot, newArmor);
         					}
         					else if (!PlayerHelper.canUseChestPlateInLactation(player, item)) {
@@ -682,7 +683,7 @@ public class PlayerEventHandler {
                        			removeArmorAndDamagePregnantPlayer(player, slot, newArmor);
         					}
         				}
-        				else if (slot == EquipmentSlot.LEGS && !PregnancySystemHelper.canUseLegging(item, femaleData.getPregnancySystem().getCurrentPregnancyStage())) {
+        				else if (slot == EquipmentSlot.LEGS && !PregnancySystemHelper.canUseLegging(item, femaleData.getPregnancyData().getCurrentPregnancyPhase())) {
                    			MessageHelper.sendTo(player, Component.translatable("chat.minepreggo.player.armor.message.leggings_does_not_fit"), true);
                    			removeArmorAndDamagePregnantPlayer(player, slot, newArmor);
         				}
@@ -699,29 +700,82 @@ public class PlayerEventHandler {
 	@SubscribeEvent
 	public static void onRightClickEntity(PlayerInteractEvent.EntityInteract event) {	
 		if (event.getHand() != InteractionHand.MAIN_HAND || event.getLevel().isClientSide) return;
-		
-		if (event.getEntity() instanceof ServerPlayer sourcePlayer
-				&& event.getTarget() instanceof ServerPlayer targetPlayer) {
+
+		if (event.getEntity() instanceof ServerPlayer sourcePlayer) {	
+			Optional<Boolean> isInLabor = sourcePlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).map(cap -> 
+				cap.getFemaleData().map(femaleData -> 
+					femaleData.isPregnant()
+					&& femaleData.isPregnancyDataInitialized() 
+					&& PregnancyPain.isLaborPain(femaleData.getPregnancyData().getPregnancyPain())
+				)
+			).orElse(Optional.empty());
 			
-			if (PregnancySystemHelper.tryRubBelly(sourcePlayer, targetPlayer, event.getLevel())) {
-				MinepreggoMod.LOGGER.debug("Player {} slapped the pregnant belly of player {}", sourcePlayer.getName().getString(), targetPlayer.getName().getString());
+			if (isInLabor.isPresent() && isInLabor.get().booleanValue()) {
+				MessageHelper.sendTo(sourcePlayer, Component.translatable("chat.minepreggo.player.pregnancy.message.cannot_in_labor"), true);
 		        event.setCancellationResult(InteractionResult.SUCCESS);
 		        sourcePlayer.swing(InteractionHand.MAIN_HAND);
 		        event.setCanceled(true);
-			}
-			else if (PregnancySystemHelper.hasEnoughBedsForBreeding(targetPlayer, 1, 12)) {		        		        	
-				if (!PregnancySystemHelper.canFuck(sourcePlayer, targetPlayer)) {
-					return;
+			}				
+			else if (event.getTarget() instanceof ServerPlayer targetPlayer) {
+				if (PregnancySystemHelper.tryRubBelly(sourcePlayer, targetPlayer, event.getLevel())) {
+					MinepreggoMod.LOGGER.debug("Player {} slapped the pregnant belly of player {}", sourcePlayer.getName().getString(), targetPlayer.getName().getString());
+			        event.setCancellationResult(InteractionResult.SUCCESS);
+			        sourcePlayer.swing(InteractionHand.MAIN_HAND);
+			        event.setCanceled(true);
 				}
-				
-				MessageHelper.sendTo(sourcePlayer, Component.translatable("chat.minepreggo.player.sex.request_sent", targetPlayer.getDisplayName().getString()), true);
-				RequestSexP2PMenu.create(targetPlayer, sourcePlayer);
-		        event.setCancellationResult(InteractionResult.SUCCESS);
-		        sourcePlayer.swing(InteractionHand.MAIN_HAND);
-		        event.setCanceled(true);
+				else if (PregnancySystemHelper.hasEnoughBedsForBreeding(targetPlayer, 1, 12) && PregnancySystemHelper.canFuck(sourcePlayer, targetPlayer)) {		        		        				
+					MessageHelper.sendTo(sourcePlayer, Component.translatable("chat.minepreggo.player.sex.request_sent", targetPlayer.getDisplayName().getString()), true);
+					RequestSexP2PMenu.create(targetPlayer, sourcePlayer);
+			        event.setCancellationResult(InteractionResult.SUCCESS);
+			        sourcePlayer.swing(InteractionHand.MAIN_HAND);
+			        event.setCanceled(true);
+				}
 			}
 		}
 	}
+	
+    @SubscribeEvent
+    public static void onLivingDeath(LivingDeathEvent event) {
+    	var entity = event.getEntity();
+    	
+    	if (entity.level().isClientSide) {
+			return;
+		}
+    	
+    	if (entity instanceof ServerPlayer player) {
+        	player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap ->
+        		cap.getFemaleData().ifPresent(femaleData -> {
+        			if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
+                    	ServerPlayerAnimationManager.getInstance().stopAnimation(player);             	
+                    	PlayerHelper.removeJigglePhysics(player);
+                    	boolean explode = false;
+                    	Position deathPos = entity.position();
+                    	
+            			if (player.level() instanceof ServerLevel serverLevel) {	
+                        	if (event.getSource().is(MinepreggoModDamageSources.BELLY_BURST)) {
+                        		PregnancySystemHelper.deathByBellyBurst(entity, serverLevel);
+                        		PlayerHelper.playSoundNearTo(player, MinepreggoModSounds.PREGNANT_PREGGO_MOB_DEATH.get(), 0.8f);
+                        		explode = true;
+                        	}
+
+            				var pregnancySystem = femaleData.getPregnancyData();
+                			var phase = pregnancySystem.getCurrentPregnancyPhase();  		
+            				if (player.hasEffect(MinepreggoModMobEffects.FULL_OF_CREEPERS.get()) && phase.compareTo(PregnancyPhase.P3) >= 0 && !explode) {
+            					serverLevel.explode(player, deathPos.x(), deathPos.y(), deathPos.z(), PlayerHelper.calculateExplosionLevelByPregnancyPhase(phase), ExplosionInteraction.MOB);
+            				}
+                			if (phase.compareTo(PregnancyPhase.P3) >= 0) {
+                    			float alive = PregnancySystemHelper.getSpawnProbabilityBasedPregnancy(pregnancySystem, 0.6F, 0.3F, 0.1F, 0.3F);
+                    			PregnancySystemHelper.spawnBabiesOrFetuses(serverLevel, deathPos, alive, 0.35f, pregnancySystem.getWomb(), player.getRandom());
+                			}
+                			else {
+                				PregnancySystemHelper.spawnFetuses(serverLevel, deathPos, 0.85f, pregnancySystem.getWomb(), player.getRandom());
+                			}
+            			}
+        			}
+        		})
+        	);
+        }
+    }   
 	
     @SubscribeEvent
     public static void onItemPickup(ItemPickupEvent event) {
@@ -734,13 +788,6 @@ public class PlayerEventHandler {
             PlayerHelper.removeAnyFemalePlayerIdTag(stack);
         }
     }
-
-	@SubscribeEvent
-	public static void onPlayerQuit(PlayerEvent.PlayerLoggedOutEvent event) {
-	    if (event.getEntity() instanceof ServerPlayer player) {
-	    	ServerCinematicManager.getInstance().end(player);
-	    }
-	}
 	
 	private static void showPlayerMainMenu(ServerPlayer serverPlayer) {
 		BlockPos bpos = BlockPos.containing(serverPlayer.getX(), serverPlayer.getY(), serverPlayer.getZ());	
@@ -763,4 +810,47 @@ public class PlayerEventHandler {
         }
         player.hurt(new DamageSource(player.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.GENERIC)), 1);
 	}
+	
+    @SubscribeEvent
+	public static void onMountEntity(EntityMountEvent event) {		
+		// TODO: Pregnant preggomobs are not being handled here, only players.
+		
+		if (!event.getLevel().isClientSide
+				&& event.getEntityBeingMounted() != null
+				&& event.getEntityMounting() instanceof ServerPlayer serverPlayer) {	
+
+			Optional<Boolean> canRiding = serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).map(cap -> 
+				cap.getFemaleData().map(femaleData -> {
+					if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
+						return PregnancySystemHelper.canMountEntity(femaleData.getPregnancyData().getCurrentPregnancyPhase());
+					}
+					return false;
+				})
+			).orElse(Optional.empty());
+			
+			if (canRiding.isPresent() && !canRiding.get().booleanValue()) {
+				var message = serverPlayer.getRandom().nextBoolean() 
+						? Component.translatable("chat.minepreggo.player.pregnancy.message.cannot_ride.message.1") 
+						: Component.translatable("chat.minepreggo.player.pregnancy.message.cannot_ride.message.2");
+				MessageHelper.sendTo(serverPlayer, message, true);
+		        event.setCanceled(true);
+			}
+		}
+	}
+    
+    @SubscribeEvent
+    public static void onFall(LivingFallEvent event) {
+    	if (!(event.getEntity() instanceof ServerPlayer serverPlayer)) return;	
+		
+    	serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap ->
+    		cap.getFemaleData().ifPresent(femaleData -> {
+    			if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
+    				var phase = femaleData.getPregnancyData().getCurrentPregnancyPhase();	
+    				if (phase.compareTo(PregnancyPhase.P3) >= 0) {
+    			        event.setDamageMultiplier(event.getDamageMultiplier() * PregnancySystemHelper.calculateExtraFallDamageMultiplier(phase));
+    				}
+    			}
+    		})
+    	);
+    } 
 }

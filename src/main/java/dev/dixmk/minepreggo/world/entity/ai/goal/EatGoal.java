@@ -40,7 +40,7 @@ public class EatGoal<E extends PreggoMob & ITamablePreggoMob<?>> extends Goal {
         }
         
         float healthPercentage = this.mob.getHealth() / this.mob.getMaxHealth();
-        int fullness = mob.getFullness();
+        int fullness = mob.getTamableData().getFullness();
         
         return (fullness < ITamablePreggoMob.MAX_FULLNESS * 0.5 || 
         		(healthPercentage < this.healThreshold && fullness < ITamablePreggoMob.MAX_FULLNESS * 0.9))
@@ -95,7 +95,7 @@ public class EatGoal<E extends PreggoMob & ITamablePreggoMob<?>> extends Goal {
     			if (foodProperties == null) {
     				return;
     			}         	
-    			mob.incrementFullness(foodProperties.getNutrition());
+    			mob.getTamableData().incrementFullness(foodProperties.getNutrition());
             	this.mob.eat(mob.level(), f);
                 this.mob.playSound(SoundEvents.PLAYER_BURP, 1.0F, 1.0F);
                 

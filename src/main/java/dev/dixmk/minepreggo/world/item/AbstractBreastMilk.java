@@ -46,8 +46,8 @@ public abstract class AbstractBreastMilk extends Item {
 			if (entity instanceof Player player && player.getCapability(MinepreggoCapabilities.PLAYER_DATA).isPresent()) {	
 				player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> {			
 					Optional<List<MobEffect>> result = cap.getFemaleData().map(femaleData -> {
-						if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {
-							return PlayerHelper.removeEffectsByPregnancyPhase(player, femaleData.getPregnancySystem().getCurrentPregnancyStage());
+						if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
+							return PlayerHelper.removeEffectsByPregnancyPhase(player, femaleData.getPregnancyData().getCurrentPregnancyPhase());
 						}
 						return PlayerHelper.removeEffects(player, effect -> !PregnancySystemHelper.isFemaleEffect(effect));
 					});

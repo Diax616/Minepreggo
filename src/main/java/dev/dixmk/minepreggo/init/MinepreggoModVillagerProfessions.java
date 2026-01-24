@@ -61,9 +61,9 @@ public class MinepreggoModVillagerProfessions {
 	}
 
 	private static class ProfessionPoiType {
-		final Supplier<Block> block;
-		Holder<PoiType> poiType;
-
+		private final Supplier<Block> block;
+		private Holder<PoiType> poiType;
+		
 		ProfessionPoiType(Supplier<Block> block, Holder<PoiType> poiType) {
 			this.block = block;
 			this.poiType = poiType;

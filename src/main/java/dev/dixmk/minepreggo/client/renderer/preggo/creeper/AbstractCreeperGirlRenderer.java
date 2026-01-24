@@ -18,7 +18,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 public abstract class AbstractCreeperGirlRenderer
 	<E extends AbstractCreeperGirl, M extends AbstractCreeperGirlModel<E>> extends MobRenderer<E, M>{
 
-	protected static final ResourceLocation CREEPER_GIRL_LOCATION = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/creeper_girl.png");
+	protected static final ResourceLocation CREEPER_GIRL_LOCATION = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/monster/creeper_girl.png");
 
 	protected AbstractCreeperGirlRenderer(EntityRendererProvider.Context context, M main, M armor) {
 		super(context, main, 0.5F);

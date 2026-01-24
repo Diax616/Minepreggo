@@ -21,8 +21,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fml.common.Mod;
 
-
-
 @Mod.EventBusSubscriber(modid = MinepreggoMod.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class MobEffectEventHandler {
 
@@ -48,7 +46,7 @@ public class MobEffectEventHandler {
         	Impregnantion.unmarkForImpregnation(entity);
         }
         
-    	if (entity instanceof ServerPlayer player && MinepreggoHelper.isFromMinepreggo(effect)) {     
+    	if (entity instanceof ServerPlayer player && MinepreggoHelper.isFromThisMod(effect)) {     
     		// Only sync from server side to avoid client-side PacketDistributor usage
             PregnancySystemHelper.syncRemovedMobEffect(player, effect);
     		if (effect == MinepreggoModMobEffects.FERTILE.get()) {           		
@@ -77,7 +75,7 @@ public class MobEffectEventHandler {
 			return;
 		}
         
-        if (entity instanceof ServerPlayer player && MinepreggoHelper.isFromMinepreggo(effect)) {  	
+        if (entity instanceof ServerPlayer player && MinepreggoHelper.isFromThisMod(effect)) {  	
             // Only sync from server side to avoid client-side PacketDistributor usage
             PregnancySystemHelper.syncRemovedMobEffect(player, effect);
         	if (effect == MinepreggoModMobEffects.FERTILE.get()) {
@@ -106,10 +104,9 @@ public class MobEffectEventHandler {
             return;
         }
         
-        if (effect == MinepreggoModMobEffects.ETERNAL_PREGNANCY.get() && !PregnancySystemHelper.canHaveEternalPregnancy(entity)) {
+        if ((effect == MinepreggoModMobEffects.ETERNAL_PREGNANCY.get() || effect == MinepreggoModMobEffects.ZERO_GRAVITY_BELLY.get()) && !PregnancySystemHelper.canHavePregnancyEffects(entity)) {
             event.setResult(Event.Result.DENY);
             entity.hurt(new DamageSource(entity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.MAGIC)), 1);
-            MinepreggoMod.LOGGER.debug("Prevented mob effect {} from being applied to entity {} due to incompatibility", effect.getDescriptionId(), entity.getDisplayName().getString());
         }
     }
 
@@ -129,7 +126,7 @@ public class MobEffectEventHandler {
 			return;
 		}
         
-        if ((entity instanceof ServerPlayer && MinepreggoHelper.isFromMinepreggo(effect)) || (entity instanceof PreggoMob && effect == MobEffects.CONFUSION)) {          
+        if ((entity instanceof ServerPlayer && MinepreggoHelper.isFromThisMod(effect)) || (entity instanceof PreggoMob && effect == MobEffects.CONFUSION)) {          
         	PregnancySystemHelper.syncNewMobEffect(entity, effectInstance);
         	MinepreggoMod.LOGGER.debug("Added mob effect {} to entity {}", effect.getDescriptionId(), entity.getDisplayName().getString());
         }

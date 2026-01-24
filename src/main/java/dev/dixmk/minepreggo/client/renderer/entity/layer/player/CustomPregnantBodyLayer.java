@@ -31,16 +31,16 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class CustomPregnantBodyLayer extends AbstractPregnantBodyLayer {
-	private final CustomBoobsModel boobsModel;
-	private final CustomPregnantBodyP0Model pregnantBodyP0Model;
-	private final CustomPregnantBodyP1Model pregnantBodyP1Model;
-	private final CustomPregnantBodyP2Model pregnantBodyP2Model;
-	private final CustomPregnantBodyP3Model pregnantBodyP3Model;
-	private final CustomPregnantBodyP4Model pregnantBodyP4Model;
-	private final CustomPregnantBodyP5Model pregnantBodyP5Model;
-	private final CustomPregnantBodyP6Model pregnantBodyP6Model;
-	private final CustomPregnantBodyP7Model pregnantBodyP7Model;
-	private final CustomPregnantBodyP8Model pregnantBodyP8Model;
+	public final CustomBoobsModel boobsModel;
+	public final CustomPregnantBodyP0Model pregnantBodyP0Model;
+	public final CustomPregnantBodyP1Model pregnantBodyP1Model;
+	public final CustomPregnantBodyP2Model pregnantBodyP2Model;
+	public final CustomPregnantBodyP3Model pregnantBodyP3Model;
+	public final CustomPregnantBodyP4Model pregnantBodyP4Model;
+	public final CustomPregnantBodyP5Model pregnantBodyP5Model;
+	public final CustomPregnantBodyP6Model pregnantBodyP6Model;
+	public final CustomPregnantBodyP7Model pregnantBodyP7Model;
+	public final CustomPregnantBodyP8Model pregnantBodyP8Model;
 
 	public CustomPregnantBodyLayer(RenderLayerParent<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> parent, EntityModelSet modelSet) {
 		super(parent);
@@ -71,8 +71,8 @@ public class CustomPregnantBodyLayer extends AbstractPregnantBodyLayer {
     	        PlayerModel<AbstractClientPlayer> playerModel = this.getParentModel();       
     	        final VertexConsumer playerVertexConsumer = buffer.getBuffer(RenderType.entityCutoutNoCull(player.getSkinTextureLocation()));       
     	       
-    	        if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {
-        	        final var pregnancyPhase = femaleData.getPregnancySystem().getCurrentPregnancyStage();	        
+    	        if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
+        	        final var pregnancyPhase = femaleData.getPregnancyData().getCurrentPregnancyPhase();	        
   	      	
         	        Consumer<AbstractPregnantBodyModel> renderBellyAndBoobs = model -> {
         	        	model.setupAnim(player, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);

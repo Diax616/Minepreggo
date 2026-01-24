@@ -34,7 +34,10 @@ public interface Ill {
 	void tameByIllager(@NonNull ScientificIllager illagerScientific);
 	
 	void removeIllagerOwner();
-
+	
+	// TODO: Use PlayMessages.SpawnEntity in Ill entities for proper spawning handling
+	default void onFinalizeSpawnWithOwner() {}
+		
 	static <E extends PreggoMob & Ill> void removeBehaviourGoals(@NonNull E ill) {
 		var goals =	ill.goalSelector.getAvailableGoals().stream()
 			.filter(wgoal -> {
@@ -49,8 +52,7 @@ public interface Ill {
 		ill.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(ill, 1.1D, 0.0F));
 		ill.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(ill, Player.class, false, false));
 	}
-	
-	
+		
 	static <E extends PreggoMob & Ill> void addBehaviourGoals(@NonNull E ill) {	
 		ill.goalSelector.addGoal(1, new OwnerHurtByTargetGoal(ill));
 		ill.targetSelector.addGoal(2, new OwnerHurtTargetGoal(ill));
@@ -129,8 +131,7 @@ public interface Ill {
 
 	        super.start();
 	    }
-
-	    
+  
 	    protected void alertOthers() {
 	        double d0 = this.getFollowDistance();
 	        AABB aabb = AABB.unitCubeFromLowerCorner(this.mob.position()).inflate(d0, alertRangeY, d0);

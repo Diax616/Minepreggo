@@ -76,13 +76,13 @@ import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.world.entity.npc.Trades;
+import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.IllHumanoidCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.IllCreeperGirl;
 import dev.dixmk.minepreggo.world.inventory.preggo.PlayerPrenatalCheckUpMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.SelectPregnantEntityForPrenatalCheckUpMenu;
 import dev.dixmk.minepreggo.world.pregnancy.IObstetrician;
-import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.pregnancy.PrenatalCheckupCostHolder;
 import dev.dixmk.minepreggo.world.pregnancy.PrenatalCheckupCostHolder.PrenatalCheckupCost;
 import io.netty.buffer.Unpooled;
@@ -91,11 +91,10 @@ import dev.dixmk.minepreggo.world.entity.preggo.zombie.IllZombieGirl;
 
 public class ScientificIllager extends AbstractIllager implements Merchant, IObstetrician {
     private MerchantOffers offers;
-    private Player tradingPlayer;
-    
+    private Player tradingPlayer; 
     private PrenatalCheckupCostHolder prenatalCheckUpCosts = new PrenatalCheckupCostHolder(3, 10);
-	private Set<UUID> petsUUID = null;
-    
+	private boolean spawnedPets = false;
+    private Set<UUID> petsUUID = null;
     
 	public ScientificIllager(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.SCIENTIFIC_ILLAGER.get(), world);
@@ -223,14 +222,14 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
     	
 		final var blockPos = serverPlayer.blockPosition();
 		final var scientificIllagerId = this.getId();   		
-		final List<Integer> list = serverPlayer.level().getEntitiesOfClass(PreggoMob.class, new AABB(blockPos).inflate(16D), e -> e.isOwnedBy(serverPlayer) && e instanceof IPregnancySystemHandler)
+		final List<Integer> list = serverPlayer.level().getEntitiesOfClass(PreggoMob.class, new AABB(blockPos).inflate(16D), e -> e.isOwnedBy(serverPlayer) && e instanceof ITamablePregnantPreggoMob)
 					.stream()
 					.map(e -> e.getId())
 					.collect(Collectors.toCollection(ArrayList::new));
 		
 		serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 			  		 		 		   		    		
 			cap.getFemaleData().ifPresent(femaleData -> {
-        		if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {
+        		if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
             		list.add(serverPlayer.getId());		
         		}
 			}) 		
@@ -272,6 +271,8 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
 	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);				
 	    MerchantOffers merchantoffers = this.getOffers();
+	    compound.putBoolean("spawnedPets", this.spawnedPets);
+	    
 	    if (!merchantoffers.isEmpty()) {
 	    	compound.put("Offers", merchantoffers.createTag());
 	    }
@@ -292,7 +293,9 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
 	}
 	@Override
 	public void readAdditionalSaveData(CompoundTag compound) {
-		super.readAdditionalSaveData(compound);			
+		super.readAdditionalSaveData(compound);		
+		this.spawnedPets = compound.getBoolean("spawnedPets");
+		
 		if (compound.contains("Offers")) {
 			this.offers = new MerchantOffers(compound.getCompound("Offers"));
 		}
@@ -334,8 +337,9 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
 	}
 
 	private boolean spawnPets() {			
-		if (petsUUID == null && this.level() instanceof ServerLevel serverLevel) {	
-			petsUUID = new HashSet<>(4);			
+		if (!this.spawnedPets && this.level() instanceof ServerLevel serverLevel) {	
+			this.spawnedPets = true;
+			this.petsUUID = new HashSet<>(4);			
 			final var x = this.getX();
 			final var y = this.getY();
 			final var z = this.getZ();
@@ -343,26 +347,26 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
 			IllZombieGirl zombieGirl = MinepreggoModEntities.ILL_ZOMBIE_GIRL.get().spawn(serverLevel, BlockPos.containing(x + 1.25, y, z), MobSpawnType.MOB_SUMMONED);
 			zombieGirl.setYRot(this.random.nextFloat() * 360F);
 			zombieGirl.tameByIllager(this);
-			zombieGirl.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.IRON_HELMET));
-			zombieGirl.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SWORD));
+			serverLevel.addFreshEntity(zombieGirl);
 			petsUUID.add(zombieGirl.getUUID());
 						
-			IllHumanoidCreeperGirl creeperGirl = MinepreggoModEntities.ILL_HUMANOID_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(x - 1.25, y, z), MobSpawnType.MOB_SUMMONED);
+			IllHumanoidCreeperGirl humanoidCreeperGirl = MinepreggoModEntities.ILL_HUMANOID_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(x - 1.25, y, z), MobSpawnType.MOB_SUMMONED);
+			humanoidCreeperGirl.setYRot(this.random.nextFloat() * 360F);
+			humanoidCreeperGirl.tameByIllager(this);	
+			serverLevel.addFreshEntity(humanoidCreeperGirl);
+			petsUUID.add(humanoidCreeperGirl.getUUID());
+			
+			IllCreeperGirl creeperGirl = MinepreggoModEntities.ILL_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(x, y, z + 1.25), MobSpawnType.MOB_SUMMONED);
 			creeperGirl.setYRot(this.random.nextFloat() * 360F);
 			creeperGirl.tameByIllager(this);
+			serverLevel.addFreshEntity(creeperGirl);
 			petsUUID.add(creeperGirl.getUUID());
-			
-			IllCreeperGirl humanoidCreeperGirl = MinepreggoModEntities.ILL_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(x, y, z + 1.25), MobSpawnType.MOB_SUMMONED);
-			humanoidCreeperGirl.setYRot(this.random.nextFloat() * 360F);
-			humanoidCreeperGirl.tameByIllager(this);
-			petsUUID.add(humanoidCreeperGirl.getUUID());
 			
 			IllEnderWoman enderWoman = MinepreggoModEntities.ILL_ENDER_WOMAN.get().spawn(serverLevel, BlockPos.containing(x, y, z - 1.25), MobSpawnType.MOB_SUMMONED);
 			enderWoman.setYRot(this.random.nextFloat() * 360F);
 			enderWoman.tameByIllager(this);
-			enderWoman.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.IRON_HELMET));
-			petsUUID.add(enderWoman.getUUID());
-						
+			serverLevel.addFreshEntity(enderWoman);
+			petsUUID.add(enderWoman.getUUID());					
 			return true;
 		}	
 		return false;

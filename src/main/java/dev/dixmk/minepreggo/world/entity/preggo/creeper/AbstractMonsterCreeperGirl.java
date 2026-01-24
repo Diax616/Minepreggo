@@ -1,6 +1,7 @@
 package dev.dixmk.minepreggo.world.entity.preggo.creeper;
 
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
+import dev.dixmk.minepreggo.world.entity.preggo.IMonsterPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -24,9 +25,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 
-public abstract class AbstractMonsterCreeperGirl extends AbstractCreeperGirl {
-	private CombatMode basicCombatMode = CombatMode.EXPLODE;
-	
+public abstract class AbstractMonsterCreeperGirl extends AbstractCreeperGirl implements IMonsterPreggoMob {
+
 	protected AbstractMonsterCreeperGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_, Creature typeOfCreature) {
 		super(p_21803_, p_21804_, typeOfCreature);	
 		this.setRandomCombatMode();
@@ -39,7 +39,7 @@ public abstract class AbstractMonsterCreeperGirl extends AbstractCreeperGirl {
 	
 	@Override
 	public boolean canExplode() {
-		switch (this.basicCombatMode) {
+		switch (this.getCombatMode()) {
 		case FIGHT_AND_EXPLODE: {
 			return this.getHealth() <= this.getMaxHealth() * 0.6F;
 		}
@@ -51,10 +51,6 @@ public abstract class AbstractMonsterCreeperGirl extends AbstractCreeperGirl {
 		}
 	}
 	
-	public CombatMode getCombatMode() {
-		return this.basicCombatMode;
-	}
-	
 	protected void setRandomCombatMode() {	
 		
 		if (this.level().isClientSide()) {
@@ -63,13 +59,13 @@ public abstract class AbstractMonsterCreeperGirl extends AbstractCreeperGirl {
 		
 		final var p = this.getRandom().nextFloat();		
 	    if (p < 0.4F) {    	
-	    	this.basicCombatMode = CombatMode.FIGHT_AND_EXPLODE;
+	    	this.setCombatMode(CombatMode.FIGHT_AND_EXPLODE);
 	    }
 	    else if (p < 0.9F) {
-	    	this.basicCombatMode = CombatMode.EXPLODE;
+	    	this.setCombatMode(CombatMode.EXPLODE);
 	    }
 	    else {
-	    	this.basicCombatMode = CombatMode.DONT_EXPLODE;
+	    	this.setCombatMode(CombatMode.DONT_EXPLODE);
 	    }
 	}
 	

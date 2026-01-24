@@ -4,9 +4,8 @@ import javax.annotation.Nonnegative;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
-import net.minecraftforge.common.util.INBTSerializable;
 
-public abstract class AbstractBreedableEntity implements IBreedable, INBTSerializable<CompoundTag> {
+public abstract class AbstractBreedableEntity implements IBreedable {
 	protected final Gender gender;
 	protected float fertility = 0.25F;
 	protected int fertilityRateTimer = 0;

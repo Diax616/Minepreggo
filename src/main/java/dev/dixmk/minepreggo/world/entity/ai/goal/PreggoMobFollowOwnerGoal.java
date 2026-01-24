@@ -9,8 +9,7 @@ public class PreggoMobFollowOwnerGoal<T extends PreggoMob & ITamablePreggoMob<?>
 	
 	protected final T preggoMob;
 	
-	public PreggoMobFollowOwnerGoal(T p_25294_, double p_25295_, float p_25296_, float p_25297_,
-			boolean p_25298_) {
+	public PreggoMobFollowOwnerGoal(T p_25294_, double p_25295_, float p_25296_, float p_25297_, boolean p_25298_) {
 		super(p_25294_, p_25295_, p_25296_, p_25297_, p_25298_);
 		this.preggoMob = p_25294_;
 	}
@@ -33,14 +32,14 @@ public class PreggoMobFollowOwnerGoal<T extends PreggoMob & ITamablePreggoMob<?>
 	@Override
 	public boolean canUse() {
 		return super.canUse() 
-		&& !preggoMob.isWaiting()
-		&& !preggoMob.isSavage()
-		&& !PreggoMobHelper.hasValidTarget(preggoMob);
+		&& !preggoMob.getTamableData().isWaiting()
+		&& !preggoMob.getTamableData().isSavage()
+		&& !PreggoMobHelper.hasValidTarget(this.tamable);
 	}
 
 	@Override
 	public boolean canContinueToUse() {
 		return super.canContinueToUse()
-		&& !PreggoMobHelper.isTargetStillValid(preggoMob);
+		&& !PreggoMobHelper.isTargetStillValid(this.tamable);
 	}
 }

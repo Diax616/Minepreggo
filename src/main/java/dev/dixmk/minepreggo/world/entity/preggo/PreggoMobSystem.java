@@ -6,12 +6,11 @@ import javax.annotation.Nonnull;
 import org.jetbrains.annotations.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
-import dev.dixmk.minepreggo.utils.ServerParticleUtil;
-import dev.dixmk.minepreggo.network.packet.SexCinematicControlP2MS2CPacket;
+import dev.dixmk.minepreggo.network.packet.s2c.SexCinematicControlP2MS2CPacket;
 import dev.dixmk.minepreggo.server.ServerCinematicManager;
+import dev.dixmk.minepreggo.server.ServerParticleHelper;
 import dev.dixmk.minepreggo.world.item.AbstractBreastMilk;
 import dev.dixmk.minepreggo.world.item.ItemHelper;
-import dev.dixmk.minepreggo.world.pregnancy.AbstractBreedableEntity;
 import dev.dixmk.minepreggo.world.pregnancy.IBreedable;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -32,7 +31,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.network.PacketDistributor;
 
-public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> {
+public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> implements ITamablePreggoMobSystem {
 	
 	public static final int MIN_FULLNESS_TO_HEAL = 16;
 	public static final int MIN_FULLNESS_TO_TAME_AGAIN = 12;
@@ -46,19 +45,17 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> {
     private long cinematicEndTime = -1; 
     private ServerPlayer cinematicOwner = null;
     
-    private final AbstractBreedableEntity abstractBreedableEntity;
-	
 	public PreggoMobSystem(@Nonnull E preggoMob, @Nonnegative int totalTicksOfHungry, @Nonnegative int totalTicksOfSexualAppetitve) {
 		this.preggoMob = preggoMob;	
 		this.randomSource = preggoMob.getRandom();
 		this.totalTicksOfHungry = totalTicksOfHungry;
-		this.totalTicksOfSexualAppetive = totalTicksOfSexualAppetitve;
-		this.abstractBreedableEntity = preggoMob.getGenderedData();
+		this.totalTicksOfSexualAppetive = totalTicksOfSexualAppetitve;	
 	}
 	
-	protected boolean tryStartSavage() {		
-		if (preggoMob.getFullness() <= 0) {
-			preggoMob.setSavage(true);
+	protected boolean tryStartSavage() {
+		final var tamableData = preggoMob.getTamableData();
+		if (tamableData.getFullness() <= 0) {
+			tamableData.setSavage(true);
 			return true;
 		}
 		return false;
@@ -75,12 +72,13 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> {
 	}
 	
 	protected void evaluateHealing() {  
-	    final var currentHungry = preggoMob.getFullness();
+		final var tamableData = preggoMob.getTamableData();
+	    final var currentHungry = tamableData.getFullness();
 		if (currentHungry >= MIN_FULLNESS_TO_HEAL
 				&& preggoMob.getHealth() < preggoMob.getMaxHealth()) {     	
 			if (healingCooldownTimer >= 20) {
 		 	preggoMob.heal(1F);
-		 	preggoMob.setFullness(currentHungry - 1);
+		 	tamableData.setFullness(currentHungry - 1);
 		 	healingCooldownTimer = 0;
 			}
 			else {
@@ -89,21 +87,23 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> {
 		} 
 	}
 	
-	protected void evaluateSexualAppetiteTimer() {		
-		if (abstractBreedableEntity.getSexualAppetite() < IBreedable.MAX_SEXUAL_APPETIVE) {
-			if (abstractBreedableEntity.getSexualAppetiteTimer() > totalTicksOfSexualAppetive) {
-				abstractBreedableEntity.setSexualAppetiteTimer(0);
-				abstractBreedableEntity.incrementSexualAppetite(1);
+	protected void evaluateSexualAppetiteTimer() {	
+		final var breedableData = preggoMob.getGenderedData();
+		if (breedableData.getSexualAppetite() < IBreedable.MAX_SEXUAL_APPETIVE) {
+			if (breedableData.getSexualAppetiteTimer() > totalTicksOfSexualAppetive) {
+				breedableData.setSexualAppetiteTimer(0);
+				breedableData.incrementSexualAppetite(1);
 			}
 			else {
-				abstractBreedableEntity.incrementSexualAppetiteTimer();
+				breedableData.incrementSexualAppetiteTimer();
 			}
 		}
 	}
 	
-	protected void evaluateHungryTimer() {			
-	    final var currentHungry = preggoMob.getFullness();
-	    var currentHungryTimer = preggoMob.getHungryTimer();
+	protected void evaluateHungryTimer() {	
+		final var tamableData = preggoMob.getTamableData();
+	    final var currentHungry = tamableData.getFullness();
+	    var currentHungryTimer = tamableData.getHungryTimer();
 		    	
 	    if (currentHungry >= ITamablePreggoMob.MAX_FULLNESS) {
 	    	return;
@@ -120,11 +120,11 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> {
         currentHungryTimer += timerIncrement;
         
         if (currentHungryTimer >= totalTicksOfHungry) {
-        	preggoMob.resetHungryTimer();
-        	preggoMob.incrementFullness(1);
+        	tamableData.resetHungryTimer();
+        	tamableData.incrementFullness(1);
         }
         else {
-        	preggoMob.setHungryTimer(currentHungryTimer);
+        	tamableData.setHungryTimer(currentHungryTimer);
         } 
 	}
 		
@@ -135,7 +135,7 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> {
 			return;
 		}
 		
-		if (preggoMob.isSavage()) {
+		if (preggoMob.getTamableData().isSavage()) {
 			evaluateSavage(level);
 			return;
 		}
@@ -179,7 +179,7 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> {
 	public boolean canOwnerAccessGUI(Player source) {			
 		return preggoMob.isOwnedBy(source)
 				&& !preggoMob.isAggressive()
-				&& !preggoMob.isSavage()
+				&& !preggoMob.getTamableData().isSavage()
 				&& !preggoMob.isFood(source.getMainHandItem())
 				&& !source.getMainHandItem().is(Items.POTION)
 				&& !ItemHelper.isMilk(source.getMainHandItem());
@@ -189,8 +189,9 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> {
 	protected Result evaluateFullness(Level level, Player source) {		
 		
 	    var mainHandItem = source.getMainHandItem();
-	    var currentFullness = preggoMob.getFullness();
-    
+		final var tamableData = preggoMob.getTamableData();
+	    var currentFullness = tamableData.getFullness();
+
 	    if (currentFullness >= ITamablePreggoMob.MAX_FULLNESS) {
 	    	return null;
 	    }
@@ -209,10 +210,10 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> {
             	mainHandItem.shrink(1);
                 source.getInventory().setChanged(); 
                 currentFullness += foodValue;          
-                preggoMob.setFullness(currentFullness);             
+                tamableData.setFullness(currentFullness);             
                 
-                if (preggoMob.isSavage() && preggoMob.isTame() && currentFullness >= MIN_FULLNESS_TO_TAME_AGAIN) {
-                	preggoMob.setSavage(false);
+                if (tamableData.isSavage() && preggoMob.isTame() && currentFullness >= MIN_FULLNESS_TO_TAME_AGAIN) {
+                	tamableData.setSavage(false);
                 } 
             }
 
@@ -325,6 +326,6 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> {
 		else 
 			return;
 					
-		ServerParticleUtil.spawnRandomlyFromServer(preggoMob, particleoptions);
+		ServerParticleHelper.spawnRandomlyFromServer(preggoMob, particleoptions);
 	}
 }

@@ -3,7 +3,7 @@ package dev.dixmk.minepreggo.client.gui.preggo;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
-import dev.dixmk.minepreggo.network.packet.ResponseSexRequestP2PC2SPacket;
+import dev.dixmk.minepreggo.network.packet.c2s.ResponseSexRequestP2PC2SPacket;
 import dev.dixmk.minepreggo.world.inventory.preggo.RequestSexP2PMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;

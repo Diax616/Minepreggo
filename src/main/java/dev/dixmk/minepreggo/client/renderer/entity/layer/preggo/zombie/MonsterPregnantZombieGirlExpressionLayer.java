@@ -23,7 +23,7 @@ public class MonsterPregnantZombieGirlExpressionLayer
 
 	@Override
 	public @Nullable RenderType renderType(E zombieGirl) {		
-		if (zombieGirl.isIncapacitated()) {
+		if (zombieGirl.getPregnancyData().isIncapacitated()) {
 			return HOSTIL_PAIN;
 		}	
 		return super.renderType(zombieGirl);

@@ -14,7 +14,7 @@ import net.minecraft.world.entity.LivingEntity;
 public class EnderImpregnation extends Impregnantion {
 
 	public EnderImpregnation() {
-		super(-13434829);
+		super(-6750106);
 	}
 	
 	@Override

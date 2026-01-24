@@ -1,6 +1,8 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.creeper.quadruped;
 
 import dev.dixmk.minepreggo.client.animation.preggo.CreeperGirlAnimation;
+import dev.dixmk.minepreggo.client.jiggle.EntityJiggleDataFactory;
+import dev.dixmk.minepreggo.client.jiggle.EntityJiggleDataFactory.JigglePositionConfig;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterQuadrupedCreeperGirl;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraftforge.api.distmarker.Dist;
@@ -10,18 +12,25 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public abstract class AbstractMonsterCreeperGirlModel<E extends AbstractMonsterQuadrupedCreeperGirl> extends AbstractCreeperGirlModel<E> {
 
 	protected AbstractMonsterCreeperGirlModel(ModelPart root) {
-		super(root);
+		super(root, null);
 		this.belly.visible = false;
 	}
 
 	@Override
+	protected JigglePositionConfig createJiggleConfig() {
+		return EntityJiggleDataFactory.JigglePositionConfig.boobs(this.boobs.y);
+	}
+	
+	@Override
 	public void setupAnim(E entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		this.root().getAllParts().forEach(ModelPart::resetPose);
 		
-		this.moveHead(entity, netHeadYaw, headPitch);
+		this.moveHead(netHeadYaw, headPitch);
+		
+		this.updateJiggle(entity);
 		
 		if (entity.isAttacking()) {
-		    this.animate(entity.attackAnimationState, CreeperGirlAnimation.ATTACK, ageInTicks, 1f);
+		    this.animate(entity.attackAnimationState, CreeperGirlAnimation.ATTACK, ageInTicks);
 		}
 		
 		if (entity.walkAnimation.isMoving()) {
@@ -33,6 +42,6 @@ public abstract class AbstractMonsterCreeperGirlModel<E extends AbstractMonsterQ
 			}
 		} 
 
-		this.animate(entity.loopAnimationState, CreeperGirlAnimation.IDLE, ageInTicks, 1f);						
+		this.animate(entity.loopAnimationState, CreeperGirlAnimation.IDLE, ageInTicks);						
 	}
 }

@@ -2,11 +2,12 @@ package dev.dixmk.minepreggo.world.effect;
 
 import javax.annotation.Nullable;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
+import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.init.MinepreggoModSounds;
-import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
+import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
+import dev.dixmk.minepreggo.world.pregnancy.IPregnancyData;
 import dev.dixmk.minepreggo.world.pregnancy.MapPregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhaseHelper;
@@ -18,20 +19,14 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
-/**
- * It apparently works correctly, but I did not test it extensively.
- * @author DixMK
- * 
- */
-
 public class PregnancyDelay extends MobEffect {
 
     private static final float[][] PERCETANGES_RANGES = {
-            {0.15f, 0.20f},
-            {0.20f, 0.25f},
-            {0.25f, 0.30f},
-            {0.30f, 0.35f},
-            {0.35f, 0.4f}
+            {0.1f, 0.2f},
+            {0.2f, 0.3f},
+            {0.3f, 0.35f},
+            {0.35f, 0.45f},
+            {0.45f, 0.5f}
 		};
 	
 	public PregnancyDelay() {
@@ -47,14 +42,14 @@ public class PregnancyDelay extends MobEffect {
 	public void applyInstantenousEffect(@Nullable Entity source, @Nullable Entity indirectSource, LivingEntity target, int amplifier, double effectiveness) {
 		if (target.level().isClientSide || target.hasEffect(MinepreggoModMobEffects.ETERNAL_PREGNANCY.get())) return;
 
-		if (target instanceof IPregnancySystemHandler handler) {
-			apply(handler, getDaysByAmplifier(target.getRandom(), amplifier));
+		if (target instanceof ITamablePregnantPreggoMob handler) {
+			apply(handler.getPregnancyData(), getDaysByAmplifier(target.getRandom(), amplifier));
         	PregnancySystemHelper.playSoundNearTo(target, MinepreggoModSounds.getRandomStomachGrowls(target.getRandom()));
 		} else if (target instanceof ServerPlayer serverPlayer) {
 			serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap ->
 				cap.getFemaleData().ifPresent(femaleData -> {
-					if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {
-						apply(femaleData.getPregnancySystem(), getDaysByAmplifier(target.getRandom(), amplifier));
+					if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
+						apply(femaleData.getPregnancyData(), getDaysByAmplifier(target.getRandom(), amplifier));
 			        	PregnancySystemHelper.playSoundNearTo(target, MinepreggoModSounds.getRandomStomachGrowls(target.getRandom()));
 					}
 				})		
@@ -62,9 +57,9 @@ public class PregnancyDelay extends MobEffect {
 		}
 	}
 	
-    private static void apply(IPregnancySystemHandler handler, int extraDays) {
+    private static void apply(IPregnancyData handler, int extraDays) {
 		MapPregnancyPhase map = handler.getMapPregnancyPhase();
-		PregnancyPhase current = handler.getCurrentPregnancyStage();
+		PregnancyPhase current = handler.getCurrentPregnancyPhase();
 
 		int added = PregnancyPhaseHelper.addDaysToPhase(map, current, extraDays);
 		if (added > 0) {
@@ -72,15 +67,12 @@ public class PregnancyDelay extends MobEffect {
 			int currentDaysToBirth = handler.getDaysToGiveBirth();
 			handler.setDaysToGiveBirth(currentDaysToBirth + added);
 		}
-
 		handler.setMapPregnancyPhase(map);
-		
-		MinepreggoMod.LOGGER.debug("PregnancyDelay applied, added {} days to pregnancy phase {}, New MapPregnancyPhase: {}", extraDays, current.name(), map);			
     }
     
 	// Returns a number of days proportional to the total pregnancy days, based on amplifier
 	private static int getDaysByAmplifier(RandomSource random, int amplifier) {
-		int totalPregnancyDays = dev.dixmk.minepreggo.MinepreggoModConfig.getTotalPregnancyDays();
+		int totalPregnancyDays = MinepreggoModConfig.getTotalPregnancyDays();
 
 		int idx = Math.min(amplifier, PERCETANGES_RANGES.length - 1);
 		double minPercent = PERCETANGES_RANGES[idx][0];

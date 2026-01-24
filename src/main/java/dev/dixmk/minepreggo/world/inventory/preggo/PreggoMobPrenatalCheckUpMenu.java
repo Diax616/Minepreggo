@@ -12,12 +12,12 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModMenus;
 import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
+import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.item.checkup.PrenatalCheckups;
 import dev.dixmk.minepreggo.world.item.checkup.PrenatalCheckups.PrenatalCheckup;
 import dev.dixmk.minepreggo.world.item.checkup.PrenatalCheckups.PrenatalCheckupData;
-import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
@@ -35,7 +35,7 @@ import net.minecraftforge.network.NetworkHooks;
 
 public class PreggoMobPrenatalCheckUpMenu extends AbstractPrenatalCheckUpMenu<PreggoMob, ScientificIllager> {
 
-	private Optional<IPregnancySystemHandler> pregnancySystem;
+	private Optional<ITamablePregnantPreggoMob> pregnancySystem;
 	
 	public PreggoMobPrenatalCheckUpMenu(int id, Inventory inv, FriendlyByteBuf buffer) {
 		super(MinepreggoModMenus.PREGGO_MOB_PRENATAL_CHECKUP_MENU.get(), id, inv, buffer);	
@@ -44,7 +44,7 @@ public class PreggoMobPrenatalCheckUpMenu extends AbstractPrenatalCheckUpMenu<Pr
 	@Override
 	protected void readBuffer(FriendlyByteBuf buffer) {
 		PreggoMob s = null;	
-		IPregnancySystemHandler ps = null;
+		ITamablePregnantPreggoMob ps = null;
 		ScientificIllager t = null;
 		Vector3i p = null;
 		
@@ -56,9 +56,9 @@ public class PreggoMobPrenatalCheckUpMenu extends AbstractPrenatalCheckUpMenu<Pr
 			
 			if (level.getEntity(buffer.readVarInt()) instanceof PreggoMob preggoMob)  {
 				s = preggoMob;		
-				if (preggoMob instanceof IPregnancySystemHandler pregSystem) {
+				if (preggoMob instanceof ITamablePregnantPreggoMob pregSystem) {
 					ps = pregSystem;
-					this.motherPregnancyPhase = pregSystem.getCurrentPregnancyStage();
+					this.motherPregnancyPhase = pregSystem.getPregnancyData().getCurrentPregnancyPhase();
 				}	
 			}	
 				
@@ -100,7 +100,7 @@ public class PreggoMobPrenatalCheckUpMenu extends AbstractPrenatalCheckUpMenu<Pr
 			return null;
 		}
 			
-		final var ps = pregnancySystem.get();
+		final var ps = pregnancySystem.get().getPregnancyData();
 		
 		String playerName = source.get().getSimpleName();
 		LocalDateTime date = LocalDateTime.now();

@@ -2,10 +2,13 @@ package dev.dixmk.minepreggo.world.entity.preggo.creeper;
 
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
-import dev.dixmk.minepreggo.world.entity.preggo.IPregnancyP2;
+import dev.dixmk.minepreggo.world.entity.preggo.IPreggoMobPregnancySystem;
+import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMobSystem;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobPregnancySystemP2;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnantPreggoMobSystemP2;
+import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
+import dev.dixmk.minepreggo.world.pregnancy.IFemaleEntity;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.core.BlockPos;
@@ -16,7 +19,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.PlayMessages;
 
-public class TamableHumanoidCreeperGirlP2 extends AbstractTamablePregnantHumanoidCreeperGirl<PregnantPreggoMobSystemP2<TamableHumanoidCreeperGirlP2>,PreggoMobPregnancySystemP2<TamableHumanoidCreeperGirlP2>> implements IPregnancyP2<TamableHumanoidCreeperGirlP2> {
+public class TamableHumanoidCreeperGirlP2 extends AbstractTamablePregnantHumanoidCreeperGirl {
 	
 	public TamableHumanoidCreeperGirlP2(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P2.get(), world);
@@ -30,12 +33,17 @@ public class TamableHumanoidCreeperGirlP2 extends AbstractTamablePregnantHumanoi
 	}
 	
 	@Override
-	protected PregnantPreggoMobSystemP2<TamableHumanoidCreeperGirlP2> createPreggoMobSystem() {
+	protected ITamablePreggoMobSystem createTamablePreggoMobSystem() {
 		return new PregnantPreggoMobSystemP2<>(this, MinepreggoModConfig.getTotalTicksOfHungryP2(), PregnancySystemHelper.TOTAL_TICKS_SEXUAL_APPETITE_P2);
 	}
 	
 	@Override
-	protected PreggoMobPregnancySystemP2<TamableHumanoidCreeperGirlP2> createPregnancySystem() {
+	protected IFemaleEntity createFemaleEntityData() {
+		return new FemaleEntityImpl();
+	}
+	
+	@Override
+	protected IPreggoMobPregnancySystem createPregnancySystem() {
 		return new PreggoMobPregnancySystemP2<TamableHumanoidCreeperGirlP2>(this) {
 			@Override
 			protected void advanceToNextPregnancyPhase() {
@@ -53,11 +61,6 @@ public class TamableHumanoidCreeperGirlP2 extends AbstractTamablePregnantHumanoi
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return AbstractTamableHumanoidCreeperGirl.getBasicAttributes(0.235);
-	}
-
-	@Override
-	public PreggoMobPregnancySystemP2<TamableHumanoidCreeperGirlP2> getPregnancySystemP2() {
-		return pregnancySystem;
+		return AbstractTamableHumanoidCreeperGirl.createBasicAttributes(0.235);
 	}
 }

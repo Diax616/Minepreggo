@@ -1,25 +1,18 @@
 package dev.dixmk.minepreggo.world.inventory.preggo.creeper;
 
-import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.utils.TagHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGirl;
 import dev.dixmk.minepreggo.world.inventory.preggo.AbstractPreggoMobInventaryMenu;
-import dev.dixmk.minepreggo.world.item.ItemHelper;
-import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
-import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.SlotItemHandler;
 
-
-public abstract class AbstractCreeperGirlInventoryMenu<E extends AbstractTamableCreeperGirl<?>> extends AbstractPreggoMobInventaryMenu<E> {
+public abstract class AbstractCreeperGirlInventoryMenu<E extends AbstractTamableCreeperGirl> extends AbstractPreggoMobInventaryMenu<E> {
 		
 	protected AbstractCreeperGirlInventoryMenu(MenuType<?> menuType, int id, Inventory inv, FriendlyByteBuf extraData, Class<E> creeperGirlClass) {
 		super(menuType, id, inv, extraData, AbstractTamableCreeperGirl.INVENTORY_SIZE, creeperGirlClass);
@@ -29,81 +22,12 @@ public abstract class AbstractCreeperGirlInventoryMenu<E extends AbstractTamable
 	protected void createInventory(Inventory inv) {
 		this.preggoMob.ifPresent(creeperGirl -> {
 			
-			this.addSlot(new SlotItemHandler(internal, ITamablePreggoMob.HEAD_INVENTORY_SLOT, 8, 8) {
-				@Override
-				public boolean mayPlace(ItemStack itemstack) {
-					return ItemHelper.isHelmet(itemstack);
-				}
-			});
-			
-			this.addSlot(new SlotItemHandler(internal, ITamablePreggoMob.CHEST_INVENTORY_SLOT, 8, 26) {
-				@Override
-				public boolean mayPlace(ItemStack itemstack) {			
-					var armor = itemstack.getItem();
-					boolean flag = ItemHelper.isChest(armor);			
-					
-					if (!flag) {
-						return false;
-					}
-										
-					if (creeperGirl instanceof IPregnancySystemHandler pregnancySystem) {
-						final var pregnancyPhase = pregnancySystem.getCurrentPregnancyStage();					
-						if (!PregnancySystemHelper.canUseChestplate(armor, pregnancyPhase, false)) {
-							MessageHelper.warnFittedArmor((Player) creeperGirl.getOwner(), creeperGirl, pregnancyPhase);
-			                flag = false;
-						}	
-						else if (!PreggoMobHelper.canUseChestPlateInLactation(pregnancySystem, armor)) {
-							MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) creeperGirl.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.armor.message.lactating", creeperGirl.getSimpleName()));
-			                flag = false;
-						}
-					}					
-					else {    
-						if (!PreggoMobHelper.canUseChestPlateInLactation(creeperGirl, armor)) {
-							MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) creeperGirl.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.armor.message.lactating", creeperGirl.getSimpleName()));
-							flag = false;
-						}
-					}
-					
-					return flag;			
-				}
-			});
-			
-			this.addSlot(new SlotItemHandler(internal, ITamablePreggoMob.LEGS_INVENTORY_SLOT, 8, 44) {
-				@Override
-				public boolean mayPlace(ItemStack itemstack) {
-					var armor = itemstack.getItem();
-					boolean flag = ItemHelper.isLegging(armor);			
-					
-					if (!flag) {
-						return false;
-					}
-	
-					if (creeperGirl instanceof IPregnancySystemHandler pregnancySystem) {
-						final var pregnancyPhase = pregnancySystem.getCurrentPregnancyStage();					
-						if (!PregnancySystemHelper.canUseLegging(armor, pregnancyPhase)) {
-							MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) creeperGirl.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.armor.message.leggings_does_not_fit", creeperGirl.getSimpleName()));
-							flag = false;
-						}			
-					}												
-					return flag;			
-				}
-			});
-
-			this.addSlot(new SlotItemHandler(internal, ITamablePreggoMob.FEET_INVENTORY_SLOT, 8, 62) {
-				@Override
-				public boolean mayPlace(ItemStack itemstack) {
-					return ItemHelper.isBoot(itemstack);
-				}
-			});
-			
-			this.addSlot(new SlotItemHandler(internal, ITamablePreggoMob.MAINHAND_INVENTORY_SLOT, 77, 62));
-					
-			this.addSlot(new SlotItemHandler(internal, ITamablePreggoMob.OFFHAND_INVENTORY_SLOT, 95, 62));
+			this.initVanillaEquipmentSlots(inv);
 			
 			this.addSlot(new SlotItemHandler(internal, ITamablePreggoMob.FOOD_INVENTORY_SLOT, 113, 62) {
 				@Override
 				public boolean mayPlace(ItemStack itemstack) {
-					return itemstack.is(TagHelper.CREEPER_GIRL_FOOD);
+					return itemstack.is(TagHelper.CREEPER_FOOD);
 				}
 			});
 			

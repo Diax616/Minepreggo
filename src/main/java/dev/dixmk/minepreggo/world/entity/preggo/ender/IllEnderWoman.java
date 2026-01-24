@@ -3,10 +3,12 @@ package dev.dixmk.minepreggo.world.entity.preggo.ender;
 import net.minecraftforge.network.PlayMessages;
 
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.entity.monster.AbstractIllager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
@@ -21,6 +23,7 @@ import javax.annotation.Nullable;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.world.entity.monster.Ill;
 import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
+import dev.dixmk.minepreggo.world.item.ItemHelper;
 
 public class IllEnderWoman extends AbstractMonsterEnderWoman implements Ill {
 	
@@ -54,6 +57,17 @@ public class IllEnderWoman extends AbstractMonsterEnderWoman implements Ill {
     	this.setTame(false);	
 		this.setOwnerUUID(null);	
 		Ill.removeBehaviourGoals(this);
+	}
+	
+	@Override
+	public void onFinalizeSpawnWithOwner() {
+		var helmet = new ItemStack(ItemHelper.getRandomHelmet(this.random));
+		helmet.setDamageValue(this.random.nextInt(helmet.getMaxDamage() / 2));
+		
+		this.setItemSlot(EquipmentSlot.HEAD, helmet);
+		if (this.random.nextFloat() < 0.3F) {
+			this.setCarriedBlock(Blocks.DARK_OAK_WOOD.defaultBlockState());
+		}
 	}
 	
 	@Override

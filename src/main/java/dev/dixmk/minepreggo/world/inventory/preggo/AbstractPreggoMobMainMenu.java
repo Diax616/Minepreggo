@@ -4,6 +4,8 @@ import java.util.Optional;
 
 import org.joml.Vector3i;
 
+import com.machinezoo.noexception.optional.OptionalBoolean;
+
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import net.minecraft.network.FriendlyByteBuf;
@@ -22,6 +24,8 @@ public abstract class AbstractPreggoMobMainMenu
 	public final Class<E> preggoMobClass;
 	protected Optional<Vector3i> pos;
 	protected final Optional<E> preggoMob;
+	protected OptionalBoolean canPickUpLoot = OptionalBoolean.empty();
+	protected OptionalBoolean canBreakBlocks = OptionalBoolean.empty();
 	
 	protected AbstractPreggoMobMainMenu(MenuType<?> p_38851_, int p_38852_, Inventory inv, FriendlyByteBuf extraData, Class<E> preggoMobClass) {
 		super(p_38851_, p_38852_);
@@ -33,18 +37,19 @@ public abstract class AbstractPreggoMobMainMenu
 
 	protected Optional<E> readBuffer(FriendlyByteBuf extraData) {		
 		E mob = null;
-		Vector3i p = null;
 		if (extraData != null) {
 			var posBlock = extraData.readBlockPos();			
-			p = new Vector3i(posBlock.getX(), posBlock.getY(), posBlock.getZ());
+			this.pos = Optional.of(new Vector3i(posBlock.getX(), posBlock.getY(), posBlock.getZ()));
 			
 			var e = level.getEntity(extraData.readVarInt());		
 			if (e != null && preggoMobClass.isInstance(e))  {
 				mob = preggoMobClass.cast(e);
 			}	
-		}				
-		this.pos = Optional.ofNullable(p);
-		
+			
+			this.canPickUpLoot = OptionalBoolean.of(extraData.readBoolean());
+			this.canBreakBlocks = OptionalBoolean.of(extraData.readBoolean());			
+		}	
+
 		return Optional.ofNullable(mob);
 	}
 	
@@ -55,6 +60,14 @@ public abstract class AbstractPreggoMobMainMenu
 	
 	public Optional<E> getPreggoMob() {
 		return this.preggoMob;
+	}
+	
+	public OptionalBoolean getCanPickUpLoot() {
+		return this.canPickUpLoot;
+	}
+	
+	public OptionalBoolean getCanBreakBlocks() {
+		return this.canBreakBlocks;
 	}
 	
 	@Override

@@ -9,14 +9,18 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.animal.horse.AbstractHorse;
 
-public abstract class AbstractPregnancySystem<E extends LivingEntity> {
+public abstract class AbstractPregnancySystem<E extends LivingEntity> implements IPregnancySystem {
 
 	protected E pregnantEntity;
 	protected final RandomSource randomSource;
 	
 	private int stomachGrowlCoolDown = 0;
-	protected float stomachGrowlProb = 0.005f;
+	protected float stomachGrowlProb = 0.01f;
+	
+	private int pregnancyPainCoolDown = 0;
+	protected float pregnancyHurtProb = 0.1f;
 	
 	protected AbstractPregnancySystem(@Nonnull E pregnantEntity) {
 		this.pregnantEntity = pregnantEntity;
@@ -32,8 +36,6 @@ public abstract class AbstractPregnancySystem<E extends LivingEntity> {
 	protected abstract void evaluatePregnancyTimer();
 	
 	protected abstract void evaluateMiscarriage(ServerLevel serverLevel);
-	
-	public abstract void onServerTick();
 	
 	public abstract boolean isMiscarriageActive();
 	
@@ -101,7 +103,6 @@ public abstract class AbstractPregnancySystem<E extends LivingEntity> {
 		}
 	}
 	
-	
 	protected boolean tryPlayStomachGrowlsSound() {	
 		if (stomachGrowlCoolDown < 20) {
 			++stomachGrowlCoolDown;
@@ -113,5 +114,41 @@ public abstract class AbstractPregnancySystem<E extends LivingEntity> {
 			return true;
 		}	
 		return false;
+	}
+	
+	protected boolean tryHurt() {	
+		if (pregnantEntity.getHealth() > 1.5f) {
+			PregnancySystemHelper.applyDamageByPregnancyPain(pregnantEntity, 1);
+			return true;
+		}
+		return false;
+	}
+	
+	protected boolean tryHurtByCooldown(int coolDownTicks) {	
+		if (pregnantEntity.getHealth() < 1.5f) {
+			return false;
+		}
+		
+		if (pregnancyPainCoolDown < coolDownTicks) {
+			++pregnancyPainCoolDown;
+			return false;
+		}
+		pregnancyPainCoolDown = 0;	
+		if (randomSource.nextFloat() < pregnancyHurtProb) {
+			PregnancySystemHelper.applyDamageByPregnancyPain(pregnantEntity, 1);
+			return true;
+		}	
+		return false;
+	}
+	
+	protected boolean tryHurtByCooldown() {	
+		return tryHurtByCooldown(60);
+	}
+	
+	protected boolean isMovingRidingSaddledHorse() {
+		return this.pregnantEntity.isPassenger()
+		&& this.pregnantEntity.getVehicle() instanceof AbstractHorse horse
+		&& horse.isSaddled()
+		&& (pregnantEntity.xxa != 0 || pregnantEntity.zza != 0);
 	}
 }

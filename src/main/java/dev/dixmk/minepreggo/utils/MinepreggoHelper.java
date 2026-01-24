@@ -49,7 +49,11 @@ public class MinepreggoHelper {
 	    return new ResourceLocation(ResourceLocation.DEFAULT_NAMESPACE, path);
 	}
 
-	public static boolean isFromMinepreggo(MobEffect effect) {
+	public static ResourceLocation fromThisMod(String path) {
+		return fromNamespaceAndPath(MinepreggoMod.MODID, path);
+	}
+	
+	public static boolean isFromThisMod(MobEffect effect) {
 		ResourceLocation id = ForgeRegistries.MOB_EFFECTS.getKey(effect);
 		return id != null && id.getNamespace().equals(MinepreggoMod.MODID);
 	}

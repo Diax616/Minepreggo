@@ -3,7 +3,7 @@
   "biomes": "#minecraft:is_overworld",
   "spawners": {
     "type": "minepreggo:monster_zombie_girl",
-    "weight": 30,
+    "weight": 20,
     "minCount": 1,
     "maxCount": 1
   }

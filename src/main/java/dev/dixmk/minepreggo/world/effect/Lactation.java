@@ -16,24 +16,28 @@ public class Lactation extends AbstractPlayerPregnancySymptom {
 
 	@Override
 	public void addAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {	
+		if (entity.level().isClientSide) {
+			return;
+		}
+			
 		if (PregnancySystemHelper.isPregnantEntityValid(entity) || PregnancySystemHelper.isInPostPregnancyPhase(entity)) {
-			if (!entity.level().isClientSide) {
-				AttributeInstance speedAttr = entity.getAttribute(Attributes.MOVEMENT_SPEED);
-				if (speedAttr != null && speedAttr.getModifier(SPEED_MODIFIER_UUID) == null) {
-				    speedAttr.addPermanentModifier(SPEED_MODIFIER);
-				}
+			AttributeInstance speedAttr = entity.getAttribute(Attributes.MOVEMENT_SPEED);
+			if (speedAttr != null && speedAttr.getModifier(SPEED_MODIFIER_UUID) == null) {
+			    speedAttr.addPermanentModifier(SPEED_MODIFIER);
 			}
 		}
 	}
 	
 	@Override
 	public void removeAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {
+		if (entity.level().isClientSide) {
+			return;
+		}
+		
 		if (PregnancySystemHelper.isPregnantEntityValid(entity) || PregnancySystemHelper.isInPostPregnancyPhase(entity)) {
-			if (!entity.level().isClientSide) {		
-				AttributeInstance speedAttr = entity.getAttribute(Attributes.MOVEMENT_SPEED);
-				if (speedAttr != null && speedAttr.getModifier(SPEED_MODIFIER_UUID) != null) {
-					speedAttr.removeModifier(SPEED_MODIFIER);
-				}
+			AttributeInstance speedAttr = entity.getAttribute(Attributes.MOVEMENT_SPEED);
+			if (speedAttr != null && speedAttr.getModifier(SPEED_MODIFIER_UUID) != null) {
+				speedAttr.removeModifier(SPEED_MODIFIER);
 			}
 		}
 	}

@@ -6,8 +6,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class BoobJigglePhysics extends AbstractJigglePhysics {	
-    private float rotationVelocityY = 0.0f;
+public class BoobJigglePhysics extends AbstractJigglePhysics<BoobJigglePhysics.JigglePhysicsConfig> {	
+	private float rotationVelocityY = 0.0f;
     private float rotationY = 0.0f;
     private float rotationVelocityX = 0.0f;
     private float rotationX = 0.0f;
@@ -20,23 +20,6 @@ public class BoobJigglePhysics extends AbstractJigglePhysics {
     
     private float oscillationTime = 0.0f;
     
-	private final float rotationSpringY;
-    private final float rotationSpringX;
-    private final float rotationSpringZ;
-    private final float rotationDamping; 
-    private final float rotationReturnSpring; 
-    private final float maxRotationY;	
-    private final float maxRotationX;
-    private final float maxRotationZ;
-    
-    private final float movementMultiplier;
-    private final float movementDecay;
-    private final float oscillationSpeed;
-
-    private final float phaseInfluence;
-    private final float sideInfluence;
-    private final float asymetricDelay;
-    
     private boolean wasInAir = false;
     private float jumpTargetRotationX = 0.0f;
     private float jumpTargetRotationZ = 0.0f;
@@ -44,44 +27,17 @@ public class BoobJigglePhysics extends AbstractJigglePhysics {
     private float jumpElevationTarget = 0.0f;
     private float jumpElevationCurrent = 0.0f;
     
-    private final float phaseOffset;
-    private final float sideMultiplier;
-    private final float asymmetricFrequency;
-        
     private boolean axisX = true;
     private boolean axisZ = true;
-    
-    
-    
-    // Jump bounce constants
-    private static final float JUMP_ELEVATION_MIN = 0.4f;
-    private static final float JUMP_ELEVATION_MAX = 0.8f;
-    private static final float JUMP_ELEVATION_SPRING = 0.15f;
-    private static final float JUMP_ELEVATION_DAMPING = 0.85f;
-    
-    
+            
+    public BoobJigglePhysics(JigglePhysicsConfig config) {
+		super(config);
+	}
     
     public BoobJigglePhysics(Builder builder) {
-        super(builder.springStrength, builder.damping, builder.gravity, builder.maxDisplacement, builder.additionalYPos);
-        this.rotationSpringY = builder.rotationSpringY;
-        this.rotationSpringX = builder.rotationSpringX;
-        this.rotationSpringZ = builder.rotationSpringZ;
-        this.rotationDamping = builder.rotationDamping;
-        this.maxRotationY = builder.maxRotationY;
-        this.maxRotationX = builder.maxRotationX;
-        this.maxRotationZ = builder.maxRotationZ;
-        this.movementMultiplier = builder.movementMultiplier;
-        this.movementDecay = builder.movementDecay;
-        this.oscillationSpeed = builder.oscillationSpeed;
-        this.phaseInfluence = builder.phaseInfluence;
-        this.sideInfluence = builder.sideInfluence;
-        this.phaseOffset = builder.phaseOffset;
-        this.sideMultiplier = builder.sideMultiplier;
-        this.asymmetricFrequency = builder.asymmetricFrequency;
-        this.rotationReturnSpring = builder.rotationReturnSpring;
-		this.asymetricDelay = builder.asymetricDelay;
-    }
-    
+    	this(new JigglePhysicsConfig(builder));
+	}
+
 	public static BoobJigglePhysics.Builder builder(float phaseOffset, boolean isLeft) {
 		return new BoobJigglePhysics.Builder(phaseOffset, isLeft);
 	}
@@ -101,11 +57,11 @@ public class BoobJigglePhysics extends AbstractJigglePhysics {
         boolean isInAir = !isOnGround || hasVerticalMovement;
         
         if (isInAir && !wasInAir) {
-            jumpTargetRotationX = (float) ((Math.random() * 2.0 - 1.0) * maxRotationX);
-            jumpTargetRotationZ = (float) ((Math.random() * 2.0 - 1.0) * maxRotationZ);
+            jumpTargetRotationX = (float) ((Math.random() * 2.0 - 1.0) * config.maxRotationX);
+            jumpTargetRotationZ = (float) ((Math.random() * 2.0 - 1.0) * config.maxRotationZ);
             jumpTargetsSet = true;
   
-            jumpElevationTarget = JUMP_ELEVATION_MIN + (float) (Math.random() * (JUMP_ELEVATION_MAX - JUMP_ELEVATION_MIN));
+            jumpElevationTarget = config.jumpElevationMin + (float) (Math.random() * (config.jumpElevationMax - config.jumpElevationMin));
         }
         
         if (!isInAir && wasInAir) {
@@ -116,51 +72,51 @@ public class BoobJigglePhysics extends AbstractJigglePhysics {
         wasInAir = isInAir;
         
         if (isMoving && horizontalMovement > 0.001f) {
-            movementIntensity = Math.min(1.0f, movementIntensity + horizontalMovement * movementMultiplier);
+            movementIntensity = Math.min(1.0f, movementIntensity + horizontalMovement * config.movementMultiplier);
         } else {
-            movementIntensity *= movementDecay;
+            movementIntensity *= config.movementDecay;
         }
         
         if (movementIntensity > 0.01f || hasVerticalMovement) {
-            oscillationTime += oscillationSpeed * Math.max(movementIntensity, Math.abs(playerVelocityY) * 2.0f);
+            oscillationTime += config.oscillationSpeed * Math.max(movementIntensity, Math.abs(playerVelocityY) * 2.0f);
         }
         
-        float elevationSpringForce = (jumpElevationTarget - jumpElevationCurrent) * JUMP_ELEVATION_SPRING;
+        float elevationSpringForce = (jumpElevationTarget - jumpElevationCurrent) * config.jumpElevationSpring;
         jumpElevationCurrent += elevationSpringForce;
-        jumpElevationCurrent *= JUMP_ELEVATION_DAMPING;
+        jumpElevationCurrent *= config.jumpElevationDamping;
 
-        float phaseTime = oscillationTime * asymmetricFrequency + phaseOffset;
+        float phaseTime = oscillationTime * config.asymmetricFrequency + config.phaseOffset;
         boolean hasAnyMovement = movementIntensity > 0.05f || hasVerticalMovement;
-        float springForce = -position * springStrength;
-        float gravityForce = gravity * Math.signum(velocity);    
+        float springForce = -position * config.springStrength;
+        float gravityForce = config.gravity * Math.signum(velocity);    
         float movementForce = movementIntensity * 0.08f * (float) Math.sin(phaseTime);
-        float asymmetricBounce = phaseInfluence * (float) Math.cos(phaseTime * 1.3f + sideMultiplier * 0.5f) * movementIntensity;
+        float asymmetricBounce = config.phaseInfluence * (float) Math.cos(phaseTime * 1.3f + config.sideMultiplier * 0.5f) * movementIntensity;
 
-        asymmetricBounce += sideMultiplier * asymetricDelay * (float) Math.sin(phaseTime * 1.5f) * movementIntensity;
+        asymmetricBounce += config.sideMultiplier * config.asymetricDelay * (float) Math.sin(phaseTime * 1.5f) * movementIntensity;
         
         velocity += springForce - (playerVelocityY * 0.1f) - gravityForce + movementForce + asymmetricBounce;
-        velocity *= damping;
+        velocity *= config.damping;
         
         position += velocity * deltaTime;
-        position = Math.max(-maxDisplacement, Math.min(maxDisplacement, position));
+        position = Math.max(-config.maxDisplacement, Math.min(config.maxDisplacement, position));
         
         float targetRotationY;
         if (hasAnyMovement) {
             targetRotationY = movementIntensity * 0.25f * (float) Math.cos(phaseTime * 0.8);
             targetRotationY += velocity * 0.4f;
-            targetRotationY += sideMultiplier * sideInfluence * 1.5f * movementIntensity * (float) Math.sin(phaseTime * 1.1);
+            targetRotationY += config.sideMultiplier * config.sideInfluence * 1.5f * movementIntensity * (float) Math.sin(phaseTime * 1.1);
             targetRotationY += playerVelocityY * 0.3f;
-            targetRotationY += sideMultiplier * 0.05f * movementIntensity;
+            targetRotationY += config.sideMultiplier * 0.05f * movementIntensity;
         } else {
             targetRotationY = 0.0f;
         }
         
-        float rotationSpringForceY = (targetRotationY - rotationY) * (hasAnyMovement ? rotationSpringY : rotationReturnSpring); 
+        float rotationSpringForceY = (targetRotationY - rotationY) * (hasAnyMovement ? config.rotationSpringY : config.rotationReturnSpring); 
         rotationVelocityY += rotationSpringForceY;
-        rotationVelocityY *= rotationDamping;
+        rotationVelocityY *= config.rotationDamping;
         
         rotationY += rotationVelocityY * deltaTime;
-        rotationY = Math.max(-maxRotationY, Math.min(maxRotationY, rotationY));
+        rotationY = Math.max(-config.maxRotationY, Math.min(config.maxRotationY, rotationY));
         
         if (axisX) {
         	updateAxisX(deltaTime, phaseTime, playerVelocityY, hasAnyMovement, hasVerticalMovement);
@@ -176,15 +132,15 @@ public class BoobJigglePhysics extends AbstractJigglePhysics {
             if (jumpTargetsSet && hasVerticalMovement) {
                 targetRotationX = jumpTargetRotationX;
                 targetRotationX += (float) Math.sin(phaseTime * 2.5) * Math.abs(playerVelocityY) * 0.15f;
-                targetRotationX += sideMultiplier * asymetricDelay * (float) Math.cos(phaseTime * 2.0) * Math.abs(playerVelocityY) * 0.2f;
+                targetRotationX += config.sideMultiplier * config.asymetricDelay * (float) Math.cos(phaseTime * 2.0) * Math.abs(playerVelocityY) * 0.2f;
             } else {
                 targetRotationX = movementIntensity * 0.2f * (float) Math.sin(phaseTime * 1.2);
                 targetRotationX += playerVelocityY * 0.25f;
-                targetRotationX += sideMultiplier * sideInfluence * 0.8f * (float) Math.cos(phaseTime * 0.95);
+                targetRotationX += config.sideMultiplier * config.sideInfluence * 0.8f * (float) Math.cos(phaseTime * 0.95);
                 
                 if (hasVerticalMovement) {
                     targetRotationX += (float) Math.sin(phaseTime * 1.5) * Math.abs(playerVelocityY) * 0.4f;
-                    targetRotationX += sideMultiplier * asymetricDelay * (float) Math.cos(phaseTime * 1.8) * Math.abs(playerVelocityY);
+                    targetRotationX += config.sideMultiplier * config.asymetricDelay * (float) Math.cos(phaseTime * 1.8) * Math.abs(playerVelocityY);
                 }
             }
         } else {
@@ -192,12 +148,12 @@ public class BoobJigglePhysics extends AbstractJigglePhysics {
         }
         
         float rotationSpringForceX = (targetRotationX - rotationX) * 
-            (hasAnyMovement ? rotationSpringX : rotationReturnSpring);
+            (hasAnyMovement ? config.rotationSpringX : config.rotationReturnSpring);
         rotationVelocityX += rotationSpringForceX;
-        rotationVelocityX *= rotationDamping;
+        rotationVelocityX *= config.rotationDamping;
         
         rotationX += rotationVelocityX * deltaTime;
-        rotationX = Math.max(-maxRotationX, Math.min(maxRotationX, rotationX));
+        rotationX = Math.max(-config.maxRotationX, Math.min(config.maxRotationX, rotationX));
     }
     
     private void updateAxisZ(float deltaTime, float phaseTime, float playerVelocityY, boolean hasAnyMovement, boolean hasVerticalMovement) {
@@ -205,16 +161,16 @@ public class BoobJigglePhysics extends AbstractJigglePhysics {
         if (hasAnyMovement) {
             if (jumpTargetsSet && hasVerticalMovement) {
                 targetRotationZ = jumpTargetRotationZ;
-                targetRotationZ += sideMultiplier * (float) Math.cos(phaseTime * 2.3) * Math.abs(playerVelocityY) * 0.18f;
-                targetRotationZ += sideMultiplier * asymetricDelay * (float) Math.sin(phaseTime * 2.2) * Math.abs(playerVelocityY) * 0.25f;
+                targetRotationZ += config.sideMultiplier * (float) Math.cos(phaseTime * 2.3) * Math.abs(playerVelocityY) * 0.18f;
+                targetRotationZ += config.sideMultiplier * config.asymetricDelay * (float) Math.sin(phaseTime * 2.2) * Math.abs(playerVelocityY) * 0.25f;
             } else {
                 targetRotationZ = movementIntensity * 0.22f * (float) Math.cos(phaseTime * 1.05);
-                targetRotationZ += sideMultiplier * velocity * 0.6f;
-                targetRotationZ += sideMultiplier * sideInfluence * 1.5f * (float) Math.sin(phaseTime * 1.15);
+                targetRotationZ += config.sideMultiplier * velocity * 0.6f;
+                targetRotationZ += config.sideMultiplier * config.sideInfluence * 1.5f * (float) Math.sin(phaseTime * 1.15);
                 
                 if (hasVerticalMovement) {
-                    targetRotationZ += sideMultiplier * (float) Math.cos(phaseTime * 1.3) * Math.abs(playerVelocityY) * 0.5f;
-                    targetRotationZ += sideMultiplier * asymetricDelay * 2.0f * (float) Math.sin(phaseTime * 1.6) * Math.abs(playerVelocityY);
+                    targetRotationZ += config.sideMultiplier * (float) Math.cos(phaseTime * 1.3) * Math.abs(playerVelocityY) * 0.5f;
+                    targetRotationZ += config.sideMultiplier * config.asymetricDelay * 2.0f * (float) Math.sin(phaseTime * 1.6) * Math.abs(playerVelocityY);
                 }
             }
         } else {
@@ -222,12 +178,12 @@ public class BoobJigglePhysics extends AbstractJigglePhysics {
         }
         
         float rotationSpringForceZ = (targetRotationZ - rotationZ) * 
-            (hasAnyMovement ? rotationSpringZ : rotationReturnSpring);
+            (hasAnyMovement ? config.rotationSpringZ : config.rotationReturnSpring);
         rotationVelocityZ += rotationSpringForceZ;
-        rotationVelocityZ *= rotationDamping;
+        rotationVelocityZ *= config.rotationDamping;
         
         rotationZ += rotationVelocityZ * deltaTime;
-        rotationZ = Math.max(-maxRotationZ, Math.min(maxRotationZ, rotationZ));
+        rotationZ = Math.max(-config.maxRotationZ, Math.min(config.maxRotationZ, rotationZ));
     }
     
     @Override
@@ -295,7 +251,7 @@ public class BoobJigglePhysics extends AbstractJigglePhysics {
         rightJiggle.update(
             (float) entity.getY(), 
             entity.getX(), 
-            entity.getZ(), 
+            entity.getZ(),
             deltaTime, 
             entity.walkAnimation.isMoving(),
             entity.onGround()
@@ -303,7 +259,7 @@ public class BoobJigglePhysics extends AbstractJigglePhysics {
         
         // Calculate average offset for parent bone
         float avgOffset = (leftJiggle.getOffset() + rightJiggle.getOffset()) * 0.5f;
-        boobParent.y = leftJiggle.additionalYPos + avgOffset;
+        boobParent.y = leftJiggle.config.originalYPos + avgOffset;
         
         // Apply averaged rotations to parent bone
         float avgRotY = (leftJiggle.getRotationY() + rightJiggle.getRotationY()) * 0.5f;
@@ -330,11 +286,11 @@ public class BoobJigglePhysics extends AbstractJigglePhysics {
       
     @OnlyIn(Dist.CLIENT)
     public static class Builder {
-    	private float springStrength = 0.15f;
+    	private float springStrength = 1.5f;
     	private float damping = 0.5f;
     	private float gravity = 0.02f;
     	private float maxDisplacement = 0.3f;
-    	private float additionalYPos = 2.0f;
+    	private float originalYPos = 2.0f;
     	
         private float rotationSpringY = 0.25f;
         private float rotationSpringX = 0.23f;
@@ -353,6 +309,11 @@ public class BoobJigglePhysics extends AbstractJigglePhysics {
         private float sideInfluence = 0.15f;
         private float asymetricDelay = 0.08f;
         
+        private float jumpElevationMin = 0.4f;
+        private float jumpElevationMax = 0.8f;
+        private float jumpElevationSpring = 0.15f;
+        private float jumpElevationDamping = 0.85f;
+            
         private final float phaseOffset;
         private final float sideMultiplier;
         private final float asymmetricFrequency;
@@ -382,8 +343,8 @@ public class BoobJigglePhysics extends AbstractJigglePhysics {
     		return this;
     	}
     	
-    	public Builder additionalYPos(float additionalYPos) {
-    		this.additionalYPos = additionalYPos;
+    	public Builder originalYPos(float originalYPos) {
+    		this.originalYPos = originalYPos;
     		return this;
     	}
     	
@@ -456,5 +417,75 @@ public class BoobJigglePhysics extends AbstractJigglePhysics {
         	this.asymetricDelay = asymetricDelay;
         	return this;
         } 
+        
+        public Builder jumpElevationMin(float jumpElevationMin) {
+			this.jumpElevationMin = jumpElevationMin;
+			return this;
+		}
+        
+        public Builder jumpElevationMax(float jumpElevationMax) {			
+        	this.jumpElevationMax = jumpElevationMax;
+        	return this;
+        }
+        
+        public Builder jumpElevationSpring(float jumpElevationSpring) {
+        	this.jumpElevationSpring = jumpElevationSpring;
+        	return this;
+        }
+        
+        public Builder jumpElevationDamping(float jumpElevationDamping) {
+			this.jumpElevationDamping = jumpElevationDamping;
+			return this;
+		}   
+    }
+    
+    @OnlyIn(Dist.CLIENT)
+    public static class JigglePhysicsConfig extends AbstractJigglePhysics.AbstractJigglePhysicsConfig {
+        public final float rotationSpringY;
+        public final float rotationSpringX;
+        public final float rotationSpringZ;
+        public final float rotationDamping;
+        public final float rotationReturnSpring;
+        public final float maxRotationY;
+        public final float maxRotationX;
+        public final float maxRotationZ;
+        public final float movementMultiplier;
+        public final float movementDecay;
+        public final float oscillationSpeed;
+        public final float phaseInfluence;
+        public final float sideInfluence;
+        public final float asymetricDelay;
+        public final float phaseOffset;
+        public final float sideMultiplier;
+        public final float asymmetricFrequency;
+        public final float jumpElevationMin;
+        public final float jumpElevationMax;
+        public final float jumpElevationSpring;
+        public final float jumpElevationDamping;
+
+        public JigglePhysicsConfig(Builder builder) {
+            super(builder.springStrength, builder.damping, builder.gravity, builder.maxDisplacement, builder.originalYPos);
+            this.rotationSpringY = builder.rotationSpringY;
+            this.rotationSpringX = builder.rotationSpringX;
+            this.rotationSpringZ = builder.rotationSpringZ;
+            this.rotationDamping = builder.rotationDamping;
+            this.rotationReturnSpring = builder.rotationReturnSpring;
+            this.maxRotationY = builder.maxRotationY;
+            this.maxRotationX = builder.maxRotationX;
+            this.maxRotationZ = builder.maxRotationZ;
+            this.movementMultiplier = builder.movementMultiplier;
+            this.movementDecay = builder.movementDecay;
+            this.oscillationSpeed = builder.oscillationSpeed;
+            this.phaseInfluence = builder.phaseInfluence;
+            this.sideInfluence = builder.sideInfluence;
+            this.asymetricDelay = builder.asymetricDelay;
+            this.phaseOffset = builder.phaseOffset;
+            this.sideMultiplier = builder.sideMultiplier;
+            this.asymmetricFrequency = builder.asymmetricFrequency;
+            this.jumpElevationMin = builder.jumpElevationMin;
+            this.jumpElevationMax = builder.jumpElevationMax;
+            this.jumpElevationSpring = builder.jumpElevationSpring;
+            this.jumpElevationDamping = builder.jumpElevationDamping;
+        }
     }
 }

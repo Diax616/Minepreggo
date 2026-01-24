@@ -1,8 +1,13 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.ender;
 
-import dev.dixmk.minepreggo.client.animation.preggo.EnderGirlAnimation;
+import javax.annotation.Nullable;
+
+import org.apache.commons.lang3.tuple.ImmutablePair;
+
+import dev.dixmk.minepreggo.client.jiggle.EntityJiggleDataFactory;
+import dev.dixmk.minepreggo.client.jiggle.EntityJiggleDataFactory.JigglePositionConfig;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractMonsterEnderWoman;
-import net.minecraft.client.model.HierarchicalModel;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -11,56 +16,18 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public abstract class AbstractMonsterEnderWomanModel
 	<E extends AbstractMonsterEnderWoman> extends AbstractEnderWomanModel<E> {
 	
-	protected AbstractMonsterEnderWomanModel(ModelPart root, HierarchicalModel<E> animator) {
-		super(root, animator);
+	protected AbstractMonsterEnderWomanModel(ModelPart root, EnderWomanAnimator<E> animator, @Nullable ImmutablePair<PregnancyPhase, Boolean> pregnancyPhaseAndSimpleBellyJiggle) {
+		super(root, animator, pregnancyPhaseAndSimpleBellyJiggle);
 		this.belly.visible = false;
 	}
 	
 	protected AbstractMonsterEnderWomanModel(ModelPart root) {
-		this(root, createDefaultHierarchicalModel(root));
+		this(root, new EnderWomanAnimator.BasicEnderWomanAnimator<>(root), null);
 	}
 	
-	private static<E extends AbstractMonsterEnderWoman> HierarchicalModel<E> createDefaultHierarchicalModel(ModelPart root) {
-		return new HierarchicalModel<E>() {		
-			@Override
-			public ModelPart root() {
-				return root;
-			}
-
-			@Override
-			public void setupAnim(E entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-				this.root().getAllParts().forEach(ModelPart::resetPose);
-						
-				boolean isCarring = entity.isCarring();
-				
-				if (!isCarring && entity.isAttacking()) {
-				    this.animate(entity.attackAnimationState, EnderGirlAnimation.ATTACK, ageInTicks, 1f);
-				}
-				
-				if (isCarring) {
-				    this.animate(entity.loopAnimationState, EnderGirlAnimation.CARRING, ageInTicks, 1f);
-				}
-				
-				if (entity.isCreepy()) {
-				    this.animate(entity.loopAnimationState, EnderGirlAnimation.CREEPY, ageInTicks, 1f);
-				}
-						
-				if (entity.walkAnimation.isMoving()) {
-					if (isCarring) {
-						this.animateWalk(EnderGirlAnimation.WALK2, limbSwing, limbSwingAmount * 4F, 1f, 1f);
-					}
-					else {
-						this.animateWalk(EnderGirlAnimation.WALK1, limbSwing, limbSwingAmount * 4F, 1f, 1f);
-					}
-				} 
-				
-				if (entity.isPassenger()) {
-					this.animate(entity.loopAnimationState, EnderGirlAnimation.RIDING, ageInTicks, 1f);						
-				}
-				else {
-					this.animate(entity.loopAnimationState, EnderGirlAnimation.IDLE, ageInTicks, 1f);						
-				}		
-			}	
-		};
+	@Override
+	protected JigglePositionConfig createJiggleConfig() {
+		return EntityJiggleDataFactory.JigglePositionConfig.boobs(this.boobs.y);
 	}
 }
+

@@ -12,15 +12,18 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class HumanoidTamablePregnantCreeperGirlExpressionLayer 
-	<E extends AbstractTamablePregnantHumanoidCreeperGirl<?,?>, M extends AbstractTamableHumanoidPregnantCreeperGirlModel<E>> extends AbstractHumanoidCreeperGirlExpressionFacialLayer<E, M> {
+	<E extends AbstractTamablePregnantHumanoidCreeperGirl, M extends AbstractTamableHumanoidPregnantCreeperGirlModel<E>> extends AbstractHumanoidCreeperGirlExpressionFacialLayer<E, M> {
 	
 	public HumanoidTamablePregnantCreeperGirlExpressionLayer(RenderLayerParent<E, M> p_117346_) {
 		super(p_117346_);
 	}
 	
 	@Override
-	public @Nullable RenderType renderType(E creeperGirl) {			
-		final var pain = creeperGirl.getPregnancyPain();
+	public @Nullable RenderType renderType(E creeperGirl) {		
+		
+		final var pregnancyData =  creeperGirl.getPregnancyData();
+		final var tamableData = creeperGirl.getTamableData();
+		final var pain = pregnancyData.getPregnancyPain();
 			
 		if (pain != null) {
 			switch (pain) {
@@ -50,16 +53,16 @@ public class HumanoidTamablePregnantCreeperGirlExpressionLayer
 			}
 		}
 	
-		if (!creeperGirl.getPregnancySymptoms().isEmpty()) {
+		if (!pregnancyData.getSyncedPregnancySymptoms().isEmpty()) {
 			return SAD1;
 		}
-		else if (creeperGirl.getFaceState() == PreggoMobFace.BLUSHED) {
+		else if (tamableData.getFaceState() == PreggoMobFace.BLUSHED) {
 			return HORNY2;
 		}
-		else if (creeperGirl.isWaiting()) {
+		else if (tamableData.isWaiting()) {
 			return SAD2;
 		}
-		else if (creeperGirl.isSavage()) {
+		else if (tamableData.isSavage()) {
 			return SAD3;
 		}
 

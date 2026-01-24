@@ -1,40 +1,24 @@
 package dev.dixmk.minepreggo.world.entity.preggo.creeper;
 
-import java.util.Optional;
-import java.util.UUID;
-
-import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.apache.commons.lang3.tuple.ImmutableTriple;
-import org.checkerframework.checker.nullness.qual.NonNull;
-
-import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
+import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.world.entity.ai.goal.PreggoMobAIHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMobData;
+import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMobSystem;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
-import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobBody;
-import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobFace;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem;
-import dev.dixmk.minepreggo.world.entity.preggo.Species;
+import dev.dixmk.minepreggo.world.entity.preggo.TamablePreggoMobDataImpl;
 import dev.dixmk.minepreggo.world.inventory.preggo.creeper.AbstractCreeperGirlInventoryMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.creeper.AbstractCreeperGirlMainMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlMenuHelper;
-import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
-import dev.dixmk.minepreggo.world.pregnancy.Gender;
 import dev.dixmk.minepreggo.world.pregnancy.IFemaleEntity;
-import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
-import dev.dixmk.minepreggo.world.pregnancy.PostPregnancyData;
-import dev.dixmk.minepreggo.world.pregnancy.PrePregnancyData;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -64,103 +48,74 @@ import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import net.minecraftforge.items.wrapper.EntityArmorInvWrapper;
 import net.minecraftforge.items.wrapper.EntityHandsInvWrapper;
 
-public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> extends AbstractCreeperGirl implements ITamablePreggoMob<FemaleEntityImpl>, IFemaleEntity {
-	
-	private static final EntityDataAccessor<Integer> DATA_HUNGRY = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.INT);
-	private static final EntityDataAccessor<Boolean> DATA_SAVAGE = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
-	private static final EntityDataAccessor<Boolean> DATA_ANGRY = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
-	private static final EntityDataAccessor<Boolean> DATA_WAITING = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
-	private static final EntityDataAccessor<CombatMode> DATA_COMBAT_MODE = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, MinepreggoModEntityDataSerializers.COMBAT_MODE);
-	private static final EntityDataAccessor<Boolean> DATA_BREAK_BLOCKS = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
-	private static final EntityDataAccessor<Boolean> DATA_PICKUP_ITEMS = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
-	
-	private static final EntityDataAccessor<Optional<PreggoMobFace>> DATA_FACE = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, MinepreggoModEntityDataSerializers.OPTIONAL_PREGGO_MOB_FACE);
-	private static final EntityDataAccessor<Optional<PreggoMobBody>> DATA_BODY = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, MinepreggoModEntityDataSerializers.OPTIONAL_PREGGO_MOB_BODY);
-	
+public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl implements ITamablePreggoMob<IFemaleEntity> {
 	public static final int INVENTORY_SIZE = 13;
 	private final ItemStackHandler inventory = new ItemStackHandler(INVENTORY_SIZE);
 	private final CombinedInvWrapper combined = new CombinedInvWrapper(inventory, new EntityHandsInvWrapper(this), new EntityArmorInvWrapper(this));	
-	private int hungryTimer = 0;
-	private int poweredTimer = 0; 
-	private boolean panic = false;
-	protected final S preggoMobSystem;
 	
-	protected final FemaleEntityImpl defaultFemaleEntityImpl = new FemaleEntityImpl();
+    private static final TamablePreggoMobDataImpl.DataAccessor<AbstractTamableCreeperGirl> DATA_HOLDER = new TamablePreggoMobDataImpl.DataAccessor<>(AbstractTamableCreeperGirl.class);
+	
+	protected final ITamablePreggoMobSystem preggoMobSystem;
+	
+	protected final IFemaleEntity femaleEntityData;
 
+	protected final ITamablePreggoMobData tamablePreggoMobData = new TamablePreggoMobDataImpl<>(DATA_HOLDER, this);
+	
+	protected boolean breakBlocks = false;
+	private	int poweredTimer = 0;
+	
 	protected AbstractTamableCreeperGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_, Creature typeOfCreature) {
 	      super(p_21803_, p_21804_, typeOfCreature);
 	      this.reassessTameGoals();	   
-	      this.preggoMobSystem = createPreggoMobSystem();
+	      this.femaleEntityData = createFemaleEntityData();
+	      this.preggoMobSystem = createTamablePreggoMobSystem();
+	      
+	      if (this.getTamableData() == null) {
+	    	  MinepreggoMod.LOGGER.error("TamablePreggoMobData is null for entity {}", this);
+	      }
+	      else {
+	    	  MinepreggoMod.LOGGER.info("TamablePreggoMobData created for entity {}", this);
+	      }
 	}
 		 
-	@Nonnull
-	protected abstract S createPreggoMobSystem();
+	protected abstract @Nonnull ITamablePreggoMobSystem createTamablePreggoMobSystem();
 	
+	protected abstract @Nonnull IFemaleEntity createFemaleEntityData();
+	
+	@Override
+	public void setBreakBlocks(boolean breakBlocks) {
+		this.breakBlocks = breakBlocks;
+	}
+
+	@Override
+	public boolean canBreakBlocks() {
+		return this.breakBlocks;
+	}
+
 	@Override
 	protected void defineSynchedData() {
 		super.defineSynchedData();
-		this.entityData.define(DATA_HUNGRY, 12);		
-		this.entityData.define(DATA_SAVAGE, true);
-		this.entityData.define(DATA_ANGRY, false);
-		this.entityData.define(DATA_WAITING, false);
-		this.entityData.define(DATA_BREAK_BLOCKS, false);
-		this.entityData.define(DATA_PICKUP_ITEMS, this.canPickUpLoot());
-		this.entityData.define(DATA_COMBAT_MODE, CombatMode.FIGHT_AND_EXPLODE);
-		this.entityData.define(DATA_FACE, Optional.empty());
-		this.entityData.define(DATA_BODY, Optional.empty());
+		DATA_HOLDER.defineSynchedData(this);
 	}
 	
 	@Override
 	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
 		compound.put("InventoryCustom", inventory.serializeNBT());
-		compound.putInt("DataHungry", this.entityData.get(DATA_HUNGRY));
-		compound.putInt("DataHungryTimer", this.hungryTimer);	
-		compound.putBoolean("DataSavage", this.entityData.get(DATA_SAVAGE));
-		compound.putBoolean("DataWaiting", this.entityData.get(DATA_WAITING));
-		compound.putBoolean("DataAngry", this.entityData.get(DATA_ANGRY));
-		compound.putBoolean("DataBreakBlocks", this.entityData.get(DATA_BREAK_BLOCKS));
-		compound.putBoolean("DataPickUpItems", this.entityData.get(DATA_PICKUP_ITEMS));
-		compound.putInt("DataPoweredTimer", this.poweredTimer);
-		compound.putString(CombatMode.NBT_KEY, this.entityData.get(DATA_COMBAT_MODE).name());	
-		
-		compound.putBoolean("DataPanic", this.panic);
-		final var face = getFaceState();
-		if (face != null) {
-			compound.putString(PreggoMobFace.NBT_KEY, face.name());
-		}
-		final var body = getBodyState();
-		if (body != null) {
-			compound.putString(PreggoMobBody.NBT_KEY, body.name());
-		}
-		compound.put("defaultFemaleEntityImpl", this.defaultFemaleEntityImpl.serializeNBT());
-	}
+		compound.put("defaultFemaleEntityImpl", this.femaleEntityData.serializeNBT());
+		compound.put("TamableData", tamablePreggoMobData.serializeNBT());
+	}	
 	
 	@Override
 	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
-		Tag inventoryCustom = compound.get("InventoryCustom");
-		if (inventoryCustom instanceof CompoundTag inventoryTag)
-			inventory.deserializeNBT(inventoryTag);	
-		this.entityData.set(DATA_HUNGRY, compound.getInt("DataHungry"));
-		this.hungryTimer = compound.getInt("DataHungryTimer");		
-		this.entityData.set(DATA_SAVAGE, compound.getBoolean("DataSavage"));		
-		this.entityData.set(DATA_WAITING, compound.getBoolean("DataWaiting"));		
-		this.entityData.set(DATA_ANGRY, compound.getBoolean("DataAngry"));	
-		this.entityData.set(DATA_BREAK_BLOCKS, compound.getBoolean("DataBreakBlocks"));	
-		this.entityData.set(DATA_PICKUP_ITEMS, compound.getBoolean("DataPickUpItems"));	
-		this.poweredTimer = compound.getInt("DataPoweredTimer");
-		this.entityData.set(DATA_COMBAT_MODE, CombatMode.valueOf(compound.getString(CombatMode.NBT_KEY)));	
-		
-		this.panic = compound.getBoolean("DataPanic");
-		if (compound.contains(PreggoMobFace.NBT_KEY, Tag.TAG_STRING)) {
-			setFaceState(PreggoMobFace.valueOf(compound.getString(PreggoMobFace.NBT_KEY)));
-		}
-		if (compound.contains(PreggoMobBody.NBT_KEY, Tag.TAG_STRING)) {
-			setBodyState(PreggoMobBody.valueOf(compound.getString(PreggoMobBody.NBT_KEY)));
-		}
+		if (compound.get("InventoryCustom") instanceof CompoundTag inventoryTag)
+			inventory.deserializeNBT(inventoryTag);		
 		if (compound.contains("defaultFemaleEntityImpl", Tag.TAG_COMPOUND)) {
-			this.defaultFemaleEntityImpl.deserializeNBT(compound.getCompound("defaultFemaleEntityImpl"));
+			femaleEntityData.deserializeNBT(compound.getCompound("defaultFemaleEntityImpl"));
+		}
+		if (compound.contains("TamableData", Tag.TAG_COMPOUND)) {
+			tamablePreggoMobData.deserializeNBT(compound.getCompound("TamableData"));
 		}
 	}
 	
@@ -181,19 +136,9 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 		return true;
 	}
 	
-	public void setcombatMode(CombatMode value) {
-		this.entityData.set(DATA_COMBAT_MODE, value);
-		if (value == CombatMode.EXPLODE)
-			this.maxDistance = 4D;
-	}
-	
-	public CombatMode getcombatMode() {
-		return this.entityData.get(DATA_COMBAT_MODE);
-	}
-	
 	@Override
 	public boolean canExplode() {
-		switch (this.getcombatMode()) {
+		switch (this.getCombatMode()) {
 		case FIGHT_AND_EXPLODE: {
 			return this.getHealth() <= this.getMaxHealth() / 2F;
 		}
@@ -246,11 +191,11 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 		boolean result = super.hurt(damagesource, amount);	
 		if (result && !this.level().isClientSide) {
 			PreggoMobHelper.tryToDamageArmor(this, damagesource);			
-			if (canBePanicking()
+			if (this.tamablePreggoMobData.canBePanicking()
 					&& damagesource.is(DamageTypes.GENERIC)
 					&& !this.isOwnedBy(this.getLastHurtByMob())) {			
 					this.setTarget(this.getLastHurtByMob());							
-					this.setPanic(true);
+					this.tamablePreggoMobData.setPanic(true);
 			}	
 			
 			if (this.getOwner() instanceof ServerPlayer serverPlayer
@@ -259,10 +204,6 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 			}			
 		}		
 		return result;
-	}
-	
-	public boolean canBePanicking() {
-		return this.isWaiting() && !this.isPanic();
 	}
 	
 	@Override
@@ -277,7 +218,7 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 	@Override
 	protected void afterTaming() {
 		if (!this.level().isClientSide) {
-			this.setSavage(false);
+			this.tamablePreggoMobData.setSavage(false);
 		}
 	}
 	
@@ -292,7 +233,8 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 				CreeperGirlMenuHelper.showMainMenu(serverPlayer, this);			
 				
 				// TODO: Find a better way to stop panicking when owner interacts with the mob.
-				if (this.isPanic()) setPanic(false);
+				if (this.tamablePreggoMobData.isPanic())
+					this.tamablePreggoMobData.setPanic(false);
 			}	
 			return InteractionResult.sidedSuccess(this.level().isClientSide);
 		}
@@ -303,7 +245,7 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 	
 	@Override
 	public boolean hasCustomHeadAnimation() {
-		return isWaiting();
+		return this.tamablePreggoMobData.isWaiting();
 	}
 	
 	@Override
@@ -366,343 +308,24 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 	}
 	
 	@Override
-	public int getFullness() {
-	    return this.entityData.get(DATA_HUNGRY);
-	}
-
-	@Override
-	public void setFullness(int hungry) {
-	    this.entityData.set(DATA_HUNGRY, hungry);
-	}
-
-	@Override
-	public int getHungryTimer() {
-	    return this.hungryTimer;
-	}
-
-	@Override
-	public void setHungryTimer(int ticks) {
-	    this.hungryTimer = ticks;
-	}
-	
-	@Override
-	public void incrementFullness(int amount) {
-		this.setFullness(Math.min(this.getFullness() + amount, ITamablePreggoMob.MAX_FULLNESS));
-	}
-
-
-	@Override
-	public void reduceFullness(int amount) {
-		this.setFullness(Math.max(this.getFullness() - amount, 0));
-		
-	}
-
-	@Override
-	public void incrementHungryTimer() {
-		++this.hungryTimer;
-	}
-
-	@Override
-	public void resetHungryTimer() {
-		this.hungryTimer = 0;	
-	}
-
-	@Override
-	public boolean isSavage() {
-	    return this.entityData.get(DATA_SAVAGE);
-	}
-	
-	@Override
-	public void setSavage(boolean savage) {
-	    this.entityData.set(DATA_SAVAGE, savage);
-	}
-	
-	@Override
-	public boolean isWaiting() {
-	    return this.entityData.get(DATA_WAITING);
-	}
-	
-	@Override
-	public void setWaiting(boolean waiting) {
-	    this.entityData.set(DATA_WAITING, waiting);
-	}
-	
-	@Override
-	public boolean isAngry() {
-	    return this.entityData.get(DATA_ANGRY);
-	}
-	
-	@Override
-	public void setAngry(boolean angry) {
-	    this.entityData.set(DATA_ANGRY, angry);
-	}
-	
-	@Override
-	public boolean isPanic() {
-		return this.panic;
-	}
-
-	@Override
-	public void setPanic(boolean panic) {
-	    this.panic = panic;
-	}
-	
-	@Override
 	public void setCinematicOwner(ServerPlayer player) {
-		preggoMobSystem.setCinematicOwner(player);
+		this.preggoMobSystem.setCinematicOwner(player);
 	}
 
 	@Override
 	public void setCinematicEndTime(long time) {
-		preggoMobSystem.setCinematicEndTime(time);
+		this.preggoMobSystem.setCinematicEndTime(time);
+	}
+		
+	@Override
+	public IFemaleEntity getGenderedData() {
+		return femaleEntityData;
 	}
 	
 	@Override
-	public boolean canPickUpItems() {
-		return this.entityData.get(DATA_PICKUP_ITEMS);
-	}
-
-	@Override
-	public void setPickUpItems(boolean value) {
-		this.entityData.set(DATA_PICKUP_ITEMS, value);	
-		this.setCanPickUpLoot(value);
-	}
-
-	@Override
-	public boolean canBreakBlocks() {
-		return this.entityData.get(DATA_BREAK_BLOCKS);
-	}
-
-	@Override
-	public void setBreakBlocks(boolean value) {
-		this.entityData.set(DATA_BREAK_BLOCKS, value);
-	}
-
-	@Override
-	public @Nullable PreggoMobFace getFaceState() {
-		return this.entityData.get(DATA_FACE).orElse(null);
-	}
-
-	@Override
-	public void setFaceState(@Nullable PreggoMobFace state) {
-		this.entityData.set(DATA_FACE, Optional.ofNullable(state));
-	}
-
-	@Override
-	public void cleanFaceState() {
-		this.entityData.set(DATA_FACE, Optional.empty());
-	}
-
-	@Override
-	public @Nullable PreggoMobBody getBodyState() {
-		return this.entityData.get(DATA_BODY).orElse(null);
-	}
-
-	@Override
-	public void setBodyState(@Nullable PreggoMobBody state) {
-		this.entityData.set(DATA_BODY, Optional.ofNullable(state));	
-	}
-
-	@Override
-	public void cleanBodyState() {
-		this.entityData.set(DATA_BODY, Optional.empty());			
-	}
-	
-	@Override
-	public FemaleEntityImpl getGenderedData() {
-		return defaultFemaleEntityImpl;
+	public  ITamablePreggoMobData getTamableData() {
+		return tamablePreggoMobData;
 	}
 	
 	// ITamablePreggoMob END
-	
-
-	
-	// IFemaleEntity START	
-	@Override
-	public int getPregnancyInitializerTimer() {
-		return this.defaultFemaleEntityImpl.getPregnancyInitializerTimer();
-	}
-
-	@Override
-	public void setPregnancyInitializerTimer(int ticks) {
-		this.defaultFemaleEntityImpl.setPregnancyInitializerTimer(ticks);
-	}
-
-	@Override
-	public void incrementPregnancyInitializerTimer() {
-		this.defaultFemaleEntityImpl.incrementPregnancyInitializerTimer();
-	}
-
-	@Override
-	public boolean isPregnant() {
-		return this.defaultFemaleEntityImpl.isPregnant();
-	}
-
-	@Override
-	public boolean canGetPregnant() {
-		return this.defaultFemaleEntityImpl.canGetPregnant();
-	}
-
-	@Override
-	public boolean tryImpregnate(@Nonnegative int fertilizedEggs, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father) {
-		return this.defaultFemaleEntityImpl.tryImpregnate(fertilizedEggs, father);
-	}
-	
-	@Override
-	public Optional<PrePregnancyData> getPrePregnancyData() {
-		return this.defaultFemaleEntityImpl.getPrePregnancyData();
-	}
-	
-	@Override
-	public Optional<PostPregnancyData> getPostPregnancyData() {
-		return this.defaultFemaleEntityImpl.getPostPregnancyData();
-	}
-	
-	@Override
-	public boolean tryCancelPregnancy() {
-		return this.defaultFemaleEntityImpl.tryCancelPregnancy();
-	}
-
-	@Override
-	public @Nullable UUID getFather() {
-		return this.defaultFemaleEntityImpl.getFather();
-	}
-
-	@Override
-	public boolean hasNaturalPregnancy() {
-		return this.defaultFemaleEntityImpl.hasNaturalPregnancy();
-	}
-
-	
-	
-	// START WARNING: These methods will be removed from IFemaleEntity in future versions, they are only present here because of synchronization issues between server and client
-	@Override
-	public @Nullable PostPregnancy getPostPregnancyPhase() {
-		return this.defaultFemaleEntityImpl.getPostPregnancyPhase();
-	}
-
-	@Override
-	public int getPostPartumLactation() {
-		return this.defaultFemaleEntityImpl.getPostPartumLactation();
-	}
-	
-	@Override
-	public void setPostPartumLactation(int amount) {
-		this.defaultFemaleEntityImpl.setPostPartumLactation(amount);
-	}
-
-	@Override
-	public boolean tryActivatePostPregnancyPhase(@NonNull PostPregnancy postPregnancy) {
-		return this.defaultFemaleEntityImpl.tryActivatePostPregnancyPhase(postPregnancy);
-	}
-
-	@Override
-	public boolean tryRemovePostPregnancyPhase() {
-		return this.defaultFemaleEntityImpl.tryRemovePostPregnancyPhase();
-	}
-	
-	@Override
-	public int getPostPregnancyTimer() {
-		return this.defaultFemaleEntityImpl.getPostPregnancyTimer();
-	}
-
-	@Override
-	public void setPostPregnancyTimer(int ticks) {
-		this.defaultFemaleEntityImpl.setPostPregnancyTimer(ticks);
-	}
-
-	@Override
-	public void incrementPostPregnancyTimer() {
-		this.defaultFemaleEntityImpl.incrementPostPregnancyTimer();	
-	}	
-	// END WARNING
-	
-	
-	
-	@Override
-	public int getFertilityRateTimer() {
-		return this.defaultFemaleEntityImpl.getFertilityRateTimer();
-	}
-
-	@Override
-	public void setFertilityRateTimer(int ticks) {
-		this.defaultFemaleEntityImpl.setFertilityRateTimer(ticks);
-	}
-
-	@Override
-	public void incrementFertilityRateTimer() {
-		this.defaultFemaleEntityImpl.incrementFertilityRateTimer();
-	}
-
-	@Override
-	public float getFertilityRate() {
-		return this.defaultFemaleEntityImpl.getFertilityRate();
-	}
-
-	@Override
-	public void setFertilityRate(float rate) {
-		this.defaultFemaleEntityImpl.setFertilityRate(rate);
-	}
-
-	@Override
-	public void incrementFertilityRate(float rate) {
-		this.defaultFemaleEntityImpl.incrementFertilityRate(rate);
-	}
-
-	@Override
-	public int getSexualAppetite() {
-		return this.defaultFemaleEntityImpl.getSexualAppetite();
-	}
-
-	@Override
-	public void setSexualAppetite(int sexualAppetite) {
-		this.defaultFemaleEntityImpl.setSexualAppetite(sexualAppetite);
-	}
-
-	@Override
-	public void reduceSexualAppetite(int amount) {
-		this.defaultFemaleEntityImpl.reduceSexualAppetite(amount);
-	}
-
-	@Override
-	public void incrementSexualAppetite(int amount) {
-		this.defaultFemaleEntityImpl.incrementSexualAppetite(amount);
-	}
-
-	@Override
-	public int getSexualAppetiteTimer() {
-		return this.defaultFemaleEntityImpl.getSexualAppetiteTimer();
-	}
-
-	@Override
-	public void setSexualAppetiteTimer(int timer) {
-		this.defaultFemaleEntityImpl.setSexualAppetiteTimer(timer);
-	}
-
-	@Override
-	public void incrementSexualAppetiteTimer() {
-		this.defaultFemaleEntityImpl.incrementSexualAppetiteTimer();
-	}
-
-	@Override
-	public Gender getGender() {
-		return this.defaultFemaleEntityImpl.getGender();
-	}
-
-	@Override
-	public boolean canFuck() {
-		return this.defaultFemaleEntityImpl.canFuck();
-	}
-
-	@Override
-	public void resetFertilityRateTimer() {
-		this.defaultFemaleEntityImpl.resetFertilityRateTimer();	
-	}
-
-	@Override
-	public void resetFertilityRate() {
-		this.defaultFemaleEntityImpl.resetFertilityRate();	
-	}
-	
-	// IFemaleEntity END
 }

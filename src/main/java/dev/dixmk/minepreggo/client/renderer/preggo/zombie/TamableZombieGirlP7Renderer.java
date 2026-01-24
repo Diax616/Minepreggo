@@ -23,7 +23,7 @@ public class TamableZombieGirlP7Renderer extends AbstractTamablePregnantZombieGi
 
 	@Override
 	public ResourceLocation getTextureLocation(TamableZombieGirlP7 entity) {
-		if (entity.getBodyState() == PreggoMobBody.NAKED) {
+		if (entity.getTamableData().getBodyState() == PreggoMobBody.NAKED) {
 			return ZOMBIE_GIRL_P7_LOCATION.getRight();
 		}
 		return ZOMBIE_GIRL_P7_LOCATION.getLeft(); 

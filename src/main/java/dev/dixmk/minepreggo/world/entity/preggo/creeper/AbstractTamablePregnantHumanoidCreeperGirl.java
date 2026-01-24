@@ -3,9 +3,6 @@ package dev.dixmk.minepreggo.world.entity.preggo.creeper;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobPregnancySystemP0;
-import dev.dixmk.minepreggo.world.entity.preggo.PregnantPreggoMobSystemP0;
-import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.world.entity.EntityType;
@@ -14,9 +11,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-public abstract class AbstractTamablePregnantHumanoidCreeperGirl<S extends PregnantPreggoMobSystemP0<?>, P extends PreggoMobPregnancySystemP0<?>> extends AbstractTamablePregnantCreeperGirl<S, P> {
+public abstract class AbstractTamablePregnantHumanoidCreeperGirl extends AbstractTamablePregnantCreeperGirl {
 
-	protected AbstractTamablePregnantHumanoidCreeperGirl(EntityType<? extends AbstractTamableCreeperGirl<?>> p_21803_, Level p_21804_, PregnancyPhase pStage) {
+	protected AbstractTamablePregnantHumanoidCreeperGirl(EntityType<? extends AbstractTamableCreeperGirl> p_21803_, Level p_21804_, PregnancyPhase pStage) {
 		super(p_21803_, p_21804_, Creature.HUMANOID, pStage);
 	}
 	
@@ -24,15 +21,15 @@ public abstract class AbstractTamablePregnantHumanoidCreeperGirl<S extends Pregn
 	protected boolean canReplaceArmorBasedInPregnancyPhase(ItemStack armor) {	
 		final var slot = LivingEntity.getEquipmentSlotForItem(armor);				
 		if (slot == EquipmentSlot.CHEST) {
-			return PregnancySystemHelper.canUseChestplate(armor.getItem(), this.getCurrentPregnancyStage(), false) && PreggoMobHelper.canUseChestPlateInLactation((IPregnancySystemHandler) this, armor.getItem());
+			return PregnancySystemHelper.canUseChestplate(armor.getItem(), this.pregnancyData.getCurrentPregnancyPhase(), false) && PreggoMobHelper.canUseChestPlateInLactation(this, armor.getItem());
 		}
 		else if (slot == EquipmentSlot.LEGS) {
-			return PregnancySystemHelper.canUseLegging(armor.getItem(), this.getCurrentPregnancyStage());
+			return PregnancySystemHelper.canUseLegging(armor.getItem(), this.pregnancyData.getCurrentPregnancyPhase());
 		}
 		return true;
 	}
 	
-	public static EntityType<? extends AbstractTamablePregnantHumanoidCreeperGirl<?,?>> getEntityType(PregnancyPhase phase) {	
+	public static EntityType<? extends AbstractTamablePregnantHumanoidCreeperGirl> getEntityType(PregnancyPhase phase) {	
 		switch (phase) {
 		case P0: {
 			return MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P0.get();

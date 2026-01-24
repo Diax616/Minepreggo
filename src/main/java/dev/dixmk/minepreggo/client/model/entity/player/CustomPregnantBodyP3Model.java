@@ -19,15 +19,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class CustomPregnantBodyP3Model extends AbstractHeavyPregnantBodyModel {
-	
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "custom_pregnant_body_p3_model"), "main");
-	
+
 	public CustomPregnantBodyP3Model(ModelPart root) {
-		super(root,
-				BellyInflation.MEDIUM,
-				FetalMovementIntensity.P3,
-				PregnancyPhase.P3,
-				SkinType.CUSTOM);
+		super(root, BellyInflation.MEDIUM, FetalMovementIntensity.P3, PregnancyPhase.P3, SkinType.CUSTOM);
 		milkingBoobsYPos = -0.46F;
 	}
 	
@@ -35,7 +30,7 @@ public class CustomPregnantBodyP3Model extends AbstractHeavyPregnantBodyModel {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 		PartDefinition body = partdefinition.addOrReplaceChild("body", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-		PartDefinition boobs = body.addOrReplaceChild("boobs", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 2.0F, -2.0F, -0.3316F, 0.0F, 0.0F));
+		PartDefinition boobs = body.addOrReplaceChild("boobs", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 2.1F, -2.0F, -0.3316F, 0.0F, 0.0F));
 		PartDefinition rightBoob = boobs.addOrReplaceChild("right_boob", CubeListBuilder.create(), PartPose.offset(-1.5F, 0.0F, 0.0F));
 		rightBoob.addOrReplaceChild("rightBoobCube_r1", CubeListBuilder.create().texOffs(18, 21).addBox(-1.5F, -1.6F, -1.6F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.3F)), PartPose.offsetAndRotation(-0.5336F, 1.8279F, -0.7635F, 0.3491F, 0.1745F, 0.0436F));
 		PartDefinition leftBoob = boobs.addOrReplaceChild("left_boob", CubeListBuilder.create(), PartPose.offset(1.5F, 0.0F, 0.0F));

@@ -11,7 +11,7 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.client.gui.component.ToggleableCheckbox;
 import dev.dixmk.minepreggo.client.gui.preggo.AbstractPreggoMobMainScreen;
-import dev.dixmk.minepreggo.network.packet.UpdateCreeperGirlCombatModeC2SPacket;
+import dev.dixmk.minepreggo.network.packet.c2s.UpdateCreeperGirlCombatModeC2SPacket;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractCreeperGirl.CombatMode;
@@ -25,7 +25,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class AbstractCreeperGirlMainScreen
-	<E extends AbstractTamableCreeperGirl<?>, G extends AbstractCreeperGirlMainMenu<E>> extends AbstractPreggoMobMainScreen<E, G> {
+	<E extends AbstractTamableCreeperGirl, G extends AbstractCreeperGirlMainMenu<E>> extends AbstractPreggoMobMainScreen<E, G> {
 	
 	protected static final ImmutableMap<Craving, ResourceLocation> CRAVING_ICONS = ImmutableMap.of(
 			Craving.SALTY, MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/activated_gunpowder_with_salt.png"), 
@@ -34,9 +34,11 @@ public abstract class AbstractCreeperGirlMainScreen
 			Craving.SPICY, MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/activated_gunpowder_with_hot_sauce.png"));
 					
 	private final List<ToggleableCheckbox> combatModes = new ArrayList<>();
-
+	protected final CombatMode currentCombatMode;
+	
 	protected AbstractCreeperGirlMainScreen(G container, Inventory inventory, Component text) {
 		super(container, inventory, text, 1, 89);	
+		this.currentCombatMode = container.currentCombatMode.orElse(CombatMode.DONT_EXPLODE);
 	}
 	
 	@Override
@@ -47,7 +49,6 @@ public abstract class AbstractCreeperGirlMainScreen
 	
 	private void addCombatModeCheckboxes() {
 		this.preggoMob.ifPresent(mob -> {
-			final var currentCombatMode = mob.getcombatMode();
 			final var creeperGirlId = mob.getId();
 						
 			var explodeCheckBox = ToggleableCheckbox.builder(this.leftPos + 190, this.topPos, 20, 20, Component.translatable("gui.minepreggo.creeper_girl_main.checkbox_explode"), currentCombatMode == CombatMode.EXPLODE)

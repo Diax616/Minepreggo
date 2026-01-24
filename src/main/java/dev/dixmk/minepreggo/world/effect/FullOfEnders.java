@@ -28,9 +28,9 @@ public class FullOfEnders extends MobEffect {
 		if (entity instanceof ServerPlayer serverPlayer) {		
 			serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 			
 				cap.getFemaleData().ifPresent(femaleData -> {
-					if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {
-						var pregnancySystem = femaleData.getPregnancySystem();
-						if (serverPlayer.getRandom().nextFloat() < calculateProbabilityToRandomTeleport(pregnancySystem.getCurrentPregnancyStage(), pregnancySystem.getWomb())) {
+					if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
+						var pregnancySystem = femaleData.getPregnancyData();
+						if (serverPlayer.getRandom().nextFloat() < calculateProbabilityToRandomTeleport(pregnancySystem.getCurrentPregnancyPhase(), pregnancySystem.getWomb())) {
 							randomTeleport(entity);
 							PregnancySystemHelper.playSoundNearTo(entity, MinepreggoModSounds.getRandomStomachGrowls(entity.getRandom()));
 						}					

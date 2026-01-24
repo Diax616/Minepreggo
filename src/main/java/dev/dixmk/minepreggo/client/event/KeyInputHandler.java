@@ -5,8 +5,8 @@ import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.client.animation.player.PlayerAnimationManager;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModKeyMappings;
-import dev.dixmk.minepreggo.network.packet.RequestBellyRubbingAnimationC2SPacket;
-import dev.dixmk.minepreggo.network.packet.StopPlayerAnimationC2SPacket;
+import dev.dixmk.minepreggo.network.packet.c2s.RequestBellyRubbingAnimationC2SPacket;
+import dev.dixmk.minepreggo.network.packet.c2s.StopPlayerAnimationC2SPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
@@ -25,8 +25,8 @@ public class KeyInputHandler {
     	if (MinepreggoModKeyMappings.RUB_BELLY_KEY.consumeClick()) {        
         	player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
         		cap.getFemaleData().ifPresent(femaleData -> {
-        			if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {
-        				final var pain = femaleData.getPregnancySystem().getPregnancyPain();
+        			if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
+        				final var pain = femaleData.getPregnancyData().getPregnancyPain();
         				if (pain != null && pain.incapacitate) {
         					return;
         				}
@@ -35,7 +35,7 @@ public class KeyInputHandler {
             				MinepreggoModPacketHandler.INSTANCE.sendToServer(new StopPlayerAnimationC2SPacket(player.getUUID()));
         				}
         				else {
-            				MinepreggoModPacketHandler.INSTANCE.sendToServer(new RequestBellyRubbingAnimationC2SPacket(player.getUUID(), femaleData.getPregnancySystem().getCurrentPregnancyStage()));
+            				MinepreggoModPacketHandler.INSTANCE.sendToServer(new RequestBellyRubbingAnimationC2SPacket(player.getUUID(), femaleData.getPregnancyData().getCurrentPregnancyPhase()));
         				}
         			}
         		})

@@ -6,8 +6,8 @@ import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.network.capability.FemalePlayerImpl;
 import dev.dixmk.minepreggo.network.capability.PlayerDataImpl;
-import dev.dixmk.minepreggo.network.capability.PlayerPregnancyEffectsImpl;
-import dev.dixmk.minepreggo.network.capability.PlayerPregnancySystemImpl;
+import dev.dixmk.minepreggo.network.capability.PlayerPregnancyDataImpl;
+import dev.dixmk.minepreggo.world.entity.BellyPartManager;
 import dev.dixmk.minepreggo.world.pregnancy.AbstractPregnancySystem;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
@@ -20,8 +20,7 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 	
 	protected PlayerDataImpl playerData = null;
 	protected FemalePlayerImpl femaleData = null;
-	protected PlayerPregnancySystemImpl pregnancySystem = null;
-	protected PlayerPregnancyEffectsImpl pregnancyEffects = null;
+	protected PlayerPregnancyDataImpl pregnancySystem = null;
 	
 	private final boolean isValid;
 	
@@ -32,16 +31,23 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 			this.playerData = cap;				
 			cap.getFemaleData().ifPresent(f -> {
 				this.femaleData = f;
-				this.pregnancySystem = f.getPregnancySystem();
-				this.pregnancyEffects = f.getPregnancyEffects();
+				this.pregnancySystem = f.getPregnancyData();
 			});	
 		});	
 		
-		this.isValid = this.playerData != null && this.pregnancySystem != null && this.pregnancyEffects != null;
+		this.isValid = this.playerData != null && this.pregnancySystem != null;
 	}
 
 	public boolean isPlayerValid(ServerPlayer currentPlayer) {
 	    if (this.pregnantEntity == null || currentPlayer == null) {
+	        return false;
+	    }
+	    
+	    if (this.pregnantEntity.isRemoved() || currentPlayer.isRemoved()) {
+	        return false;
+	    }
+	    
+	    if (!this.pregnantEntity.isAlive() || !currentPlayer.isAlive()) {
 	        return false;
 	    }
 	    
@@ -61,8 +67,8 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 			return;
 		}
 		if (!isValid) {
-			MinepreggoMod.LOGGER.warn("PlayerPregnancySystem is not valid for player: {}. Aborting onServerTick. playerData: {}, femaleData: {}, pregnancySystem: {}, pregnancyEffects: {}",
-					pregnantEntity.getGameProfile().getName(), this.playerData != null, this.femaleData != null, this.pregnancySystem != null, this.pregnancyEffects != null);		
+			MinepreggoMod.LOGGER.warn("PlayerPregnancySystem is not valid for player: {}. Aborting onServerTick. playerData: {}, femaleData: {}, pregnancySystem: {}",
+					pregnantEntity.getGameProfile().getName(), this.playerData != null, this.femaleData != null, this.pregnancySystem != null);		
 			return;
 		}	
 		evaluatePregnancySystem();
@@ -176,18 +182,20 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 
 	@Override
 	protected void advanceToNextPregnancyPhase() {		
-		final var previousStage = pregnancySystem.getCurrentPregnancyStage();
+		final var previousStage = pregnancySystem.getCurrentPregnancyPhase();
 		final var phases = PregnancyPhase.values();	
 		final var next = phases[Math.min(previousStage.ordinal() + 1, phases.length - 1)];
 		
-		pregnantEntity.removeEffect(PlayerHelper.getPregnancyEffects(pregnancySystem.getCurrentPregnancyStage()));
+		pregnantEntity.removeEffect(PlayerHelper.getPregnancyEffects(pregnancySystem.getCurrentPregnancyPhase()));
 		pregnantEntity.addEffect(new MobEffectInstance(PlayerHelper.getPregnancyEffects(next), -1, 0, false, false, true));
+
+		PlayerHelper.updateJigglePhysics(pregnantEntity, playerData.getSkinType(), next);
 		
-		pregnancySystem.setCurrentPregnancyStage(next);
+		pregnancySystem.setCurrentPregnancyPhase(next);
 		pregnancySystem.resetPregnancyTimer();
 		pregnancySystem.resetDaysPassed();
-		pregnancySystem.sync(pregnantEntity);	
-		
+		pregnancySystem.syncState(pregnantEntity);		
+			
 		if (next.compareTo(PregnancyPhase.P0) > 0) {		
 			var chestplate = pregnantEntity.getItemBySlot(EquipmentSlot.CHEST);
 			var legginds = pregnantEntity.getItemBySlot(EquipmentSlot.LEGS);
@@ -202,7 +210,12 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 				PlayerHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.LEGS);
 			}
 		}
-	
+		
+		if (MinepreggoModConfig.isBellyColisionsEnable()
+				&& next.compareTo(PregnancyPhase.P5) >= 0) {
+			BellyPartManager.getInstance().create(pregnantEntity, next);
+		}
+		
 		MinepreggoMod.LOGGER.debug("Player {} advanced to next pregnancy phase: {}",
 				pregnantEntity.getGameProfile().getName(), next);	
 	}
@@ -234,5 +247,14 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 				pregnantEntity.removeEffect(e);
 			}
 		});	
+		
+		pregnantEntity.removeEffect(MinepreggoModMobEffects.ETERNAL_PREGNANCY.get());
+		pregnantEntity.removeEffect(MinepreggoModMobEffects.ZERO_GRAVITY_BELLY.get());
+		
+		if (MinepreggoModConfig.isBellyColisionsEnable()) {
+			BellyPartManager.getInstance().remove(pregnantEntity);
+		}
+		 
+		MinepreggoMod.LOGGER.debug("Pregnancy removed for player {}", pregnantEntity.getGameProfile().getName());
 	}
 }

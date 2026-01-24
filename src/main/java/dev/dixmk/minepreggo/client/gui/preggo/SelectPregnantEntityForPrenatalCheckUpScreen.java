@@ -18,8 +18,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.client.gui.component.PreggoMobScrollList;
-import dev.dixmk.minepreggo.network.packet.RequestPlayerMedicalCheckUpC2SPacket;
-import dev.dixmk.minepreggo.network.packet.RequestPreggoMobMedicalCheckUpPacket;
+import dev.dixmk.minepreggo.network.packet.c2s.RequestPlayerMedicalCheckUpC2SPacket;
+import dev.dixmk.minepreggo.network.packet.c2s.RequestPreggoMobMedicalCheckUpC2SPacket;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
@@ -100,7 +100,7 @@ public class SelectPregnantEntityForPrenatalCheckUpScreen extends AbstractContai
 	private Optional<Runnable> createRequestMedicalCheckUpPacket(PreggoMob preggoMob) {	
 		Runnable onClick = null;			
 		if (this.scientificIllager.isPresent()) {
-			onClick = () -> MinepreggoModPacketHandler.INSTANCE.sendToServer(new RequestPreggoMobMedicalCheckUpPacket(preggoMob.getId(), this.scientificIllager.get().getId()));
+			onClick = () -> MinepreggoModPacketHandler.INSTANCE.sendToServer(new RequestPreggoMobMedicalCheckUpC2SPacket(preggoMob.getId(), this.scientificIllager.get().getId()));
 		}	
 		return Optional.ofNullable(onClick);
 	}

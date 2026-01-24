@@ -8,12 +8,12 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.client.gui.ScreenHelper;
 import dev.dixmk.minepreggo.client.gui.component.ToggleableCheckbox;
-import dev.dixmk.minepreggo.network.packet.UpdatePreggoMobBreakBlocksC2SPacket;
-import dev.dixmk.minepreggo.network.packet.RequestPreggoMobInventoryMenuC2SPacket;
-import dev.dixmk.minepreggo.network.packet.UpdatePreggoMobPickUpItemC2SPacket;
-import dev.dixmk.minepreggo.network.packet.UpdatePreggoMobWaitC2SPacket;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
-import dev.dixmk.minepreggo.network.packet.RequestSexCinematicP2MC2SPacket;
+import dev.dixmk.minepreggo.network.packet.c2s.RequestPreggoMobInventoryMenuC2SPacket;
+import dev.dixmk.minepreggo.network.packet.c2s.RequestSexCinematicP2MC2SPacket;
+import dev.dixmk.minepreggo.network.packet.c2s.UpdatePreggoMobBreakBlocksC2SPacket;
+import dev.dixmk.minepreggo.network.packet.c2s.UpdatePreggoMobPickUpItemC2SPacket;
+import dev.dixmk.minepreggo.network.packet.c2s.UpdatePreggoMobWaitC2SPacket;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.inventory.preggo.AbstractPreggoMobMainMenu;
@@ -50,6 +50,8 @@ public abstract class AbstractPreggoMobMainScreen
 	
 	protected final Player entity;
 	protected final Optional<E> preggoMob;
+	protected final boolean canPickUpLoot;
+	protected final boolean canBreakBlocks;
 	protected ImageButton inventoryButton;
 	protected ImageButton sexButton;
 	
@@ -75,6 +77,8 @@ public abstract class AbstractPreggoMobMainScreen
 		this.ySexSprite = ySexSprite;
 		this.entity = container.player;
 		this.preggoMob = container.getPreggoMob();
+		this.canPickUpLoot = container.getCanPickUpLoot().orElse(false);
+		this.canBreakBlocks = container.getCanBreakBlocks().orElse(false);
 	}
 
 	@Override
@@ -111,7 +115,7 @@ public abstract class AbstractPreggoMobMainScreen
 	
 	private void addPreggoMobCheckBoxes() {		
 		this.preggoMob.ifPresentOrElse(mob -> {			
-			final var isWaiting = mob.isWaiting();
+			final var isWaiting = mob.getTamableData().isWaiting();
 			final var id = mob.getId();
 					
 			inventoryButton = new ImageButton(this.leftPos - 24, this.topPos + 6, 16, 16, 1, 57, 16, ScreenHelper.MINEPREGGO_ICONS_TEXTURE, 256, 256, 
@@ -135,7 +139,7 @@ public abstract class AbstractPreggoMobMainScreen
 					.onSelect(() -> MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdatePreggoMobWaitC2SPacket(id, false)))
 					.build();
 			
-			var pickUpItems = new Checkbox(this.leftPos + 6, this.topPos + 53, 20, 20, Component.translatable("gui.minepreggo.preggo_mob_main.checkbox_pickup"), mob.canPickUpItems()) {
+			var pickUpItems = new Checkbox(this.leftPos + 6, this.topPos + 53, 20, 20, Component.translatable("gui.minepreggo.preggo_mob_main.checkbox_pickup"), canPickUpLoot) {
 				@Override
 				public void onPress() {
 					super.onPress();
@@ -145,7 +149,7 @@ public abstract class AbstractPreggoMobMainScreen
 			pickUpItems.setTooltip(Tooltip.create(Component.translatable("gui.minepreggo.preggo_mob_inventory.tooltip_checkbox_pickup")));
 
 					
-			var breakBlocks = new Checkbox(this.leftPos + 6, this.topPos + 77, 20, 20, Component.translatable("gui.minepreggo.preggo_mob_main.checkbox_break"), mob.canBreakBlocks()) {
+			var breakBlocks = new Checkbox(this.leftPos + 6, this.topPos + 77, 20, 20, Component.translatable("gui.minepreggo.preggo_mob_main.checkbox_break"), canBreakBlocks) {
 				@Override
 				public void onPress() {
 					super.onPress();

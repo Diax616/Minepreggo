@@ -10,14 +10,15 @@ public class TagHelper {
 	
 	private TagHelper() {}
 	
-	public static final TagKey<Item> ZOMBIE_GIRL_FOOD =
-	        TagKey.create(Registries.ITEM, MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "zombie_girl_food"));
+	public static final TagKey<Item> ZOMBIE_FOOD =
+	        TagKey.create(Registries.ITEM, MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "zombie_food"));
 	
+	public static final TagKey<Item> CREEPER_FOOD =
+	        TagKey.create(Registries.ITEM, MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "creeper_food"));
 	
-	public static final TagKey<Item> CREEPER_GIRL_FOOD =
-	        TagKey.create(Registries.ITEM, MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "creeper_girl_food"));
+	public static final TagKey<Item> ENDER_FOOD =
+	        TagKey.create(Registries.ITEM, MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "ender_food"));
 	
-
 	public static final TagKey<MobEffect> PREGNANCY_EFFECTS =
 	        TagKey.create(Registries.MOB_EFFECT, MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "pregnancy_effects"));
 	

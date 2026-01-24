@@ -6,12 +6,17 @@ import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.network.capability.PlayerDataProvider;
 import dev.dixmk.minepreggo.network.capability.VillagerDataProvider;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
+import dev.dixmk.minepreggo.world.entity.monster.Ill;
+import dev.dixmk.minepreggo.world.entity.preggo.IMonsterPregnantPreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterHumanoidCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractMonsterZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractZombieGirl;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
@@ -44,15 +49,15 @@ public class EntityEventHandler {
     @SubscribeEvent
     public static void onFinalizeSpawn(MobSpawnEvent.FinalizeSpawn event) {
         var mob = event.getEntity();
-           
-        if (mob instanceof AbstractTamablePregnantCreeperGirl<?,?> creeperGirl && event.getSpawnType() != MobSpawnType.CONVERSION) {  	
-        	PreggoMobHelper.initDefaultPregnancy(creeperGirl);
+       
+    	if (mob instanceof AbstractTamablePregnantCreeperGirl creeperGirl && event.getSpawnType() != MobSpawnType.CONVERSION) {  	
+        	PreggoMobHelper.initDefaultPregnancy(creeperGirl);    	
         }
-        else if (mob instanceof AbstractTamablePregnantZombieGirl<?,?> zombieGirl && event.getSpawnType() != MobSpawnType.CONVERSION) {  	
+        else if (mob instanceof AbstractTamablePregnantZombieGirl zombieGirl && event.getSpawnType() != MobSpawnType.CONVERSION) {  	
         	PreggoMobHelper.initDefaultPregnancy(zombieGirl);
         }
         else if (mob instanceof AbstractMonsterHumanoidCreeperGirl) {  	
-        	mob.setCanPickUpLoot(mob.getRandom().nextFloat() < 0.35F * event.getDifficulty().getSpecialMultiplier());    
+        	mob.setCanPickUpLoot(mob.getRandom().nextFloat() < 0.35F * event.getDifficulty().getSpecialMultiplier());    	
         	if (mob.getType() == MinepreggoModEntities.MONSTER_HUMANOID_CREEPER_GIRL.get()
         			&& mob.getRandom().nextFloat() < MinepreggoModConfig.getBabyCreeperGirlProbability()) {
             	mob.setBaby(true);
@@ -64,12 +69,29 @@ public class EntityEventHandler {
             		&& mob.getRandom().nextFloat() < MinepreggoModConfig.getBabyCreeperGirlProbability()) {
                 mob.setBaby(true);    	
         	}    
-        }   
+        } 	
         else if (mob instanceof AbstractVillager villager) {
 			villager.goalSelector.addGoal(2, new AvoidEntityGoal<>(villager, AbstractZombieGirl.class, 6F, 1F, 1.2F));
 		} 
 		else if (mob instanceof IronGolem golem) {
 			golem.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(golem, AbstractZombieGirl.class, false, false));
+		}
+    	  	
+    	if (mob instanceof Ill ill) {
+    		ill.onFinalizeSpawnWithOwner();
+    	}
+    	
+        PregnancyPhase phase = null;
+    	if (mob instanceof ITamablePregnantPreggoMob tamablePregnantPreggoMob) {
+    		phase = tamablePregnantPreggoMob.getPregnancyData().getCurrentPregnancyPhase();	
+    	}
+    	else if (mob instanceof IMonsterPregnantPreggoMob monsterPregnantPreggoMob) {
+			phase = monsterPregnantPreggoMob.getPregnancyData().getCurrentPregnancyPhase();
+		}
+    	
+    	if (phase != null) {
+			PregnancySystemHelper.applyGravityModifier(mob, phase);
+			PregnancySystemHelper.applyKnockbackResistanceModifier(mob, phase);
 		}
     }
 }

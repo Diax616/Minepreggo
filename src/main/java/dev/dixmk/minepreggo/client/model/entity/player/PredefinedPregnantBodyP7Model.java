@@ -23,11 +23,7 @@ public class PredefinedPregnantBodyP7Model extends AbstractHeavyPregnantBodyMode
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "predefined_pregnant_body_p7_model"), "main");
 	
 	public PredefinedPregnantBodyP7Model(ModelPart root) {
-		super(root,
-				BellyInflation.HIGH,
-				FetalMovementIntensity.P7,
-				PregnancyPhase.P7,
-				SkinType.PREDEFINED);
+		super(root, BellyInflation.HIGH, FetalMovementIntensity.P7, PregnancyPhase.P7, SkinType.PREDEFINED);
 		milkingBoobsYPos = -0.56F;
 	}
 	
@@ -50,7 +46,7 @@ public class PredefinedPregnantBodyP7Model extends AbstractHeavyPregnantBodyMode
 		belly.addOrReplaceChild("front_kick", CubeListBuilder.create().texOffs(5, 24).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(-0.1F)), PartPose.offset(2.0F, 0.1F, -8.0F));
 		belly.addOrReplaceChild("bottom_kick", CubeListBuilder.create().texOffs(5, 24).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(-0.1F)), PartPose.offset(-1.0F, 3.1F, -9.0F));
 		belly.addOrReplaceChild("top_kick", CubeListBuilder.create().texOffs(5, 24).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(-0.1F)), PartPose.offset(1.0F, 0.1F, -10.0F));
-		PartDefinition boobs = body.addOrReplaceChild("boobs", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 1.0F, -2.0F, -0.2356F, 0.0F, 0.0F));
+		PartDefinition boobs = body.addOrReplaceChild("boobs", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 1.1F, -2.0F, -0.2356F, 0.0F, 0.0F));
 		PartDefinition rightBoob = boobs.addOrReplaceChild("right_boob", CubeListBuilder.create(), PartPose.offset(-2.0F, 0.3F, 0.0F));
 		rightBoob.addOrReplaceChild("extraRightBoobCube1_r1", CubeListBuilder.create().texOffs(6, 10).addBox(-0.2863F, -0.647F, -4.4669F, 2.0F, 2.0F, 1.0F, new CubeDeformation(-0.6F)), PartPose.offsetAndRotation(-0.9336F, 1.8279F, -0.8635F, 0.3491F, 0.1745F, 0.0436F));
 		rightBoob.addOrReplaceChild("extraRightBoobCube_r1", CubeListBuilder.create().texOffs(3, 7).addBox(-2.3937F, -2.5823F, -3.8801F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.3F)), PartPose.offsetAndRotation(0.1664F, 2.3279F, -1.2635F, 0.3491F, 0.1745F, 0.0436F));

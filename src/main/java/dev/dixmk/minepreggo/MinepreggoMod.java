@@ -79,12 +79,16 @@ import dev.dixmk.minepreggo.client.model.entity.player.PredefinedPregnantBodyP5M
 import dev.dixmk.minepreggo.client.model.entity.player.PredefinedPregnantBodyP6Model;
 import dev.dixmk.minepreggo.client.model.entity.player.PredefinedPregnantBodyP7Model;
 import dev.dixmk.minepreggo.client.model.entity.player.PredefinedPregnantBodyP8Model;
+import dev.dixmk.minepreggo.client.model.entity.preggo.PregnantFemaleHumanoidModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractHumanoidCreeperGirlModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.quadruped.AbstractCreeperGirlModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.ender.AbstractEnderWomanModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.zombie.AbstractZombieGirlModel;
+import dev.dixmk.minepreggo.client.particle.NauseaParticle;
 import dev.dixmk.minepreggo.client.renderer.entity.FertilityWitchRenderer;
 import dev.dixmk.minepreggo.client.renderer.entity.ScientificIllagerRenderer;
+import dev.dixmk.minepreggo.client.renderer.entity.layer.player.CustomPregnantBodyLayer;
+import dev.dixmk.minepreggo.client.renderer.entity.layer.player.PredefinedPregnantBodyLayer;
 import dev.dixmk.minepreggo.client.renderer.preggo.creeper.IllCreeperGirlRenderer;
 import dev.dixmk.minepreggo.client.renderer.preggo.creeper.IllHumanoidCreeperGirlRenderer;
 import dev.dixmk.minepreggo.client.renderer.preggo.creeper.MonsterCreeperGirlRenderer;
@@ -121,51 +125,19 @@ import dev.dixmk.minepreggo.client.renderer.preggo.zombie.TamableZombieGirlP8Ren
 import dev.dixmk.minepreggo.client.renderer.preggo.zombie.TamableZombieGirlRenderer;
 import dev.dixmk.minepreggo.init.MinepreggoLootModifier;
 import dev.dixmk.minepreggo.init.MinepreggoModBlocks;
+import dev.dixmk.minepreggo.init.MinepreggoModDamageSources;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
 import dev.dixmk.minepreggo.init.MinepreggoModMenus;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoModParticles;
 import dev.dixmk.minepreggo.init.MinepreggoModPotions;
 import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.init.MinepreggoModTabs;
 import dev.dixmk.minepreggo.init.MinepreggoModVillagerProfessions;
 import dev.dixmk.minepreggo.network.capability.PlayerDataImpl;
 import dev.dixmk.minepreggo.network.capability.VillagerDataImpl;
-import dev.dixmk.minepreggo.network.packet.RemoveJigglePhysicsS2CPacket;
-import dev.dixmk.minepreggo.network.packet.RemoveMobEffectPacket;
-import dev.dixmk.minepreggo.network.packet.RemovePostPregnancyDataS2CPacket;
-import dev.dixmk.minepreggo.network.packet.RenderSexOverlayS2CPacket;
-import dev.dixmk.minepreggo.network.packet.RequestBellyRubbingAnimationC2SPacket;
-import dev.dixmk.minepreggo.network.packet.RequestPlayerMedicalCheckUpC2SPacket;
-import dev.dixmk.minepreggo.network.packet.RequestPreggoMobInventoryMenuC2SPacket;
-import dev.dixmk.minepreggo.network.packet.RequestPreggoMobMedicalCheckUpPacket;
-import dev.dixmk.minepreggo.network.packet.RequestSexCinematicP2MC2SPacket;
-import dev.dixmk.minepreggo.network.packet.RequestSexCinematicP2PC2SPacket;
-import dev.dixmk.minepreggo.network.packet.RequestSexM2PC2SPacket;
-import dev.dixmk.minepreggo.network.packet.RequestSexP2PC2SPacket;
-import dev.dixmk.minepreggo.network.packet.ResetPregnancyS2CPacket;
-import dev.dixmk.minepreggo.network.packet.ResponseSexRequestM2PC2SPacket;
-import dev.dixmk.minepreggo.network.packet.ResponseSexRequestP2PC2SPacket;
-import dev.dixmk.minepreggo.network.packet.SexCinematicControlP2MS2CPacket;
-import dev.dixmk.minepreggo.network.packet.SexCinematicControlP2PS2CPacket;
-import dev.dixmk.minepreggo.network.packet.StopPlayerAnimationC2SPacket;
-import dev.dixmk.minepreggo.network.packet.SyncCinematicStateS2CPacket;
-import dev.dixmk.minepreggo.network.packet.SyncFemalePlayerDataS2CPacket;
-import dev.dixmk.minepreggo.network.packet.SyncMobEffectPacket;
-import dev.dixmk.minepreggo.network.packet.SyncPlayerDataS2CPacket;
-import dev.dixmk.minepreggo.network.packet.SyncPlayerLactationS2CPacket;
-import dev.dixmk.minepreggo.network.packet.SyncPregnancyEffectsS2CPacket;
-import dev.dixmk.minepreggo.network.packet.SyncPregnancySystemS2CPacket;
-import dev.dixmk.minepreggo.network.packet.UpdateBellyRubbingStateC2SPacket;
-import dev.dixmk.minepreggo.network.packet.UpdateCreeperGirlCombatModeC2SPacket;
-import dev.dixmk.minepreggo.network.packet.UpdateJigglePhysicsS2CPacket;
-import dev.dixmk.minepreggo.network.packet.UpdatePlayerAnimationS2CPacket;
-import dev.dixmk.minepreggo.network.packet.UpdatePlayerDataC2SPacket;
-import dev.dixmk.minepreggo.network.packet.UpdatePreggoMobBreakBlocksC2SPacket;
-import dev.dixmk.minepreggo.network.packet.UpdatePreggoMobPickUpItemC2SPacket;
-import dev.dixmk.minepreggo.network.packet.UpdatePreggoMobWaitC2SPacket;
-import dev.dixmk.minepreggo.network.packet.UpdateShowPlayerMainMenuC2SPacket;
 import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterQuadrupedCreeperGirl;
@@ -218,12 +190,19 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.NoopRenderer;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.Witch;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraft.world.level.block.ComposterBlock;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
+import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
@@ -252,7 +231,9 @@ public class MinepreggoMod {
 		MinepreggoModVillagerProfessions.REGISTRY.register(modEventBus);
 		MinepreggoLootModifier.REGISTRY.register(modEventBus);
 		MinepreggoModEntityDataSerializers.register();
-       	
+		MinepreggoModDamageSources.REGISTRY.register(modEventBus);
+		MinepreggoModParticles.REGISTRY.register(modEventBus); 	
+		
 		modEventBus.addListener(this::registerLayerDefinitions);	
 		modEventBus.addListener(this::registerAttributes);
 		modEventBus.addListener(this::onSpawnPlacementRegister);
@@ -260,10 +241,12 @@ public class MinepreggoMod {
 		modEventBus.addListener(this::registerEntityRenderers);
 		modEventBus.addListener(this::registerCapabilities);
         modEventBus.addListener(this::commonSetup);
-
+        modEventBus.addListener(this::onRegisterRenderers);
+        modEventBus.addListener(this::registerItemColors);
+        modEventBus.addListener(this::registerParticleFactories);
+        
         context.registerConfig(ModConfig.Type.CLIENT, MinepreggoModConfig.CLIENT_SPEC);
-		context.registerConfig(ModConfig.Type.COMMON, MinepreggoModConfig.COMMON_SPEC);
-		context.registerConfig(ModConfig.Type.SERVER, MinepreggoModConfig.SERVER_SPEC);
+        context.registerConfig(ModConfig.Type.SERVER, MinepreggoModConfig.SERVER_SPEC);
 	}
 
 	private void onSpawnPlacementRegister(SpawnPlacementRegisterEvent event) {
@@ -390,8 +373,8 @@ public class MinepreggoMod {
 		event.registerLayerDefinition(AbstractZombieGirlModel.LAYER_LOCATION_P6, AbstractZombieGirlModel::createP6BodyLayer);
 		event.registerLayerDefinition(AbstractZombieGirlModel.LAYER_LOCATION_P7, AbstractZombieGirlModel::createP7BodyLayer);
 		event.registerLayerDefinition(AbstractZombieGirlModel.LAYER_LOCATION_P8, AbstractZombieGirlModel::createP8BodyLayer);
-		event.registerLayerDefinition(AbstractZombieGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractZombieGirlModel::createInnerLayer);
-		event.registerLayerDefinition(AbstractZombieGirlModel.LAYER_OUTER_ARMOR_LOCATION, AbstractZombieGirlModel::createOuterLayer);
+		event.registerLayerDefinition(AbstractZombieGirlModel.LAYER_INNER_ARMOR_LOCATION, PregnantFemaleHumanoidModel::createInnerLayer);
+		event.registerLayerDefinition(AbstractZombieGirlModel.LAYER_OUTER_ARMOR_LOCATION, PregnantFemaleHumanoidModel::createOuterLayer);
 		
 		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_LOCATION, AbstractHumanoidCreeperGirlModel::createBodyLayer);
 		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_LOCATION_P0, AbstractHumanoidCreeperGirlModel::createP0BodyLayer);
@@ -403,8 +386,8 @@ public class MinepreggoMod {
 		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_LOCATION_P6, AbstractHumanoidCreeperGirlModel::createP6BodyLayer);
 		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_LOCATION_P7, AbstractHumanoidCreeperGirlModel::createP7BodyLayer);
 		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_LOCATION_P8, AbstractHumanoidCreeperGirlModel::createP8BodyLayer);
-		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractHumanoidCreeperGirlModel::createInnerLayer);
-		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_OUTER_ARMOR_LOCATION, AbstractHumanoidCreeperGirlModel::createOuterLayer);
+		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_INNER_ARMOR_LOCATION, PregnantFemaleHumanoidModel::createInnerLayer);
+		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_OUTER_ARMOR_LOCATION, PregnantFemaleHumanoidModel::createOuterLayer);
 		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_ENERGY_ARMOR_LOCATION, AbstractHumanoidCreeperGirlModel::createBodyLayer);
 		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_ENERGY_ARMOR_P0_LOCATION, AbstractHumanoidCreeperGirlModel::createP0BodyLayer);
 		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_ENERGY_ARMOR_P1_LOCATION, AbstractHumanoidCreeperGirlModel::createP1BodyLayer);
@@ -558,6 +541,8 @@ public class MinepreggoMod {
 
 		event.registerEntityRenderer(MinepreggoModEntities.MONSTER_ENDER_WOMAN.get(), MonsterlEnderWomanRenderer::new);	
 		event.registerEntityRenderer(MinepreggoModEntities.MONSTER_CREEPER_GIRL.get(), MonsterCreeperGirlRenderer::new);
+	
+		event.registerEntityRenderer(MinepreggoModEntities.BELLY_PART.get(), NoopRenderer::new);
 	}
 	
 	private void registerCapabilities(RegisterCapabilitiesEvent event) {
@@ -566,65 +551,60 @@ public class MinepreggoMod {
 	}
 	
     private void commonSetup(FMLCommonSetupEvent event) {		
-        event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new CreeperImpregnationPotionBrewingRecipe.A0()));
-		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new CreeperImpregnationPotionBrewingRecipe.A1()));
-		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new CreeperImpregnationPotionBrewingRecipe.A2()));
-		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new CreeperImpregnationPotionBrewingRecipe.A3()));
-		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new CreeperImpregnationPotionBrewingRecipe.A4()));
-		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new EnderImpregnationPotionBrewingRecipe.A0()));
-		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new EnderImpregnationPotionBrewingRecipe.A1()));
-		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new EnderImpregnationPotionBrewingRecipe.A2()));
-		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new EnderImpregnationPotionBrewingRecipe.A3()));
-		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new EnderImpregnationPotionBrewingRecipe.A4()));
-		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new ZombieImpregnationPotionBrewingRecipe.A0()));
-		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new ZombieImpregnationPotionBrewingRecipe.A1()));
-		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new ZombieImpregnationPotionBrewingRecipe.A2()));
-		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new ZombieImpregnationPotionBrewingRecipe.A3()));
-		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new ZombieImpregnationPotionBrewingRecipe.A4()));
-		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new ImpregnationPotionBrewingRecipe.A0()));
-		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new ImpregnationPotionBrewingRecipe.A1()));
-		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new ImpregnationPotionBrewingRecipe.A2()));
-		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new ImpregnationPotionBrewingRecipe.A3()));
-		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new ImpregnationPotionBrewingRecipe.A4()));
-		event.enqueueWork(() -> BrewingRecipeRegistry.addRecipe(new PregnancyHealingBrewingRecipe()));
-  
-        ComposterBlock.COMPOSTABLES.put(MinepreggoModItems.CHILI_PEPPER.get(), 0.6f);
-        ComposterBlock.COMPOSTABLES.put(MinepreggoModItems.CUCUMBER.get(), 0.7f);
-        ComposterBlock.COMPOSTABLES.put(MinepreggoModItems.LEMON.get(), 0.6f);
-                
-		MinepreggoModPacketHandler.addNetworkMessage(RemoveJigglePhysicsS2CPacket.class, RemoveJigglePhysicsS2CPacket::encode, RemoveJigglePhysicsS2CPacket::decode, RemoveJigglePhysicsS2CPacket::handler);
-		MinepreggoModPacketHandler.addNetworkMessage(RemoveMobEffectPacket.class, RemoveMobEffectPacket::encode, RemoveMobEffectPacket::new, RemoveMobEffectPacket::handle);
-		MinepreggoModPacketHandler.addNetworkMessage(RemovePostPregnancyDataS2CPacket.class, RemovePostPregnancyDataS2CPacket::encode, RemovePostPregnancyDataS2CPacket::decode, RemovePostPregnancyDataS2CPacket::handler);
-		MinepreggoModPacketHandler.addNetworkMessage(RenderSexOverlayS2CPacket.class, RenderSexOverlayS2CPacket::encode, RenderSexOverlayS2CPacket::decode, RenderSexOverlayS2CPacket::handler);
-		MinepreggoModPacketHandler.addNetworkMessage(RequestBellyRubbingAnimationC2SPacket.class, RequestBellyRubbingAnimationC2SPacket::encode, RequestBellyRubbingAnimationC2SPacket::decode, RequestBellyRubbingAnimationC2SPacket::handler);
-		MinepreggoModPacketHandler.addNetworkMessage(RequestPlayerMedicalCheckUpC2SPacket.class, RequestPlayerMedicalCheckUpC2SPacket::encode, RequestPlayerMedicalCheckUpC2SPacket::decode, RequestPlayerMedicalCheckUpC2SPacket::handler);
-		MinepreggoModPacketHandler.addNetworkMessage(RequestPreggoMobInventoryMenuC2SPacket.class, RequestPreggoMobInventoryMenuC2SPacket::encode, RequestPreggoMobInventoryMenuC2SPacket::decode, RequestPreggoMobInventoryMenuC2SPacket::handler);
-		MinepreggoModPacketHandler.addNetworkMessage(RequestPreggoMobMedicalCheckUpPacket.class, RequestPreggoMobMedicalCheckUpPacket::encode, RequestPreggoMobMedicalCheckUpPacket::decode, RequestPreggoMobMedicalCheckUpPacket::handler);
-		MinepreggoModPacketHandler.addNetworkMessage(RequestSexCinematicP2MC2SPacket.class, RequestSexCinematicP2MC2SPacket::encode, RequestSexCinematicP2MC2SPacket::decode, RequestSexCinematicP2MC2SPacket::handler);
-		MinepreggoModPacketHandler.addNetworkMessage(RequestSexCinematicP2PC2SPacket.class, RequestSexCinematicP2PC2SPacket::encode, RequestSexCinematicP2PC2SPacket::decode, RequestSexCinematicP2PC2SPacket::handler);
-		MinepreggoModPacketHandler.addNetworkMessage(RequestSexM2PC2SPacket.class, RequestSexM2PC2SPacket::encode, RequestSexM2PC2SPacket::decode, RequestSexM2PC2SPacket::handler);
-		MinepreggoModPacketHandler.addNetworkMessage(RequestSexP2PC2SPacket.class, RequestSexP2PC2SPacket::encode, RequestSexP2PC2SPacket::decode, RequestSexP2PC2SPacket::handler);
-		MinepreggoModPacketHandler.addNetworkMessage(ResetPregnancyS2CPacket.class, ResetPregnancyS2CPacket::encode, ResetPregnancyS2CPacket::decode, ResetPregnancyS2CPacket::handler);
-		MinepreggoModPacketHandler.addNetworkMessage(ResponseSexRequestM2PC2SPacket.class, ResponseSexRequestM2PC2SPacket::encode, ResponseSexRequestM2PC2SPacket::decode, ResponseSexRequestM2PC2SPacket::handler);
-		MinepreggoModPacketHandler.addNetworkMessage(ResponseSexRequestP2PC2SPacket.class, ResponseSexRequestP2PC2SPacket::encode, ResponseSexRequestP2PC2SPacket::decode, ResponseSexRequestP2PC2SPacket::handler);
-		MinepreggoModPacketHandler.addNetworkMessage(SexCinematicControlP2MS2CPacket.class, SexCinematicControlP2MS2CPacket::encode, SexCinematicControlP2MS2CPacket::decode, SexCinematicControlP2MS2CPacket::handler);
-		MinepreggoModPacketHandler.addNetworkMessage(SexCinematicControlP2PS2CPacket.class, SexCinematicControlP2PS2CPacket::encode, SexCinematicControlP2PS2CPacket::decode, SexCinematicControlP2PS2CPacket::handler);
-		MinepreggoModPacketHandler.addNetworkMessage(StopPlayerAnimationC2SPacket.class, StopPlayerAnimationC2SPacket::encode, StopPlayerAnimationC2SPacket::decode, StopPlayerAnimationC2SPacket::handler);
-		MinepreggoModPacketHandler.addNetworkMessage(SyncCinematicStateS2CPacket.class, SyncCinematicStateS2CPacket::encode, SyncCinematicStateS2CPacket::decode, SyncCinematicStateS2CPacket::handler);
-		MinepreggoModPacketHandler.addNetworkMessage(SyncFemalePlayerDataS2CPacket.class, SyncFemalePlayerDataS2CPacket::encode, SyncFemalePlayerDataS2CPacket::decode, SyncFemalePlayerDataS2CPacket::handler);
-		MinepreggoModPacketHandler.addNetworkMessage(SyncMobEffectPacket.class, SyncMobEffectPacket::encode, SyncMobEffectPacket::new, SyncMobEffectPacket::handle);
-		MinepreggoModPacketHandler.addNetworkMessage(SyncPlayerDataS2CPacket.class, SyncPlayerDataS2CPacket::encode, SyncPlayerDataS2CPacket::decode, SyncPlayerDataS2CPacket::handler);
-		MinepreggoModPacketHandler.addNetworkMessage(SyncPlayerLactationS2CPacket.class, SyncPlayerLactationS2CPacket::encode, SyncPlayerLactationS2CPacket::decode, SyncPlayerLactationS2CPacket::handler);
-		MinepreggoModPacketHandler.addNetworkMessage(SyncPregnancyEffectsS2CPacket.class, SyncPregnancyEffectsS2CPacket::encode, SyncPregnancyEffectsS2CPacket::decode, SyncPregnancyEffectsS2CPacket::handler);
-		MinepreggoModPacketHandler.addNetworkMessage(SyncPregnancySystemS2CPacket.class, SyncPregnancySystemS2CPacket::encode, SyncPregnancySystemS2CPacket::decode, SyncPregnancySystemS2CPacket::handler);
-		MinepreggoModPacketHandler.addNetworkMessage(UpdateBellyRubbingStateC2SPacket.class, UpdateBellyRubbingStateC2SPacket::encode, UpdateBellyRubbingStateC2SPacket::decode, UpdateBellyRubbingStateC2SPacket::handler);
-		MinepreggoModPacketHandler.addNetworkMessage(UpdateCreeperGirlCombatModeC2SPacket.class, UpdateCreeperGirlCombatModeC2SPacket::encode, UpdateCreeperGirlCombatModeC2SPacket::decode, UpdateCreeperGirlCombatModeC2SPacket::handler);
-		MinepreggoModPacketHandler.addNetworkMessage(UpdatePlayerAnimationS2CPacket.class, UpdatePlayerAnimationS2CPacket::encode, UpdatePlayerAnimationS2CPacket::decode, UpdatePlayerAnimationS2CPacket::handle);
-		MinepreggoModPacketHandler.addNetworkMessage(UpdatePlayerDataC2SPacket.class, UpdatePlayerDataC2SPacket::encode, UpdatePlayerDataC2SPacket::decode, UpdatePlayerDataC2SPacket::handler);
-		MinepreggoModPacketHandler.addNetworkMessage(UpdatePreggoMobBreakBlocksC2SPacket.class, UpdatePreggoMobBreakBlocksC2SPacket::encode, UpdatePreggoMobBreakBlocksC2SPacket::decode, UpdatePreggoMobBreakBlocksC2SPacket::handler);
-		MinepreggoModPacketHandler.addNetworkMessage(UpdatePreggoMobPickUpItemC2SPacket.class, UpdatePreggoMobPickUpItemC2SPacket::encode, UpdatePreggoMobPickUpItemC2SPacket::decode, UpdatePreggoMobPickUpItemC2SPacket::handler);
-		MinepreggoModPacketHandler.addNetworkMessage(UpdatePreggoMobWaitC2SPacket.class, UpdatePreggoMobWaitC2SPacket::encode, UpdatePreggoMobWaitC2SPacket::decode, UpdatePreggoMobWaitC2SPacket::handler);
-		MinepreggoModPacketHandler.addNetworkMessage(UpdateShowPlayerMainMenuC2SPacket.class, UpdateShowPlayerMainMenuC2SPacket::encode, UpdateShowPlayerMainMenuC2SPacket::decode, UpdateShowPlayerMainMenuC2SPacket::handler);	
-		MinepreggoModPacketHandler.addNetworkMessage(UpdateJigglePhysicsS2CPacket.class, UpdateJigglePhysicsS2CPacket::encode, UpdateJigglePhysicsS2CPacket::decode, UpdateJigglePhysicsS2CPacket::handler);	
+        event.enqueueWork(() -> {
+        	BrewingRecipeRegistry.addRecipe(new CreeperImpregnationPotionBrewingRecipe.A0());
+        	BrewingRecipeRegistry.addRecipe(new CreeperImpregnationPotionBrewingRecipe.A1());
+        	BrewingRecipeRegistry.addRecipe(new CreeperImpregnationPotionBrewingRecipe.A2());
+        	BrewingRecipeRegistry.addRecipe(new CreeperImpregnationPotionBrewingRecipe.A3());
+        	BrewingRecipeRegistry.addRecipe(new CreeperImpregnationPotionBrewingRecipe.A4());
+        	BrewingRecipeRegistry.addRecipe(new EnderImpregnationPotionBrewingRecipe.A0());
+        	BrewingRecipeRegistry.addRecipe(new EnderImpregnationPotionBrewingRecipe.A1());
+        	BrewingRecipeRegistry.addRecipe(new EnderImpregnationPotionBrewingRecipe.A2());
+        	BrewingRecipeRegistry.addRecipe(new EnderImpregnationPotionBrewingRecipe.A3());
+        	BrewingRecipeRegistry.addRecipe(new EnderImpregnationPotionBrewingRecipe.A4());
+        	BrewingRecipeRegistry.addRecipe(new ZombieImpregnationPotionBrewingRecipe.A0());
+        	BrewingRecipeRegistry.addRecipe(new ZombieImpregnationPotionBrewingRecipe.A1());
+        	BrewingRecipeRegistry.addRecipe(new ZombieImpregnationPotionBrewingRecipe.A2());
+        	BrewingRecipeRegistry.addRecipe(new ZombieImpregnationPotionBrewingRecipe.A3());
+        	BrewingRecipeRegistry.addRecipe(new ZombieImpregnationPotionBrewingRecipe.A4());
+        	BrewingRecipeRegistry.addRecipe(new ImpregnationPotionBrewingRecipe.A0());
+        	BrewingRecipeRegistry.addRecipe(new ImpregnationPotionBrewingRecipe.A1());
+        	BrewingRecipeRegistry.addRecipe(new ImpregnationPotionBrewingRecipe.A2());
+        	BrewingRecipeRegistry.addRecipe(new ImpregnationPotionBrewingRecipe.A3());
+        	BrewingRecipeRegistry.addRecipe(new ImpregnationPotionBrewingRecipe.A4());
+        	BrewingRecipeRegistry.addRecipe(new PregnancyHealingBrewingRecipe());
+            ComposterBlock.COMPOSTABLES.put(MinepreggoModItems.CHILI_PEPPER.get(), 0.6f);
+            ComposterBlock.COMPOSTABLES.put(MinepreggoModItems.CUCUMBER.get(), 0.7f);
+            ComposterBlock.COMPOSTABLES.put(MinepreggoModItems.LEMON.get(), 0.6f);
+                    
+            MinepreggoModPacketHandler.registerMessages();
+        });	
     }
+    
+    private void onRegisterRenderers(EntityRenderersEvent.AddLayers event) {
+        addBoobsLayerToSkin(event, "default");
+        addBoobsLayerToSkin(event, "slim");
+    }
+
+    private void registerItemColors(RegisterColorHandlersEvent.Item event) {
+        event.register((stack, tintIndex) -> tintIndex > 0 ? -1 : ((DyeableLeatherItem) stack.getItem()).getColor(stack),     		
+        MinepreggoModItems.FEMALE_LEATHER_P0_CHESTPLATE.get(),
+        MinepreggoModItems.MATERNITY_LEATHER_P1_CHESTPLATE.get(),
+        MinepreggoModItems.MATERNITY_LEATHER_P2_CHESTPLATE.get(),
+        MinepreggoModItems.MATERNITY_LEATHER_P3_CHESTPLATE.get(),
+        MinepreggoModItems.MATERNITY_LEATHER_P4_CHESTPLATE.get(),
+        MinepreggoModItems.LEATHER_KNEE_BRACE.get());    
+    }
+    
+    private void registerParticleFactories(RegisterParticleProvidersEvent event) {
+        event.registerSpriteSet(MinepreggoModParticles.NAUSEA.get(), NauseaParticle::provider);
+    }
+    
+	private void addBoobsLayerToSkin(EntityRenderersEvent.AddLayers event, String skinName) {
+        EntityRenderer<? extends Player> renderer = event.getPlayerSkin(skinName);
+        if (renderer instanceof PlayerRenderer playerRenderer) {
+            playerRenderer.addLayer(new CustomPregnantBodyLayer(playerRenderer, event.getEntityModels()));
+            playerRenderer.addLayer(new PredefinedPregnantBodyLayer(playerRenderer, event.getEntityModels()));
+        }
+    }	
 }

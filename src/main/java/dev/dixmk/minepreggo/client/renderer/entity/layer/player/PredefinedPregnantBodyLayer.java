@@ -36,16 +36,16 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class PredefinedPregnantBodyLayer extends AbstractPregnantBodyLayer {	
-	private final PredefinedBoobsModel boobsModel;
-	private final PredefinedPregnantBodyP0Model pregnantBodyP0Model;
-	private final PredefinedPregnantBodyP1Model pregnantBodyP1Model;
-	private final PredefinedPregnantBodyP2Model pregnantBodyP2Model;
-	private final PredefinedPregnantBodyP3Model pregnantBodyP3Model;
-	private final PredefinedPregnantBodyP4Model pregnantBodyP4Model;
-	private final PredefinedPregnantBodyP5Model pregnantBodyP5Model;
-	private final PredefinedPregnantBodyP6Model pregnantBodyP6Model;
-	private final PredefinedPregnantBodyP7Model pregnantBodyP7Model;
-	private final PredefinedPregnantBodyP8Model pregnantBodyP8Model;
+	public final PredefinedBoobsModel boobsModel;
+	public final PredefinedPregnantBodyP0Model pregnantBodyP0Model;
+	public final PredefinedPregnantBodyP1Model pregnantBodyP1Model;
+	public final PredefinedPregnantBodyP2Model pregnantBodyP2Model;
+	public final PredefinedPregnantBodyP3Model pregnantBodyP3Model;
+	public final PredefinedPregnantBodyP4Model pregnantBodyP4Model;
+	public final PredefinedPregnantBodyP5Model pregnantBodyP5Model;
+	public final PredefinedPregnantBodyP6Model pregnantBodyP6Model;
+	public final PredefinedPregnantBodyP7Model pregnantBodyP7Model;
+	public final PredefinedPregnantBodyP8Model pregnantBodyP8Model;
 	
 	public PredefinedPregnantBodyLayer(RenderLayerParent<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> parent, EntityModelSet modelSet) {
 		super(parent);
@@ -76,8 +76,8 @@ public class PredefinedPregnantBodyLayer extends AbstractPregnantBodyLayer {
     	        final ImmutablePair<ResourceLocation, ResourceLocation> textures;
     	        PlayerModel<AbstractClientPlayer> playerModel = this.getParentModel(); 
     	        
-    			if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {
-        	        final var pregnancyPhase = femaleData.getPregnancySystem().getCurrentPregnancyStage();	        
+    			if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
+        	        final var pregnancyPhase = femaleData.getPregnancyData().getCurrentPregnancyPhase();	        
     				textures = ClientPlayerHelper.getPredefinedPlayerTextures("player1", pregnancyPhase);
     			
         	        if (textures == null) {

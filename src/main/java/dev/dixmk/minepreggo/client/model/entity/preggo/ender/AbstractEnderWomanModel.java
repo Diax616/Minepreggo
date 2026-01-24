@@ -1,11 +1,16 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.ender;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import org.apache.commons.lang3.tuple.ImmutablePair;
+
 import dev.dixmk.minepreggo.MinepreggoMod;
+import dev.dixmk.minepreggo.client.jiggle.EntityJiggleDataFactory;
 import dev.dixmk.minepreggo.client.model.entity.preggo.PregnantFemaleHumanoidModel;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractEnderWoman;
-import net.minecraft.client.model.HierarchicalModel;
-import net.minecraft.client.model.HumanoidModel;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -17,11 +22,6 @@ import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-/*
- * Classes that extend this abstract class need to be refactored to reduce code duplication.
- * 
- * */
-
 @OnlyIn(Dist.CLIENT)
 public abstract class AbstractEnderWomanModel<E extends AbstractEnderWoman> extends PregnantFemaleHumanoidModel<E>{
 	public static final ModelLayerLocation LAYER_INNER_ARMOR_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "ender_girl_inner_model"), "inner");
@@ -29,13 +29,19 @@ public abstract class AbstractEnderWomanModel<E extends AbstractEnderWoman> exte
 	
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "ender_girl_model"), "main");
 	protected final ModelPart root;
-	protected final HierarchicalModel<E> animator;
-	
-	protected AbstractEnderWomanModel(ModelPart root, HierarchicalModel<E> animator) {
+	protected final EnderWomanAnimator<E> animator;
+	protected final EntityJiggleDataFactory.JigglePositionConfig jiggleConfig;
+	protected final @Nullable ImmutablePair<PregnancyPhase, Boolean> pregnancyPhaseAndSimpleBellyJiggle;
+
+	protected AbstractEnderWomanModel(ModelPart root, EnderWomanAnimator<E> animator, @Nullable ImmutablePair<PregnancyPhase, Boolean> pregnancyPhaseAndSimpleBellyJiggle) {
 		super(root);
 		this.root = root;
 		this.animator = animator;
+		this.pregnancyPhaseAndSimpleBellyJiggle = pregnancyPhaseAndSimpleBellyJiggle;
+		this.jiggleConfig = this.createJiggleConfig();
 	}
+	
+	protected abstract @Nonnull EntityJiggleDataFactory.JigglePositionConfig createJiggleConfig();
 	
 	protected static void createBasicBodyLayer(PartDefinition partdefinition, float extraLeftArmRotationZ, float extraRightArmRotationZ) {
 		partdefinition.addOrReplaceChild("head", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -7.5F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(-0.5F))
@@ -73,31 +79,21 @@ public abstract class AbstractEnderWomanModel<E extends AbstractEnderWoman> exte
 		body.addOrReplaceChild("belly", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));     
 		return LayerDefinition.create(meshdefinition, 64, 64);
 	}
-	
-    // Outer armor (chestplate, helmet, boots)
-    public static LayerDefinition createOuterLayer() {
-        MeshDefinition mesh = HumanoidModel.createMesh(new CubeDeformation(0.85F), 0.0F);
-        PartDefinition partdefinition = mesh.getRoot();
-        partdefinition.getChild("body").addOrReplaceChild("boobs", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-        partdefinition.getChild("body").addOrReplaceChild("belly", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-        return LayerDefinition.create(mesh, 64, 32);
-    }
-    
-    // Inner armor (leggings layer)
-    public static LayerDefinition createInnerLayer() {
-        MeshDefinition mesh = HumanoidModel.createMesh(new CubeDeformation(0.35F), 0.0F);
-        PartDefinition partdefinition = mesh.getRoot();
-        partdefinition.getChild("body").addOrReplaceChild("boobs", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-        partdefinition.getChild("body").addOrReplaceChild("belly", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-        return LayerDefinition.create(mesh, 64, 32);
-    }
     
     @Override
 	public void setupAnim(E entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		this.animator.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);			
-		this.moveHeadWithHat(entity, netHeadYaw, headPitch);	
+		this.animator.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);				
+		if (entity.hasCustomHeadAnimation()) {
+			this.hat.copyFrom(this.head);
+		}
+		else {
+			this.moveHeadWithHat(entity, netHeadYaw, headPitch);
+		}
+		
 		if (entity.isCreepy()) {
 			this.head.y -= 5F;
 		} 
+
+		updateJiggle(entity, pregnancyPhaseAndSimpleBellyJiggle, jiggleConfig);
 	}
 }

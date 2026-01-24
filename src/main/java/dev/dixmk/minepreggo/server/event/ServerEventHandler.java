@@ -1,15 +1,20 @@
 package dev.dixmk.minepreggo.server.event;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
+import dev.dixmk.minepreggo.MinepreggoModConfig;
+import dev.dixmk.minepreggo.server.ServerParticleHelper;
 import dev.dixmk.minepreggo.server.ServerPlayerAnimationManager;
 import dev.dixmk.minepreggo.server.ServerTaskQueueManager;
+import dev.dixmk.minepreggo.world.entity.BellyPartManager;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.level.LevelEvent;
+import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = MinepreggoMod.MODID)
 public class ServerEventHandler {
-
+	
 	private ServerEventHandler() {}
 	
     @SubscribeEvent
@@ -18,5 +23,20 @@ public class ServerEventHandler {
             
         ServerPlayerAnimationManager.getInstance().onServerTick();
         ServerTaskQueueManager.getInstance().processTasks();
+        ServerParticleHelper.tickBloodRains();
+    }
+    
+    @SubscribeEvent
+    public static void onServerStopping(ServerStoppingEvent event) {
+    	if (MinepreggoModConfig.isBellyColisionsEnable()) {
+        	BellyPartManager.getInstance().clear();
+		}	
+    }
+    
+    @SubscribeEvent
+    public static void onWorldUnload(LevelEvent.Unload event) {
+    	if (MinepreggoModConfig.isBellyColisionsEnable()) {
+        	BellyPartManager.getInstance().clear();
+		}	
     }
 }

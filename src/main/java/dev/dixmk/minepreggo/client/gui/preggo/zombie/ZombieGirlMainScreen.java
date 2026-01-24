@@ -13,11 +13,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class ZombieGirlMainScreen extends AbstractZombieGirlMainScreen<TamableZombieGirl, ZombieGirlMainMenu> {
-
+	protected final boolean pregnant;
+	
 	public ZombieGirlMainScreen(ZombieGirlMainMenu container, Inventory inventory, Component text) {
 		super(container, inventory, text);
 		this.imageWidth = 187;
 		this.imageHeight = 103;
+		this.pregnant = container.pregnant.orElse(false);
 	}
 
 	@Override
@@ -35,6 +37,6 @@ public class ZombieGirlMainScreen extends AbstractZombieGirlMainScreen<TamableZo
 	
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-		this.preggoMob.ifPresent(zombieGirl -> ScreenHelper.renderDefaultPreggoLabelMainGUI(guiGraphics, this.font, zombieGirl));
+		this.preggoMob.ifPresent(zombieGirl -> ScreenHelper.renderDefaultPreggoLabelMainGUI(guiGraphics, this.font, zombieGirl, this.pregnant));
 	}
 }

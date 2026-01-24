@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
-import dev.dixmk.minepreggo.network.packet.UpdatePlayerAnimationS2CPacket;
+import dev.dixmk.minepreggo.network.packet.s2c.SyncPlayerAnimationS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.PacketDistributor;
@@ -56,7 +56,7 @@ public class ServerPlayerAnimationManager {
             
             MinepreggoModPacketHandler.INSTANCE.send(
             		PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> animatingPlayer),
-            		new UpdatePlayerAnimationS2CPacket(entry.getKey(), state.animationName, state.tick, true));
+            		new SyncPlayerAnimationS2CPacket(entry.getKey(), state.animationName, state.tick, true));
         }
     }
     
@@ -68,7 +68,7 @@ public class ServerPlayerAnimationManager {
         // Broadcast to all clients
         MinepreggoModPacketHandler.INSTANCE.send(
         		PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player),
-        		new UpdatePlayerAnimationS2CPacket(playerId, animationName, 0, true));
+        		new SyncPlayerAnimationS2CPacket(playerId, animationName, 0, true));
     }
     
     public void stopAnimation(ServerPlayer player) {
@@ -77,7 +77,7 @@ public class ServerPlayerAnimationManager {
         
         MinepreggoModPacketHandler.INSTANCE.send(
         		PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player),
-        		new UpdatePlayerAnimationS2CPacket(playerId, null, 0, false));
+        		new SyncPlayerAnimationS2CPacket(playerId, null, 0, false));
     }
     
     private class AnimationState {

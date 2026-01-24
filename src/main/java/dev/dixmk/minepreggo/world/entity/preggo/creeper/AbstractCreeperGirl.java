@@ -57,10 +57,26 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 	protected int explosionRadius = 3;
 	protected int explosionItensity = 1;
 	protected double maxDistance = 9D;
+	private CombatMode combatMode = CombatMode.EXPLODE;
 	
 	protected AbstractCreeperGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_, Creature typeOfCreature) {
       super(p_21803_, p_21804_, Species.CREEPER, typeOfCreature);
       this.reassessTameGoals();	    
+	}
+		
+	public void setCombatMode(CombatMode value) {
+		this.combatMode = value;
+		if (value == CombatMode.EXPLODE)
+			this.maxDistance = 4D;
+	}
+	
+	public CombatMode getCombatMode() {
+		return combatMode;
+	}
+	
+	@Override
+	public boolean hasJigglePhysics() {
+		return true;
 	}
 	
 	@Override
@@ -85,7 +101,7 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 	
 	@Override
 	public boolean isFood(ItemStack stack) {
-		return stack.is(TagHelper.CREEPER_GIRL_FOOD);
+		return stack.is(TagHelper.CREEPER_FOOD);
 	}
 	
 	@Override
@@ -112,6 +128,7 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 		compoundTag.putInt("DataSwell", this.entityData.get(DATA_SWELL_DIR));
 		compoundTag.putBoolean("DataIsPowered", this.entityData.get(DATA_IS_POWERED));
 		compoundTag.putBoolean("DataIsIgnited", this.entityData.get(DATA_IS_IGNITED));
+		compoundTag.putString(CombatMode.NBT_KEY, this.combatMode.name());
 	}
 	
 	@Override
@@ -120,6 +137,7 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 		this.entityData.set(DATA_SWELL_DIR, compoundTag.getInt("DataSwell"));
 		this.entityData.set(DATA_IS_POWERED, compoundTag.getBoolean("DataIsPowered"));
 		this.entityData.set(DATA_IS_IGNITED, compoundTag.getBoolean("DataIsIgnited"));	
+		this.setCombatMode(CombatMode.valueOf(compoundTag.getString(CombatMode.NBT_KEY)));
 	}
 	
 	@Override

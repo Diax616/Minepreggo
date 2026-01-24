@@ -2,10 +2,13 @@ package dev.dixmk.minepreggo.world.entity.preggo.zombie;
 
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
-import dev.dixmk.minepreggo.world.entity.preggo.IPregnancyP7;
+import dev.dixmk.minepreggo.world.entity.preggo.IPreggoMobPregnancySystem;
+import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMobSystem;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobPregnancySystemP7;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnantPreggoMobSystemP2;
+import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
+import dev.dixmk.minepreggo.world.pregnancy.IFemaleEntity;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.core.BlockPos;
@@ -16,7 +19,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.PlayMessages;
 
-public class TamableZombieGirlP7 extends AbstractTamablePregnantZombieGirl<PregnantPreggoMobSystemP2<TamableZombieGirlP7>, PreggoMobPregnancySystemP7<TamableZombieGirlP7>> implements IPregnancyP7<TamableZombieGirlP7> {
+public class TamableZombieGirlP7 extends AbstractTamablePregnantZombieGirl {
 		
 	public TamableZombieGirlP7(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P7.get(), world);
@@ -30,12 +33,17 @@ public class TamableZombieGirlP7 extends AbstractTamablePregnantZombieGirl<Pregn
 	}
 	
 	@Override
-	protected PregnantPreggoMobSystemP2<TamableZombieGirlP7> createPreggoMobSystem() {
+	protected ITamablePreggoMobSystem createTamablePreggoMobSystem() {
 		return new PregnantPreggoMobSystemP2<>(this, MinepreggoModConfig.getTotalTicksOfHungryP7(), PregnancySystemHelper.TOTAL_TICKS_SEXUAL_APPETITE_P7);
 	}
 	
 	@Override
-	protected PreggoMobPregnancySystemP7<TamableZombieGirlP7> createPregnancySystem() {
+	protected IFemaleEntity createFemaleEntityData() {
+		return new FemaleEntityImpl();
+	}
+	
+	@Override
+	protected IPreggoMobPregnancySystem createPregnancySystem() {
 		return new PreggoMobPregnancySystemP7<>(this) {
 			@Override
 			protected void advanceToNextPregnancyPhase() {
@@ -59,10 +67,5 @@ public class TamableZombieGirlP7 extends AbstractTamablePregnantZombieGirl<Pregn
 
 	public static AttributeSupplier.Builder createAttributes() {
 		return getBasicAttributes(0.19);
-	}
-
-	@Override
-	public PreggoMobPregnancySystemP7<TamableZombieGirlP7> getPregnancySystemP7() {
-		return pregnancySystem;
 	}
 }

@@ -29,6 +29,7 @@ import dev.dixmk.minepreggo.world.item.DeadVillagerFetusItem;
 import dev.dixmk.minepreggo.world.item.DeadCreeperFetusItem;
 import dev.dixmk.minepreggo.world.item.DeadZombieFetusItem;
 import dev.dixmk.minepreggo.world.item.EnderLifeSubstanceItem;
+import dev.dixmk.minepreggo.world.item.EnderSlimeJellyItem;
 import dev.dixmk.minepreggo.world.item.FemaleChainmailChestPlateItem;
 import dev.dixmk.minepreggo.world.item.FemaleDiamondChestPlateItem;
 import dev.dixmk.minepreggo.world.item.FemaleGoldenChestPlateItem;
@@ -47,6 +48,7 @@ import dev.dixmk.minepreggo.world.item.LemonIcePopsiclesItem;
 import dev.dixmk.minepreggo.world.item.LemonItem;
 import dev.dixmk.minepreggo.world.item.PickleItem;
 import dev.dixmk.minepreggo.world.item.PillagerBrainItem;
+import dev.dixmk.minepreggo.world.item.RefinedChorusShardsItem;
 import dev.dixmk.minepreggo.world.item.RopesItem;
 import dev.dixmk.minepreggo.world.item.SaltItem;
 import dev.dixmk.minepreggo.world.item.SaltyWaterBottleItem;
@@ -219,6 +221,9 @@ public class MinepreggoModItems {
 
 	public static final RegistryObject<Item> MEDICAL_TABLE = block(MinepreggoModBlocks.MEDICAL_TABLE);
 	
+	public static final RegistryObject<Item> ENDER_SLIME_JELLY = REGISTRY.register("ender_slime_jelly", EnderSlimeJellyItem::new);
+	public static final RegistryObject<Item> REFINED_CHORUS_SHARDS = REGISTRY.register("refined_chorus_shards", RefinedChorusShardsItem::new);
+
 	private static RegistryObject<Item> block(RegistryObject<Block> block) {
 		return REGISTRY.register(block.getId().getPath(), () -> new BlockItem(block.get(), new Item.Properties()));
 	}

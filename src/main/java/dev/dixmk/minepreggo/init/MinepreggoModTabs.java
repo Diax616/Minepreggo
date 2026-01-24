@@ -54,9 +54,13 @@ public class MinepreggoModTabs {
                 output.accept(MinepreggoModItems.ACTIVATED_GUNPOWDER_WITH_HOT_SAUCE.get());
                 output.accept(MinepreggoModItems.SOUR_ACTIVATED_GUNPOWDER.get());
                
-                output.accept(MinepreggoModItems.MEDICAL_TABLE.get());
-
+                /*
+                output.accept(MinepreggoModItems.ENDER_SLIME_JELLY.get());
+                output.accept(MinepreggoModItems.REFINED_CHORUS_SHARDS.get());
+                */
                 
+                output.accept(MinepreggoModItems.MEDICAL_TABLE.get());
+        
                 output.accept(MinepreggoModItems.FEMALE_CHAINMAIL_P0_CHESTPLATE.get());
                 output.accept(MinepreggoModItems.FEMALE_IRON_P0_CHESTPLATE.get());
                 output.accept(MinepreggoModItems.FEMALE_GOLDEN_P0_CHESTPLATE.get());

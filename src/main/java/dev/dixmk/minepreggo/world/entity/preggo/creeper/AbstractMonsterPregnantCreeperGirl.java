@@ -1,20 +1,21 @@
 package dev.dixmk.minepreggo.world.entity.preggo.creeper;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.utils.MathHelper;
-import dev.dixmk.minepreggo.utils.MinepreggoHelper;
+import dev.dixmk.minepreggo.MinepreggoModConfig;
+import dev.dixmk.minepreggo.init.MinepreggoModDamageSources;
+import dev.dixmk.minepreggo.init.MinepreggoModSounds;
+import dev.dixmk.minepreggo.world.entity.BellyPartFactory;
+import dev.dixmk.minepreggo.world.entity.BellyPartManager;
+import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
-import dev.dixmk.minepreggo.world.entity.preggo.ISimplePregnancy;
-import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.IMonsterPreggoMobPregnancyData;
+import dev.dixmk.minepreggo.world.entity.preggo.IMonsterPregnantPreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.MonsterPregnantPreggoMobDataImpl;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
@@ -29,56 +30,62 @@ import net.minecraft.world.entity.animal.Cat;
 import net.minecraft.world.entity.animal.Ocelot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistries;
 
-public abstract class AbstractMonsterPregnantCreeperGirl extends AbstractMonsterCreeperGirl implements ISimplePregnancy {
-	private static final EntityDataAccessor<Boolean> DATA_HAS_PREGNANCY_PAIN = SynchedEntityData.defineId(AbstractMonsterPregnantCreeperGirl.class, EntityDataSerializers.BOOLEAN);
-	private int pregnancyPainTimer = 0;
-	private final PregnancyPhase currentPregnanctStage;
-	private final PregnancyPhase maxPregnanctStage;
-	private final int totalDaysPassed;
-	private final float pregnancyPainProbability;
+public abstract class AbstractMonsterPregnantCreeperGirl extends AbstractMonsterCreeperGirl implements IMonsterPregnantPreggoMob {
+
+	private static final MonsterPregnantPreggoMobDataImpl.DataAccessor<AbstractMonsterPregnantCreeperGirl> DATA_ACCESOR = new MonsterPregnantPreggoMobDataImpl.DataAccessor<>(AbstractMonsterPregnantCreeperGirl.class);
+	private final IMonsterPreggoMobPregnancyData pregnancyDataImpl;
 		
-	protected AbstractMonsterPregnantCreeperGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_, Creature typeOfCreature, PregnancyPhase currentPregnancyStage) {
+	protected AbstractMonsterPregnantCreeperGirl(EntityType<? extends AbstractMonsterCreeperGirl> p_21803_, Level p_21804_, Creature typeOfCreature, PregnancyPhase currentPregnancyStage) {
 		super(p_21803_, p_21804_, typeOfCreature);
-		this.currentPregnanctStage = currentPregnancyStage;
-		this.maxPregnanctStage = PregnancySystemHelper.calculateRandomMinPhaseToGiveBirthFrom(currentPregnancyStage, random);
-		this.totalDaysPassed = ISimplePregnancy.getRandomTotalDaysPassed(currentPregnancyStage, this.maxPregnanctStage, this.getRandom());
-		this.setExplosionByCurrentPregnancyStage();
-		this.pregnancyPainProbability = MathHelper.sigmoid(0.1F, 0.4F, 0.1F, Mth.clamp(this.getTotalDaysPassed() /(float) PregnancySystemHelper.TOTAL_PREGNANCY_DAYS , 0, 1), 0.6F);
+		pregnancyDataImpl = new MonsterPregnantPreggoMobDataImpl<>(DATA_ACCESOR, this, currentPregnancyStage);
+		this.setExplosionByCurrentPregnancyStage();	
+	}
+	
+	@Override
+	public IMonsterPreggoMobPregnancyData getPregnancyData() {
+		return pregnancyDataImpl;
 	}
 
 	@Override
 	protected void defineSynchedData() {
 		super.defineSynchedData();
-		this.entityData.define(DATA_HAS_PREGNANCY_PAIN, false);
+		DATA_ACCESOR.defineSynchedData(this);
 	}
 	
 	@Override
 	public void addAdditionalSaveData(CompoundTag compoundTag) {
 		super.addAdditionalSaveData(compoundTag);
-		compoundTag.putBoolean("DataHasPregnancyPain", this.getEntityData().get(DATA_HAS_PREGNANCY_PAIN));
+		compoundTag.put("MonsterPregnantPreggoMobData", pregnancyDataImpl.serializeNBT());
 	}
 	
 	@Override
 	public void readAdditionalSaveData(CompoundTag compoundTag) {
 		super.readAdditionalSaveData(compoundTag);	
-		this.entityData.set(DATA_HAS_PREGNANCY_PAIN, compoundTag.getBoolean("DataHasPregnancyPain"));
+		if (compoundTag.contains("MonsterPregnantPreggoMobData")) {
+			pregnancyDataImpl.deserializeNBT(compoundTag.getCompound("MonsterPregnantPreggoMobData"));
+		}
 	}
 	
 	@Override
 	public void die(DamageSource source) {
-		super.die(source);			
-		PreggoMobHelper.spawnBabyAndFetusCreepers(this);
+		super.die(source);		
+		if (!this.level().isClientSide) {
+			boolean bellyBurst = source.is(MinepreggoModDamageSources.BELLY_BURST);
+			if (bellyBurst) {
+				PregnancySystemHelper.deathByBellyBurst(this, (ServerLevel) this.level());
+			}
+			PreggoMobHelper.spawnBabyAndFetusCreepers(this);
+		}
 	}
 	
 	@Override
 	public SoundEvent getDeathSound() {
-		return ForgeRegistries.SOUND_EVENTS.getValue(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "preggo_death"));
+		return MinepreggoModSounds.PREGNANT_PREGGO_MOB_DEATH.get();
 	}
 	
 	protected void setExplosionByCurrentPregnancyStage() {	
-		final var currentPregnancyStage = this.getCurrentPregnancyStage();
+		final var currentPregnancyStage = pregnancyDataImpl.getCurrentPregnancyPhase();
 		
 		if (currentPregnancyStage == PregnancyPhase.P2
 				|| currentPregnancyStage == PregnancyPhase.P3) {
@@ -99,40 +106,53 @@ public abstract class AbstractMonsterPregnantCreeperGirl extends AbstractMonster
 	
 	@Override
 	public boolean hurt(DamageSource damagesource, float amount) {	
-		if (super.hurt(damagesource, amount) && !this.isIncapacitated() && !this.level().isClientSide()) {		
-					
-			if (this.getRandom().nextFloat() < pregnancyPainProbability) {
-				this.setPregnancyPain(true);
-			}			
-			return true;
+		var result = super.hurt(damagesource, amount);
+		if (!this.level().isClientSide
+				&& result
+				&& !this.pregnancyDataImpl.isIncapacitated()
+				&& this.getRandom().nextFloat() < pregnancyDataImpl.getPregnancyPainProbability()) {		
+			this.pregnancyDataImpl.setPregnancyPain(true);	
+			PlayerHelper.playSoundNearTo(this, MinepreggoModSounds.getRandomStomachGrowls(random));
 		}
-		return false;
+		return result;
 	}
-	
 	
 	@Override
 	public boolean hasCustomHeadAnimation() {
-		return this.isIncapacitated();
+		return pregnancyDataImpl.isIncapacitated();
 	}
 	
 	@Override
    	public void tick() {
       super.tick();
          
-      if (this.level().isClientSide()) {
+      if (this.level().isClientSide) {
     	  return;
       }
 
-      if (this.isIncapacitated()) {   	  
-    	  final var timer = this.getPregnancyPainTimer();
+      if (pregnancyDataImpl.isIncapacitated()) {   	  
+    	  final var timer = pregnancyDataImpl.getPregnancyPainTimer();
     	  if (timer > 120) {
-    		  this.setPregnancyPainTimer(0);
-    		  this.setPregnancyPain(false);
+    		  pregnancyDataImpl.setPregnancyPainTimer(0);
+    		  pregnancyDataImpl.setPregnancyPain(false);
     	  }
     	  else {
-        	  this.setPregnancyPainTimer(timer + 1);
+    		  pregnancyDataImpl.setPregnancyPainTimer(timer + 1);
     	  }
       }  
+      
+      if (MinepreggoModConfig.isBellyColisionsEnable() && pregnancyDataImpl.getCurrentPregnancyPhase().compareTo(PregnancyPhase.P5) >= 0) {
+    	  BellyPartManager.getInstance().onServerTick(this, () -> BellyPartFactory.createHumanoidBellyPart(this, pregnancyDataImpl.getCurrentPregnancyPhase()));
+      }
+	}
+	
+	@Override
+	public boolean causeFallDamage(float pFallDistance, float pMultiplier, DamageSource pSource) {
+		PregnancyPhase currentPregnancyPhase = this.pregnancyDataImpl.getCurrentPregnancyPhase();
+		if (currentPregnancyPhase.compareTo(PregnancyPhase.P3) >= 0) {
+			return super.causeFallDamage(pFallDistance, pMultiplier * PregnancySystemHelper.calculateExtraFallDamageMultiplier(currentPregnancyPhase), pSource);
+		}
+		return super.causeFallDamage(pFallDistance, pMultiplier, pSource);
 	}
 	
 	@Override
@@ -141,21 +161,21 @@ public abstract class AbstractMonsterPregnantCreeperGirl extends AbstractMonster
 		this.goalSelector.addGoal(3, new MeleeAttackGoal(this, 1.2, false) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() && !isIncapacitated();		
+				return super.canUse() && !pregnancyDataImpl.isIncapacitated();		
 			}
 			@Override
 			public boolean canContinueToUse() {
-				return super.canContinueToUse() && !isIncapacitated();			   
+				return super.canContinueToUse() && !pregnancyDataImpl.isIncapacitated();			   
 			}
 		});
 		this.targetSelector.addGoal(2, new HurtByTargetGoal(this) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() && !isIncapacitated();		
+				return super.canUse() && !pregnancyDataImpl.isIncapacitated();		
 			}
 			@Override
 			public boolean canContinueToUse() {
-				return super.canContinueToUse() && !isIncapacitated();			   
+				return super.canContinueToUse() && !pregnancyDataImpl.isIncapacitated();			   
 			}
 		});
 
@@ -163,29 +183,29 @@ public abstract class AbstractMonsterPregnantCreeperGirl extends AbstractMonster
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
-					&& !isIncapacitated();		
+					&& !pregnancyDataImpl.isIncapacitated();		
 			}
 		});
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() && !isIncapacitated();		
+				return super.canUse() && !pregnancyDataImpl.isIncapacitated();		
 			}
 			@Override
 			public boolean canContinueToUse() {
-				return super.canContinueToUse() && !isIncapacitated();			   
+				return super.canContinueToUse() && !pregnancyDataImpl.isIncapacitated();			   
 			}
 		});
 		this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8F) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() && !isIncapacitated();		
+				return super.canUse() && !pregnancyDataImpl.isIncapacitated();		
 			}
 		});
 		this.goalSelector.addGoal(8, new RandomLookAroundGoal(this) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() && !isIncapacitated();		
+				return super.canUse() && !pregnancyDataImpl.isIncapacitated();		
 			}
 		});
 	}
@@ -197,74 +217,38 @@ public abstract class AbstractMonsterPregnantCreeperGirl extends AbstractMonster
 			public boolean canUse() {												
 				return super.canUse() 
 					&& canExplode()
-					&& !isIncapacitated();
+					&& !pregnancyDataImpl.isIncapacitated();
 			}
 		});
 		this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Player.class, true) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() && !isIncapacitated();		
+				return super.canUse() && !pregnancyDataImpl.isIncapacitated();		
 			}
 			@Override
 			public boolean canContinueToUse() {
-				return super.canContinueToUse() && !isIncapacitated();			   
+				return super.canContinueToUse() && !pregnancyDataImpl.isIncapacitated();			   
 			}
 		});
 		this.goalSelector.addGoal(3, new AvoidEntityGoal<>(this, Ocelot.class, 6F, 1, 1.2) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() && !isIncapacitated();		
+				return super.canUse() && !pregnancyDataImpl.isIncapacitated();		
 			}
 			@Override
 			public boolean canContinueToUse() {
-				return super.canContinueToUse() && !isIncapacitated();			   
+				return super.canContinueToUse() && !pregnancyDataImpl.isIncapacitated();			   
 			}
 		});
 		this.goalSelector.addGoal(3, new AvoidEntityGoal<>(this, Cat.class, 6F, 1, 1.2) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() && !isIncapacitated();		
+				return super.canUse() && !pregnancyDataImpl.isIncapacitated();		
 			}
 			@Override
 			public boolean canContinueToUse() {
-				return super.canContinueToUse() && !isIncapacitated();			   
+				return super.canContinueToUse() && !pregnancyDataImpl.isIncapacitated();			   
 			}
 		});	
 	}
-	
-	@Override
-	public boolean isIncapacitated() {
-		return this.entityData.get(DATA_HAS_PREGNANCY_PAIN);
-	}
-	
-	@Override
-	public void setPregnancyPain(boolean value) {
-		this.entityData.set(DATA_HAS_PREGNANCY_PAIN, value);
-	}
-	
-	@Override
-	public int getPregnancyPainTimer() {
-		return this.pregnancyPainTimer;
-	}
-
-	@Override
-	public void setPregnancyPainTimer(int tick) {
-		this.pregnancyPainTimer = tick;
-	}
-	
-	@Override
-	public PregnancyPhase getCurrentPregnancyStage() {
-		return currentPregnanctStage;
-	}
-
-	@Override
-	public PregnancyPhase getLastPregnancyStage() {
-		return maxPregnanctStage;
-	}
-
-	@Override
-	public int getTotalDaysPassed() {
-		return totalDaysPassed;
-	}
 }
-

@@ -5,9 +5,6 @@ import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem.Result;
 import dev.dixmk.minepreggo.world.pregnancy.AbstractPregnancySystem;
-import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
-import dev.dixmk.minepreggo.world.pregnancy.IPregnancyEffectsHandler;
-import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
@@ -20,7 +17,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 
 public abstract class PreggoMobPregnancySystemP0
-	<E extends PreggoMob & ITamablePreggoMob<FemaleEntityImpl> & IPregnancySystemHandler & IPregnancyEffectsHandler> extends AbstractPregnancySystem<E> {
+	<E extends PreggoMob & ITamablePregnantPreggoMob> extends AbstractPregnancySystem<E> implements IPreggoMobPregnancySystem {
 
 	private int angryTicks = 0;
 	
@@ -35,12 +32,13 @@ public abstract class PreggoMobPregnancySystemP0
 			var chestplate = pregnantEntity.getItemBySlot(EquipmentSlot.CHEST);
 			var leggings = pregnantEntity.getItemBySlot(EquipmentSlot.LEGS);
 			var phases = PregnancyPhase.values();
-			var current = pregnantEntity.getCurrentPregnancyStage();
+			var pregnancyData = pregnantEntity.getPregnancyData();
+			var current = pregnancyData.getCurrentPregnancyPhase();
 			var next = phases[Math.min(current.ordinal() + 1, phases.length - 1)];
 			
 			
 			if (!chestplate.isEmpty()
-					&& (!PregnancySystemHelper.canUseChestplate(chestplate.getItem(), next) || pregnantEntity.getPregnancySymptoms().contains(PregnancySymptom.MILKING))) {
+					&& (!PregnancySystemHelper.canUseChestplate(chestplate.getItem(), next) || pregnancyData.getSyncedPregnancySymptoms().containsPregnancySymptom(PregnancySymptom.MILKING))) {
 				PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.CHEST);
 			}
 			
@@ -52,7 +50,7 @@ public abstract class PreggoMobPregnancySystemP0
 			advanceToNextPregnancyPhase();
 			
 			pregnantEntity.discard();
-			MinepreggoMod.LOGGER.debug("Pregnancy phase advanced from {} for entity {}",pregnantEntity.getCurrentPregnancyStage(), pregnantEntity.getSimpleName());
+			MinepreggoMod.LOGGER.debug("Pregnancy phase advanced from {} for entity {}", pregnancyData.getCurrentPregnancyPhase(), pregnantEntity.getSimpleName());
 			return;
 		}
 		
@@ -84,14 +82,14 @@ public abstract class PreggoMobPregnancySystemP0
 		if (this.pregnantEntity.hasEffect(MinepreggoModMobEffects.ETERNAL_PREGNANCY.get())) {
 			return;
 		}
-		
-        if (pregnantEntity.getPregnancyTimer() >= MinepreggoModConfig.getTotalTicksByPregnancyDay()) {
-        	pregnantEntity.resetPregnancyTimer();
-        	pregnantEntity.incrementDaysPassed();
-        	pregnantEntity.reduceDaysToGiveBirth();
-        	MinepreggoMod.LOGGER.debug("Pregnancy day advanced to {} for entity {}", pregnantEntity.getDaysPassed(), pregnantEntity.getSimpleName());
+		final var pregnancyData = pregnantEntity.getPregnancyData();
+        if (pregnancyData.getPregnancyTimer() >= MinepreggoModConfig.getTotalTicksByPregnancyDay()) {
+        	pregnancyData.resetPregnancyTimer();
+        	pregnancyData.incrementDaysPassed();
+        	pregnancyData.reduceDaysToGiveBirth();
+        	MinepreggoMod.LOGGER.debug("Pregnancy day advanced to {} for entity {}", pregnancyData.getDaysPassed(), pregnantEntity.getSimpleName());
         } else {
-        	pregnantEntity.incrementPregnancyTimer();
+        	pregnancyData.incrementPregnancyTimer();
         }
 	}
 
@@ -100,7 +98,7 @@ public abstract class PreggoMobPregnancySystemP0
 	}
 	
 	public boolean canAdvanceNextPregnancyPhase() {
-	    return pregnantEntity.getDaysPassed() >= pregnantEntity.getDaysByCurrentStage();
+	    return pregnantEntity.getPregnancyData().getDaysPassed() >= pregnantEntity.getPregnancyData().getDaysByCurrentStage();
 	}
 	
 	public boolean hasPregnancyPain() {
@@ -133,20 +131,20 @@ public abstract class PreggoMobPregnancySystemP0
 	}
 
 	public boolean canBeAngry() {
-		return pregnantEntity.getFullness() <= 4;
+		return pregnantEntity.getTamableData().getFullness() <= 4;
 	}
 
 	protected void evaluateAngry(final float angerProbability) {
-	   final var angry = pregnantEntity.isAngry();
+	   final var angry = pregnantEntity.getTamableData().isAngry();
 		
 		if (!angry && this.canBeAngry()) {
-	    	pregnantEntity.setAngry(true);
+			pregnantEntity.getTamableData().setAngry(true);
 	    	return;
 	    } 
 
 		
 		if (!canBeAngry()) {
-			pregnantEntity.setAngry(false);
+			pregnantEntity.getTamableData().setAngry(false);
 			return;
 		}		
 		

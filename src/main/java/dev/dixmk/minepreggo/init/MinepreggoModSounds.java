@@ -37,47 +37,32 @@ public class MinepreggoModSounds {
 	public static final RegistryObject<SoundEvent> PLAYER_PUSH_1 = REGISTRY.register("player_push_1", () -> SoundEvent.createVariableRangeEvent(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "player_push_1")));
 	public static final RegistryObject<SoundEvent> PLAYER_PUSH_2 = REGISTRY.register("player_push_2", () -> SoundEvent.createVariableRangeEvent(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "player_push_2")));
 	public static final RegistryObject<SoundEvent> PLAYER_PUSH_3 = REGISTRY.register("player_push_3", () -> SoundEvent.createVariableRangeEvent(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "player_push_3")));
-
-	private static SoundEvent[] pregnancyPains = null;
 	
-	private static SoundEvent[] stomachGrols = null;
-	
-	private static SoundEvent[] playerPuches = null;
-
 	public static final SoundEvent getRandomPregnancyPain(RandomSource random) {	
-		if (pregnancyPains == null) {
-			pregnancyPains = new SoundEvent[] {
-					PREGNANCY_PAIN1.get(),
-					PREGNANCY_PAIN2.get(),
-					PREGNANCY_PAIN3.get(),
-					PREGNANCY_PAIN4.get()
-				};
-		}
-		return pregnancyPains[random.nextInt(pregnancyPains.length)];
+		return switch (random.nextInt(4)) {
+			case 0 -> PREGNANCY_PAIN1.get();
+			case 1 -> PREGNANCY_PAIN2.get();
+			case 2 -> PREGNANCY_PAIN3.get();
+			default -> PREGNANCY_PAIN4.get();
+		};
 	}
 	
 	public static final SoundEvent getRandomStomachGrowls(RandomSource random) {
-		if (stomachGrols == null) {
-			stomachGrols = new SoundEvent[] {
-					STOMACH_GROWLS_1.get(),
-					STOMACH_GROWLS_2.get(),
-					STOMACH_GROWLS_3.get(),
-					STOMACH_GROWLS_4.get(),
-					STOMACH_GROWLS_5.get(),
-					STOMACH_GROWLS_6.get()
-				};
-		}
-		return stomachGrols[random.nextInt(stomachGrols.length)];
+		return switch (random.nextInt(6)) {
+			case 0 -> STOMACH_GROWLS_1.get();
+			case 1 -> STOMACH_GROWLS_2.get();
+			case 2 -> STOMACH_GROWLS_3.get();
+			case 3 -> STOMACH_GROWLS_4.get();
+			case 4 -> STOMACH_GROWLS_5.get();
+			default -> STOMACH_GROWLS_6.get();
+		};
 	}
 	
 	public static final SoundEvent getRandomPlayerPush(RandomSource random) {
-		if (playerPuches == null) {
-			playerPuches = new SoundEvent[] {
-					PLAYER_PUSH_1.get(),
-					PLAYER_PUSH_2.get(),
-					PLAYER_PUSH_3.get()
-				};
-		}
-		return playerPuches[random.nextInt(playerPuches.length)];
+		return switch (random.nextInt(3)) {
+			case 0 -> PLAYER_PUSH_1.get();
+			case 1 -> PLAYER_PUSH_2.get();
+			default -> PLAYER_PUSH_3.get();
+		};
 	}
 }

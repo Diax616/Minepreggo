@@ -14,7 +14,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class EnderWomanEyesLayer 
 	<E extends AbstractEnderWoman, M extends AbstractEnderWomanModel<E>> extends EyesLayer<E, M> {
 
-	private static final RenderType ENDER_EYES = RenderType.eyes(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/ender/ender_woman_eyes.png"));
+	private static final RenderType ENDER_EYES = RenderType.eyes(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/ender/monster/eye/ender_woman_eyes.png"));
 	private final RenderType enderEyes;
 	
 	public EnderWomanEyesLayer(RenderLayerParent<E, M> p_116981_, RenderType enderEyes) {

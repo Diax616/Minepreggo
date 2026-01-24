@@ -5,10 +5,16 @@ import java.util.Optional;
 import org.joml.Vector3i;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
+import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
+import dev.dixmk.minepreggo.world.item.ItemHelper;
+import dev.dixmk.minepreggo.world.pregnancy.IFemaleEntity;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -21,6 +27,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.SlotItemHandler;
 
 @Mod.EventBusSubscriber
 public abstract class AbstractPreggoMobInventaryMenu
@@ -50,8 +57,83 @@ public abstract class AbstractPreggoMobInventaryMenu
 		this.createInventory(inv);	
 	}
 
-	
 	protected abstract void createInventory(Inventory inv);
+	
+	protected void initVanillaEquipmentSlots(Inventory inv) {
+		this.preggoMob.ifPresent(mob -> {
+			this.addSlot(new SlotItemHandler(internal, ITamablePreggoMob.HEAD_INVENTORY_SLOT, 8, 8) {
+				@Override
+				public boolean mayPlace(ItemStack itemstack) {
+					return ItemHelper.isHelmet(itemstack);
+				}
+			});
+			
+			this.addSlot(new SlotItemHandler(internal, ITamablePreggoMob.CHEST_INVENTORY_SLOT, 8, 26) {
+				@Override
+				public boolean mayPlace(ItemStack itemstack) {	
+					var armor = itemstack.getItem();
+					boolean flag = ItemHelper.isChest(armor);			
+					
+					if (!flag) {
+						return false;
+					}
+					
+					if (mob instanceof ITamablePregnantPreggoMob tamablePregnantPreggoMob) {
+						final var pregnancyData = tamablePregnantPreggoMob.getPregnancyData();
+						final var pregnancyPhase = pregnancyData.getCurrentPregnancyPhase();					
+						if (!PregnancySystemHelper.canUseChestplate(armor, pregnancyPhase, false)) {
+							MessageHelper.warnFittedArmor((Player) mob.getOwner(), mob, pregnancyPhase);
+			                flag = false;
+						}	
+						else if (!PreggoMobHelper.canUseChestPlateInLactation(tamablePregnantPreggoMob.getGenderedData(), armor)) {
+							MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) mob.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.armor.message.lactating", mob.getSimpleName()));
+			                flag = false;
+						}
+					}		
+					else {                      							
+						if (mob.getGenderedData() instanceof IFemaleEntity femaleData && !PreggoMobHelper.canUseChestPlateInLactation(femaleData, armor)) {
+							MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) mob.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.armor.message.lactating", mob.getSimpleName()));
+							flag = false;
+						}
+					}
+			
+					return flag;			
+				}
+			});
+			
+			this.addSlot(new SlotItemHandler(internal, ITamablePreggoMob.LEGS_INVENTORY_SLOT, 8, 44) {
+				@Override
+				public boolean mayPlace(ItemStack itemstack) {
+					var armor = itemstack.getItem();
+					boolean flag = ItemHelper.isLegging(armor);			
+					
+					if (!flag) {
+						return false;
+					}
+					
+					if (mob instanceof ITamablePregnantPreggoMob tamablePregnantPreggoMob) {
+						final var pregnancyData = tamablePregnantPreggoMob.getPregnancyData();
+						final var pregnancyPhase = pregnancyData.getCurrentPregnancyPhase();					
+						if (!PregnancySystemHelper.canUseLegging(armor, pregnancyPhase)) {
+							MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) mob.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.armor.message.leggings_does_not_fit", mob.getSimpleName()));
+			                return false;
+						}			
+					}												
+					return true;			
+				}
+			});
+	
+			this.addSlot(new SlotItemHandler(internal, ITamablePreggoMob.FEET_INVENTORY_SLOT, 8, 62) {
+				@Override
+				public boolean mayPlace(ItemStack itemstack) {
+					return ItemHelper.isBoot(itemstack);
+				}
+			});
+			
+			this.addSlot(new SlotItemHandler(internal, ITamablePreggoMob.MAINHAND_INVENTORY_SLOT, 77, 62));
+			this.addSlot(new SlotItemHandler(internal, ITamablePreggoMob.OFFHAND_INVENTORY_SLOT, 95, 62));
+		});
+	}
 	
 	protected Optional<E> readBuffer(FriendlyByteBuf extraData) {		
 		E mob = null;

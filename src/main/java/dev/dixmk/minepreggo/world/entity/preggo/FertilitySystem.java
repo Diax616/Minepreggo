@@ -2,7 +2,6 @@ package dev.dixmk.minepreggo.world.entity.preggo;
 
 import javax.annotation.Nonnull;
 
-import dev.dixmk.minepreggo.world.pregnancy.AbstractBreedableEntity;
 import dev.dixmk.minepreggo.world.pregnancy.IBreedable;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.util.RandomSource;
@@ -11,22 +10,22 @@ public abstract class FertilitySystem<E extends PreggoMob & ITamablePreggoMob<?>
 
 	protected final RandomSource randomSource;	
 	protected final E preggoMob;
-	private final AbstractBreedableEntity abstractBreedableEntity;
+	private final IBreedable breedableData;
 	
 	protected FertilitySystem(@Nonnull E preggoMob) {
 		this.preggoMob = preggoMob;	
 		this.randomSource = preggoMob.getRandom();
-		this.abstractBreedableEntity = preggoMob.getGenderedData();
+		this.breedableData = preggoMob.getGenderedData();
 	}
 	
 	protected void evaluateFertilityTimer() {			    	
-        if (abstractBreedableEntity.getFertilityRate() < IBreedable.MAX_FERTILITY_RATE) {     	
-        	if (abstractBreedableEntity.getFertilityRateTimer() >= PregnancySystemHelper.TOTAL_TICKS_FERTILITY_RATE) {
-            	abstractBreedableEntity.resetFertilityRateTimer();  	
-            	abstractBreedableEntity.incrementFertilityRate(0.075F);
+        if (breedableData.getFertilityRate() < IBreedable.MAX_FERTILITY_RATE) {     	
+        	if (breedableData.getFertilityRateTimer() >= PregnancySystemHelper.TOTAL_TICKS_FERTILITY_RATE) {
+        		breedableData.resetFertilityRateTimer();  	
+        		breedableData.incrementFertilityRate(0.075F);
         	}
         	else {
-            	abstractBreedableEntity.incrementFertilityRateTimer();
+        		breedableData.incrementFertilityRateTimer();
             } 
         } 
 	}

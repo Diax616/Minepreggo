@@ -10,23 +10,21 @@ import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
-import dev.dixmk.minepreggo.network.packet.RequestSexM2PC2SPacket;
+import dev.dixmk.minepreggo.network.packet.c2s.RequestSexM2PC2SPacket;
 import dev.dixmk.minepreggo.world.pregnancy.AbstractPregnancySystem;
-import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
 import dev.dixmk.minepreggo.world.pregnancy.IBreedable;
-import dev.dixmk.minepreggo.world.pregnancy.IPregnancyEffectsHandler;
-import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
+import dev.dixmk.minepreggo.world.pregnancy.SyncedSetPregnancySymptom;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 
-public abstract class PreggoMobPregnancySystemP4<E extends PreggoMob
-	& ITamablePreggoMob<FemaleEntityImpl> & IPregnancySystemHandler & IPregnancyEffectsHandler> extends PreggoMobPregnancySystemP3<E> {
+public abstract class PreggoMobPregnancySystemP4
+	<E extends PreggoMob & ITamablePregnantPreggoMob> extends PreggoMobPregnancySystemP3<E> {
 	
 	protected @Nonnegative int totalTicksOfHorny = MinepreggoModConfig.getTotalTicksOfHornyP4();
 	protected @Nonnegative int totalTicksOfBirth = PregnancySystemHelper.TOTAL_TICKS_BIRTH_P4;
@@ -35,7 +33,6 @@ public abstract class PreggoMobPregnancySystemP4<E extends PreggoMob
 
 	private int sexRequestCooldown = 0;
 
-	
 	protected PreggoMobPregnancySystemP4(@Nonnull E preggoMob) {
 		super(preggoMob);
 		addNewValidPregnancySymptom(PregnancySymptom.HORNY);
@@ -72,8 +69,18 @@ public abstract class PreggoMobPregnancySystemP4<E extends PreggoMob
 			return;
 		}
 		
-		if (canAdvanceNextPregnancyPhase() && hasToGiveBirth()) {
-			breakWater();
+		if (canAdvanceNextPregnancyPhase() && hasToGiveBirth()) {		
+			if (pregnantEntity.getPregnancyData().getWomb().isWombOverloaded()) {
+				if (pregnantEntity.isAlive()) {
+					PregnancySystemHelper.tornWomb(pregnantEntity);
+				}
+				else {
+					MinepreggoMod.LOGGER.debug("PreggoMob {} has a torn womb but is dead, skipping torn womb handling.", pregnantEntity.getDisplayName().getString());
+				}
+			} 
+			else {
+				breakWater();
+			}
 			return;
 		}
 		
@@ -84,14 +91,14 @@ public abstract class PreggoMobPregnancySystemP4<E extends PreggoMob
 	
 	@Override
 	protected void evaluateBirth(ServerLevel serverLevel) {		
-		
-		final var pain = pregnantEntity.getPregnancyPain();
-		
+		final var pregnancyData = pregnantEntity.getPregnancyData();
+		final var pain = pregnancyData.getPregnancyPain();
 		if (pain == PregnancyPain.PREBIRTH) {		
-			if (pregnantEntity.getPregnancyPainTimer() >= totalTicksOfPreBirth) {
-				pregnantEntity.setPregnancyPain(PregnancyPain.BIRTH);
-				pregnantEntity.setBodyState(PreggoMobBody.NAKED);
-	    		pregnantEntity.resetPregnancyPainTimer();   		
+			if (pregnancyData.getPregnancyPainTimer() >= totalTicksOfPreBirth) {
+				tryHurt();
+				pregnancyData.setPregnancyPain(PregnancyPain.BIRTH);
+				pregnantEntity.getTamableData().setBodyState(PreggoMobBody.NAKED);
+				pregnancyData.resetPregnancyPainTimer();   		
 				PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.CHEST);
 				PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.LEGS);
 				PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.MAINHAND);
@@ -99,19 +106,19 @@ public abstract class PreggoMobPregnancySystemP4<E extends PreggoMob
 	        	MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) pregnantEntity.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.birth.message.pre", pregnantEntity.getSimpleName()));
 			}	
 			else {
-	    		pregnantEntity.incrementPregnancyPainTimer();
+				pregnancyData.incrementPregnancyPainTimer();
 	    		AbstractPregnancySystem.spawnParticulesForWaterBreaking(serverLevel, pregnantEntity);
 			}
 		}
 		else if (pain == PregnancyPain.BIRTH) {
-			if (pregnantEntity.getPregnancyPainTimer() >= totalTicksOfBirth) {			
+			if (pregnancyData.getPregnancyPainTimer() >= totalTicksOfBirth) {			
 				
-	        	final var aliveBabiesItemStacks = new ArrayList<>(PregnancySystemHelper.getAliveBabies(pregnantEntity.getWomb()));   	
+	        	final var aliveBabiesItemStacks = new ArrayList<>(PregnancySystemHelper.getAliveBabies(pregnancyData.getWomb()));   	
 	       		
 	        	MinepreggoMod.LOGGER.debug("PreggoMob {} is giving birth to {} babies.", pregnantEntity.getDisplayName().getString(), aliveBabiesItemStacks.size());
 	        	
 	        	if (aliveBabiesItemStacks.isEmpty()) {
-					MinepreggoMod.LOGGER.error("Failed to get baby item for pregnancy system {} birth.", pregnantEntity.getCurrentPregnancyStage());
+					MinepreggoMod.LOGGER.error("Failed to get baby item for pregnancy system {} birth.", pregnancyData.getCurrentPregnancyPhase());
 				}
 	        	
 	        	// TODO: Babies itemstacks are only removed if player's hands are empty. It should handle stacking unless itemstack is a baby item.
@@ -137,16 +144,19 @@ public abstract class PreggoMobPregnancySystemP4<E extends PreggoMob
 				MinepreggoMod.LOGGER.debug("PreggoMob {} has given birth.", pregnantEntity.getDisplayName().getString());	
 			}	
 			else {
-	    		pregnantEntity.incrementPregnancyPainTimer();
+				pregnancyData.incrementPregnancyPainTimer();
+				tryHurtByCooldown();
 			}
 		}
 	}
 	
 	@Override
 	protected void startLabor() {
-		pregnantEntity.setPregnancyPain(PregnancyPain.PREBIRTH);
-		pregnantEntity.resetPregnancyPainTimer();
-		pregnantEntity.setPickUpItems(false);
+		tryHurt();
+		final var pregnancyData = pregnantEntity.getPregnancyData();
+		pregnancyData.setPregnancyPain(PregnancyPain.PREBIRTH);
+		pregnancyData.resetPregnancyPainTimer();
+		pregnantEntity.setCanPickUpLoot(false);
 		pregnantEntity.setBreakBlocks(false);
 		MinepreggoMod.LOGGER.debug("PreggoMob {} has started labor.", pregnantEntity.getDisplayName().getString());	
     	MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) pregnantEntity.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.birth.message.warning", pregnantEntity.getSimpleName()));
@@ -154,42 +164,47 @@ public abstract class PreggoMobPregnancySystemP4<E extends PreggoMob
 	
 	@Override
 	protected void evaluateWaterBreaking(ServerLevel serverLevel) {
-		if (pregnantEntity.getPregnancyPainTimer() >= PregnancySystemHelper.TOTAL_TICKS_WATER_BREAKING) {
+		final var pregnancyData = pregnantEntity.getPregnancyData();
+		if (pregnancyData.getPregnancyPainTimer() >= PregnancySystemHelper.TOTAL_TICKS_WATER_BREAKING) {
 			startLabor();
 		}
 		else {
-			pregnantEntity.incrementPregnancyPainTimer();
+			pregnancyData.incrementPregnancyPainTimer();
     		AbstractPregnancySystem.spawnParticulesForWaterBreaking(serverLevel, pregnantEntity);
 		}
 	}
 	
 	@Override
 	protected void breakWater() {
-		pregnantEntity.resetPregnancyPainTimer();
-		pregnantEntity.setPregnancyPain(PregnancyPain.WATER_BREAKING);
+		tryHurt();
+		final var pregnancyData = pregnantEntity.getPregnancyData();
+		pregnancyData.resetPregnancyPainTimer();
+		pregnancyData.setPregnancyPain(PregnancyPain.WATER_BREAKING);
 		MinepreggoMod.LOGGER.debug("PreggoMob {} water has broken.", pregnantEntity.getDisplayName().getString());
     	MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) pregnantEntity.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.birth.message.init", pregnantEntity.getSimpleName()));
 	}
 	
 	@Override
 	public boolean canBeAngry() {
-		return super.canBeAngry() || pregnantEntity.getHorny() >= 20;	
+		return super.canBeAngry() || pregnantEntity.getPregnancyData().getHorny() >= 20;	
 	}
 	
 	@Override
 	protected boolean hasToGiveBirth() {
-		return pregnantEntity.getLastPregnancyStage() == pregnantEntity.getCurrentPregnancyStage();
+		final var pregnancyData = pregnantEntity.getPregnancyData();
+		return pregnancyData.getLastPregnancyStage() == pregnancyData.getCurrentPregnancyPhase();
 	}
 	
 	@Override
 	protected boolean isInLabor() {
-		final var pain = pregnantEntity.getPregnancyPain();
+		final var pregnancyData = pregnantEntity.getPregnancyData();
+		final var pain = pregnancyData.getPregnancyPain();
 		return pain == PregnancyPain.PREBIRTH || pain == PregnancyPain.BIRTH;
  	}
 	
 	@Override
 	protected boolean isWaterBroken() {
-		return pregnantEntity.getPregnancyPain() == PregnancyPain.WATER_BREAKING;
+		return pregnantEntity.getPregnancyData().getPregnancyPain() == PregnancyPain.WATER_BREAKING;
  	}
 		
 	@Override
@@ -197,9 +212,11 @@ public abstract class PreggoMobPregnancySystemP4<E extends PreggoMob
 		if (super.tryInitPregnancySymptom()) {
 			return true;
 		}
-		if (pregnantEntity.getHorny() >= PregnancySystemHelper.ACTIVATE_HORNY_SYMPTOM
-				&& !pregnantEntity.getPregnancySymptoms().contains(PregnancySymptom.HORNY)) {
-	    	pregnantEntity.addPregnancySymptom(PregnancySymptom.HORNY);
+		final var pregnancyData = pregnantEntity.getPregnancyData();
+		SyncedSetPregnancySymptom pregnancySymptoms = pregnancyData.getSyncedPregnancySymptoms();	
+		if (pregnancyData.getHorny() >= PregnancySystemHelper.ACTIVATE_HORNY_SYMPTOM
+				&& !pregnancySymptoms.containsPregnancySymptom(PregnancySymptom.HORNY)) {
+			pregnancySymptoms.addPregnancySymptom(PregnancySymptom.HORNY);
 	    	pregnantEntity.getGenderedData().setSexualAppetite(IBreedable.MAX_SEXUAL_APPETIVE);
 	    	return true;		
 		}
@@ -210,12 +227,13 @@ public abstract class PreggoMobPregnancySystemP4<E extends PreggoMob
 	protected boolean tryInitRandomPregnancyPain() {
 		if (super.tryInitRandomPregnancyPain()) {
 			return true;
-		}				
+		}			
+		final var pregnancyData = pregnantEntity.getPregnancyData();
 		if (hasToGiveBirth()
 				&& !pregnantEntity.hasEffect(MinepreggoModMobEffects.ETERNAL_PREGNANCY.get())
 				&& randomSource.nextFloat() < contractionProb) {
-			pregnantEntity.setPregnancyPain(PregnancyPain.CONTRACTION);
-			pregnantEntity.resetPregnancyPainTimer();
+			pregnancyData.setPregnancyPain(PregnancyPain.CONTRACTION);
+			pregnancyData.resetPregnancyPainTimer();
 			PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.CHEST);					
 			return true;
 		}     
@@ -225,25 +243,28 @@ public abstract class PreggoMobPregnancySystemP4<E extends PreggoMob
 	@Override
 	protected void evaluatePregnancyPains() {
 		super.evaluatePregnancyPains();
-		if (pregnantEntity.getPregnancyPain() == PregnancyPain.CONTRACTION) {
-			if (pregnantEntity.getPregnancyPainTimer() >= totalTicksOfFetalMovement) {
-				pregnantEntity.clearPregnancyPain();	
-				pregnantEntity.resetPregnancyPainTimer();
+		final var pregnancyData = pregnantEntity.getPregnancyData();
+		if (pregnancyData.getPregnancyPain() == PregnancyPain.CONTRACTION) {
+			if (pregnancyData.getPregnancyPainTimer() >= totalTicksOfFetalMovement) {
+				pregnancyData.clearPregnancyPain();	
+				pregnancyData.resetPregnancyPainTimer();
 			}
 			else {
-				pregnantEntity.incrementPregnancyPainTimer();
+				pregnancyData.incrementPregnancyPainTimer();
+				tryHurtByCooldown();
 			}
 		}
 	}
 	
 	protected void evaluateHornyTimer() {
-		if (pregnantEntity.getHorny() < PregnancySystemHelper.MAX_HORNY_LEVEL) {
-	        if (pregnantEntity.getHornyTimer() >= totalTicksOfHorny) {
-	        	pregnantEntity.incrementHorny();
-	        	pregnantEntity.resetHornyTimer();
+		final var pregnancyData = pregnantEntity.getPregnancyData();
+		if (pregnancyData.getHorny() < PregnancySystemHelper.MAX_HORNY_LEVEL) {
+	        if (pregnancyData.getHornyTimer() >= totalTicksOfHorny) {
+	        	pregnancyData.incrementHorny();
+	        	pregnancyData.resetHornyTimer();
 	        }
 	        else {
-	        	pregnantEntity.incrementHornyTimer();
+	        	pregnancyData.incrementHornyTimer();
 	        }
 		}	
 	}
@@ -251,7 +272,8 @@ public abstract class PreggoMobPregnancySystemP4<E extends PreggoMob
 	// TODO: PreggoMob can only request sex if she is pregnant and horny enough. But She can't request if she's not pregnant. It should allow even if not pregnant.
 	// It ignores if their owner (Player) is female or male
 	protected boolean tryRequestSexToOwner() {	
-		if (!pregnantEntity.getPregnancySymptoms().contains(PregnancySymptom.HORNY)) {
+		final var pregnancyData = pregnantEntity.getPregnancyData();
+		if (!pregnancyData.getSyncedPregnancySymptoms().containsPregnancySymptom(PregnancySymptom.HORNY)) {
 			return false;
 		}
 		

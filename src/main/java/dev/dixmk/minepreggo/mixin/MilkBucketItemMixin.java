@@ -31,9 +31,9 @@ public class MilkBucketItemMixin {
 	        	cap.getFemaleData().ifPresent(femaleData -> {                      		                	
 	            	boolean flag = false;
 	            	List<MobEffect> effectsToRemove = null;
-	            	if (femaleData.isPregnant() && femaleData.isPregnancySystemInitialized()) {        
+	            	if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {        
 	                	// TODO: Refactor the logic to avoid removing secondary pregnancy effects
-						effectsToRemove = PlayerHelper.removeEffectsByPregnancyPhase(player, femaleData.getPregnancySystem().getCurrentPregnancyStage());
+						effectsToRemove = PlayerHelper.removeEffectsByPregnancyPhase(player, femaleData.getPregnancyData().getCurrentPregnancyPhase());
 	                	flag = true;
 	                }
 	                else {         

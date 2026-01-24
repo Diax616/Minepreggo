@@ -13,11 +13,11 @@
 	  "other_set": "minecraft:villages"
 	},
 	
-	"frequency": 0.6,
+	"frequency": 0.3,
 	"frequency_reduction_method": "legacy_type_1",
 	
-    "spacing": 8,
-    "separation": 4,
+    "spacing": 20,
+    "separation": 10,
     "salt": 737459095
   }
 }

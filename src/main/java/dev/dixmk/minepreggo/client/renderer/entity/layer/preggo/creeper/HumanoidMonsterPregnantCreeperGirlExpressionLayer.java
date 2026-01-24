@@ -17,7 +17,7 @@ public class HumanoidMonsterPregnantCreeperGirlExpressionLayer
 	
 	@Override
 	public RenderType renderType(E creeperGirl) {		
-		if (creeperGirl.isIncapacitated()) {
+		if (creeperGirl.getPregnancyData().isIncapacitated()) {
 			return HOSTIL_PAIN;
 		}	
 		return HOSTIL; 

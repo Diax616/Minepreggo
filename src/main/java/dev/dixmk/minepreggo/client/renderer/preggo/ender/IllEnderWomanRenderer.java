@@ -16,7 +16,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class IllEnderWomanRenderer extends AbstractMonsterEnderWomanRenderer<IllEnderWoman, IllEnderWomanModel> {
 
-	private static final RenderType ILL_ENDER_EYES = RenderType.eyes(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/ender/ill_ender_woman_eyes.png"));
+	private static final RenderType ILL_ENDER_EYES = RenderType.eyes(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/ender/monster/eye/ill_ender_woman_eyes.png"));
 	
 	public IllEnderWomanRenderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation outter, ModelLayerLocation inner) {
 		super(context, new IllEnderWomanModel(context.bakeLayer(main)), ILL_ENDER_EYES);

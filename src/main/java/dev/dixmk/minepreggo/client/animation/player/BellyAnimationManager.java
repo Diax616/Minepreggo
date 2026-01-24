@@ -43,11 +43,11 @@ public class BellyAnimationManager {
     	startAnimation((LivingEntity) player, definition);
     }
     
-    public void startAnimation(AbstractTamablePregnantCreeperGirl<?,?> creeperGirl, AnimationDefinition definition) {
+    public void startAnimation(AbstractTamablePregnantCreeperGirl creeperGirl, AnimationDefinition definition) {
     	startAnimation((LivingEntity) creeperGirl, definition);
     }
     
-    public void startAnimation(AbstractTamablePregnantZombieGirl<?,?> zombieGirl, AnimationDefinition definition) {
+    public void startAnimation(AbstractTamablePregnantZombieGirl zombieGirl, AnimationDefinition definition) {
     	startAnimation((LivingEntity) zombieGirl, definition);
     }
     

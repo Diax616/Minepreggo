@@ -8,7 +8,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public final class PrenatalCheckups {
-	EnumMap<PrenatalCheckup, PrenatalCheckupData> map = new EnumMap<>(PrenatalCheckup.class);
+	private EnumMap<PrenatalCheckup, PrenatalCheckupData> map = new EnumMap<>(PrenatalCheckup.class);
 	
 	private PrenatalCheckups() {
 		for (var key : PrenatalCheckup.values()) {

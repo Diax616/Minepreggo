@@ -1,5 +1,6 @@
 package dev.dixmk.minepreggo.world.item;
 
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
@@ -54,5 +55,25 @@ public class ItemHelper {
 	
 	public static boolean isMilk(Item item) {
     	return item == Items.MILK_BUCKET || item instanceof AbstractBreastMilk;
+	}
+	
+	public static Item getRandomHelmet(RandomSource random) {
+		return switch (random.nextInt(5)) {
+		case 0 -> Items.LEATHER_HELMET;
+		case 1 -> Items.IRON_HELMET;
+		case 2 -> Items.GOLDEN_HELMET;
+		case 3 -> Items.DIAMOND_HELMET;
+		default -> Items.CHAINMAIL_HELMET;
+		};
+	}
+	
+	public static Item getRandomAxe(RandomSource random) {
+		return switch (random.nextInt(5)) {
+		case 0 -> Items.WOODEN_AXE;
+		case 1 -> Items.STONE_AXE;
+		case 2 -> Items.IRON_AXE;
+		case 3 -> Items.GOLDEN_AXE;
+		default -> Items.DIAMOND_AXE;
+		};
 	}
 }

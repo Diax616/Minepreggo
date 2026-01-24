@@ -1,6 +1,8 @@
 package dev.dixmk.minepreggo.world.pregnancy;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -14,7 +16,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.common.utils.FixedSizeList;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import net.minecraft.nbt.CompoundTag;
@@ -23,8 +24,8 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.util.RandomSource;
 
 public class Womb {
-	FixedSizeList<BabyData> babies = new FixedSizeList<>(IBreedable.MAX_NUMBER_OF_BABIES);
 	
+	private List<BabyData> babies = new ArrayList<>(PregnancySystemHelper.MAX_NUMBER_OF_BABIES);
 	private static final String NBT_KEY = "DataWomb";
 	
 	private Womb() {}
@@ -75,28 +76,37 @@ public class Womb {
 		babies.forEach(consumer);
 	}
 	
+	/**
+	 * Duplicates a random baby in the womb.
+	 * If the womb is already at maximum capacity, the duplicated baby is added to the discarded, extraBabies list indicate that the womb is overloaded.
+	 * 
+	 * @see #isWombOverloaded
+	 * */
 	public boolean duplicateRandomBaby(RandomSource random) {
-	    if (this.babies.size() >= IBreedable.MAX_NUMBER_OF_BABIES || this.babies.isEmpty()) {
-	        return false;
-	    }
-
-	    // Select a random baby to duplicate
 	    int idx = random.nextInt(0, this.babies.size());
 	    BabyData original = this.babies.get(idx);
-	    // Use BabyData.duplicate to create a copy
-	    BabyData duplicate = BabyData.duplicate(original);
-	    return this.babies.add(duplicate);
+	    return this.babies.add(BabyData.duplicate(original));
 	}
 	
 	public static int getMaxNumOfBabies() {
-		return IBreedable.MAX_NUMBER_OF_BABIES;
+		return PregnancySystemHelper.MAX_NUMBER_OF_BABIES;
+	}
+	
+	/**
+	 * Indicates whether the womb has exceeded its maximum capacity of babies.
+	 * If true, in a some point in the pregnancy process, the mother should die due to overloading.
+	 * */
+	public boolean isWombOverloaded() {
+		return this.babies.size() > PregnancySystemHelper.MAX_NUMBER_OF_BABIES;
 	}
  
     public CompoundTag toNBT() {
     	CompoundTag wrapper = new CompoundTag();
+    	CompoundTag data = new CompoundTag();
 		ListTag listTag = new ListTag();
 		babies.forEach(baby -> listTag.add(baby.toNBT()));	
-		wrapper.put(NBT_KEY, listTag);
+		data.put("Babies", listTag);
+		wrapper.put(NBT_KEY, data);
         return wrapper;
     }
 	
@@ -125,16 +135,18 @@ public class Womb {
 
 	@CheckForNull
 	public static Womb fromNBT(CompoundTag nbt) {		
-		if (nbt.contains(NBT_KEY, Tag.TAG_LIST)) {
-			ListTag list = nbt.getList(NBT_KEY, Tag.TAG_COMPOUND);
-			Womb womb = new Womb();			
+		if (nbt.contains(NBT_KEY, Tag.TAG_COMPOUND)) {
+			CompoundTag dataTag = nbt.getCompound(NBT_KEY);
+			ListTag list = dataTag.getList("Babies", Tag.TAG_COMPOUND);
+			Womb womb = new Womb();	
+			
 	        for (var tag : list) {
 	        	final var baby = BabyData.fromNBT((CompoundTag) tag);     	
 	        	if (baby != null) {
 	            	womb.addBaby(baby);
 	        	}
 	        	else {
-	        		MinepreggoMod.LOGGER.error("BabyData was null from nbt");
+	        		MinepreggoMod.LOGGER.warn("Failed to read BabyData from NBT tag in Womb: {}", tag);
 	        	}
 	        }
 	        return womb;

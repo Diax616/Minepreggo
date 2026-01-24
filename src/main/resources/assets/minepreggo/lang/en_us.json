@@ -168,6 +168,7 @@
 	"effect.minepreggo.craving": "Craving",
 	"effect.minepreggo.fertile": "Fertile",
 	"effect.minepreggo.fertility": "Fertility",
+	"effect.minepreggo.zero_gravity_belly": "Zero Gravity Belly",
 	
 	"item.minecraft.potion.effect.zombie_impregnation_0": "Potion of Zombie Impregnation",
 	"item.minecraft.potion.effect.zombie_impregnation_1": "Potion of Zombie Impregnation",
@@ -221,9 +222,10 @@
 	"item.minecraft.potion.effect.pregnancy_acceleration_4": "Potion of Pregnancy Acceleration",
 	"item.minecraft.potion.effect.pregnancy_healing_0": "Potion of Pregnancy Healing",
 	"item.minecraft.potion.effect.pregnancy_resistance_0": "Potion of Pregnancy Resistance",
-	"item.minecraft.potion.effect.eternal_pregnancy": "Potion of Eternal Pregnancy",
-	"item.minecraft.potion.effect.fertility": "Potion of Fertility",
-
+	"item.minecraft.potion.effect.eternal_pregnancy_0": "Potion of Eternal Pregnancy",
+	"item.minecraft.potion.effect.fertility_0": "Potion of Fertility",
+	"item.minecraft.potion.effect.zero_gravity_belly_0": "Potion of Zero Gravity Belly",
+	
 	"item.minecraft.splash_potion.effect.zombie_impregnation_0": "Splash Potion of Zombie Impregnation",
 	"item.minecraft.splash_potion.effect.zombie_impregnation_1": "Splash Potion of Zombie Impregnation",
 	"item.minecraft.splash_potion.effect.zombie_impregnation_2": "Splash Potion of Zombie Impregnation",
@@ -276,8 +278,9 @@
 	"item.minecraft.splash_potion.effect.pregnancy_acceleration_4": "Splash Potion of Pregnancy Acceleration",
 	"item.minecraft.splash_potion.effect.pregnancy_healing_0": "Splash Potion of Pregnancy Healing",
 	"item.minecraft.splash_potion.effect.pregnancy_resistance_0": "Splash Potion of Pregnancy Resistance",
-	"item.minecraft.splash_potion.effect.eternal_pregnancy": "Splash Potion of Eternal Pregnancy",
-	"item.minecraft.splash_potion.effect.fertility": "Splash Potion of Fertility",
+	"item.minecraft.splash_potion.effect.eternal_pregnancy_0": "Splash Potion of Eternal Pregnancy",
+	"item.minecraft.splash_potion.effect.fertility_0": "Splash Potion of Fertility",
+	"item.minecraft.splash_potion.effect.zero_gravity_belly_0": "Splash Potion of Zero Gravity Belly",
 
 	"item.minecraft.lingering_potion.effect.zombie_impregnation_0": "Lingering Potion of Zombie Impregnation",
 	"item.minecraft.lingering_potion.effect.zombie_impregnation_1": "Lingering Potion of Zombie Impregnation",
@@ -331,8 +334,9 @@
 	"item.minecraft.lingering_potion.effect.pregnancy_acceleration_4": "Lingering Potion of Pregnancy Acceleration",
 	"item.minecraft.lingering_potion.effect.pregnancy_healing_0": "Lingering Potion of Pregnancy Healing",
 	"item.minecraft.lingering_potion.effect.pregnancy_resistance_0": "Lingering Potion of Pregnancy Resistance",
-	"item.minecraft.lingering_potion.effect.eternal_pregnancy": "Lingering Potion of Eternal Pregnancy",
-	"item.minecraft.lingering_potion.effect.fertility": "Lingering Potion of Fertility",
+	"item.minecraft.lingering_potion.effect.eternal_pregnancy_0": "Lingering Potion of Eternal Pregnancy",
+	"item.minecraft.lingering_potion.effect.fertility_0": "Lingering Potion of Fertility",
+	"item.minecraft.lingering_potion.effect.zero_gravity_belly_0": "Lingering Potion of Zero Gravity Belly",
 
 	"item.minecraft.tipped_arrow.effect.zombie_impregnation_0": "Arrow of Zombie Impregnation",
 	"item.minecraft.tipped_arrow.effect.zombie_impregnation_1": "Arrow of Zombie Impregnation",
@@ -386,9 +390,9 @@
 	"item.minecraft.tipped_arrow.effect.pregnancy_acceleration_4": "Arrow of Pregnancy Acceleration",
 	"item.minecraft.tipped_arrow.effect.pregnancy_healing_0": "Arrow of Pregnancy Healing",
 	"item.minecraft.tipped_arrow.effect.pregnancy_resistance_0": "Arrow of Pregnancy Resistance",
-	"item.minecraft.tipped_arrow.effect.eternal_pregnancy": "Arrow of Eternal Pregnancy",
-	"item.minecraft.tipped_arrow.effect.fertility": "Arrow of Fertility",
-
+	"item.minecraft.tipped_arrow.effect.eternal_pregnancy_0": "Arrow of Eternal Pregnancy",
+	"item.minecraft.tipped_arrow.effect.fertility_0": "Arrow of Fertility",
+	"item.minecraft.tipped_arrow.effect.zero_gravity_belly_0": "Arrow of Zero Gravity Belly",
 	
 	"item.minepreggo.female_chainmail_p0_chestplate": "Female Chainmail Chestplate",
 	"item.minepreggo.female_netherite_p0_chestplate": "Female Netherite Chestplate",
@@ -606,7 +610,6 @@
 		
 	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.title": "Prenatal Ultrasound Scan Results",
 	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.1.intro": "       Result\n  Ultrasound Scan\n\n",
-	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.1.babies_inside_belly": "Babies Inside Belly: %s",
 
 	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.default.title": "     Baby State\n\n",
 	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.gender": "Gender: %s\n\n",
@@ -628,5 +631,16 @@
 	"book.minepreggo.prenatal_checkup.paternity_test.template.page.default.result.negative": "He IS NOT the father!",
 	
 	"key.minepreggo.rub_belly": "Rub Your Pregnant Belly",
-	"key.categories.minepreggo": "Minepreggo Keyboards"
+	"key.categories.minepreggo": "Minepreggo Keyboards",
+	
+	"death.attack.belly_burst": "%1$s's pregnant belly burst",
+	"death.attack.pregnancy_pain": "%1$s's didn't endure the pregnancy pain",
+	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.1.womb_size_state": "Womb Size State: %s\n\n",
+	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.1.womb_size_state.overloaded": "Overloaded",
+	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.1.womb_size_state.normal": "Normal",
+	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.1.babies_inside_belly": "Babies Inside Belly: %s\n\n",
+	"chat.minepreggo.player.pregnancy.message.cannot_in_labor": "You feel too much pain to do this now",
+	"chat.minepreggo.player.pregnancy.message.cannot_ride.message.1": "You feel too much discomfort to ride now",
+	"chat.minepreggo.player.pregnancy.message.cannot_ride.message.2": "Your belly is too big to ride now"
+
 }

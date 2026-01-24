@@ -8,9 +8,11 @@ import org.apache.commons.lang3.tuple.ImmutableTriple;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
+import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
@@ -18,9 +20,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.creeper.MonsterHumanoidCreeperGi
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableHumanoidCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.MonsterZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirl;
-import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
 import dev.dixmk.minepreggo.world.pregnancy.IFemaleEntity;
-import dev.dixmk.minepreggo.world.pregnancy.IPregnancySystemHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
@@ -114,11 +114,11 @@ public class Impregnantion extends MobEffect {
 				var nextStage = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
 				initPregnancy(zombieGirl, nextStage, amplifier);
 			}
-			else if (entity instanceof TamableHumanoidCreeperGirl creeperGirl && creeperGirl.getPostPregnancyData().isEmpty()) {
+			else if (entity instanceof TamableHumanoidCreeperGirl creeperGirl && creeperGirl.getGenderedData().getPostPregnancyData().isEmpty()) {
 				var nextStage = MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
 				initPregnancyInTamable(creeperGirl, nextStage, amplifier);
 			}
-			else if (entity instanceof TamableZombieGirl zombieGirl && zombieGirl.getPostPregnancyData().isEmpty()) {
+			else if (entity instanceof TamableZombieGirl zombieGirl && zombieGirl.getGenderedData().getPostPregnancyData().isEmpty()) {
 				var nextStage = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
 				initPregnancyInTamable(zombieGirl, nextStage, amplifier);
 			}
@@ -140,20 +140,21 @@ public class Impregnantion extends MobEffect {
 		}
 	}
 	
-	protected static<E extends PreggoMob & ITamablePreggoMob<FemaleEntityImpl> & IFemaleEntity & IPregnancySystemHandler> void initPregnancy(PreggoMob source, E target, int amplifier) {
+	protected static<E extends PreggoMob & ITamablePregnantPreggoMob> void initPregnancy(PreggoMob source, E target, int amplifier) {
 		PreggoMobHelper.copyRotation(source, target);
 		PreggoMobHelper.copyName(source, target);
 		PreggoMobHelper.copyHealth(source, target);
 		PreggoMobHelper.transferSlots(source, target);
 		PreggoMobHelper.syncFromEquipmentSlotToInventory(target);
 		PreggoMobHelper.transferAttackTarget(source, target);
+		LivingEntityHelper.copyMobEffects(source, target);
 		PreggoMobHelper.initPregnancyByPotion(target, ImmutableTriple.of(Optional.empty(), target.getTypeOfSpecies(), target.getTypeOfCreature()), amplifier);
 		source.discard();
 	}
 	
 	protected static
-	<S extends PreggoMob & ITamablePreggoMob<FemaleEntityImpl> & IFemaleEntity,
-	T extends PreggoMob & ITamablePreggoMob<FemaleEntityImpl> & IFemaleEntity & IPregnancySystemHandler> void initPregnancyInTamable(S source, T target, int amplifier) {
+	<S extends PreggoMob & ITamablePreggoMob<IFemaleEntity>,
+	T extends PreggoMob & ITamablePregnantPreggoMob> void initPregnancyInTamable(S source, T target, int amplifier) {
 		PreggoMobHelper.copyOwner(source, target);
 		PreggoMobHelper.copyTamableData(source, target);
 		PreggoMobHelper.transferInventory(source, target);

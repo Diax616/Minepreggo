@@ -10,13 +10,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
-import dev.dixmk.minepreggo.utils.ServerParticleUtil;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
 import dev.dixmk.minepreggo.init.MinepreggoModVillagerProfessions;
-import dev.dixmk.minepreggo.network.packet.RenderSexOverlayS2CPacket;
-import dev.dixmk.minepreggo.network.packet.SexCinematicControlP2MS2CPacket;
+import dev.dixmk.minepreggo.network.packet.s2c.RenderSexOverlayS2CPacket;
+import dev.dixmk.minepreggo.network.packet.s2c.SexCinematicControlP2MS2CPacket;
 import dev.dixmk.minepreggo.server.ServerCinematicManager;
+import dev.dixmk.minepreggo.server.ServerParticleHelper;
 import dev.dixmk.minepreggo.server.ServerTaskQueueManager;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.inventory.preggo.PlayerPrenatalCheckUpMenu;
@@ -101,7 +101,7 @@ public class VillagerMixin {
         		if (serverPlayer.isCrouching()) {
 	        		Optional<Boolean> result = serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).map(cap -> 
 			        				cap.getFemaleData().map(femaleData -> {
-			        					return femaleData.isPregnant() && femaleData.isPregnancySystemInitialized();
+			        					return femaleData.isPregnant() && femaleData.isPregnancyDataInitialized();
 			        				})
 			        			).orElse(Optional.empty());
 	        		
@@ -122,7 +122,7 @@ public class VillagerMixin {
 	                    			if (!villagerCap.doesVillagerKnowPlayerIsPregnant()
 	                    					&& motherId.equals(serverPlayer.getUUID())
 	                    					&& femaleData.isPregnant()
-	                    					&& femaleData.isPregnancySystemInitialized()) {
+	                    					&& femaleData.isPregnancyDataInitialized()) {
 	        							villager.getGossips().add(serverPlayer.getUUID(), GossipType.MAJOR_POSITIVE, 50);
 	        							villagerCap.setVillagerKnowIsPlayerIsPregnant(true);
 	                    			}
@@ -139,8 +139,8 @@ public class VillagerMixin {
     	
 		Runnable start = () -> {
 			villager.setTradingPlayer(femalePlayer);
-			ServerParticleUtil.spawnRandomlyFromServer(femalePlayer, ParticleTypes.HEART);
-			ServerParticleUtil.spawnRandomlyFromServer(villager, ParticleTypes.HEART);
+			ServerParticleHelper.spawnRandomlyFromServer(femalePlayer, ParticleTypes.HEART);
+			ServerParticleHelper.spawnRandomlyFromServer(villager, ParticleTypes.HEART);
 		};
 		
 		Runnable end = () -> {
@@ -198,8 +198,8 @@ public class VillagerMixin {
     	
 		Runnable start = () -> {
 			villager.setTradingPlayer(femalePlayer);
-			ServerParticleUtil.spawnRandomlyFromServer(femalePlayer, ParticleTypes.HEART);
-			ServerParticleUtil.spawnRandomlyFromServer(villager, ParticleTypes.HEART);
+			ServerParticleHelper.spawnRandomlyFromServer(femalePlayer, ParticleTypes.HEART);
+			ServerParticleHelper.spawnRandomlyFromServer(villager, ParticleTypes.HEART);
 		};
 		
 		Runnable end = () -> {			
