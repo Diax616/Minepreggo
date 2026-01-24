@@ -76,8 +76,14 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 		if (canAdvanceNextPregnancyPhase() && hasToGiveBirth()) {			
 			if (pregnancySystem.getWomb().isWombOverloaded()) {
 				if (pregnantEntity.isAlive()) {
-					MinepreggoMod.LOGGER.debug("Player {} is alive, tearing womb.", pregnantEntity.getGameProfile().getName());
-					PregnancySystemHelper.tornWomb(pregnantEntity);
+					if (pregnantEntity.isCreative() || pregnantEntity.isSpectator()) {
+						pregnantEntity.kill();
+						MinepreggoMod.LOGGER.info("Player {} was in creative or spectator mode and had an overloaded womb, so they were killed to prevent issues.", 
+								pregnantEntity.getGameProfile().getName());
+					}
+					else {
+						PregnancySystemHelper.tornWomb(pregnantEntity);
+					}
 				}
 				else {
 					MinepreggoMod.LOGGER.debug("Player {} is dead", pregnantEntity.getGameProfile().getName());

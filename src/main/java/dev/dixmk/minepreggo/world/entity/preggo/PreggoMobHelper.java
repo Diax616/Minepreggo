@@ -16,6 +16,7 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
+import dev.dixmk.minepreggo.init.MinepreggoModDamageSources;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
@@ -488,7 +489,11 @@ public class PreggoMobHelper {
 	}
 	
 	public static <E extends PreggoMob & ITamablePreggoMob<?>> void tryToDamageArmor(@NonNull E preggoMob, DamageSource damageSource) {
-	    var world = preggoMob.level();
+		if (damageSource.is(MinepreggoModDamageSources.PREGNANCY_PAIN)) {
+			return;
+		}
+		
+		var world = preggoMob.level();
 	
 	    List<ItemStack> armorStacks = new ArrayList<>(4);
 	
