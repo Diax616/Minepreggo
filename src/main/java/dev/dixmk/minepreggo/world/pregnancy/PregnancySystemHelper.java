@@ -223,17 +223,17 @@ public class PregnancySystemHelper {
 	
 	public static final int TOTAL_TICKS_CALM_BELLY_RUGGING_DOWN = 120;
 	
-	public static final float LOW_PREGNANCY_PAIN_PROBABILITY = 0.015F;
-	public static final float MEDIUM_PREGNANCY_PAIN_PROBABILITY = 0.02F;
-	public static final float HIGH_PREGNANCY_PAIN_PROBABILITY = 0.025F;
+	public static final float LOW_PREGNANCY_PAIN_PROBABILITY = 0.01F;
+	public static final float MEDIUM_PREGNANCY_PAIN_PROBABILITY = 0.015F;
+	public static final float HIGH_PREGNANCY_PAIN_PROBABILITY = 0.02F;
 	
-	public static final float LOW_MORNING_SICKNESS_PROBABILITY = 0.0075F;
-	public static final float MEDIUM_MORNING_SICKNESS_PROBABILITY = 0.01F;
-	public static final float HIGH_MORNING_SICKNESS_PROBABILITY = 0.0125F;
+	public static final float LOW_MORNING_SICKNESS_PROBABILITY = 0.005F;
+	public static final float MEDIUM_MORNING_SICKNESS_PROBABILITY = 0.075F;
+	public static final float HIGH_MORNING_SICKNESS_PROBABILITY = 0.01F;
 	
-	public static final float LOW_ANGER_PROBABILITY = 0.0075F;
-	public static final float MEDIUM_ANGER_PROBABILITY = 0.0125F;
-	public static final float HIGH_ANGER_PROBABILITY = 0.0175F;
+	public static final float LOW_ANGER_PROBABILITY = 0.005F;
+	public static final float MEDIUM_ANGER_PROBABILITY = 0.01F;
+	public static final float HIGH_ANGER_PROBABILITY = 0.015F;
 	
 	public static final int CRAVING_VALUE = 4;
 	public static final int ACTIVATE_CRAVING_SYMPTOM = 16;

@@ -52,7 +52,7 @@ public class BabyDuplication extends MobEffect {
         if (target instanceof ITamablePregnantPreggoMob tamablePregnantPreggoMob) {
         	var pregnancyData = tamablePregnantPreggoMob.getPregnancyData();
         	var random = target.getRandom();
-        	var newPhase = apply(pregnancyData, getExtraBabiesByAmplifier(amplifier, random), random);
+        	var newPhase = apply(pregnancyData, getExtraBabiesByAmplifier(amplifier), random);
         	PregnancySystemHelper.playSoundNearTo(target, MinepreggoModSounds.getRandomStomachGrowls(target.getRandom()));         	
 
         	if (newPhase != pregnancyData.getCurrentPregnancyPhase()) {    		
@@ -79,7 +79,7 @@ public class BabyDuplication extends MobEffect {
                     	var pregnancySystem = femaleData.getPregnancyData();
                     	var random = player.getRandom();
                     	var oldPhase = pregnancySystem.getCurrentPregnancyPhase(); 	
-                    	var newPhase = apply(pregnancySystem, getExtraBabiesByAmplifier(amplifier, random), random);
+                    	var newPhase = apply(pregnancySystem, getExtraBabiesByAmplifier(amplifier), random);
                     	PregnancySystemHelper.playSoundNearTo(target, MinepreggoModSounds.getRandomStomachGrowls(target.getRandom()));
         	
                     	if (newPhase != oldPhase) {
@@ -93,7 +93,7 @@ public class BabyDuplication extends MobEffect {
             );
         }
         else if (target instanceof IMonsterPregnantPreggoMob monsterPregnantPreggoMob) {
-        	monsterPregnantPreggoMob.getPregnancyData().incrementNumOfBabies(getExtraBabiesByAmplifier(amplifier, target.getRandom()));
+        	monsterPregnantPreggoMob.getPregnancyData().incrementNumOfBabies(getExtraBabiesByAmplifier(amplifier));
         	PregnancySystemHelper.tornWomb(target);
         }
 		else {
@@ -303,13 +303,13 @@ public class BabyDuplication extends MobEffect {
         return lastPhase;
     }
 	
-	private static int getExtraBabiesByAmplifier(int amplifier, RandomSource random) {     
+	private static int getExtraBabiesByAmplifier(int amplifier) {     
 		return switch (Math.max(amplifier, 0)) {
 			case 0 -> 1;
-			case 1 -> random.nextInt(2, 4);
-			case 2 -> random.nextInt(3, 5);
-			case 3 -> random.nextInt(4, 6);
-			default -> random.nextInt(6, 8);
+			case 1 -> 2;
+			case 2 -> 3;
+			case 3 -> 4;
+			default -> 5;
 		};
 	}
 }
