@@ -28,7 +28,7 @@ public class PregnancyP8 extends AbstractPlayerPregnancy<PlayerPregnancySystemP8
             pregnancySystemsCache.put(serverPlayer.getUUID(), pregnancySystem);
             MinepreggoMod.LOGGER.info("Initialized PlayerPregnancySystemP8 for player: {}", serverPlayer.getName().getString());
         }
-        else if (!pregnancySystem.isPlayerValid(serverPlayer)) {
+        else if (serverPlayer.isAlive() && !pregnancySystem.isPlayerValid(serverPlayer)) {
             MinepreggoMod.LOGGER.info("Player {} reference is stale, reinitializing PlayerPregnancySystemP8", serverPlayer.getGameProfile().getName());
             pregnancySystem = new PlayerPregnancySystemP8(serverPlayer);
             pregnancySystemsCache.put(serverPlayer.getUUID(), pregnancySystem);
@@ -40,7 +40,7 @@ public class PregnancyP8 extends AbstractPlayerPregnancy<PlayerPregnancySystemP8
 		super.addAttributeModifiers(entity, p_19479_, p_19480_);
 		if (!PlayerHelper.isPlayerValid(entity)) return;
 		
-		if (!entity.level().isClientSide) {
+		if (!entity.level().isClientSide && !entity.hasEffect(MinepreggoModMobEffects.ZERO_GRAVITY_BELLY.get())) {
 			entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, -1, 4, false, false));			
 		
 			AttributeInstance attackSpeedAttr = entity.getAttribute(Attributes.ATTACK_SPEED);
@@ -56,7 +56,7 @@ public class PregnancyP8 extends AbstractPlayerPregnancy<PlayerPregnancySystemP8
 		super.removeAttributeModifiers(entity, p_19470_, p_19471_);
     	if (!PlayerHelper.isPlayerValid(entity)) return;
 		
-		if (!entity.level().isClientSide && !entity.hasEffect(MinepreggoModMobEffects.ZERO_GRAVITY_BELLY.get())) {
+		if (!entity.level().isClientSide) {
 			entity.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);
 			
 			AttributeInstance attackSpeedAttr = entity.getAttribute(Attributes.ATTACK_SPEED);
