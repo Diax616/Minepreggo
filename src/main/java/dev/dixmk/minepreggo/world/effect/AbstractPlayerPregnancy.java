@@ -110,7 +110,7 @@ public abstract class AbstractPlayerPregnancy<S extends PlayerPregnancySystemP0>
 	
     @Override
     public void removeAttributeModifiers(LivingEntity entity, AttributeMap p_19470_, int p_19471_) {
-    	if (entity instanceof ServerPlayer serverPlayer) {
+    	if (entity instanceof ServerPlayer serverPlayer && !serverPlayer.level().isClientSide) {
     		// Remove the pregnancy system for this specific player from the Map
     		pregnancySystemsCache.remove(serverPlayer.getUUID());
     		

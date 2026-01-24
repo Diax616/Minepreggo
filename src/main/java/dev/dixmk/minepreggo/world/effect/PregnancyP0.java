@@ -19,7 +19,7 @@ public class PregnancyP0 extends AbstractPlayerPregnancy<PlayerPregnancySystemP0
             pregnancySystemsCache.put(serverPlayer.getUUID(), pregnancySystem);
             MinepreggoMod.LOGGER.info("Initialized PlayerPregnancySystemP0 for player: {}", serverPlayer.getName().getString());
         }
-        else if (!pregnancySystem.isPlayerValid(serverPlayer)) {
+        else if (serverPlayer.isAlive() && !pregnancySystem.isPlayerValid(serverPlayer)) {
             MinepreggoMod.LOGGER.info("Player {} reference is stale, reinitializing PlayerPregnancySystemP0", serverPlayer.getGameProfile().getName());
             pregnancySystem = new PlayerPregnancySystemP0(serverPlayer);
             pregnancySystemsCache.put(serverPlayer.getUUID(), pregnancySystem);

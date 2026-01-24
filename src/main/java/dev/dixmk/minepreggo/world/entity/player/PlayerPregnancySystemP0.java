@@ -45,11 +45,7 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 	    
 	    if (this.pregnantEntity.isRemoved() || currentPlayer.isRemoved()) {
 	        return false;
-	    }
-	    
-	    if (!this.pregnantEntity.isAlive() || !currentPlayer.isAlive()) {
-	        return false;
-	    }
+	    }	   
 	    
 	    if (!this.pregnantEntity.getUUID().equals(currentPlayer.getUUID())) {
 	        return false;
