@@ -64,7 +64,7 @@ public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
 		}
 		
 		if (!hasPregnancyPain()) {
-			if (pregnancyPainTicks > 40) {
+			if (pregnancyPainTicks > 20) {
 				tryInitRandomPregnancyPain();
 				pregnancyPainTicks = 0;
 			}
