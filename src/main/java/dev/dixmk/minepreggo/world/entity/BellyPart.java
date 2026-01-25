@@ -43,6 +43,7 @@ public class BellyPart extends Entity implements IEntityAdditionalSpawnData {
         this(MinepreggoModEntities.BELLY_PART.get(), parent.level());
         this.parent = parent;
         this.getEntityData().set(PARENT_ID, parent.getId());
+        this.teleportTo(parent.getX(), parent.getY(), parent.getZ());
         this.width = width;
         this.height = height;
         this.offsetX = offsetX;
@@ -50,18 +51,18 @@ public class BellyPart extends Entity implements IEntityAdditionalSpawnData {
         this.offsetZ = offsetZ;
         this.refreshDimensions();
     }
-
+    
     @Override
     protected void defineSynchedData() {
         this.getEntityData().define(PARENT_ID, -1);
     }
-    
+
     protected void pushPart(LivingEntity currentParent) {
         List<BellyPart> nearbyBellyParts = this.level().getEntitiesOfClass(BellyPart.class, this.getBoundingBox().inflate(0.1), 
             other -> other != this && other.getParent() != null && other.getParent() != this.parent);
         
         for (BellyPart otherPart : nearbyBellyParts) {
-            if (this.getBoundingBox().intersects(otherPart.getBoundingBox())) {
+            if (this.getBoundingBox().inflate(0.05).intersects(otherPart.getBoundingBox())) {
                 LivingEntity otherParent = otherPart.getParent();
                 if (otherParent != null) {
                     double dx = currentParent.getX() - otherParent.getX();
@@ -135,18 +136,16 @@ public class BellyPart extends Entity implements IEntityAdditionalSpawnData {
         float yaw = (float) Math.toRadians(currentParent.getYRot());
         double rotX = -Math.sin(yaw) * this.offsetZ;
         double rotZ = Math.cos(yaw) * this.offsetZ;
-
+      
         double targetX = currentParent.getX() + rotX + this.offsetX;
-        double targetY = currentParent.getY() + this.offsetY;
+        double targetY = currentParent.isCrouching() ? 
+						 currentParent.getY() + this.offsetY - 0.5 : 
+						 currentParent.getY() + this.offsetY;
         double targetZ = currentParent.getZ() + rotZ;
-        
-        Vec3 parentMotion = currentParent.getDeltaMovement();
-        targetX += parentMotion.x;
-        targetZ += parentMotion.z;
-        
+            
         Vec3 posBefore = this.position();
         Vec3 targetPos = new Vec3(targetX, targetY, targetZ);
-        Vec3 movement = targetPos.subtract(posBefore).scale(0.9);
+        Vec3 movement = targetPos.subtract(posBefore);
         
         this.move(MoverType.SELF, movement);
         
@@ -160,12 +159,12 @@ public class BellyPart extends Entity implements IEntityAdditionalSpawnData {
         double deltaY = Math.abs(movement.y - actualMovement.y);
         double deltaZ = Math.abs(movement.z - actualMovement.z);
 
-        boolean collidedX = deltaX > 0.05 && Math.abs(movement.x) > 0.001;
-        boolean collidedY = deltaY > 0.05 && Math.abs(movement.y) > 0.001;
-        boolean collidedZ = deltaZ > 0.05 && Math.abs(movement.z) > 0.001;
+        boolean collidedX = deltaX > 0.01 && Math.abs(movement.x) > 0.001;
+        boolean collidedY = deltaY > 0.01 && Math.abs(movement.y) > 0.001;
+        boolean collidedZ = deltaZ > 0.01 && Math.abs(movement.z) > 0.001;
 
         if (collidedX || collidedY || collidedZ) {
-            parentMotion = currentParent.getDeltaMovement();
+        	Vec3 parentMotion = currentParent.getDeltaMovement();
             
             if (collidedX || collidedZ) {
                 double newMotionX = collidedX ? 0.0 : parentMotion.x;
@@ -238,11 +237,6 @@ public class BellyPart extends Entity implements IEntityAdditionalSpawnData {
     public boolean isPushable() {
         return true;
     }
-    
-    @Override
-    public boolean canBeCollidedWith() {
-        return true;
-    }
 
     @Override
     public boolean isPickable() {
@@ -267,16 +261,7 @@ public class BellyPart extends Entity implements IEntityAdditionalSpawnData {
         Vec3 pushVector = this.position().subtract(entityIn.position()).normalize().scale(0.1);
         currentParent.push(pushVector.x, pushVector.y, pushVector.z);
     }
-
-    @Override
-    public void push(double x, double y, double z) {
-        super.push(x, y, z);
-        LivingEntity currentParent = getParent();
-        if (currentParent != null) {
-            currentParent.push(x * 0.5, y * 0.5, z * 0.5);
-        }
-    }
-
+    
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {}
 

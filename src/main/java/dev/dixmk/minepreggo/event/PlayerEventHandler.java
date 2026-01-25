@@ -107,7 +107,7 @@ public class PlayerEventHandler {
 	    	ServerPlayerAnimationManager.getInstance().stopAnimation(player);
 	    	PlayerHelper.removeJigglePhysics(player);
 	    	
-	        if (MinepreggoModConfig.isBellyColisionsEnable()) {
+	        if (MinepreggoModConfig.isBellyColisionsForPlayersEnable()) {
 	        	BellyPartManager.getInstance().remove(event.getEntity());
 	        }
 	    }
@@ -129,7 +129,7 @@ public class PlayerEventHandler {
 	public static void onPlayerRespawnedSync(PlayerEvent.PlayerRespawnEvent event) {
 		if (event.getEntity() instanceof ServerPlayer serverPlayer && !serverPlayer.level().isClientSide) {	
 	
-	        if (MinepreggoModConfig.isBellyColisionsEnable()) {
+	        if (MinepreggoModConfig.isBellyColisionsForPlayersEnable()) {
 	        	BellyPartManager.getInstance().remove(event.getEntity());
 	        }
 
@@ -384,7 +384,7 @@ public class PlayerEventHandler {
 					}
 				}
 				
-				if (MinepreggoModConfig.isBellyColisionsEnable() && phase.compareTo(PregnancyPhase.P5) >= 0) {
+				if (MinepreggoModConfig.isBellyColisionsForPlayersEnable() && phase.compareTo(PregnancyPhase.P4) >= 0) {
 					BellyPartManager.getInstance().onServerTick(serverPlayer, () -> BellyPartFactory.createHumanoidBellyPart(serverPlayer, phase));
 				}
 			}	
