@@ -1101,7 +1101,7 @@ public class PregnancySystemHelper {
 	}
 	
 	public static boolean canMountEntity(PregnancyPhase pregnancyPhase) {
-		return pregnancyPhase.compareTo(PregnancyPhase.P4) <= 0;
+		return pregnancyPhase.compareTo(PregnancyPhase.P5) <= 0;
 	}
 	
 	public static float calculateExtraFallDamageMultiplier(PregnancyPhase pregnancyPhase) {

@@ -14,7 +14,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 
 public class PlayerPregnancySystemP2 extends PlayerPregnancySystemP1 {
 
-	protected @Nonnegative int totalTicksOfMilking = MinepreggoModConfig.getTotalTicksOfMilkingP2();
+	protected @Nonnegative int totalTicksOfMilking = MinepreggoModConfig.SERVER.getTotalTicksOfMilkingP2();
 	public PlayerPregnancySystemP2(@NonNull ServerPlayer player) {
 		super(player);		
 		addNewValidPregnancySymptoms(PregnancySymptom.MILKING);
@@ -22,7 +22,7 @@ public class PlayerPregnancySystemP2 extends PlayerPregnancySystemP1 {
 
 	@Override
 	protected void initPregnancyTimers() {
-		totalTicksOfCraving = MinepreggoModConfig.getTotalTicksOfCravingP2();
+		totalTicksOfCraving = MinepreggoModConfig.SERVER.getTotalTicksOfCravingP2();
 		morningSicknessProb = PregnancySystemHelper.MEDIUM_MORNING_SICKNESS_PROBABILITY;
 		pregnancyExhaustion = 1.02f;
 	}

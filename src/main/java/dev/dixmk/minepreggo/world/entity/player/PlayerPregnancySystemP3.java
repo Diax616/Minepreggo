@@ -17,7 +17,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 
 public class PlayerPregnancySystemP3 extends PlayerPregnancySystemP2 {
 
-	protected @Nonnegative int totalTicksOfBellyRubs = MinepreggoModConfig.getTotalTicksOfBellyRubsP3();
+	protected @Nonnegative int totalTicksOfBellyRubs = MinepreggoModConfig.SERVER.getTotalTicksOfBellyRubsP3();
 	protected @Nonnegative float fetalMovementProb = PregnancySystemHelper.LOW_PREGNANCY_PAIN_PROBABILITY;
 	protected @Nonnegative int totalTicksOfFetalMovement = PregnancySystemHelper.TOTAL_TICKS_KICKING_P3;
 
@@ -44,8 +44,8 @@ public class PlayerPregnancySystemP3 extends PlayerPregnancySystemP2 {
 
 	@Override
 	protected void initPregnancyTimers() {
-		totalTicksOfCraving = MinepreggoModConfig.getTotalTicksOfCravingP3();
-		totalTicksOfMilking = MinepreggoModConfig.getTotalTicksOfMilkingP3();
+		totalTicksOfCraving = MinepreggoModConfig.SERVER.getTotalTicksOfCravingP3();
+		totalTicksOfMilking = MinepreggoModConfig.SERVER.getTotalTicksOfMilkingP3();
 		morningSicknessProb = PregnancySystemHelper.HIGH_MORNING_SICKNESS_PROBABILITY;
 		pregnancyExhaustion = 1.03f;
 	}

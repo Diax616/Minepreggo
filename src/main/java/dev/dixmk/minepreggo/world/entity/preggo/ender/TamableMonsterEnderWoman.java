@@ -23,7 +23,7 @@ public class TamableMonsterEnderWoman extends AbstractTamableMonsterEnderWoman {
 	
 	@Override
 	protected ITamablePreggoMobSystem createTamableSystem() {
-		return new PreggoMobSystem<>(this, MinepreggoModConfig.getTotalTicksOfHungryP0(), PregnancySystemHelper.TOTAL_TICKS_SEXUAL_APPETITE_P0);
+		return new PreggoMobSystem<>(this, MinepreggoModConfig.SERVER.getTotalTicksOfHungryP0(), PregnancySystemHelper.TOTAL_TICKS_SEXUAL_APPETITE_P0);
 	}
 
 	@Override

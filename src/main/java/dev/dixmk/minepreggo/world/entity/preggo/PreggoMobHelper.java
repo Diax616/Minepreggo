@@ -329,7 +329,7 @@ public class PreggoMobHelper {
 			final ITamablePregnantPreggoMobData pregnancyData = preggoMob.getPregnancyData();
 			final var numOfBabies = prePregnancyData.fertilizedEggs();
 			final PregnancyPhase lastPregnancyStage = PregnancySystemHelper.calculateMaxPregnancyPhaseByTotalNumOfBabies(numOfBabies);
-			final int totalDays = MinepreggoModConfig.getTotalPregnancyDays();
+			final int totalDays = MinepreggoModConfig.SERVER.getTotalPregnancyDays();
 			final var mother = ImmutableTriple.of(preggoMob.getUUID(), preggoMob.getTypeOfSpecies(), preggoMob.getTypeOfCreature());
 			final var father = ImmutableTriple.of(Optional.ofNullable(prePregnancyData.fatherId()), prePregnancyData.typeOfSpeciesOfFather(), prePregnancyData.typeOfCreatureOfFather());
 			final var map = new MapPregnancyPhase(totalDays, lastPregnancyStage);

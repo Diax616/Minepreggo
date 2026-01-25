@@ -212,15 +212,4 @@ public class PlayerDataImpl implements IPlayerData {
 			
 		});
 	}
-	
-	/**
-     * Resetea todos los datos del capability a su estado base
-     */
-    public void resetToDefault() {
-        skinType = SkinType.CUSTOM;
-        showMainMenu = true;
-        cinematic = false;
-        gender = Gender.UNKNOWN;
-        invalidateGenderData();
-    }
 }

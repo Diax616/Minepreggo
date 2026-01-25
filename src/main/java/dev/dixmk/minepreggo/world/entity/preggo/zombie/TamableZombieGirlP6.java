@@ -34,7 +34,7 @@ public class TamableZombieGirlP6 extends AbstractTamablePregnantZombieGirl {
 
 	@Override
 	protected ITamablePreggoMobSystem createTamablePreggoMobSystem() {
-		return new PregnantPreggoMobSystemP2<>(this, MinepreggoModConfig.getTotalTicksOfHungryP6(), PregnancySystemHelper.TOTAL_TICKS_SEXUAL_APPETITE_P6);
+		return new PregnantPreggoMobSystemP2<>(this, MinepreggoModConfig.SERVER.getTotalTicksOfHungryP6(), PregnancySystemHelper.TOTAL_TICKS_SEXUAL_APPETITE_P6);
 	}
 	
 	@Override

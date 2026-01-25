@@ -26,7 +26,7 @@ import net.minecraft.world.entity.player.Player;
 public abstract class PreggoMobPregnancySystemP4
 	<E extends PreggoMob & ITamablePregnantPreggoMob> extends PreggoMobPregnancySystemP3<E> {
 	
-	protected @Nonnegative int totalTicksOfHorny = MinepreggoModConfig.getTotalTicksOfHornyP4();
+	protected @Nonnegative int totalTicksOfHorny = MinepreggoModConfig.SERVER.getTotalTicksOfHornyP4();
 	protected @Nonnegative int totalTicksOfBirth = PregnancySystemHelper.TOTAL_TICKS_BIRTH_P4;
 	protected @Nonnegative int totalTicksOfPreBirth = PregnancySystemHelper.TOTAL_TICKS_PREBIRTH_P4;
 	protected @Nonnegative float contractionProb = PregnancySystemHelper.HIGH_PREGNANCY_PAIN_PROBABILITY;
@@ -41,9 +41,9 @@ public abstract class PreggoMobPregnancySystemP4
 	
 	@Override
 	protected void initPregnancyTimers() {
-		totalTicksOfCraving = MinepreggoModConfig.getTotalTicksOfCravingP4();
-		totalTicksOfMilking = MinepreggoModConfig.getTotalTicksOfMilkingP4();
-		totalTicksOfBellyRubs = MinepreggoModConfig.getTotalTicksOfBellyRubsP4();
+		totalTicksOfCraving = MinepreggoModConfig.SERVER.getTotalTicksOfCravingP4();
+		totalTicksOfMilking = MinepreggoModConfig.SERVER.getTotalTicksOfMilkingP4();
+		totalTicksOfBellyRubs = MinepreggoModConfig.SERVER.getTotalTicksOfBellyRubsP4();
 		totalTicksOfFetalMovement = PregnancySystemHelper.TOTAL_TICKS_KICKING_P4;
 	}
 	

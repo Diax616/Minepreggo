@@ -18,8 +18,8 @@ public class EntityMixin {
     private void onCanCollideWith(Entity other, CallbackInfoReturnable<Boolean> cir) {
     	if (Entity.class.cast(this) instanceof LivingEntity livingEntity
     			&& !livingEntity.level().isClientSide
-    			&& (MinepreggoModConfig.isBellyColisionsForPlayersEnable() || MinepreggoModConfig.isBellyColisionsForPreggoMobsEnable())) {
-            BellyPart myBelly = BellyPartManager.getInstance().get(livingEntity);
+    			&& (MinepreggoModConfig.SERVER.isBellyColisionsForPlayersEnable() || MinepreggoModConfig.SERVER.isBellyColisionsForPreggoMobsEnable())) {      
+    		BellyPart myBelly = BellyPartManager.getInstance().get(livingEntity);
             if (myBelly != null && other.getUUID().equals(myBelly.getUUID())) {
             	cir.setReturnValue(false);
             }

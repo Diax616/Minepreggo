@@ -14,10 +14,10 @@ public class PlayerPregnancySystemP7 extends PlayerPregnancySystemP6 {
 
 	@Override
 	protected void initPregnancyTimers() {
-		totalTicksOfCraving = MinepreggoModConfig.getTotalTicksOfCravingP7();
-		totalTicksOfMilking = MinepreggoModConfig.getTotalTicksOfMilkingP7();
-		totalTicksOfBellyRubs = MinepreggoModConfig.getTotalTicksOfBellyRubsP7();
-		totalTicksOfHorny = MinepreggoModConfig.getTotalTicksOfHornyP7();
+		totalTicksOfCraving = MinepreggoModConfig.SERVER.getTotalTicksOfCravingP7();
+		totalTicksOfMilking = MinepreggoModConfig.SERVER.getTotalTicksOfMilkingP7();
+		totalTicksOfBellyRubs = MinepreggoModConfig.SERVER.getTotalTicksOfBellyRubsP7();
+		totalTicksOfHorny = MinepreggoModConfig.SERVER.getTotalTicksOfHornyP7();
 		totalTicksOfPreBirth = PregnancySystemHelper.TOTAL_TICKS_PREBIRTH_P7;
 		totalTicksOfBirth = PregnancySystemHelper.TOTAL_TICKS_BIRTH_P7;
 		totalTicksOfFetalMovement = PregnancySystemHelper.TOTAL_TICKS_KICKING_P7;

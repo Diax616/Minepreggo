@@ -33,7 +33,7 @@ public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
 	private int pregnancyPainTicks = 0;
 	private int pregnancysymptonsTicks = 0;
 	
-	protected @Nonnegative int totalTicksOfCraving = MinepreggoModConfig.getTotalTicksOfCravingP1();
+	protected @Nonnegative int totalTicksOfCraving = MinepreggoModConfig.SERVER.getTotalTicksOfCravingP1();
 	protected @Nonnegative float morningSicknessProb = PregnancySystemHelper.LOW_MORNING_SICKNESS_PROBABILITY;
 	protected @Nonnegative float pregnancyExhaustion = 1.01f;
 	
@@ -281,7 +281,7 @@ public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
 		femaleData.resetPregnancy();
 		femaleData.resetPregnancyOnClient(pregnantEntity);
 	
-		pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.DEPRESSION.get(), MinepreggoModConfig.getTotalTicksOfPostPregnancyPhase(), 0, false, false, true));
+		pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.DEPRESSION.get(), MinepreggoModConfig.SERVER.getTotalTicksOfPostPregnancyPhase(), 0, false, false, true));
 		pregnantEntity.addEffect(new MobEffectInstance(MobEffects.UNLUCK, 12000, 0, false, true, true));
 		pregnantEntity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 4800, 0, false, false, true));
 		

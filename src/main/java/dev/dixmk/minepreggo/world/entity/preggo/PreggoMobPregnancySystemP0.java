@@ -83,7 +83,7 @@ public abstract class PreggoMobPregnancySystemP0
 			return;
 		}
 		final var pregnancyData = pregnantEntity.getPregnancyData();
-        if (pregnancyData.getPregnancyTimer() >= MinepreggoModConfig.getTotalTicksByPregnancyDay()) {
+        if (pregnancyData.getPregnancyTimer() >= MinepreggoModConfig.SERVER.getTotalTicksByPregnancyDay()) {
         	pregnancyData.resetPregnancyTimer();
         	pregnancyData.incrementDaysPassed();
         	pregnancyData.reduceDaysToGiveBirth();

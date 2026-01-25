@@ -1,7 +1,9 @@
 package dev.dixmk.minepreggo.world.effect;
 
+import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModSounds;
+import dev.dixmk.minepreggo.world.entity.BellyPartManager;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
@@ -61,6 +63,13 @@ public class FullOfEnders extends MobEffect {
 					break;
 				}
 			}
+			
+			if (MinepreggoModConfig.SERVER.isBellyColisionsForPlayersEnable()) {
+				var bellyPart = BellyPartManager.getInstance().get(entity);
+				if (bellyPart != null) {
+					bellyPart.teleportTo(entity.getX(), entity.getY(), entity.getZ());
+				}
+			}	
 		}
 	}
 	

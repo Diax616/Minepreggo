@@ -188,7 +188,7 @@ public class PlayerHelper {
 			
 			femaleData.getPrePregnancyData().ifPresent(prePregnancyData -> {
 				final var lastPregnancyStage = PregnancySystemHelper.calculateMaxPregnancyPhaseByTotalNumOfBabies(prePregnancyData.fertilizedEggs());
-				final var totalDays = MinepreggoModConfig.getTotalPregnancyDays();
+				final var totalDays = MinepreggoModConfig.SERVER.getTotalPregnancyDays();
 				final var daysByStage = new MapPregnancyPhase(totalDays, lastPregnancyStage);
 				final var pregnancySystem = femaleData.getPregnancyData();
 				

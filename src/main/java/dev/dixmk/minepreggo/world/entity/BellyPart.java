@@ -111,10 +111,16 @@ public class BellyPart extends Entity implements IEntityAdditionalSpawnData {
     }
     
     protected void pushCollidingEntities(LivingEntity currentParent) {
-        List<LivingEntity> collidingEntities = this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(0.075), 
+
+    	List<LivingEntity> collidingEntities = this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(0.075), 
             entity -> !entity.getUUID().equals(currentParent.getUUID()));
         
         for (LivingEntity entity : collidingEntities) {
+        	if (currentParent.getVehicle() != null
+        			&& entity.getUUID().equals(currentParent.getVehicle().getUUID())) {
+        		continue;
+        	}
+        	
             double dx = entity.getX() - this.getX();
             double dz = entity.getZ() - this.getZ();
             double distance = Math.sqrt(dx * dx + dz * dz);     
@@ -123,8 +129,8 @@ public class BellyPart extends Entity implements IEntityAdditionalSpawnData {
 				distance = 0.01;
 			}
             
-            double pushX = (dx / distance) * 0.3;
-            double pushZ = (dz / distance) * 0.3;
+            double pushX = (dx / distance) * 0.15;
+            double pushZ = (dz / distance) * 0.15;
             
             entity.push(pushX, 0, pushZ);
             
@@ -144,6 +150,10 @@ public class BellyPart extends Entity implements IEntityAdditionalSpawnData {
         double targetZ = currentParent.getZ() + rotZ;
             
         Vec3 posBefore = this.position();
+        Vec3 parentMotion = currentParent.getDeltaMovement();
+        targetX += parentMotion.x;
+        targetZ += parentMotion.z;
+             
         Vec3 targetPos = new Vec3(targetX, targetY, targetZ);
         Vec3 movement = targetPos.subtract(posBefore);
         
@@ -164,7 +174,7 @@ public class BellyPart extends Entity implements IEntityAdditionalSpawnData {
         boolean collidedZ = deltaZ > 0.01 && Math.abs(movement.z) > 0.001;
 
         if (collidedX || collidedY || collidedZ) {
-        	Vec3 parentMotion = currentParent.getDeltaMovement();
+        	parentMotion = currentParent.getDeltaMovement();
             
             if (collidedX || collidedZ) {
                 double newMotionX = collidedX ? 0.0 : parentMotion.x;
@@ -217,8 +227,6 @@ public class BellyPart extends Entity implements IEntityAdditionalSpawnData {
             }
         }
         
-        // TODO: It is probably that horses, pigs, or other rideable entities will be pushed incorrectly when the player is riding them while having a belly part.
-
         pushCollidingEntities(currentParent);
         
         pushPart(currentParent);
