@@ -142,8 +142,8 @@ public abstract class AbstractTamablePregnantCreeperGirl extends AbstractTamable
 		}	
 		
 		if (!this.level().isClientSide
-				&& MinepreggoModConfig.isBellyColisionsEnable()
-				&& pregnancyData.getCurrentPregnancyPhase().compareTo(PregnancyPhase.P5) >= 0) {
+				&& MinepreggoModConfig.isBellyColisionsForPreggoMobsEnable()
+				&& pregnancyData.getCurrentPregnancyPhase().compareTo(PregnancyPhase.P4) >= 0) {
 			BellyPartManager.getInstance().onServerTick(this, () -> BellyPartFactory.createHumanoidBellyPart(this, pregnancyData.getCurrentPregnancyPhase()));
 		}
 	}

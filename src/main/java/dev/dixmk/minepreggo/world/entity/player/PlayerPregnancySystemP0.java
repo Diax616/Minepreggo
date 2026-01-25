@@ -207,8 +207,8 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 			}
 		}
 		
-		if (MinepreggoModConfig.isBellyColisionsEnable()
-				&& next.compareTo(PregnancyPhase.P5) >= 0) {
+		if (MinepreggoModConfig.isBellyColisionsForPlayersEnable()
+				&& next.compareTo(PregnancyPhase.P4) >= 0) {
 			BellyPartManager.getInstance().create(pregnantEntity, next);
 		}
 		
@@ -247,7 +247,7 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 		pregnantEntity.removeEffect(MinepreggoModMobEffects.ETERNAL_PREGNANCY.get());
 		pregnantEntity.removeEffect(MinepreggoModMobEffects.ZERO_GRAVITY_BELLY.get());
 		
-		if (MinepreggoModConfig.isBellyColisionsEnable()) {
+		if (MinepreggoModConfig.isBellyColisionsForPlayersEnable()) {
 			BellyPartManager.getInstance().remove(pregnantEntity);
 		}
 		 
