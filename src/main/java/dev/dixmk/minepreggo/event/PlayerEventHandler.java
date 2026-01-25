@@ -128,11 +128,7 @@ public class PlayerEventHandler {
 	@SubscribeEvent
 	public static void onPlayerRespawnedSync(PlayerEvent.PlayerRespawnEvent event) {
 		if (event.getEntity() instanceof ServerPlayer serverPlayer && !serverPlayer.level().isClientSide) {	
-				
-	        if (!serverPlayer.isAlive() || serverPlayer.getHealth() <= 0) {
-	            serverPlayer.setHealth(serverPlayer.getMaxHealth());
-	        }
-					
+	
 	        if (MinepreggoModConfig.isBellyColisionsEnable()) {
 	        	BellyPartManager.getInstance().remove(event.getEntity());
 	        }

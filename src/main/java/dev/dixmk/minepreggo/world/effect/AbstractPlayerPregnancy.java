@@ -9,7 +9,6 @@ import java.util.UUID;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.world.entity.player.PlayerPregnancySystemP0;
-import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
@@ -65,10 +64,15 @@ public abstract class AbstractPlayerPregnancy<S extends PlayerPregnancySystemP0>
     	if (entity instanceof ServerPlayer serverPlayer) {
     		ensurePregnancySystemInitialized(serverPlayer);
     		
-    		getPlayerPregnancyPhase(serverPlayer).ifPresent(phase -> {
-				PregnancySystemHelper.applyGravityModifier(entity, phase);
-				PregnancySystemHelper.applyKnockbackResistanceModifier(entity, phase);
-			});
+    		serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
+    			cap.getFemaleData().ifPresent(femaleData -> {
+    				if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
+    					var phase = femaleData.getPregnancyData().getCurrentPregnancyPhase();
+    					PregnancySystemHelper.applyGravityModifier(entity, phase);
+    					PregnancySystemHelper.applyKnockbackResistanceModifier(entity, phase);		
+    				}
+    			})
+    		); 	
     	}
 	}
 		
@@ -114,19 +118,9 @@ public abstract class AbstractPlayerPregnancy<S extends PlayerPregnancySystemP0>
     		// Remove the pregnancy system for this specific player from the Map
     		pregnancySystemsCache.remove(serverPlayer.getUUID());
     		
-    		getPlayerPregnancyPhase(serverPlayer).ifPresent(phase -> {
-				PregnancySystemHelper.removeGravityModifier(entity);
-				PregnancySystemHelper.removeKnockbackResistanceModifier(entity);
-			});
+			PregnancySystemHelper.removeGravityModifier(entity);
+			PregnancySystemHelper.removeKnockbackResistanceModifier(entity);
     	}
-    }
-    
-    private static Optional<PregnancyPhase> getPlayerPregnancyPhase(ServerPlayer serverPlayer) {
-    	return serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).map(cap -> 
-			cap.getFemaleData().map(femaleData ->
-			femaleData.isPregnant()
-			&& femaleData.isPregnancyDataInitialized() ? femaleData.getPregnancyData().getCurrentPregnancyPhase() : null)
-		).orElse(Optional.empty());
     }
     
     abstract Optional<AttributeModifier> getSpeedModifier();
