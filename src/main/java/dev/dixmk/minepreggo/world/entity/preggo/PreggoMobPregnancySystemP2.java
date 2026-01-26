@@ -94,18 +94,7 @@ public abstract class PreggoMobPregnancySystemP2
 		}
 		return false;
 	}
-	
-	@Override
-	protected void evaluatePregnancySymptoms() {
-		super.evaluatePregnancySymptoms();
-		final var pregnancyData = pregnantEntity.getPregnancyData();
-		SyncedSetPregnancySymptom pregnancySymptoms = pregnancyData.getSyncedPregnancySymptoms();	
-		if (pregnancySymptoms.containsPregnancySymptom(PregnancySymptom.MILKING)
-				&& pregnancyData.getMilking() <= PregnancySystemHelper.DESACTIVATE_MILKING_SYMPTOM) {
-			pregnancySymptoms.removePregnancySymptom(PregnancySymptom.MILKING);
-		}
-	}
-	
+		
 	@Override
 	public boolean canBeAngry() {
 		return super.canBeAngry() || pregnantEntity.getPregnancyData().getMilking() >= PregnancySystemHelper.MAX_MILKING_LEVEL;
@@ -115,19 +104,15 @@ public abstract class PreggoMobPregnancySystemP2
 	public Result evaluateMilking(Level level, Player source) {
 		final var pregnancyData = pregnantEntity.getPregnancyData();
 	    var mainHandItem = source.getMainHandItem();
-	    var currentMilking = pregnancyData.getMilking();
 		
-	    if (currentMilking < PregnancySystemHelper.MILKING_VALUE || mainHandItem.isEmpty() || mainHandItem.getItem() != Items.GLASS_BOTTLE) {   
+	    if (pregnancyData.getMilking() < PregnancySystemHelper.MILKING_VALUE || mainHandItem.isEmpty() || mainHandItem.getItem() != Items.GLASS_BOTTLE) {   
 	    	return null;
 	    }
 	    
         pregnantEntity.playSound(SoundEvents.COW_MILK, 0.8F, 0.8F + pregnantEntity.getRandom().nextFloat() * 0.3F);
 	       
-        if (!level.isClientSide) {    	
-        	MinepreggoMod.LOGGER.debug("{} {}", mainHandItem, mainHandItem.getCount());
-	
-            currentMilking = Math.max(0, currentMilking - PregnancySystemHelper.MILKING_VALUE);
-            pregnancyData.setMilking(currentMilking);               
+        if (!level.isClientSide) {    		
+            pregnancyData.decrementMilking(PregnancySystemHelper.MILKING_VALUE);              
             var milkItem = PregnancySystemHelper.getMilkItem(pregnantEntity.getTypeOfSpecies());
            
             if (milkItem != null) {
@@ -144,13 +129,10 @@ public abstract class PreggoMobPregnancySystemP2
             source.getInventory().setChanged();
             
     		SyncedSetPregnancySymptom pregnancySymptoms = pregnancyData.getSyncedPregnancySymptoms();	
-
             if (pregnancySymptoms.containsPregnancySymptom(PregnancySymptom.MILKING)
-            		&& currentMilking <= PregnancySystemHelper.DESACTIVATE_MILKING_SYMPTOM) {
+            		&& pregnancyData.getMilking() <= PregnancySystemHelper.DESACTIVATE_MILKING_SYMPTOM) {
             	pregnancySymptoms.removePregnancySymptom(PregnancySymptom.MILKING);
-            } 
-            
-        	MinepreggoMod.LOGGER.debug("{} {}", mainHandItem, mainHandItem.getCount());
+            }           
         }
      
         return Result.SUCCESS;   

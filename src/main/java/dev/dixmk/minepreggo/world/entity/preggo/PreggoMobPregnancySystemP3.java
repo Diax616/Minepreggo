@@ -60,17 +60,6 @@ public abstract class PreggoMobPregnancySystemP3
 	}
 	
 	@Override
-	protected void evaluatePregnancySymptoms() {	
-		super.evaluatePregnancySymptoms();
-		final var pregnancyData = pregnantEntity.getPregnancyData();
-		SyncedSetPregnancySymptom pregnancySymptoms = pregnancyData.getSyncedPregnancySymptoms();	
-		if (pregnancySymptoms.containsPregnancySymptom(PregnancySymptom.BELLY_RUBS)
-				&& pregnancyData.getBellyRubs() <= PregnancySystemHelper.DESACTIVATEL_BELLY_RUBS_SYMPTOM) {
-			pregnancySymptoms.removePregnancySymptom(PregnancySymptom.BELLY_RUBS);
-		}
-	}
-	
-	@Override
 	protected boolean tryInitPregnancySymptom() {
 		if (super.tryInitPregnancySymptom()) {
 			return true;
@@ -134,15 +123,14 @@ public abstract class PreggoMobPregnancySystemP3
 	protected Result evaluateBellyRubs(Level level, Player source) {		
 		super.evaluateBellyRubs(level, source);	
 		final var pregnancyData = pregnantEntity.getPregnancyData();
-		var currentBellyRubs = pregnancyData.getBellyRubs();
-		if (currentBellyRubs > 0) {			
+
+		if (pregnancyData.getBellyRubs() > 0) {			
 			if (!level.isClientSide) { 
-				SyncedSetPregnancySymptom pregnancySymptoms = pregnancyData.getSyncedPregnancySymptoms();	
-				currentBellyRubs = Math.max(0, currentBellyRubs - PregnancySystemHelper.BELLY_RUBBING_VALUE);			
-				pregnancyData.setBellyRubs(currentBellyRubs);
-							
+				pregnancyData.decrementBellyRubs(PregnancySystemHelper.BELLY_RUBBING_VALUE);
+				
+				SyncedSetPregnancySymptom pregnancySymptoms = pregnancyData.getSyncedPregnancySymptoms();				
 				if (pregnancySymptoms.containsPregnancySymptom(PregnancySymptom.BELLY_RUBS)
-						&& currentBellyRubs <= PregnancySystemHelper.DESACTIVATEL_BELLY_RUBS_SYMPTOM) {									
+						&& pregnancyData.getBellyRubs() <= PregnancySystemHelper.DESACTIVATEL_BELLY_RUBS_SYMPTOM) {									
 					pregnancySymptoms.removePregnancySymptom(PregnancySymptom.BELLY_RUBS);							
 				}	
 			}						

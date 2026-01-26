@@ -62,7 +62,7 @@ public abstract class PreggoMobPregnancySystemP0
 	}
 	
 	protected void evaluatePregnancySymptoms() {
-		// This pregnancy phase does not support pregnancy symptoms yet	
+		// This pregnancy phase does not support pregnancy symptoms yet			
 	}
 	
 	protected void evaluatePregnancyNeeds() {
@@ -177,12 +177,8 @@ public abstract class PreggoMobPregnancySystemP0
 
 		// Belly rubs has priority over other right click actions
 		if (PregnancySystemHelper.canTouchBelly(source, pregnantEntity)) {		
-			if (level instanceof ServerLevel serverLevel) {		
-				Result result = evaluateBellyRubs(serverLevel, source);
-				
-				if (!serverLevel.isClientSide) {
-					PreggoMobSystem.spawnParticles(pregnantEntity, result);
-				}
+			if (level instanceof ServerLevel serverLevel && !serverLevel.isClientSide) {		
+				PreggoMobSystem.spawnParticles(pregnantEntity, evaluateBellyRubs(serverLevel, source));
 			}	
 			
 			return InteractionResult.sidedSuccess(level.isClientSide);
