@@ -63,6 +63,11 @@ public class SyncedSetPregnancySymptom extends SetPregnancySymptom {
 	}
 	
 	@Override
+	public boolean containsPregnancySymptom(PregnancySymptom symptom) {
+		return (preggoMob.getEntityData().get(dataAccessor) & symptom.flag) != 0;
+	}
+	
+	@Override
 	public Set<PregnancySymptom> toSet() {
 		return PregnancySymptom.fromBitMask(preggoMob.getEntityData().get(dataAccessor));
 	}

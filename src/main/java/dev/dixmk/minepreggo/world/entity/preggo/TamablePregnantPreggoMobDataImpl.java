@@ -391,10 +391,14 @@ public class TamablePregnantPreggoMobDataImpl<E extends PreggoMob & ITamablePreg
 		var craving = this.getTypeOfCraving();
 		if (craving == null) return false;
 			
-		final var items = PregnancySystemHelper.getCravingItems(Species.ZOMBIE, craving);
+		final var items = PregnancySystemHelper.getCravingItems(preggoMob.getTypeOfSpecies(), craving);
 		
-		if (items == null) return false;
-		
+		if (items == null) {
+			MinepreggoMod.LOGGER.warn("No craving items found for species: {} and craving: {}", 
+					preggoMob.getTypeOfSpecies(), craving);
+			return false;
+		}
+
 		for (final var item : items) {
 			MinepreggoMod.LOGGER.debug("Checking craving item: {} against item: {}", item, itemCraving);
 			if (item == itemCraving) {
@@ -510,7 +514,7 @@ public class TamablePregnantPreggoMobDataImpl<E extends PreggoMob & ITamablePreg
 			compoundTag.putString(Craving.NBT_KEY, craving.name());
 		}
 		
-		compoundTag.putByte(PregnancySymptom.NBT_KEY, syncedData.get(this.dataAccessor.dataPregnancySymptom));
+		compoundTag.putByte(PregnancySymptom.NBT_KEY, syncedSetPregnancySymptoms.getBitmask());
 		
 		var pain = getPregnancyPain();
 		if (pain != null) {
@@ -552,8 +556,8 @@ public class TamablePregnantPreggoMobDataImpl<E extends PreggoMob & ITamablePreg
 	        setPregnancyPain(PregnancyPain.valueOf(compoundTag.getString(PregnancyPain.NBT_KEY)));
 	    }   
 	    
-    	syncedData.set(this.dataAccessor.dataPregnancySymptom, compoundTag.getByte(PregnancySymptom.NBT_KEY));
-	    
+	    syncedSetPregnancySymptoms.setBitMask(compoundTag.getByte(PregnancySymptom.NBT_KEY));
+ 
 	    if (compoundTag.contains("DataBabies", Tag.TAG_COMPOUND)) {
 	    	this.babiesInsideWomb = Womb.fromNBT(compoundTag.getCompound("DataBabies"));
 	    	if (this.babiesInsideWomb == null) {

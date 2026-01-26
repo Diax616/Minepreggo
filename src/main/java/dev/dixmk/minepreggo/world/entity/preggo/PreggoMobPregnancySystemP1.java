@@ -86,9 +86,6 @@ public abstract class PreggoMobPregnancySystemP1
 				++pregnancysymptonsTicks;
 			}
 		}
-		if (!pregnantEntity.getPregnancyData().getSyncedPregnancySymptoms().isEmpty()) {
-			evaluatePregnancySymptoms();
-		}
 		
 		evaluatePregnancyNeeds();
 		
@@ -109,11 +106,13 @@ public abstract class PreggoMobPregnancySystemP1
 					
 		var level = pregnantEntity.level();
 					
-		final Result result;	
-		if (!source.getMainHandItem().isEmpty() && (result = evaluateCraving(level, source)) != null) {			
+		final Result result = evaluateCraving(level, source);	
+		
+		
+		if (result != null) {			
 			if (!level.isClientSide) {
 				PreggoMobSystem.spawnParticles(pregnantEntity, result);
-			}
+			}				
 			return InteractionResult.sidedSuccess(level.isClientSide);
 		}
 		
@@ -198,17 +197,6 @@ public abstract class PreggoMobPregnancySystemP1
 	}
 	
 	@Override
-	protected void evaluatePregnancySymptoms() {
-		final var pregnancyData = pregnantEntity.getPregnancyData();
-		SyncedSetPregnancySymptom pregnancySymptoms = pregnancyData.getSyncedPregnancySymptoms();	
-		if (pregnancySymptoms.containsPregnancySymptom(PregnancySymptom.CRAVING)
-				&& pregnancyData.getCraving() <= PregnancySystemHelper.DESACTIVATE_CRAVING_SYMPTOM) {
-			pregnancySymptoms.removePregnancySymptom(PregnancySymptom.CRAVING);
-			pregnancyData.clearTypeOfCraving();
-		}
-	}
-	
-	@Override
 	public void evaluateOnSuccessfulHurt(DamageSource damagesource) {	
 		final var pregnancyData = pregnantEntity.getPregnancyData();
 
@@ -280,30 +268,37 @@ public abstract class PreggoMobPregnancySystemP1
 	}
 	
 	@Nullable
-	protected Result evaluateCraving(Level level, Player source) {
+	protected Result evaluateCraving(Level level, Player source) {		
 		final var pregnancyData = pregnantEntity.getPregnancyData();
-		if (!pregnancyData.getSyncedPregnancySymptoms().containsPregnancySymptom(PregnancySymptom.CRAVING)) {
+		SyncedSetPregnancySymptom pregnancySymptoms = pregnancyData.getSyncedPregnancySymptoms();			
+		if (!pregnancySymptoms.containsPregnancySymptom(PregnancySymptom.CRAVING)) {
+			MinepreggoMod.LOGGER.debug("No craving symptom active");
 			return null;
 		}
 		
 	    var mainHandItem = source.getMainHandItem();
-	    var currentCraving = pregnancyData.getCraving();
-	    
-	    if (currentCraving > PregnancySystemHelper.DESACTIVATE_CRAVING_SYMPTOM && pregnantEntity.isFood(mainHandItem)) {    	
-	    	
-	    	if (!pregnancyData.isValidCraving(mainHandItem.getItem()) || !(mainHandItem.getItem() instanceof ICravingItem)) {
-	    		return Result.ANGRY;
-	    	}
-	    	    	
+   
+	    if (pregnancyData.getCraving() > PregnancySystemHelper.DESACTIVATE_CRAVING_SYMPTOM && pregnantEntity.isFood(mainHandItem)) {    	
+	    	    		    	
             pregnantEntity.playSound(SoundEvents.GENERIC_EAT, 0.8F, 0.8F + pregnantEntity.getRandom().nextFloat() * 0.3F);
 
-	    	if (!level.isClientSide) {
+	    	if (!level.isClientSide) {	  
+	    		var item = mainHandItem.getItem();
+		    	if (!pregnancyData.isValidCraving(item) || !(item instanceof ICravingItem)) {
+		    		return Result.ANGRY;
+		    	}
+	    		
 				mainHandItem.shrink(1);
 	            if (mainHandItem.isEmpty()) {
 	            	source.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
 	            }        
 	            source.getInventory().setChanged();    		  		
-	            pregnancyData.setCraving(currentCraving - ((ICravingItem)mainHandItem.getItem()).getGratification());    
+	            pregnancyData.decrementCraving(((ICravingItem)item).getGratification());   
+	            
+	    		if (pregnancyData.getCraving() <= PregnancySystemHelper.DESACTIVATE_CRAVING_SYMPTOM) {
+	    			pregnancySymptoms.removePregnancySymptom(PregnancySymptom.CRAVING);
+	    			pregnancyData.clearTypeOfCraving();
+	    		}
 	    	}
             
             return Result.SUCCESS; 

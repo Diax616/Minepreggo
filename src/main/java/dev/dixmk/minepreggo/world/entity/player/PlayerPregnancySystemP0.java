@@ -128,7 +128,7 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 	protected void evaluatePregnancyPains() {
 		// This pregnancy phase does not support pregnancy pains yet	
 	}
-
+	
 	@Override
 	protected void evaluatePregnancySymptoms() {
 		// This pregnancy phase does not support pregnancy symptoms yet			

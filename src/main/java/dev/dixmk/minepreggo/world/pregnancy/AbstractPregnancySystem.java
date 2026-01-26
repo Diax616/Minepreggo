@@ -31,11 +31,11 @@ public abstract class AbstractPregnancySystem<E extends LivingEntity> implements
 	
 	protected abstract void evaluatePregnancyPains();
 	
-	protected abstract void evaluatePregnancySymptoms();
-	
 	protected abstract void evaluatePregnancyTimer();
 	
 	protected abstract void evaluateMiscarriage(ServerLevel serverLevel);
+	
+	protected abstract void evaluatePregnancySymptoms();
 	
 	public abstract boolean isMiscarriageActive();
 	
