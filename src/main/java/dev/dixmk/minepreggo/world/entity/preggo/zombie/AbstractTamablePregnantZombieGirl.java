@@ -132,7 +132,7 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 		}	
 		
 		if (!this.level().isClientSide
-				&& MinepreggoModConfig.isBellyColisionsForPreggoMobsEnable()
+				&& MinepreggoModConfig.SERVER.isBellyColisionsForPreggoMobsEnable()
 				&& pregnancyData.getCurrentPregnancyPhase().compareTo(PregnancyPhase.P4) >= 0) {
 			BellyPartManager.getInstance().onServerTick(this, () -> BellyPartFactory.createHumanoidBellyPart(this, pregnancyData.getCurrentPregnancyPhase()));
 		}	

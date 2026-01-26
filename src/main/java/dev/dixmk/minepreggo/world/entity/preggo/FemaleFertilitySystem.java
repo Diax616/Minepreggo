@@ -101,7 +101,7 @@ public abstract class FemaleFertilitySystem<E extends PreggoMob & ITamablePreggo
 	
 	protected void evaluatePregnancyInitializerTimer() {			    	
 		final var femaleData = preggoMob.getGenderedData();
-		if (femaleData.getPregnancyInitializerTimer() >= MinepreggoModConfig.getTicksToStartPregnancy()) {
+		if (femaleData.getPregnancyInitializerTimer() >= MinepreggoModConfig.SERVER.getTotalTicksToStartPregnancy()) {
         	startPregnancy();
         	preggoMob.discard();
         } else {
@@ -113,7 +113,7 @@ public abstract class FemaleFertilitySystem<E extends PreggoMob & ITamablePreggo
 		final var femaleData = preggoMob.getSyncedFemaleEntity();
 		
 		var result = femaleData.getSyncedPostPregnancyData().map(post -> {
-					if (post.getPostPregnancyTimer() > MinepreggoModConfig.getTotalTicksOfPostPregnancyPhase()) {
+					if (post.getPostPregnancyTimer() > MinepreggoModConfig.SERVER.getTotalTicksOfPostPregnancyPhase()) {
 						post.resetPostPregnancyTimer();					
 						return true;
 					}
@@ -122,7 +122,7 @@ public abstract class FemaleFertilitySystem<E extends PreggoMob & ITamablePreggo
 					}
 					
 					if (post.getPostPregnancy() == PostPregnancy.PARTUM && post.getPostPartumLactation() < PregnancySystemHelper.MAX_MILKING_LEVEL) {
-						if (post.getPostPartumLactationTimer() > MinepreggoModConfig.getTotalTicksOfMaternityLactation()) {
+						if (post.getPostPartumLactationTimer() > MinepreggoModConfig.SERVER.getTotalTicksOfMaternityLactation()) {
 							post.resetPostPartumLactationTimer();
 							post.incrementPostPartumLactation();
 							

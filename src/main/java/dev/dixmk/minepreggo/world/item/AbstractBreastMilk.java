@@ -16,11 +16,12 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public abstract class AbstractBreastMilk extends Item {
 	
 	protected AbstractBreastMilk(int nutrition, float saturation) {
-		super(new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON).food((new FoodProperties.Builder()).nutrition(nutrition).saturationMod(saturation).alwaysEat().build()));
+		super(new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON).food((new FoodProperties.Builder()).nutrition(nutrition).saturationMod(saturation).build()));
 	}
 
 	protected AbstractBreastMilk(int nutrition) {
@@ -28,11 +29,11 @@ public abstract class AbstractBreastMilk extends Item {
 	}
 	
 	protected AbstractBreastMilk(float saturation) {
-		this(2, saturation);
+		this(3, saturation);
 	}
 	
 	protected AbstractBreastMilk() {
-		this(2, 0.2F);
+		this(3, 0.2F);
 	}
 	
 	@Override
@@ -42,17 +43,19 @@ public abstract class AbstractBreastMilk extends Item {
 
 	@Override
 	public ItemStack finishUsingItem(ItemStack itemstack, Level level, LivingEntity entity) {
+		var result = super.finishUsingItem(itemstack, level, entity);
+		
 		if (!level.isClientSide) {
 			if (entity instanceof Player player && player.getCapability(MinepreggoCapabilities.PLAYER_DATA).isPresent()) {	
 				player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> {			
-					Optional<List<MobEffect>> result = cap.getFemaleData().map(femaleData -> {
+					Optional<List<MobEffect>> effects = cap.getFemaleData().map(femaleData -> {
 						if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
 							return PlayerHelper.removeEffectsByPregnancyPhase(player, femaleData.getPregnancyData().getCurrentPregnancyPhase());
 						}
 						return PlayerHelper.removeEffects(player, effect -> !PregnancySystemHelper.isFemaleEffect(effect));
 					});
-					if (result.isPresent()) {
-	                    for (MobEffect effect : result.get()) {
+					if (effects.isPresent()) {
+	                    for (MobEffect effect : effects.get()) {
                             player.removeEffect(effect);
                         }
 					}
@@ -66,12 +69,12 @@ public abstract class AbstractBreastMilk extends Item {
 					entity.removeEffect(effectInstance.getEffect())
 				);
 			}
-		}	
-		
-		if (entity instanceof Player player && !player.getAbilities().instabuild) {
-			itemstack.shrink(1);
-		}
+		}		
 
-		return itemstack.isEmpty() ? new ItemStack(Items.GLASS_BOTTLE) : itemstack;		
+		if (entity instanceof Player player && !result.isEmpty()) {
+			ItemHandlerHelper.giveItemToPlayer(player, new ItemStack(Items.GLASS_BOTTLE));
+		}
+		
+		return result.isEmpty() ? new ItemStack(Items.GLASS_BOTTLE) : result;		
 	}
 }

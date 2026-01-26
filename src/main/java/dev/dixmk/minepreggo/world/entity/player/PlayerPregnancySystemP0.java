@@ -140,7 +140,7 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 			return;
 		}
 		
-		if (pregnancySystem.getPregnancyTimer() > MinepreggoModConfig.getTotalTicksByPregnancyDay()) {
+		if (pregnancySystem.getPregnancyTimer() > MinepreggoModConfig.SERVER.getTotalTicksByPregnancyDay()) {
 			pregnancySystem.resetPregnancyTimer();
 			pregnancySystem.incrementDaysPassed();
 			pregnancySystem.reduceDaysToGiveBirth();
@@ -207,7 +207,7 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 			}
 		}
 		
-		if (MinepreggoModConfig.isBellyColisionsForPlayersEnable()
+		if (MinepreggoModConfig.SERVER.isBellyColisionsForPlayersEnable()
 				&& next.compareTo(PregnancyPhase.P4) >= 0) {
 			BellyPartManager.getInstance().create(pregnantEntity, next);
 		}
@@ -247,7 +247,7 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 		pregnantEntity.removeEffect(MinepreggoModMobEffects.ETERNAL_PREGNANCY.get());
 		pregnantEntity.removeEffect(MinepreggoModMobEffects.ZERO_GRAVITY_BELLY.get());
 		
-		if (MinepreggoModConfig.isBellyColisionsForPlayersEnable()) {
+		if (MinepreggoModConfig.SERVER.isBellyColisionsForPlayersEnable()) {
 			BellyPartManager.getInstance().remove(pregnantEntity);
 		}
 		 

@@ -141,7 +141,7 @@ public abstract class AbstractMonsterPregnantCreeperGirl extends AbstractMonster
     	  }
       }  
       
-      if (MinepreggoModConfig.isBellyColisionsForPreggoMobsEnable() && pregnancyDataImpl.getCurrentPregnancyPhase().compareTo(PregnancyPhase.P4) >= 0) {
+      if (MinepreggoModConfig.SERVER.isBellyColisionsForPreggoMobsEnable() && pregnancyDataImpl.getCurrentPregnancyPhase().compareTo(PregnancyPhase.P4) >= 0) {
     	  BellyPartManager.getInstance().onServerTick(this, () -> BellyPartFactory.createHumanoidBellyPart(this, pregnancyDataImpl.getCurrentPregnancyPhase()));
       }
 	}

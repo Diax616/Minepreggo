@@ -124,12 +124,6 @@ public abstract class ZombieGirlAnimator<T extends AbstractZombieGirl> extends P
 			if (zombieGirl.getPregnancyData().isIncapacitated()) {
 			    this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.CONTRACTION2, ageInTicks);	
 			}
-			else if (zombieGirl.isPassenger()) {
-			    this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.RIDING, ageInTicks);	
-			}
-			else {
-			    this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.IDLE, ageInTicks);	
-			}
 		}
 	}
 	

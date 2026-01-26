@@ -125,12 +125,6 @@ public abstract class HumanoidCreeperGirlAnimator<E extends AbstractCreeperGirl>
   			if (creeperGirl.getPregnancyData().isIncapacitated()) {
   			    this.animate(creeperGirl.loopAnimationState, HumanoidCreeperGirlAnimation.CONTRACTION2, ageInTicks);	
   			}
-  			else if (creeperGirl.isPassenger()) {
-  			    this.animate(creeperGirl.loopAnimationState, HumanoidCreeperGirlAnimation.RIDING, ageInTicks);	
-  			}
-  			else {
-  			    this.animate(creeperGirl.loopAnimationState, HumanoidCreeperGirlAnimation.IDLE, ageInTicks);	
-  			}
   		}
   	}
   	

@@ -1,267 +1,20 @@
 package dev.dixmk.minepreggo;
 
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-@Mod.EventBusSubscriber(modid = MinepreggoMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class MinepreggoModConfig {
 	
 	private MinepreggoModConfig() {}
 	
-    public static final ForgeConfigSpec CLIENT_SPEC;
-    public static final ForgeConfigSpec SERVER_SPEC;
+    static final ForgeConfigSpec CLIENT_SPEC;
+    static final ForgeConfigSpec SERVER_SPEC;
  
-    static final Client CLIENT;
-    static final Server SERVER;
-    
-    private static int totalTickByPregnancyDays;
-    private static int totalPregnancyDays;
-    private static int ticksToStartPregnancy;
-    private static int totalTicksOfMaternityLactation;
-    private static int totalTicksOfPostPregnancyPhase;
-    
-    private static int totalTicksOfHungryP0;
-    private static int totalTicksOfHungryP1;
-    private static int totalTicksOfHungryP2;
-    private static int totalTicksOfHungryP3;
-    private static int totalTicksOfHungryP4;
-    private static int totalTicksOfHungryP5;
-    private static int totalTicksOfHungryP6;
-    private static int totalTicksOfHungryP7;
-    private static int totalTicksOfHungryP8;
-
-    private static int totalTicksOfCravingP1;
-    private static int totalTicksOfCravingP2;
-    private static int totalTicksOfCravingP3;
-    private static int totalTicksOfCravingP4;
-    private static int totalTicksOfCravingP5;
-    private static int totalTicksOfCravingP6;
-    private static int totalTicksOfCravingP7;
-    private static int totalTicksOfCravingP8;
-    
-    private static int totalTicksOfMilkingP2;
-    private static int totalTicksOfMilkingP3;
-    private static int totalTicksOfMilkingP4;
-    private static int totalTicksOfMilkingP5;
-    private static int totalTicksOfMilkingP6;
-    private static int totalTicksOfMilkingP7;
-    private static int totalTicksOfMilkingP8;
-    
-    private static int totalTicksOfBellyRubsP3;
-    private static int totalTicksOfBellyRubsP4;
-    private static int totalTicksOfBellyRubsP5;
-    private static int totalTicksOfBellyRubsP6;
-    private static int totalTicksOfBellyRubsP7;
-    private static int totalTicksOfBellyRubsP8;
-    
-    private static int totalTicksOfHornyP4;
-    private static int totalTicksOfHornyP5;
-    private static int totalTicksOfHornyP6;
-    private static int totalTicksOfHornyP7;
-    private static int totalTicksOfHornyP8;
-    
-    private static float babyCreeperGirlProbability;
-    private static float babyZombieGirlProbability;
-
-    private static boolean enableBellyColisionsForPlayer;
-    private static boolean enableBellyColisionsForPreggoMob;
-    
-    private static boolean enablePreggoMobsMoans;  
-    private static boolean enablePlayerMoans;
-    private static boolean enableBellySounds;
-
-    public static int getTotalPregnancyDays() {
-    	return totalPregnancyDays;
-    }
-     
-    public static int getTotalTicksByPregnancyDay() {
-    	return totalTickByPregnancyDays;
-    }
-    
-    public static int getTicksToStartPregnancy() {
-    	return ticksToStartPregnancy;
-    }
-    
-    public static int getTotalTicksOfMaternityLactation() {
-		return totalTicksOfMaternityLactation;
-	}
-    
-    public static int getTotalTicksOfPostPregnancyPhase() {
-    	return totalTicksOfPostPregnancyPhase;
-    }
-    
-    public static int getTotalTicksOfHungryP0() {
-    	return totalTicksOfHungryP0;
-    }
-
-    public static int getTotalTicksOfHungryP1() {
-    	return totalTicksOfHungryP1;
-    }
-    
-    public static int getTotalTicksOfHungryP2() {
-    	return totalTicksOfHungryP2;
-    }
-    
-    public static int getTotalTicksOfHungryP3() {
-    	return totalTicksOfHungryP3;
-    }
-    
-    public static int getTotalTicksOfHungryP4() {
-    	return totalTicksOfHungryP4;
-    }
-    
-    public static int getTotalTicksOfHungryP5() {
-    	return totalTicksOfHungryP5;
-    }
-    
-    public static int getTotalTicksOfHungryP6() {
-    	return totalTicksOfHungryP6;
-    }
-    
-    public static int getTotalTicksOfHungryP7() {
-    	return totalTicksOfHungryP7;
-    }
-    
-    public static int getTotalTicksOfHungryP8() {
-    	return totalTicksOfHungryP8;
-    }
-    
-    public static int getTotalTicksOfMilkingP2() {
-    	return totalTicksOfMilkingP2;
-    }
-    
-    public static int getTotalTicksOfMilkingP3() {
-    	return totalTicksOfMilkingP3;
-    }
-    
-    public static int getTotalTicksOfMilkingP4() {
-    	return totalTicksOfMilkingP4;
-    }
-    
-    public static int getTotalTicksOfMilkingP5() {
-    	return totalTicksOfMilkingP5;
-    }
-    
-    public static int getTotalTicksOfMilkingP6() {
-    	return totalTicksOfMilkingP6;
-    }
-    
-    public static int getTotalTicksOfMilkingP7() {
-    	return totalTicksOfMilkingP7;
-    }
-    
-    public static int getTotalTicksOfMilkingP8() {
-    	return totalTicksOfMilkingP8;
-    }
-    
-    public static int getTotalTicksOfBellyRubsP3() {
-    	return totalTicksOfBellyRubsP3;
-    }
-    
-    public static int getTotalTicksOfBellyRubsP4() {
-    	return totalTicksOfBellyRubsP4;
-    }
-    
-    public static int getTotalTicksOfBellyRubsP5() {
-    	return totalTicksOfBellyRubsP5;
-    }
-    
-    public static int getTotalTicksOfBellyRubsP6() {
-    	return totalTicksOfBellyRubsP6;
-    }
-    
-    public static int getTotalTicksOfBellyRubsP7() {
-    	return totalTicksOfBellyRubsP7;
-    }
-    
-    public static int getTotalTicksOfBellyRubsP8() {
-    	return totalTicksOfBellyRubsP8;
-    }
-    
-    public static int getTotalTicksOfCravingP1() {
-    	return totalTicksOfCravingP1;
-    }
-    
-    public static int getTotalTicksOfCravingP2() {
-    	return totalTicksOfCravingP2;
-    }
-    
-    public static int getTotalTicksOfCravingP3() {
-    	return totalTicksOfCravingP3;
-    }
-    
-    public static int getTotalTicksOfCravingP4() {
-    	return totalTicksOfCravingP4;
-    }
-    
-    public static int getTotalTicksOfCravingP5() {
-    	return totalTicksOfCravingP5;
-    }
-    
-    public static int getTotalTicksOfCravingP6() {
-    	return totalTicksOfCravingP6;
-    }
-    
-    public static int getTotalTicksOfCravingP7() {
-    	return totalTicksOfCravingP7;
-    }
-    
-    public static int getTotalTicksOfCravingP8() {
-    	return totalTicksOfCravingP8;
-    }
-    
-    public static int getTotalTicksOfHornyP4() {
-    	return totalTicksOfHornyP4;
-    }
-    
-    public static int getTotalTicksOfHornyP5() {
-    	return totalTicksOfHornyP5;
-    }
-    
-    public static int getTotalTicksOfHornyP6() {
-    	return totalTicksOfHornyP6;
-    }
-    
-    public static int getTotalTicksOfHornyP7() {
-    	return totalTicksOfHornyP7;
-    }
-    
-    public static int getTotalTicksOfHornyP8() {
-    	return totalTicksOfHornyP8;
-    }
-    
-    public static float getBabyCreeperGirlProbability() {
-    	return babyCreeperGirlProbability;
-    }
-    
-    public static float getBabyZombieGirlProbability() {
-    	return babyZombieGirlProbability;
-    }
-    
-    public static boolean isBellyColisionsForPlayersEnable() {
-		return enableBellyColisionsForPlayer;
-	}
-    
-    public static boolean isPlayerMoansEnable() {
-    	return enablePlayerMoans;
-    }
-    
-    public static boolean isPreggoMobsMoansEnable() {
-    	return enablePreggoMobsMoans;
-    }
-    
-    public static boolean isBellySoundsEnable() {
-		return enableBellySounds;
-	}
-    
-    public static boolean isBellyColisionsForPreggoMobsEnable() {
-    	return enableBellyColisionsForPreggoMob;
-    }
-    
+    public static final Client CLIENT;
+    public static final Server SERVER;
+   
     static {
     	Pair<Client, ForgeConfigSpec> client = 
                 new ForgeConfigSpec.Builder().configure(Client::new);     
@@ -274,186 +27,441 @@ public class MinepreggoModConfig {
         SERVER = server.getLeft();
     }
     
-
-    @SubscribeEvent
     static void onLoad(ModConfigEvent.Loading event) {  		  	
     	if (event.getConfig().getSpec() == CLIENT_SPEC) {
-        	enablePlayerMoans = CLIENT.enablePlayerMoans.get();
-        	enablePreggoMobsMoans = CLIENT.enablePreggoMobsMoans.get();
-        	enableBellySounds = CLIENT.enableBellySounds.get();
+        	CLIENT.enablePlayerMoans = CLIENT.enablePlayerMoansConfig.get();
+        	CLIENT.enablePreggoMobsMoans = CLIENT.enablePreggoMobsMoansConfig.get();
+        	CLIENT.enableBellySounds = CLIENT.enableBellySoundsConfig.get();
         }
         else if (event.getConfig().getSpec() == SERVER_SPEC) {
-        	babyCreeperGirlProbability = (float) SERVER.babyCreeperGirlProbability.get().doubleValue();
-        	babyZombieGirlProbability = (float) SERVER.babyZombieGirlProbability.get().doubleValue(); 
+        	SERVER.babyCreeperGirlProbability = (float) SERVER.babyCreeperGirlProbabilityConfig.get().doubleValue();
+        	SERVER.babyZombieGirlProbability = (float) SERVER.babyZombieGirlProbabilityConfig.get().doubleValue(); 
         	
-        	totalTickByPregnancyDays = SERVER.totalTickByPregnancyDays.get();
-        	totalPregnancyDays = SERVER.totalPregnancyDays.get();
-        	ticksToStartPregnancy = SERVER.ticksToStartPregnancy.get();    
-        	totalTicksOfMaternityLactation = SERVER.totalTicksOfMaternityLactation.get();
-        	totalTicksOfPostPregnancyPhase = SERVER.totalTicksOfPostPregnancyPhase.get();
-        	totalTicksOfHungryP0 = SERVER.totalTicksOfHungry.get();
-        	totalTicksOfCravingP1 = SERVER.totalTicksOfCraving.get();
-        	totalTicksOfMilkingP2 = SERVER.totalTicksOfMilking.get();
-        	totalTicksOfBellyRubsP3 = SERVER.totalTicksOfBellyRubs.get();
-        	totalTicksOfHornyP4 = SERVER.totalTicksOfHorny.get();
-        	enableBellyColisionsForPlayer = SERVER.enableBellyColisionsForPlayer.get();
-        	enableBellyColisionsForPreggoMob = SERVER.enableBellyColisionsForPreggoMob.get();
+        	SERVER.totalTickByPregnancyDays = SERVER.totalTickByPregnancyDaysConfig.get();
+        	SERVER.totalPregnancyDays = SERVER.totalPregnancyDaysConfig.get();
+        	SERVER.totalTicksToStartPregnancy = SERVER.totalTicksToStartPregnancyConfig.get();    
+        	SERVER.totalTicksOfMaternityLactation = SERVER.totalTicksOfMaternityLactationConfig.get();
+        	SERVER.totalTicksOfPostPregnancyPhase = SERVER.totalTicksOfPostPregnancyPhaseConfig.get();
+        	SERVER.totalTicksOfHungryP0 = SERVER.totalTicksOfHungryConfig.get();
+        	SERVER.totalTicksOfCravingP1 = SERVER.totalTicksOfCravingConfig.get();
+        	SERVER.totalTicksOfMilkingP2 = SERVER.totalTicksOfMilkingConfig.get();
+        	SERVER.totalTicksOfBellyRubsP3 = SERVER.totalTicksOfBellyRubsConfig.get();
+        	SERVER.totalTicksOfHornyP4 = SERVER.totalTicksOfHornyConfig.get();
+        	SERVER.enableBellyColisionsForPlayer = SERVER.enableBellyColisionsForPlayerConfig.get();
+        	SERVER.enableBellyColisionsForPreggoMob = SERVER.enableBellyColisionsForPreggoMobConfig.get();
+        	SERVER.enableMountingEntitiesInLaterPregnancyPhases = SERVER.enableMountingEntitiesInLaterPregnancyPhasesConfig.get();
         	
-        	calculateHungryValues();
-        	calculateCravingValues();
-        	calculateMilkingValues();
-        	calculateBellyRubsValues();
-        	calculateHornyValues();    
+        	SERVER.calculateHungryValues();
+        	SERVER.calculateCravingValues();
+        	SERVER.calculateMilkingValues();
+        	SERVER.calculateBellyRubsValues();
+        	SERVER.calculateHornyValues();
         }
     }
   
-    static class Client {
-    	private final ForgeConfigSpec.BooleanValue enablePlayerMoans;
-    	private final ForgeConfigSpec.BooleanValue enablePreggoMobsMoans;
-    	private final ForgeConfigSpec.BooleanValue enableBellySounds;
+    public static class Client {
+    	private final ForgeConfigSpec.BooleanValue enablePlayerMoansConfig;
+    	private final ForgeConfigSpec.BooleanValue enablePreggoMobsMoansConfig;
+    	private final ForgeConfigSpec.BooleanValue enableBellySoundsConfig;
 	
+        private boolean enablePreggoMobsMoans;  
+        private boolean enablePlayerMoans;
+        private boolean enableBellySounds;
+    	
     	private Client(ForgeConfigSpec.Builder builder) {
             builder.push("Client");
 
-            enablePlayerMoans = builder
+            enablePlayerMoansConfig = builder
                     .comment("Enable or disable player moans. (NOT WORKING)")
                     .define("enablePlayerMoans", false);
 
-            enablePreggoMobsMoans = builder
+            enablePreggoMobsMoansConfig = builder
                     .comment("Enable or disable pregnant mobs moans. (NOT WORKING)")
                     .define("enablePreggoMobsMoans", false);
 
-            enableBellySounds = builder
+            enableBellySoundsConfig = builder
                     .comment("Enable or disable belly sounds. (NOT WORKING)")
                     .define("enableBellySounds", false);
             
             builder.pop();
         }
+    	 
+        public boolean isPlayerMoansEnable() {
+        	return enablePlayerMoans;
+        }
+        
+        public boolean isPreggoMobsMoansEnable() {
+        	return enablePreggoMobsMoans;
+        }
+        
+        public boolean isBellySoundsEnable() {
+    		return enableBellySounds;
+    	}
     }
         
-    static class Server {
-        private final ForgeConfigSpec.DoubleValue babyCreeperGirlProbability;   
-        private final ForgeConfigSpec.DoubleValue babyZombieGirlProbability;
+    public static class Server {
+        private final ForgeConfigSpec.DoubleValue babyCreeperGirlProbabilityConfig;   
+        private final ForgeConfigSpec.DoubleValue babyZombieGirlProbabilityConfig;
  
-        private final ForgeConfigSpec.IntValue totalPregnancyDays;
-        private final ForgeConfigSpec.IntValue ticksToStartPregnancy;
-        private final ForgeConfigSpec.IntValue totalTickByPregnancyDays;
-        private final ForgeConfigSpec.IntValue totalTicksOfHungry;
-        private final ForgeConfigSpec.IntValue totalTicksOfCraving;
-        private final ForgeConfigSpec.IntValue totalTicksOfMilking;
-        private final ForgeConfigSpec.IntValue totalTicksOfBellyRubs;
-        private final ForgeConfigSpec.IntValue totalTicksOfHorny;
-        private final ForgeConfigSpec.IntValue totalTicksOfMaternityLactation;
-        private final ForgeConfigSpec.IntValue totalTicksOfPostPregnancyPhase;
+        private final ForgeConfigSpec.IntValue totalPregnancyDaysConfig;
+        private final ForgeConfigSpec.IntValue totalTicksToStartPregnancyConfig;
+        private final ForgeConfigSpec.IntValue totalTickByPregnancyDaysConfig;
+        private final ForgeConfigSpec.IntValue totalTicksOfHungryConfig;
+        private final ForgeConfigSpec.IntValue totalTicksOfCravingConfig;
+        private final ForgeConfigSpec.IntValue totalTicksOfMilkingConfig;
+        private final ForgeConfigSpec.IntValue totalTicksOfBellyRubsConfig;
+        private final ForgeConfigSpec.IntValue totalTicksOfHornyConfig;
+        private final ForgeConfigSpec.IntValue totalTicksOfMaternityLactationConfig;
+        private final ForgeConfigSpec.IntValue totalTicksOfPostPregnancyPhaseConfig;
         
-        private final ForgeConfigSpec.BooleanValue enableBellyColisionsForPlayer;
-        private final ForgeConfigSpec.BooleanValue enableBellyColisionsForPreggoMob;
+        private final ForgeConfigSpec.BooleanValue enableBellyColisionsForPlayerConfig;
+        private final ForgeConfigSpec.BooleanValue enableBellyColisionsForPreggoMobConfig;
+        private final ForgeConfigSpec.BooleanValue enableMountingEntitiesInLaterPregnancyPhasesConfig;
+        
+        private int totalTickByPregnancyDays;
+        private int totalPregnancyDays;
+        private int totalTicksToStartPregnancy;
+        private int totalTicksOfMaternityLactation;
+        private int totalTicksOfPostPregnancyPhase;
+        
+        private int totalTicksOfHungryP0;
+        private int totalTicksOfHungryP1;
+        private int totalTicksOfHungryP2;
+        private int totalTicksOfHungryP3;
+        private int totalTicksOfHungryP4;
+        private int totalTicksOfHungryP5;
+        private int totalTicksOfHungryP6;
+        private int totalTicksOfHungryP7;
+        private int totalTicksOfHungryP8;
+
+        private int totalTicksOfCravingP1;
+        private int totalTicksOfCravingP2;
+        private int totalTicksOfCravingP3;
+        private int totalTicksOfCravingP4;
+        private int totalTicksOfCravingP5;
+        private int totalTicksOfCravingP6;
+        private int totalTicksOfCravingP7;
+        private int totalTicksOfCravingP8;
+        
+        private int totalTicksOfMilkingP2;
+        private int totalTicksOfMilkingP3;
+        private int totalTicksOfMilkingP4;
+        private int totalTicksOfMilkingP5;
+        private int totalTicksOfMilkingP6;
+        private int totalTicksOfMilkingP7;
+        private int totalTicksOfMilkingP8;
+        
+        private int totalTicksOfBellyRubsP3;
+        private int totalTicksOfBellyRubsP4;
+        private int totalTicksOfBellyRubsP5;
+        private int totalTicksOfBellyRubsP6;
+        private int totalTicksOfBellyRubsP7;
+        private int totalTicksOfBellyRubsP8;
+        
+        private int totalTicksOfHornyP4;
+        private int totalTicksOfHornyP5;
+        private int totalTicksOfHornyP6;
+        private int totalTicksOfHornyP7;
+        private int totalTicksOfHornyP8;
+        
+        private float babyCreeperGirlProbability;
+        private float babyZombieGirlProbability;
+
+        private boolean enableBellyColisionsForPlayer;
+        private boolean enableBellyColisionsForPreggoMob;
+        
+        // It only applies in final phase of pregnancy from P5 to P8
+        private boolean enableMountingEntitiesInLaterPregnancyPhases;
         
         private Server(ForgeConfigSpec.Builder builder) {
             builder.push("Server");
             
-            babyCreeperGirlProbability = builder
+            babyCreeperGirlProbabilityConfig = builder
                     .comment("probability of spawning a girl baby creeper.")
                     .defineInRange("babyCreeperGirlProbability", 0.1, 0.0, 1.0);
 
-            babyZombieGirlProbability = builder
+            babyZombieGirlProbabilityConfig = builder
                     .comment("probability of spawning a girl baby zombie.")
                     .defineInRange("babyZombieGirlProbability", 0.15, 0.0, 1.0);
             
-            totalPregnancyDays = builder
+            totalPregnancyDaysConfig = builder
                     .comment("Total number of pregnancy days.")
                     .defineInRange("totalPregnancyDays", 50, 20, Integer.MAX_VALUE);
             
-            totalTickByPregnancyDays = builder
+            totalTickByPregnancyDaysConfig = builder
                     .comment("Total ticks per pregnancy day.")
                     .defineInRange("totalTickByDays", 24000, 100, 24000);
 
-            ticksToStartPregnancy = builder
+            totalTicksToStartPregnancyConfig = builder
                     .comment("Ticks to start pregnancy after mating.")
-                    .defineInRange("ticksToStartPregnancy", 4800, 100, 24000);
+                    .defineInRange("totalTicksToStartPregnancy", 4800, 100, 24000);
             
-            totalTicksOfMaternityLactation = builder
+            totalTicksOfMaternityLactationConfig = builder
 					.comment("Total ticks of maternity lactation for preggo mobs and player.")
 					.defineInRange("totalTicksOfMaternityLactation", 1200, 100, Integer.MAX_VALUE);
                    
-            totalTicksOfPostPregnancyPhase = builder
+            totalTicksOfPostPregnancyPhaseConfig = builder
             		.comment("Total ticks of post pregnancy phase for preggo mobs and player.")
             		.defineInRange("totalTicksOfPostPregnancyPhase", 24000, 100, Integer.MAX_VALUE);
             
-            totalTicksOfHungry = builder
+            totalTicksOfHungryConfig = builder
                     .comment("Total ticks of hungry for preggo mobs.")
                     .defineInRange("totalTicksOfHungry", 6000, 100, 24000);
             
-            totalTicksOfCraving = builder
+            totalTicksOfCravingConfig = builder
                     .comment("Total ticks of craving for pregnant entities.")
                     .defineInRange("totalTicksOfCraving", 4800, 100, 24000);
             
-            totalTicksOfMilking = builder
+            totalTicksOfMilkingConfig = builder
                     .comment("total ticks of milking for pregnant entities.")
                     .defineInRange("totalTicksOfMilking", 3600, 100, 24000);
             
-            totalTicksOfBellyRubs = builder
+            totalTicksOfBellyRubsConfig = builder
                     .comment("total ticks of belly rubs for pregnant entities.")
                     .defineInRange("totalTicksOfBellyRubs", 3600, 100, 24000);
             
-            totalTicksOfHorny = builder
+            totalTicksOfHornyConfig = builder
                     .comment("total ticks of horny for pregnant entities.")
                     .defineInRange("totalTicksOfHorny", 6000, 100, 24000);
             
-            enableBellyColisionsForPlayer = builder
+            enableBellyColisionsForPlayerConfig = builder
             		.comment("Enable or disable belly colisions for player. EXPERIMENTAL.")
 					.define("enableBellyColisionsForPlayer", false);
             
-            enableBellyColisionsForPreggoMob = builder
+            enableBellyColisionsForPreggoMobConfig = builder
 					.comment("Enable or disable belly colisions for preggo mobs. EXPERIMENTAL.")
 					.define("enableBellyColisionsForPreggoMob", false);
             
+            enableMountingEntitiesInLaterPregnancyPhasesConfig = builder
+					.comment("Enable or disable the ability to mount entities in later pregnancy phases (P6 to P8).")
+					.define("enableMountingEntitiesInLaterPregnancyPhases", true);
+            
             builder.pop();
         }
-    }
-    
-    private static void calculateHungryValues() { 	
-    	totalTicksOfHungryP1 = (int) Math.ceil(totalTicksOfHungryP0 * 0.85F);
-    	totalTicksOfHungryP2 = (int) Math.ceil(totalTicksOfHungryP0 * 0.8F);
-    	totalTicksOfHungryP3 = (int) Math.ceil(totalTicksOfHungryP0 * 0.75F);
-    	totalTicksOfHungryP4 = (int) Math.ceil(totalTicksOfHungryP0 * 0.7F);
-    	totalTicksOfHungryP5 = (int) Math.ceil(totalTicksOfHungryP0 * 0.65F);
-    	totalTicksOfHungryP6 = (int) Math.ceil(totalTicksOfHungryP0  * 0.6F);
-    	totalTicksOfHungryP7 = (int) Math.ceil(totalTicksOfHungryP0 * 0.55F);
-    	totalTicksOfHungryP8 = (int) Math.ceil(totalTicksOfHungryP0 * 0.5);
-    }
-    
-    private static void calculateCravingValues() { 	
-    	totalTicksOfCravingP2 = (int) Math.ceil(totalTicksOfCravingP1 * 0.9F);
-    	totalTicksOfCravingP3 = (int) Math.ceil(totalTicksOfCravingP1 * 0.85F);
-    	totalTicksOfCravingP4 = (int) Math.ceil(totalTicksOfCravingP1 * 0.8F);
-    	totalTicksOfCravingP5 = (int) Math.ceil(totalTicksOfCravingP1 * 0.75F);
-    	totalTicksOfCravingP6 = (int) Math.ceil(totalTicksOfCravingP1 * 0.7F);
-    	totalTicksOfCravingP7 = (int) Math.ceil(totalTicksOfCravingP1 * 0.65F);
-    	totalTicksOfCravingP8 = (int) Math.ceil(totalTicksOfCravingP1 * 0.6F);
-    }
-    
-    private static void calculateMilkingValues() { 	
-    	totalTicksOfMilkingP3 = (int) Math.ceil(totalTicksOfMilkingP2 * 0.75F);
-    	totalTicksOfMilkingP4 = (int) Math.ceil(totalTicksOfMilkingP2 * 0.7F);
-    	totalTicksOfMilkingP5 = (int) Math.ceil(totalTicksOfMilkingP2 * 0.65F);
-    	totalTicksOfMilkingP6 = (int) Math.ceil(totalTicksOfMilkingP2 * 0.6F);
-    	totalTicksOfMilkingP7 = (int) Math.ceil(totalTicksOfMilkingP2 * 0.55F);
-    	totalTicksOfMilkingP8 = (int) Math.ceil(totalTicksOfMilkingP2 * 0.5F);
-    }
-    
-    private static void calculateBellyRubsValues() { 	
-    	totalTicksOfBellyRubsP4 = (int) Math.ceil(totalTicksOfBellyRubsP3 * 0.7F);
-    	totalTicksOfBellyRubsP5 = (int) Math.ceil(totalTicksOfBellyRubsP3 * 0.65F);
-    	totalTicksOfBellyRubsP6 = (int) Math.ceil(totalTicksOfBellyRubsP3 * 0.6F);
-    	totalTicksOfBellyRubsP7 = (int) Math.ceil(totalTicksOfBellyRubsP3 * 0.55F);
-    	totalTicksOfBellyRubsP8 = (int) Math.ceil(totalTicksOfBellyRubsP3 * 0.5F);
-    }
-   
-    private static void calculateHornyValues() { 	
-    	totalTicksOfHornyP5 = (int) Math.ceil(totalTicksOfHornyP4 * 0.65F);
-    	totalTicksOfHornyP6 = (int) Math.ceil(totalTicksOfHornyP4 * 0.6F);
-    	totalTicksOfHornyP7 = (int) Math.ceil(totalTicksOfHornyP4 * 0.55F);
-    	totalTicksOfHornyP8 = (int) Math.ceil(totalTicksOfHornyP4 * 0.5F);
-    }    
+        
+        public int getTotalPregnancyDays() {
+        	return totalPregnancyDays;
+        }
+         
+        public int getTotalTicksByPregnancyDay() {
+        	return totalTickByPregnancyDays;
+        }
+        
+        public int getTotalTicksToStartPregnancy() {
+        	return totalTicksToStartPregnancy;
+        }
+        
+        public int getTotalTicksOfMaternityLactation() {
+    		return totalTicksOfMaternityLactation;
+    	}
+        
+        public int getTotalTicksOfPostPregnancyPhase() {
+        	return totalTicksOfPostPregnancyPhase;
+        }
+        
+        public int getTotalTicksOfHungryP0() {
+        	return totalTicksOfHungryP0;
+        }
+
+        public int getTotalTicksOfHungryP1() {
+        	return totalTicksOfHungryP1;
+        }
+        
+        public int getTotalTicksOfHungryP2() {
+        	return totalTicksOfHungryP2;
+        }
+        
+        public int getTotalTicksOfHungryP3() {
+        	return totalTicksOfHungryP3;
+        }
+        
+        public int getTotalTicksOfHungryP4() {
+        	return totalTicksOfHungryP4;
+        }
+        
+        public int getTotalTicksOfHungryP5() {
+        	return totalTicksOfHungryP5;
+        }
+        
+        public int getTotalTicksOfHungryP6() {
+        	return totalTicksOfHungryP6;
+        }
+        
+        public int getTotalTicksOfHungryP7() {
+        	return totalTicksOfHungryP7;
+        }
+        
+        public int getTotalTicksOfHungryP8() {
+        	return totalTicksOfHungryP8;
+        }
+        
+        public int getTotalTicksOfMilkingP2() {
+        	return totalTicksOfMilkingP2;
+        }
+        
+        public int getTotalTicksOfMilkingP3() {
+        	return totalTicksOfMilkingP3;
+        }
+        
+        public int getTotalTicksOfMilkingP4() {
+        	return totalTicksOfMilkingP4;
+        }
+        
+        public int getTotalTicksOfMilkingP5() {
+        	return totalTicksOfMilkingP5;
+        }
+        
+        public int getTotalTicksOfMilkingP6() {
+        	return totalTicksOfMilkingP6;
+        }
+        
+        public int getTotalTicksOfMilkingP7() {
+        	return totalTicksOfMilkingP7;
+        }
+        
+        public int getTotalTicksOfMilkingP8() {
+        	return totalTicksOfMilkingP8;
+        }
+        
+        public int getTotalTicksOfBellyRubsP3() {
+        	return totalTicksOfBellyRubsP3;
+        }
+        
+        public int getTotalTicksOfBellyRubsP4() {
+        	return totalTicksOfBellyRubsP4;
+        }
+        
+        public int getTotalTicksOfBellyRubsP5() {
+        	return totalTicksOfBellyRubsP5;
+        }
+        
+        public int getTotalTicksOfBellyRubsP6() {
+        	return totalTicksOfBellyRubsP6;
+        }
+        
+        public int getTotalTicksOfBellyRubsP7() {
+        	return totalTicksOfBellyRubsP7;
+        }
+        
+        public int getTotalTicksOfBellyRubsP8() {
+        	return totalTicksOfBellyRubsP8;
+        }
+        
+        public int getTotalTicksOfCravingP1() {
+        	return totalTicksOfCravingP1;
+        }
+        
+        public int getTotalTicksOfCravingP2() {
+        	return totalTicksOfCravingP2;
+        }
+        
+        public int getTotalTicksOfCravingP3() {
+        	return totalTicksOfCravingP3;
+        }
+        
+        public int getTotalTicksOfCravingP4() {
+        	return totalTicksOfCravingP4;
+        }
+        
+        public int getTotalTicksOfCravingP5() {
+        	return totalTicksOfCravingP5;
+        }
+        
+        public int getTotalTicksOfCravingP6() {
+        	return totalTicksOfCravingP6;
+        }
+        
+        public int getTotalTicksOfCravingP7() {
+        	return totalTicksOfCravingP7;
+        }
+        
+        public int getTotalTicksOfCravingP8() {
+        	return totalTicksOfCravingP8;
+        }
+        
+        public int getTotalTicksOfHornyP4() {
+        	return totalTicksOfHornyP4;
+        }
+        
+        public int getTotalTicksOfHornyP5() {
+        	return totalTicksOfHornyP5;
+        }
+        
+        public int getTotalTicksOfHornyP6() {
+        	return totalTicksOfHornyP6;
+        }
+        
+        public int getTotalTicksOfHornyP7() {
+        	return totalTicksOfHornyP7;
+        }
+        
+        public int getTotalTicksOfHornyP8() {
+        	return totalTicksOfHornyP8;
+        }
+        
+        public float getBabyCreeperGirlProbability() {
+        	return babyCreeperGirlProbability;
+        }
+        
+        public float getBabyZombieGirlProbability() {
+        	return babyZombieGirlProbability;
+        }
+        
+        public boolean isBellyColisionsForPlayersEnable() {
+    		return enableBellyColisionsForPlayer;
+    	}
+        
+        public boolean isBellyColisionsForPreggoMobsEnable() {
+        	return enableBellyColisionsForPreggoMob;
+        }
+        
+        public boolean isMountingEntitiesInLaterPregnancyPhasesEnable() {
+			return enableMountingEntitiesInLaterPregnancyPhases;
+		}
+        
+        private void calculateHungryValues() { 	
+        	totalTicksOfHungryP1 = (int) Math.ceil(totalTicksOfHungryP0 * 0.85F);
+        	totalTicksOfHungryP2 = (int) Math.ceil(totalTicksOfHungryP0 * 0.8F);
+        	totalTicksOfHungryP3 = (int) Math.ceil(totalTicksOfHungryP0 * 0.75F);
+        	totalTicksOfHungryP4 = (int) Math.ceil(totalTicksOfHungryP0 * 0.7F);
+        	totalTicksOfHungryP5 = (int) Math.ceil(totalTicksOfHungryP0 * 0.65F);
+        	totalTicksOfHungryP6 = (int) Math.ceil(totalTicksOfHungryP0  * 0.6F);
+        	totalTicksOfHungryP7 = (int) Math.ceil(totalTicksOfHungryP0 * 0.55F);
+        	totalTicksOfHungryP8 = (int) Math.ceil(totalTicksOfHungryP0 * 0.5);
+        }
+        
+        private void calculateCravingValues() { 	
+        	totalTicksOfCravingP2 = (int) Math.ceil(totalTicksOfCravingP1 * 0.9F);
+        	totalTicksOfCravingP3 = (int) Math.ceil(totalTicksOfCravingP1 * 0.85F);
+        	totalTicksOfCravingP4 = (int) Math.ceil(totalTicksOfCravingP1 * 0.8F);
+        	totalTicksOfCravingP5 = (int) Math.ceil(totalTicksOfCravingP1 * 0.75F);
+        	totalTicksOfCravingP6 = (int) Math.ceil(totalTicksOfCravingP1 * 0.7F);
+        	totalTicksOfCravingP7 = (int) Math.ceil(totalTicksOfCravingP1 * 0.65F);
+        	totalTicksOfCravingP8 = (int) Math.ceil(totalTicksOfCravingP1 * 0.6F);
+        }
+        
+        private void calculateMilkingValues() { 	
+        	totalTicksOfMilkingP3 = (int) Math.ceil(totalTicksOfMilkingP2 * 0.75F);
+        	totalTicksOfMilkingP4 = (int) Math.ceil(totalTicksOfMilkingP2 * 0.7F);
+        	totalTicksOfMilkingP5 = (int) Math.ceil(totalTicksOfMilkingP2 * 0.65F);
+        	totalTicksOfMilkingP6 = (int) Math.ceil(totalTicksOfMilkingP2 * 0.6F);
+        	totalTicksOfMilkingP7 = (int) Math.ceil(totalTicksOfMilkingP2 * 0.55F);
+        	totalTicksOfMilkingP8 = (int) Math.ceil(totalTicksOfMilkingP2 * 0.5F);
+        }
+        
+        private void calculateBellyRubsValues() { 	
+        	totalTicksOfBellyRubsP4 = (int) Math.ceil(totalTicksOfBellyRubsP3 * 0.7F);
+        	totalTicksOfBellyRubsP5 = (int) Math.ceil(totalTicksOfBellyRubsP3 * 0.65F);
+        	totalTicksOfBellyRubsP6 = (int) Math.ceil(totalTicksOfBellyRubsP3 * 0.6F);
+        	totalTicksOfBellyRubsP7 = (int) Math.ceil(totalTicksOfBellyRubsP3 * 0.55F);
+        	totalTicksOfBellyRubsP8 = (int) Math.ceil(totalTicksOfBellyRubsP3 * 0.5F);
+        }
+       
+        private void calculateHornyValues() { 	
+        	totalTicksOfHornyP5 = (int) Math.ceil(totalTicksOfHornyP4 * 0.65F);
+        	totalTicksOfHornyP6 = (int) Math.ceil(totalTicksOfHornyP4 * 0.6F);
+        	totalTicksOfHornyP7 = (int) Math.ceil(totalTicksOfHornyP4 * 0.55F);
+        	totalTicksOfHornyP8 = (int) Math.ceil(totalTicksOfHornyP4 * 0.5F);
+        }
+    }  
 }

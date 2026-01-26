@@ -14,10 +14,10 @@ public abstract class PreggoMobPregnancySystemP8
 	
 	@Override
 	protected void initPregnancyTimers() {
-		totalTicksOfCraving = MinepreggoModConfig.getTotalTicksOfCravingP8();
-		totalTicksOfMilking = MinepreggoModConfig.getTotalTicksOfMilkingP8();
-		totalTicksOfBellyRubs = MinepreggoModConfig.getTotalTicksOfBellyRubsP8();
-		totalTicksOfHorny = MinepreggoModConfig.getTotalTicksOfHornyP8();
+		totalTicksOfCraving = MinepreggoModConfig.SERVER.getTotalTicksOfCravingP8();
+		totalTicksOfMilking = MinepreggoModConfig.SERVER.getTotalTicksOfMilkingP8();
+		totalTicksOfBellyRubs = MinepreggoModConfig.SERVER.getTotalTicksOfBellyRubsP8();
+		totalTicksOfHorny = MinepreggoModConfig.SERVER.getTotalTicksOfHornyP8();
 		totalTicksOfPreBirth = PregnancySystemHelper.TOTAL_TICKS_PREBIRTH_P8;
 		totalTicksOfBirth = PregnancySystemHelper.TOTAL_TICKS_BIRTH_P8;
 		totalTicksOfFetalMovement = PregnancySystemHelper.TOTAL_TICKS_KICKING_P8;

@@ -85,8 +85,8 @@ public class WorldEventHandler {
             // Add the skipped ticks to the pregnancy timer.
         	final var pregnancyTimer = pregnantEntity.getPregnancyTimer();
             final var tickResult = pregnancyTimer + (int) ticksSkipped;
-            final var numOfDays = Math.min(tickResult / MinepreggoModConfig.getTotalTicksByPregnancyDay(), pregnantEntity.getDaysByCurrentStage() - pregnantEntity.getDaysPassed());
-            final var remainingTicks = tickResult % MinepreggoModConfig.getTotalTicksByPregnancyDay();
+            final var numOfDays = Math.min(tickResult / MinepreggoModConfig.SERVER.getTotalTicksByPregnancyDay(), pregnantEntity.getDaysByCurrentStage() - pregnantEntity.getDaysPassed());
+            final var remainingTicks = tickResult % MinepreggoModConfig.SERVER.getTotalTicksByPregnancyDay();
                             
             if (numOfDays > 0) {
                 pregnantEntity.setPregnancyTimer(remainingTicks);

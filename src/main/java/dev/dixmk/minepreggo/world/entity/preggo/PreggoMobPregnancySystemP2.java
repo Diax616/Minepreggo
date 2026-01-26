@@ -24,7 +24,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 public abstract class PreggoMobPregnancySystemP2
 	<E extends PreggoMob & ITamablePregnantPreggoMob> extends PreggoMobPregnancySystemP1<E> {
 	
-	protected @Nonnegative int totalTicksOfMilking = MinepreggoModConfig.getTotalTicksOfMilkingP2();
+	protected @Nonnegative int totalTicksOfMilking = MinepreggoModConfig.SERVER.getTotalTicksOfMilkingP2();
 
 	protected PreggoMobPregnancySystemP2(@Nonnull E preggoMob) {
 		super(preggoMob);
@@ -33,7 +33,7 @@ public abstract class PreggoMobPregnancySystemP2
 	
 	@Override
 	protected void initPregnancyTimers() {
-		this.totalTicksOfCraving = MinepreggoModConfig.getTotalTicksOfCravingP2();
+		this.totalTicksOfCraving = MinepreggoModConfig.SERVER.getTotalTicksOfCravingP2();
 		this.morningSicknessProb = PregnancySystemHelper.MEDIUM_MORNING_SICKNESS_PROBABILITY;
 	}
 	

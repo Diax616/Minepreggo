@@ -28,7 +28,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 
 public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 	
-	protected @Nonnegative int totalTicksOfHorny = MinepreggoModConfig.getTotalTicksOfHornyP4();
+	protected @Nonnegative int totalTicksOfHorny = MinepreggoModConfig.SERVER.getTotalTicksOfHornyP4();
 	protected @Nonnegative int totalTicksOfBirth = PregnancySystemHelper.TOTAL_TICKS_BIRTH_P4;
 	protected @Nonnegative int totalTicksOfPreBirth = PregnancySystemHelper.TOTAL_TICKS_PREBIRTH_P4;
 	protected @Nonnegative float contractionProb = PregnancySystemHelper.HIGH_PREGNANCY_PAIN_PROBABILITY;
@@ -43,9 +43,9 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 	
 	@Override
 	protected void initPregnancyTimers() {
-		totalTicksOfCraving = MinepreggoModConfig.getTotalTicksOfCravingP4();
-		totalTicksOfMilking = MinepreggoModConfig.getTotalTicksOfMilkingP4();
-		totalTicksOfBellyRubs = MinepreggoModConfig.getTotalTicksOfBellyRubsP4();
+		totalTicksOfCraving = MinepreggoModConfig.SERVER.getTotalTicksOfCravingP4();
+		totalTicksOfMilking = MinepreggoModConfig.SERVER.getTotalTicksOfMilkingP4();
+		totalTicksOfBellyRubs = MinepreggoModConfig.SERVER.getTotalTicksOfBellyRubsP4();
 		fetalMovementProb = PregnancySystemHelper.HIGH_PREGNANCY_PAIN_PROBABILITY;
 		totalTicksOfFetalMovement = PregnancySystemHelper.TOTAL_TICKS_KICKING_P4;	
 		pregnancyExhaustion = 1.03f;
@@ -313,7 +313,7 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 		femaleData.resetPregnancy();
 		femaleData.resetPregnancyOnClient(pregnantEntity);
 		
-		pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.MATERNITY.get(), MinepreggoModConfig.getTotalTicksOfPostPregnancyPhase(), 0, false, false, true));
+		pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.MATERNITY.get(), MinepreggoModConfig.SERVER.getTotalTicksOfPostPregnancyPhase(), 0, false, false, true));
 		pregnantEntity.addEffect(new MobEffectInstance(MobEffects.LUCK, 12000, 0, false, true, true));
 		pregnantEntity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 3600, 0, false, false, true));
 		

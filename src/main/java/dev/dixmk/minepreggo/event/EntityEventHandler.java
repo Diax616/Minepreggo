@@ -59,14 +59,14 @@ public class EntityEventHandler {
         else if (mob instanceof AbstractMonsterHumanoidCreeperGirl) {  	
         	mob.setCanPickUpLoot(mob.getRandom().nextFloat() < 0.35F * event.getDifficulty().getSpecialMultiplier());    	
         	if (mob.getType() == MinepreggoModEntities.MONSTER_HUMANOID_CREEPER_GIRL.get()
-        			&& mob.getRandom().nextFloat() < MinepreggoModConfig.getBabyCreeperGirlProbability()) {
+        			&& mob.getRandom().nextFloat() < MinepreggoModConfig.SERVER.getBabyCreeperGirlProbability()) {
             	mob.setBaby(true);
         	}   
         }
         else if (mob instanceof AbstractMonsterZombieGirl) {     	
         	mob.setCanPickUpLoot(mob.getRandom().nextFloat() < 0.55F * event.getDifficulty().getSpecialMultiplier());     
         	if (mob.getType() == MinepreggoModEntities.MONSTER_ZOMBIE_GIRL.get()
-            		&& mob.getRandom().nextFloat() < MinepreggoModConfig.getBabyCreeperGirlProbability()) {
+            		&& mob.getRandom().nextFloat() < MinepreggoModConfig.SERVER.getBabyCreeperGirlProbability()) {
                 mob.setBaby(true);    	
         	}    
         } 	

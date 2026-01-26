@@ -72,7 +72,7 @@ public class PregnancyDelay extends MobEffect {
     
 	// Returns a number of days proportional to the total pregnancy days, based on amplifier
 	private static int getDaysByAmplifier(RandomSource random, int amplifier) {
-		int totalPregnancyDays = MinepreggoModConfig.getTotalPregnancyDays();
+		int totalPregnancyDays = MinepreggoModConfig.SERVER.getTotalPregnancyDays();
 
 		int idx = Math.min(amplifier, PERCETANGES_RANGES.length - 1);
 		double minPercent = PERCETANGES_RANGES[idx][0];

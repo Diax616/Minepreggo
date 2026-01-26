@@ -9,7 +9,7 @@ import net.minecraft.world.level.Level;
 
 public class HumanBreastMilkBottleItem extends AbstractBreastMilk {
 	public HumanBreastMilkBottleItem() {
-		super(3);
+		super(4);
 	}
 	
 	@Override

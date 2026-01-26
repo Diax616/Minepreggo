@@ -28,14 +28,14 @@ public class ServerEventHandler {
     
     @SubscribeEvent
     public static void onServerStopping(ServerStoppingEvent event) {
-    	if (MinepreggoModConfig.isBellyColisionsForPlayersEnable() || MinepreggoModConfig.isBellyColisionsForPreggoMobsEnable()) {
+    	if (MinepreggoModConfig.SERVER.isBellyColisionsForPlayersEnable() || MinepreggoModConfig.SERVER.isBellyColisionsForPreggoMobsEnable()) {
         	BellyPartManager.getInstance().clear();
 		}	
     }
     
     @SubscribeEvent
     public static void onWorldUnload(LevelEvent.Unload event) {
-    	if (MinepreggoModConfig.isBellyColisionsForPlayersEnable() || MinepreggoModConfig.isBellyColisionsForPreggoMobsEnable()) {
+    	if (MinepreggoModConfig.SERVER.isBellyColisionsForPlayersEnable() || MinepreggoModConfig.SERVER.isBellyColisionsForPreggoMobsEnable()) {
         	BellyPartManager.getInstance().clear();
 		}	
     }

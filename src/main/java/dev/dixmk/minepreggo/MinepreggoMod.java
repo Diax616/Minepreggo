@@ -217,8 +217,10 @@ public class MinepreggoMod {
 
 	public MinepreggoMod(FMLJavaModLoadingContext context) {
 		MinecraftForge.EVENT_BUS.register(this);
-	
 		IEventBus modEventBus = context.getModEventBus();	
+        context.registerConfig(ModConfig.Type.CLIENT, MinepreggoModConfig.CLIENT_SPEC);
+        context.registerConfig(ModConfig.Type.SERVER, MinepreggoModConfig.SERVER_SPEC);
+		
 		MinepreggoModItems.REGISTRY.register(modEventBus);
 		MinepreggoModEntities.REGISTRY.register(modEventBus);
 		MinepreggoModBlocks.REGISTRY.register(modEventBus);
@@ -244,9 +246,7 @@ public class MinepreggoMod {
         modEventBus.addListener(this::onRegisterRenderers);
         modEventBus.addListener(this::registerItemColors);
         modEventBus.addListener(this::registerParticleFactories);
-        
-        context.registerConfig(ModConfig.Type.CLIENT, MinepreggoModConfig.CLIENT_SPEC);
-        context.registerConfig(ModConfig.Type.SERVER, MinepreggoModConfig.SERVER_SPEC);
+        modEventBus.addListener(MinepreggoModConfig::onLoad);     
 	}
 
 	private void onSpawnPlacementRegister(SpawnPlacementRegisterEvent event) {
@@ -607,4 +607,6 @@ public class MinepreggoMod {
             playerRenderer.addLayer(new PredefinedPregnantBodyLayer(playerRenderer, event.getEntityModels()));
         }
     }	
+	
+	
 }
