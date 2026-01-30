@@ -161,7 +161,13 @@ public class BellyPart extends Entity implements IEntityAdditionalSpawnData {
         
         this.setYRot(currentParent.getYRot());
         this.setXRot(currentParent.getXRot());
-
+    
+        double distanceToTarget = this.position().distanceTo(targetPos);
+        
+        if (distanceToTarget > 3.0) {
+            this.teleportTo(targetX, targetY, targetZ);
+        }  
+        
         Vec3 posAfter = this.position();
         Vec3 actualMovement = posAfter.subtract(posBefore);
 
