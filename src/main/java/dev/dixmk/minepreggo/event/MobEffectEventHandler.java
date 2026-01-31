@@ -5,6 +5,7 @@ import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.effect.Impregnantion;
+import dev.dixmk.minepreggo.world.effect.MobEffectHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.core.registries.Registries;
@@ -48,14 +49,14 @@ public class MobEffectEventHandler {
         
     	if (entity instanceof ServerPlayer player && MinepreggoHelper.isFromThisMod(effect)) {     
     		// Only sync from server side to avoid client-side PacketDistributor usage
-            PregnancySystemHelper.syncRemovedMobEffect(player, effect);
+    		MobEffectHelper.syncRemovedMobEffect(player, effect);
     		if (effect == MinepreggoModMobEffects.FERTILE.get()) {           		
         		removeMobAttacks(player);
         	}
     		MinepreggoMod.LOGGER.debug("Removed mob effect {} from player {}", effect.getDescriptionId(), player.getScoreboardName());
     	}
     	else if (entity instanceof PreggoMob && effect == MobEffects.CONFUSION) {
-            PregnancySystemHelper.syncRemovedMobEffect(entity, effect);
+    		MobEffectHelper.syncRemovedMobEffect(entity, effect);
             MinepreggoMod.LOGGER.debug("Removed mob effect {} from preggo mob {}", effect.getDescriptionId(), entity.getDisplayName().getString());
     	}
     }
@@ -77,14 +78,14 @@ public class MobEffectEventHandler {
         
         if (entity instanceof ServerPlayer player && MinepreggoHelper.isFromThisMod(effect)) {  	
             // Only sync from server side to avoid client-side PacketDistributor usage
-            PregnancySystemHelper.syncRemovedMobEffect(player, effect);
+        	MobEffectHelper.syncRemovedMobEffect(player, effect);
         	if (effect == MinepreggoModMobEffects.FERTILE.get()) {
         		removeMobAttacks(player);
         	}
         	MinepreggoMod.LOGGER.debug("Expired mob effect {} from player {}", effect.getDescriptionId(), player.getScoreboardName());
         }
     	else if (entity instanceof PreggoMob && effect == MobEffects.CONFUSION) {
-            PregnancySystemHelper.syncRemovedMobEffect(entity, effect);
+    		MobEffectHelper.syncRemovedMobEffect(entity, effect);
             MinepreggoMod.LOGGER.debug("Expired mob effect {} from preggo mob {}", effect.getDescriptionId(), entity.getDisplayName().getString());
     	}
     }
@@ -127,7 +128,7 @@ public class MobEffectEventHandler {
 		}
         
         if ((entity instanceof ServerPlayer && MinepreggoHelper.isFromThisMod(effect)) || (entity instanceof PreggoMob && effect == MobEffects.CONFUSION)) {          
-        	PregnancySystemHelper.syncNewMobEffect(entity, effectInstance);
+        	MobEffectHelper.syncNewMobEffect(entity, effectInstance);
         	MinepreggoMod.LOGGER.debug("Added mob effect {} to entity {}", effect.getDescriptionId(), entity.getDisplayName().getString());
         }
     }

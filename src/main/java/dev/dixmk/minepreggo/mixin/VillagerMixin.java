@@ -8,24 +8,17 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
 import dev.dixmk.minepreggo.init.MinepreggoModVillagerProfessions;
-import dev.dixmk.minepreggo.network.packet.s2c.RenderSexOverlayS2CPacket;
-import dev.dixmk.minepreggo.network.packet.s2c.SexCinematicControlP2MS2CPacket;
 import dev.dixmk.minepreggo.server.ServerCinematicManager;
-import dev.dixmk.minepreggo.server.ServerParticleHelper;
-import dev.dixmk.minepreggo.server.ServerTaskQueueManager;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.inventory.preggo.PlayerPrenatalCheckUpMenu;
-import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
+import dev.dixmk.minepreggo.world.pregnancy.SexHelper;
 
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -38,7 +31,6 @@ import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.network.PacketDistributor;
 
 @Mixin(Villager.class)
 public class VillagerMixin {
@@ -52,27 +44,26 @@ public class VillagerMixin {
         	Villager villager = Villager.class.cast(this);
             if (villager.getVillagerData().getProfession() != VillagerProfession.NONE
             		&& villager.canBreed()
-            		&& PregnancySystemHelper.hasEnoughBedsForBreeding(villager, 1, 8)
+            		&& SexHelper.hasEnoughBedsForBreeding(villager, 1, 8)
             		&& villager.level() instanceof ServerLevel serverLevel
             		&& serverLevel.getPlayerByUUID(playerId) instanceof ServerPlayer serverPlayer
             		&& serverPlayer.distanceToSqr(villager) < 25D) {        	       	      	
         		villager.getNavigation().moveTo(serverPlayer, 0.95); 
-        		initSex(serverPlayer, villager);
+        		SexHelper.initSex(serverPlayer, villager);
             }    
         }
         else if ((playerId = PlayerHelper.getPregnantFemalePlayerIdTag(stack)) != null) {
     		Villager villager = Villager.class.cast(this);
     		if (villager.level() instanceof ServerLevel serverLevel
     				&& villager.canBreed()
-    				&& PregnancySystemHelper.hasEnoughBedsForBreeding(villager, 1, 8)
+    				&& SexHelper.hasEnoughBedsForBreeding(villager, 1, 8)
     				&& serverLevel.getPlayerByUUID(playerId) instanceof ServerPlayer serverPlayer
         			&& serverPlayer.distanceToSqr(villager) < 25D) {       		      			       					
     			villager.getNavigation().moveTo(serverPlayer, 0.95); 
-    			shake(serverPlayer, villager);			
+    			SexHelper.initSex(serverPlayer, villager);			
     		}
         }     
     }
-
 
     @Inject(method = "mobInteract", at = @At("HEAD"), cancellable = true)
 	private void onMobInteract(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
@@ -134,109 +125,4 @@ public class VillagerMixin {
         	}
     	}
 	}
-    
-    private static void initSex(ServerPlayer femalePlayer, Villager villager) {
-    	
-		Runnable start = () -> {
-			villager.setTradingPlayer(femalePlayer);
-			ServerParticleHelper.spawnRandomlyFromServer(femalePlayer, ParticleTypes.HEART);
-			ServerParticleHelper.spawnRandomlyFromServer(villager, ParticleTypes.HEART);
-		};
-		
-		Runnable end = () -> {
-			villager.setTradingPlayer(null);
-			femalePlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
-				cap.getFemaleData().ifPresent(femaleData -> {				
-					if (!PlayerHelper.tryStartPregnancyBySex(femalePlayer, villager)) {
-						MinepreggoMod.LOGGER.warn("Failed to impregnate female player {} by villager {}", femalePlayer.getUUID(), villager.getUUID());
-					}
-					else {
-						femaleData.resetFertilityRate();
-						villager.eatAndDigestFood();
-						villager.eatAndDigestFood();
-						villager.getCapability(MinepreggoCapabilities.VILLAGER_DATA).ifPresent(capVillager -> {
-							capVillager.setMotherPlayer(femalePlayer.getUUID());
-							villager.getGossips().add(femalePlayer.getUUID(), GossipType.MAJOR_POSITIVE, 15);
-						});												
-					}
-				})
-			);	
-		};
-				
-		var manager = ServerTaskQueueManager.getInstance();
-		
-		manager.queueTask(20, start);		
-		manager.queueTask(40, start);
-		
-		ServerCinematicManager.getInstance().start(femalePlayer, villager, start, end);
-		
-		int overlayTicks = 120;
-		int overlayPauseTicks = 20;
-			                  
-        MinepreggoModPacketHandler.INSTANCE.send(
-    			PacketDistributor.PLAYER.with(() -> femalePlayer),
-    			new RenderSexOverlayS2CPacket(overlayTicks, overlayPauseTicks)
-    		);     		
-        
-        MinepreggoModPacketHandler.INSTANCE.send(
-    			PacketDistributor.PLAYER.with(() -> femalePlayer),
-    			new SexCinematicControlP2MS2CPacket(true, villager.getId())
-    		);
-        
-        
-        manager.queueTask(overlayTicks * 2 + overlayPauseTicks, () -> {
-			ServerCinematicManager.getInstance().end(femalePlayer);
-	        
-			MinepreggoModPacketHandler.INSTANCE.send(
-	    			PacketDistributor.PLAYER.with(() -> femalePlayer),
-	    			new SexCinematicControlP2MS2CPacket(false, villager.getId())
-	    		);
-		});		
-    }
-    
-    private static void shake(ServerPlayer femalePlayer, Villager villager) {
-    	
-		Runnable start = () -> {
-			villager.setTradingPlayer(femalePlayer);
-			ServerParticleHelper.spawnRandomlyFromServer(femalePlayer, ParticleTypes.HEART);
-			ServerParticleHelper.spawnRandomlyFromServer(villager, ParticleTypes.HEART);
-		};
-		
-		Runnable end = () -> {			
-			villager.setTradingPlayer(null);	
-			villager.eatAndDigestFood();
-			villager.eatAndDigestFood();
-			PlayerHelper.removeHorny(femalePlayer);		
-		};
-				
-		var manager = ServerTaskQueueManager.getInstance();
-		
-		manager.queueTask(20, start);		
-		manager.queueTask(40, start);
-		
-		ServerCinematicManager.getInstance().start(femalePlayer, villager, start, end);
-		
-		int overlayTicks = 140;
-		int overlayPauseTicks = 80;
-			                  
-        MinepreggoModPacketHandler.INSTANCE.send(
-    			PacketDistributor.PLAYER.with(() -> femalePlayer),
-    			new RenderSexOverlayS2CPacket(overlayTicks, overlayPauseTicks)
-    		);     		
-        
-        MinepreggoModPacketHandler.INSTANCE.send(
-    			PacketDistributor.PLAYER.with(() -> femalePlayer),
-    			new SexCinematicControlP2MS2CPacket(true, villager.getId())
-    		);
-        
-        
-        manager.queueTask(overlayTicks * 2 + overlayPauseTicks, () -> {
-			ServerCinematicManager.getInstance().end(femalePlayer);
-	        
-			MinepreggoModPacketHandler.INSTANCE.send(
-	    			PacketDistributor.PLAYER.with(() -> femalePlayer),
-	    			new SexCinematicControlP2MS2CPacket(false, villager.getId())
-	    		);
-		}); 	  	
-    }
 }

@@ -4,9 +4,9 @@ import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.world.entity.BellyPartManager;
+import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
-import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import dev.dixmk.minepreggo.world.pregnancy.Womb;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -34,7 +34,7 @@ public class FullOfEnders extends MobEffect {
 						var pregnancySystem = femaleData.getPregnancyData();
 						if (serverPlayer.getRandom().nextFloat() < calculateProbabilityToRandomTeleport(pregnancySystem.getCurrentPregnancyPhase(), pregnancySystem.getWomb())) {
 							randomTeleport(entity);
-							PregnancySystemHelper.playSoundNearTo(entity, MinepreggoModSounds.getRandomStomachGrowls(entity.getRandom()));
+							LivingEntityHelper.playSoundNearTo(entity, MinepreggoModSounds.getRandomStomachGrowls(entity.getRandom()));
 						}					
 					}
 				})

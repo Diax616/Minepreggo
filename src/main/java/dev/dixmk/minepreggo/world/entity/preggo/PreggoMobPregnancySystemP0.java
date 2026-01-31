@@ -3,6 +3,8 @@ package dev.dixmk.minepreggo.world.entity.preggo;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
+import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem.Result;
 import dev.dixmk.minepreggo.world.pregnancy.AbstractPregnancySystem;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
@@ -39,12 +41,12 @@ public abstract class PreggoMobPregnancySystemP0
 			
 			if (!chestplate.isEmpty()
 					&& (!PregnancySystemHelper.canUseChestplate(chestplate.getItem(), next) || pregnancyData.getSyncedPregnancySymptoms().containsPregnancySymptom(PregnancySymptom.MILKING))) {
-				PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.CHEST);
+				PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, InventorySlot.CHEST);
 			}
 			
 			if (!leggings.isEmpty()
-					&& PregnancySystemHelper.canUseLegging(leggings.getItem(), next)) {
-				PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.LEGS);
+					&& !PregnancySystemHelper.canUseLegging(leggings.getItem(), next)) {
+				PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, InventorySlot.LEGS);
 			}
 			
 			advanceToNextPregnancyPhase();
@@ -156,12 +158,12 @@ public abstract class PreggoMobPregnancySystemP0
 			return;
 		}
 			
-        if (!PreggoMobHelper.hasValidTarget(pregnantEntity) && randomSource.nextFloat() < angerProbability) {     
+        if (!LivingEntityHelper.hasValidTarget(pregnantEntity) && randomSource.nextFloat() < angerProbability) {     
             var players = pregnantEntity.level().getEntitiesOfClass(Player.class, new AABB(pregnantEntity.blockPosition()).inflate(12), pregnantEntity::isOwnedBy);
                   
             if (!players.isEmpty()) {
             	var owner = players.get(0);
-	            if (!PreggoMobHelper.isPlayerInCreativeOrSpectator(owner)) {
+	            if (!PlayerHelper.isInvencible(owner)) {
 	            	pregnantEntity.setTarget(owner);
 	            } 
             }

@@ -28,6 +28,8 @@ import net.minecraft.nbt.CompoundTag;
 import java.util.UUID;
 
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
+import dev.dixmk.minepreggo.world.entity.EntityHelper;
+import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 
 public class MonsterHumanoidCreeperGirl extends AbstractMonsterHumanoidCreeperGirl {
@@ -83,10 +85,10 @@ public class MonsterHumanoidCreeperGirl extends AbstractMonsterHumanoidCreeperGi
 	protected void afterTaming() {
 		if (this.level() instanceof ServerLevel serverLevel) {
 			TamableHumanoidCreeperGirl next = MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(this.getX(), this.getY(), this.getZ()), MobSpawnType.CONVERSION);
-			PreggoMobHelper.copyRotation(this, next);
-			PreggoMobHelper.copyName(this, next);
-			PreggoMobHelper.copyHealth(this, next);
-			PreggoMobHelper.transferSlots(this, next);
+			LivingEntityHelper.copyRotation(this, next);
+			EntityHelper.copyName(this, next);
+			LivingEntityHelper.copyHealth(this, next);
+			LivingEntityHelper.transferSlots(this, next);
 			PreggoMobHelper.syncFromEquipmentSlotToInventory(next);
 			PreggoMobHelper.copyOwner(this, next);
 			next.getTamableData().setSavage(false);

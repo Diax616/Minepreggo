@@ -11,7 +11,6 @@ import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import dev.dixmk.minepreggo.world.pregnancy.SyncedSetPregnancySymptom;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
@@ -92,7 +91,7 @@ public abstract class PreggoMobPregnancySystemP3
 		if (randomSource.nextFloat() < newFetalMovementProb) {
 			pregnancyData.setPregnancyPain(PregnancyPain.FETAL_MOVEMENT);
 			pregnancyData.resetPregnancyPainTimer();
-			PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.CHEST);				
+			PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, InventorySlot.CHEST);				
 			return true;
 		}     
 	    return false;

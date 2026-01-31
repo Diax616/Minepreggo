@@ -1,15 +1,19 @@
 package dev.dixmk.minepreggo.world.entity.preggo.ender;
 
+import java.util.EnumSet;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.ai.goal.BreakBlocksToFollowOwnerGoal;
 import dev.dixmk.minepreggo.world.entity.ai.goal.EatGoal;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMobData;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMobSystem;
-import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.Inventory;
+import dev.dixmk.minepreggo.world.entity.preggo.InventorySlot;
 import dev.dixmk.minepreggo.world.entity.preggo.TamablePreggoMobDataImpl;
 import dev.dixmk.minepreggo.world.pregnancy.IFemaleEntity;
 import net.minecraft.core.Direction;
@@ -41,16 +45,8 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.wrapper.CombinedInvWrapper;
-import net.minecraftforge.items.wrapper.EntityArmorInvWrapper;
-import net.minecraftforge.items.wrapper.EntityHandsInvWrapper;
 
 public abstract class AbstractTamableEnderWoman extends AbstractEnderWoman implements ITamablePreggoMob<IFemaleEntity> {
-	private final ItemStackHandler inventory = new ItemStackHandler(INVENTORY_SIZE);
-	private final CombinedInvWrapper combined = new CombinedInvWrapper(inventory, new EntityHandsInvWrapper(this), new EntityArmorInvWrapper(this));
-	public static final int INVENTORY_SIZE = 15;
-
     private static final TamablePreggoMobDataImpl.DataAccessor<AbstractTamableEnderWoman> DATA_HOLDER = new TamablePreggoMobDataImpl.DataAccessor<>(AbstractTamableEnderWoman.class);
 	
 	protected final ITamablePreggoMobSystem tamablePreggoMobSystem;
@@ -59,6 +55,15 @@ public abstract class AbstractTamableEnderWoman extends AbstractEnderWoman imple
 
 	protected final ITamablePreggoMobData tamablePreggoMobData = new TamablePreggoMobDataImpl<>(DATA_HOLDER, this);
 	
+	protected final Inventory inventory = new Inventory(
+			EnumSet.of(
+					InventorySlot.HEAD,
+					InventorySlot.MAINHAND,
+					InventorySlot.OFFHAND,
+					InventorySlot.FOOD,
+					InventorySlot.BOTH_HANDS
+			),10);
+
 	protected boolean breakBlocks = false;
 	
 	protected AbstractTamableEnderWoman(EntityType<? extends AbstractEnderWoman> p_32485_, Level p_32486_, Creature typeOfCreature) {
@@ -98,7 +103,7 @@ public abstract class AbstractTamableEnderWoman extends AbstractEnderWoman imple
 	@Override
 	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
-		compound.put("InventoryCustom", inventory.serializeNBT());
+		compound.put("InventoryCustom", inventory.getHandler().serializeNBT());
 		compound.put("defaultFemaleEntityImpl", this.femaleEntity.serializeNBT());
 		compound.put("TamableData", tamablePreggoMobData.serializeNBT());
 	}
@@ -107,7 +112,7 @@ public abstract class AbstractTamableEnderWoman extends AbstractEnderWoman imple
 	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
 		if (compound.get("InventoryCustom") instanceof CompoundTag inventoryTag)	
-			inventory.deserializeNBT(inventoryTag);		
+			inventory.getHandler().deserializeNBT(inventoryTag);		
 		femaleEntity.deserializeNBT(compound.getCompound("defaultFemaleEntityImpl"));
 		tamablePreggoMobData.deserializeNBT(compound.getCompound("TamableData"));
 	}
@@ -120,15 +125,16 @@ public abstract class AbstractTamableEnderWoman extends AbstractEnderWoman imple
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
 		if (this.isAlive() && capability == ForgeCapabilities.ITEM_HANDLER && side == null)
-			return LazyOptional.of(() -> combined).cast();
+			return LazyOptional.of(inventory::getHandler).cast();
 		return super.getCapability(capability, side);
 	}
 
 	@Override
 	protected void dropEquipment() {
 		super.dropEquipment();
-		for (int i = ITamablePreggoMob.FOOD_INVENTORY_SLOT; i < inventory.getSlots(); ++i) {
-			ItemStack itemstack = inventory.getStackInSlot(i);
+		var handler = inventory.getHandler();
+		for (int i = inventory.getSlotMapper().getExtraSlotsRange().leftInt(); i < handler.getSlots(); ++i) {
+			ItemStack itemstack = handler.getStackInSlot(i);
 			if (!itemstack.isEmpty() && !EnchantmentHelper.hasVanishingCurse(itemstack)) {
 				this.spawnAtLocation(itemstack);
 			}
@@ -228,12 +234,12 @@ public abstract class AbstractTamableEnderWoman extends AbstractEnderWoman imple
 			public boolean canUse() {
 				return super.canUse() 
 				&& !getTamableData().isWaiting()
-				&& !PreggoMobHelper.hasValidTarget(mob);
+				&& !LivingEntityHelper.hasValidTarget(mob);
 			}		
 			@Override
 			public boolean canContinueToUse() {
 				return super.canContinueToUse()
-				&& !PreggoMobHelper.isTargetStillValid(mob);
+				&& !LivingEntityHelper.isTargetStillValid(mob);
 			}
 		});			
 		this.goalSelector.addGoal(10, new RandomLookAroundGoal(this) {
@@ -248,8 +254,8 @@ public abstract class AbstractTamableEnderWoman extends AbstractEnderWoman imple
 
 	// ITamablePreggomob START
 	@Override
-	public int getInventorySize() {
-		return INVENTORY_SIZE;
+	public Inventory getInventory() {
+		return inventory;
 	}
 	
 	@Override

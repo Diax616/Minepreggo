@@ -3,12 +3,13 @@ package dev.dixmk.minepreggo.world.entity.preggo.creeper;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.world.entity.ai.goal.PreggoMobAIHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMobData;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMobSystem;
+import dev.dixmk.minepreggo.world.entity.preggo.Inventory;
+import dev.dixmk.minepreggo.world.entity.preggo.InventorySlotMapper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.TamablePreggoMobDataImpl;
@@ -43,39 +44,25 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.wrapper.CombinedInvWrapper;
-import net.minecraftforge.items.wrapper.EntityArmorInvWrapper;
-import net.minecraftforge.items.wrapper.EntityHandsInvWrapper;
 
 public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl implements ITamablePreggoMob<IFemaleEntity> {
-	public static final int INVENTORY_SIZE = 13;
-	private final ItemStackHandler inventory = new ItemStackHandler(INVENTORY_SIZE);
-	private final CombinedInvWrapper combined = new CombinedInvWrapper(inventory, new EntityHandsInvWrapper(this), new EntityArmorInvWrapper(this));	
-	
     private static final TamablePreggoMobDataImpl.DataAccessor<AbstractTamableCreeperGirl> DATA_HOLDER = new TamablePreggoMobDataImpl.DataAccessor<>(AbstractTamableCreeperGirl.class);
-	
+	   
 	protected final ITamablePreggoMobSystem preggoMobSystem;
 	
 	protected final IFemaleEntity femaleEntityData;
 
 	protected final ITamablePreggoMobData tamablePreggoMobData = new TamablePreggoMobDataImpl<>(DATA_HOLDER, this);
+
+    protected final Inventory inventory = new Inventory(InventorySlotMapper.createHumanoidDefault(), 6);
 	
 	protected boolean breakBlocks = false;
 	private	int poweredTimer = 0;
 	
 	protected AbstractTamableCreeperGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_, Creature typeOfCreature) {
 	      super(p_21803_, p_21804_, typeOfCreature);
-	      this.reassessTameGoals();	   
 	      this.femaleEntityData = createFemaleEntityData();
-	      this.preggoMobSystem = createTamablePreggoMobSystem();
-	      
-	      if (this.getTamableData() == null) {
-	    	  MinepreggoMod.LOGGER.error("TamablePreggoMobData is null for entity {}", this);
-	      }
-	      else {
-	    	  MinepreggoMod.LOGGER.info("TamablePreggoMobData created for entity {}", this);
-	      }
+	      this.preggoMobSystem = createTamablePreggoMobSystem();    
 	}
 		 
 	protected abstract @Nonnull ITamablePreggoMobSystem createTamablePreggoMobSystem();
@@ -101,7 +88,7 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 	@Override
 	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
-		compound.put("InventoryCustom", inventory.serializeNBT());
+		compound.put("InventoryCustom", inventory.getHandler().serializeNBT());
 		compound.put("defaultFemaleEntityImpl", this.femaleEntityData.serializeNBT());
 		compound.put("TamableData", tamablePreggoMobData.serializeNBT());
 	}	
@@ -110,7 +97,7 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
 		if (compound.get("InventoryCustom") instanceof CompoundTag inventoryTag)
-			inventory.deserializeNBT(inventoryTag);		
+			inventory.getHandler().deserializeNBT(inventoryTag);		
 		if (compound.contains("defaultFemaleEntityImpl", Tag.TAG_COMPOUND)) {
 			femaleEntityData.deserializeNBT(compound.getCompound("defaultFemaleEntityImpl"));
 		}
@@ -130,7 +117,11 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 		PreggoMobAIHelper.setTamableCreeperGirlGoals(this);
 	}
 	
-
+	@Override
+	protected void reassessTameGoals() {
+		
+	}
+	
 	@Override
 	public boolean canBeTamedByPlayer() {
 		return true;
@@ -163,15 +154,15 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
 		if (this.isAlive() && capability == ForgeCapabilities.ITEM_HANDLER && side == null)
-			return LazyOptional.of(() -> combined).cast();
+			return LazyOptional.of(inventory::getHandler).cast();
 		return super.getCapability(capability, side);
 	}
-
+	
 	@Override
 	protected void dropEquipment() {
 		super.dropEquipment();
-		for (int i = ITamablePreggoMob.FOOD_INVENTORY_SLOT; i < inventory.getSlots(); ++i) {
-			ItemStack itemstack = inventory.getStackInSlot(i);
+		for (int i = inventory.getSlotMapper().getExtraSlotsRange().leftInt(); i < inventory.getHandler().getSlots(); ++i) {
+			ItemStack itemstack = inventory.getHandler().getStackInSlot(i);
 			if (!itemstack.isEmpty() && !EnchantmentHelper.hasVanishingCurse(itemstack)) {
 				this.spawnAtLocation(itemstack);
 			}
@@ -292,7 +283,7 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 			}
 		}
 		else {
-			PreggoMobHelper.storeItemInSpecificRange(this, p_21471_, ITamablePreggoMob.FOOD_INVENTORY_SLOT + 1, INVENTORY_SIZE - 1);	
+			PreggoMobHelper.storeItemInExtraSlots(this, p_21471_);	
 		}
 	}
 	
@@ -302,9 +293,10 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 	}
 	
 	// ITamablePreggoMob START
+	
 	@Override
-	public int getInventorySize() {
-		return INVENTORY_SIZE;
+	public Inventory getInventory() {
+		return this.inventory;
 	}
 	
 	@Override

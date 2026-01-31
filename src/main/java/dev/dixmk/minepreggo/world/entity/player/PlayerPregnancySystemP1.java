@@ -14,7 +14,7 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
+import dev.dixmk.minepreggo.world.entity.EntityHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.pregnancy.AbstractPregnancySystem;
 import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
@@ -148,7 +148,7 @@ public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
         	if (!deadBabiesItemStacks.isEmpty()) {
             	deadBabiesItemStacks.forEach(baby -> {
 	        		if(!pregnantEntity.getInventory().add(baby)) 
-	        			PreggoMobHelper.dropItemStack(pregnantEntity, baby);
+	        			EntityHelper.dropItemStack(pregnantEntity, baby);
             	}); 	
         	}
 			

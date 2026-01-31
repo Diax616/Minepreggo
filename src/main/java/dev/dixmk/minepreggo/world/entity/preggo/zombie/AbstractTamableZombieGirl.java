@@ -14,6 +14,8 @@ import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMobData;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMobSystem;
+import dev.dixmk.minepreggo.world.entity.preggo.Inventory;
+import dev.dixmk.minepreggo.world.entity.preggo.InventorySlotMapper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.TamablePreggoMobDataImpl;
 import dev.dixmk.minepreggo.world.inventory.preggo.zombie.AbstractZombieGirlInventoryMenu;
@@ -47,16 +49,8 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.wrapper.CombinedInvWrapper;
-import net.minecraftforge.items.wrapper.EntityArmorInvWrapper;
-import net.minecraftforge.items.wrapper.EntityHandsInvWrapper;
 
 public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl implements ITamablePreggoMob<IFemaleEntity> {
-	
-	private final ItemStackHandler inventory = new ItemStackHandler(INVENTORY_SIZE);
-	private final CombinedInvWrapper combined = new CombinedInvWrapper(inventory, new EntityHandsInvWrapper(this), new EntityArmorInvWrapper(this));
-	public static final int INVENTORY_SIZE = 15;
 
     private static final TamablePreggoMobDataImpl.DataAccessor<AbstractTamableZombieGirl> DATA_HOLDER = new TamablePreggoMobDataImpl.DataAccessor<>(AbstractTamableZombieGirl.class);
 	
@@ -65,6 +59,8 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	protected final IFemaleEntity femaleEntityData;
 
 	protected final ITamablePreggoMobData tamablePreggoMobData = new TamablePreggoMobDataImpl<>(DATA_HOLDER, this);
+	
+	protected final Inventory inventory = new Inventory(InventorySlotMapper.createHumanoidDefault(), 8);
 	
 	protected boolean breakBlocks = false;
 	
@@ -98,7 +94,7 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	@Override
 	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
-		compound.put("InventoryCustom", inventory.serializeNBT());
+		compound.put("InventoryCustom", inventory.getHandler().serializeNBT());
 		compound.put("defaultFemaleEntityImpl", this.femaleEntityData.serializeNBT());
 		compound.put("TamableData", tamablePreggoMobData.serializeNBT());
 	}
@@ -107,7 +103,7 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
 		if (compound.get("InventoryCustom") instanceof CompoundTag inventoryTag)	
-			inventory.deserializeNBT(inventoryTag);		
+			inventory.getHandler().deserializeNBT(inventoryTag);		
 		
 		if (compound.contains("defaultFemaleEntityImpl", Tag.TAG_COMPOUND)) {
 			femaleEntityData.deserializeNBT(compound.getCompound("defaultFemaleEntityImpl"));
@@ -125,15 +121,16 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
 		if (this.isAlive() && capability == ForgeCapabilities.ITEM_HANDLER && side == null)
-			return LazyOptional.of(() -> combined).cast();
+			return LazyOptional.of(inventory::getHandler).cast();
 		return super.getCapability(capability, side);
 	}
 
 	@Override
 	protected void dropEquipment() {
 		super.dropEquipment();
-		for (int i = ITamablePreggoMob.FOOD_INVENTORY_SLOT; i < inventory.getSlots(); ++i) {
-			ItemStack itemstack = inventory.getStackInSlot(i);
+		var handler = inventory.getHandler();
+		for (int i = inventory.getSlotMapper().getExtraSlotsRange().leftInt(); i < handler.getSlots(); ++i) {
+			ItemStack itemstack = handler.getStackInSlot(i);
 			if (!itemstack.isEmpty() && !EnchantmentHelper.hasVanishingCurse(itemstack)) {
 				this.spawnAtLocation(itemstack);
 			}
@@ -282,7 +279,7 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 			}
 		}
 		else {
-			PreggoMobHelper.storeItemInSpecificRange(this, p_21471_, ITamablePreggoMob.FOOD_INVENTORY_SLOT + 1, INVENTORY_SIZE - 1);	
+			PreggoMobHelper.storeItemInExtraSlots(this, p_21471_);	
 		}
 	}
 	
@@ -294,10 +291,10 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	
 	// ITamablePreggomob START
 	@Override
-	public int getInventorySize() {
-		return INVENTORY_SIZE;
+	public Inventory getInventory() {
+		return inventory;
 	}
-	
+
 	@Override
 	public void setCinematicOwner(ServerPlayer player) {
 		this.tamablePreggoMobSystem.setCinematicOwner(player);

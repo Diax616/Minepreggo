@@ -53,17 +53,17 @@ public abstract class AbstractCreeperGirlMainScreen
 						
 			var explodeCheckBox = ToggleableCheckbox.builder(this.leftPos + 190, this.topPos, 20, 20, Component.translatable("gui.minepreggo.creeper_girl_main.checkbox_explode"), currentCombatMode == CombatMode.EXPLODE)
 					.group(combatModes)
-					.onSelect(() -> MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdateCreeperGirlCombatModeC2SPacket(x, y, z, CombatMode.EXPLODE, creeperGirlId)))
+					.onSelect(() -> MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdateCreeperGirlCombatModeC2SPacket(CombatMode.EXPLODE, creeperGirlId)))
 					.build();
 		
 			var dontExplodeCheckBox = ToggleableCheckbox.builder(this.leftPos + 190, this.topPos + 36, 20, 20, Component.translatable("gui.minepreggo.creeper_girl_main.checkbox_dont_explode"), currentCombatMode == CombatMode.DONT_EXPLODE)
 					.group(combatModes)
-					.onSelect(() -> MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdateCreeperGirlCombatModeC2SPacket(x, y, z, CombatMode.DONT_EXPLODE, creeperGirlId)))
+					.onSelect(() -> MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdateCreeperGirlCombatModeC2SPacket(CombatMode.DONT_EXPLODE, creeperGirlId)))
 					.build();
 			
 			var fightAndExplodeCheckBox = ToggleableCheckbox.builder(this.leftPos + 190, this.topPos + 72, 20, 20, Component.translatable("gui.minepreggo.creeper_girl_main.checkbox_fight_and_explode"), currentCombatMode == CombatMode.FIGHT_AND_EXPLODE)
 					.group(combatModes)
-					.onSelect(() -> MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdateCreeperGirlCombatModeC2SPacket(x, y, z, CombatMode.FIGHT_AND_EXPLODE, creeperGirlId)))
+					.onSelect(() -> MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdateCreeperGirlCombatModeC2SPacket(CombatMode.FIGHT_AND_EXPLODE, creeperGirlId)))
 					.build();
 				
 			this.addRenderableWidget(explodeCheckBox);

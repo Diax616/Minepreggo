@@ -15,8 +15,8 @@ import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
 import dev.dixmk.minepreggo.world.item.checkup.PrenatalCheckups;
 import dev.dixmk.minepreggo.world.item.checkup.PrenatalCheckups.PrenatalCheckup;
 import dev.dixmk.minepreggo.world.item.checkup.PrenatalCheckups.PrenatalCheckupData;
-import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import dev.dixmk.minepreggo.world.pregnancy.PrenatalCheckupCostHolder.PrenatalCheckupCost;
+import dev.dixmk.minepreggo.world.pregnancy.PrenatalCheckupHelper;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -76,13 +76,13 @@ public abstract class PlayerPrenatalCheckUpMenu<T extends Mob> extends AbstractP
 		LocalDateTime date = LocalDateTime.now();
 		String autor = target.get().getName().getString();
 		
-		Supplier<ItemStack> f1 = () -> PregnancySystemHelper.createPrenatalCheckUpResult(
-				new PregnancySystemHelper.PrenatalCheckUpInfo(playerName, emeraldForRegularCheckUp, date),
+		Supplier<ItemStack> f1 = () -> PrenatalCheckupHelper.createPrenatalCheckUpResult(
+				new PrenatalCheckupHelper.PrenatalCheckUpInfo(playerName, emeraldForRegularCheckUp, date),
 				pregnancySystem.createRegularCheckUpData(),
 				autor);
 
-		Supplier<ItemStack> f2 = () -> PregnancySystemHelper.createPrenatalCheckUpResult(
-				new PregnancySystemHelper.PrenatalCheckUpInfo(playerName, emeraldForUltrasoundScan, date),
+		Supplier<ItemStack> f2 = () -> PrenatalCheckupHelper.createPrenatalCheckUpResult(
+				new PrenatalCheckupHelper.PrenatalCheckUpInfo(playerName, emeraldForUltrasoundScan, date),
 				pregnancySystem.createUltrasoundScanData(),
 				autor);
 	
@@ -92,11 +92,11 @@ public abstract class PlayerPrenatalCheckUpMenu<T extends Mob> extends AbstractP
 			final var c = p.getCapability(MinepreggoCapabilities.PLAYER_DATA).resolve();
 			return !(c.isEmpty() || c.get().isFemale());
 		}).stream()
-		  .map(p -> new PregnancySystemHelper.PrenatalPaternityTestData(p.getId(), p.getName().getString(), p.getUUID().equals(motherId)))
+		  .map(p -> new PrenatalCheckupHelper.PrenatalPaternityTestData(p.getId(), p.getName().getString(), p.getUUID().equals(motherId)))
 		  .toList();
 		
-		Supplier<ItemStack> f3 = () -> PregnancySystemHelper.createPrenatalCheckUpResult(
-				new PregnancySystemHelper.PrenatalCheckUpInfo(playerName, emeraldForPaternityTest, date),
+		Supplier<ItemStack> f3 = () -> PrenatalCheckupHelper.createPrenatalCheckUpResult(
+				new PrenatalCheckupHelper.PrenatalCheckUpInfo(playerName, emeraldForPaternityTest, date),
 				malePlayers,
 				autor);
 				

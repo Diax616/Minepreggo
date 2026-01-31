@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
+import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.world.effect.MobEffect;
@@ -52,7 +53,7 @@ public abstract class AbstractBreastMilk extends Item {
 						if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
 							return PlayerHelper.removeEffectsByPregnancyPhase(player, femaleData.getPregnancyData().getCurrentPregnancyPhase());
 						}
-						return PlayerHelper.removeEffects(player, effect -> !PregnancySystemHelper.isFemaleEffect(effect));
+						return LivingEntityHelper.removeEffects(player, effect -> !PregnancySystemHelper.isFemaleEffect(effect));
 					});
 					if (effects.isPresent()) {
 	                    for (MobEffect effect : effects.get()) {

@@ -119,7 +119,7 @@ public abstract class AbstractPreggoMobMainScreen
 			final var id = mob.getId();
 					
 			inventoryButton = new ImageButton(this.leftPos - 24, this.topPos + 6, 16, 16, 1, 57, 16, ScreenHelper.MINEPREGGO_ICONS_TEXTURE, 256, 256, 
-					e -> MinepreggoModPacketHandler.INSTANCE.sendToServer(new RequestPreggoMobInventoryMenuC2SPacket(x, y, z, id)));	
+					e -> MinepreggoModPacketHandler.INSTANCE.sendToServer(new RequestPreggoMobInventoryMenuC2SPacket(id)));	
 			inventoryButton.setTooltip(Tooltip.create(Component.translatable("gui.minepreggo.preggo_mob_inventory.tooltip_inventory")));
 								
 			sexButton = new ImageButton(this.leftPos - 24, this.topPos + 32, 16, 16, this.xSexSprite, this.ySexSprite, 16, ScreenHelper.MINEPREGGO_ICONS_TEXTURE, 256, 256, 

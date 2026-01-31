@@ -11,7 +11,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -129,7 +128,7 @@ public abstract class FemaleFertilitySystem<E extends PreggoMob & ITamablePreggo
 							MinepreggoMod.LOGGER.debug("Increased milking level to {} for entity {} using {}", post.getPostPartumLactation(), preggoMob.getDisplayName().getString(), post.getClass().getSimpleName());
 							
 							if (post.getPostPartumLactation() >= PregnancySystemHelper.ACTIVATE_MILKING_SYMPTOM) {
-								PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(preggoMob, EquipmentSlot.CHEST);
+								PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(preggoMob, InventorySlot.CHEST);
 							}						
 						}
 						else {

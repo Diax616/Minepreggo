@@ -11,7 +11,8 @@ import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
+import dev.dixmk.minepreggo.world.entity.EntityHelper;
+import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.pregnancy.AbstractPregnancySystem;
 import dev.dixmk.minepreggo.world.pregnancy.IBreedable;
 import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
@@ -125,7 +126,7 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 			}
 			
 			if (randomSource.nextFloat() < newContractionProb) {
-				PlayerHelper.playSoundNearTo(pregnantEntity, MinepreggoModSounds.PLAYER_CONTRACTION.get());			
+				LivingEntityHelper.playSoundNearTo(pregnantEntity, MinepreggoModSounds.PLAYER_CONTRACTION.get());			
 				pregnancySystem.setPregnancyPain(PregnancyPain.CONTRACTION);
 				pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.CONTRACTION.get(), totalTicksOfFetalMovement, 0, false, false, true));
 				pregnancySystem.syncState(pregnantEntity);	
@@ -165,7 +166,7 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 	@Override
 	protected void startLabor() {
 		tryHurt();
-		PlayerHelper.playSoundNearTo(pregnantEntity, MinepreggoModSounds.getRandomPregnancyPain(randomSource));
+		LivingEntityHelper.playSoundNearTo(pregnantEntity, MinepreggoModSounds.getRandomPregnancyPain(randomSource));
 		MessageHelper.sendTo(pregnantEntity, Component.translatable("chat.minepreggo.player.birth.message.pre", pregnantEntity.getDisplayName().getString()), true);
 		pregnancySystem.setPregnancyPain(PregnancyPain.PREBIRTH);
 		pregnancySystem.resetPregnancyPainTimer();
@@ -184,7 +185,7 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 				pregnantEntity.removeEffect(MinepreggoModMobEffects.PREBIRTH.get());
 				tryHurt();
 				pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.BIRTH.get(), totalTicksOfBirth, 0, false, false, true));
-				PlayerHelper.playSoundNearTo(pregnantEntity, MinepreggoModSounds.PLAYER_BIRTH.get());
+				LivingEntityHelper.playSoundNearTo(pregnantEntity, MinepreggoModSounds.PLAYER_BIRTH.get());
 				pregnancySystem.resetPregnancyPainTimer();
 				PlayerHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.CHEST);
 				PlayerHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.LEGS);
@@ -224,7 +225,7 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 	        	if (!aliveBabiesItemStacks.isEmpty()) {	              	
 		        	aliveBabiesItemStacks.forEach(baby -> {
 		        		if(!pregnantEntity.getInventory().add(baby)) 
-		        			PreggoMobHelper.dropItemStack(pregnantEntity, baby);
+		        			EntityHelper.dropItemStack(pregnantEntity, baby);
 		        	}); 						
 	        	}
 	        	        	
@@ -254,7 +255,7 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 	@Override
 	protected void breakWater() {	
 		tryHurt();
-		PlayerHelper.playSoundNearTo(pregnantEntity, MinepreggoModSounds.getRandomPregnancyPain(randomSource));
+		LivingEntityHelper.playSoundNearTo(pregnantEntity, MinepreggoModSounds.getRandomPregnancyPain(randomSource));
 		MessageHelper.sendTo(pregnantEntity, Component.translatable("chat.minepreggo.player.birth.message.start", pregnantEntity.getDisplayName().getString()), true);
 		pregnancySystem.resetPregnancyPainTimer();
 		pregnancySystem.setPregnancyPain(PregnancyPain.WATER_BREAKING);
@@ -330,7 +331,7 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 		}
 		pushCoolDown = 0;	
 		if (randomSource.nextFloat() < pushProb) {
-			PlayerHelper.playSoundNearTo(pregnantEntity, MinepreggoModSounds.getRandomPlayerPush(randomSource));	
+			LivingEntityHelper.playSoundNearTo(pregnantEntity, MinepreggoModSounds.getRandomPlayerPush(randomSource));	
 			return true;
 		}	
 		return false;

@@ -13,6 +13,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.player.Player;
 
 public class PregnancyP2 extends AbstractPlayerPregnancy<PlayerPregnancySystemP2> {
 	
@@ -35,7 +36,9 @@ public class PregnancyP2 extends AbstractPlayerPregnancy<PlayerPregnancySystemP2
 	@Override
 	public void addAttributeModifiers(LivingEntity entity, AttributeMap p_19479_, int p_19480_) {
 		super.addAttributeModifiers(entity, p_19479_, p_19480_);
-		if (!PlayerHelper.isPlayerValid(entity)) return;
+		if (!(entity instanceof Player player) || !PlayerHelper.isFemale(player)) {
+        	return;
+        }
 		
 		if (!entity.level().isClientSide && !entity.hasEffect(MinepreggoModMobEffects.ZERO_GRAVITY_BELLY.get())) {
 			entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, -1, 0, false, false));			
@@ -46,7 +49,9 @@ public class PregnancyP2 extends AbstractPlayerPregnancy<PlayerPregnancySystemP2
     @Override
     public void removeAttributeModifiers(LivingEntity entity, AttributeMap p_19470_, int p_19471_) {
     	super.removeAttributeModifiers(entity, p_19470_, p_19471_);
-		if (!PlayerHelper.isPlayerValid(entity)) return;
+		if (!(entity instanceof Player player) || !PlayerHelper.isFemale(player)) {
+        	return;
+        }
 		
 		if (!entity.level().isClientSide) {
 			entity.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);

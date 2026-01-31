@@ -14,11 +14,10 @@ import dev.dixmk.minepreggo.init.MinepreggoModMenus;
 import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
-import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.item.checkup.PrenatalCheckups;
 import dev.dixmk.minepreggo.world.item.checkup.PrenatalCheckups.PrenatalCheckup;
 import dev.dixmk.minepreggo.world.item.checkup.PrenatalCheckups.PrenatalCheckupData;
-import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
+import dev.dixmk.minepreggo.world.pregnancy.PrenatalCheckupHelper;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -106,13 +105,13 @@ public class PreggoMobPrenatalCheckUpMenu extends AbstractPrenatalCheckUpMenu<Pr
 		LocalDateTime date = LocalDateTime.now();
 		String autor = target.get().getName().getString();
 		
-		Supplier<ItemStack> f1 = () -> PregnancySystemHelper.createPrenatalCheckUpResult(
-				new PregnancySystemHelper.PrenatalCheckUpInfo(playerName, emeraldForRegularCheckUp, date),
-				PreggoMobHelper.createRegularPrenatalCheckUpData(ps), autor);
+		Supplier<ItemStack> f1 = () -> PrenatalCheckupHelper.createPrenatalCheckUpResult(
+				new PrenatalCheckupHelper.PrenatalCheckUpInfo(playerName, emeraldForRegularCheckUp, date),
+				PrenatalCheckupHelper.createRegularPrenatalCheckUpData(ps), autor);
 
-		Supplier<ItemStack> f2 = () -> PregnancySystemHelper.createPrenatalCheckUpResult(
-				new PregnancySystemHelper.PrenatalCheckUpInfo(playerName, emeraldForUltrasoundScan, date),
-				PreggoMobHelper.createUltrasoundScanPrenatalCheckUpData(source.get().getTypeOfSpecies(), ps), autor);
+		Supplier<ItemStack> f2 = () -> PrenatalCheckupHelper.createPrenatalCheckUpResult(
+				new PrenatalCheckupHelper.PrenatalCheckUpInfo(playerName, emeraldForUltrasoundScan, date),
+				PrenatalCheckupHelper.createUltrasoundScanPrenatalCheckUpData(source.get().getTypeOfSpecies(), ps), autor);
 	
 		UUID motherId = source.get().getUUID();
 		
@@ -120,11 +119,11 @@ public class PreggoMobPrenatalCheckUpMenu extends AbstractPrenatalCheckUpMenu<Pr
 			final var c = p.getCapability(MinepreggoCapabilities.PLAYER_DATA).resolve();
 			return !(c.isEmpty() || c.get().isFemale());
 		}).stream()
-		  .map(p -> new PregnancySystemHelper.PrenatalPaternityTestData(p.getId(), p.getName().getString(), p.getUUID().equals(motherId)))
+		  .map(p -> new PrenatalCheckupHelper.PrenatalPaternityTestData(p.getId(), p.getName().getString(), p.getUUID().equals(motherId)))
 		  .toList();
 		
-		Supplier<ItemStack> f3 = () -> PregnancySystemHelper.createPrenatalCheckUpResult(
-				new PregnancySystemHelper.PrenatalCheckUpInfo(playerName, emeraldForPaternityTest, date),
+		Supplier<ItemStack> f3 = () -> PrenatalCheckupHelper.createPrenatalCheckUpResult(
+				new PrenatalCheckupHelper.PrenatalCheckUpInfo(playerName, emeraldForPaternityTest, date),
 				malePlayers,
 				autor);
 

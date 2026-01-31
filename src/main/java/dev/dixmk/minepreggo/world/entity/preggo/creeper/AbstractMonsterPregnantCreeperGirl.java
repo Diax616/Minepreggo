@@ -5,7 +5,7 @@ import dev.dixmk.minepreggo.init.MinepreggoModDamageSources;
 import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.world.entity.BellyPartFactory;
 import dev.dixmk.minepreggo.world.entity.BellyPartManager;
-import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
+import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.IMonsterPreggoMobPregnancyData;
 import dev.dixmk.minepreggo.world.entity.preggo.IMonsterPregnantPreggoMob;
@@ -112,7 +112,7 @@ public abstract class AbstractMonsterPregnantCreeperGirl extends AbstractMonster
 				&& !this.pregnancyDataImpl.isIncapacitated()
 				&& this.getRandom().nextFloat() < pregnancyDataImpl.getPregnancyPainProbability()) {		
 			this.pregnancyDataImpl.setPregnancyPain(true);	
-			PlayerHelper.playSoundNearTo(this, MinepreggoModSounds.getRandomStomachGrowls(random));
+			LivingEntityHelper.playSoundNearTo(this, MinepreggoModSounds.getRandomStomachGrowls(random));
 		}
 		return result;
 	}

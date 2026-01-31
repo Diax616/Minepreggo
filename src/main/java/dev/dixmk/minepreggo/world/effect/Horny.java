@@ -16,6 +16,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.AbstractIllager;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -33,9 +34,9 @@ public class Horny extends AbstractPlayerPregnancySymptom {
 
 	@Override
 	public void removeAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {
-		if (!PlayerHelper.isPlayerValid(entity)) {
-			return;
-		}
+		if (!(entity instanceof Player player) || !PlayerHelper.isFemale(player)) {
+        	return;
+        }
 		
         var level = entity.level();
         if (level.isClientSide) {
@@ -67,7 +68,7 @@ public class Horny extends AbstractPlayerPregnancySymptom {
 	
 	@Override
 	public void applyEffectTick(LivingEntity entity, int amplifier) {	
-        if (!PlayerHelper.isPlayerValid(entity)) {
+		if (!(entity instanceof Player player) || !PlayerHelper.isFemale(player)) {
         	return;
         }
         

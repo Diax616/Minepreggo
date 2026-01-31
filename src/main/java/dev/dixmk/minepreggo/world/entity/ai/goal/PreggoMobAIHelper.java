@@ -1,9 +1,9 @@
 package dev.dixmk.minepreggo.world.entity.ai.goal;
 
+import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
-import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
@@ -323,13 +323,13 @@ public class PreggoMobAIHelper {
 			public boolean canUse() {
 				return super.canUse() 
 				&& !preggoMob.getTamableData().isWaiting()
-				&& !PreggoMobHelper.hasValidTarget(preggoMob);
+				&& !LivingEntityHelper.hasValidTarget(preggoMob);
 			}
 			
 			@Override
 			public boolean canContinueToUse() {
 				return super.canContinueToUse()
-				&& !PreggoMobHelper.isTargetStillValid(preggoMob);
+				&& !LivingEntityHelper.isTargetStillValid(preggoMob);
 			}
 		});			
 		
@@ -439,7 +439,7 @@ public class PreggoMobAIHelper {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
-				&& !PreggoMobHelper.hasValidTarget(preggoMob)
+				&& !LivingEntityHelper.hasValidTarget(preggoMob)
 				&& !preggoMob.getTamableData().isWaiting()
 				&& !preggoMob.getPregnancyData().isIncapacitated();
 				
@@ -448,7 +448,7 @@ public class PreggoMobAIHelper {
 			@Override
 			public boolean canContinueToUse() {
 				return super.canContinueToUse() 
-				&& !PreggoMobHelper.isTargetStillValid(preggoMob)
+				&& !LivingEntityHelper.isTargetStillValid(preggoMob)
 				&& !preggoMob.getPregnancyData().isIncapacitated();
 			}
 		});			

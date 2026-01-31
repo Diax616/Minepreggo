@@ -40,9 +40,9 @@ public class WorldEventHandler {
                     if (entity instanceof LivingEntity livingEntity
                     		&& !livingEntity.hasEffect(MinepreggoModMobEffects.ETERNAL_PREGNANCY.get())
                     		&& entity instanceof ITamablePregnantPreggoMob handler) {
-                        return Stream.of(handler.getPregnancyData());
+                        return Stream.of(IPregnancyData.class.cast(handler.getPregnancyData()));
                     }
-
+                    
                     // If the entity is a player, try to obtain the player's pregnancy system from capability
                     if (entity instanceof ServerPlayer serverPlayer && !serverPlayer.hasEffect(MinepreggoModMobEffects.ETERNAL_PREGNANCY.get())) { 
                         var playerDataOpt = serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).resolve();

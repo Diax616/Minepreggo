@@ -1,8 +1,8 @@
 package dev.dixmk.minepreggo.world.entity.ai.goal;
 
+import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
-import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import net.minecraft.world.entity.ai.goal.FollowOwnerGoal;
 
 public class PreggoMobFollowOwnerGoal<T extends PreggoMob & ITamablePreggoMob<?>> extends FollowOwnerGoal {
@@ -34,12 +34,12 @@ public class PreggoMobFollowOwnerGoal<T extends PreggoMob & ITamablePreggoMob<?>
 		return super.canUse() 
 		&& !preggoMob.getTamableData().isWaiting()
 		&& !preggoMob.getTamableData().isSavage()
-		&& !PreggoMobHelper.hasValidTarget(this.tamable);
+		&& !LivingEntityHelper.hasValidTarget(this.tamable);
 	}
 
 	@Override
 	public boolean canContinueToUse() {
 		return super.canContinueToUse()
-		&& !PreggoMobHelper.isTargetStillValid(this.tamable);
+		&& !LivingEntityHelper.isTargetStillValid(this.tamable);
 	}
 }

@@ -8,6 +8,7 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.init.MinepreggoModSounds;
+import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
@@ -126,7 +127,7 @@ public class PlayerPregnancySystemP3 extends PlayerPregnancySystemP2 {
 		}
 		
 		if (randomSource.nextFloat() < newFetalMovementProb) {
-			PlayerHelper.playSoundNearTo(pregnantEntity, MinepreggoModSounds.getRandomPregnancyPain(randomSource));	
+			LivingEntityHelper.playSoundNearTo(pregnantEntity, MinepreggoModSounds.getRandomPregnancyPain(randomSource));	
 			
 			pregnancySystem.setPregnancyPain(PregnancyPain.FETAL_MOVEMENT);
 			pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.FETAL_MOVEMENT.get(), totalTicksOfFetalMovement, 0, false, false, true));

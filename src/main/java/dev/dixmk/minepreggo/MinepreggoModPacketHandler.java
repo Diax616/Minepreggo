@@ -9,7 +9,6 @@ import dev.dixmk.minepreggo.network.packet.c2s.RequestPlayerMedicalCheckUpC2SPac
 import dev.dixmk.minepreggo.network.packet.c2s.RequestPreggoMobInventoryMenuC2SPacket;
 import dev.dixmk.minepreggo.network.packet.c2s.RequestPreggoMobMedicalCheckUpC2SPacket;
 import dev.dixmk.minepreggo.network.packet.c2s.RequestSexCinematicP2MC2SPacket;
-import dev.dixmk.minepreggo.network.packet.c2s.RequestSexCinematicP2PC2SPacket;
 import dev.dixmk.minepreggo.network.packet.c2s.RequestSexM2PC2SPacket;
 import dev.dixmk.minepreggo.network.packet.c2s.RequestSexP2PC2SPacket;
 import dev.dixmk.minepreggo.network.packet.c2s.ResponseSexRequestM2PC2SPacket;
@@ -68,7 +67,6 @@ public class MinepreggoModPacketHandler {
 		addNetworkMessage(RequestPreggoMobInventoryMenuC2SPacket.class, RequestPreggoMobInventoryMenuC2SPacket::encode, RequestPreggoMobInventoryMenuC2SPacket::decode, RequestPreggoMobInventoryMenuC2SPacket::handler);
 		addNetworkMessage(RequestPreggoMobMedicalCheckUpC2SPacket.class, RequestPreggoMobMedicalCheckUpC2SPacket::encode, RequestPreggoMobMedicalCheckUpC2SPacket::decode, RequestPreggoMobMedicalCheckUpC2SPacket::handler);
 		addNetworkMessage(RequestSexCinematicP2MC2SPacket.class, RequestSexCinematicP2MC2SPacket::encode, RequestSexCinematicP2MC2SPacket::decode, RequestSexCinematicP2MC2SPacket::handler);
-		addNetworkMessage(RequestSexCinematicP2PC2SPacket.class, RequestSexCinematicP2PC2SPacket::encode, RequestSexCinematicP2PC2SPacket::decode, RequestSexCinematicP2PC2SPacket::handler);
 		addNetworkMessage(RequestSexM2PC2SPacket.class, RequestSexM2PC2SPacket::encode, RequestSexM2PC2SPacket::decode, RequestSexM2PC2SPacket::handler);
 		addNetworkMessage(RequestSexP2PC2SPacket.class, RequestSexP2PC2SPacket::encode, RequestSexP2PC2SPacket::decode, RequestSexP2PC2SPacket::handler);
 		addNetworkMessage(ResetPregnancyS2CPacket.class, ResetPregnancyS2CPacket::encode, ResetPregnancyS2CPacket::decode, ResetPregnancyS2CPacket::handler);

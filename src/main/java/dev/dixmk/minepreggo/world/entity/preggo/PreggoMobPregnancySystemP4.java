@@ -20,7 +20,6 @@ import dev.dixmk.minepreggo.world.pregnancy.SyncedSetPregnancySymptom;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 
 public abstract class PreggoMobPregnancySystemP4
@@ -99,10 +98,10 @@ public abstract class PreggoMobPregnancySystemP4
 				pregnancyData.setPregnancyPain(PregnancyPain.BIRTH);
 				pregnantEntity.getTamableData().setBodyState(PreggoMobBody.NAKED);
 				pregnancyData.resetPregnancyPainTimer();   		
-				PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.CHEST);
-				PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.LEGS);
-				PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.MAINHAND);
-				PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.OFFHAND);
+				PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, InventorySlot.CHEST);
+				PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, InventorySlot.LEGS);
+				PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, InventorySlot.MAINHAND);
+				PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, InventorySlot.OFFHAND);
 	        	MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) pregnantEntity.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.birth.message.pre", pregnantEntity.getSimpleName()));
 			}	
 			else {
@@ -134,8 +133,8 @@ public abstract class PreggoMobPregnancySystemP4
 	        		return false;
 	        	});
 	        	
-	        	if (!aliveBabiesItemStacks.isEmpty()) {	              	
-		        	aliveBabiesItemStacks.forEach(baby -> PreggoMobHelper.storeItemInSpecificRangeOrDrop(pregnantEntity, baby, ITamablePreggoMob.FOOD_INVENTORY_SLOT + 1, pregnantEntity.getInventorySize() - 1)); 						
+	        	if (!aliveBabiesItemStacks.isEmpty()) {	  
+		        	aliveBabiesItemStacks.forEach(baby -> PreggoMobHelper.storeItemInExtraSlotsOrDrop(pregnantEntity, baby)); 						
 	        	}
 	        	        	
 	        	MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) pregnantEntity.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.birth.message.post", pregnantEntity.getSimpleName()));
@@ -234,7 +233,7 @@ public abstract class PreggoMobPregnancySystemP4
 				&& randomSource.nextFloat() < contractionProb) {
 			pregnancyData.setPregnancyPain(PregnancyPain.CONTRACTION);
 			pregnancyData.resetPregnancyPainTimer();
-			PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.CHEST);					
+			PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, InventorySlot.CHEST);					
 			return true;
 		}     
 	    return false;

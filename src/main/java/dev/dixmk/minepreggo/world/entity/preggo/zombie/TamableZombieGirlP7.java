@@ -49,7 +49,7 @@ public class TamableZombieGirlP7 extends AbstractTamablePregnantZombieGirl {
 			protected void advanceToNextPregnancyPhase() {
 				if (pregnantEntity.level() instanceof ServerLevel serverLevel) {
 					var zombieGirl = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P8.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);		
-					PreggoMobHelper.transferAllData(pregnantEntity, zombieGirl);			
+					PreggoMobHelper.copyAllData(pregnantEntity, zombieGirl);			
 				}
 			}
 				

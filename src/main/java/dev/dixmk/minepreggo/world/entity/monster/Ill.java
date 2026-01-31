@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
-import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
@@ -60,13 +60,13 @@ public interface Ill {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
-				&& !PreggoMobHelper.hasValidTarget(this.tamable);
+				&& !LivingEntityHelper.hasValidTarget(this.tamable);
 			}
 
 			@Override
 			public boolean canContinueToUse() {
 				return super.canContinueToUse()
-				&& !PreggoMobHelper.isTargetStillValid(this.tamable);
+				&& !LivingEntityHelper.isTargetStillValid(this.tamable);
 			}		
 			
 			@Override

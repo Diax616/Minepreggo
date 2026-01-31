@@ -157,7 +157,7 @@ public abstract class PreggoMobPregnancySystemP1
         	});
         	    	
         	if (!deadBabiesItemStacks.isEmpty()) {
-            	deadBabiesItemStacks.forEach(baby -> PreggoMobHelper.storeItemInSpecificRangeOrDrop(pregnantEntity, baby, ITamablePreggoMob.FOOD_INVENTORY_SLOT + 1, pregnantEntity.getInventorySize() - 1)); 	
+            	deadBabiesItemStacks.forEach(baby -> PreggoMobHelper.storeItemInExtraSlotsOrDrop(pregnantEntity, baby)); 	
         	}
 	    	
         	initPostMiscarriage();	 

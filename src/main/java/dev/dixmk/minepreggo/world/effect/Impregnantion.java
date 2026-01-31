@@ -8,6 +8,7 @@ import org.apache.commons.lang3.tuple.ImmutableTriple;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
+import dev.dixmk.minepreggo.world.entity.EntityHelper;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
@@ -141,12 +142,12 @@ public class Impregnantion extends MobEffect {
 	}
 	
 	protected static<E extends PreggoMob & ITamablePregnantPreggoMob> void initPregnancy(PreggoMob source, E target, int amplifier) {
-		PreggoMobHelper.copyRotation(source, target);
-		PreggoMobHelper.copyName(source, target);
-		PreggoMobHelper.copyHealth(source, target);
-		PreggoMobHelper.transferSlots(source, target);
+		LivingEntityHelper.copyRotation(source, target);
+		EntityHelper.copyName(source, target);
+		LivingEntityHelper.copyHealth(source, target);
+		LivingEntityHelper.transferSlots(source, target);
 		PreggoMobHelper.syncFromEquipmentSlotToInventory(target);
-		PreggoMobHelper.transferAttackTarget(source, target);
+		LivingEntityHelper.transferAttackTarget(source, target);
 		LivingEntityHelper.copyMobEffects(source, target);
 		PreggoMobHelper.initPregnancyByPotion(target, ImmutableTriple.of(Optional.empty(), target.getTypeOfSpecies(), target.getTypeOfCreature()), amplifier);
 		source.discard();

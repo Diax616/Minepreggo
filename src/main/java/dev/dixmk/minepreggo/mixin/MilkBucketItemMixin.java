@@ -16,6 +16,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
+import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 
@@ -37,7 +38,7 @@ public class MilkBucketItemMixin {
 	                	flag = true;
 	                }
 	                else {         
-	                	effectsToRemove = PlayerHelper.removeEffects(entity, effect -> !PregnancySystemHelper.isFemaleEffect(effect));
+	                	effectsToRemove = LivingEntityHelper.removeEffects(entity, effect -> !PregnancySystemHelper.isFemaleEffect(effect));
 	                    flag = true;
 	                }
 	                

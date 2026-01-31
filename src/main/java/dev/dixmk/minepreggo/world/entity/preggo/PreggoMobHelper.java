@@ -1,7 +1,6 @@
 package dev.dixmk.minepreggo.world.entity.preggo;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -19,12 +18,12 @@ import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModDamageSources;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
-import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.network.packet.s2c.RemovePreggoMobJigglePhysicsS2CPacket;
-import dev.dixmk.minepreggo.server.ServerCinematicManager;
 import dev.dixmk.minepreggo.utils.MathHelper;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
+import dev.dixmk.minepreggo.world.entity.EntityHelper;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
+import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterPregnantCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
@@ -34,7 +33,6 @@ import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractZombieGirl;
 import dev.dixmk.minepreggo.world.item.IFemaleArmor;
 import dev.dixmk.minepreggo.world.item.IMaternityArmor;
 import dev.dixmk.minepreggo.world.item.ItemHelper;
-import dev.dixmk.minepreggo.world.pregnancy.IBreedable;
 import dev.dixmk.minepreggo.world.pregnancy.IFemaleEntity;
 import dev.dixmk.minepreggo.world.pregnancy.MapPregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
@@ -46,7 +44,6 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -56,10 +53,8 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.TamableAnimal;
@@ -70,40 +65,16 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.AABB;
 import net.minecraftforge.registries.ForgeRegistries;
-
-/**
- * Helper class for PreggoMob related operations.
- * WARNING: Some fields from PreggoMobs are only available on the server side, but this class does not check for it. That issue will be fixed in future versions.
- */
-
 
 public class PreggoMobHelper {
 			
 	private PreggoMobHelper() {}
 	
-	
-	// Transfer or Copy Data START
-	public static void copyRotation(@NonNull LivingEntity source, @NonNull LivingEntity target) {		
-		target.setYRot(source.getYRot());
-		target.setYBodyRot(source.getYRot());
-		target.setYHeadRot(source.getYRot());
-		target.setXRot(source.getXRot());
-	}
-
+	// COPY AND TRANSFER DATA - START
 	public static void copyOwner(@NonNull TamableAnimal source, @NonNull TamableAnimal target) {
 		if (source.isTame() && source.getOwner() != null)
 			target.tame((Player) source.getOwner());
-	}
-	
-	public static void copyHealth(LivingEntity source, LivingEntity target) {
-		target.setHealth(Math.min(target.getMaxHealth(), source.getHealth()));
-	}
-	
-	public static void copyName(Entity source, Entity target) {
-		if (source.hasCustomName())
-			target.setCustomName(source.getCustomName());
 	}
 	
 	public static<E extends PreggoMob & ITamablePreggoMob<IFemaleEntity>> void copyTamableData(@NonNull E source, @NonNull E target) {		
@@ -113,241 +84,446 @@ public class PreggoMobHelper {
 		target.getGenderedData().deserializeNBT(source.getGenderedData().serializeNBT());
 	}
 	
-	public static<E extends PreggoMob & ITamablePregnantPreggoMob> void transferPregnancyData(@NonNull E source, @NonNull E target) {
+	public static<E extends PreggoMob & ITamablePregnantPreggoMob> void copyPregnancyData(@NonNull E source, @NonNull E target) {
 		var targetPregnancyData = target.getPregnancyData();
-		targetPregnancyData.deserializeNBT(source.getPregnancyData().serializeNBT());
-		
+		targetPregnancyData.deserializeNBT(source.getPregnancyData().serializeNBT());	
 		targetPregnancyData.resetDaysPassed();
 		targetPregnancyData.resetPregnancyTimer();
 	}
 		
-	public static<E extends PreggoMob & ITamablePregnantPreggoMob> void transferAllData(@NonNull E source, @NonNull E target) {
-		copyRotation(source, target);
+	public static<E extends PreggoMob & ITamablePregnantPreggoMob> void copyAllData(@NonNull E source, @NonNull E target) {
+		LivingEntityHelper.copyRotation(source, target);
 		copyOwner(source, target);
-		copyHealth(source, target);
-		copyName(source, target);
+		LivingEntityHelper.copyHealth(source, target);
+		EntityHelper.copyName(source, target);
 		copyTamableData(source, target);
 		LivingEntityHelper.copyMobEffects(source, target);
 		transferInventory(source, target);
-		transferPregnancyData(source, target);
+		copyPregnancyData(source, target);
+	}
+	// COPY AND TRANSFER DATA - END
+	
+	
+	
+	// INVENTORY OPERATIONS - START
+	public static<E extends PreggoMob & ITamablePreggoMob<?>> void transferInventory(E source, E target) throws IllegalArgumentException {
+		InventoryHelper.transferAll(source.getInventory(), target.getInventory());
+		InventoryHelper.syncToVanilla(target);
 	}
 	
-	// Transfer or Copy Data START
-	
-
-	// Inventory START
-	public static void transferSlots(@NonNull Mob source, @NonNull Mob target) {
-		target.setItemInHand(InteractionHand.MAIN_HAND, source.getMainHandItem());
-		target.setItemInHand(InteractionHand.OFF_HAND, source.getOffhandItem());
-		target.setItemSlot(EquipmentSlot.HEAD, source.getItemBySlot(EquipmentSlot.HEAD));
-		target.setItemSlot(EquipmentSlot.CHEST, source.getItemBySlot(EquipmentSlot.CHEST));
-		target.setItemSlot(EquipmentSlot.LEGS, source.getItemBySlot(EquipmentSlot.LEGS));
-		target.setItemSlot(EquipmentSlot.FEET, source.getItemBySlot(EquipmentSlot.FEET));
-	}	
-	
-	public static <E extends PreggoMob & ITamablePreggoMob<?>> void transferInventory(@NonNull E source, @NonNull E target) {
-		transferSlots(source, target);
-	    source.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(sourceHandler -> 
-	        target.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(targetHandler -> {
-	            if (targetHandler instanceof IItemHandlerModifiable modifiableTarget) {
-	                int slots = Math.min(sourceHandler.getSlots(), modifiableTarget.getSlots());
-	                for (int slot = 0; slot < slots; slot++) {
-	                    modifiableTarget.setStackInSlot(slot, sourceHandler.getStackInSlot(slot));
-	                }
-	            }
-	        })
-	    );
+	public static<T extends PreggoMob & ITamablePreggoMob<?>> void syncFromEquipmentSlotToInventory(@NonNull T preggoMob) {
+		if (!preggoMob.level().isClientSide) {
+			InventoryHelper.syncFromVanilla(preggoMob);
+		}
 	}
-
-	public static<T extends PreggoMob & ITamablePreggoMob<?>> void syncFromEquipmentSlotToInventory(@NonNull T preggoEntity) {
-        if (!preggoEntity.level().isClientSide) {
-    		preggoEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(capability -> {
-                if (capability instanceof IItemHandlerModifiable modHandlerEntSetSlot) {
-                    modHandlerEntSetSlot.setStackInSlot(ITamablePreggoMob.HEAD_INVENTORY_SLOT, preggoEntity.getItemBySlot(EquipmentSlot.HEAD));
-                    modHandlerEntSetSlot.setStackInSlot(ITamablePreggoMob.CHEST_INVENTORY_SLOT, preggoEntity.getItemBySlot(EquipmentSlot.CHEST));
-                    modHandlerEntSetSlot.setStackInSlot(ITamablePreggoMob.LEGS_INVENTORY_SLOT, preggoEntity.getItemBySlot(EquipmentSlot.LEGS));
-                    modHandlerEntSetSlot.setStackInSlot(ITamablePreggoMob.FEET_INVENTORY_SLOT, preggoEntity.getItemBySlot(EquipmentSlot.FEET));
-                    modHandlerEntSetSlot.setStackInSlot(ITamablePreggoMob.MAINHAND_INVENTORY_SLOT, preggoEntity.getMainHandItem());
-                    modHandlerEntSetSlot.setStackInSlot(ITamablePreggoMob.OFFHAND_INVENTORY_SLOT, preggoEntity.getOffhandItem());
-                }
-            });
+	
+	public static<T extends PreggoMob & ITamablePreggoMob<?>> void syncFromInventoryToEquipmentSlot(@NonNull T preggoMob) {
+	    if (!preggoMob.level().isClientSide) {
+	    	InventoryHelper.syncToVanillaIfChanged(preggoMob);
+	    }
+	}
+	
+    /**
+     * Stores an item from an entity into the extra slots of the inventory
+     * @param preggoMob The mob that will pick up the item
+     * @param itemEntity The item entity to pick up
+     */
+    public static <E extends PreggoMob & ITamablePreggoMob<?>> void storeItemInExtraSlots(@NonNull E preggoMob, @NonNull ItemEntity itemEntity) {
+        if (preggoMob.level().isClientSide) return;
+        
+        Inventory inventory = preggoMob.getInventory();
+        InventorySlotMapper slotMapper = inventory.getSlotMapper();
+        
+        ItemStack originalItemStack = itemEntity.getItem();
+        int originalCount = originalItemStack.getCount();
+        
+        int baseIndex = slotMapper.getMappedSlotsCount();
+        int extraCount = slotMapper.getExtraSlots();
+        
+        for (int i = 0; i < extraCount && !originalItemStack.isEmpty(); i++) {
+            int slotIndex = baseIndex + i;
+            originalItemStack = inventory.getHandler().insertItem(slotIndex, originalItemStack, false);
         }
-	}
+        
+        if (originalItemStack.getCount() != originalCount) {
+            preggoMob.level().playSound(
+                null, 
+                BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()),
+                ForgeRegistries.SOUND_EVENTS.getValue(MinepreggoHelper.withDefaultNamespace("entity.item.pickup")),
+                SoundSource.AMBIENT, 
+                0.75F, 
+                0.75F
+            );
+            
+            if (originalItemStack.isEmpty()) {
+                itemEntity.discard();
+            } else {
+                itemEntity.setItem(originalItemStack);
+            }
+        }
+    }
+    
+    /**
+     * Stores an item in the extra slots or drops it if it doesn't fit
+     * @param preggoMob The mob that will try to store the item
+     * @param itemStack The item to store
+     */
+    public static <E extends PreggoMob & ITamablePreggoMob<?>> void storeItemInExtraSlotsOrDrop(@NonNull E preggoMob, @NonNull ItemStack itemStack) {
+        if (preggoMob.level().isClientSide) return;
+        
+        Inventory inventory = preggoMob.getInventory();
+        InventorySlotMapper slotMapper = inventory.getSlotMapper();
+        
+        ItemStack originalItemStack = itemStack.copy();
+        
+        // Intentar insertar en los slots extra
+        int baseIndex = slotMapper.getMappedSlotsCount();
+        int extraCount = slotMapper.getExtraSlots();
+        
+        for (int i = 0; i < extraCount && !originalItemStack.isEmpty(); i++) {
+            int slotIndex = baseIndex + i;
+            originalItemStack = inventory.getHandler().insertItem(slotIndex, originalItemStack, false);
+        }
+        
+        // Si sobró algo o no se insertó nada, dropear
+        if (!originalItemStack.isEmpty()) {
+            EntityHelper.dropItemStack(preggoMob, originalItemStack);
+        }
+    }
+    
+    /**
+     * Transfers an item from the inventory to the mob's hand
+     * @param preggoMob The mob
+     * @param item The type of item to search for
+     * @param hand The hand where to place the item
+     */
+    public static <E extends PreggoMob & ITamablePreggoMob<?>> void transferItemFromInventoryToHand(
+            @NonNull E preggoMob, 
+            @NonNull Item item, 
+            @NonNull InteractionHand hand) {
+        
+        if (preggoMob.level().isClientSide) return;
+        
+        Inventory inventory = preggoMob.getInventory();
+        InventorySlotMapper slotMapper = inventory.getSlotMapper();
+        
+        ItemStack foundStack = ItemStack.EMPTY;
+        int foundSlotIndex = InventorySlotMapper.DEFAULT_INVALID_SLOT_INDEX;
+        
+        int baseIndex = slotMapper.getMappedSlotsCount();
+        int extraCount = slotMapper.getExtraSlots();
+        
+        for (int i = 0; i < extraCount; i++) {
+            int slotIndex = baseIndex + i;
+            ItemStack stack = inventory.getHandler().getStackInSlot(slotIndex);
+            
+            if (stack.is(item)) {
+                foundStack = stack;
+                foundSlotIndex = slotIndex;
+                break;
+            }
+        }
+        
+        if (!foundStack.isEmpty() && foundSlotIndex != InventorySlotMapper.DEFAULT_INVALID_SLOT_INDEX) {
+            inventory.getHandler().setStackInSlot(foundSlotIndex, ItemStack.EMPTY);
+            replaceAndDropItemstackInHand(preggoMob, hand, foundStack);
+        }
+    }
+    
+    /**
+     * Transfers a specific item from a range of slots to the hand
+     * @param preggoMob The mob
+     * @param item The type of item to search for
+     * @param hand The hand where to place the item
+     * @param searchInExtraSlotsOnly Whether to search only in extra slots (true) or in all slots (false)
+     */
+    public static <E extends PreggoMob & ITamablePreggoMob<?>> void transferItemFromInventoryToHand(
+            @NonNull E preggoMob, 
+            @NonNull Item item, 
+            @NonNull InteractionHand hand,
+            boolean searchInExtraSlotsOnly) {
+        
+        if (preggoMob.level().isClientSide) return;
+        
+        Inventory inventory = preggoMob.getInventory();
+        InventorySlotMapper slotMapper = inventory.getSlotMapper();
+        
+        ItemStack foundStack = ItemStack.EMPTY;
+        int foundSlotIndex = InventorySlotMapper.DEFAULT_INVALID_SLOT_INDEX;
+        
+        if (searchInExtraSlotsOnly) {
+            int baseIndex = slotMapper.getMappedSlotsCount();
+            int extraCount = slotMapper.getExtraSlots();
+            
+            for (int i = 0; i < extraCount; i++) {
+                int slotIndex = baseIndex + i;
+                ItemStack stack = inventory.getHandler().getStackInSlot(slotIndex);
+                
+                if (stack.is(item)) {
+                    foundStack = stack;
+                    foundSlotIndex = slotIndex;
+                    break;
+                }
+            }
+        } else {
+            int totalSlots = slotMapper.getTotalSlots();
+            
+            for (int slotIndex = 0; slotIndex < totalSlots; slotIndex++) {
+                ItemStack stack = inventory.getHandler().getStackInSlot(slotIndex);
+                
+                if (stack.is(item)) {
+                    foundStack = stack;
+                    foundSlotIndex = slotIndex;
+                    break;
+                }
+            }
+        }
+        
+        if (!foundStack.isEmpty() && foundSlotIndex != InventorySlotMapper.DEFAULT_INVALID_SLOT_INDEX) {
+            inventory.getHandler().setStackInSlot(foundSlotIndex, ItemStack.EMPTY);
+            replaceAndDropItemstackInHand(preggoMob, hand, foundStack);
+        }
+    }
+    
+    /**
+     * Adds an item to the mob's inventory (in any available slot)
+     * @param preggoMob The mob
+     * @param itemEntity The item entity to add
+     */
+    public static <E extends PreggoMob & ITamablePreggoMob<?>> void addItemToInventory(@NonNull E preggoMob, @NonNull ItemEntity itemEntity) {
+        if (preggoMob.level().isClientSide) return;
+        
+        Inventory inventory = preggoMob.getInventory();
+        
+        ItemStack originalItemStack = itemEntity.getItem();
+        ItemStack remainder = ItemHandlerHelper.insertItemStacked(inventory.getHandler(), originalItemStack, false);
+        
+        if (remainder.getCount() != originalItemStack.getCount()) {
+            if (remainder.isEmpty()) {
+                itemEntity.discard();
+            } else {
+                itemEntity.setItem(remainder);
+            }
+        }
+    }
+    
+    /**
+     * Replaces the item in the mob's hand and drops the previous item if it existed
+     * @param preggoMob The mob
+     * @param hand The hand to replace
+     * @param itemStack The new item
+     */
+    public static <E extends PreggoMob & ITamablePreggoMob<?>> void replaceAndDropItemstackInHand(
+            @Nonnull E preggoMob, 
+            @NonNull InteractionHand hand, 
+            @Nonnull ItemStack itemStack) {
+        
+        if (preggoMob.level().isClientSide) return;
+        
+        Inventory inventory = preggoMob.getInventory();
+        InventorySlotMapper slotMapper = inventory.getSlotMapper();
+        
+        InventorySlot inventorySlot = hand == InteractionHand.MAIN_HAND 
+            ? InventorySlot.MAINHAND 
+            : InventorySlot.OFFHAND;
+        
+        if (!slotMapper.hasSlot(inventorySlot)) {
+            return;
+        }
+        
+        int slotIndex = slotMapper.getSlotIndex(inventorySlot);
+        
+        if (slotIndex == InventorySlotMapper.DEFAULT_INVALID_SLOT_INDEX) {
+            return;
+        }
+        
+        ItemStack currentStack = inventory.getHandler().getStackInSlot(slotIndex);
+        if (!currentStack.isEmpty()) {
+            removeAndDropItemStackFromEquipmentSlot(preggoMob, inventorySlot);
+        }
+        
+        inventory.getHandler().setStackInSlot(slotIndex, itemStack.copy());
+        
+        if (inventorySlot.vanilla.isPresent()) {
+            preggoMob.setItemSlot(inventorySlot.vanilla.get(), itemStack.copy());
+        }
+    }
+    
+    /**
+     * Removes and drops the item from an equipment slot
+     * @param preggoMob The mob
+     * @param inventorySlot The slot to empty
+     */
+    public static <E extends PreggoMob & ITamablePreggoMob<?>> void removeAndDropItemStackFromEquipmentSlot(
+            @NonNull E preggoMob, 
+            @NonNull InventorySlot inventorySlot) {
+        
+        if (preggoMob.level().isClientSide) return;
+        
+        Inventory inventory = preggoMob.getInventory();
+        InventorySlotMapper slotMapper = inventory.getSlotMapper();
+        
+        int slotIndex = slotMapper.getSlotIndex(inventorySlot);
+        
+        if (slotIndex == InventorySlotMapper.DEFAULT_INVALID_SLOT_INDEX) {
+            return;
+        }
+        
+        ItemStack stack = inventory.getHandler().getStackInSlot(slotIndex);
+        
+        if (!stack.isEmpty() && EntityHelper.dropItemStack(preggoMob, stack)) {
+        	inventory.getHandler().setStackInSlot(slotIndex, ItemStack.EMPTY);   
+        	inventorySlot.vanilla.ifPresent(equipmentSlot -> preggoMob.setItemSlot(equipmentSlot, ItemStack.EMPTY));
+        }
+    }
+    
+    /**
+     * Removes and drops all items from the inventory
+     * @param preggoMob The mob
+     * @param includeEquipment Whether to also drop equipment
+     * @param includeExtraSlots Whether to also drop extra slots
+     */
+    public static <E extends PreggoMob & ITamablePreggoMob<?>> void dropAllInventory(
+            @NonNull E preggoMob, 
+            boolean includeEquipment, 
+            boolean includeExtraSlots) {
+        
+        if (preggoMob.level().isClientSide) return;
+        
+        Inventory inventory = preggoMob.getInventory();
+        InventorySlotMapper slotMapper = inventory.getSlotMapper();
+        
+        if (includeEquipment) {
+            for (InventorySlot slot : slotMapper.getAvailableSlots()) {
+                if (slot.type == InventorySlot.Type.EQUIPMENT) {
+                    removeAndDropItemStackFromEquipmentSlot(preggoMob, slot);
+                }
+            }
+        }
+        
+        for (InventorySlot slot : slotMapper.getAvailableSlots()) {
+            if (slot.type == InventorySlot.Type.INVENTORY) {
+                int slotIndex = slotMapper.getSlotIndex(slot);
+                ItemStack stack = inventory.getHandler().getStackInSlot(slotIndex);
+                
+                if (!stack.isEmpty() && EntityHelper.dropItemStack(preggoMob, stack)) {
+                        inventory.getHandler().setStackInSlot(slotIndex, ItemStack.EMPTY);
+                    }
+                
+            }
+        }
+        
+        if (includeExtraSlots) {
+            int baseIndex = slotMapper.getMappedSlotsCount();
+            int extraCount = slotMapper.getExtraSlots();
+            
+            for (int i = 0; i < extraCount; i++) {
+                int slotIndex = baseIndex + i;
+                ItemStack stack = inventory.getHandler().getStackInSlot(slotIndex);
+                
+                if (!stack.isEmpty() && EntityHelper.dropItemStack(preggoMob, stack)) {
+                        inventory.getHandler().setStackInSlot(slotIndex, ItemStack.EMPTY);
+                }      
+            }
+        }
+    }
+    
+    /**
+     * Counts how many items of a specific type are in the inventory
+     * @param preggoMob The mob
+     * @param item The type of item to count
+     * @param searchInExtraSlotsOnly Whether to search only in extra slots
+     * @return The total number of items found
+     */
+    public static <E extends PreggoMob & ITamablePreggoMob<?>> int countItemsInInventory(
+            @NonNull E preggoMob, 
+            @NonNull Item item,
+            boolean searchInExtraSlotsOnly) {
+        
+        Inventory inventory = preggoMob.getInventory();
+        InventorySlotMapper slotMapper = inventory.getSlotMapper();
+        
+        int count = 0;
+        
+        if (searchInExtraSlotsOnly) {
+            int baseIndex = slotMapper.getMappedSlotsCount();
+            int extraCount = slotMapper.getExtraSlots();
+            
+            for (int i = 0; i < extraCount; i++) {
+                int slotIndex = baseIndex + i;
+                ItemStack stack = inventory.getHandler().getStackInSlot(slotIndex);
+                
+                if (stack.is(item)) {
+                    count += stack.getCount();
+                }
+            }
+        } else {
+            int totalSlots = slotMapper.getTotalSlots();
+            
+            for (int slotIndex = 0; slotIndex < totalSlots; slotIndex++) {
+                ItemStack stack = inventory.getHandler().getStackInSlot(slotIndex);
+                
+                if (stack.is(item)) {
+                    count += stack.getCount();
+                }
+            }
+        }
+        
+        return count;
+    }
+    
+    /**
+     * Checks if the inventory has a specific item
+     * @param preggoMob The mob
+     * @param item The type of item to search for
+     * @param searchInExtraSlotsOnly Whether to search only in extra slots
+     * @return true if the item was found
+     */
+    public static <E extends PreggoMob & ITamablePreggoMob<?>> boolean hasItem(
+            @NonNull E preggoMob, 
+            @NonNull Item item,
+            boolean searchInExtraSlotsOnly) {
+        
+        return countItemsInInventory(preggoMob, item, searchInExtraSlotsOnly) > 0;
+    }
 	
-	public static<T extends PreggoMob & ITamablePreggoMob<?>> void syncFromInventoryToEquipmentSlot(@NonNull T preggoEntity) {
-	    if (!preggoEntity.level().isClientSide) {
-		    preggoEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(capability -> {   	
-		        preggoEntity.setItemInHand(InteractionHand.MAIN_HAND, capability.getStackInSlot(ITamablePreggoMob.MAINHAND_INVENTORY_SLOT));
-		        preggoEntity.setItemInHand(InteractionHand.OFF_HAND, capability.getStackInSlot(ITamablePreggoMob.OFFHAND_INVENTORY_SLOT));
-		        preggoEntity.setItemSlot(EquipmentSlot.HEAD, capability.getStackInSlot(ITamablePreggoMob.HEAD_INVENTORY_SLOT));	   
-		        preggoEntity.setItemSlot(EquipmentSlot.CHEST, capability.getStackInSlot(ITamablePreggoMob.CHEST_INVENTORY_SLOT));	   
-		        preggoEntity.setItemSlot(EquipmentSlot.LEGS, capability.getStackInSlot(ITamablePreggoMob.LEGS_INVENTORY_SLOT));	   
-		        preggoEntity.setItemSlot(EquipmentSlot.FEET, capability.getStackInSlot(ITamablePreggoMob.FEET_INVENTORY_SLOT));		
-		    });   
-	    }
-	}
-	
-	public static<E extends PreggoMob & ITamablePreggoMob<?>> void storeItemInSpecificRange(@NonNull E preggoMob, @NonNull ItemEntity itemEntity, int minStorageSlot, int maxStorageSlot) {
-		preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(sourceHandler -> {		
-			var originalItemStack = itemEntity.getItem();
-			var originalCount = originalItemStack.getCount();
-			
-		    for (int slot = minStorageSlot; slot <= maxStorageSlot && !originalItemStack.isEmpty(); slot++) {
-		    	originalItemStack = sourceHandler.insertItem(slot, originalItemStack, false);
-		    }		
-				    
-		    if (originalItemStack.getCount() != originalCount) {		          
-		    	if (!preggoMob.level().isClientSide) {
-			    	preggoMob.level().playSound(null, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(MinepreggoHelper.withDefaultNamespace("entity.item.pickup")), SoundSource.AMBIENT, 0.75F, 0.75F);	    	
-		    	}
-		    	
-		    	if (originalItemStack.isEmpty()) {
-	            	itemEntity.discard();
-	            } else {
-	            	itemEntity.setItem(originalItemStack);
-	            }
-		    }		  
-		});	
-	}
-	
-	public static<E extends PreggoMob & ITamablePreggoMob<?>> void storeItemInSpecificRangeOrDrop(@NonNull E preggoMob, @NonNull ItemStack itemStack, int minStorageSlot, int maxStorageSlot) {
-		preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(sourceHandler -> {		
-			var originalItemStack = itemStack;	
-			var originalCount = originalItemStack.getCount();
-			for (int slot = minStorageSlot; slot <= maxStorageSlot && !originalItemStack.isEmpty(); slot++) {
-		    	originalItemStack = sourceHandler.insertItem(slot, originalItemStack, false);
-		    }			
-			
-		    if (!originalItemStack.isEmpty() || originalItemStack.getCount() != originalCount) {
-            	dropItemStack(preggoMob, originalItemStack);
-		    }
-		});
-	}
-	
-	public static<E extends PreggoMob & ITamablePreggoMob<?>> void transferItemFromInventoryToHand(@NonNull E preggoMob, @NonNull Item item, InteractionHand hand, int minStorageSlot, int maxStorageSlot) {
-		preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(sourceHandler -> {		
-			ItemStack target = null;
-			for (int slot = minStorageSlot; slot <= maxStorageSlot; slot++) {		
-				target = sourceHandler.getStackInSlot(slot); 
-				if (target.is(item) && sourceHandler instanceof IItemHandlerModifiable modHandlerEntSetSlot) {
-					modHandlerEntSetSlot.setStackInSlot(slot, ItemStack.EMPTY);
-					break;
-				}	
-		    }			
-			if (target != null) {				
-				replaceAndDropItemstackInHand(preggoMob, hand, target);	
-			}
-		});
-	}
-	
-	public static<E extends PreggoMob & ITamablePreggoMob<?>> void addItemToInventory(@NonNull E preggoMob, @NonNull ItemEntity itemEntity) {		
-		preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(sourceHandler -> {		
-			var originalItemStack = itemEntity.getItem();
-			var remainder = ItemHandlerHelper.insertItemStacked(sourceHandler, originalItemStack, false);		
-			
-	        if (remainder.getCount() != originalItemStack.getCount()) {
-	            if (remainder.isEmpty()) {
-	            	itemEntity.discard();
-	            } else {
-	            	itemEntity.setItem(remainder);
-	            }
-	        }		
-		});
-	}
-
-	public static<E extends PreggoMob & ITamablePreggoMob<?>> void replaceAndDropItemstackInHand(@Nonnull E preggoMob, InteractionHand hand, @Nonnull ItemStack itemStack) {			
-		preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler -> {			    	
-			if (handler instanceof IItemHandlerModifiable modHandler) {	
-				int inventorySlot = hand == InteractionHand.MAIN_HAND ? ITamablePreggoMob.MAINHAND_INVENTORY_SLOT : ITamablePreggoMob.OFFHAND_INVENTORY_SLOT;		
-				EquipmentSlot equipmentSlot = hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND;	
-				
-				if (!modHandler.getStackInSlot(inventorySlot).isEmpty()) {
-					removeAndDropItemStackFromEquipmentSlot(preggoMob, equipmentSlot);			
-				}
-						
-	            modHandler.setStackInSlot(inventorySlot, itemStack);
-	            preggoMob.setItemSlot(equipmentSlot, itemStack);
-	        }	
-		});
-	}
-	
-	public static<E extends PreggoMob & ITamablePreggoMob<?>> void removeAndDropItemStackFromEquipmentSlot(E preggoMob, EquipmentSlot slotId) {			
-		if (dropItemStack(preggoMob, preggoMob.getItemBySlot(slotId))) {		
-			preggoMob.setItemSlot(slotId, ItemStack.EMPTY);
-			preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler -> {			    
-		        if (handler instanceof IItemHandlerModifiable modHandler) {
-		            modHandler.setStackInSlot(slotId.getFilterFlag(), ItemStack.EMPTY);
-		        }	
-			});			
-		}	
-	}
-	
-	public static boolean dropItemStack(LivingEntity entity, ItemStack stack) {
-	    if (!stack.isEmpty()) {
-	        ItemEntity item = new ItemEntity(
-	            entity.level(),
-	            entity.getX(), entity.getY(), entity.getZ(),
-	            stack
-	        );
-	        item.setDefaultPickUpDelay();
-	        entity.level().addFreshEntity(item);
-	        return true;
-	    }
-	    return false;
-	}	
-	// Inventory END
-	
-	public static void transferAttackTarget(@NonNull Mob source, @NonNull Mob target) {
-		var entfound = source.level().getEntitiesOfClass(LivingEntity.class, new AABB(source.blockPosition()).inflate(16)).stream()
-				.sorted(Comparator.comparingDouble(entcnd -> entcnd.distanceToSqr(source)))
-				.toList();
-			
-		entfound.forEach(ent -> {
-			if (ent instanceof Mob mob && mob.getTarget() == source) {
-				mob.setTarget(target);
-			}
-			if (source.getTarget() == ent) {
-				target.setTarget(ent);
-			}
-		});
-	}
-
+	// INVENTORY OPERATIONS - END
 	
 	
-	// Pregnancy START
+	// PREGNANCY SYSTEM - START
 	public static<E extends PreggoMob & ITamablePregnantPreggoMob> boolean initPregnancy(@NonNull E preggoMob) {					
 		final IFemaleEntity femaleData = preggoMob.getGenderedData();
-		final boolean result = femaleData.isPregnant() && femaleData.getPrePregnancyData().isPresent();
 		
-		if (!result) {
-			MinepreggoMod.LOGGER.warn("CANNOT INIT PREGNANCY: class={}, isPregnant={}, hasPrePregnancyData={}",
-					preggoMob.getClass().getSimpleName(), femaleData.isPregnant(), femaleData.getPrePregnancyData().isPresent());
-			return result;
+		if (!femaleData.isPregnant()) {
+			return false;
 		}
 		
-		femaleData.getPrePregnancyData().ifPresent(prePregnancyData -> {
-			final ITamablePregnantPreggoMobData pregnancyData = preggoMob.getPregnancyData();
-			final var numOfBabies = prePregnancyData.fertilizedEggs();
-			final PregnancyPhase lastPregnancyStage = PregnancySystemHelper.calculateMaxPregnancyPhaseByTotalNumOfBabies(numOfBabies);
-			final int totalDays = MinepreggoModConfig.SERVER.getTotalPregnancyDays();
-			final var mother = ImmutableTriple.of(preggoMob.getUUID(), preggoMob.getTypeOfSpecies(), preggoMob.getTypeOfCreature());
-			final var father = ImmutableTriple.of(Optional.ofNullable(prePregnancyData.fatherId()), prePregnancyData.typeOfSpeciesOfFather(), prePregnancyData.typeOfCreatureOfFather());
-			final var map = new MapPregnancyPhase(totalDays, lastPregnancyStage);
-			final var womb = new Womb(mother, father, preggoMob.getRandom(), numOfBabies);
+		Optional<Boolean> gotPregnant = femaleData.getPrePregnancyData()
+				.map(prePregnancyData -> {
+					final ITamablePregnantPreggoMobData pregnancyData = preggoMob.getPregnancyData();
+					final var numOfBabies = prePregnancyData.fertilizedEggs();
+					final PregnancyPhase lastPregnancyStage = PregnancySystemHelper.calculateMaxPregnancyPhaseByTotalNumOfBabies(numOfBabies);
+					final int totalDays = MinepreggoModConfig.SERVER.getTotalPregnancyDays();
+					final var mother = ImmutableTriple.of(preggoMob.getUUID(), preggoMob.getTypeOfSpecies(), preggoMob.getTypeOfCreature());
+					final var father = ImmutableTriple.of(Optional.ofNullable(prePregnancyData.fatherId()), prePregnancyData.typeOfSpeciesOfFather(), prePregnancyData.typeOfCreatureOfFather());
+					final var map = new MapPregnancyPhase(totalDays, lastPregnancyStage);
+					final var womb = new Womb(mother, father, preggoMob.getRandom(), numOfBabies);
 
-			pregnancyData.setLastPregnancyStage(lastPregnancyStage);	
-			pregnancyData.setMapPregnancyPhase(map);	
-			pregnancyData.setPregnancyHealth(PregnancySystemHelper.MAX_PREGNANCY_HEALTH); 
-			pregnancyData.setWomb(womb);
-			pregnancyData.setDaysToGiveBirth(PregnancySystemHelper.calculateDaysToGiveBirth(pregnancyData));	
-			
-			pregnancyData.resetDaysPassed();
-			
-			MinepreggoMod.LOGGER.debug("INIT PREGNANCY: class={}, lastPregnancyStage={}, totalDays={}, daysByStage={}, womb={}",
-					preggoMob.getClass().getSimpleName(), lastPregnancyStage, totalDays, map, womb);
-		});
+					pregnancyData.setLastPregnancyStage(lastPregnancyStage);	
+					pregnancyData.setMapPregnancyPhase(map);	
+					pregnancyData.setPregnancyHealth(PregnancySystemHelper.MAX_PREGNANCY_HEALTH); 
+					pregnancyData.setWomb(womb);
+					pregnancyData.setDaysToGiveBirth(PregnancySystemHelper.calculateDaysToGiveBirth(pregnancyData));	
+					
+					pregnancyData.resetDaysPassed();
+					
+					MinepreggoMod.LOGGER.debug("INIT PREGNANCY: class={}, lastPregnancyStage={}, totalDays={}, daysByStage={}, womb={}",
+							preggoMob.getClass().getSimpleName(), lastPregnancyStage, totalDays, map, womb);
+					
+					return true;
+				});
 		
-		return result;
+		return gotPregnant.isPresent() && gotPregnant.get().booleanValue();
 	}
 	
 	public static<E extends PreggoMob & ITamablePregnantPreggoMob> void initDefaultPregnancy(@NonNull E preggoMob) throws IllegalStateException {				
@@ -384,43 +560,48 @@ public class PreggoMobHelper {
 	
 	public static <E extends PreggoMob & ITamablePreggoMob<IFemaleEntity>> boolean initPregnancyBySex(@NonNull E preggoMob, @NonNull ServerPlayer serverPlayer) {	
 		if (!preggoMob.isOwnedBy(serverPlayer)) {
-			MinepreggoMod.LOGGER.debug("CANNOT INIT PREGNANCY BY SEX : class={}, playerId={}, ownerId={}",
-					preggoMob.getClass().getSimpleName(), serverPlayer.getUUID(), preggoMob.getOwnerUUID());
+			MinepreggoMod.LOGGER.debug("Cannot init pregnancy by sex - not the owner: preggoMobClass={}, ownerId={}, playerId={}",
+					preggoMob.getClass().getSimpleName(), preggoMob.getOwnerUUID(), serverPlayer.getUUID());
 			return false;
 		}
 		
-		final var cap = serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).resolve();
-		
-		if (cap.isEmpty()) {
+		Optional<Integer> numOfBabiesOpt = serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA)
+				.resolve()
+				.flatMap(cap -> cap.getMaleData().resolve())
+				.map(maleData -> PregnancySystemHelper.calculateNumOfBabiesByFertility(		
+						maleData.getFertilityRate(),
+						preggoMob.getGenderedData().getFertilityRate()));
+				
+		if (numOfBabiesOpt.isEmpty()) {
+			MinepreggoMod.LOGGER.debug("Cannot init pregnancy by sex - cannot calculate num of babies: preggoMobClass={}, ownerId={}, playerId={}",
+					preggoMob.getClass().getSimpleName(), preggoMob.getOwnerUUID(), serverPlayer.getUUID());
 			return false;
 		}
 		
-		final var maleData = cap.get().getMaleData().resolve();
-		
-		if (maleData.isEmpty()) {
+		if (numOfBabiesOpt.get().intValue() == 0) {
+			MinepreggoMod.LOGGER.debug("Cannot init pregnancy by sex - num of babies is zero: preggoMobClass={}, ownerId={}, playerId={}",
+					preggoMob.getClass().getSimpleName(), preggoMob.getOwnerUUID(), serverPlayer.getUUID());
 			return false;
 		}
-		
-		final IFemaleEntity femaleData = preggoMob.getGenderedData();
-		final var numOfBabies = PregnancySystemHelper.calculateNumOfBabiesByFertility(femaleData.getFertilityRate(), maleData.get().getFertilityRate());
-
-		MinepreggoMod.LOGGER.debug("Fertility: {}, {}", femaleData.getFertilityRate(), maleData.get().getFertilityRate());
-		
-		if (numOfBabies == 0) {
-			return false;
-		}
-		
-		return initPrePregnancy(preggoMob, ImmutableTriple.of(Optional.of(serverPlayer.getUUID()), Species.HUMAN, Creature.HUMANOID), numOfBabies);
+	
+		return initPrePregnancy(preggoMob, ImmutableTriple.of(Optional.of(serverPlayer.getUUID()), Species.HUMAN, Creature.HUMANOID), numOfBabiesOpt.get().intValue());
 	}
 	
 	private static<E extends PreggoMob & ITamablePregnantPreggoMob> float getSpawnProbabilityBasedPregnancy(@NonNull E preggoMob, float t0, float k, float pMin, float pMax) {	
-		return PregnancySystemHelper.getSpawnProbabilityBasedPregnancy(preggoMob.getPregnancyData(), t0, k, pMin, pMax);
+		return PregnancySystemHelper.calculateSpawnProbabilityBasedPregnancy(preggoMob.getPregnancyData(), t0, k, pMin, pMax);
 	}
-	// Pregnancy END
+	// PREGNANCY SYSTEM - END
 	
 	
-	// Armor START
 	
+	
+	
+	
+	
+	
+	
+	
+	// ARMOR AND ITEMS - START
 	public static boolean canUseChestPlateInLactation(IFemaleEntity preggoMob, Item armor) {
 		var result = preggoMob.getPostPregnancyData().map(post -> 
 				post.getPostPartumLactation() < PregnancySystemHelper.ACTIVATE_MILKING_SYMPTOM
@@ -480,11 +661,13 @@ public class PreggoMobHelper {
 	    if (stack.getDamageValue() >= stack.getMaxDamage()) {
 	        world.playSound(null, preggoMob.blockPosition(), SoundEvents.ITEM_BREAK, SoundSource.NEUTRAL, 1.0F, 1.0F);
 	    } else {
-	        preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(cap -> {
-	            if (cap instanceof IItemHandlerModifiable mod) {
-	                mod.setStackInSlot(ITamablePreggoMob.MAINHAND_INVENTORY_SLOT, stack);
-	            }
-	        });
+	    	Inventory inventory = preggoMob.getInventory();
+	    	InventorySlotMapper slotMapper = inventory.getSlotMapper();
+	    	int mainHandSlotIndex = slotMapper.getSlotIndex(InventorySlot.MAINHAND);
+
+	    	if (mainHandSlotIndex != InventorySlotMapper.DEFAULT_INVALID_SLOT_INDEX) {
+		    	inventory.getHandler().setStackInSlot(mainHandSlotIndex, stack);
+	    	}	    
 	    }	
 	}
 	
@@ -549,10 +732,10 @@ public class PreggoMobHelper {
 	    float threshold = (slotIndex == 3 || slotIndex == 0) ? 0.7F : 0.85F;
 	    return random.nextFloat() < threshold;
 	}
-	// Armor END
+	// ARMOR AND ITEMS - END
 	
 	
-	// Spawn Babies START	
+	// SPAWN BABIES AND FETUSES - START
 	private static void spawnBabyOrFetusZombies(ServerLevel serverLevel, float p, int numOfBabies, @NonNull AbstractZombieGirl zombieGirl) {
 			
 		final var minHealth = (int) Math.floor(zombieGirl.getMaxHealth() * 0.2F);
@@ -576,8 +759,7 @@ public class PreggoMobHelper {
 				entityToSpawn.setHealth(randomSource.nextInt(minHealth, maxHealth));				
 			
 				var target = zombieGirl.getLastHurtByMob();
-				
-				if (!isPlayerInCreativeOrSpectator(target)) {
+				if (target instanceof Player targetPlayer && !PlayerHelper.isInvencible(targetPlayer)) {
 					entityToSpawn.setTarget(target);
 				}				
 			}	
@@ -606,7 +788,7 @@ public class PreggoMobHelper {
 				
 				var target = creeperGirl.getLastHurtByMob();
 				
-				if (!isPlayerInCreativeOrSpectator(target)) {
+				if (target instanceof Player playerTarget && !PlayerHelper.isInvencible(playerTarget)) {
 					entityToSpawn.setTarget(target);
 				}
 			}	
@@ -648,7 +830,7 @@ public class PreggoMobHelper {
 		final var pregnancyData = zombieGirl.getPregnancyData();
 		final var pregnancyStage = pregnancyData.getCurrentPregnancyPhase();
 
-		if (pregnancyStage.ordinal() >= 3) {
+		if (pregnancyStage.compareTo(PregnancyPhase.P3) >= 0) {
 			final var alive = getSpawnProbabilityBasedPregnancy(zombieGirl, 0.6F, 0.3F, 0.1F, 0.15F);
 			PregnancySystemHelper.spawnBabiesOrFetuses(serverLevel, zombieGirl.position(), alive, 0.3f, pregnancyData.getWomb(), zombieGirl.getRandom());
 		}	
@@ -666,7 +848,7 @@ public class PreggoMobHelper {
 		final var pregnancyData = creeperGirl.getPregnancyData();
 		final var pregnancyStage = pregnancyData.getCurrentPregnancyPhase();
 		
-		if (pregnancyStage.ordinal() >= 3) {
+		if (pregnancyStage.compareTo(PregnancyPhase.P3) >= 0) {
 			final var alive = getSpawnProbabilityBasedPregnancy(creeperGirl, 0.6F, 0.3F, 0.1F, 0.15F);
 			PregnancySystemHelper.spawnBabiesOrFetuses(serverLevel, creeperGirl.position(), alive, 0.3f, pregnancyData.getWomb(), creeperGirl.getRandom());
 		}	
@@ -675,8 +857,7 @@ public class PreggoMobHelper {
 			PregnancySystemHelper.spawnFetuses(serverLevel, creeperGirl.position(), fetusSpawn, pregnancyData.getWomb(), creeperGirl.getRandom());
 		}
 	}
-	
-	
+		
 	public static void spawnBabyAndFetusCreepers(@NonNull AbstractMonsterPregnantCreeperGirl creeperGirl) {			
 		if (!(creeperGirl.level() instanceof ServerLevel serverLevel)) {
 			return;
@@ -689,7 +870,7 @@ public class PreggoMobHelper {
 		final var t = Mth.clamp(totalDaysPassed / (float) PregnancySystemHelper.DEFAULT_TOTAL_PREGNANCY_DAYS, 0, 1);
 		float p;
 		
-		if (currentPregnancyStage.ordinal() > 2) {
+		if (currentPregnancyStage.compareTo(PregnancyPhase.P3) >= 0) {
 			p = MathHelper.sigmoid(0.1F, 0.15F, 0.3F, t, 0.6F);
 			spawnBabyOrFetusCreepers(serverLevel, p, numOfBabies, creeperGirl);
 		}
@@ -715,7 +896,7 @@ public class PreggoMobHelper {
 		final var t = Mth.clamp(totalDaysPassed / (float) PregnancySystemHelper.DEFAULT_TOTAL_PREGNANCY_DAYS, 0, 1);
 		float p;
 		
-		if (currentPregnancyStage.ordinal() > 2) {
+		if (currentPregnancyStage.compareTo(PregnancyPhase.P3) >= 0) {
 			p = MathHelper.sigmoid(0.1F, 0.15F, 0.3F, t, 0.7F);
 			spawnBabyOrFetusZombies(serverLevel, p, numOfBabies, zombieGirl);
 		}
@@ -727,122 +908,14 @@ public class PreggoMobHelper {
 		MinepreggoMod.LOGGER.debug("SPAWN BABY AND FETUS ZOMBIES: id={}, class={}, currentPregnancytStage={}, maxPregnancyStage={}, totalDaysPassed={}, t={}",
 				zombieGirl.getId(), zombieGirl.getClass().getSimpleName(), currentPregnancyStage, pregnancyData.getLastPregnancyPhase(), totalDaysPassed, t);
 	}	
-	// Spawn Babies END
+	// SPAWN BABIES AND FETUSES - END
 	
-	// Client Data START
-	public static PregnancySystemHelper.PrenatalRegularCheckUpData createRegularPrenatalCheckUpData(ITamablePregnantPreggoMobData ps) {
-		return new PregnancySystemHelper.PrenatalRegularCheckUpData(
-				ps.getCurrentPregnancyPhase(),
-				ps.getLastPregnancyStage(),
-				ps.getPregnancyHealth(),
-				ps.getWomb().getNumOfBabies(),
-				ps.getDaysPassed(),
-				PregnancySystemHelper.calculateDaysToNextPhase(ps),
-				ps.getDaysToGiveBirth()
-				);
-	}
-	
-	public static PregnancySystemHelper.PrenatalUltrasoundScanData createUltrasoundScanPrenatalCheckUpData(Species motherSpecies, ITamablePregnantPreggoMobData ps) {
-		return new PregnancySystemHelper.PrenatalUltrasoundScanData(
-				motherSpecies,
-				ps.getWomb()	
-				);
-	}
-	// Client Data END
-	
-	
-	// Sex Event START	
-	public static boolean canOwnerActivateSexEvent(ServerPlayer owner, PreggoMob target) {
-		if (!(target instanceof ITamablePreggoMob<?> tamableTarget)) {
-			return false;
-		}
-		
-		Optional<Boolean> result = owner.getCapability(MinepreggoCapabilities.PLAYER_DATA).map(cap -> cap.getBreedableData().map(IBreedable::canFuck)).orElse(Optional.empty());
-		
-		if (PregnancySystemHelper.areHostileMobsNearby(owner, target, 16D)) {
-			MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.sex.message.mobs"));
-			return false;
-		}
-		else if (!tamableTarget.getGenderedData().canFuck()) {
-			MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.preggo_mob.sex.message.tiring", target.getSimpleName()));
-			return false;
-		}
-		else if (result.isPresent() && !result.get().booleanValue()) {
-			MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.player.sex.message.tiring"));
-			return false;
-		}
-		else if (owner.distanceToSqr(target) >= 32) {
-			MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.sex.message.distance", target.getSimpleName()));
-			return false;
-		}
-		else if (!PregnancySystemHelper.hasEnoughBedsForBreeding(target, 1, 8)) {
-			MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.sex.message.enough_beds"));
-			return false;
-		}
-		else if (ServerCinematicManager.getInstance().isInCinematic(target)) {
-			MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.sex.message.active_cinematic", target.getSimpleName()));
-			return false;
-		}
-		
-		owner.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> {
-			if (cap.getGender() == tamableTarget.getGenderedData().getGender()) {
-				MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.preggo_mob.message.same_sex", target.getSimpleName()));
-			}
-		});
-		
-		return true;
-	}
-	
-	public static boolean canActivateSexEvent(ServerPlayer owner, PreggoMob target) {		
-		if (!(target instanceof ITamablePreggoMob<?>)) {
-			return false;
-		}
-		
-		if (PregnancySystemHelper.areHostileMobsNearby(owner, target, 16D)) {
-			MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.sex.message.mobs"));
-		}
-		else if (owner.distanceToSqr(target) >= 32) {
-			MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.sex.message.distance", target.getSimpleName()));
-		}
-		else if (ServerCinematicManager.getInstance().isInCinematic(target)) {
-			MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.sex.message.active_cinematic", target.getSimpleName()));
-		}
-		
-			
-		if (!PregnancySystemHelper.hasEnoughBedsForBreeding(target, 1, 8)) {
-			MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.pregnant.preggo_mob.message.without_beds", target.getSimpleName(), owner.getDisplayName().getString()));
-		}
-		else {
-			return true;
-		}
 
-		return false;
-	}	
-	// Sex Event END
-	
-	// Common START	
-	public static boolean isPlayerInCreativeOrSpectator(LivingEntity entity) {
-	    if (entity instanceof Player player) {
-	        return player.isCreative() || player.isSpectator();
-	    }
-	    return false;
-	}
-	
-	public static boolean hasValidTarget(Mob entity) {
-	    LivingEntity target = entity.getTarget();
-	    return target != null && target.isAlive() && entity.canAttack(target);
-	}
-	
-	public static boolean isTargetStillValid(Mob entity) {
-	    LivingEntity target = entity.getTarget();
-	    return target != null && target.isAlive();
-	}
-	// Common END
-	
+	// JIGGLE PHYSICS - START
 	public static void removeJigglePhysics(PreggoMob preggoMob) {
 		MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> preggoMob), 
 				new RemovePreggoMobJigglePhysicsS2CPacket(preggoMob.getId()));
-	}
-	
+	}	
+	// JIGGLE PHYSICS - END
 }
 

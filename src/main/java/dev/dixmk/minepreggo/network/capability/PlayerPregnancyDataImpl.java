@@ -20,6 +20,7 @@ import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
+import dev.dixmk.minepreggo.world.pregnancy.PrenatalCheckupHelper;
 import dev.dixmk.minepreggo.world.pregnancy.SetPregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.Womb;
 import net.minecraft.nbt.CompoundTag;
@@ -580,7 +581,7 @@ public class PlayerPregnancyDataImpl implements IPlayerPregnancyDataHandler {
 		return wrapper;
 	}
 
-	public void deserializeNBT(@NonNull Tag tag) {
+	public void deserializeNBT(@NonNull Tag tag) throws IllegalStateException {
 		CompoundTag wrapper = (CompoundTag) tag;	
 		if (!wrapper.contains(NBT_KEY, Tag.TAG_COMPOUND)) {
 			MinepreggoMod.LOGGER.error("{} is not present in nbt", NBT_KEY);
@@ -609,14 +610,14 @@ public class PlayerPregnancyDataImpl implements IPlayerPregnancyDataHandler {
 	    if (nbt.contains("DataBabies", Tag.TAG_COMPOUND)) {
 	    	this.babiesInsideWomb = Womb.fromNBT(nbt.getCompound("DataBabies"));
 	    	if (this.babiesInsideWomb == null) {
-	    		MinepreggoMod.LOGGER.error("Could not deserialize babies inside womb from nbt DataBabies");
+	    		throw new IllegalStateException("Could not deserialize babies inside womb from nbt DataBabies");
 	    	}
 	    }  	
 	    
 	    if (nbt.contains("DaysByPhase", Tag.TAG_COMPOUND)) {
 	    	this.daysByPregnancyPhase = MapPregnancyPhase.fromNBT(nbt.getCompound("DaysByPhase"));
 	    	if (this.daysByPregnancyPhase == null) {
-	    		MinepreggoMod.LOGGER.error("Could not deserialize days by pregnancy phase from nbt DaysByPhase");
+	    		throw new IllegalStateException("Could not deserialize days by pregnancy phase from nbt DaysByPhase");
 	    	}
 	    }  
 	    
@@ -656,8 +657,8 @@ public class PlayerPregnancyDataImpl implements IPlayerPregnancyDataHandler {
 				this.getTypeOfCravingBySpecies());
 	}
 	
-	public PregnancySystemHelper.PrenatalRegularCheckUpData createRegularCheckUpData() {
-		return new PregnancySystemHelper.PrenatalRegularCheckUpData(
+	public PrenatalCheckupHelper.PrenatalRegularCheckUpData createRegularCheckUpData() {
+		return new PrenatalCheckupHelper.PrenatalRegularCheckUpData(
 				this.currentPregnancyPhase,
 				this.lastPregnancyPhase,
 				this.pregnancyHealth,
@@ -667,8 +668,8 @@ public class PlayerPregnancyDataImpl implements IPlayerPregnancyDataHandler {
 				this.daysToGiveBirth);	
 	}
 	
-	public PregnancySystemHelper.PrenatalUltrasoundScanData createUltrasoundScanData() {
-		return new PregnancySystemHelper.PrenatalUltrasoundScanData(
+	public PrenatalCheckupHelper.PrenatalUltrasoundScanData createUltrasoundScanData() {
+		return new PrenatalCheckupHelper.PrenatalUltrasoundScanData(
 				Species.HUMAN,
 				this.babiesInsideWomb);	
 	}
