@@ -1,5 +1,6 @@
 package dev.dixmk.minepreggo.world.entity.ai.goal;
 
+import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
@@ -19,7 +20,12 @@ public class PreggoMobFollowOwnerGoal<T extends PreggoMob & ITamablePreggoMob<?>
 		this.tamable.getLookControl().setLookAt(this.owner, 10.0F, this.tamable.getMaxHeadXRot());
 		if (--this.timeToRecalcPath <= 0) {
 			this.timeToRecalcPath = this.adjustedTickDelay(10);
-			this.navigation.moveTo(this.owner, this.speedModifier);
+			if (MinepreggoModConfig.SERVER.isPreggoMobsTeleportToPlayerEnable() && this.tamable.distanceToSqr(this.owner) >= 256.0D) {
+				this.teleportToOwner();
+			}
+			else {
+				this.navigation.moveTo(this.owner, this.speedModifier);
+			}
 		}		
 		
 		if (this.tamable.getTarget() != null

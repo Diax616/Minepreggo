@@ -66,7 +66,7 @@ public class IllZombieGirl extends AbstractMonsterZombieGirl implements Ill {
 	public void removeIllagerOwner() {
     	this.setTame(false);
 		this.setOwnerUUID(null);
-		Ill.removeBehaviourGoals(this);
+		Ill.addBehaviourGoalsWhenOwnerDies(this);
 	}
 	
 	@Override
@@ -97,7 +97,7 @@ public class IllZombieGirl extends AbstractMonsterZombieGirl implements Ill {
 	
 	@Override
 	protected void registerGoals() {
-		Ill.addBehaviourGoals(this);
+		Ill.addTamableBehaviourGoals(this);
 		this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.2, false));	
 		this.goalSelector.addGoal(2, new RestrictSunGoal(this));		
         this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 8.0F));
@@ -105,6 +105,15 @@ public class IllZombieGirl extends AbstractMonsterZombieGirl implements Ill {
 		this.goalSelector.addGoal(11, new FloatGoal(this));
 	}
 
+	@Override
+	protected void reassessTameGoals() {
+		if (this.isTame()) {
+	    	Ill.addTamableBehaviourGoals(this);
+		} else {
+			Ill.removeTamableBehaviourGoals(this);
+		}
+	}
+	
 	@Override
 	public ItemStack getPickResult() {
 	    return ItemStack.EMPTY;

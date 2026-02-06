@@ -12,7 +12,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class CreeperGirlMainScreen extends AbstractCreeperGirlMainScreen<TamableHumanoidCreeperGirl, CreeperGirlMainMenu> {
+public class CreeperGirlMainScreen extends AbstractHumanoidCreeperGirlMainScreen<TamableHumanoidCreeperGirl, CreeperGirlMainMenu> {
 
 	protected final boolean pregnant;
 	

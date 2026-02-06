@@ -3,16 +3,8 @@ package dev.dixmk.minepreggo.world.inventory.preggo.zombie;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamableZombieGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirl;
-import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP0;
-import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP1;
-import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP2;
-import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP3;
-import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP4;
-import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP5;
-import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP6;
-import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP7;
-import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirlP8;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -52,32 +44,32 @@ public class ZombieGirlMenuHelper {
                 	packetBuffer.writeBoolean(zombieGirl.getGenderedData().isPregnant());
                 	return new ZombieGirlMainMenu(id, inventory, packetBuffer);
                 }
-                else if (zombieGirlClass == TamableZombieGirlP0.class) {
-                	return new ZombieGirlP0MainMenu(id, inventory, packetBuffer);
+                else if (zombieGirlClass == TamablePregnantZombieGirl.TamableZombieGirlP0.class) {
+                	return new TamablePregnantZombieGirlMainMenu.ZombieGirlP0MainMenu(id, inventory, packetBuffer);
                 }
-                else if (zombieGirlClass == TamableZombieGirlP1.class) {
-                	return new ZombieGirlP1MainMenu(id, inventory, packetBuffer);
+                else if (zombieGirlClass == TamablePregnantZombieGirl.TamableZombieGirlP1.class) {
+                	return new TamablePregnantZombieGirlMainMenu.ZombieGirlP1MainMenu(id, inventory, packetBuffer);
                 }
-                else if (zombieGirlClass == TamableZombieGirlP2.class) {
-                	return new ZombieGirlP2MainMenu(id, inventory, packetBuffer);
+                else if (zombieGirlClass == TamablePregnantZombieGirl.TamableZombieGirlP2.class) {
+                	return new TamablePregnantZombieGirlMainMenu.ZombieGirlP2MainMenu(id, inventory, packetBuffer);
                 }
-                else if (zombieGirlClass == TamableZombieGirlP3.class) {
-                	return new ZombieGirlP3MainMenu(id, inventory, packetBuffer);
+                else if (zombieGirlClass == TamablePregnantZombieGirl.TamableZombieGirlP3.class) {
+                	return new TamablePregnantZombieGirlMainMenu.ZombieGirlP3MainMenu(id, inventory, packetBuffer);
                 }
-                else if (zombieGirlClass == TamableZombieGirlP4.class) {
-                	return new ZombieGirlP4MainMenu(id, inventory, packetBuffer);
+                else if (zombieGirlClass == TamablePregnantZombieGirl.TamableZombieGirlP4.class) {
+                	return new TamablePregnantZombieGirlMainMenu.ZombieGirlP4MainMenu(id, inventory, packetBuffer);
                 }
-                else if (zombieGirlClass == TamableZombieGirlP5.class) {
-                	return new ZombieGirlP5MainMenu(id, inventory, packetBuffer);
+                else if (zombieGirlClass == TamablePregnantZombieGirl.TamableZombieGirlP5.class) {
+                	return new TamablePregnantZombieGirlMainMenu.ZombieGirlP5MainMenu(id, inventory, packetBuffer);
                 }
-                else if (zombieGirlClass == TamableZombieGirlP6.class) {
-                	return new ZombieGirlP6MainMenu(id, inventory, packetBuffer);
+                else if (zombieGirlClass == TamablePregnantZombieGirl.TamableZombieGirlP6.class) {
+                	return new TamablePregnantZombieGirlMainMenu.ZombieGirlP6MainMenu(id, inventory, packetBuffer);
                 }
-                else if (zombieGirlClass == TamableZombieGirlP7.class) {
-                	return new ZombieGirlP7MainMenu(id, inventory, packetBuffer);
+                else if (zombieGirlClass == TamablePregnantZombieGirl.TamableZombieGirlP7.class) {
+                	return new TamablePregnantZombieGirlMainMenu.ZombieGirlP7MainMenu(id, inventory, packetBuffer);
                 }
-                else if (zombieGirlClass == TamableZombieGirlP8.class) {
-                	return new ZombieGirlP8MainMenu(id, inventory, packetBuffer);
+                else if (zombieGirlClass == TamablePregnantZombieGirl.TamableZombieGirlP8.class) {
+                	return new TamablePregnantZombieGirlMainMenu.ZombieGirlP8MainMenu(id, inventory, packetBuffer);
                 }
                 else {
                     throw new IllegalArgumentException("Unsupported zombie girl menu: " + zombieGirlClass.getSimpleName());
@@ -115,32 +107,32 @@ public class ZombieGirlMenuHelper {
                 if (zombieGirlClass == TamableZombieGirl.class) {
                 	return new ZombieGirlInventoryMenu(id, inventory, packetBuffer);
                 }
-                else if (zombieGirlClass == TamableZombieGirlP0.class) {
-                	return new ZombieGirlP0InventoryMenu(id, inventory, packetBuffer);
+                else if (zombieGirlClass == TamablePregnantZombieGirl.TamableZombieGirlP0.class) {
+                	return new TamablePregnantZombieGirlInventoryMenu.ZombieGirlP0InventoryMenu(id, inventory, packetBuffer);
                 }
-                else if (zombieGirlClass == TamableZombieGirlP1.class) {
-                	return new ZombieGirlP1InventoryMenu(id, inventory, packetBuffer);
+                else if (zombieGirlClass == TamablePregnantZombieGirl.TamableZombieGirlP1.class) {
+                	return new TamablePregnantZombieGirlInventoryMenu.ZombieGirlP1InventoryMenu(id, inventory, packetBuffer);
                 }
-                else if (zombieGirlClass == TamableZombieGirlP2.class) {
-                	return new ZombieGirlP2InventoryMenu(id, inventory, packetBuffer);
+                else if (zombieGirlClass == TamablePregnantZombieGirl.TamableZombieGirlP2.class) {
+                	return new TamablePregnantZombieGirlInventoryMenu.ZombieGirlP2InventoryMenu(id, inventory, packetBuffer);
                 }
-                else if (zombieGirlClass == TamableZombieGirlP3.class) {
-                	return new ZombieGirlP3InventoryMenu(id, inventory, packetBuffer);
+                else if (zombieGirlClass == TamablePregnantZombieGirl.TamableZombieGirlP3.class) {
+                	return new TamablePregnantZombieGirlInventoryMenu.ZombieGirlP3InventoryMenu(id, inventory, packetBuffer);
                 }
-                else if (zombieGirlClass == TamableZombieGirlP4.class) {
-                	return new ZombieGirlP4InventoryMenu(id, inventory, packetBuffer);
+                else if (zombieGirlClass == TamablePregnantZombieGirl.TamableZombieGirlP4.class) {
+                	return new TamablePregnantZombieGirlInventoryMenu.ZombieGirlP4InventoryMenu(id, inventory, packetBuffer);
                 }
-                else if (zombieGirlClass == TamableZombieGirlP5.class) {
-                	return new ZombieGirlP5InventoryMenu(id, inventory, packetBuffer);
+                else if (zombieGirlClass == TamablePregnantZombieGirl.TamableZombieGirlP5.class) {
+                	return new TamablePregnantZombieGirlInventoryMenu.ZombieGirlP5InventoryMenu(id, inventory, packetBuffer);
                 }
-                else if (zombieGirlClass == TamableZombieGirlP6.class) {
-                	return new ZombieGirlP6InventoryMenu(id, inventory, packetBuffer);
+                else if (zombieGirlClass == TamablePregnantZombieGirl.TamableZombieGirlP6.class) {
+                	return new TamablePregnantZombieGirlInventoryMenu.ZombieGirlP6InventoryMenu(id, inventory, packetBuffer);
                 }
-                else if (zombieGirlClass == TamableZombieGirlP7.class) {
-                	return new ZombieGirlP7InventoryMenu(id, inventory, packetBuffer);
+                else if (zombieGirlClass == TamablePregnantZombieGirl.TamableZombieGirlP7.class) {
+                	return new TamablePregnantZombieGirlInventoryMenu.ZombieGirlP7InventoryMenu(id, inventory, packetBuffer);
                 }
-                else if (zombieGirlClass == TamableZombieGirlP8.class) {
-                	return new ZombieGirlP8InventoryMenu(id, inventory, packetBuffer);
+                else if (zombieGirlClass == TamablePregnantZombieGirl.TamableZombieGirlP8.class) {
+                	return new TamablePregnantZombieGirlInventoryMenu.ZombieGirlP8InventoryMenu(id, inventory, packetBuffer);
                 }
                 else {
                     throw new IllegalArgumentException("Unsupported zombie girl menu: " + zombieGirlClass.getSimpleName());

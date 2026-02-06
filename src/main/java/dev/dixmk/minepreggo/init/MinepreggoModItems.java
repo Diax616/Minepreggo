@@ -30,6 +30,9 @@ import dev.dixmk.minepreggo.world.item.DeadCreeperFetusItem;
 import dev.dixmk.minepreggo.world.item.DeadZombieFetusItem;
 import dev.dixmk.minepreggo.world.item.EnderLifeSubstanceItem;
 import dev.dixmk.minepreggo.world.item.EnderSlimeJellyItem;
+import dev.dixmk.minepreggo.world.item.EnderSlimeJellyWithChocolateItem;
+import dev.dixmk.minepreggo.world.item.EnderSlimeJellyWithHotSauceItem;
+import dev.dixmk.minepreggo.world.item.EnderSlimeJellyWithSaltItem;
 import dev.dixmk.minepreggo.world.item.FemaleChainmailChestPlateItem;
 import dev.dixmk.minepreggo.world.item.FemaleDiamondChestPlateItem;
 import dev.dixmk.minepreggo.world.item.FemaleGoldenChestPlateItem;
@@ -54,6 +57,7 @@ import dev.dixmk.minepreggo.world.item.SaltItem;
 import dev.dixmk.minepreggo.world.item.SaltyWaterBottleItem;
 import dev.dixmk.minepreggo.world.item.SourActivatedGunpowderItem;
 import dev.dixmk.minepreggo.world.item.SourBrainItem;
+import dev.dixmk.minepreggo.world.item.SourEnderSlimeJellyItem;
 import dev.dixmk.minepreggo.world.item.SpecimenTubeItem;
 import dev.dixmk.minepreggo.world.item.VillagerBrainItem;
 import dev.dixmk.minepreggo.world.item.VillagerLifeSubstanceItem;
@@ -77,7 +81,11 @@ public class MinepreggoModItems {
 	public static final DeferredRegister<Item> REGISTRY = DeferredRegister.create(ForgeRegistries.ITEMS, MinepreggoMod.MODID);
 	
 	public static final RegistryObject<Item> MONSTER_CREEPER_GIRL_SPAWN_EGG = REGISTRY.register("monster_creeper_girl_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.MONSTER_CREEPER_GIRL, -16539904, -16777216, new Item.Properties()));
+	public static final RegistryObject<Item> TAMABLE_MONSTER_CREEPER_GIRL_SPAWN_EGG = REGISTRY.register("tamable_monster_creeper_girl_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL, -16539904, -16777216, new Item.Properties()));
+
 	public static final RegistryObject<Item> MONSTER_ENDER_WOMAN_SPAWN_EGG = REGISTRY.register("monster_ender_woman_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.MONSTER_ENDER_WOMAN, -14869219, -16777216, new Item.Properties()));
+	public static final RegistryObject<Item> TAMABLE_MONSTER_ENDER_WOMAN_SPAWN_EGG = REGISTRY.register("tamable_monster_ender_woman_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN, -14869219, -16777216, new Item.Properties()));
+	
 	public static final RegistryObject<Item> SCIENTIFIC_ILLAGER_SPAWN_EGG = REGISTRY.register("scientific_illager_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.SCIENTIFIC_ILLAGER, -13434880, -10066330, new Item.Properties()));
 	public static final RegistryObject<Item> FERTILITY_WITCH_SPAWN_EGG = REGISTRY.register("fertility_witch_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.FERTILITY_WITCH, -39271, -65434, new Item.Properties()));
 	
@@ -147,6 +155,13 @@ public class MinepreggoModItems {
 	public static final RegistryObject<Item> ACTIVATED_GUNPOWDER_WITH_SALT = REGISTRY.register("activated_gunpowder_with_salt", ActivatedGunpowderWithSaltItem::new);
 	public static final RegistryObject<Item> ACTIVATED_GUNPOWDER_WITH_HOT_SAUCE = REGISTRY.register("activated_gunpowder_with_hot_sauce", ActivatedGunpowderWithHotSauceItem::new);
 	public static final RegistryObject<Item> SOUR_ACTIVATED_GUNPOWDER = REGISTRY.register("sour_activated_gunpowder", SourActivatedGunpowderItem::new);
+	
+	public static final RegistryObject<Item> ENDER_SLIME_JELLY = REGISTRY.register("ender_slime_jelly", EnderSlimeJellyItem::new);
+	public static final RegistryObject<Item> ENDER_SLIME_JELLY_WITH_CHOCOLATE = REGISTRY.register("ender_slime_jelly_with_chocolate", EnderSlimeJellyWithChocolateItem::new);
+	public static final RegistryObject<Item> ENDER_SLIME_JELLY_WITH_HOT_SAUCE = REGISTRY.register("ender_slime_jelly_with_hot_sauce", EnderSlimeJellyWithHotSauceItem::new);
+	public static final RegistryObject<Item> ENDER_SLIME_JELLY_WITH_SALT = REGISTRY.register("ender_slime_jelly_with_salt", EnderSlimeJellyWithSaltItem::new);
+	public static final RegistryObject<Item> SOUR_ENDER_SLIME_JELLY = REGISTRY.register("sour_ender_slime_jelly", SourEnderSlimeJellyItem::new);
+	public static final RegistryObject<Item> REFINED_CHORUS_SHARDS = REGISTRY.register("refined_chorus_shards", RefinedChorusShardsItem::new);
 
 	public static final RegistryObject<Item> FEMALE_CHAINMAIL_P0_CHESTPLATE = REGISTRY.register("female_chainmail_p0_chestplate", FemaleChainmailChestPlateItem.ChestplateP0::new);
 	public static final RegistryObject<Item> FEMALE_IRON_P0_CHESTPLATE = REGISTRY.register("female_iron_p0_chestplate", FemaleIronChestPlateItem.ChestplateP0::new);
@@ -220,9 +235,6 @@ public class MinepreggoModItems {
 	public static final RegistryObject<Item> CUM_SPECIMEN_TUBE = REGISTRY.register("cum_specimen_tube", CumSpecimenTubeItem::new);
 
 	public static final RegistryObject<Item> MEDICAL_TABLE = block(MinepreggoModBlocks.MEDICAL_TABLE);
-	
-	public static final RegistryObject<Item> ENDER_SLIME_JELLY = REGISTRY.register("ender_slime_jelly", EnderSlimeJellyItem::new);
-	public static final RegistryObject<Item> REFINED_CHORUS_SHARDS = REGISTRY.register("refined_chorus_shards", RefinedChorusShardsItem::new);
 
 	private static RegistryObject<Item> block(RegistryObject<Block> block) {
 		return REGISTRY.register(block.getId().getPath(), () -> new BlockItem(block.get(), new Item.Properties()));

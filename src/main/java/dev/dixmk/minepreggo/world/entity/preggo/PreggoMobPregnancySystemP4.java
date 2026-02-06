@@ -102,7 +102,7 @@ public abstract class PreggoMobPregnancySystemP4
 				PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, InventorySlot.LEGS);
 				PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, InventorySlot.MAINHAND);
 				PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, InventorySlot.OFFHAND);
-	        	MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) pregnantEntity.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.birth.message.pre", pregnantEntity.getSimpleName()));
+	        	MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) pregnantEntity.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.birth.message.pre", pregnantEntity.getSimpleNameOrCustom()));
 			}	
 			else {
 				pregnancyData.incrementPregnancyPainTimer();
@@ -137,7 +137,7 @@ public abstract class PreggoMobPregnancySystemP4
 		        	aliveBabiesItemStacks.forEach(baby -> PreggoMobHelper.storeItemInExtraSlotsOrDrop(pregnantEntity, baby)); 						
 	        	}
 	        	        	
-	        	MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) pregnantEntity.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.birth.message.post", pregnantEntity.getSimpleName()));
+	        	MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) pregnantEntity.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.birth.message.post", pregnantEntity.getSimpleNameOrCustom()));
 				initPostPartum();	
 	        	pregnantEntity.discard();   	
 				MinepreggoMod.LOGGER.debug("PreggoMob {} has given birth.", pregnantEntity.getDisplayName().getString());	
@@ -158,7 +158,7 @@ public abstract class PreggoMobPregnancySystemP4
 		pregnantEntity.setCanPickUpLoot(false);
 		pregnantEntity.setBreakBlocks(false);
 		MinepreggoMod.LOGGER.debug("PreggoMob {} has started labor.", pregnantEntity.getDisplayName().getString());	
-    	MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) pregnantEntity.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.birth.message.warning", pregnantEntity.getSimpleName()));
+    	MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) pregnantEntity.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.birth.message.warning", pregnantEntity.getSimpleNameOrCustom()));
 	}
 	
 	@Override
@@ -180,7 +180,7 @@ public abstract class PreggoMobPregnancySystemP4
 		pregnancyData.resetPregnancyPainTimer();
 		pregnancyData.setPregnancyPain(PregnancyPain.WATER_BREAKING);
 		MinepreggoMod.LOGGER.debug("PreggoMob {} water has broken.", pregnantEntity.getDisplayName().getString());
-    	MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) pregnantEntity.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.birth.message.init", pregnantEntity.getSimpleName()));
+    	MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) pregnantEntity.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.birth.message.init", pregnantEntity.getSimpleNameOrCustom()));
 	}
 	
 	@Override

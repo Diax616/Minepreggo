@@ -157,7 +157,6 @@ public abstract class AbstractMonsterPregnantCreeperGirl extends AbstractMonster
 	
 	@Override
 	protected void registerGoals() {
-		this.addBehaviourGoals();
 		this.goalSelector.addGoal(3, new MeleeAttackGoal(this, 1.2, false) {
 			@Override
 			public boolean canUse() {
@@ -208,10 +207,6 @@ public abstract class AbstractMonsterPregnantCreeperGirl extends AbstractMonster
 				return super.canUse() && !pregnancyDataImpl.isIncapacitated();		
 			}
 		});
-	}
-	
-	@Override
-	protected void addBehaviourGoals() {
 		this.goalSelector.addGoal(1, new AbstractCreeperGirl.SwellGoal<>(this) {		
 			@Override
 			public boolean canUse() {												

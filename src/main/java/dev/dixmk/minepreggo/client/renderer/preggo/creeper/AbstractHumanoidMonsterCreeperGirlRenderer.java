@@ -1,7 +1,7 @@
 package dev.dixmk.minepreggo.client.renderer.preggo.creeper;
 
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractHumanoidMonsterCreeperGirlModel;
-import dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.creeper.HumanoidMonsterCreeperGirlExpressionLayer;
+import dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.creeper.MonsterHumanoidCreeperGirlExpressionLayer;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterHumanoidCreeperGirl;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraftforge.api.distmarker.Dist;
@@ -21,6 +21,6 @@ public abstract class AbstractHumanoidMonsterCreeperGirlRenderer
 	}
 	
 	protected void addFacialExpresions() {
-		this.addLayer(new HumanoidMonsterCreeperGirlExpressionLayer<>(this));
+		this.addLayer(new MonsterHumanoidCreeperGirlExpressionLayer<>(this));
 	}
 }

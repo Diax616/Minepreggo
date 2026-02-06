@@ -1,17 +1,19 @@
 package dev.dixmk.minepreggo.world.item;
 
+import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantments;
 
 public class ItemHelper {
 
 	private ItemHelper() {}
-	
-	
+		
 	public static boolean isHelmet(ItemStack item) {
 		if (item == null) return false;
 		return isHelmet(item.getItem());
@@ -75,5 +77,9 @@ public class ItemHelper {
 		case 3 -> Items.GOLDEN_AXE;
 		default -> Items.DIAMOND_AXE;
 		};
+	}
+	
+	public static boolean canPickUp(Player player, ItemStack itemstack) {
+	    return PlayerHelper.isInvencible(player) || itemstack.getEnchantmentLevel(Enchantments.BINDING_CURSE) == 0;	
 	}
 }

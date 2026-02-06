@@ -21,6 +21,7 @@ import net.minecraft.server.level.ServerLevel;
 import javax.annotation.Nullable;
 
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
+import dev.dixmk.minepreggo.world.entity.ai.goal.GoalHelper;
 import dev.dixmk.minepreggo.world.entity.monster.Ill;
 import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
 import dev.dixmk.minepreggo.world.item.ItemHelper;
@@ -56,7 +57,7 @@ public class IllEnderWoman extends AbstractMonsterEnderWoman implements Ill {
 	public void removeIllagerOwner() {
     	this.setTame(false);	
 		this.setOwnerUUID(null);	
-		Ill.removeBehaviourGoals(this);
+		Ill.addBehaviourGoalsWhenOwnerDies(this);
 	}
 	
 	@Override
@@ -93,11 +94,22 @@ public class IllEnderWoman extends AbstractMonsterEnderWoman implements Ill {
     @Override
     protected void registerGoals() {
     	this.addBehaviourGoals();
-    	Ill.addBehaviourGoals(this);
+		this.goalSelector.addGoal(5, new AbstractEnderWoman.EnderWomanTeleportToTargetGoal(this, 196F, 25F));
         this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.2D, false));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));  
     }
+    
+	@Override
+	protected void reassessTameGoals() {
+		if (this.isTame()) {
+	    	Ill.addTamableBehaviourGoals(this);
+			GoalHelper.addGoalWithReplacement(this, 7, new AbstractEnderWoman.EnderWomanTeleportToOwnerGoal(this, 196F, 81F));
+		} else {
+			Ill.removeTamableBehaviourGoals(this);
+			GoalHelper.removeGoalByClass(this.goalSelector, AbstractEnderWoman.EnderWomanTeleportToOwnerGoal.class);
+		}
+	}
     
 	@Override
 	public ItemStack getPickResult() {
@@ -105,7 +117,7 @@ public class IllEnderWoman extends AbstractMonsterEnderWoman implements Ill {
 	}
     
     public static AttributeSupplier.Builder createAttributes() {
-        return createBasicAttributes(0.35D);
+        return MonsterEnderWomanHelper.createBasicAttributes(0.35D);
 	}
 
 	@Override

@@ -60,8 +60,8 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 	private CombatMode combatMode = CombatMode.EXPLODE;
 	
 	protected AbstractCreeperGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_, Creature typeOfCreature) {
-      super(p_21803_, p_21804_, Species.CREEPER, typeOfCreature);
-      this.reassessTameGoals();	    
+		super(p_21803_, p_21804_, Species.CREEPER, typeOfCreature);   
+		this.setRandomCombatMode();
 	}
 		
 	public void setCombatMode(CombatMode value) {
@@ -72,6 +72,22 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 	
 	public CombatMode getCombatMode() {
 		return combatMode;
+	}
+	
+	protected void setRandomCombatMode() {		
+		if (this.level().isClientSide()) {
+			return;
+		}	
+		final var p = this.getRandom().nextFloat();		
+	    if (p < 0.4F) {    	
+	    	this.setCombatMode(CombatMode.FIGHT_AND_EXPLODE);
+	    }
+	    else if (p < 0.9F) {
+	    	this.setCombatMode(CombatMode.EXPLODE);
+	    }
+	    else {
+	    	this.setCombatMode(CombatMode.DONT_EXPLODE);
+	    }
 	}
 	
 	@Override
@@ -107,11 +123,6 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 	@Override
 	public boolean isFoodToTame(ItemStack stack) {
 		return stack.is(MinepreggoModItems.ACTIVATED_GUNPOWDER.get());
-	}
-	
-	@Override
-	public String getSimpleName() {
-		return this.hasCustomName() ? this.getDisplayName().getString() : "Creeper Girl";
 	}
 	
 	@Override

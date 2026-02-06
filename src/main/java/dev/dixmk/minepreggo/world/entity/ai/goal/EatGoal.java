@@ -24,7 +24,7 @@ public class EatGoal<E extends PreggoMob & ITamablePreggoMob<?>> extends Goal {
     private ItemStack food = ItemStack.EMPTY;
     private InteractionHand hand = null;
 
-    public EatGoal(E mob, float healThreshold, int eatDuration) throws IllegalArgumentException {
+    public EatGoal(E mob, float healThreshold, int eatDuration) {
     	this.mob = mob;
         this.healThreshold = healThreshold;
         this.eatDuration = eatDuration;

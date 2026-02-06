@@ -4,6 +4,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import dev.dixmk.minepreggo.network.packet.c2s.MountEntityC2SPacket;
 import dev.dixmk.minepreggo.network.packet.c2s.RequestBellyRubbingAnimationC2SPacket;
 import dev.dixmk.minepreggo.network.packet.c2s.RequestPlayerMedicalCheckUpC2SPacket;
 import dev.dixmk.minepreggo.network.packet.c2s.RequestPreggoMobInventoryMenuC2SPacket;
@@ -14,6 +15,7 @@ import dev.dixmk.minepreggo.network.packet.c2s.RequestSexP2PC2SPacket;
 import dev.dixmk.minepreggo.network.packet.c2s.ResponseSexRequestM2PC2SPacket;
 import dev.dixmk.minepreggo.network.packet.c2s.ResponseSexRequestP2PC2SPacket;
 import dev.dixmk.minepreggo.network.packet.c2s.StopPlayerAnimationC2SPacket;
+import dev.dixmk.minepreggo.network.packet.c2s.TeleportWithEnderWomanC2SPacket;
 import dev.dixmk.minepreggo.network.packet.c2s.UpdateBellyRubbingStateC2SPacket;
 import dev.dixmk.minepreggo.network.packet.c2s.UpdateCreeperGirlCombatModeC2SPacket;
 import dev.dixmk.minepreggo.network.packet.c2s.UpdatePlayerDataC2SPacket;
@@ -92,5 +94,7 @@ public class MinepreggoModPacketHandler {
 		addNetworkMessage(UpdateShowPlayerMainMenuC2SPacket.class, UpdateShowPlayerMainMenuC2SPacket::encode, UpdateShowPlayerMainMenuC2SPacket::decode, UpdateShowPlayerMainMenuC2SPacket::handler);	
 		addNetworkMessage(SyncJigglePhysicsS2CPacket.class, SyncJigglePhysicsS2CPacket::encode, SyncJigglePhysicsS2CPacket::decode, SyncJigglePhysicsS2CPacket::handler);	
 		addNetworkMessage(RemovePreggoMobJigglePhysicsS2CPacket.class, RemovePreggoMobJigglePhysicsS2CPacket::encode, RemovePreggoMobJigglePhysicsS2CPacket::decode, RemovePreggoMobJigglePhysicsS2CPacket::handler);
+		addNetworkMessage(MountEntityC2SPacket.class, MountEntityC2SPacket::encode, MountEntityC2SPacket::decode, MountEntityC2SPacket::handler);
+		addNetworkMessage(TeleportWithEnderWomanC2SPacket.class, TeleportWithEnderWomanC2SPacket::encode, TeleportWithEnderWomanC2SPacket::decode, TeleportWithEnderWomanC2SPacket::handler);
 	}
 }

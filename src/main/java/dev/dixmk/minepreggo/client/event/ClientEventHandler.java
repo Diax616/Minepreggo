@@ -1,5 +1,7 @@
 package dev.dixmk.minepreggo.client.event;
 
+import javax.annotation.CheckForNull;
+
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.client.animation.player.PlayerAnimationManager;
@@ -9,13 +11,23 @@ import dev.dixmk.minepreggo.client.renderer.entity.layer.player.ClientPlayerHelp
 import dev.dixmk.minepreggo.client.screens.effect.SexOverlayManager;
 import dev.dixmk.minepreggo.common.animation.CommonPlayerAnimationRegistry;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
+import dev.dixmk.minepreggo.init.MinepreggoModKeyMappings;
+import dev.dixmk.minepreggo.network.packet.c2s.RequestBellyRubbingAnimationC2SPacket;
+import dev.dixmk.minepreggo.network.packet.c2s.StopPlayerAnimationC2SPacket;
+import dev.dixmk.minepreggo.network.packet.c2s.TeleportWithEnderWomanC2SPacket;
 import dev.dixmk.minepreggo.network.packet.c2s.UpdateBellyRubbingStateC2SPacket;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractTamableMonsterEnderWoman;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -150,5 +162,66 @@ public class ClientEventHandler {
         	cameraOffsetY = 0;
         	
         }     
+    }
+    
+    @SubscribeEvent
+    public static void onKeyInput(InputEvent.Key event) {
+    	var player = Minecraft.getInstance().player; 
+    	
+    	if (player == null) return;
+    	
+    	
+    	if (MinepreggoModKeyMappings.RUB_BELLY_KEY.consumeClick()) {        
+        	player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
+        		cap.getFemaleData().ifPresent(femaleData -> {
+        			if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
+        				final var pain = femaleData.getPregnancyData().getPregnancyPain();
+        				if (pain != null && pain.incapacitate) {
+        					return;
+        				}
+        				       				
+        				if (PlayerAnimationManager.getInstance().get(player).hasActiveAnimation()) {
+            				MinepreggoModPacketHandler.INSTANCE.sendToServer(new StopPlayerAnimationC2SPacket(player.getUUID()));
+        				}
+        				else {
+            				MinepreggoModPacketHandler.INSTANCE.sendToServer(new RequestBellyRubbingAnimationC2SPacket(player.getUUID(), femaleData.getPregnancyData().getCurrentPregnancyPhase()));
+        				}
+        			}
+        		})
+        	);	
+        }
+    	else if (MinepreggoModKeyMappings.TELEPORT_WITH_ENDER_WOMAN.consumeClick() && player.getVehicle() instanceof AbstractTamableMonsterEnderWoman enderWoman) {
+    		BlockPos targetPos = performTeleport();
+			if (targetPos != null) {
+				MinepreggoModPacketHandler.INSTANCE.sendToServer(
+					new TeleportWithEnderWomanC2SPacket(enderWoman.getId(), targetPos)
+				);
+			}
+    	}		
+    }	
+    
+    @CheckForNull
+    private static BlockPos performTeleport() {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player == null || mc.level == null)
+        	return null;
+        
+        Vec3 eyePos = mc.player.getEyePosition();
+        Vec3 lookVec = mc.player.getLookAngle();
+        Vec3 endPos = eyePos.add(lookVec.scale(100));
+        
+        BlockHitResult result = mc.level.clip(new ClipContext(
+            eyePos,
+            endPos,
+            ClipContext.Block.OUTLINE,
+            ClipContext.Fluid.NONE,
+            mc.player
+        ));
+        
+        if (result.getType() != BlockHitResult.Type.MISS) {
+            return result.getBlockPos();
+        }
+        
+        return null;
     }
 }

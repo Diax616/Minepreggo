@@ -14,6 +14,7 @@ import dev.dixmk.minepreggo.event.entity.living.EnderWomanAngerEvent;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.utils.TagHelper;
+import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
@@ -45,13 +46,11 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -80,7 +79,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
-
 
 public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob {
 	protected static final UUID SPEED_MODIFIER_ATTACKING_UUID = UUID.fromString("020E0DFB-87AE-4653-9556-831010E291A0");
@@ -117,17 +115,17 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
 	
 	@Override
 	public boolean removeWhenFarAway(double p_27598_) {
-		return !this.isTame();
+		return !this.isTame() && !this.wasTamed();
+	}
+	
+	@Override
+	protected boolean shouldDespawnInPeaceful() {
+		return !this.isTame() && !this.wasTamed();
 	}
 	
 	@Override
 	public boolean canBeLeashed(Player p_21813_) {
 		return false;
-	}
-	
-	@Override
-	protected boolean shouldDespawnInPeaceful() {
-		return !this.isTame();
 	}
 	
 	@Override
@@ -140,11 +138,6 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
 		return stack.is(TagHelper.ENDER_FOOD);
 	}
 
-	@Override
-	public String getSimpleName() {
-		return "Ender Woman";
-	}
-	
     @Override
     public void setTarget(@Nullable LivingEntity p_32537_) {
         AttributeInstance attributeinstance = this.getAttribute(Attributes.MOVEMENT_SPEED);
@@ -334,8 +327,21 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
         return this.teleport(d1, d2, d3);
     }
 
+    boolean teleportNear(Entity target) {
+        Vec3 targetPos = target.position();
+        
+        double angle = this.random.nextDouble() * Math.PI * 2.0D;
+        double distance = this.random.nextDouble() * 2.0D;
+        
+        double d1 = targetPos.x + Math.cos(angle) * distance;
+        double d2 = targetPos.y;
+        double d3 = targetPos.z + Math.sin(angle) * distance;
+        
+        return this.teleport(d1, d2, d3);
+    }
+    
     @SuppressWarnings("deprecation")
-	private boolean teleport(double p_32544_, double p_32545_, double p_32546_) {
+    protected boolean teleport(double p_32544_, double p_32545_, double p_32546_) {
         BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos(p_32544_, p_32545_, p_32546_);
 
         while (blockpos$mutableblockpos.getY() > this.level().getMinBuildHeight() && !this.level().getBlockState(blockpos$mutableblockpos).blocksMotion()) {
@@ -364,7 +370,7 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
             return false;
         }
     }
-
+    
     @Override
     protected SoundEvent getAmbientSound() {
         return this.isCreepy() ? SoundEvents.ENDERMAN_SCREAM : SoundEvents.ENDERMAN_AMBIENT;
@@ -402,7 +408,7 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
 
     @Nullable
     public BlockState getCarriedBlock() {
-        return this.entityData.get(DATA_CARRY_STATE).orElse((BlockState)null);
+        return this.entityData.get(DATA_CARRY_STATE).orElse(null);
     }
 
     public boolean isCarring() {
@@ -486,16 +492,7 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
         this.targetSelector.addGoal(1, new AbstractEnderWoman.EnderWomanLookForPlayerGoal(this, this::isAngryAt));
         this.targetSelector.addGoal(4, new ResetUniversalAngerTargetGoal<>(this, false));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Endermite.class, true, false));
-		this.goalSelector.addGoal(5, new AbstractEnderWoman.EnderWomanTeleportToTargetGoal(this, 400F, 25F));
     }
-    
-    protected static AttributeSupplier.Builder createBasicAttributes(double movementSpeed) {
-        return Mob.createMobAttributes()
-        		.add(Attributes.MAX_HEALTH, 40.0D)
-        		.add(Attributes.MOVEMENT_SPEED, movementSpeed)
-        		.add(Attributes.ATTACK_DAMAGE, 7.0D)
-        		.add(Attributes.FOLLOW_RANGE, 64.0D);
-	}
     
     protected static class EnderWomanFreezeWhenLookedAt extends Goal {
         private final AbstractEnderWoman abstractEnderGirl;
@@ -529,7 +526,7 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
     
     protected static class EnderWomanLookForPlayerGoal extends NearestAttackableTargetGoal<Player> {
         private final AbstractEnderWoman abstractEnderGirl;
-        @Nullable private Player pendingTarget;
+        @Nullable protected Player pendingTarget;
         private int aggroTime;
         private int teleportTime;
         private final TargetingConditions startAggroTargetConditions;
@@ -630,16 +627,13 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
         private int teleportTime;      
         private LivingEntity target;
 
-        public EnderWomanTeleportToTargetGoal(AbstractEnderWoman enderWoman, float maxDistance, float minDistance) {
+        public EnderWomanTeleportToTargetGoal(AbstractEnderWoman enderWoman, float maxDistance, float minDistance) throws IllegalArgumentException {
             this.enderWoman = enderWoman;
             if (minDistance > maxDistance) {
-                this.maxDistance = minDistance;
-                this.minDistance = maxDistance;
+				throw new IllegalArgumentException("Minimum distance must be less than maximum distance");          
             }
-            else {
-                this.maxDistance = maxDistance;
-                this.minDistance = minDistance;
-            }
+            this.maxDistance = maxDistance;
+            this.minDistance = minDistance;
         }
 
         @Override
@@ -662,7 +656,7 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
             if (this.target != null && !this.enderWoman.isPassenger()) {                    	
             	if (this.target.distanceToSqr(this.enderWoman) > this.minDistance
                 		&& this.teleportTime++ >= this.adjustedTickDelay(10)
-                		&& this.enderWoman.teleportTowards(this.target)) {
+                		&& this.enderWoman.teleportNear(this.target)) {
                     this.teleportTime = 0;
                 }      
                 super.tick();
@@ -757,6 +751,57 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
                 this.abstractEnderGirl.setCarriedBlock(blockstate.getBlock().defaultBlockState());
             }
 
+        }
+    }
+    
+    protected static class EnderWomanTeleportToOwnerGoal extends Goal {
+        private final AbstractEnderWoman enderWoman;
+        private final float maxDistance;
+        private final float minDistance;
+        private int teleportTime;      
+        private LivingEntity target;
+        
+        public EnderWomanTeleportToOwnerGoal(AbstractEnderWoman enderWoman, float maxDistance, float minDistance) throws IllegalArgumentException {
+            this.enderWoman = enderWoman;
+            if (minDistance > maxDistance) {
+				throw new IllegalArgumentException("Minimum distance must be less than maximum distance");          
+            }
+            this.maxDistance = maxDistance;
+            this.minDistance = minDistance;
+        }
+        
+        @Override
+        public boolean canUse() {
+            this.target = this.enderWoman.getOwner();
+            if (this.target == null || !this.target.isAlive()) {
+                return false;
+            }              
+            
+            if (this.enderWoman.isAggressive() || 
+            		LivingEntityHelper.hasValidTarget(this.enderWoman) ||
+            		LivingEntityHelper.isTargetStillValid(this.enderWoman)) {
+				return false;
+			}
+            
+            double distance = this.enderWoman.distanceToSqr(this.target);            
+            return distance > this.minDistance && distance < this.maxDistance;
+        }
+
+        @Override
+        public void start() {
+            this.teleportTime = 0;
+        }
+        
+        @Override
+        public void tick() {
+            if (this.target != null && !this.enderWoman.isPassenger()) {                    	
+            	if (this.target.distanceToSqr(this.enderWoman) > this.minDistance
+                		&& this.teleportTime++ >= this.adjustedTickDelay(10)
+                		&& this.enderWoman.teleportNear(this.target)) {
+                    this.teleportTime = 0;
+                }      
+                super.tick();
+            }
         }
     }
 }

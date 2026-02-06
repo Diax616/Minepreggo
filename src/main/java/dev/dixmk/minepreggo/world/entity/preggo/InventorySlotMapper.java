@@ -144,7 +144,6 @@ public class InventorySlotMapper {
         return debug;
     }
     
-    
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {

@@ -29,7 +29,6 @@ public abstract class AbstractMonsterCreeperGirl extends AbstractCreeperGirl imp
 
 	protected AbstractMonsterCreeperGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_, Creature typeOfCreature) {
 		super(p_21803_, p_21804_, typeOfCreature);	
-		this.setRandomCombatMode();
 	}
 
 	@Override
@@ -51,36 +50,8 @@ public abstract class AbstractMonsterCreeperGirl extends AbstractCreeperGirl imp
 		}
 	}
 	
-	protected void setRandomCombatMode() {	
-		
-		if (this.level().isClientSide()) {
-			return;
-		}
-		
-		final var p = this.getRandom().nextFloat();		
-	    if (p < 0.4F) {    	
-	    	this.setCombatMode(CombatMode.FIGHT_AND_EXPLODE);
-	    }
-	    else if (p < 0.9F) {
-	    	this.setCombatMode(CombatMode.EXPLODE);
-	    }
-	    else {
-	    	this.setCombatMode(CombatMode.DONT_EXPLODE);
-	    }
-	}
-	
 	@Override
 	protected void registerGoals() {	
-		this.goalSelector.addGoal(3, new MeleeAttackGoal(this, 1.2, false));
-		this.targetSelector.addGoal(2, new HurtByTargetGoal(this));
-		this.goalSelector.addGoal(3, new FloatGoal(this));
-		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0));
-		this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8F));
-		this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
-		this.addBehaviourGoals();
-	}
-	
-	protected void addBehaviourGoals() {	
 		this.goalSelector.addGoal(1, new AbstractCreeperGirl.SwellGoal<>(this) {		
 			@Override
 			public boolean canUse() {												
@@ -89,7 +60,13 @@ public abstract class AbstractMonsterCreeperGirl extends AbstractCreeperGirl imp
 		});
 		this.goalSelector.addGoal(2, new AvoidEntityGoal<>(this, Ocelot.class, 6F, 1, 1.2));
 		this.goalSelector.addGoal(2, new AvoidEntityGoal<>(this, Cat.class, 6F, 1, 1.2));	
-		this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Player.class, true));	
+		this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Player.class, true));
+		this.goalSelector.addGoal(3, new MeleeAttackGoal(this, 1.2, false));
+		this.targetSelector.addGoal(2, new HurtByTargetGoal(this));
+		this.goalSelector.addGoal(3, new FloatGoal(this));
+		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0));
+		this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8F));
+		this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
 	}
 
 	@Override

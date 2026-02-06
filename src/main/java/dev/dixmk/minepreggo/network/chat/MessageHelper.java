@@ -10,6 +10,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
 public class MessageHelper {
@@ -65,7 +66,7 @@ public class MessageHelper {
 		ServerPlayer serverPlayer;
 		String message;
 		if (preggoMob.isOwnedBy(owner) && (message = PREGGO_MOB_ARMOR_MESSAGES.get(pregnancyPhase)) != null && (serverPlayer = asServerPlayer(owner)) != null) {
-			sendTo(serverPlayer, Component.translatable(message, preggoMob.getSimpleName()));		
+			sendTo(serverPlayer, Component.translatable(message, preggoMob.getSimpleNameOrCustom()));		
 			return true;
 		}				
 		return false;
@@ -94,4 +95,10 @@ public class MessageHelper {
             player.displayClientMessage(message, bar);
         }
     }
+    
+    public static void sendTo(LivingEntity player, String component, String preggoMobName, boolean bar) {
+		if (player instanceof ServerPlayer serverPlayer) {
+			MessageHelper.sendTo(serverPlayer, Component.translatable(component, preggoMobName), true);
+		}
+	}
 }

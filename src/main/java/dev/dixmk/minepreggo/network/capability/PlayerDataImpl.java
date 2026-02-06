@@ -1,11 +1,14 @@
 package dev.dixmk.minepreggo.network.capability;
 
+import java.util.EnumSet;
 import java.util.Optional;
+import java.util.Set;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.network.packet.s2c.SyncPlayerDataS2CPacket;
 import dev.dixmk.minepreggo.world.entity.player.SkinType;
+import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.pregnancy.AbstractBreedableEntity;
 import dev.dixmk.minepreggo.world.pregnancy.Gender;
 import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
@@ -25,6 +28,9 @@ public class PlayerDataImpl implements IPlayerData {
 	private LazyOptional<FemalePlayerImpl> femalePlayerData = LazyOptional.empty();
 	private LazyOptional<MalePlayerImpl> malePlayerData = LazyOptional.empty();
 		
+	private final Set<Species> successfulBirths = EnumSet.noneOf(Species.class);
+	private final Set<Species> entitiesGottenPregnant = EnumSet.noneOf(Species.class);
+	
 	@Override
 	public SkinType getSkinType() {
 		return skinType;
@@ -119,10 +125,7 @@ public class PlayerDataImpl implements IPlayerData {
     		}	
     		return Optional.ofNullable(data);
     	}
-    	
 
-    	
-    	
     	return Optional.empty();
     }
     
@@ -150,6 +153,21 @@ public class PlayerDataImpl implements IPlayerData {
 	        this.malePlayerData.resolve().ifPresentOrElse(data -> nbt.put("MalePlayerImpl", data.serializeNBT()), () -> MinepreggoMod.LOGGER.error("Player is male, but male data is not PRESENT"));
 		}		
 
+		if (!successfulBirths.isEmpty()) {
+			CompoundTag birthsTag = new CompoundTag();
+			for (Species species : successfulBirths) {
+				birthsTag.putBoolean(species.name(), true);
+			}
+			nbt.put("SuccessfulBirths", birthsTag);
+		}
+		if (!entitiesGottenPregnant.isEmpty()) {
+			CompoundTag pregnantTag = new CompoundTag();
+			for (Species species : entitiesGottenPregnant) {
+				pregnantTag.putBoolean(species.name(), true);
+			}
+			nbt.put("EntitiesGottenPregnant", pregnantTag);
+		}
+		
 		return nbt;
 	}
 	
@@ -182,7 +200,34 @@ public class PlayerDataImpl implements IPlayerData {
                 	}
             	});
             }
-	    } 			
+	    } 	
+	    
+	    if (nbt.contains("SuccessfulBirths", Tag.TAG_COMPOUND)) {
+	    	CompoundTag birthsTag = nbt.getCompound("SuccessfulBirths");
+	    	for (String key : birthsTag.getAllKeys()) {
+	    		try {
+	    			Species species = Species.valueOf(key);
+	    			if (birthsTag.getBoolean(key)) {
+	    				successfulBirths.add(species);
+	    			}
+	    		} catch (IllegalArgumentException e) {
+	    			MinepreggoMod.LOGGER.error("Unknown species in SuccessfulBirths: {}", e.getMessage());
+	    		}
+	    	}
+	    }
+	    if (nbt.contains("EntitiesGottenPregnant", Tag.TAG_COMPOUND)) {
+	    	CompoundTag pregnantTag = nbt.getCompound("EntitiesGottenPregnant");
+	    	for (String key : pregnantTag.getAllKeys()) {
+	    		try {
+	    			Species species = Species.valueOf(key);
+	    			if (pregnantTag.getBoolean(key)) {
+	    				entitiesGottenPregnant.add(species);
+	    			}
+	    		} catch (IllegalArgumentException e) {
+	    			MinepreggoMod.LOGGER.error("Unknown species in EntitiesGottenPregnant: {}", e.getMessage());
+	    		}
+	    	}
+	    }
 	}
 	
 	public void invalidate() {
@@ -211,5 +256,21 @@ public class PlayerDataImpl implements IPlayerData {
 				cap.syncLactation(serverPlayer);
 			}		
 		});
+	}
+	
+	public boolean addSuccessfulBirth(Species species) {
+		return successfulBirths.add(species);
+	}
+	
+	public boolean addEntityGottenPregnant(Species species) {
+		return entitiesGottenPregnant.add(species);
+	}
+	
+	public boolean containsAllSuccessfulBirths() {
+		return successfulBirths.containsAll(Set.of(Species.values()));
+	}
+	
+	public boolean containsAllEntitiesGottenPregnant() {
+		return entitiesGottenPregnant.containsAll(Set.of(Species.values()));
 	}
 }

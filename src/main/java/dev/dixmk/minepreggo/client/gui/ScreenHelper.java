@@ -13,6 +13,8 @@ import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableHumanoidCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableMonsterCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.TamableMonsterEnderWoman;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamableZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirl;
@@ -37,10 +39,9 @@ public class ScreenHelper {
 		
 	public static final ResourceLocation MINECRAFT_ICONS_TEXTURE = MinepreggoHelper.withDefaultNamespace("textures/gui/icons.png");
 	public static final ResourceLocation MINEPREGGO_ICONS_TEXTURE = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/icons.png");
-	
-	
+		
 	public static void renderZombieGirlMainScreen(GuiGraphics guiGraphics, int leftPos, int topPos, @NonNull TamableZombieGirl zombieGirl) {
-		renderHungryAndHealth(guiGraphics, leftPos, topPos - 20, zombieGirl.getHealth(), zombieGirl, 3);
+		renderHungryAndHealth(guiGraphics, leftPos, topPos - 20, zombieGirl);
 
 		zombieGirl.getSyncedPostPregnancy().ifPresent(state -> {
 			if (state == PostPregnancy.PARTUM) {			
@@ -50,7 +51,7 @@ public class ScreenHelper {
 	}
 		
 	public static void renderCreeperGirlMainScreen(GuiGraphics guiGraphics, int leftPos, int topPos, @NonNull TamableHumanoidCreeperGirl creeperGirl) {
-		renderHungryAndHealth(guiGraphics, leftPos, topPos - 20, creeperGirl.getHealth(), creeperGirl, 1);	
+		renderHungryAndHealth(guiGraphics, leftPos, topPos - 20, creeperGirl);	
 
 		creeperGirl.getSyncedPostPregnancy().ifPresent(state -> {
 			if (state == PostPregnancy.PARTUM) {
@@ -58,6 +59,27 @@ public class ScreenHelper {
 			}
 		});
 	}
+	
+	public static void renderCreeperGirlMainScreen(GuiGraphics guiGraphics, int leftPos, int topPos, @NonNull TamableMonsterCreeperGirl creeperGirl) {
+		renderHungryAndHealth(guiGraphics, leftPos, topPos - 20, creeperGirl);	
+
+		creeperGirl.getSyncedPostPregnancy().ifPresent(state -> {
+			if (state == PostPregnancy.PARTUM) {
+				renderPostPartumLactation(guiGraphics, leftPos, topPos - 11 - 20, creeperGirl.getSyncedPostPartumLactation().orElse(0));
+			}
+		});
+	}
+	
+	public static void renderEnderWomanMainScreen(GuiGraphics guiGraphics, int leftPos, int topPos, @NonNull TamableMonsterEnderWoman enderWoman) {
+		renderHungryAndHealth(guiGraphics, leftPos, topPos - 20, enderWoman);	
+	
+		enderWoman.getSyncedPostPregnancy().ifPresent(state -> {
+			if (state == PostPregnancy.PARTUM) {
+				renderPostPartumLactation(guiGraphics, leftPos, topPos - 11 - 20, enderWoman.getSyncedPostPartumLactation().orElse(0));
+			}
+		});
+	}
+	
 	
 	private static void renderPostPartumLactation(GuiGraphics guiGraphics, int leftPos, int topPos, int milking) {
 		for (int i = 0, pos = 74, oddValue = 1, evenValue = 2; i < 10; ++i, pos += 10, oddValue += 2, evenValue += 2) {		
@@ -72,49 +94,60 @@ public class ScreenHelper {
 	}
 	
 	private static void renderPregnantZombieGirlMainScreen(GuiGraphics guiGraphics, int leftPos, int topPos, @NonNull AbstractTamableZombieGirl zombieGirl) {
-		renderHungryAndHealth(guiGraphics, leftPos, topPos, zombieGirl.getHealth(), zombieGirl, 3);
+		renderHungryAndHealth(guiGraphics, leftPos, topPos, zombieGirl);
 	}
 		
 	private static void renderPregnantCreeperGirlMainScreen(GuiGraphics guiGraphics, int leftPos, int topPos, @NonNull AbstractTamableCreeperGirl creeperGirl) {
-		renderHungryAndHealth(guiGraphics, leftPos, topPos, creeperGirl.getHealth(), creeperGirl, 1);
+		renderHungryAndHealth(guiGraphics, leftPos, topPos, creeperGirl);
 	}
 	
-	private static void renderHungryAndHealth(GuiGraphics guiGraphics, int leftPos, int topPos, float health, ITamablePreggoMob<?> p0, int extraHearts) {
-		for (int i = 0, pos = 74; i < 10; i++, pos += 10) {
-			guiGraphics.blit(MINECRAFT_ICONS_TEXTURE, leftPos + pos, topPos + 56, 16, 27, 9, 9, 256, 256);		
-			guiGraphics.blit(MINECRAFT_ICONS_TEXTURE, leftPos + pos, topPos + 67, 16, 45, 9, 9, 256, 256);		
-		}	
-		
-		for (int i = 0, pos = 74; i < extraHearts; i++, pos += 10) {		
-			guiGraphics.blit(MINECRAFT_ICONS_TEXTURE, leftPos + pos, topPos + 78, 16, 45, 9, 9, 256, 256);			
-		}
-
-		final var hungry = p0.getTamableData().getFullness();
-		
-		for (int i = 0, pos = 74, oddValue = 1, evenValue = 2; i < 10; ++i, pos += 10, oddValue += 2, evenValue += 2) {		
-			if (hungry >= evenValue) {
-				guiGraphics.blit(MINECRAFT_ICONS_TEXTURE, leftPos + pos, topPos + 56, 52, 27, 9, 9, 256, 256);			
-			} else if (hungry >= oddValue) {
-				guiGraphics.blit(MINECRAFT_ICONS_TEXTURE, leftPos + pos, topPos + 56, 61, 27, 9, 9, 256, 256);
-			}
-
-			if (health >= evenValue) {
-				guiGraphics.blit(MINECRAFT_ICONS_TEXTURE, leftPos + pos, topPos + 67, 52, 0, 9, 9, 256, 256);
-			} else if (health >= oddValue) {
-				guiGraphics.blit(MINECRAFT_ICONS_TEXTURE, leftPos + pos, topPos + 67, 61, 0, 9, 9, 256, 256);
-			} else if (health <= 0.75F) {
-				guiGraphics.blit(MINECRAFT_ICONS_TEXTURE, leftPos + pos, topPos + 67, 61, 0, 9, 9, 256, 256);
-				break;
-			}
-		}
-		
-		for (int i = 0, pos = 74, oddValue = 21, evenValue = 22; i < extraHearts; ++i, pos += 10, oddValue += 2, evenValue += 2) {			
-			if (health >= evenValue) {
-				guiGraphics.blit(MINECRAFT_ICONS_TEXTURE, leftPos + pos, topPos + 78, 52, 0, 9, 9, 256, 256);
-			} else if (health >= oddValue) {
-				guiGraphics.blit(MINECRAFT_ICONS_TEXTURE, leftPos + pos, topPos + 78, 61, 0, 9, 9, 256, 256);
-			}		
-		}
+	private static<E extends PreggoMob & ITamablePreggoMob<?>> void renderHungryAndHealth(GuiGraphics guiGraphics, int leftPos, int topPos, E preggoMob) {
+	    final int totalHearts = (int) Math.ceil(preggoMob.getMaxHealth() / 2.0);
+	    final int rows = (int) Math.ceil(totalHearts / 10.0);
+	    
+	    // Render hungry bar
+	    for (int i = 0, pos = 74; i < 10; i++, pos += 10) {
+	        guiGraphics.blit(MINECRAFT_ICONS_TEXTURE, leftPos + pos, topPos + 56, 16, 27, 9, 9, 256, 256);
+	    }
+	    
+	    final var hungry = preggoMob.getTamableData().getFullness();
+	    
+	    for (int i = 0, pos = 74, oddValue = 1, evenValue = 2; i < 10; ++i, pos += 10, oddValue += 2, evenValue += 2) {
+	        if (hungry >= evenValue) {
+	            guiGraphics.blit(MINECRAFT_ICONS_TEXTURE, leftPos + pos, topPos + 56, 52, 27, 9, 9, 256, 256);
+	        } else if (hungry >= oddValue) {
+	            guiGraphics.blit(MINECRAFT_ICONS_TEXTURE, leftPos + pos, topPos + 56, 61, 27, 9, 9, 256, 256);
+	        }
+	    }
+	    
+	    // Render health bars in multiple rows
+	    for (int row = 0; row < rows; row++) {
+	        int yOffset = topPos + 67 + (row * 11);
+	        int heartsInRow = Math.min(10, totalHearts - (row * 10));
+	        
+	        // Render empty hearts background
+	        for (int i = 0; i < heartsInRow; i++) {
+	            int xPos = leftPos + 74 + (i * 10);
+	            guiGraphics.blit(MINECRAFT_ICONS_TEXTURE, xPos, yOffset, 16, 45, 9, 9, 256, 256);
+	        }
+	        
+	        // Render filled hearts
+	        for (int i = 0; i < heartsInRow; i++) {
+	        	float health = preggoMob.getHealth();
+	            int heartIndex = (row * 10) + i;
+	            int xPos = leftPos + 74 + (i * 10);
+	            float heartValue = heartIndex * 2;
+	            
+	            if (health >= heartValue + 2) {
+	                guiGraphics.blit(MINECRAFT_ICONS_TEXTURE, xPos, yOffset, 52, 0, 9, 9, 256, 256);
+	            } else if (health >= heartValue + 1) {
+	                guiGraphics.blit(MINECRAFT_ICONS_TEXTURE, xPos, yOffset, 61, 0, 9, 9, 256, 256);
+	            } else if (health <= 0.75F && heartIndex == 0) {
+	                guiGraphics.blit(MINECRAFT_ICONS_TEXTURE, xPos, yOffset, 61, 0, 9, 9, 256, 256);
+	                return;
+	            }
+	        }
+	    }
 	}
 
 	private static void renderDefaultPreggoP1MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, ITamablePregnantPreggoMobData p1) {	
@@ -178,7 +211,7 @@ public class ScreenHelper {
 	}
 	
 	public static<E extends PreggoMob & ITamablePreggoMob<IFemaleEntity>> void renderDefaultPreggoLabelMainGUI(GuiGraphics guiGraphics, Font font, E p0, boolean syncedIsPregnant) {	
-		guiGraphics.drawString(font, p0.getSimpleName(), 90, 4, -12829636, false);
+		guiGraphics.drawString(font, p0.getSimpleNameOrCustom(), 90, 4, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_state"), 75, 21, -12829636, false);
 		if (syncedIsPregnant) {
 			guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_maybe_pregnant"), 104, 21, -12829636, false);
@@ -188,7 +221,7 @@ public class ScreenHelper {
 	}
 	
 	public static<E extends PreggoMob & ITamablePregnantPreggoMob> void renderP0LabelMainGUI(GuiGraphics guiGraphics, Font font, E p0) {	
-		guiGraphics.drawString(font, p0.getSimpleName(), 90, 4, -12829636, false);
+		guiGraphics.drawString(font, p0.getSimpleNameOrCustom(), 90, 4, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_state"), 75, 22, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_pregnant"), 107, 22, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_phase"), 75, 37, -12829636, false);
@@ -196,7 +229,7 @@ public class ScreenHelper {
 	}
 	
 	public static<E extends PreggoMob & ITamablePregnantPreggoMob> void renderP1LabelMainGUI(GuiGraphics guiGraphics, Font font, E p1) {	
-		guiGraphics.drawString(font, p1.getSimpleName(), 90, 4, -12829636, false);
+		guiGraphics.drawString(font, p1.getSimpleNameOrCustom(), 90, 4, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_state"), 75, 22, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_pregnant"), 107, 22, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_phase"), 75, 37, -12829636, false);
@@ -215,7 +248,7 @@ public class ScreenHelper {
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_pregnant"), 109, 17, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_craving"), 77, 45, -12829636, false);
 		
-		guiGraphics.drawString(font, p2.getSimpleName(), 90, 4, -12829636, false);
+		guiGraphics.drawString(font, p2.getSimpleNameOrCustom(), 90, 4, -12829636, false);
 
 		if (p2.getPregnancyData().getTypeOfCraving() == null) {
 			guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_none"), 118, 45, -12829636, false);
@@ -229,7 +262,7 @@ public class ScreenHelper {
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_pregnant"), 107, 17, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_craving"), 75, 45, -12829636, false);
 
-		guiGraphics.drawString(font, p3.getSimpleName(), 90, 4, -12829636, false);
+		guiGraphics.drawString(font, p3.getSimpleNameOrCustom(), 90, 4, -12829636, false);
 
 		if (p3.getPregnancyData().getTypeOfCraving() == null) {
 			guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_none"), 118, 45, -12829636, false);
@@ -237,7 +270,7 @@ public class ScreenHelper {
 	}
 	
 	public static<E extends PreggoMob & ITamablePregnantPreggoMob> void renderP4LabelMainGUI(GuiGraphics guiGraphics, Font font, E p4) {
-		guiGraphics.drawString(font, p4.getSimpleName(), 90, 4, -12829636, false);	
+		guiGraphics.drawString(font, p4.getSimpleNameOrCustom(), 90, 4, -12829636, false);	
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_phase"), 74, 35, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_craving"), 74, 51, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_state"), 74, 19, -12829636, false);

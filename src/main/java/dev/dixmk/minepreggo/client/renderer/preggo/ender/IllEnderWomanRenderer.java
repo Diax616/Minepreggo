@@ -8,7 +8,6 @@ import dev.dixmk.minepreggo.world.entity.preggo.ender.IllEnderWoman;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -19,8 +18,7 @@ public class IllEnderWomanRenderer extends AbstractMonsterEnderWomanRenderer<Ill
 	private static final RenderType ILL_ENDER_EYES = RenderType.eyes(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/ender/monster/eye/ill_ender_woman_eyes.png"));
 	
 	public IllEnderWomanRenderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation outter, ModelLayerLocation inner) {
-		super(context, new IllEnderWomanModel(context.bakeLayer(main)), ILL_ENDER_EYES);
-		this.addLayer(new HumanoidArmorLayer<>(this, new IllEnderWomanModel(context.bakeLayer(inner)), new IllEnderWomanModel(context.bakeLayer(outter)), context.getModelManager()));
+		super(context, new IllEnderWomanModel(context.bakeLayer(main)), new IllEnderWomanModel(context.bakeLayer(inner)), new IllEnderWomanModel(context.bakeLayer(outter)), ILL_ENDER_EYES);
 	}
 	
 	public IllEnderWomanRenderer(EntityRendererProvider.Context context) {
@@ -29,6 +27,6 @@ public class IllEnderWomanRenderer extends AbstractMonsterEnderWomanRenderer<Ill
 
 	@Override
 	public ResourceLocation getTextureLocation(IllEnderWoman p_115812_) {
-		return ENDER_GIRL_LOCATION;
+		return MONSTER_ENDER_GIRL_LOCATION;
 	}
 }

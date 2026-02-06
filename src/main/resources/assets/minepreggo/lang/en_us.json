@@ -39,6 +39,7 @@
 	"gui.minepreggo.preggo_mob_main.checkbox_wait": "Wait",
 	"gui.minepreggo.preggo_mob_main.checkbox_break": "Break",
 	"gui.minepreggo.preggo_mob_main.checkbox_pickup": "PickUp",
+	"gui.minepreggo.preggo_mob_main.button.mount": "Mount",
 	
 	"gui.minepreggo.sex_request.button.yeah": "Yeah",
 	"gui.minepreggo.sex_request.button.nope": "Nope",
@@ -52,34 +53,34 @@
 	"gui.minepreggo.sex_request.preggo_mob.horny.label.message.2": "Can we have some fun tonight?",
 	"gui.minepreggo.sex_request.preggo_mob.horny.label.message.3": "Can we 'shake' our babies tonight?",
 	
-	"entity.minepreggo.monster_zombie_girl": "Monster Zombie Girl",
-	"entity.minepreggo.monster_zombie_girl_p3": "Monster Zombie Girl (P3)",
-	"entity.minepreggo.monster_zombie_girl_p5": "Monster Zombie Girl (P5)",
-	"entity.minepreggo.monster_zombie_girl_p7": "Monster Zombie Girl (P7)",
-	"entity.minepreggo.tamable_zombie_girl": "Zombie Girl",
-	"entity.minepreggo.tamable_zombie_girl_p0": "Zombie Girl (P0)",
-	"entity.minepreggo.tamable_zombie_girl_p1": "Zombie Girl (P1)",
-	"entity.minepreggo.tamable_zombie_girl_p2": "Zombie Girl (P2)",
-	"entity.minepreggo.tamable_zombie_girl_p3": "Zombie Girl (P3)",
-	"entity.minepreggo.tamable_zombie_girl_p4": "Zombie Girl (P4)",
-	"entity.minepreggo.tamable_zombie_girl_p5": "Zombie Girl (P5)",
-	"entity.minepreggo.tamable_zombie_girl_p6": "Zombie Girl (P6)",
-	"entity.minepreggo.tamable_zombie_girl_p7": "Zombie Girl (P7)",
-	"entity.minepreggo.tamable_zombie_girl_p8": "Zombie Girl (P8)",
-	"entity.minepreggo.monster_humanoid_creeper_girl": "Monster Humanoid Creeper Girl",
-	"entity.minepreggo.monster_humanoid_creeper_girl_p3": "Monster Humanoid Creeper Girl (P3)",
-	"entity.minepreggo.monster_humanoid_creeper_girl_p5": "Monster Humanoid Creeper Girl (P5)",
-	"entity.minepreggo.monster_humanoid_creeper_girl_p7": "Monster Humanoid Creeper Girl (P7)",
-	"entity.minepreggo.tamable_humanoid_creeper_girl": "Humanoid Creeper Girl",
-	"entity.minepreggo.tamable_humanoid_creeper_girl_p0": "Humanoid Creeper Girl (P0)",
-	"entity.minepreggo.tamable_humanoid_creeper_girl_p1": "Humanoid Creeper Girl (P1)",
-	"entity.minepreggo.tamable_humanoid_creeper_girl_p2": "Humanoid Creeper Girl (P2)",
-	"entity.minepreggo.tamable_humanoid_creeper_girl_p3": "Humanoid Creeper Girl (P3)",
-	"entity.minepreggo.tamable_humanoid_creeper_girl_p4": "Humanoid Creeper Girl (P4)",
-	"entity.minepreggo.tamable_humanoid_creeper_girl_p5": "Humanoid Creeper Girl (P5)",
-	"entity.minepreggo.tamable_humanoid_creeper_girl_p6": "Humanoid Creeper Girl (P6)",
-	"entity.minepreggo.tamable_humanoid_creeper_girl_p7": "Humanoid Creeper Girl (P7)",
-	"entity.minepreggo.tamable_humanoid_creeper_girl_p8": "Humanoid Creeper Girl (P8)",
+	"entity.minepreggo.monster_zombie_girl": "Zombie Girl",
+	"entity.minepreggo.monster_zombie_girl_p3": "Zombie Girl (P3)",
+	"entity.minepreggo.monster_zombie_girl_p5": "Zombie Girl (P5)",
+	"entity.minepreggo.monster_zombie_girl_p7": "Zombie Girl (P7)",
+	"entity.minepreggo.tamable_zombie_girl": "Tamable Zombie Girl",
+	"entity.minepreggo.tamable_zombie_girl_p0": "Tamable Zombie Girl (P0)",
+	"entity.minepreggo.tamable_zombie_girl_p1": "Tamable Zombie Girl (P1)",
+	"entity.minepreggo.tamable_zombie_girl_p2": "Tamable Zombie Girl (P2)",
+	"entity.minepreggo.tamable_zombie_girl_p3": "Tamable Zombie Girl (P3)",
+	"entity.minepreggo.tamable_zombie_girl_p4": "Tamable Zombie Girl (P4)",
+	"entity.minepreggo.tamable_zombie_girl_p5": "Tamable Zombie Girl (P5)",
+	"entity.minepreggo.tamable_zombie_girl_p6": "Tamable Zombie Girl (P6)",
+	"entity.minepreggo.tamable_zombie_girl_p7": "Tamable Zombie Girl (P7)",
+	"entity.minepreggo.tamable_zombie_girl_p8": "Tamable Zombie Girl (P8)",
+	"entity.minepreggo.monster_humanoid_creeper_girl": "Humanoid Creeper Girl",
+	"entity.minepreggo.monster_humanoid_creeper_girl_p3": "Humanoid Creeper Girl (P3)",
+	"entity.minepreggo.monster_humanoid_creeper_girl_p5": "Humanoid Creeper Girl (P5)",
+	"entity.minepreggo.monster_humanoid_creeper_girl_p7": "Humanoid Creeper Girl (P7)",
+	"entity.minepreggo.tamable_humanoid_creeper_girl": "Tamable Humanoid Creeper Girl",
+	"entity.minepreggo.tamable_humanoid_creeper_girl_p0": "Tamable Humanoid Creeper Girl (P0)",
+	"entity.minepreggo.tamable_humanoid_creeper_girl_p1": "Tamable Humanoid Creeper Girl (P1)",
+	"entity.minepreggo.tamable_humanoid_creeper_girl_p2": "Tamable Humanoid Creeper Girl (P2)",
+	"entity.minepreggo.tamable_humanoid_creeper_girl_p3": "Tamable Humanoid Creeper Girl (P3)",
+	"entity.minepreggo.tamable_humanoid_creeper_girl_p4": "Tamable Humanoid Creeper Girl (P4)",
+	"entity.minepreggo.tamable_humanoid_creeper_girl_p5": "Tamable Humanoid Creeper Girl (P5)",
+	"entity.minepreggo.tamable_humanoid_creeper_girl_p6": "Tamable Humanoid Creeper Girl (P6)",
+	"entity.minepreggo.tamable_humanoid_creeper_girl_p7": "Tamable Humanoid Creeper Girl (P7)",
+	"entity.minepreggo.tamable_humanoid_creeper_girl_p8": "Tamable Humanoid Creeper Girl (P8)",
 	
 	"entity.minepreggo.monster_ender_woman": "Monster Ender Woman",
 	"entity.minepreggo.monster_creeper_girl": "Monster Creeper Girl",
@@ -91,35 +92,38 @@
 	"entity.minepreggo.ill_humanoid_creeper_girl": "Ill Humanoid Creeper Girl",
 	"entity.minepreggo.ill_zombie_girl": "Ill Zombie Girl",
 	
-	"item.minepreggo.monster_zombie_girl_spawn_egg": "Monster Zombie Girl Spawn Egg",
-	"item.minepreggo.monster_zombie_girl_p3_spawn_egg": "Monster Zombie Girl (P3) Spawn Egg",
-	"item.minepreggo.monster_zombie_girl_p5_spawn_egg": "Monster Zombie Girl (P5) Spawn Egg",
-	"item.minepreggo.monster_zombie_girl_p7_spawn_egg": "Monster Zombie Girl (P7) Spawn Egg",
-	"item.minepreggo.tamable_zombie_girl_spawn_egg": "Zombie Girl Spawn Egg",
-	"item.minepreggo.tamable_zombie_girl_p0_spawn_egg": "Zombie Girl (P0) Spawn Egg",
-	"item.minepreggo.tamable_zombie_girl_p1_spawn_egg": "Zombie Girl (P1) Spawn Egg",
-	"item.minepreggo.tamable_zombie_girl_p2_spawn_egg": "Zombie Girl (P2) Spawn Egg",
-	"item.minepreggo.tamable_zombie_girl_p3_spawn_egg": "Zombie Girl (P3) Spawn Egg",
-	"item.minepreggo.tamable_zombie_girl_p4_spawn_egg": "Zombie Girl (P4) Spawn Egg",
-	"item.minepreggo.tamable_zombie_girl_p5_spawn_egg": "Zombie Girl (P5) Spawn Egg",
-	"item.minepreggo.tamable_zombie_girl_p6_spawn_egg": "Zombie Girl (P6) Spawn Egg",
-	"item.minepreggo.tamable_zombie_girl_p7_spawn_egg": "Zombie Girl (P7) Spawn Egg",
-	"item.minepreggo.tamable_zombie_girl_p8_spawn_egg": "Zombie Girl (P8) Spawn Egg",
+	"item.minepreggo.monster_zombie_girl_spawn_egg": "Zombie Girl Spawn Egg",
+	"item.minepreggo.monster_zombie_girl_p3_spawn_egg": "Zombie Girl (P3) Spawn Egg",
+	"item.minepreggo.monster_zombie_girl_p5_spawn_egg": "Zombie Girl (P5) Spawn Egg",
+	"item.minepreggo.monster_zombie_girl_p7_spawn_egg": "Zombie Girl (P7) Spawn Egg",
+	"item.minepreggo.tamable_zombie_girl_spawn_egg": "Tamable Zombie Girl Spawn Egg",
+	"item.minepreggo.tamable_zombie_girl_p0_spawn_egg": "Tamable Zombie Girl (P0) Spawn Egg",
+	"item.minepreggo.tamable_zombie_girl_p1_spawn_egg": "Tamable Zombie Girl (P1) Spawn Egg",
+	"item.minepreggo.tamable_zombie_girl_p2_spawn_egg": "Tamable Zombie Girl (P2) Spawn Egg",
+	"item.minepreggo.tamable_zombie_girl_p3_spawn_egg": "Tamable Zombie Girl (P3) Spawn Egg",
+	"item.minepreggo.tamable_zombie_girl_p4_spawn_egg": "Tamable Zombie Girl (P4) Spawn Egg",
+	"item.minepreggo.tamable_zombie_girl_p5_spawn_egg": "Tamable Zombie Girl (P5) Spawn Egg",
+	"item.minepreggo.tamable_zombie_girl_p6_spawn_egg": "Tamable Zombie Girl (P6) Spawn Egg",
+	"item.minepreggo.tamable_zombie_girl_p7_spawn_egg": "Tamable Zombie Girl (P7) Spawn Egg",
+	"item.minepreggo.tamable_zombie_girl_p8_spawn_egg": "Tamable Zombie Girl (P8) Spawn Egg",
 	
-	"item.minepreggo.monster_humanoid_creeper_girl_spawn_egg": "Monster Humanoid Creeper Girl Spawn Egg",
-	"item.minepreggo.monster_humanoid_creeper_girl_p3_spawn_egg": "Monster Humanoid Creeper Girl (P3) Spawn Egg",
-	"item.minepreggo.monster_humanoid_creeper_girl_p5_spawn_egg": "Monster Humanoid Creeper Girl (P5) Spawn Egg",
-	"item.minepreggo.monster_humanoid_creeper_girl_p7_spawn_egg": "Monster Humanoid Creeper Girl (P7) Spawn Egg",
-	"item.minepreggo.tamable_humanoid_creeper_girl_spawn_egg": "Creeper Humanoid Girl Spawn Egg",
-	"item.minepreggo.tamable_humanoid_creeper_girl_p0_spawn_egg": "Creeper Humanoid Girl (P0) Spawn Egg",
-	"item.minepreggo.tamable_humanoid_creeper_girl_p1_spawn_egg": "Creeper Humanoid Girl (P1) Spawn Egg",
-	"item.minepreggo.tamable_humanoid_creeper_girl_p2_spawn_egg": "Creeper Humanoid Girl (P2) Spawn Egg",
-	"item.minepreggo.tamable_humanoid_creeper_girl_p3_spawn_egg": "Creeper Humanoid Girl (P3) Spawn Egg",
-	"item.minepreggo.tamable_humanoid_creeper_girl_p4_spawn_egg": "Creeper Humanoid Girl (P4) Spawn Egg",
-	"item.minepreggo.tamable_humanoid_creeper_girl_p5_spawn_egg": "Creeper Humanoid Girl (P5) Spawn Egg",
-	"item.minepreggo.tamable_humanoid_creeper_girl_p6_spawn_egg": "Creeper Humanoid Girl (P6) Spawn Egg",
-	"item.minepreggo.tamable_humanoid_creeper_girl_p7_spawn_egg": "Creeper Humanoid Girl (P7) Spawn Egg",
-	"item.minepreggo.tamable_humanoid_creeper_girl_p8_spawn_egg": "Creeper Humanoid Girl (P8) Spawn Egg",
+	"item.minepreggo.monster_humanoid_creeper_girl_spawn_egg": "Humanoid Creeper Girl Spawn Egg",
+	"item.minepreggo.monster_humanoid_creeper_girl_p3_spawn_egg": "Humanoid Creeper Girl (P3) Spawn Egg",
+	"item.minepreggo.monster_humanoid_creeper_girl_p5_spawn_egg": "Humanoid Creeper Girl (P5) Spawn Egg",
+	"item.minepreggo.monster_humanoid_creeper_girl_p7_spawn_egg": "Humanoid Creeper Girl (P7) Spawn Egg",
+	"item.minepreggo.tamable_humanoid_creeper_girl_spawn_egg": "Tamable Humanoid Creeper Girl Spawn Egg",
+	"item.minepreggo.tamable_humanoid_creeper_girl_p0_spawn_egg": "Tamable Humanoid Creeper Girl (P0) Spawn Egg",
+	"item.minepreggo.tamable_humanoid_creeper_girl_p1_spawn_egg": "Tamable Humanoid Creeper Girl (P1) Spawn Egg",
+	"item.minepreggo.tamable_humanoid_creeper_girl_p2_spawn_egg": "Tamable Humanoid Creeper Girl (P2) Spawn Egg",
+	"item.minepreggo.tamable_humanoid_creeper_girl_p3_spawn_egg": "Tamable Humanoid Creeper Girl (P3) Spawn Egg",
+	"item.minepreggo.tamable_humanoid_creeper_girl_p4_spawn_egg": "Tamable Humanoid Creeper Girl (P4) Spawn Egg",
+	"item.minepreggo.tamable_humanoid_creeper_girl_p5_spawn_egg": "Tamable Humanoid Creeper Girl (P5) Spawn Egg",
+	"item.minepreggo.tamable_humanoid_creeper_girl_p6_spawn_egg": "Tamable Humanoid Creeper Girl (P6) Spawn Egg",
+	"item.minepreggo.tamable_humanoid_creeper_girl_p7_spawn_egg": "Tamable Humanoid Creeper Girl (P7) Spawn Egg",
+	"item.minepreggo.tamable_humanoid_creeper_girl_p8_spawn_egg": "Tamable Humanoid Creeper Girl (P8) Spawn Egg",
+
+	"item.minepreggo.tamable_monster_creeper_girl_spawn_egg": "Tamable Monster Creeper Girl Spawn Egg",
+	"item.minepreggo.tamable_monster_ender_woman_spawn_egg": "Tamable Monster Ender Woman Spawn Egg",
 
 	"item.minepreggo.scientific_illager_spawn_egg": "Scientific Illager Spawn Egg",
 	"item.minepreggo.monster_creeper_girl_spawn_egg": "Monster Creeper Girl Spawn Egg",
@@ -441,15 +445,11 @@
 	"item.minepreggo.leather_knee_brace": "Leather Knee Brace",
 	"item.minepreggo.ropes": "Ropes",
 
-	
 	"item.minepreggo.chili_pepper": "Chili Pepper",
 	"item.minepreggo.activated_gunpowder_with_salt": "Activated Gunpowder With Salt",
-	
 	"item.minepreggo.zombie_breast_milk_bottle": "Zombie Breast Milk Bottle",
-	
 	"item.minepreggo.activated_gunpowder_with_chocolate": "Activated Gunpowder With Chocolate",
-	
-	
+
 	"item.minepreggo.specimen_tube": "Specimen Tube",
 	"item.minepreggo.brain_with_chocolate": "Brain With Chocolate",
 	"item.minepreggo.salty_water_bottle": "Salty Water Bottle",
@@ -541,7 +541,11 @@
 	"chat.minepreggo.preggo_mob.miscarriage.message.warning": "%s feels pain below her pregnant belly, something isn't right...",
 	
 	"chat.minepreggo.preggo_mob.sex.message.tiring": "%s feels too tired to have fun...",
-
+	"chat.minepreggo.preggo_mob.inventory.message.both_hands_occupied": "%s can't hold no items in main hand or off hand with a block in both hands",
+	"chat.minepreggo.preggo_mob.inventory.message.one_hand_occupied": "%s can't hold a block in both hands with an item in one hand",
+	"chat.minepreggo.preggo_mob.inventory.message.not_a_block": "%s can only hold blocks in both hands",
+	"chat.minepreggo.preggo_mob.inventory.message.both_hands_block_one_item": "%s can't hold an item in one hand with a block in both hands",
+	"chat.minepreggo.preggo_mob.inventory.message.cannot_place_block_on_mouth": "%s can't place a block on her mouth",
 	
 	"chat.minepreggo.player.armor.message.chestplate_does_not_fit.boobs": "Your boobs don't fit in this armor!",
 	
@@ -575,7 +579,10 @@
 	
 	"chat.minepreggo.player.sex.request_reject": "%s has rejected your request for some fun",
 
-	
+	"chat.minepreggo.player.pregnancy.message.cannot_in_labor": "You feel too much pain to do this now",
+	"chat.minepreggo.player.pregnancy.message.cannot_ride.message.1": "You feel too much discomfort to ride now",
+	"chat.minepreggo.player.pregnancy.message.cannot_ride.message.2": "Your belly is too big to ride now",
+
 	"chat.minepreggo.scientific_illager.no_pregnant_entities": "There are no pregnant entities to checkup",
 
 	"chat.minepreggo.prenatal_checkup.message.warning": "It is necessary to be at least in the %s stage of pregnancy to perform this prenatal check-up",
@@ -590,7 +597,7 @@
 	"chat.minepreggo.preggo_mob.message.still_not_pregnant": "<%s> When are you gonna make me a mom, %s?",
 	"chat.minepreggo.pregnant.preggo_mob.message.without_beds": "<%s> Let's go somewhere more private, %s",
 	"chat.minepreggo.pregnant.preggo_mob.message.rejection_by_its_owner": "<%s> Okay, maybe later... 😖",
-	
+
 	"book.minepreggo.prenatal_checkup.regular.template.title": "Regular Prenatal Checkup Results",
 	"book.minepreggo.prenatal_checkup.regular.template.page.1.intro": "       Result\n  Regular Checkup\n\n",
 	
@@ -615,6 +622,11 @@
 	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.gender": "Gender: %s\n\n",
 	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.type_of_species": "Species: %s\n\n",
 	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.type_of_creature": "Creature: %s",
+	
+	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.1.womb_size_state": "Womb Size State: %s\n\n",
+	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.1.womb_size_state.overloaded": "Overloaded",
+	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.1.womb_size_state.normal": "Normal",
+	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.1.babies_inside_belly": "Babies Inside Belly: %s\n\n",
 
 	"book.minepreggo.prenatal_checkup.paternity_test.template.title": "Prenatal Paternity Test Results",
 	"book.minepreggo.prenatal_checkup.paternity_test.template.page.1.intro": "       Result\n   Paternity Test\n\n",
@@ -632,15 +644,8 @@
 	
 	"key.minepreggo.rub_belly": "Rub Your Pregnant Belly",
 	"key.categories.minepreggo": "Minepreggo Keyboards",
+	"key.minepreggo.teleport_with_ender_woman": "Teleport With Ender Woman",
 	
 	"death.attack.belly_burst": "%1$s's pregnant belly burst",
-	"death.attack.pregnancy_pain": "%1$s's didn't endure the pregnancy pain",
-	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.1.womb_size_state": "Womb Size State: %s\n\n",
-	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.1.womb_size_state.overloaded": "Overloaded",
-	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.1.womb_size_state.normal": "Normal",
-	"book.minepreggo.prenatal_checkup.ultrasound_scan.template.page.1.babies_inside_belly": "Babies Inside Belly: %s\n\n",
-	"chat.minepreggo.player.pregnancy.message.cannot_in_labor": "You feel too much pain to do this now",
-	"chat.minepreggo.player.pregnancy.message.cannot_ride.message.1": "You feel too much discomfort to ride now",
-	"chat.minepreggo.player.pregnancy.message.cannot_ride.message.2": "Your belly is too big to ride now"
-
+	"death.attack.pregnancy_pain": "%1$s's didn't endure the pregnancy pain"
 }

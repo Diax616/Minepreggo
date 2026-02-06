@@ -36,14 +36,14 @@ public abstract class AbstractCreeperGirlMainScreen
 	private final List<ToggleableCheckbox> combatModes = new ArrayList<>();
 	protected final CombatMode currentCombatMode;
 	
-	protected AbstractCreeperGirlMainScreen(G container, Inventory inventory, Component text) {
-		super(container, inventory, text, 1, 89);	
+	protected AbstractCreeperGirlMainScreen(G container, Inventory inventory, Component text, int xSexSprite, int ySexSprite) {
+		super(container, inventory, text, xSexSprite, ySexSprite);
 		this.currentCombatMode = container.currentCombatMode.orElse(CombatMode.DONT_EXPLODE);
 	}
 	
 	@Override
 	public void init() {
-		super.init();							
+		super.init();	
 		this.addCombatModeCheckboxes();
 	}	
 	

@@ -52,7 +52,7 @@ public class SexHelper {
 			return false;
 		}
 		else if (!tamableTarget.getGenderedData().canFuck()) {
-			MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.preggo_mob.sex.message.tiring", target.getSimpleName()));
+			MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.preggo_mob.sex.message.tiring", target.getSimpleNameOrCustom()));
 			return false;
 		}
 		else if (result.isPresent() && !result.get().booleanValue()) {
@@ -60,7 +60,7 @@ public class SexHelper {
 			return false;
 		}
 		else if (owner.distanceToSqr(target) >= 32) {
-			MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.sex.message.distance", target.getSimpleName()));
+			MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.sex.message.distance", target.getSimpleNameOrCustom()));
 			return false;
 		}
 		else if (!hasEnoughBedsForBreeding(target, 1, 8)) {
@@ -68,13 +68,13 @@ public class SexHelper {
 			return false;
 		}
 		else if (ServerCinematicManager.getInstance().isInCinematic(target)) {
-			MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.sex.message.active_cinematic", target.getSimpleName()));
+			MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.sex.message.active_cinematic", target.getSimpleNameOrCustom()));
 			return false;
 		}
 		
 		owner.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> {
 			if (cap.getGender() == tamableTarget.getGenderedData().getGender()) {
-				MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.preggo_mob.message.same_sex", target.getSimpleName()));
+				MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.preggo_mob.message.same_sex", target.getSimpleNameOrCustom()));
 			}
 		});
 		
@@ -90,14 +90,14 @@ public class SexHelper {
 			MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.sex.message.mobs"));
 		}
 		else if (owner.distanceToSqr(target) >= 32) {
-			MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.sex.message.distance", target.getSimpleName()));
+			MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.sex.message.distance", target.getSimpleNameOrCustom()));
 		}
 		else if (ServerCinematicManager.getInstance().isInCinematic(target)) {
-			MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.sex.message.active_cinematic", target.getSimpleName()));
+			MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.sex.message.active_cinematic", target.getSimpleNameOrCustom()));
 		}
 					
 		if (!hasEnoughBedsForBreeding(target, 1, 8)) {
-			MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.pregnant.preggo_mob.message.without_beds", target.getSimpleName(), owner.getDisplayName().getString()));
+			MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.pregnant.preggo_mob.message.without_beds", target.getSimpleNameOrCustom(), owner.getDisplayName().getString()));
 		}
 		else {
 			return true;
@@ -175,7 +175,7 @@ public class SexHelper {
 				return false;
 			}
 			else if (!preggoMob.getGenderedData().canFuck()) {
-				MessageHelper.sendTo(sourcePlayer, Component.translatable("chat.minepreggo.preggo_mob.sex.message.tiring", preggoMob.getSimpleName()), true);
+				MessageHelper.sendTo(sourcePlayer, Component.translatable("chat.minepreggo.preggo_mob.sex.message.tiring", preggoMob.getSimpleNameOrCustom()), true);
 				return false;
 			}
 			return true;
@@ -310,7 +310,7 @@ public class SexHelper {
 	}
 	
     public static void rejectSexRequest(ServerPlayer target, PreggoMob source) {
-		MessageHelper.sendTo(target, Component.translatable("chat.minepreggo.pregnant.preggo_mob.message.rejection_by_its_owner", source.getSimpleName()));
+		MessageHelper.sendTo(target, Component.translatable("chat.minepreggo.pregnant.preggo_mob.message.rejection_by_its_owner", source.getSimpleNameOrCustom()));
 		ServerParticleHelper.spawnRandomlyFromServer(target, ParticleTypes.SMOKE);
 	}
     

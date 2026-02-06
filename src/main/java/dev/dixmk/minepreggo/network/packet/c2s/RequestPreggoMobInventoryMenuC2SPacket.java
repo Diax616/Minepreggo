@@ -3,9 +3,12 @@ package dev.dixmk.minepreggo.network.packet.c2s;
 import java.util.function.Supplier;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
+import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractTamableMonsterEnderWoman;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamableZombieGirl;
 import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlMenuHelper;
+import dev.dixmk.minepreggo.world.inventory.preggo.ender.EnderWomanMenuHelper;
 import dev.dixmk.minepreggo.world.inventory.preggo.zombie.ZombieGirlMenuHelper;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.TamableAnimal;
@@ -30,13 +33,19 @@ public record RequestPreggoMobInventoryMenuC2SPacket(int preggoMobId) {
     			var level = serverPlayer.level();  			
 		
     			if (level.getEntity(message.preggoMobId) instanceof TamableAnimal tamableAnimal) {			
-    				if (tamableAnimal instanceof AbstractTamableCreeperGirl creeperGirl) {
-    					CreeperGirlMenuHelper.showInventoryMenu(serverPlayer, creeperGirl);
-    					MinepreggoMod.LOGGER.debug("INVENTARY CREEPER GIRL: id={}, class={}", creeperGirl.getId(), creeperGirl.getClass().getSimpleName());
+    				if (tamableAnimal instanceof AbstractTamableCreeperGirl creeperGirl) { 					
+    					if (creeperGirl.getTypeOfCreature() == Creature.HUMANOID) {
+        					CreeperGirlMenuHelper.showInventoryMenuForHumanoid(serverPlayer, creeperGirl);
+    					}
+    					else {
+        					CreeperGirlMenuHelper.showInventoryMenuForMonster(serverPlayer, creeperGirl);
+    					}			
     				}	
     				else if (tamableAnimal instanceof AbstractTamableZombieGirl zombieGirl) {
     					ZombieGirlMenuHelper.showInventoryMenu(serverPlayer, zombieGirl);
-    					MinepreggoMod.LOGGER.debug("INVENTARY ZOMBIE GIRL: id={}, class={}", zombieGirl.getId(), zombieGirl.getClass().getSimpleName());
+    				}
+    				else if (tamableAnimal instanceof AbstractTamableMonsterEnderWoman enderWoman) {
+    					EnderWomanMenuHelper.showInventoryMenu(serverPlayer, enderWoman);
     				}
     				else {
     					MinepreggoMod.LOGGER.error("PREGGO MOB CLASS COULD NOT BE RESOLVED");

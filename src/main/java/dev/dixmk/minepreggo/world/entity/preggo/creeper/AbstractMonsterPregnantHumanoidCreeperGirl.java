@@ -25,4 +25,9 @@ public abstract class AbstractMonsterPregnantHumanoidCreeperGirl extends Abstrac
 		}
 		return true;
 	}
+	
+	@Override
+	public String getSimpleName() {
+		return HumanoidCreeperHelper.SIMPLE_NAME;
+	}
 }

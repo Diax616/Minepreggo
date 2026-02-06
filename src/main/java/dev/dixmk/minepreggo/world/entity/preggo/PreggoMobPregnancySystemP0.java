@@ -52,7 +52,7 @@ public abstract class PreggoMobPregnancySystemP0
 			advanceToNextPregnancyPhase();
 			
 			pregnantEntity.discard();
-			MinepreggoMod.LOGGER.debug("Pregnancy phase advanced from {} for entity {}", pregnancyData.getCurrentPregnancyPhase(), pregnantEntity.getSimpleName());
+			MinepreggoMod.LOGGER.debug("Pregnancy phase advanced from {} for entity {}", pregnancyData.getCurrentPregnancyPhase(), pregnantEntity.getSimpleNameOrCustom());
 			return;
 		}
 		
@@ -89,7 +89,7 @@ public abstract class PreggoMobPregnancySystemP0
         	pregnancyData.resetPregnancyTimer();
         	pregnancyData.incrementDaysPassed();
         	pregnancyData.reduceDaysToGiveBirth();
-        	MinepreggoMod.LOGGER.debug("Pregnancy day advanced to {} for entity {}", pregnancyData.getDaysPassed(), pregnantEntity.getSimpleName());
+        	MinepreggoMod.LOGGER.debug("Pregnancy day advanced to {} for entity {}", pregnancyData.getDaysPassed(), pregnantEntity.getSimpleNameOrCustom());
         } else {
         	pregnancyData.incrementPregnancyTimer();
         }
@@ -133,7 +133,7 @@ public abstract class PreggoMobPregnancySystemP0
 	}
 
 	public boolean canBeAngry() {
-		return pregnantEntity.getTamableData().getFullness() <= 4;
+		return pregnantEntity.getTamableData().getFullness() <= 2;
 	}
 
 	protected void evaluateAngry(final float angerProbability) {

@@ -26,7 +26,7 @@ public abstract class AbstractMonsterEnderWoman extends AbstractEnderWoman {
 	}
 
     public static AttributeSupplier.Builder createDefaultAttributes() {
-        return createBasicAttributes(0.3D);
+        return MonsterEnderWomanHelper.createBasicAttributes(0.3D);
 	}
 	
 	@Override
@@ -66,5 +66,10 @@ public abstract class AbstractMonsterEnderWoman extends AbstractEnderWoman {
 	@Override
 	public InteractionResult mobInteract(Player sourceentity, InteractionHand hand) {
 		return InteractionResult.FAIL;
+	}
+	
+	@Override
+	public String getSimpleName() {
+		return MonsterEnderWomanHelper.SIMPLE_NAME;
 	}
 }

@@ -1,32 +1,41 @@
 package dev.dixmk.minepreggo.world.entity.preggo.ender;
 
-import java.util.EnumSet;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
-import dev.dixmk.minepreggo.world.entity.ai.goal.BreakBlocksToFollowOwnerGoal;
 import dev.dixmk.minepreggo.world.entity.ai.goal.EatGoal;
+import dev.dixmk.minepreggo.world.entity.ai.goal.GoalHelper;
+import dev.dixmk.minepreggo.world.entity.ai.goal.PreggoMobFollowOwnerGoal;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMobData;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMobSystem;
 import dev.dixmk.minepreggo.world.entity.preggo.Inventory;
 import dev.dixmk.minepreggo.world.entity.preggo.InventorySlot;
+import dev.dixmk.minepreggo.world.entity.preggo.InventorySlotMapper;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.TamablePreggoMobDataImpl;
+import dev.dixmk.minepreggo.world.inventory.preggo.ender.AbstractEnderWomanInventoryMenu;
+import dev.dixmk.minepreggo.world.inventory.preggo.ender.AbstractEnderWomanMainMenu;
+import dev.dixmk.minepreggo.world.inventory.preggo.ender.EnderWomanMenuHelper;
 import dev.dixmk.minepreggo.world.pregnancy.IFemaleEntity;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.TamableAnimal;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
@@ -34,14 +43,21 @@ import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.OwnerHurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.OwnerHurtTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.ResetUniversalAngerTargetGoal;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Endermite;
 import net.minecraft.world.entity.monster.Ghast;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -55,14 +71,7 @@ public abstract class AbstractTamableEnderWoman extends AbstractEnderWoman imple
 
 	protected final ITamablePreggoMobData tamablePreggoMobData = new TamablePreggoMobDataImpl<>(DATA_HOLDER, this);
 	
-	protected final Inventory inventory = new Inventory(
-			EnumSet.of(
-					InventorySlot.HEAD,
-					InventorySlot.MAINHAND,
-					InventorySlot.OFFHAND,
-					InventorySlot.FOOD,
-					InventorySlot.BOTH_HANDS
-			),10);
+	protected final Inventory inventory;
 
 	protected boolean breakBlocks = false;
 	
@@ -70,6 +79,7 @@ public abstract class AbstractTamableEnderWoman extends AbstractEnderWoman imple
 		super(p_32485_, p_32486_, typeOfCreature);
 		this.femaleEntity = createFemaleEntity();   
 		this.tamablePreggoMobSystem = createTamableSystem();
+		this.inventory = createInventory();
 		xpReward = 12;
 		setNoAi(false);
 		setMaxUpStep(0.6f);
@@ -78,6 +88,8 @@ public abstract class AbstractTamableEnderWoman extends AbstractEnderWoman imple
 	protected abstract @Nonnull ITamablePreggoMobSystem createTamableSystem();
 	
 	protected abstract @Nonnull IFemaleEntity createFemaleEntity();
+	
+	protected abstract @Nonnull Inventory createInventory();
 	
     @Override
     protected boolean shouldRandomlyTeleport() {
@@ -182,76 +194,172 @@ public abstract class AbstractTamableEnderWoman extends AbstractEnderWoman imple
 	public AgeableMob getBreedOffspring(ServerLevel p_146743_, AgeableMob p_146744_) {
 		return null;
 	}
-		
+	
+	@Override
+	protected void pickUpItem(ItemEntity p_21471_) {		
+		ItemStack itemstack = p_21471_.getItem();
+		ItemStack itemstack1 = this.equipItemIfPossible(itemstack.copy());			
+		if (!itemstack1.isEmpty()) {
+			this.onItemPickup(p_21471_);
+			this.take(p_21471_, itemstack1.getCount());
+			itemstack.shrink(itemstack1.getCount());		
+			if (itemstack.isEmpty()) {
+				p_21471_.discard();
+			}
+		}
+		else {
+			PreggoMobHelper.storeItemInExtraSlots(this, p_21471_);	
+		}
+	}
+	
+	@Override
+	public boolean hurt(DamageSource damagesource, float amount) {				
+		boolean result = super.hurt(damagesource, amount);	
+		if (result && !this.level().isClientSide) {
+			PreggoMobHelper.tryToDamageArmor(this, damagesource);	
+	
+			if (this.tamablePreggoMobData.canBePanicking()
+					&& damagesource.is(DamageTypes.GENERIC)
+					&& !this.isOwnedBy(this.getLastHurtByMob())) {			
+					this.setTarget(this.getLastHurtByMob());							
+					this.tamablePreggoMobData.setPanic(true);
+			}	
+			
+			if (this.getOwner() instanceof ServerPlayer serverPlayer
+					&& (serverPlayer.containerMenu instanceof AbstractEnderWomanInventoryMenu<?> || serverPlayer.containerMenu instanceof AbstractEnderWomanMainMenu<?>)) {
+				serverPlayer.closeContainer();
+			}			
+		}		
+		return result;
+	}
+	
+	@Override
+	public boolean doHurtTarget(Entity target) {		
+		boolean result = super.doHurtTarget(target);	
+		if (result && !this.level().isClientSide) {
+			PreggoMobHelper.tryToDamageItemOnMainHand(this);
+		}
+		return result;
+	}
+	
+	@Override
+	public InteractionResult mobInteract(Player sourceentity, InteractionHand hand) {				
+		var retval = super.mobInteract(sourceentity, hand);		
+		if (retval == InteractionResult.SUCCESS || retval == InteractionResult.CONSUME) {
+			return retval;
+		}		
+		if (tamablePreggoMobSystem.canOwnerAccessGUI(sourceentity)) {			
+			if (!this.level().isClientSide && sourceentity instanceof ServerPlayer serverPlayer) {
+				EnderWomanMenuHelper.showMainMenu(serverPlayer, this);			
+				
+				// TODO: Find a better way to stop panicking when owner interacts with the mob.
+				if (this.tamablePreggoMobData.isPanic())
+					this.tamablePreggoMobData.setPanic(false);
+			}	
+			return InteractionResult.sidedSuccess(this.level().isClientSide);
+		}
+		else {			
+			return tamablePreggoMobSystem.onRightClick(sourceentity);
+		}	
+	}	
+	
 	@Override
 	protected void registerGoals() {
-		addTamableBehaviourGoals();
-	}
-
-	protected void addTamableBehaviourGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
-        this.goalSelector.addGoal(1, new AbstractEnderWoman.EnderWomanFreezeWhenLookedAt(this) {
-			@Override
-			public boolean canUse() {
-				return super.canUse() 
-				&& (getTamableData().isSavage() || !isTame());	
-			}
-        });       
+        this.goalSelector.addGoal(1, new AbstractEnderWoman.EnderWomanFreezeWhenLookedAt(this));       
 		this.goalSelector.addGoal(10, new AbstractEnderWoman.EnderWomanLeaveBlockGoal(this));
         this.goalSelector.addGoal(11, new AbstractEnderWoman.EnderWomanTakeBlockGoal(this));
-        this.targetSelector.addGoal(1, new AbstractEnderWoman.EnderWomanLookForPlayerGoal(this, this::isAngryAt) {
+        this.targetSelector.addGoal(4, new ResetUniversalAngerTargetGoal<>(this, false));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Endermite.class, true, false) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() 
-				&& (getTamableData().isSavage() || !isTame());	
+				return super.canUse() && !getTamableData().isWaiting();		
 			}
-        });
-        this.targetSelector.addGoal(4, new ResetUniversalAngerTargetGoal<>(this, false));
-		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Endermite.class, true, false));
-		this.goalSelector.addGoal(5, new AbstractEnderWoman.EnderWomanTeleportToTargetGoal(this, 400F, 25F));
-			
+		});
+		this.goalSelector.addGoal(5, new AbstractEnderWoman.EnderWomanTeleportToTargetGoal(this, 196F, 25F));
 		this.targetSelector.addGoal(2, new HurtByTargetGoal(this));		
-		this.targetSelector.addGoal(4, new BreakBlocksToFollowOwnerGoal<>(this, 2, 7));	
 		this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.2D, false));
 		this.goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(this, 1.0D) {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
-				&& (getTamableData().isSavage() || !isTame());	
-			}
-		});
-				
-		this.goalSelector.addGoal(6, new EatGoal<>(this, 0.6F, 20));
-		this.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(this, Player.class, false, false) {
-			@Override
-			public boolean canUse() {
-				return super.canUse() 
 				&& (getTamableData().isSavage() || !isTame());		
 			}
-		});		
+		});
 		this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 6F) {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
 				&& !getTamableData().isWaiting()
 				&& !LivingEntityHelper.hasValidTarget(mob);
-			}		
+			}
+			
 			@Override
 			public boolean canContinueToUse() {
 				return super.canContinueToUse()
 				&& !LivingEntityHelper.isTargetStillValid(mob);
 			}
-		});			
+		});
 		this.goalSelector.addGoal(10, new RandomLookAroundGoal(this) {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
 				&& (getTamableData().isSavage() || !isTame());		
 			}
+		});	      
+        this.targetSelector.addGoal(1, new AbstractEnderWoman.EnderWomanLookForPlayerGoal(this, this::isAngryAt) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& getOwner() != null && pendingTarget != null && !getOwner().getUUID().equals(pendingTarget.getUUID());		
+			}
 		});
 	}
 	
-
+	@Override
+	protected void reassessTameGoals() {
+		if (this.isTame()) {		
+			GoalHelper.addGoalWithReplacement(this, 6, new EatGoal<>(this, 0.6F, 20));
+			GoalHelper.addGoalWithReplacement(this, 3, new OwnerHurtByTargetGoal(this) {
+				@Override
+				public boolean canUse() {
+					return super.canUse() 
+					&& !getTamableData().isWaiting();	
+				}
+			});
+			GoalHelper.addGoalWithReplacement(this, 4, new OwnerHurtTargetGoal(this) {
+				@Override
+				public boolean canUse() {
+					return super.canUse() 
+					&& !getTamableData().isWaiting();			
+				}
+			}, true);
+			GoalHelper.addGoalWithReplacement(this, 6, new PreggoMobFollowOwnerGoal<>(this, 1.2D, 6F, 2F, false) {
+				@Override
+				public boolean canUse() {
+					return super.canUse() 
+					&& !getTamableData().isWaiting();			
+				}
+			});
+			GoalHelper.addGoalWithReplacement(this, 7, new AbstractEnderWoman.EnderWomanTeleportToOwnerGoal(this, 196F, 81F) {
+				@Override
+				public boolean canUse() {
+					return super.canUse() 
+					&& !getTamableData().isWaiting();			
+				}
+			});
+		}
+		else {
+			GoalHelper.removeGoalByClass(this.goalSelector, Set.of(
+					EatGoal.class,
+					OwnerHurtByTargetGoal.class,
+					PreggoMobFollowOwnerGoal.class,
+					AbstractEnderWoman.EnderWomanTeleportToOwnerGoal.class
+			));
+			GoalHelper.removeGoalByClass(this.targetSelector, OwnerHurtTargetGoal.class);
+		}	
+	}
+	
 	// ITamablePreggomob START
 	@Override
 	public Inventory getInventory() {
@@ -280,13 +388,77 @@ public abstract class AbstractTamableEnderWoman extends AbstractEnderWoman imple
 	
 	// ITamablePreggomob END
 	
-	
-	
-    protected static AttributeSupplier.Builder createTamableAttributes(double movementSpeed) {
-        return Mob.createMobAttributes()
-        		.add(Attributes.MAX_HEALTH, 46.0D)
-        		.add(Attributes.MOVEMENT_SPEED, movementSpeed)
-        		.add(Attributes.ATTACK_DAMAGE, 7.0D)
-        		.add(Attributes.FOLLOW_RANGE, 64.0D);
+	public boolean teleportWithOwner(BlockPos targetPos) {
+	    if (this.canTeleportWithOwner()) {
+	        return teleport(targetPos.getX() + 0.5, targetPos.getY() + 1.0, targetPos.getZ() + 0.5);
+	    }
+	    return false;
 	}
-}
+	
+	public boolean canTeleportWithOwner() {
+		return false;
+	}
+   
+    public static void syncBlockToInventory(AbstractTamableEnderWoman enderWoman) {
+        Inventory inventory = enderWoman.getInventory();
+    	InventorySlotMapper slotMapper = inventory.getSlotMapper();
+    	
+        int customIndex = slotMapper.getSlotIndex(InventorySlot.BOTH_HANDS);
+        if (customIndex == InventorySlotMapper.DEFAULT_INVALID_SLOT_INDEX) {
+            return;
+        }
+        
+        BlockState blockStack = enderWoman.getCarriedBlock();
+        
+        if (blockStack == null) {
+			inventory.getHandler().setStackInSlot(customIndex, ItemStack.EMPTY);
+		} else {
+			inventory.getHandler().setStackInSlot(customIndex, new ItemStack(blockStack.getBlock()));
+		}
+    }
+    
+    public static void syncBlockToVanilla(AbstractTamableEnderWoman enderWoman) {
+    	Inventory inventory = enderWoman.getInventory();
+		InventorySlotMapper slotMapper = inventory.getSlotMapper();
+		
+		int customIndex = slotMapper.getSlotIndex(InventorySlot.BOTH_HANDS);
+		if (customIndex == InventorySlotMapper.DEFAULT_INVALID_SLOT_INDEX) {
+			return;
+		}
+		
+		ItemStack blockStack = inventory.getHandler().getStackInSlot(customIndex);
+		
+		if (blockStack.isEmpty()) {
+			enderWoman.setCarriedBlock(null);
+		} else if (blockStack.getItem() instanceof BlockItem blockItem) {
+			enderWoman.setCarriedBlock(blockItem.getBlock().defaultBlockState());
+		}
+    }
+    
+    public static boolean syncBlockToVanillaIfChanged(AbstractTamableEnderWoman enderWoman) {
+        Inventory inventory = enderWoman.getInventory();
+        InventorySlotMapper slotMapper = inventory.getSlotMapper();
+        int customIndex = slotMapper.getSlotIndex(InventorySlot.BOTH_HANDS);
+        if (customIndex == InventorySlotMapper.DEFAULT_INVALID_SLOT_INDEX)
+            return false;
+
+        ItemStack customStack = inventory.getHandler().getStackInSlot(customIndex);
+        BlockState blockState = enderWoman.getCarriedBlock();
+        
+        Item customItem = customStack.getItem();
+        Item blockItem = blockState != null ? blockState.getBlock().asItem() : Items.AIR;
+
+        if (customItem != blockItem) {
+			if (customStack.isEmpty()) {
+				enderWoman.setCarriedBlock(null);
+				return true;
+			}
+			else if (customStack.getItem() instanceof BlockItem blockItem2) {
+				enderWoman.setCarriedBlock(blockItem2.getBlock().defaultBlockState());
+			} 
+			return true;
+		}
+
+        return false;
+    }
+ }

@@ -71,7 +71,7 @@ public class IllHumanoidCreeperGirl extends AbstractMonsterHumanoidCreeperGirl i
 	public void removeIllagerOwner() {
     	this.setTame(false);	
 		this.setOwnerUUID(null);
-		Ill.removeBehaviourGoals(this);
+		Ill.addBehaviourGoalsWhenOwnerDies(this);
 	}
 	
 	@Override
@@ -109,6 +109,15 @@ public class IllHumanoidCreeperGirl extends AbstractMonsterHumanoidCreeperGirl i
 	}
 
 	@Override
+	protected void reassessTameGoals() {
+		if (this.isTame()) {
+	    	Ill.addTamableBehaviourGoals(this);
+		} else {
+			Ill.removeTamableBehaviourGoals(this);
+		}
+	}
+	
+	@Override
 	public InteractionResult mobInteract(Player sourceentity, InteractionHand hand) {					
 		return IllHumanoidCreeperGirl.mobInteract(this, sourceentity, hand);
 	}
@@ -123,7 +132,7 @@ public class IllHumanoidCreeperGirl extends AbstractMonsterHumanoidCreeperGirl i
 	}
 	
 	static<E extends AbstractMonsterCreeperGirl & Ill> void addDefaultGoals(E target) {
-    	Ill.addBehaviourGoals(target);
+    	Ill.addTamableBehaviourGoals(target);
     	target.goalSelector.addGoal(1, new IllCreeperGirl.SwellGoal<>(target) {		
 			@Override
 			public boolean canUse() {												

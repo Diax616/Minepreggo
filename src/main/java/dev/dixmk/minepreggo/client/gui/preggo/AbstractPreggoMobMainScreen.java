@@ -113,7 +113,7 @@ public abstract class AbstractPreggoMobMainScreen
 		this.addPreggoMobCheckBoxes();
 	}	
 	
-	private void addPreggoMobCheckBoxes() {		
+	protected void addPreggoMobCheckBoxes() {		
 		this.preggoMob.ifPresentOrElse(mob -> {			
 			final var isWaiting = mob.getTamableData().isWaiting();
 			final var id = mob.getId();
@@ -138,33 +138,11 @@ public abstract class AbstractPreggoMobMainScreen
 					.group(state)
 					.onSelect(() -> MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdatePreggoMobWaitC2SPacket(id, false)))
 					.build();
-			
-			var pickUpItems = new Checkbox(this.leftPos + 6, this.topPos + 53, 20, 20, Component.translatable("gui.minepreggo.preggo_mob_main.checkbox_pickup"), canPickUpLoot) {
-				@Override
-				public void onPress() {
-					super.onPress();
-					MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdatePreggoMobPickUpItemC2SPacket(id, this.selected));
-				}
-			};
-			pickUpItems.setTooltip(Tooltip.create(Component.translatable("gui.minepreggo.preggo_mob_inventory.tooltip_checkbox_pickup")));
 
-					
-			var breakBlocks = new Checkbox(this.leftPos + 6, this.topPos + 77, 20, 20, Component.translatable("gui.minepreggo.preggo_mob_main.checkbox_break"), canBreakBlocks) {
-				@Override
-				public void onPress() {
-					super.onPress();
-					MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdatePreggoMobBreakBlocksC2SPacket(id, this.selected));
-				}
-			};
-			breakBlocks.setTooltip(Tooltip.create(Component.translatable("gui.minepreggo.preggo_mob_inventory.tooltip_checkbox_break")));
-
-			
 			this.addRenderableWidget(inventoryButton);	
 			this.addRenderableWidget(sexButton);
 			this.addRenderableWidget(wait);
 			this.addRenderableWidget(follow);
-			this.addRenderableWidget(pickUpItems);
-			this.addRenderableWidget(breakBlocks);	
 			
 			state.add(wait);
 			state.add(follow);
@@ -173,6 +151,34 @@ public abstract class AbstractPreggoMobMainScreen
 			this.minecraft.player.closeContainer();
 			return;
 		});	
+	}
+	
+	protected void addPickUpLootCheckBox() {
+		this.preggoMob.ifPresent(mob -> {		
+			var pickUpItems = new Checkbox(this.leftPos + 6, this.topPos + 53, 20, 20, Component.translatable("gui.minepreggo.preggo_mob_main.checkbox_pickup"), canPickUpLoot) {
+				@Override
+				public void onPress() {
+					super.onPress();
+					MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdatePreggoMobPickUpItemC2SPacket(mob.getId(), this.selected));
+				}
+			};
+			pickUpItems.setTooltip(Tooltip.create(Component.translatable("gui.minepreggo.preggo_mob_inventory.tooltip_checkbox_pickup")));
+			this.addRenderableWidget(pickUpItems);
+		});
+	}
+	
+	protected void addBreakBlocksCheckBox() {
+		this.preggoMob.ifPresent(mob -> {		
+			var breakBlocks = new Checkbox(this.leftPos + 6, this.topPos + 77, 20, 20, Component.translatable("gui.minepreggo.preggo_mob_main.checkbox_break"), canBreakBlocks) {
+				@Override
+				public void onPress() {
+					super.onPress();
+					MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdatePreggoMobBreakBlocksC2SPacket(mob.getId(), this.selected));
+				}
+			};
+			breakBlocks.setTooltip(Tooltip.create(Component.translatable("gui.minepreggo.preggo_mob_inventory.tooltip_checkbox_break")));
+			this.addRenderableWidget(breakBlocks);
+		});
 	}
 }
 

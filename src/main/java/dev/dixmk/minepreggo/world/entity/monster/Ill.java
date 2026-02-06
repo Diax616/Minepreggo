@@ -1,10 +1,12 @@
 package dev.dixmk.minepreggo.world.entity.monster;
 
 import java.util.List;
+import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
+import dev.dixmk.minepreggo.world.entity.ai.goal.GoalHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.Mob;
@@ -21,7 +23,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.FollowOwnerGoal;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
-import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.AbstractIllager;
@@ -38,25 +39,26 @@ public interface Ill {
 	// TODO: Use PlayMessages.SpawnEntity in Ill entities for proper spawning handling
 	default void onFinalizeSpawnWithOwner() {}
 		
-	static <E extends PreggoMob & Ill> void removeBehaviourGoals(@NonNull E ill) {
-		var goals =	ill.goalSelector.getAvailableGoals().stream()
-			.filter(wgoal -> {
-				 var goal = wgoal.getGoal();
-				 return goal instanceof OwnerHurtByTargetGoal || goal instanceof OwnerHurtTargetGoal || goal instanceof FollowOwnerGoal;
-			})
-			.map(WrappedGoal::getGoal)
-			.toList();
-				
-		goals.forEach(ill.goalSelector::removeGoal);
-		
+	static <E extends PreggoMob & Ill> void addBehaviourGoalsWhenOwnerDies(@NonNull E ill) {
 		ill.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(ill, 1.1D, 0.0F));
 		ill.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(ill, Player.class, false, false));
 	}
+
+	static <E extends PreggoMob & Ill> void addBehaviourGoals(@NonNull E ill) {
+		ill.targetSelector.addGoal(3, new Ill.IllMobHurtByTargetGoal(ill, 12D));		
+		ill.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(ill, AbstractVillager.class, false, false));
+		ill.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(ill, IronGolem.class, false, false));
+	}
+	
+	static <E extends PreggoMob & Ill> void removeTamableBehaviourGoals(@NonNull E ill) {
+		GoalHelper.removeGoalByClass(ill.goalSelector, Set.of(OwnerHurtByTargetGoal.class, FollowOwnerGoal.class));
+		GoalHelper.removeGoalByClass(ill.targetSelector, OwnerHurtTargetGoal.class);
+	}
 		
-	static <E extends PreggoMob & Ill> void addBehaviourGoals(@NonNull E ill) {	
-		ill.goalSelector.addGoal(1, new OwnerHurtByTargetGoal(ill));
-		ill.targetSelector.addGoal(2, new OwnerHurtTargetGoal(ill));
-		ill.goalSelector.addGoal(6, new FollowOwnerGoal(ill, 1.2D, 8F, 3F, false) {
+	static <E extends PreggoMob & Ill> void addTamableBehaviourGoals(@NonNull E ill) {		
+		GoalHelper.addGoalWithReplacement(ill, 1, new OwnerHurtByTargetGoal(ill));
+		GoalHelper.addGoalWithReplacement(ill, 2, new OwnerHurtTargetGoal(ill), true);
+		GoalHelper.addGoalWithReplacement(ill, 6, new FollowOwnerGoal(ill, 1.2D, 8F, 3F, false) {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
@@ -67,26 +69,8 @@ public interface Ill {
 			public boolean canContinueToUse() {
 				return super.canContinueToUse()
 				&& !LivingEntityHelper.isTargetStillValid(this.tamable);
-			}		
-			
-			@Override
-			public void tick() {
-				this.tamable.getLookControl().setLookAt(this.owner, 10.0F, this.tamable.getMaxHeadXRot());
-				if (--this.timeToRecalcPath <= 0) {
-					this.timeToRecalcPath = this.adjustedTickDelay(10);
-					this.navigation.moveTo(this.owner, this.speedModifier);
-				}		
-				
-				if (this.tamable.getTarget() != null
-						&& this.tamable.distanceToSqr(this.owner) > 169D) {
-					this.tamable.setTarget(null);
-					this.navigation.stop();
-				}		
-			}
-		});	
-		ill.targetSelector.addGoal(3, new Ill.IllMobHurtByTargetGoal(ill, 12D));		
-		ill.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(ill, AbstractVillager.class, false, false));
-		ill.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(ill, IronGolem.class, false, false));
+			}				
+		});
 	}
 	
 	class IllMobHurtByTargetGoal extends TargetGoal {

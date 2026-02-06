@@ -26,7 +26,10 @@ import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterPregnantCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.MonsterCreeperHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractTamableEnderWoman;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractMonsterPregnantZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractZombieGirl;
@@ -120,6 +123,13 @@ public class PreggoMobHelper {
 	public static<T extends PreggoMob & ITamablePreggoMob<?>> void syncFromInventoryToEquipmentSlot(@NonNull T preggoMob) {
 	    if (!preggoMob.level().isClientSide) {
 	    	InventoryHelper.syncToVanillaIfChanged(preggoMob);
+	    	
+	    	if (preggoMob instanceof AbstractTamableEnderWoman enderWoman) {
+	    		AbstractTamableEnderWoman.syncBlockToVanillaIfChanged(enderWoman);
+	    	}
+	    	else if (preggoMob instanceof AbstractTamableCreeperGirl creeperGirl) {
+	    		MonsterCreeperHelper.syncItemOnMouthToVanillaIfChanged(creeperGirl);
+	    	}
 	    }
 	}
 	

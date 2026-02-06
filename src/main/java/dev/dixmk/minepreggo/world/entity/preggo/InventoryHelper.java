@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import dev.dixmk.minepreggo.MinepreggoMod;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
@@ -171,7 +172,7 @@ public class InventoryHelper {
         Inventory inventory = preggoMob.getInventory();
         for (InventorySlot slot : inventory.getSlotMapper().getAvailableSlots()) {
             if (slot.vanilla.isPresent() && syncSlotFromVanilla(preggoMob, slot)) {
-                    anySuccess = true;
+            	anySuccess = true;
             }   
         }
         
@@ -240,13 +241,12 @@ public class InventoryHelper {
             int customIndex = inventory.getSlotMapper().getSlotIndex(slot);
             if (customIndex == InventorySlotMapper.DEFAULT_INVALID_SLOT_INDEX || slot.vanilla.isEmpty())
                 continue;
-            
+
             EquipmentSlot vanillaSlot = slot.vanilla.get();
-            
             ItemStack customStack = inventory.getHandler().getStackInSlot(customIndex);
             ItemStack vanillaStack = preggoMob.getItemBySlot(vanillaSlot);
-            
             if (!ItemStack.matches(customStack, vanillaStack)) {
+            	MinepreggoMod.LOGGER.debug("Syncing slot {} from custom to vanilla: {} -> {}", vanillaSlot, vanillaStack, customStack);
                 preggoMob.setItemSlot(vanillaSlot, customStack);
                 hadChanges = true;
             }

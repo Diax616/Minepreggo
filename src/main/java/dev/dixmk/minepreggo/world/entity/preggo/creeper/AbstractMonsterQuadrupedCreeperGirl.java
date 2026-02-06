@@ -49,4 +49,9 @@ public abstract class AbstractMonsterQuadrupedCreeperGirl extends AbstractMonste
 	protected boolean canReplaceArmorBasedInPregnancyPhase(ItemStack armor) {
 		return false;
 	}
+	
+	@Override
+	public String getSimpleName() {
+		return MonsterCreeperHelper.SIMPLE_NAME;
+	}
 }

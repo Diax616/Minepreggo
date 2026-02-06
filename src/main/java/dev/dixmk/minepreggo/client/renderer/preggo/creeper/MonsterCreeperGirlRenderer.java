@@ -22,6 +22,6 @@ public class MonsterCreeperGirlRenderer extends AbstractMonsterCreeperGirlRender
 	
 	@Override
 	public ResourceLocation getTextureLocation(MonsterCreeperGirl p_115812_) {
-		return CREEPER_GIRL_LOCATION;
+		return MONSTER_CREEPER_GIRL_LOCATION;
 	}
 }

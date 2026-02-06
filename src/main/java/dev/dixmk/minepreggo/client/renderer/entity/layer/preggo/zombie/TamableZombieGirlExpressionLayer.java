@@ -7,6 +7,7 @@ import dev.dixmk.minepreggo.client.model.entity.preggo.zombie.AbstractTamableZom
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobFace;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamableZombieGirl;
+import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.world.effect.MobEffects;
@@ -26,17 +27,22 @@ public class TamableZombieGirlExpressionLayer
 	protected static final RenderType POST_PARTUM = RenderType.entityCutoutNoCull(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/expressions/zombie_girl_face_post_partum.png"));
 	protected static final RenderType POST_MISCARRIAGE = RenderType.entityCutoutNoCull(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/expressions/zombie_girl_face_post_miscarriage.png"));
 
-	
 	public TamableZombieGirlExpressionLayer(RenderLayerParent<E, M> p_117346_) {
 		super(p_117346_);
 	}
 	
 	@Override
 	public @Nullable RenderType renderType(E zombieGirl) {		
+		final var femaleData = zombieGirl.getGenderedData();
+		final var post = femaleData.getPostPregnancyData().map(p -> p.getPostPregnancy()).orElse(null);
 		var tamableData = zombieGirl.getTamableData();
+	
 		if (zombieGirl.isOnFire()) {
 			return SURPRISED2;
-		}		
+		}	
+		if (post == PostPregnancy.MISCARRIAGE) {
+			return POST_MISCARRIAGE;
+		}
 		else if (zombieGirl.hasEffect(MobEffects.CONFUSION)) {
 			return PAIN4;
 		}
@@ -48,7 +54,10 @@ public class TamableZombieGirlExpressionLayer
 		}
 		else if (tamableData.isSavage()) {
 			return SAD3;
-		}		
+		}	
+		else if (post == PostPregnancy.PARTUM) {
+			return POST_PARTUM;
+		}
 		return null;
 	}
 }

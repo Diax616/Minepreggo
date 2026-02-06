@@ -1,7 +1,6 @@
 package dev.dixmk.minepreggo.init;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
-
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -54,10 +53,12 @@ public class MinepreggoModTabs {
                 output.accept(MinepreggoModItems.ACTIVATED_GUNPOWDER_WITH_HOT_SAUCE.get());
                 output.accept(MinepreggoModItems.SOUR_ACTIVATED_GUNPOWDER.get());
                
-                /*
                 output.accept(MinepreggoModItems.ENDER_SLIME_JELLY.get());
                 output.accept(MinepreggoModItems.REFINED_CHORUS_SHARDS.get());
-                */
+                output.accept(MinepreggoModItems.ENDER_SLIME_JELLY_WITH_CHOCOLATE.get());
+                output.accept(MinepreggoModItems.ENDER_SLIME_JELLY_WITH_HOT_SAUCE.get());
+                output.accept(MinepreggoModItems.ENDER_SLIME_JELLY_WITH_SALT.get());
+                output.accept(MinepreggoModItems.SOUR_ENDER_SLIME_JELLY.get());
                 
                 output.accept(MinepreggoModItems.MEDICAL_TABLE.get());
         
@@ -161,7 +162,11 @@ public class MinepreggoModTabs {
                 output.accept(MinepreggoModItems.TAMABLE_HUMANOID_CREEPER_GIRL_P8_SPAWN_EGG.get());
      
                 output.accept(MinepreggoModItems.MONSTER_CREEPER_GIRL_SPAWN_EGG.get());
+                output.accept(MinepreggoModItems.TAMABLE_MONSTER_CREEPER_GIRL_SPAWN_EGG.get());
+
                 output.accept(MinepreggoModItems.MONSTER_ENDER_WOMAN_SPAWN_EGG.get());
+                output.accept(MinepreggoModItems.TAMABLE_MONSTER_ENDER_WOMAN_SPAWN_EGG.get());
+
                 output.accept(MinepreggoModItems.SCIENTIFIC_ILLAGER_SPAWN_EGG.get());
                 output.accept(MinepreggoModItems.FERTILITY_WITCH_SPAWN_EGG.get());
  

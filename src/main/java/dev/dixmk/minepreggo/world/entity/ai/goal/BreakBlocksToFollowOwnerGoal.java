@@ -20,17 +20,21 @@ public class BreakBlocksToFollowOwnerGoal<E extends PreggoMob & ITamablePreggoMo
     private BlockPos targetBlockPos;
     private BlockPos currentColumnBase; // Track which column we're working on
     private boolean columnCleared; // Track if vertical column is cleared
-    private static final int BREAK_DURATION = 10; // Ticks to break a block
+    private int breakDuration; // Ticks to break a block
     private static final int HORIZONTAL_RANGE = 2; // How many blocks horizontally to check/break
     
-    
-    public BreakBlocksToFollowOwnerGoal(E tamable, float minDistance, float maxDistance) {
+    public BreakBlocksToFollowOwnerGoal(E tamable, float minDistance, float maxDistance, int breakDuration) {
         this.tamable = tamable;
         this.minDistance = minDistance;
         this.maxDistance = maxDistance;
+        this.breakDuration = breakDuration;
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
     }
 
+    public BreakBlocksToFollowOwnerGoal(E tamable, float minDistance, float maxDistance) {
+		this(tamable, minDistance, maxDistance, 20);
+	}
+    
     @Override
     public boolean canUse() {
         if (!this.tamable.isTame() || !this.tamable.canBreakBlocks() || this.tamable.getTamableData().isWaiting() ||  this.tamable.getOwner() == null) {
@@ -96,10 +100,10 @@ public class BreakBlocksToFollowOwnerGoal<E extends PreggoMob & ITamablePreggoMo
                 
                 this.breakingTime++;
                 
-                int progress = (int)((float)this.breakingTime / BREAK_DURATION * 10.0F);
+                int progress = (int)((float)this.breakingTime / this.breakDuration * 10.0F);
                 this.tamable.level().destroyBlockProgress(this.tamable.getId(), this.targetBlockPos, progress);
                 
-                if (this.breakingTime >= BREAK_DURATION) {
+                if (this.breakingTime >= this.breakDuration) {
 
                     this.tamable.level().destroyBlock(this.targetBlockPos, true, this.tamable);
                     this.tamable.level().destroyBlockProgress(this.tamable.getId(), this.targetBlockPos, -1);

@@ -9,10 +9,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class CreeperGirlInventaryScreen extends AbstractCreeperGirlInventaryScreen<TamableHumanoidCreeperGirl, CreeperGirlInventoryMenu> {
-
+public class CreeperGirlInventaryScreen extends AbstractHumanoidCreeperGirlInventaryScreen<TamableHumanoidCreeperGirl, CreeperGirlInventoryMenu> {
 	public CreeperGirlInventaryScreen(CreeperGirlInventoryMenu container, Inventory inventory, Component text) {
 		super(container, inventory, text);
 	}
-
 }

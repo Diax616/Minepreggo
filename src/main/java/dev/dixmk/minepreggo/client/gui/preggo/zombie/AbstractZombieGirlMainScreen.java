@@ -30,6 +30,13 @@ public abstract class AbstractZombieGirlMainScreen
 		super(container, inventory, text, 1, 121);
 	}
 	
+	@Override
+	public void init() {
+		super.init();
+		this.addBreakBlocksCheckBox();
+		this.addPickUpLootCheckBox();	
+	}	
+	
 	@CheckForNull
 	public static ResourceLocation getCravingIcon(Craving craving) {
 		if (craving == null) {

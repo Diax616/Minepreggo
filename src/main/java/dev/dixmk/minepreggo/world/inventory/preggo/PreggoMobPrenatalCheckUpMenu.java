@@ -101,7 +101,7 @@ public class PreggoMobPrenatalCheckUpMenu extends AbstractPrenatalCheckUpMenu<Pr
 			
 		final var ps = pregnancySystem.get().getPregnancyData();
 		
-		String playerName = source.get().getSimpleName();
+		String playerName = source.get().getSimpleNameOrCustom();
 		LocalDateTime date = LocalDateTime.now();
 		String autor = target.get().getName().getString();
 		

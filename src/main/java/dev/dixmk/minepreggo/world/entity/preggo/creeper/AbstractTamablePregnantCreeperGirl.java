@@ -1,5 +1,7 @@
 package dev.dixmk.minepreggo.world.entity.preggo.creeper;
 
+import java.util.Set;
+
 import javax.annotation.Nonnull;
 
 import dev.dixmk.minepreggo.MinepreggoModConfig;
@@ -9,7 +11,11 @@ import dev.dixmk.minepreggo.init.MinepreggoModDamageSources;
 import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.world.entity.BellyPartFactory;
 import dev.dixmk.minepreggo.world.entity.BellyPartManager;
-import dev.dixmk.minepreggo.world.entity.ai.goal.PreggoMobAIHelper;
+import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
+import dev.dixmk.minepreggo.world.entity.ai.goal.GoalHelper;
+import dev.dixmk.minepreggo.world.entity.ai.goal.PregnantPreggoMobFollowOwnerGoal;
+import dev.dixmk.minepreggo.world.entity.ai.goal.PregnantPreggoMobOwnerHurtByTargetGoal;
+import dev.dixmk.minepreggo.world.entity.ai.goal.PregnantPreggoMobOwnerHurtTargetGoal;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.IPreggoMobPregnancySystem;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
@@ -27,6 +33,13 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
@@ -83,7 +96,118 @@ public abstract class AbstractTamablePregnantCreeperGirl extends AbstractTamable
 				&& !pregnancyData.isIncapacitated();								
 			}
 		});
-		PreggoMobAIHelper.setTamablePregnantCreeperGirlGoals(this);
+		
+		this.goalSelector.addGoal(2, new FloatGoal(this) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !getPregnancyData().isIncapacitated();
+			}
+		});
+		
+		this.targetSelector.addGoal(2, new HurtByTargetGoal(this) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !getPregnancyData().isIncapacitated();
+			}
+
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse()
+				&& !getPregnancyData().isIncapacitated();
+			}
+		});
+			
+		this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.2D, false){
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !getPregnancyData().isIncapacitated();
+			}
+
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse()
+				&& !getPregnancyData().isIncapacitated();
+			}
+		});
+		
+		this.goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(this, 1.0D) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& (getTamableData().isSavage() || !isTame())		
+				&& !getPregnancyData().isIncapacitated();
+			}
+
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() 
+				&& !getPregnancyData().isIncapacitated();
+			}
+		});
+				
+		this.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(this, Player.class, false, false) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& (getTamableData().isSavage() || !isTame())		
+				&& !getPregnancyData().isIncapacitated();
+			}
+
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() 
+				&& !getPregnancyData().isIncapacitated();
+			}
+		});	
+		
+		this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 6F) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !LivingEntityHelper.hasValidTarget(mob)
+				&& !getTamableData().isWaiting()
+				&& !getPregnancyData().isIncapacitated();
+				
+			}
+
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() 
+				&& !LivingEntityHelper.isTargetStillValid(mob)
+				&& !getPregnancyData().isIncapacitated();
+			}
+		});			
+
+		this.goalSelector.addGoal(10, new RandomLookAroundGoal(this) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& (getTamableData().isSavage() || !isTame())		
+				&& !getPregnancyData().isIncapacitated();
+			}
+
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() 
+				&& !getPregnancyData().isIncapacitated();
+			}
+		});
+	}
+	
+	@Override
+	protected void reassessTameGoals() {
+		if (this.isTame()) {
+			GoalHelper.addGoalWithReplacement(this, 3, new PregnantPreggoMobOwnerHurtByTargetGoal<>(this));
+			GoalHelper.addGoalWithReplacement(this, 3, new PregnantPreggoMobOwnerHurtTargetGoal<>(this), true);
+			GoalHelper.addGoalWithReplacement(this, 6, new PregnantPreggoMobFollowOwnerGoal<>(this, 1.2D, 6F, 2F, false));	
+		}
+		else {
+			GoalHelper.removeGoalByClass(this.goalSelector, Set.of(PregnantPreggoMobOwnerHurtByTargetGoal.class, PregnantPreggoMobFollowOwnerGoal.class));
+			GoalHelper.removeGoalByClass(this.targetSelector, PregnantPreggoMobOwnerHurtTargetGoal.class);
+		}
 	}
 	
 	@Override

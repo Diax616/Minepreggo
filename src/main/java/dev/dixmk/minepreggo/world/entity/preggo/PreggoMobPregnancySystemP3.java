@@ -70,7 +70,7 @@ public abstract class PreggoMobPregnancySystemP3
 			pregnancySymptoms.addPregnancySymptom(PregnancySymptom.BELLY_RUBS);
 	    	
 			MinepreggoMod.LOGGER.debug("Player {} has developed pregnancy symptom: {}, all pregnancy symptoms: {}",
-					pregnantEntity.getSimpleName(), PregnancySymptom.BELLY_RUBS, pregnancySymptoms.toSet());	
+					pregnantEntity.getSimpleNameOrCustom(), PregnancySymptom.BELLY_RUBS, pregnancySymptoms.toSet());	
 	    	return true;		
 		}
 		return false;

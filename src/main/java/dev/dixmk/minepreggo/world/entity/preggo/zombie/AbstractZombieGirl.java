@@ -42,6 +42,8 @@ import net.minecraft.world.level.block.Blocks;
 
 public abstract class AbstractZombieGirl extends PreggoMob implements Enemy {
 	
+	private static final String SIMPLE_NAME = "Zombie Girl";
+	
 	protected AbstractZombieGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_, Creature typeOfCreature) {
 	      super(p_21803_, p_21804_, Species.ZOMBIE, typeOfCreature);
 	}
@@ -77,7 +79,7 @@ public abstract class AbstractZombieGirl extends PreggoMob implements Enemy {
 	
 	@Override
 	public String getSimpleName() {
-		return this.hasCustomName() ? this.getDisplayName().getString() : "Zombie Girl";
+		return SIMPLE_NAME;
 	}
 	
 	@Override

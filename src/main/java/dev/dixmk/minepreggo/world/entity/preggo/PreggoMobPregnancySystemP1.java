@@ -161,7 +161,7 @@ public abstract class PreggoMobPregnancySystemP1
         	}
 	    	
         	initPostMiscarriage();	 
-        	MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) pregnantEntity.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.miscarriage.message.post", pregnantEntity.getSimpleName()));
+        	MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) pregnantEntity.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.miscarriage.message.post", pregnantEntity.getSimpleNameOrCustom()));
         	pregnantEntity.discard();
         	MinepreggoMod.LOGGER.debug("Miscarriage completed: id={}, class={}", pregnantEntity.getId(), pregnantEntity.getClass().getSimpleName());
         }	
@@ -210,7 +210,7 @@ public abstract class PreggoMobPregnancySystemP1
 				startMiscarriage();
 			}	
 			else if (currentPregnancyHealth < 40) {
-				MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) pregnantEntity.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.miscarriage.message.warning", pregnantEntity.getSimpleName()));
+				MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) pregnantEntity.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.miscarriage.message.warning", pregnantEntity.getSimpleNameOrCustom()));
 			}		
 		});
 	}
@@ -237,7 +237,7 @@ public abstract class PreggoMobPregnancySystemP1
 		pregnancyData.setPregnancyPain(PregnancyPain.MISCARRIAGE);
 		pregnancyData.resetPregnancyPainTimer();
 		MinepreggoMod.LOGGER.debug("Miscarriage just started");
-		MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) pregnantEntity.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.miscarriage.message.init", pregnantEntity.getSimpleName()));
+		MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) pregnantEntity.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.miscarriage.message.init", pregnantEntity.getSimpleNameOrCustom()));
 	}
 	
 	@Override
@@ -261,7 +261,7 @@ public abstract class PreggoMobPregnancySystemP1
 			pregnancyData.setTypeOfCraving(PregnancySystemHelper.getRandomCraving(randomSource));
 	    	
 			MinepreggoMod.LOGGER.debug("PreggomMob {} has developed pregnancy symptom: {}, all pregnancy symptoms: {}",
-					pregnantEntity.getSimpleName(), PregnancySymptom.CRAVING.name(), pregnancySymptoms.toSet());
+					pregnantEntity.getSimpleNameOrCustom(), PregnancySymptom.CRAVING.name(), pregnancySymptoms.toSet());
 	    	return true;		
 		}
 	    return false;
