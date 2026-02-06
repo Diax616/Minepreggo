@@ -1,0 +1,38 @@
+{
+  "display": {
+	"background": "minecraft:textures/block/stone.png",
+    "icon": {
+      "item": "minepreggo:belly_shield_p5"
+    },
+    "title": {
+      "translate": "advancements.fertile_mother.title"
+    },
+    "description": {
+      "translate": "advancements.fertile_mother.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "custom_criteria": {
+      "trigger": "minepreggo:get_pregnant",
+	  "conditions": {
+	    "effects": {
+	      "minepreggo:pregnancy_p0": {}
+	    },
+		"babies": {
+			"count": 8
+		},
+		"pregnancy": {
+			"type": "SEX"
+		}
+	  }
+    }
+  },
+  "rewards": {
+    "experience": 50
+  },
+  "parent": "minepreggo:i_am_pregnant"
+}

@@ -1,6 +1,7 @@
 package dev.dixmk.minepreggo.world.entity.player;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 import javax.annotation.Nonnegative;
 
@@ -8,11 +9,13 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
+import dev.dixmk.minepreggo.init.MinepreggoModAdvancements;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.world.entity.EntityHelper;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.pregnancy.AbstractPregnancySystem;
 import dev.dixmk.minepreggo.world.pregnancy.IBreedable;
 import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
@@ -302,7 +305,10 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 	// TODO: Redesign the way of resetting pregnancy data after birth
 	@Override
 	protected void initPostPartum() {
-    	MessageHelper.sendTo(pregnantEntity, Component.translatable("chat.minepreggo.player.birth.message.post", Integer.toString(pregnancySystem.getWomb().getNumOfBabies())));	
+		MinepreggoModAdvancements.GIVE_BIRTH_TRIGGER.trigger(pregnantEntity, null);
+		MinepreggoModAdvancements.GIVE_BIRTH_TRIGGER.trigger(pregnantEntity, Set.of(Species.values()));
+
+		MessageHelper.sendTo(pregnantEntity, Component.translatable("chat.minepreggo.player.birth.message.post", Integer.toString(pregnancySystem.getWomb().getNumOfBabies())));	
     	
 		PlayerHelper.updateJigglePhysics(pregnantEntity, playerData.getSkinType(), null);
     	

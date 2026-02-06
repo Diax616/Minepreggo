@@ -647,5 +647,26 @@
 	"key.minepreggo.teleport_with_ender_woman": "Teleport With Ender Woman",
 	
 	"death.attack.belly_burst": "%1$s's pregnant belly burst",
-	"death.attack.pregnancy_pain": "%1$s's didn't endure the pregnancy pain"
+	"death.attack.pregnancy_pain": "%1$s's didn't endure the pregnancy pain",
+	
+	"advancements.first_time_mother.title": "First-Time Mother",
+	"advancements.first_time_mother.description": "Give birth for the first time",
+	"advancements.i_am_pregnant.title": "I'm Pregnant?",
+	"advancements.i_am_pregnant.description": "Become pregnant for the first time",
+	"advancements.fertile_mother.title": "Fertile Mother",
+	"advancements.fertile_mother.description": "Get Pregnant Of 8 Babies At Once By Sexual Intercourse",
+	"advancements.magic_pregnancy.title": "Magic Pregnancy",
+	"advancements.magic_pregnancy.description": "Get Pregnant Using A Potion Or An Arrow",
+	"advancements.bad_mother.title": "Bad Mother",
+	"advancements.bad_mother.description": "Sell a baby that you gave birth to a Scientific Illager",
+	"advancements.bad_father.title": "Bad Father",
+	"advancements.bad_father.description": "Sell a baby that your partner gave birth to a Scientific Illager",
+	"advancements.take_responsibility.title": "Take Responsibility",
+	"advancements.take_responsibility.description": "Get a impregnable entity pregnant by sexual intercourse",
+	"advancements.give_birth_by_all_species.title": "Give Birth By All Species",
+	"advancements.give_birth_by_all_species.description": "Give birth to all species of babies",
+	"advancements.impregnate_all_species.title": "Impregnate All Species",
+	"advancements.impregnate_all_species.description": "Get all species of impregnable entities pregnant by sexual intercourse",	
+	"advancements.good_mother.title": "Good Mother",
+	"advancements.good_mother.description": "Successfully perform all prenatal check-ups on yourself"
 }

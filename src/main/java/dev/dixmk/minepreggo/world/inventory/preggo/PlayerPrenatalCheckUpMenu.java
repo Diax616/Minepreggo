@@ -10,6 +10,7 @@ import org.joml.Vector3i;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
+import dev.dixmk.minepreggo.init.MinepreggoModAdvancements;
 import dev.dixmk.minepreggo.init.MinepreggoModMenus;
 import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
 import dev.dixmk.minepreggo.world.item.checkup.PrenatalCheckups;
@@ -21,8 +22,6 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.npc.Villager;
@@ -39,7 +38,15 @@ public abstract class PlayerPrenatalCheckUpMenu<T extends Mob> extends AbstractP
 	protected PlayerPrenatalCheckUpMenu(MenuType<?> menu, int id, Inventory inv, FriendlyByteBuf buffer) {
 		super(menu, id, inv, buffer);
 	}	
-	
+		
+	@Override
+	protected void onSuccessful(PrenatalCheckup prenatalCheckup) {		
+		if (this.source.orElse(null) instanceof ServerPlayer serverPlayer) {
+			serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> cap.getPlayerStatistic().addPrenatalCheckupDoneMyself(prenatalCheckup));
+			MinepreggoModAdvancements.PRENATAL_CHECKUP_TRIGGER.trigger(serverPlayer);
+		}
+	}
+		
 	@Override
 	protected void readBuffer(FriendlyByteBuf buffer) {
 		Vector3i p = null;
@@ -160,16 +167,7 @@ public abstract class PlayerPrenatalCheckUpMenu<T extends Mob> extends AbstractP
 				this.target.ifPresent(t -> t.setTradingPlayer(null));
 			}
 		}
-		
-		@Override
-		protected void onSuccessful() {		
-			this.source.ifPresent(s -> {
-				if (this.level.isClientSide) {
-					this.level.playLocalSound(s.getX(), s.getY(), s.getZ(), SoundEvents.VILLAGER_CELEBRATE, SoundSource.AMBIENT, 1, 1, false);
-				}
-			});
-		}
-		
+
 		public static void showPrenatalCheckUpMenu(@NonNull ServerPlayer serverPlayer, @NonNull Villager villager) {						
 			final var pos = serverPlayer.blockPosition();
 			final var playerId = serverPlayer.getId();
@@ -257,15 +255,6 @@ public abstract class PlayerPrenatalCheckUpMenu<T extends Mob> extends AbstractP
 				MinepreggoMod.LOGGER.error("Target={} or Source={} was null",
 						this.source.isPresent(), this.target.isPresent());
 			}
-		}
-
-		@Override
-		protected void onSuccessful() {		
-			this.source.ifPresent(s -> {
-				if (this.level.isClientSide) {
-					this.level.playLocalSound(s.getX(), s.getY(), s.getZ(), SoundEvents.PILLAGER_CELEBRATE, SoundSource.AMBIENT, 1, 1, false);
-				}
-			});
 		}
 		
 		public static void showPrenatalCheckUpMenu(@NonNull ServerPlayer serverPlayer, @NonNull ScientificIllager scientificIllager) {						

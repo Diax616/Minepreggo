@@ -1,0 +1,35 @@
+{
+  "display": {
+	"background": "minecraft:textures/block/stone.png",
+    "icon": {
+      "item": "minepreggo:baby_humanoid_ender"
+    },
+    "title": {
+      "translate": "advancements.impregnate_all_species.title"
+    },
+    "description": {
+      "translate": "advancements.impregnate_all_species.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "custom_criteria": {
+      "trigger": "minepreggo:impregnate_entity",
+	  "conditions": {
+		"entity": {
+		  "type": "#minepreggo:impregnable_entities"
+		},
+		"entity_gotten_pregnant": {
+			"species": ["ZOMBIE", "CREEPER", "HUMAN", "ENDER"]
+		}
+	  }
+    }
+  },
+  "rewards": {
+    "experience": 100
+  },
+  "parent": "minepreggo:take_responsibility"
+}

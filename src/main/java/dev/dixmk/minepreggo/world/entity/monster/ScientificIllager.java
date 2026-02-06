@@ -73,6 +73,7 @@ import javax.annotation.Nullable;
 import com.google.common.collect.Maps;
 
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
+import dev.dixmk.minepreggo.init.MinepreggoModAdvancements;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.world.entity.npc.Trades;
@@ -82,6 +83,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.creeper.IllHumanoidCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.IllCreeperGirl;
 import dev.dixmk.minepreggo.world.inventory.preggo.PlayerPrenatalCheckUpMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.SelectPregnantEntityForPrenatalCheckUpMenu;
+import dev.dixmk.minepreggo.world.item.AbstractBaby;
 import dev.dixmk.minepreggo.world.pregnancy.IObstetrician;
 import dev.dixmk.minepreggo.world.pregnancy.PrenatalCheckupCostHolder;
 import dev.dixmk.minepreggo.world.pregnancy.PrenatalCheckupCostHolder.PrenatalCheckupCost;
@@ -161,7 +163,12 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
 
     @Override
     public void notifyTrade(MerchantOffer offer) {
-        // It does not need, It is not a villager
+    	if (!this.level().isClientSide && this.getTradingPlayer() instanceof ServerPlayer serverPlayer) {
+    		ItemStack itemStack = offer.getCostA();
+    		if (itemStack.getItem() instanceof AbstractBaby) {
+    			MinepreggoModAdvancements.BABY_TRADE_TRIGGER.trigger(serverPlayer, itemStack, Boolean.TRUE);
+    		}    		
+		}
     }
 
     @Override
@@ -347,25 +354,21 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
 			IllZombieGirl zombieGirl = MinepreggoModEntities.ILL_ZOMBIE_GIRL.get().spawn(serverLevel, BlockPos.containing(x + 1.25, y, z), MobSpawnType.MOB_SUMMONED);
 			zombieGirl.setYRot(this.random.nextFloat() * 360F);
 			zombieGirl.tameByIllager(this);
-			serverLevel.addFreshEntity(zombieGirl);
 			petsUUID.add(zombieGirl.getUUID());
 						
 			IllHumanoidCreeperGirl humanoidCreeperGirl = MinepreggoModEntities.ILL_HUMANOID_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(x - 1.25, y, z), MobSpawnType.MOB_SUMMONED);
 			humanoidCreeperGirl.setYRot(this.random.nextFloat() * 360F);
 			humanoidCreeperGirl.tameByIllager(this);	
-			serverLevel.addFreshEntity(humanoidCreeperGirl);
 			petsUUID.add(humanoidCreeperGirl.getUUID());
 			
 			IllCreeperGirl creeperGirl = MinepreggoModEntities.ILL_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(x, y, z + 1.25), MobSpawnType.MOB_SUMMONED);
 			creeperGirl.setYRot(this.random.nextFloat() * 360F);
 			creeperGirl.tameByIllager(this);
-			serverLevel.addFreshEntity(creeperGirl);
 			petsUUID.add(creeperGirl.getUUID());
 			
 			IllEnderWoman enderWoman = MinepreggoModEntities.ILL_ENDER_WOMAN.get().spawn(serverLevel, BlockPos.containing(x, y, z - 1.25), MobSpawnType.MOB_SUMMONED);
 			enderWoman.setYRot(this.random.nextFloat() * 360F);
 			enderWoman.tameByIllager(this);
-			serverLevel.addFreshEntity(enderWoman);
 			petsUUID.add(enderWoman.getUUID());					
 			return true;
 		}	

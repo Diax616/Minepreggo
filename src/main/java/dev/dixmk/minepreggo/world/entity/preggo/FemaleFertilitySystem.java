@@ -2,10 +2,13 @@ package dev.dixmk.minepreggo.world.entity.preggo;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
+import dev.dixmk.minepreggo.init.MinepreggoModAdvancements;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem.Result;
 import dev.dixmk.minepreggo.world.pregnancy.IFemaleEntity;
 import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyType;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -101,6 +104,13 @@ public abstract class FemaleFertilitySystem<E extends PreggoMob & ITamablePreggo
 	protected void evaluatePregnancyInitializerTimer() {			    	
 		final var femaleData = preggoMob.getGenderedData();
 		if (femaleData.getPregnancyInitializerTimer() >= MinepreggoModConfig.SERVER.getTotalTicksToStartPregnancy()) {
+       	
+        	femaleData.getPrePregnancyData().ifPresent(prePregnancyData -> {
+        		if (prePregnancyData.pregnancyType() == PregnancyType.SEX && preggoMob.getOwner() instanceof ServerPlayer serverPlayer) {
+    				MinepreggoModAdvancements.IMPREGNATE_ENTITY_TRIGGER.trigger(serverPlayer, preggoMob);
+        		}
+        	});
+        	
         	startPregnancy();
         	preggoMob.discard();
         } else {

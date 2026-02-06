@@ -18,6 +18,7 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
+import dev.dixmk.minepreggo.init.MinepreggoModAdvancements;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.network.capability.FemalePlayerImpl;
 import dev.dixmk.minepreggo.network.packet.s2c.RemovePlayerJigglePhysicsS2CPacket;
@@ -31,6 +32,7 @@ import dev.dixmk.minepreggo.world.pregnancy.MapPregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyType;
 import dev.dixmk.minepreggo.world.pregnancy.Womb;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
@@ -166,7 +168,7 @@ public class PlayerHelper {
 		Optional<Boolean> gotPlayerPregnant = player.getCapability(MinepreggoCapabilities.PLAYER_DATA)
 				.resolve()
 				.flatMap(cap -> cap.getFemaleData().resolve()
-				.flatMap(femaleData -> {
+				.map(femaleData -> {
 					if (femaleData.isPregnant() && femaleData.getPrePregnancyData().isPresent()) {	
 						var prePregnancyData = femaleData.getPrePregnancyData().get();
 						
@@ -212,25 +214,27 @@ public class PlayerHelper {
 								totalDays,
 								daysByStage,
 								womb);
-								
-						return Optional.of(Boolean.TRUE);
+										
+						MinepreggoModAdvancements.GET_PREGNANT_TRIGGER.trigger(player);
+						
+						return Boolean.TRUE;
 					}
-					return Optional.empty();
+					return Boolean.FALSE;
 				}));
 
 		return gotPlayerPregnant.isPresent() && gotPlayerPregnant.get().booleanValue();
 	}
 	
-	private static boolean tryToStartPrePregnancy(ServerPlayer player, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father, @Nonnegative int numOfBabies) {	
+	private static boolean tryToStartPrePregnancy(ServerPlayer player, PregnancyType pregnancyType, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father, @Nonnegative int numOfBabies) {	
 		Optional<Boolean> gotPlayerPregnant = player.getCapability(MinepreggoCapabilities.PLAYER_DATA)
 				.resolve()
 				.flatMap(cap -> cap.getFemaleData().resolve()
-				.flatMap(femaleData -> {
+				.map(femaleData -> {
 					if (!femaleData.isPregnant() && femaleData.getPostPregnancyData().isEmpty()) {						
 						player.removeEffect(MinepreggoModMobEffects.FERTILE.get());
-						return Optional.of(femaleData.tryImpregnate(numOfBabies, father));
+						return femaleData.tryImpregnate(pregnancyType, numOfBabies, father);
 					}
-					return Optional.empty();
+					return false;
 				}));
 
 		if (gotPlayerPregnant.isPresent() && gotPlayerPregnant.get().booleanValue()) {
@@ -266,7 +270,7 @@ public class PlayerHelper {
 			return false;
 		}
 			
-		return tryToStartPrePregnancy(female, ImmutableTriple.of(Optional.of(male.getUUID()), Species.HUMAN, Creature.HUMANOID), numOfBabies);
+		return tryToStartPrePregnancy(female, PregnancyType.SEX, ImmutableTriple.of(Optional.of(male.getUUID()), Species.HUMAN, Creature.HUMANOID), numOfBabies);
 	}
 	
 	public static boolean tryStartPregnancyBySex(ServerPlayer female, Villager villager) {		
@@ -285,18 +289,18 @@ public class PlayerHelper {
 			return false;
 		}
 				
-		return tryToStartPrePregnancy(female, ImmutableTriple.of(Optional.of(villager.getUUID()), Species.VILLAGER, Creature.HUMANOID), numOfBabies.get());
+		return tryToStartPrePregnancy(female, PregnancyType.SEX, ImmutableTriple.of(Optional.of(villager.getUUID()), Species.VILLAGER, Creature.HUMANOID), numOfBabies.get());
 	}
 	
 	public static boolean tryStartPregnancyByPotion(ServerPlayer player, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father, int amplifier) {			
-		if (tryToStartPrePregnancy(player, father, PregnancySystemHelper.calculateNumOfBabiesByPotion(amplifier))) {
+		if (tryToStartPrePregnancy(player, PregnancyType.POTION, father, PregnancySystemHelper.calculateNumOfBabiesByPotion(amplifier))) {
 			return tryToStartPregnancy(player, true);
 		}	
 		return false;
 	}
 		
 	public static boolean tryStartPregnancyByMobAttack(ServerPlayer female, Species species, Creature creature) {
-		return tryToStartPrePregnancy(female, ImmutableTriple.of(Optional.empty(), species, creature), female.getRandom().nextInt(1, PregnancySystemHelper.MAX_NUMBER_OF_BABIES + 1));
+		return tryToStartPrePregnancy(female, PregnancyType.MOB_ATTACK, ImmutableTriple.of(Optional.empty(), species, creature), female.getRandom().nextInt(1, PregnancySystemHelper.MAX_NUMBER_OF_BABIES + 1));
 	}
 	
 	public static void removeHorny(ServerPlayer source) {

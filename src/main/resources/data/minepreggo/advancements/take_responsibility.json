@@ -1,0 +1,31 @@
+{
+  "display": {
+	"background": "minecraft:textures/block/stone.png",
+    "icon": {
+      "item": "minepreggo:baby_human"
+    },
+    "title": {
+      "translate": "advancements.take_responsibility.title"
+    },
+    "description": {
+      "translate": "advancements.take_responsibility.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "custom_criteria": {
+      "trigger": "minepreggo:impregnate_entity",
+	  "conditions": {
+		"entity": {
+		  "type": "#minepreggo:impregnable_entities"
+		}
+	  }
+    }
+  },
+  "rewards": {
+    "experience": 20
+  }
+}

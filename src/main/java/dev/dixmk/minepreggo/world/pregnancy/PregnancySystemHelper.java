@@ -36,6 +36,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
+import dev.dixmk.minepreggo.world.item.AbstractBaby;
 import dev.dixmk.minepreggo.world.item.IFemaleArmor;
 import dev.dixmk.minepreggo.world.item.IMaternityArmor;
 import dev.dixmk.minepreggo.world.item.ItemHelper;
@@ -353,9 +354,9 @@ public class PregnancySystemHelper {
 	public static List<ItemStack> getAliveBabies(@NonNull Womb womb) {
 		return womb.stream()
 				.map(babyData -> {
-				var babyItem = getAliveBabyItem(babyData.typeOfSpecies, babyData.typeOfCreature);
-				if (babyItem != null) {
-					return new ItemStack(babyItem);
+				Item babyItem = getAliveBabyItem(babyData.typeOfSpecies, babyData.typeOfCreature);
+				if (babyItem != null) {				
+					return AbstractBaby.createBabyItemStack(babyData.motherId, babyData.fatherId.orElse(null), (AbstractBaby) babyItem);
 				}
 				return ItemStack.EMPTY;
 				})

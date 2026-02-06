@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "minepreggo:tamable_humanoid_creeper_girl",
+    "minepreggo:tamable_zombie_girl",
+	"minepreggo:tamable_monster_ender_woman",
+	"minepreggo:tamable_monster_creeper_girl",
+	"minecraft:player"	
+  ]
+}

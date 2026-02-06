@@ -18,7 +18,7 @@ public interface IFemaleEntity extends IBreedable {
     void incrementPregnancyInitializerTimer();
     
     boolean isPregnant();
-    boolean tryImpregnate(@Nonnegative int fertilizedEggs, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father);
+    boolean tryImpregnate(PregnancyType pregnancyType, @Nonnegative int fertilizedEggs, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father);
     boolean tryCancelPregnancy();
     
     Optional<PrePregnancyData> getPrePregnancyData();

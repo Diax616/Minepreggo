@@ -6,6 +6,7 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
+import dev.dixmk.minepreggo.init.MinepreggoModAdvancements;
 import dev.dixmk.minepreggo.init.MinepreggoModDamageSources;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
@@ -39,6 +40,7 @@ import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyType;
 import dev.dixmk.minepreggo.world.pregnancy.SexHelper;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
@@ -343,9 +345,20 @@ public class PlayerEventHandler {
 					if (!PlayerHelper.tryToStartPregnancy(serverPlayer, false)) {					
 						throw new IllegalStateException("Failed to initialize pregnancy system for player " + serverPlayer.getName().getString());	
 					}
-					
 					femaleData.setPregnancyInitializerTimer(0);
-					
+					femaleData.getPrePregnancyData().ifPresent(prePregnancyData -> {
+						if (prePregnancyData.pregnancyType() == PregnancyType.SEX
+								&& prePregnancyData.fatherId() != null
+								&& serverPlayer.level() instanceof ServerLevel serverLevel) {
+							
+							Optional<ServerPlayer> fatherPlayerOpt = serverLevel.getServer().getPlayerList().getPlayers().stream()
+									.filter(p -> p.getUUID().equals(prePregnancyData.fatherId()))
+									.findFirst();
+							
+							fatherPlayerOpt.ifPresent(fatherPlayer -> MinepreggoModAdvancements.IMPREGNATE_ENTITY_TRIGGER.trigger(fatherPlayer, serverPlayer));
+						}
+					});
+		
 					MinepreggoMod.LOGGER.debug("Player {} pregnancy system initialized", serverPlayer.getName().getString());
 				}					
 				else {

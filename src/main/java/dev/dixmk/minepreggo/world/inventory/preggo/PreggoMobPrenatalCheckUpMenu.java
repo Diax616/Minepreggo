@@ -22,8 +22,6 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -40,6 +38,9 @@ public class PreggoMobPrenatalCheckUpMenu extends AbstractPrenatalCheckUpMenu<Pr
 		super(MinepreggoModMenus.PREGGO_MOB_PRENATAL_CHECKUP_MENU.get(), id, inv, buffer);	
 	}
 
+	@Override
+	protected void onSuccessful(PrenatalCheckup checkup) {}
+	
 	@Override
 	protected void readBuffer(FriendlyByteBuf buffer) {
 		PreggoMob s = null;	
@@ -133,15 +134,6 @@ public class PreggoMobPrenatalCheckUpMenu extends AbstractPrenatalCheckUpMenu<Pr
 				new PrenatalCheckupData(emeraldForPaternityTest, f3));
 	}
 
-	@Override
-	protected void onSuccessful() {		
-		this.source.ifPresent(s -> {
-			if (this.level.isClientSide) {
-				this.level.playLocalSound(s.getX(), s.getY(), s.getZ(), SoundEvents.PILLAGER_CELEBRATE, SoundSource.AMBIENT, 1, 1, false);
-			}
-		});
-	}
-	
 	public static void showPrenatalCheckUpMenu(@NonNull ServerPlayer serverPlayer, PreggoMob preggoMob, ScientificIllager scientificIllager) {						
 		final var pos = preggoMob.blockPosition();
 		final var preggoMobId = preggoMob.getId();

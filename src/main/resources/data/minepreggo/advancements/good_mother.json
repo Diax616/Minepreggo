@@ -1,0 +1,32 @@
+{
+  "display": {
+	"background": "minecraft:textures/block/stone.png",
+    "icon": {
+      "item": "minepreggo:maternity_golden_p1_chestplate"
+    },
+    "title": {
+      "translate": "advancements.good_mother.title"
+    },
+    "description": {
+      "translate": "advancements.good_mother.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "custom_criteria": {
+      "trigger": "minepreggo:prenantal_checkup",
+	  "conditions": {
+		"prenatal_checkup": {
+			"checkups": ["REGULAR", "ULTRASOUND_SCAN", "PATERNITY_TEST"]
+		}
+	  }
+    }
+  },
+  "rewards": {
+    "experience": 50
+  },
+  "parent": "minepreggo:i_am_pregnant"
+}

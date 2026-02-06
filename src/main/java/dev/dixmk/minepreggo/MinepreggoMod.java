@@ -22,6 +22,7 @@ import dev.dixmk.minepreggo.client.gui.preggo.zombie.TamablePregnantZombieGirlMa
 import dev.dixmk.minepreggo.client.gui.preggo.zombie.ZombieGirlInventaryScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.zombie.ZombieGirlMainScreen;
 import dev.dixmk.minepreggo.init.MinepreggoLootModifier;
+import dev.dixmk.minepreggo.init.MinepreggoModAdvancements;
 import dev.dixmk.minepreggo.init.MinepreggoModBlocks;
 import dev.dixmk.minepreggo.init.MinepreggoModDamageSources;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
@@ -90,6 +91,7 @@ public class MinepreggoMod {
 	public MinepreggoMod(FMLJavaModLoadingContext context) {
 		MinecraftForge.EVENT_BUS.register(this);
 		IEventBus modEventBus = context.getModEventBus();	
+		
         context.registerConfig(ModConfig.Type.CLIENT, MinepreggoModConfig.CLIENT_SPEC);
         context.registerConfig(ModConfig.Type.SERVER, MinepreggoModConfig.SERVER_SPEC);
 		
@@ -330,6 +332,8 @@ public class MinepreggoMod {
             ComposterBlock.COMPOSTABLES.put(MinepreggoModItems.LEMON.get(), 0.6f);
                     
             MinepreggoModPacketHandler.registerMessages();
+            
+            MinepreggoModAdvancements.register();
         });	
     }  
 }

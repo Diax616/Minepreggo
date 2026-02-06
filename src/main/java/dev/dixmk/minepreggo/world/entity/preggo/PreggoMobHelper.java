@@ -41,6 +41,7 @@ import dev.dixmk.minepreggo.world.pregnancy.MapPregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyType;
 import dev.dixmk.minepreggo.world.pregnancy.Womb;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -529,7 +530,7 @@ public class PreggoMobHelper {
 					
 					MinepreggoMod.LOGGER.debug("INIT PREGNANCY: class={}, lastPregnancyStage={}, totalDays={}, daysByStage={}, womb={}",
 							preggoMob.getClass().getSimpleName(), lastPregnancyStage, totalDays, map, womb);
-					
+												
 					return true;
 				});
 		
@@ -546,18 +547,18 @@ public class PreggoMobHelper {
 			throw new IllegalStateException("Cannot init default pregnancy: numOfBabies is null");
 		}
 
-		femaleData.tryImpregnate(numOfBabies.getAsInt(), ImmutableTriple.of(Optional.empty(), preggoMob.getTypeOfSpecies(), preggoMob.getTypeOfCreature()));	
+		femaleData.tryImpregnate(PregnancyType.MOB_ATTACK, numOfBabies.getAsInt(), ImmutableTriple.of(Optional.empty(), preggoMob.getTypeOfSpecies(), preggoMob.getTypeOfCreature()));	
 		initPregnancy(preggoMob);
 	}
 	
-	public static <E extends PreggoMob & ITamablePreggoMob<IFemaleEntity>> boolean initPrePregnancy(@NonNull E preggoMob, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father, @Nonnegative int fertilizedEggs) {	
+	public static <E extends PreggoMob & ITamablePreggoMob<IFemaleEntity>> boolean initPrePregnancy(@NonNull E preggoMob, PregnancyType pregnancyType, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father, @Nonnegative int fertilizedEggs) {	
 		final IFemaleEntity femaleData = preggoMob.getGenderedData();
-		return femaleData.tryImpregnate(fertilizedEggs, father);
+		return femaleData.tryImpregnate(pregnancyType, fertilizedEggs, father);
 	}
 	
 	public static <E extends PreggoMob & ITamablePregnantPreggoMob> boolean initPregnancyByPotion(@NonNull E preggoMob, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father, @Nonnegative int amplifier) {	
 		final int numOfBabies = PregnancySystemHelper.calculateNumOfBabiesByPotion(amplifier);	
-		final var r1 = initPrePregnancy(preggoMob, father, numOfBabies);	
+		final var r1 = initPrePregnancy(preggoMob, PregnancyType.POTION, father, numOfBabies);	
 		final var r2 = initPregnancy(preggoMob);
 		
 		if (!r1 || !r2) {
@@ -594,21 +595,13 @@ public class PreggoMobHelper {
 			return false;
 		}
 	
-		return initPrePregnancy(preggoMob, ImmutableTriple.of(Optional.of(serverPlayer.getUUID()), Species.HUMAN, Creature.HUMANOID), numOfBabiesOpt.get().intValue());
+		return initPrePregnancy(preggoMob, PregnancyType.SEX, ImmutableTriple.of(Optional.of(serverPlayer.getUUID()), Species.HUMAN, Creature.HUMANOID), numOfBabiesOpt.get().intValue());
 	}
 	
 	private static<E extends PreggoMob & ITamablePregnantPreggoMob> float getSpawnProbabilityBasedPregnancy(@NonNull E preggoMob, float t0, float k, float pMin, float pMax) {	
 		return PregnancySystemHelper.calculateSpawnProbabilityBasedPregnancy(preggoMob.getPregnancyData(), t0, k, pMin, pMax);
 	}
 	// PREGNANCY SYSTEM - END
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	// ARMOR AND ITEMS - START
