@@ -5,7 +5,6 @@ import javax.annotation.Nullable;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.model.entity.preggo.zombie.AbstractTamablePregnantZombieGirlModel;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobFace;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
 import net.minecraft.client.renderer.RenderType;
@@ -30,8 +29,7 @@ public class TamablePregnantZombieGirlExpressionLayer
 	}
 
 	@Override
-	public @Nullable RenderType renderType(E zombieGirl) {		
-		
+	public @Nullable RenderType renderType(E zombieGirl) {			
 		final var pregnancyData = zombieGirl.getPregnancyData();
 		final var pain = pregnancyData.getPregnancyPain();
 		
@@ -44,7 +42,7 @@ public class TamablePregnantZombieGirlExpressionLayer
 			case MORNING_SICKNESS: {		
 				return PAIN4;
 			}
-			case FETAL_MOVEMENT: {		
+			case FETAL_MOVEMENT, BIRTH: {		
 				return PAIN1;
 			}
 			case CONTRACTION: {		
@@ -56,30 +54,16 @@ public class TamablePregnantZombieGirlExpressionLayer
 			case PREBIRTH: {		
 				return PAIN3;
 			}
-			case BIRTH: {		
-				return PAIN1;
-			}
 			default:
 				break;
 			}
 		}
-		
-		var tamableData = zombieGirl.getTamableData();
-		
+
 		if (!pregnancyData.getSyncedPregnancySymptoms().isEmpty()) {
 			return SAD1;
 		}
-		else if (tamableData.getFaceState() == PreggoMobFace.BLUSHED) {
-			return HORNY2;
-		}
-		else if (tamableData.isWaiting()) {
-			return SAD2;
-		}
-		else if (tamableData.isSavage()) {
-			return SAD3;
-		}
 
-		return null;
+		return super.renderType(zombieGirl);
 	}
 }
 

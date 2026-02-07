@@ -10,8 +10,9 @@ import dev.dixmk.minepreggo.world.entity.monster.Ill;
 import dev.dixmk.minepreggo.world.entity.preggo.IMonsterPregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterHumanoidCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractHostilHumanoidCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractTamablePregnantEnderWoman;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractMonsterZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractZombieGirl;
@@ -56,7 +57,10 @@ public class EntityEventHandler {
         else if (mob instanceof AbstractTamablePregnantZombieGirl zombieGirl && event.getSpawnType() != MobSpawnType.CONVERSION) {  	
         	PreggoMobHelper.initDefaultPregnancy(zombieGirl);
         }
-        else if (mob instanceof AbstractMonsterHumanoidCreeperGirl) {  	
+        else if (mob instanceof AbstractTamablePregnantEnderWoman enderWoman && event.getSpawnType() != MobSpawnType.CONVERSION) {  	
+        	PreggoMobHelper.initDefaultPregnancy(enderWoman);
+        }
+        else if (mob instanceof AbstractHostilHumanoidCreeperGirl) {  	
         	mob.setCanPickUpLoot(mob.getRandom().nextFloat() < 0.35F * event.getDifficulty().getSpecialMultiplier());    	
         	if (mob.getType() == MinepreggoModEntities.MONSTER_HUMANOID_CREEPER_GIRL.get()
         			&& mob.getRandom().nextFloat() < MinepreggoModConfig.SERVER.getBabyCreeperGirlProbability()) {

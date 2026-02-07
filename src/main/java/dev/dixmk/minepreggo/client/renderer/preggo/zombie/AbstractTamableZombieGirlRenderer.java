@@ -13,10 +13,10 @@ public abstract class AbstractTamableZombieGirlRenderer
 
 	protected AbstractTamableZombieGirlRenderer(Context context, M main, M inner, M outter) {
 		super(context, main, inner, outter);
-		this.addFacialExpresions();
+		this.addLayer(this.createExpressionLayer());
 	}
 
-	protected void addFacialExpresions() {
-		this.addLayer(new TamableZombieGirlExpressionLayer<>(this));
+	protected TamableZombieGirlExpressionLayer<E, M> createExpressionLayer() {
+		return new TamableZombieGirlExpressionLayer<>(this);
 	}
 }

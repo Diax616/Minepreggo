@@ -25,7 +25,7 @@ import dev.dixmk.minepreggo.world.entity.EntityHelper;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractCreeperGirl;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterPregnantCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractHostilPregnantCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.MonsterCreeperHelper;
@@ -861,7 +861,7 @@ public class PreggoMobHelper {
 		}
 	}
 		
-	public static void spawnBabyAndFetusCreepers(@NonNull AbstractMonsterPregnantCreeperGirl creeperGirl) {			
+	public static void spawnBabyAndFetusCreepers(@NonNull AbstractHostilPregnantCreeperGirl creeperGirl) {			
 		if (!(creeperGirl.level() instanceof ServerLevel serverLevel)) {
 			return;
 		}

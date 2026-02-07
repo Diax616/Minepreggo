@@ -172,7 +172,7 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	@Override
 	public boolean hurt(DamageSource damagesource, float amount) {
 		boolean result = super.hurt(damagesource, amount);	
-		if (result) {
+		if (!this.level().isClientSide && result) {
 			PreggoMobHelper.tryToDamageArmor(this, damagesource);
 			
 			if (tamablePreggoMobData.canBePanicking()) {	

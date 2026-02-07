@@ -231,7 +231,7 @@ public abstract class AbstractTamablePregnantCreeperGirl extends AbstractTamable
 	public boolean hurt(DamageSource damagesource, float amount) {
 		boolean result = super.hurt(damagesource, amount);	
 		
-		if (result) {
+		if (!this.level().isClientSide && result) {
 			pregnancySystem.evaluateOnSuccessfulHurt(damagesource);
 		}
 		

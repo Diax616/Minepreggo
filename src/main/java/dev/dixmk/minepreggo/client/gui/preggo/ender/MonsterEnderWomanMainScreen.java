@@ -2,7 +2,6 @@ package dev.dixmk.minepreggo.client.gui.preggo.ender;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import dev.dixmk.minepreggo.client.gui.ScreenHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.TamableMonsterEnderWoman;
 import dev.dixmk.minepreggo.world.inventory.preggo.ender.MonsterEnderWomanMainMenu;
 import net.minecraft.client.gui.GuiGraphics;
@@ -31,13 +30,13 @@ public class MonsterEnderWomanMainScreen extends AbstractEnderWomanMainScreen<Ta
 		
 		guiGraphics.blit(DEFAULT_P0_MAIN_GUI_TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight, imageWidth, imageHeight);
 		
-		this.preggoMob.ifPresent(creeperGirl -> ScreenHelper.renderEnderWomanMainScreen(guiGraphics, this.leftPos, this.topPos, creeperGirl));
+		this.preggoMob.ifPresent(enderWoman -> renderScreenNonPreg(guiGraphics, this.leftPos, this.topPos, enderWoman));
 	
 		RenderSystem.disableBlend();
 	}
 
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {	
-		this.preggoMob.ifPresent(creeperGirl -> ScreenHelper.renderDefaultPreggoLabelMainGUI(guiGraphics, this.font, creeperGirl, this.pregnant));
+		this.preggoMob.ifPresent(enderWoman -> renderLabelsNonPreg(guiGraphics, this.font, enderWoman, this.pregnant));
 	}
 }

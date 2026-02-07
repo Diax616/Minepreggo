@@ -4,8 +4,7 @@ import javax.annotation.Nullable;
 
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractTamableHumanoidCreeperGirlModel;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobFace;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableHumanoidCreeperGirl;
-import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGirl;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.world.effect.MobEffects;
@@ -14,21 +13,15 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class TamableHumanoidCreeperGirlExpressionLayer
-	<E extends AbstractTamableHumanoidCreeperGirl, M extends AbstractTamableHumanoidCreeperGirlModel<E>> extends AbstractHumanoidCreeperGirlExpressionFacialLayer<E, M> {
+	<E extends AbstractTamableCreeperGirl, M extends AbstractTamableHumanoidCreeperGirlModel<E>> extends AbstractHumanoidCreeperGirlExpressionLayer<E, M> {
 	
 	public TamableHumanoidCreeperGirlExpressionLayer(RenderLayerParent<E, M> p_117346_) {
 		super(p_117346_);
 	}
 	
 	public @Nullable RenderType renderType(E creeperGirl) {			
-		final var femaleData = creeperGirl.getGenderedData();
-		final var post = femaleData.getPostPregnancyData().map(p -> p.getPostPregnancy()).orElse(null);
-		final var tamableData = creeperGirl.getTamableData();
-		
-		if (post == PostPregnancy.MISCARRIAGE) {
-			return POST_MISCARRIAGE;
-		}
-		else if (creeperGirl.hasEffect(MobEffects.CONFUSION)) {
+		final var tamableData = creeperGirl.getTamableData();		
+		if (creeperGirl.hasEffect(MobEffects.CONFUSION)) {
 			return PAIN4;
 		}
 		else if (tamableData.getFaceState() == PreggoMobFace.BLUSHED) {
@@ -41,14 +34,12 @@ public class TamableHumanoidCreeperGirlExpressionLayer
 			return SAD2;
 		}
 		else if (tamableData.isSavage()) {
-			if (creeperGirl.isTame() && creeperGirl.getOwner() != null) {
+			if (creeperGirl.isTame()) {
 				return ANGRY1;
 			}
 			return SAD3;
 		}
-		else if (post == PostPregnancy.PARTUM) {
-			return POST_PARTUM;
-		}
+
 		return null;
 	}
 }

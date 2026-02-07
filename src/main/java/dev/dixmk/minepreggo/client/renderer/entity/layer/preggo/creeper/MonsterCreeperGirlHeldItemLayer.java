@@ -3,7 +3,7 @@ package dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.creeper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 
-import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.quadruped.AbstractCreeperGirlModel;
+import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractMonsterCreeperGirlModel;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractCreeperGirl;
 import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -17,7 +17,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class MonsterCreeperGirlHeldItemLayer
-	<E extends AbstractCreeperGirl, M extends AbstractCreeperGirlModel<E>> extends RenderLayer<E, M> {
+	<E extends AbstractCreeperGirl, M extends AbstractMonsterCreeperGirlModel<E>> extends RenderLayer<E, M> {
 	private final ItemInHandRenderer itemInHandRenderer;
 	
 	public MonsterCreeperGirlHeldItemLayer(RenderLayerParent<E, M> p_117346_, ItemInHandRenderer p_234839_) {

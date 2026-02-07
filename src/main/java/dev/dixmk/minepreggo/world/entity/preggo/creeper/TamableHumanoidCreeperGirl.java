@@ -99,6 +99,22 @@ public class TamableHumanoidCreeperGirl extends AbstractTamableHumanoidCreeperGi
 		}			
 		return super.mobInteract(sourceentity, hand);
 	}
+
+	@Override
+	public Optional<PostPregnancy> getSyncedPostPregnancy() {
+		return this.entityData.get(DATA_HOLDER.getDataPostPregnancy());
+	}
+
+	@Override
+	public OptionalInt getSyncedPostPartumLactation() {
+		return this.entityData.get(DATA_HOLDER.getDataLactation());
+	}
+
+	@Override
+	public ISyncedFemaleEntity<?> getSyncedFemaleEntity() {
+		return (SyncedFemaleEntityImpl<?>) this.femaleEntityData;
+	}
+	
 	
 	public static AttributeSupplier.Builder createAttributes() {
 		return HumanoidCreeperHelper.createBasicAttributes(0.24);
@@ -147,20 +163,5 @@ public class TamableHumanoidCreeperGirl extends AbstractTamableHumanoidCreeperGi
 			
 			PregnancySystemHelper.applyPostPregnancyNerf(creeperGirl);
 		}
-	}
-	
-	@Override
-	public Optional<PostPregnancy> getSyncedPostPregnancy() {
-		return this.entityData.get(DATA_HOLDER.getDataPostPregnancy());
-	}
-
-	@Override
-	public OptionalInt getSyncedPostPartumLactation() {
-		return this.entityData.get(DATA_HOLDER.getDataLactation());
-	}
-
-	@Override
-	public ISyncedFemaleEntity<?> getSyncedFemaleEntity() {
-		return (SyncedFemaleEntityImpl<?>) this.femaleEntityData;
 	}
 }

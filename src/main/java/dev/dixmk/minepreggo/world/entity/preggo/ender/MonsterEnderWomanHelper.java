@@ -2,13 +2,13 @@ package dev.dixmk.minepreggo.world.entity.preggo.ender;
 
 import java.util.EnumSet;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import org.apache.commons.lang3.function.ToBooleanBiFunction;
 
 import dev.dixmk.minepreggo.world.entity.preggo.Inventory;
 import dev.dixmk.minepreggo.world.entity.preggo.InventorySlot;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -22,22 +22,21 @@ public class MonsterEnderWomanHelper {
 	
 	private MonsterEnderWomanHelper() {}
 
-	static void travel(AbstractTamableEnderWoman enderWoman, Vec3 dir, Consumer<Vec3> parentMethod) {
-		Entity entity = enderWoman.getFirstPassenger();
-		if (entity != null && enderWoman.isVehicle() && !enderWoman.isAggressive()) {
-			enderWoman.setYRot(entity.getYRot());
+	
+	private static<E extends AbstractTamableEnderWoman> void travel(Predicate<E> predicate, E enderWoman, Vec3 dir, Consumer<Vec3> parentMethod) {
+		if (predicate.test(enderWoman)) {
+			LivingEntity owner = (LivingEntity) enderWoman.getFirstPassenger();
+			enderWoman.setYRot(owner.getYRot());
 			enderWoman.yRotO = enderWoman.getYRot();
-			enderWoman.setXRot(entity.getXRot() * 0.5F);		
+			enderWoman.setXRot(owner.getXRot() * 0.5F);		
 			enderWoman.setYRot(enderWoman.getYRot() % 360.0F);
 			enderWoman.setXRot(enderWoman.getXRot() % 360.0F);
-			enderWoman.yBodyRot = entity.getYRot();
-			enderWoman.yHeadRot = entity.getYRot();
-			if (entity instanceof LivingEntity passenger) {
-				enderWoman.setSpeed((float) enderWoman.getAttributeValue(Attributes.MOVEMENT_SPEED) * 0.5f);
-				float forward = passenger.zza;
-				float strafe = passenger.xxa;
-				parentMethod.accept(new Vec3(strafe, 0, forward));
-			}
+			enderWoman.yBodyRot = owner.getYRot();
+			enderWoman.yHeadRot = owner.getYRot();
+			enderWoman.setSpeed((float) enderWoman.getAttributeValue(Attributes.MOVEMENT_SPEED) * 0.5f);
+			float forward = owner.zza;
+			float strafe = owner.xxa;
+			parentMethod.accept(new Vec3(strafe, 0, forward));
 			double d1 = enderWoman.getX() - enderWoman.xo;
 			double d0 = enderWoman.getZ() - enderWoman.zo;
 			float f1 = (float) Math.sqrt(d1 * d1 + d0 * d0) * 4;
@@ -46,14 +45,25 @@ public class MonsterEnderWomanHelper {
 			enderWoman.walkAnimation.setSpeed(enderWoman.walkAnimation.speed() + (f1 - enderWoman.walkAnimation.speed()) * 0.4F);
 			enderWoman.walkAnimation.position(enderWoman.walkAnimation.position() + enderWoman.walkAnimation.speed());
 			enderWoman.calculateEntityAnimation(true);
-		}	
+		}
 		else {
 			parentMethod.accept(dir);
 		}
 	}
 	
+	static void travel(AbstractTamableEnderWoman enderWoman, Vec3 dir, Consumer<Vec3> parentMethod) {
+		travel(MonsterEnderWomanHelper::canTravel, enderWoman, dir, parentMethod);
+	}
+	
+	static void travelBeingPregnant(AbstractTamablePregnantEnderWoman enderWoman, Vec3 dir, Consumer<Vec3> parentMethod) {
+		travel(MonsterEnderWomanHelper::canTravelBeingPregnant, enderWoman, dir, parentMethod);
+	}
+	
 	static boolean canTeleportWithOwner(AbstractTamableEnderWoman enderWoman) {
-	    return enderWoman.isVehicle() && enderWoman.getFirstPassenger() instanceof Player ownerPlayer && enderWoman.isOwnedBy(ownerPlayer);
+		if (enderWoman.isAggressive() || enderWoman.getTamableData().isWaiting() || !(enderWoman.getOwner() instanceof Player owner) ) {
+			return false;
+		}
+		return (enderWoman.isVehicle() && enderWoman.getFirstPassenger() instanceof LivingEntity passenger && passenger.getUUID().equals(owner.getUUID())) || enderWoman.distanceToSqr(owner) <= 4.0D;
 	}
 	
 	static double getMyRidingOffset() {
@@ -94,5 +104,16 @@ public class MonsterEnderWomanHelper {
 						InventorySlot.FOOD,
 						InventorySlot.BOTH_HANDS
 				),10);
+	}
+	
+	private static boolean canTravel(AbstractTamableEnderWoman enderWoman) {
+		return enderWoman.isVehicle() && 
+				enderWoman.getFirstPassenger() instanceof Player owner && 
+				enderWoman.isOwnedBy(owner) &&
+				!enderWoman.isAggressive();
+	}
+	
+	private static boolean canTravelBeingPregnant(AbstractTamablePregnantEnderWoman enderWoman) {
+		return canTravel(enderWoman) && !enderWoman.getPregnancyData().isIncapacitated();
 	}
 }

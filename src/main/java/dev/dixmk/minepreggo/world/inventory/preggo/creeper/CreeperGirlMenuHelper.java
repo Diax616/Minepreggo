@@ -6,6 +6,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGi
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableHumanoidCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableMonsterCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamablePregnantHumanoidCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamablePregnantMonsterCreeperGirl;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -38,34 +39,34 @@ public class CreeperGirlMenuHelper {
                 packetBuffer.writeVarInt(creeperGirlId);
                 
                 if (creeperGirlClass == TamableHumanoidCreeperGirl.class) {
-                	return new CreeperGirlInventoryMenu(id, inventory, packetBuffer);
+                	return new HumanoidCreeperGirlInventoryMenu(id, inventory, packetBuffer);
                 }
                 else if (creeperGirlClass == TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP0.class) {
-                	return new HumanoidTamablePregnantCreeperGirlInventoryMenu.CreeperGirlP0InventoryMenu(id, inventory, packetBuffer);
+                	return new PregnantHumanoidCreeperGirlInventoryMenu.CreeperGirlP0InventoryMenu(id, inventory, packetBuffer);
                 }
                 else if (creeperGirlClass == TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP1.class) {
-                	return new HumanoidTamablePregnantCreeperGirlInventoryMenu.CreeperGirlP1InventoryMenu(id, inventory, packetBuffer);
+                	return new PregnantHumanoidCreeperGirlInventoryMenu.CreeperGirlP1InventoryMenu(id, inventory, packetBuffer);
                 }
                 else if (creeperGirlClass == TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP2.class) {
-                	return new HumanoidTamablePregnantCreeperGirlInventoryMenu.CreeperGirlP2InventoryMenu(id, inventory, packetBuffer);
+                	return new PregnantHumanoidCreeperGirlInventoryMenu.CreeperGirlP2InventoryMenu(id, inventory, packetBuffer);
                 }
                 else if (creeperGirlClass == TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP3.class) {
-                	return new HumanoidTamablePregnantCreeperGirlInventoryMenu.CreeperGirlP3InventoryMenu(id, inventory, packetBuffer);
+                	return new PregnantHumanoidCreeperGirlInventoryMenu.CreeperGirlP3InventoryMenu(id, inventory, packetBuffer);
                 }
                 else if (creeperGirlClass == TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP4.class) {
-                	return new HumanoidTamablePregnantCreeperGirlInventoryMenu.CreeperGirlP4InventoryMenu(id, inventory, packetBuffer);
+                	return new PregnantHumanoidCreeperGirlInventoryMenu.CreeperGirlP4InventoryMenu(id, inventory, packetBuffer);
                 }
                 else if (creeperGirlClass == TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP5.class) {
-                	return new HumanoidTamablePregnantCreeperGirlInventoryMenu.CreeperGirlP5InventoryMenu(id, inventory, packetBuffer);
+                	return new PregnantHumanoidCreeperGirlInventoryMenu.CreeperGirlP5InventoryMenu(id, inventory, packetBuffer);
                 }
                 else if (creeperGirlClass == TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP6.class) {
-                	return new HumanoidTamablePregnantCreeperGirlInventoryMenu.CreeperGirlP6InventoryMenu(id, inventory, packetBuffer);
+                	return new PregnantHumanoidCreeperGirlInventoryMenu.CreeperGirlP6InventoryMenu(id, inventory, packetBuffer);
                 }
                 else if (creeperGirlClass == TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP7.class) {
-                	return new HumanoidTamablePregnantCreeperGirlInventoryMenu.CreeperGirlP7InventoryMenu(id, inventory, packetBuffer);
+                	return new PregnantHumanoidCreeperGirlInventoryMenu.CreeperGirlP7InventoryMenu(id, inventory, packetBuffer);
                 }
                 else if (creeperGirlClass == TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP8.class) {
-                	return new HumanoidTamablePregnantCreeperGirlInventoryMenu.CreeperGirlP8InventoryMenu(id, inventory, packetBuffer);
+                	return new PregnantHumanoidCreeperGirlInventoryMenu.CreeperGirlP8InventoryMenu(id, inventory, packetBuffer);
                 }
                 else {
                     throw new IllegalArgumentException("Unsupported creeper girl menu: " + creeperGirlClass.getSimpleName());
@@ -103,34 +104,34 @@ public class CreeperGirlMenuHelper {
                 
                 if (creeperGirlClass == TamableHumanoidCreeperGirl.class) {
                 	packetBuffer.writeBoolean(creeperGirl.getGenderedData().isPregnant());
-                	return new CreeperGirlMainMenu(id, inventory, packetBuffer);
+                	return new HumanoidCreeperGirlMainMenu(id, inventory, packetBuffer);
                 }
                 else if (creeperGirlClass == TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP0.class) {
-                	return new HumanoidTamablePregnantCreeperGirlMainMenu.CreeperGirlP0MainMenu(id, inventory, packetBuffer);
+                	return new PregnantHumanoidCreeperGirlMainMenu.CreeperGirlP0MainMenu(id, inventory, packetBuffer);
                 }
                 else if (creeperGirlClass == TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP1.class) {
-                	return new HumanoidTamablePregnantCreeperGirlMainMenu.CreeperGirlP1MainMenu(id, inventory, packetBuffer);
+                	return new PregnantHumanoidCreeperGirlMainMenu.CreeperGirlP1MainMenu(id, inventory, packetBuffer);
                 }
                 else if (creeperGirlClass == TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP2.class) {
-                	return new HumanoidTamablePregnantCreeperGirlMainMenu.CreeperGirlP2MainMenu(id, inventory, packetBuffer);
+                	return new PregnantHumanoidCreeperGirlMainMenu.CreeperGirlP2MainMenu(id, inventory, packetBuffer);
                 }
                 else if (creeperGirlClass == TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP3.class) {
-                	return new HumanoidTamablePregnantCreeperGirlMainMenu.CreeperGirlP3MainMenu(id, inventory, packetBuffer);
+                	return new PregnantHumanoidCreeperGirlMainMenu.CreeperGirlP3MainMenu(id, inventory, packetBuffer);
                 }
                 else if (creeperGirlClass == TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP4.class) {
-                	return new HumanoidTamablePregnantCreeperGirlMainMenu.CreeperGirlP4MainMenu(id, inventory, packetBuffer);
+                	return new PregnantHumanoidCreeperGirlMainMenu.CreeperGirlP4MainMenu(id, inventory, packetBuffer);
                 }
                 else if (creeperGirlClass == TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP5.class) {
-                	return new HumanoidTamablePregnantCreeperGirlMainMenu.CreeperGirlP5MainMenu(id, inventory, packetBuffer);
+                	return new PregnantHumanoidCreeperGirlMainMenu.CreeperGirlP5MainMenu(id, inventory, packetBuffer);
                 }
                 else if (creeperGirlClass == TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP6.class) {
-                	return new HumanoidTamablePregnantCreeperGirlMainMenu.CreeperGirlP6MainMenu(id, inventory, packetBuffer);
+                	return new PregnantHumanoidCreeperGirlMainMenu.CreeperGirlP6MainMenu(id, inventory, packetBuffer);
                 }
                 else if (creeperGirlClass == TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP7.class) {
-                	return new HumanoidTamablePregnantCreeperGirlMainMenu.CreeperGirlP7MainMenu(id, inventory, packetBuffer);
+                	return new PregnantHumanoidCreeperGirlMainMenu.CreeperGirlP7MainMenu(id, inventory, packetBuffer);
                 }
                 else if (creeperGirlClass == TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP8.class) {
-                	return new HumanoidTamablePregnantCreeperGirlMainMenu.CreeperGirlP8MainMenu(id, inventory, packetBuffer);
+                	return new PregnantHumanoidCreeperGirlMainMenu.CreeperGirlP8MainMenu(id, inventory, packetBuffer);
                 }
                 else {
                     throw new IllegalArgumentException("Unsupported creeper girl menu: " + creeperGirlClass.getSimpleName());
@@ -170,6 +171,33 @@ public class CreeperGirlMenuHelper {
                 if (creeperGirlClass == TamableMonsterCreeperGirl.class) {
                 	return new MonsterCreeperGirlInventoryMenu(id, inventory, packetBuffer);
                 }
+                else if (creeperGirlClass == TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP0.class) {
+                	return new PregnantMonsterCreeperGirlInventoryMenu.MonsterCreeperGirlP0InventoryMenu(id, inventory, packetBuffer);
+                }
+                else if (creeperGirlClass == TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP1.class) {
+                	return new PregnantMonsterCreeperGirlInventoryMenu.MonsterCreeperGirlP1InventoryMenu(id, inventory, packetBuffer);
+                }
+                else if (creeperGirlClass == TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP2.class) {
+                	return new PregnantMonsterCreeperGirlInventoryMenu.MonsterCreeperGirlP2InventoryMenu(id, inventory, packetBuffer);
+                }
+                else if (creeperGirlClass == TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP3.class) {
+                	return new PregnantMonsterCreeperGirlInventoryMenu.MonsterCreeperGirlP3InventoryMenu(id, inventory, packetBuffer);
+                }
+                else if (creeperGirlClass == TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP4.class) {
+                	return new PregnantMonsterCreeperGirlInventoryMenu.MonsterCreeperGirlP4InventoryMenu(id, inventory, packetBuffer);
+                }
+                else if (creeperGirlClass == TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP5.class) {
+                	return new PregnantMonsterCreeperGirlInventoryMenu.MonsterCreeperGirlP5InventoryMenu(id, inventory, packetBuffer);
+                }
+                else if (creeperGirlClass == TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP6.class) {
+                	return new PregnantMonsterCreeperGirlInventoryMenu.MonsterCreeperGirlP6InventoryMenu(id, inventory, packetBuffer);
+                }
+                else if (creeperGirlClass == TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP7.class) {
+                	return new PregnantMonsterCreeperGirlInventoryMenu.MonsterCreeperGirlP7InventoryMenu(id, inventory, packetBuffer);
+                }
+                else if (creeperGirlClass == TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP8.class) {
+                	return new PregnantMonsterCreeperGirlInventoryMenu.MonsterCreeperGirlP8InventoryMenu(id, inventory, packetBuffer);
+                }
                 else {
                     throw new IllegalArgumentException("Unsupported creeper girl menu: " + creeperGirlClass.getSimpleName());
                 } 
@@ -206,6 +234,33 @@ public class CreeperGirlMenuHelper {
                 if (creeperGirlClass == TamableMonsterCreeperGirl.class) {
                 	packetBuffer.writeBoolean(creeperGirl.getGenderedData().isPregnant());
                 	return new MonsterCreeperGirlMainMenu(id, inventory, packetBuffer);
+                }
+                else if (creeperGirlClass == TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP0.class) {
+                	return new PregnantMonsterCreeperGirlMainMenu.MonsterCreeperGirlP0MainMenu(id, inventory, packetBuffer);
+                }
+                else if (creeperGirlClass == TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP1.class) {
+                	return new PregnantMonsterCreeperGirlMainMenu.MonsterCreeperGirlP1MainMenu(id, inventory, packetBuffer);
+                }
+                else if (creeperGirlClass == TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP2.class) {
+                	return new PregnantMonsterCreeperGirlMainMenu.MonsterCreeperGirlP2MainMenu(id, inventory, packetBuffer);
+                }
+                else if (creeperGirlClass == TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP3.class) {
+                	return new PregnantMonsterCreeperGirlMainMenu.MonsterCreeperGirlP3MainMenu(id, inventory, packetBuffer);
+                }
+                else if (creeperGirlClass == TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP4.class) {
+                	return new PregnantMonsterCreeperGirlMainMenu.MonsterCreeperGirlP4MainMenu(id, inventory, packetBuffer);
+                }
+                else if (creeperGirlClass == TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP5.class) {
+                	return new PregnantMonsterCreeperGirlMainMenu.MonsterCreeperGirlP5MainMenu(id, inventory, packetBuffer);
+                }
+                else if (creeperGirlClass == TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP6.class) {
+                	return new PregnantMonsterCreeperGirlMainMenu.MonsterCreeperGirlP6MainMenu(id, inventory, packetBuffer);
+                }
+                else if (creeperGirlClass == TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP7.class) {
+                	return new PregnantMonsterCreeperGirlMainMenu.MonsterCreeperGirlP7MainMenu(id, inventory, packetBuffer);
+                }
+                else if (creeperGirlClass == TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP8.class) {
+                	return new PregnantMonsterCreeperGirlMainMenu.MonsterCreeperGirlP8MainMenu(id, inventory, packetBuffer);
                 }
                 else {
                     throw new IllegalArgumentException("Unsupported creeper girl menu: " + creeperGirlClass.getSimpleName());

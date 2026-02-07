@@ -31,24 +31,24 @@ public class TamableHumanoidCreeperGirlRenderer extends AbstractTamableHumanoidC
 	}
 	
 	@Override
-	protected void addFacialExpresions() {
-		this.addLayer(new TamableHumanoidCreeperGirlExpressionLayer<>(this) {
+	protected TamableHumanoidCreeperGirlExpressionLayer<TamableHumanoidCreeperGirl, TamableHumanoidCreeperGirlModel> createExpressionLayer() {
+		return new TamableHumanoidCreeperGirlExpressionLayer<>(this) {
 			@Override
 			public @Nullable RenderType renderType(TamableHumanoidCreeperGirl creeperGirl) {	
-				var result = super.renderType(creeperGirl);
-				if (result != null) {
-					return result;
-				}
 				PostPregnancy post = creeperGirl.getSyncedPostPregnancy().orElse(null);
 				if (post == PostPregnancy.MISCARRIAGE) {
 					return POST_MISCARRIAGE;
 				}
+				var result = super.renderType(creeperGirl);
+				if (result != null) {
+					return result;
+				}
 				else if (post == PostPregnancy.PARTUM) {
 					return POST_PARTUM;
-				}
+				}				
 				return null;
 			}
-		});
+		};
 	}
 }
 

@@ -4,6 +4,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractTamableEnderWoman;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.TamableMonsterEnderWoman;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.TamablePregnantMonsterEnderWoman;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -18,7 +19,7 @@ public class EnderWomanMenuHelper {
 
 	private EnderWomanMenuHelper() {}
 	
-	public static<E extends AbstractTamableEnderWoman> void showInventoryMenu(@NonNull ServerPlayer serverPlayer, @NonNull E enderWoman) {			
+	public static<E extends AbstractTamableEnderWoman> void showInventoryMenuForMonster(@NonNull ServerPlayer serverPlayer, @NonNull E enderWoman) {			
 		final var enderWomanId = enderWoman.getId();
 		final var enderWomanClass = enderWoman.getClass();
  		final var blockPos = serverPlayer.blockPosition();
@@ -38,6 +39,33 @@ public class EnderWomanMenuHelper {
                 if (enderWomanClass == TamableMonsterEnderWoman.class) {
                 	return new MonsterEnderWomanInventoryMenu(id, inventory, packetBuffer);
                 }
+                else if (enderWomanClass == TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP0.class) {
+                	return new MonsterPregnantEnderWomanInventoryMenu.MonsterEnderWomanP0InventoryMenu(id, inventory, packetBuffer);
+                }
+                else if (enderWomanClass == TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP1.class) {
+                	return new MonsterPregnantEnderWomanInventoryMenu.MonsterEnderWomanP1InventoryMenu(id, inventory, packetBuffer);
+                }
+                else if (enderWomanClass == TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP2.class) {
+                	return new MonsterPregnantEnderWomanInventoryMenu.MonsterEnderWomanP2InventoryMenu(id, inventory, packetBuffer);
+                }
+                else if (enderWomanClass == TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP3.class) {
+                	return new MonsterPregnantEnderWomanInventoryMenu.MonsterEnderWomanP3InventoryMenu(id, inventory, packetBuffer);
+                }
+                else if (enderWomanClass == TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP4.class) {
+                	return new MonsterPregnantEnderWomanInventoryMenu.MonsterEnderWomanP4InventoryMenu(id, inventory, packetBuffer);
+                }
+                else if (enderWomanClass == TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP5.class) {
+                	return new MonsterPregnantEnderWomanInventoryMenu.MonsterEnderWomanP5InventoryMenu(id, inventory, packetBuffer);
+                }
+                else if (enderWomanClass == TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP6.class) {
+                	return new MonsterPregnantEnderWomanInventoryMenu.MonsterEnderWomanP6InventoryMenu(id, inventory, packetBuffer);
+                }
+                else if (enderWomanClass == TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP7.class) {
+                	return new MonsterPregnantEnderWomanInventoryMenu.MonsterEnderWomanP7InventoryMenu(id, inventory, packetBuffer);
+                }  
+                else if (enderWomanClass == TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP8.class) {
+                	return new MonsterPregnantEnderWomanInventoryMenu.MonsterEnderWomanP8InventoryMenu(id, inventory, packetBuffer);
+                }
                 else {
                     throw new IllegalArgumentException("Unsupported creeper girl menu: " + enderWoman.getSimpleNameOrCustom());
                 } 
@@ -48,7 +76,7 @@ public class EnderWomanMenuHelper {
 		});	
 	}
 	
-	public static<E extends AbstractTamableEnderWoman> void showMainMenu(@NonNull ServerPlayer serverPlayer, @NonNull E enderWoman) {			
+	public static<E extends AbstractTamableEnderWoman> void showMainMenuForMonster(@NonNull ServerPlayer serverPlayer, @NonNull E enderWoman) {			
 		final var blockPos = serverPlayer.blockPosition();	
 		final var enderWomanId = enderWoman.getId();
 		final var canPickUpLoot = enderWoman.canPickUpLoot();
@@ -73,6 +101,33 @@ public class EnderWomanMenuHelper {
                 	packetBuffer.writeBoolean(enderWoman.getGenderedData().isPregnant());
                 	return new MonsterEnderWomanMainMenu(id, inventory, packetBuffer);
                 }
+                else if (enderWomanClass == TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP0.class) {
+                	return new MonsterPregnantEnderWomanMainMenu.MonsterEnderWomanP0MainMenu(id, inventory, packetBuffer);
+                }
+                else if (enderWomanClass == TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP1.class) {
+                	return new MonsterPregnantEnderWomanMainMenu.MonsterEnderWomanP1MainMenu(id, inventory, packetBuffer);
+                }
+                else if (enderWomanClass == TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP2.class) {
+                	return new MonsterPregnantEnderWomanMainMenu.MonsterEnderWomanP2MainMenu(id, inventory, packetBuffer);
+                }
+                else if (enderWomanClass == TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP3.class) {
+                	return new MonsterPregnantEnderWomanMainMenu.MonsterEnderWomanP3MainMenu(id, inventory, packetBuffer);
+                }
+                else if (enderWomanClass == TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP4.class) {
+                	return new MonsterPregnantEnderWomanMainMenu.MonsterEnderWomanP4MainMenu(id, inventory, packetBuffer);
+                }
+                else if (enderWomanClass == TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP5.class) {
+                	return new MonsterPregnantEnderWomanMainMenu.MonsterEnderWomanP5MainMenu(id, inventory, packetBuffer);
+                }
+                else if (enderWomanClass == TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP6.class) {
+                	return new MonsterPregnantEnderWomanMainMenu.MonsterEnderWomanP6MainMenu(id, inventory, packetBuffer);
+                }
+                else if (enderWomanClass == TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP7.class) {
+                	return new MonsterPregnantEnderWomanMainMenu.MonsterEnderWomanP7MainMenu(id, inventory, packetBuffer);
+                }
+                else if (enderWomanClass == TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP8.class) {
+                	return new MonsterPregnantEnderWomanMainMenu.MonsterEnderWomanP8MainMenu(id, inventory, packetBuffer);
+                }
                 else {
                     throw new IllegalArgumentException("Unsupported creeper girl menu: " + enderWoman.getSimpleNameOrCustom());
                 } 
@@ -87,6 +142,5 @@ public class EnderWomanMenuHelper {
 				buf.writeBoolean(enderWoman.getGenderedData().isPregnant());
 		    }
 		});		
-		
 	}
 }

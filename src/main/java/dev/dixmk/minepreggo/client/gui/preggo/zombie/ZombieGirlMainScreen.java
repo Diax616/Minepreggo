@@ -2,7 +2,6 @@ package dev.dixmk.minepreggo.client.gui.preggo.zombie;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import dev.dixmk.minepreggo.client.gui.ScreenHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirl;
 import dev.dixmk.minepreggo.world.inventory.preggo.zombie.ZombieGirlMainMenu;
 import net.minecraft.client.gui.GuiGraphics;
@@ -30,13 +29,13 @@ public class ZombieGirlMainScreen extends AbstractZombieGirlMainScreen<TamableZo
 		
 		guiGraphics.blit(DEFAULT_P0_MAIN_GUI_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
 	
-		this.preggoMob.ifPresent(zombieGirl -> ScreenHelper.renderZombieGirlMainScreen(guiGraphics, this.leftPos, this.topPos, zombieGirl));
+		this.preggoMob.ifPresent(zombieGirl -> renderScreenNonPreg(guiGraphics, this.leftPos, this.topPos, zombieGirl));
 		
 		RenderSystem.disableBlend();
 	}
 	
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-		this.preggoMob.ifPresent(zombieGirl -> ScreenHelper.renderDefaultPreggoLabelMainGUI(guiGraphics, this.font, zombieGirl, this.pregnant));
+		this.preggoMob.ifPresent(zombieGirl -> renderLabelsNonPreg(guiGraphics, this.font, zombieGirl, this.pregnant));
 	}
 }

@@ -17,7 +17,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.MonsterHumanoidCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.HostilHumanoidCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableHumanoidCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.MonsterZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirl;
@@ -107,7 +107,7 @@ public class Impregnantion extends MobEffect {
 			final double y = entity.getY();	
 			final double z = entity.getZ();
 			
-			if (entity instanceof MonsterHumanoidCreeperGirl creeperGirl && !creeperGirl.isBaby()) {
+			if (entity instanceof HostilHumanoidCreeperGirl creeperGirl && !creeperGirl.isBaby()) {
 				var nextStage = MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
 				initPregnancy(creeperGirl, nextStage, amplifier);
 			}

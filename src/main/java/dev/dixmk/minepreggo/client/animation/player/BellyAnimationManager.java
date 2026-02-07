@@ -7,6 +7,7 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractTamablePregnantEnderWoman;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.world.entity.AnimationState;
@@ -51,6 +52,10 @@ public class BellyAnimationManager {
     	startAnimation((LivingEntity) zombieGirl, definition);
     }
     
+    public void startAnimation(AbstractTamablePregnantEnderWoman enderWoman, AnimationDefinition definition) {
+    	startAnimation((LivingEntity) enderWoman, definition);
+    }
+       
     @Nullable
     public AnimationState getAnimationState(UUID playerId) {
         return animationStates.get(playerId);

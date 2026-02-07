@@ -16,7 +16,6 @@ import dev.dixmk.minepreggo.network.packet.c2s.RequestBellyRubbingAnimationC2SPa
 import dev.dixmk.minepreggo.network.packet.c2s.StopPlayerAnimationC2SPacket;
 import dev.dixmk.minepreggo.network.packet.c2s.TeleportWithEnderWomanC2SPacket;
 import dev.dixmk.minepreggo.network.packet.c2s.UpdateBellyRubbingStateC2SPacket;
-import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractTamableMonsterEnderWoman;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.client.Minecraft;
@@ -166,7 +165,7 @@ public class ClientEventHandler {
     
     @SubscribeEvent
     public static void onKeyInput(InputEvent.Key event) {
-    	var player = Minecraft.getInstance().player; 
+    	Player player = Minecraft.getInstance().player; 
     	
     	if (player == null) return;
     	
@@ -190,13 +189,13 @@ public class ClientEventHandler {
         		})
         	);	
         }
-    	else if (MinepreggoModKeyMappings.TELEPORT_WITH_ENDER_WOMAN.consumeClick() && player.getVehicle() instanceof AbstractTamableMonsterEnderWoman enderWoman) {
-    		BlockPos targetPos = performTeleport();
+    	else if (MinepreggoModKeyMappings.TELEPORT_WITH_ENDER_WOMAN.consumeClick()) {
+			BlockPos targetPos = performTeleport();
 			if (targetPos != null) {
 				MinepreggoModPacketHandler.INSTANCE.sendToServer(
-					new TeleportWithEnderWomanC2SPacket(enderWoman.getId(), targetPos)
+					new TeleportWithEnderWomanC2SPacket(targetPos)
 				);
-			}
+			}   		    	
     	}		
     }	
     

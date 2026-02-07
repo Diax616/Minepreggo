@@ -16,7 +16,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.Inventory;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.TamablePreggoMobDataImpl;
-import dev.dixmk.minepreggo.world.inventory.preggo.creeper.AbstractCreeperGirlInventoryMenu;
+import dev.dixmk.minepreggo.world.inventory.preggo.creeper.AbstractHumanoidCreeperGirlInventoryMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.creeper.AbstractCreeperGirlMainMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlMenuHelper;
 import dev.dixmk.minepreggo.world.pregnancy.IFemaleEntity;
@@ -195,13 +195,7 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 					&& !getTamableData().isWaiting();			
 				}
 			}, true);
-			GoalHelper.addGoalWithReplacement(this, 6, new PreggoMobFollowOwnerGoal<>(this, 1.2D, 7F, 2F, false) {
-				@Override
-				public boolean canUse() {
-					return super.canUse() 
-					&& !getTamableData().isWaiting();		
-				}
-			});	
+			GoalHelper.addGoalWithReplacement(this, 6, new PreggoMobFollowOwnerGoal<>(this, 1.2D, 7F, 2F, false));	
 		} else {
 			GoalHelper.removeGoalByClass(this.goalSelector, Set.of(PreggoMobFollowOwnerGoal.class, OwnerHurtByTargetGoal.class));
 			GoalHelper.removeGoalByClass(this.targetSelector, OwnerHurtTargetGoal.class);
@@ -276,7 +270,7 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 			}	
 			
 			if (this.getOwner() instanceof ServerPlayer serverPlayer
-					&& (serverPlayer.containerMenu instanceof AbstractCreeperGirlMainMenu<?> || serverPlayer.containerMenu instanceof AbstractCreeperGirlInventoryMenu<?>)) {
+					&& (serverPlayer.containerMenu instanceof AbstractCreeperGirlMainMenu<?> || serverPlayer.containerMenu instanceof AbstractHumanoidCreeperGirlInventoryMenu<?>)) {
 				serverPlayer.closeContainer();
 			}			
 		}		

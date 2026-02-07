@@ -27,6 +27,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -77,17 +78,17 @@ public abstract class AbstractTamableEnderWoman extends AbstractEnderWoman imple
 	
 	protected AbstractTamableEnderWoman(EntityType<? extends AbstractEnderWoman> p_32485_, Level p_32486_, Creature typeOfCreature) {
 		super(p_32485_, p_32486_, typeOfCreature);
-		this.femaleEntity = createFemaleEntity();   
-		this.tamablePreggoMobSystem = createTamableSystem();
+		this.femaleEntity = createFemaleEntityData();   
+		this.tamablePreggoMobSystem = createTamablePreggoMobSystem();
 		this.inventory = createInventory();
 		xpReward = 12;
 		setNoAi(false);
 		setMaxUpStep(0.6f);
 	}
 	
-	protected abstract @Nonnull ITamablePreggoMobSystem createTamableSystem();
+	protected abstract @Nonnull ITamablePreggoMobSystem createTamablePreggoMobSystem();
 	
-	protected abstract @Nonnull IFemaleEntity createFemaleEntity();
+	protected abstract @Nonnull IFemaleEntity createFemaleEntityData();
 	
 	protected abstract @Nonnull Inventory createInventory();
 	
@@ -250,7 +251,7 @@ public abstract class AbstractTamableEnderWoman extends AbstractEnderWoman imple
 		}		
 		if (tamablePreggoMobSystem.canOwnerAccessGUI(sourceentity)) {			
 			if (!this.level().isClientSide && sourceentity instanceof ServerPlayer serverPlayer) {
-				EnderWomanMenuHelper.showMainMenu(serverPlayer, this);			
+				EnderWomanMenuHelper.showMainMenuForMonster(serverPlayer, this);			
 				
 				// TODO: Find a better way to stop panicking when owner interacts with the mob.
 				if (this.tamablePreggoMobData.isPanic())
@@ -276,7 +277,13 @@ public abstract class AbstractTamableEnderWoman extends AbstractEnderWoman imple
 				return super.canUse() && !getTamableData().isWaiting();		
 			}
 		});
-		this.goalSelector.addGoal(5, new AbstractEnderWoman.EnderWomanTeleportToTargetGoal(this, 196F, 25F));
+		this.goalSelector.addGoal(5, new AbstractEnderWoman.EnderWomanTeleportToTargetGoal(this, 196F, 25F) {
+			@Override
+			public boolean canUse() {
+				return super.canUse()
+						&& !getTamableData().isWaiting();		
+			}
+		});
 		this.targetSelector.addGoal(2, new HurtByTargetGoal(this));		
 		this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.2D, false));
 		this.goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(this, 1.0D) {
@@ -334,13 +341,7 @@ public abstract class AbstractTamableEnderWoman extends AbstractEnderWoman imple
 					&& !getTamableData().isWaiting();			
 				}
 			}, true);
-			GoalHelper.addGoalWithReplacement(this, 6, new PreggoMobFollowOwnerGoal<>(this, 1.2D, 6F, 2F, false) {
-				@Override
-				public boolean canUse() {
-					return super.canUse() 
-					&& !getTamableData().isWaiting();			
-				}
-			});
+			GoalHelper.addGoalWithReplacement(this, 6, new PreggoMobFollowOwnerGoal<>(this, 1.2D, 6F, 2F, false));
 			GoalHelper.addGoalWithReplacement(this, 7, new AbstractEnderWoman.EnderWomanTeleportToOwnerGoal(this, 196F, 81F) {
 				@Override
 				public boolean canUse() {
@@ -390,7 +391,16 @@ public abstract class AbstractTamableEnderWoman extends AbstractEnderWoman imple
 	
 	public boolean teleportWithOwner(BlockPos targetPos) {
 	    if (this.canTeleportWithOwner()) {
-	        return teleport(targetPos.getX() + 0.5, targetPos.getY() + 1.0, targetPos.getZ() + 0.5);
+	        boolean flag = teleport(targetPos.getX() + 0.5, targetPos.getY() + 1.0, targetPos.getZ() + 0.5);
+	    	if (!this.isVehicle() && this.getOwner() != null) {
+	    		var owner = this.getOwner();
+	    		owner.teleportTo(targetPos.getX() + 0.5, targetPos.getY() + 1.0, targetPos.getZ() + 0.5);		
+	    	}
+	    	if (flag && !this.isSilent()) {
+                this.level().playSound(null, this.xo, this.yo, this.zo, SoundEvents.ENDERMAN_TELEPORT, this.getSoundSource(), 1.0F, 1.0F);
+                this.playSound(SoundEvents.ENDERMAN_TELEPORT, 1.0F, 1.0F);
+	    	}
+	    	return flag;	
 	    }
 	    return false;
 	}

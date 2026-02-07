@@ -16,13 +16,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public abstract class AbstractTamableMonsterEnderWomanModel 	
 	<E extends AbstractTamableEnderWoman> extends AbstractEnderWomanModel<E> {
 	
-	protected AbstractTamableMonsterEnderWomanModel(ModelPart root, EnderWomanAnimator<E> animator, @Nullable ImmutablePair<PregnancyPhase, Boolean> pregnancyPhaseAndSimpleBellyJiggle) {
+	protected AbstractTamableMonsterEnderWomanModel(ModelPart root, MonsterEnderWomanAnimator<E> animator, @Nullable ImmutablePair<PregnancyPhase, Boolean> pregnancyPhaseAndSimpleBellyJiggle) {
 		super(root, animator, pregnancyPhaseAndSimpleBellyJiggle);
 		this.belly.visible = false;
 	}
 	
 	protected AbstractTamableMonsterEnderWomanModel(ModelPart root) {
-		this(root, new EnderWomanAnimator.TamableMonsterEnderWomanAnimator<>(root), null);
+		this(root, new MonsterEnderWomanAnimator.TamableMonsterEnderWomanAnimator<>(root), null);
 	}
 	
 	@Override

@@ -32,7 +32,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.network.PlayMessages;
  
-public class IllHumanoidCreeperGirl extends AbstractMonsterHumanoidCreeperGirl implements Ill {
+public class IllHumanoidCreeperGirl extends AbstractHostilHumanoidCreeperGirl implements Ill {
 
 	public IllHumanoidCreeperGirl(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.ILL_HUMANOID_CREEPER_GIRL.get(), world);
@@ -128,12 +128,12 @@ public class IllHumanoidCreeperGirl extends AbstractMonsterHumanoidCreeperGirl i
 	}
 	
 	public static AttributeSupplier.Builder createAttributes() {
-		return AbstractMonsterHumanoidCreeperGirl.getBasicAttributes(0.235);
+		return AbstractHostilHumanoidCreeperGirl.getBasicAttributes(0.235);
 	}
 	
-	static<E extends AbstractMonsterCreeperGirl & Ill> void addDefaultGoals(E target) {
+	static<E extends AbstractHostilCreeperGirl & Ill> void addDefaultGoals(E target) {
     	Ill.addTamableBehaviourGoals(target);
-    	target.goalSelector.addGoal(1, new IllCreeperGirl.SwellGoal<>(target) {		
+    	target.goalSelector.addGoal(1, new IllMonsterCreeperGirl.SwellGoal<>(target) {		
 			@Override
 			public boolean canUse() {												
 				return super.canUse() && target.canExplode();
@@ -148,7 +148,7 @@ public class IllHumanoidCreeperGirl extends AbstractMonsterHumanoidCreeperGirl i
     	target.goalSelector.addGoal(7, new LookAtPlayerGoal(target, Player.class, 8.0F));
 	}
 	
-	static<E extends AbstractMonsterCreeperGirl & Ill> InteractionResult mobInteract(E target, Player sourceentity, InteractionHand hand) {
+	static<E extends AbstractHostilCreeperGirl & Ill> InteractionResult mobInteract(E target, Player sourceentity, InteractionHand hand) {
 		ItemStack itemstack = sourceentity.getItemInHand(hand);
 		if (itemstack.is(ItemTags.CREEPER_IGNITERS)) {	
 			target.setTarget(sourceentity);

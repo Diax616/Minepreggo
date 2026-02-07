@@ -80,7 +80,7 @@ import dev.dixmk.minepreggo.world.entity.npc.Trades;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.IllHumanoidCreeperGirl;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.IllCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.IllMonsterCreeperGirl;
 import dev.dixmk.minepreggo.world.inventory.preggo.PlayerPrenatalCheckUpMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.SelectPregnantEntityForPrenatalCheckUpMenu;
 import dev.dixmk.minepreggo.world.item.AbstractBaby;
@@ -88,7 +88,7 @@ import dev.dixmk.minepreggo.world.pregnancy.IObstetrician;
 import dev.dixmk.minepreggo.world.pregnancy.PrenatalCheckupCostHolder;
 import dev.dixmk.minepreggo.world.pregnancy.PrenatalCheckupCostHolder.PrenatalCheckupCost;
 import io.netty.buffer.Unpooled;
-import dev.dixmk.minepreggo.world.entity.preggo.ender.IllEnderWoman;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.IllMonsterEnderWoman;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.IllZombieGirl;
 
 public class ScientificIllager extends AbstractIllager implements Merchant, IObstetrician {
@@ -361,12 +361,12 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
 			humanoidCreeperGirl.tameByIllager(this);	
 			petsUUID.add(humanoidCreeperGirl.getUUID());
 			
-			IllCreeperGirl creeperGirl = MinepreggoModEntities.ILL_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(x, y, z + 1.25), MobSpawnType.MOB_SUMMONED);
+			IllMonsterCreeperGirl creeperGirl = MinepreggoModEntities.ILL_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(x, y, z + 1.25), MobSpawnType.MOB_SUMMONED);
 			creeperGirl.setYRot(this.random.nextFloat() * 360F);
 			creeperGirl.tameByIllager(this);
 			petsUUID.add(creeperGirl.getUUID());
 			
-			IllEnderWoman enderWoman = MinepreggoModEntities.ILL_ENDER_WOMAN.get().spawn(serverLevel, BlockPos.containing(x, y, z - 1.25), MobSpawnType.MOB_SUMMONED);
+			IllMonsterEnderWoman enderWoman = MinepreggoModEntities.ILL_ENDER_WOMAN.get().spawn(serverLevel, BlockPos.containing(x, y, z - 1.25), MobSpawnType.MOB_SUMMONED);
 			enderWoman.setYRot(this.random.nextFloat() * 360F);
 			enderWoman.tameByIllager(this);
 			petsUUID.add(enderWoman.getUUID());					

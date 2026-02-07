@@ -2,10 +2,9 @@ package dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.creeper;
 
 import javax.annotation.Nullable;
 
-import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.quadruped.AbstractTamableMonsterCreeperGirlModel;
+import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractTamableMonsterCreeperGirlModel;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobFace;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGirl;
-import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.world.effect.MobEffects;
@@ -14,21 +13,16 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class TamableMonsterCreeperGirlExpressionLayer
-	<E extends AbstractTamableCreeperGirl, M extends AbstractTamableMonsterCreeperGirlModel<E>> extends AbstractMonsterCreeperGirlExpressionFacialLayer<E, M> {
+	<E extends AbstractTamableCreeperGirl, M extends AbstractTamableMonsterCreeperGirlModel<E>> extends AbstractMonsterCreeperGirlExpressionLayer<E, M> {
 
 	public TamableMonsterCreeperGirlExpressionLayer(RenderLayerParent<E, M> p_117346_) {
 		super(p_117346_);
 	}
 
 	public @Nullable RenderType renderType(E creeperGirl) {		
-		final var femaleData = creeperGirl.getGenderedData();
-		final var post = femaleData.getPostPregnancyData().map(p -> p.getPostPregnancy()).orElse(null);
 		final var tamableData = creeperGirl.getTamableData();
 		
-		if (post == PostPregnancy.MISCARRIAGE) {
-			return POST_MISCARRIAGE;
-		}
-		else if (creeperGirl.hasEffect(MobEffects.CONFUSION)) {
+		if (creeperGirl.hasEffect(MobEffects.CONFUSION)) {
 			return PAIN4;
 		}
 		else if (tamableData.getFaceState() == PreggoMobFace.BLUSHED) {
@@ -46,9 +40,7 @@ public class TamableMonsterCreeperGirlExpressionLayer
 			}
 			return SAD3;
 		}
-		else if (post == PostPregnancy.PARTUM) {
-			return POST_PARTUM;
-		}
+
 		return null;
 	}
 }

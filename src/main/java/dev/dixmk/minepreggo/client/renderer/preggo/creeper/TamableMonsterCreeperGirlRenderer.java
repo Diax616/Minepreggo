@@ -1,7 +1,7 @@
 package dev.dixmk.minepreggo.client.renderer.preggo.creeper;
 
-import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.quadruped.AbstractCreeperGirlModel;
-import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.quadruped.TamableMonsterCreeperGirlModel;
+import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractMonsterCreeperGirlModel;
+import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.TamableMonsterCreeperGirlModel;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableMonsterCreeperGirl;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -13,7 +13,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class TamableMonsterCreeperGirlRenderer extends AbstractTamableMonsterCreeperGirlRenderer<TamableMonsterCreeperGirl, TamableMonsterCreeperGirlModel> {
 	
 	public TamableMonsterCreeperGirlRenderer(EntityRendererProvider.Context context) {
-		this(context, AbstractCreeperGirlModel.LAYER_LOCATION, AbstractCreeperGirlModel.LAYER_ENERGY_ARMOR_LOCATION, AbstractCreeperGirlModel.LAYER_OUTER_ARMOR_LOCATION);
+		this(context, AbstractMonsterCreeperGirlModel.LAYER_LOCATION, AbstractMonsterCreeperGirlModel.LAYER_ENERGY_ARMOR_LOCATION, AbstractMonsterCreeperGirlModel.LAYER_OUTER_ARMOR_LOCATION);
 	}
 	
 	public TamableMonsterCreeperGirlRenderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation eneryArmor, ModelLayerLocation outterArmor) {

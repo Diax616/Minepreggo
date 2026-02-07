@@ -8,7 +8,7 @@ import java.util.Locale;
 import java.util.Map;
 import javax.annotation.Nullable;
 
-import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.quadruped.AbstractCreeperGirlModel;
+import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractMonsterCreeperGirlModel;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractCreeperGirl;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -31,7 +31,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MonsterCreeperGirlArmorLayer<E extends AbstractCreeperGirl, M extends AbstractCreeperGirlModel<E>> extends RenderLayer<E, M> {
+public class MonsterCreeperGirlArmorLayer<E extends AbstractCreeperGirl, M extends AbstractMonsterCreeperGirlModel<E>> extends RenderLayer<E, M> {
     
     private static final Map<String, ResourceLocation> ARMOR_LOCATION_CACHE = Maps.newHashMap();
     private final M armorModel;

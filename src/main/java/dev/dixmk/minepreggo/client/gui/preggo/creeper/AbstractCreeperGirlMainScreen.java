@@ -27,7 +27,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public abstract class AbstractCreeperGirlMainScreen
 	<E extends AbstractTamableCreeperGirl, G extends AbstractCreeperGirlMainMenu<E>> extends AbstractPreggoMobMainScreen<E, G> {
 	
-	protected static final ImmutableMap<Craving, ResourceLocation> CRAVING_ICONS = ImmutableMap.of(
+	private static final ImmutableMap<Craving, ResourceLocation> CRAVING_ICONS = ImmutableMap.of(
 			Craving.SALTY, MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/activated_gunpowder_with_salt.png"), 
 			Craving.SWEET, MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/activated_gunpowder_with_chocolate.png"), 
 			Craving.SOUR, MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/sour_activated_gunpowder.png"),

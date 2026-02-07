@@ -79,13 +79,7 @@ public class MinepreggoModItems {
 	private MinepreggoModItems() {}
 	
 	public static final DeferredRegister<Item> REGISTRY = DeferredRegister.create(ForgeRegistries.ITEMS, MinepreggoMod.MODID);
-	
-	public static final RegistryObject<Item> MONSTER_CREEPER_GIRL_SPAWN_EGG = REGISTRY.register("monster_creeper_girl_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.MONSTER_CREEPER_GIRL, -16539904, -16777216, new Item.Properties()));
-	public static final RegistryObject<Item> TAMABLE_MONSTER_CREEPER_GIRL_SPAWN_EGG = REGISTRY.register("tamable_monster_creeper_girl_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL, -16539904, -16777216, new Item.Properties()));
 
-	public static final RegistryObject<Item> MONSTER_ENDER_WOMAN_SPAWN_EGG = REGISTRY.register("monster_ender_woman_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.MONSTER_ENDER_WOMAN, -14869219, -16777216, new Item.Properties()));
-	public static final RegistryObject<Item> TAMABLE_MONSTER_ENDER_WOMAN_SPAWN_EGG = REGISTRY.register("tamable_monster_ender_woman_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN, -14869219, -16777216, new Item.Properties()));
-	
 	public static final RegistryObject<Item> SCIENTIFIC_ILLAGER_SPAWN_EGG = REGISTRY.register("scientific_illager_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.SCIENTIFIC_ILLAGER, -13434880, -10066330, new Item.Properties()));
 	public static final RegistryObject<Item> FERTILITY_WITCH_SPAWN_EGG = REGISTRY.register("fertility_witch_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.FERTILITY_WITCH, -39271, -65434, new Item.Properties()));
 	
@@ -121,6 +115,32 @@ public class MinepreggoModItems {
 	public static final RegistryObject<Item> TAMABLE_HUMANOID_CREEPER_GIRL_P7_SPAWN_EGG = REGISTRY.register("tamable_humanoid_creeper_girl_p7_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P7, -16738048, -26368, new Item.Properties()));
 	public static final RegistryObject<Item> TAMABLE_HUMANOID_CREEPER_GIRL_P8_SPAWN_EGG = REGISTRY.register("tamable_humanoid_creeper_girl_p8_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P8, -16738048, -26368, new Item.Properties()));
 	
+	public static final RegistryObject<Item> MONSTER_ENDER_WOMAN_SPAWN_EGG = REGISTRY.register("monster_ender_woman_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.MONSTER_ENDER_WOMAN, -1, -1, new Item.Properties()));
+	
+	public static final RegistryObject<Item> TAMABLE_MONSTER_ENDER_WOMAN_SPAWN_EGG = REGISTRY.register("tamable_monster_ender_woman_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN, -1, -1, new Item.Properties()));
+	public static final RegistryObject<Item> TAMABLE_MONSTER_ENDER_WOMAN_P0_SPAWN_EGG = REGISTRY.register("tamable_monster_ender_woman_p0_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P0, -1, -1, new Item.Properties()));
+	public static final RegistryObject<Item> TAMABLE_MONSTER_ENDER_WOMAN_P1_SPAWN_EGG = REGISTRY.register("tamable_monster_ender_woman_p1_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P1, -1, -1, new Item.Properties()));
+	public static final RegistryObject<Item> TAMABLE_MONSTER_ENDER_WOMAN_P2_SPAWN_EGG = REGISTRY.register("tamable_monster_ender_woman_p2_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P2, -1, -1, new Item.Properties()));
+	public static final RegistryObject<Item> TAMABLE_MONSTER_ENDER_WOMAN_P3_SPAWN_EGG = REGISTRY.register("tamable_monster_ender_woman_p3_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P3, -1, -1, new Item.Properties()));
+	public static final RegistryObject<Item> TAMABLE_MONSTER_ENDER_WOMAN_P4_SPAWN_EGG = REGISTRY.register("tamable_monster_ender_woman_p4_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P4, -1, -1, new Item.Properties()));
+	public static final RegistryObject<Item> TAMABLE_MONSTER_ENDER_WOMAN_P5_SPAWN_EGG = REGISTRY.register("tamable_monster_ender_woman_p5_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P5, -1, -1, new Item.Properties()));
+	public static final RegistryObject<Item> TAMABLE_MONSTER_ENDER_WOMAN_P6_SPAWN_EGG = REGISTRY.register("tamable_monster_ender_woman_p6_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P6, -1, -1, new Item.Properties()));
+	public static final RegistryObject<Item> TAMABLE_MONSTER_ENDER_WOMAN_P7_SPAWN_EGG = REGISTRY.register("tamable_monster_ender_woman_p7_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P7, -1, -1, new Item.Properties()));
+	public static final RegistryObject<Item> TAMABLE_MONSTER_ENDER_WOMAN_P8_SPAWN_EGG = REGISTRY.register("tamable_monster_ender_woman_p8_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P8, -1, -1, new Item.Properties()));
+	
+	public static final RegistryObject<Item> MONSTER_CREEPER_GIRL_SPAWN_EGG = REGISTRY.register("monster_creeper_girl_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.MONSTER_CREEPER_GIRL, -1, -1, new Item.Properties()));
+	
+	public static final RegistryObject<Item> TAMABLE_MONSTER_CREEPER_GIRL_SPAWN_EGG = REGISTRY.register("tamable_monster_creeper_girl_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL, -1, -1, new Item.Properties()));
+	public static final RegistryObject<Item> TAMABLE_MONSTER_CREEPER_GIRL_P0_SPAWN_EGG = REGISTRY.register("tamable_monster_creeper_girl_p0_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL_P0, -1, -1, new Item.Properties()));
+	public static final RegistryObject<Item> TAMABLE_MONSTER_CREEPER_GIRL_P1_SPAWN_EGG = REGISTRY.register("tamable_monster_creeper_girl_p1_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL_P1, -1, -1, new Item.Properties()));
+	public static final RegistryObject<Item> TAMABLE_MONSTER_CREEPER_GIRL_P2_SPAWN_EGG = REGISTRY.register("tamable_monster_creeper_girl_p2_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL_P2, -1, -1, new Item.Properties()));
+	public static final RegistryObject<Item> TAMABLE_MONSTER_CREEPER_GIRL_P3_SPAWN_EGG = REGISTRY.register("tamable_monster_creeper_girl_p3_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL_P3, -1, -1, new Item.Properties()));
+	public static final RegistryObject<Item> TAMABLE_MONSTER_CREEPER_GIRL_P4_SPAWN_EGG = REGISTRY.register("tamable_monster_creeper_girl_p4_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL_P4, -1, -1, new Item.Properties()));
+	public static final RegistryObject<Item> TAMABLE_MONSTER_CREEPER_GIRL_P5_SPAWN_EGG = REGISTRY.register("tamable_monster_creeper_girl_p5_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL_P5, -1, -1, new Item.Properties()));
+	public static final RegistryObject<Item> TAMABLE_MONSTER_CREEPER_GIRL_P6_SPAWN_EGG = REGISTRY.register("tamable_monster_creeper_girl_p6_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL_P6, -1, -1, new Item.Properties()));
+	public static final RegistryObject<Item> TAMABLE_MONSTER_CREEPER_GIRL_P7_SPAWN_EGG = REGISTRY.register("tamable_monster_creeper_girl_p7_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL_P7, -1, -1, new Item.Properties()));
+	public static final RegistryObject<Item> TAMABLE_MONSTER_CREEPER_GIRL_P8_SPAWN_EGG = REGISTRY.register("tamable_monster_creeper_girl_p8_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL_P8, -1, -1, new Item.Properties()));
+		
 	public static final RegistryObject<Item> LEMON = REGISTRY.register("lemon", LemonItem::new);
 	public static final RegistryObject<Item> LEMON_ICE_CREAM = REGISTRY.register("lemon_ice_cream", LemonIceCreamItem::new);
 	public static final RegistryObject<Item> CHOCOLATE_BAR = REGISTRY.register("chocolate_bar", ChocolateBarItem::new);
