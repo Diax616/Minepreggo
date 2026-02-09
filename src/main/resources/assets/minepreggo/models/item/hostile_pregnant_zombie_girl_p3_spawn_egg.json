@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "minepreggo:item/hostile_zombie_girl_spawn_egg"
+   }
+}

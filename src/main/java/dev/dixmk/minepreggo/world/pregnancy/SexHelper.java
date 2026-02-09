@@ -18,6 +18,7 @@ import dev.dixmk.minepreggo.server.ServerParticleHelper;
 import dev.dixmk.minepreggo.server.ServerTaskQueueManager;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
@@ -97,7 +98,12 @@ public class SexHelper {
 		}
 					
 		if (!hasEnoughBedsForBreeding(target, 1, 8)) {
-			MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.pregnant.preggo_mob.message.without_beds", target.getSimpleNameOrCustom(), owner.getDisplayName().getString()));
+			if (target.getTypeOfCreature() == Creature.HUMANOID) {
+				MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.pregnant.preggo_mob.message.without_beds", target.getSimpleNameOrCustom(), owner.getDisplayName().getString()));
+			}
+			else {
+				MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.pregnant.preggo_mob.message.without_beds.monster", target.getSimpleNameOrCustom()));
+			}
 		}
 		else {
 			return true;
@@ -310,7 +316,14 @@ public class SexHelper {
 	}
 	
     public static void rejectSexRequest(ServerPlayer target, PreggoMob source) {
-		MessageHelper.sendTo(target, Component.translatable("chat.minepreggo.pregnant.preggo_mob.message.rejection_by_its_owner", source.getSimpleNameOrCustom()));
+		
+		if (source.getTypeOfCreature() == Creature.HUMANOID) {
+			MessageHelper.sendTo(target, Component.translatable("chat.minepreggo.pregnant.preggo_mob.message.rejection_by_its_owner", source.getSimpleNameOrCustom()));
+		}
+		else {
+			MessageHelper.sendTo(target, Component.translatable("chat.minepreggo.pregnant.preggo_mob.message.rejection_by_its_owner.monster", source.getSimpleNameOrCustom()));
+		}
+
 		ServerParticleHelper.spawnRandomlyFromServer(target, ParticleTypes.SMOKE);
 	}
     

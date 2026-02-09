@@ -24,22 +24,21 @@ public class TamableHumanoidCreeperGirlExpressionLayer
 		if (creeperGirl.hasEffect(MobEffects.CONFUSION)) {
 			return PAIN4;
 		}
-		else if (tamableData.getFaceState() == PreggoMobFace.BLUSHED) {
-			return HORNY2;
-		}
-		else if (tamableData.isAngry()) {
-			return ANGRY1;
-		}
-		else if (tamableData.isWaiting()) {
-			return SAD2;
-		}
 		else if (tamableData.isSavage()) {
 			if (creeperGirl.isTame()) {
 				return ANGRY1;
 			}
 			return SAD3;
 		}
-
+		else if (tamableData.isAngry()) {
+			return ANGRY1;
+		}
+		else if (tamableData.getFaceState() == PreggoMobFace.BLUSHED) {
+			return HORNY2;
+		}
+		else if (tamableData.isWaiting()) {
+			return SAD2;
+		}
 		return null;
 	}
 }

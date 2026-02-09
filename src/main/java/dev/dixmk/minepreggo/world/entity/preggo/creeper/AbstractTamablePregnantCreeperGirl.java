@@ -8,7 +8,6 @@ import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.client.animation.player.BellyAnimationManager;
 import dev.dixmk.minepreggo.client.animation.preggo.BellyAnimation;
 import dev.dixmk.minepreggo.init.MinepreggoModDamageSources;
-import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.world.entity.BellyPartFactory;
 import dev.dixmk.minepreggo.world.entity.BellyPartManager;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
@@ -26,7 +25,6 @@ import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -57,7 +55,10 @@ public abstract class AbstractTamablePregnantCreeperGirl extends AbstractTamable
 		super(p_21803_, p_21804_, typeOfCreature);
 		this.pregnancyData = new TamablePregnantPreggoMobDataImpl<>(DATA_HOLDER, this, currentPregnancyStage);		
 		this.pregnancySystem = createPregnancySystem();
+		setExplosionData(updateExplosionByPregnancyPhase(currentPregnancyStage));
 	}
+	
+	protected abstract ExplosionData updateExplosionByPregnancyPhase(PregnancyPhase pregnancyPhase);
 	
 	protected abstract @Nonnull IPreggoMobPregnancySystem createPregnancySystem();
 	
@@ -219,11 +220,10 @@ public abstract class AbstractTamablePregnantCreeperGirl extends AbstractTamable
 	public void die(DamageSource source) {
 		super.die(source);		
 		if (!this.level().isClientSide) {
-			boolean bellyBurst = source.is(MinepreggoModDamageSources.BELLY_BURST);
-			if (bellyBurst) {
+			if (source.is(MinepreggoModDamageSources.BELLY_BURST)) {
 				PregnancySystemHelper.deathByBellyBurst(this, (ServerLevel) this.level());
 			}
-			PreggoMobHelper.spawnBabyAndFetusCreepers(this, bellyBurst);
+			PreggoMobHelper.spawnBabyAndFetus(this);
 		}
 	}
 	
@@ -271,12 +271,7 @@ public abstract class AbstractTamablePregnantCreeperGirl extends AbstractTamable
 			BellyPartManager.getInstance().onServerTick(this, () -> BellyPartFactory.createHumanoidBellyPart(this, pregnancyData.getCurrentPregnancyPhase()));
 		}
 	}
-	
-	@Override
-	public SoundEvent getDeathSound() {
-		return MinepreggoModSounds.PREGNANT_PREGGO_MOB_DEATH.get();
-	}
-	
+		
 	@Override
 	public InteractionResult mobInteract(Player sourceentity, InteractionHand hand) {
 		var retval = this.pregnancySystem.onRightClick(sourceentity);		

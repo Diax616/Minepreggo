@@ -29,8 +29,10 @@ import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractHostilPregnantCr
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.MonsterCreeperHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractHostilPregnantEnderWoman;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractTamableEnderWoman;
-import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractMonsterPregnantZombieGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractTamablePregnantEnderWoman;
+import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractHostilPregnantZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractZombieGirl;
 import dev.dixmk.minepreggo.world.item.IFemaleArmor;
@@ -48,6 +50,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Position;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -755,7 +758,7 @@ public class PreggoMobHelper {
 					entityToSpawn = EntityType.ZOMBIE.spawn(serverLevel, BlockPos.containing(zombieGirl.getX(), zombieGirl.getY() + zombieGirl.getBbHeight() / 2F, zombieGirl.getZ()), MobSpawnType.MOB_SUMMONED);
 				}
 				else {
-					entityToSpawn = MinepreggoModEntities.MONSTER_ZOMBIE_GIRL.get().spawn(serverLevel, BlockPos.containing(zombieGirl.getX(), zombieGirl.getY() + zombieGirl.getBbHeight() / 2F, zombieGirl.getZ()), MobSpawnType.MOB_SUMMONED);
+					entityToSpawn = MinepreggoModEntities.HOSTILE_ZOMBIE_GIRL.get().spawn(serverLevel, BlockPos.containing(zombieGirl.getX(), zombieGirl.getY() + zombieGirl.getBbHeight() / 2F, zombieGirl.getZ()), MobSpawnType.MOB_SUMMONED);
 				}				
 				entityToSpawn.setBaby(true);
 				entityToSpawn.setYRot(randomSource.nextFloat() * 360F);
@@ -767,9 +770,7 @@ public class PreggoMobHelper {
 				}				
 			}	
 			else {
-				ItemEntity entityToSpawn = new ItemEntity(serverLevel, zombieGirl.getX(), zombieGirl.getY(), zombieGirl.getZ(), new ItemStack(MinepreggoModItems.DEAD_ZOMBIE_FETUS.get()));
-				entityToSpawn.setPickUpDelay(10);
-				serverLevel.addFreshEntity(entityToSpawn);
+				EntityHelper.spawnItemOn(serverLevel, zombieGirl.position(), MinepreggoModItems.DEAD_ZOMBIE_FETUS.get());
 			}
 		}	
 	}
@@ -784,7 +785,7 @@ public class PreggoMobHelper {
 		
 		for (int i = 0; i < numOfBabies; ++i) {				
 			if (randomSource.nextFloat() < p) {								
-				var entityToSpawn = MinepreggoModEntities.MONSTER_HUMANOID_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(creeperGirl.getX(), creeperGirl.getY() + creeperGirl.getBbHeight() / 2F, creeperGirl.getZ()), MobSpawnType.MOB_SUMMONED);
+				var entityToSpawn = MinepreggoModEntities.HOSTILE_HUMANOID_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(creeperGirl.getX(), creeperGirl.getY() + creeperGirl.getBbHeight() / 2F, creeperGirl.getZ()), MobSpawnType.MOB_SUMMONED);
 				entityToSpawn.setBaby(true);
 				entityToSpawn.setYRot(randomSource.nextFloat() * 360F);	
 				entityToSpawn.setHealth(randomSource.nextInt(minHealth, maxHealth));			
@@ -796,36 +797,12 @@ public class PreggoMobHelper {
 				}
 			}	
 			else {
-				ItemEntity entityToSpawn = new ItemEntity(serverLevel, creeperGirl.getX(), creeperGirl.getY(), creeperGirl.getZ(), new ItemStack(MinepreggoModItems.DEAD_HUMANOID_CREEPER_FETUS.get()));
-				entityToSpawn.setPickUpDelay(10);
-				serverLevel.addFreshEntity(entityToSpawn);
+				EntityHelper.spawnItemOn(serverLevel, creeperGirl.position(), MinepreggoModItems.DEAD_CREEPER_FETUS.get());
 			}
 		}	
 	}
 
-	private static void spawnFetusZombies(ServerLevel serverLevel, float p, int numOfBabies, @NonNull AbstractZombieGirl zombieGirl) {
-		var randomSource = zombieGirl.getRandom();
-		for (int i = 0; i < numOfBabies; ++i) {	
-			if (randomSource.nextFloat() < p) {
-				ItemEntity entityToSpawn = new ItemEntity(serverLevel, zombieGirl.getX(), zombieGirl.getY(), zombieGirl.getZ(), new ItemStack(MinepreggoModItems.DEAD_ZOMBIE_FETUS.get()));
-				entityToSpawn.setPickUpDelay(10);
-				serverLevel.addFreshEntity(entityToSpawn);
-			}
-		}
-	}
-	
-	private static void spawnFetusCreepers(ServerLevel serverLevel, float p, int numOfBabies, @NonNull AbstractCreeperGirl creeperGirl) {
-		var randomSource = creeperGirl.getRandom();
-		for (int i = 0; i < numOfBabies; ++i) {	
-			if (randomSource.nextFloat() < p) {
-				ItemEntity entityToSpawn = new ItemEntity(serverLevel, creeperGirl.getX(), creeperGirl.getY(), creeperGirl.getZ(), new ItemStack(MinepreggoModItems.DEAD_HUMANOID_CREEPER_FETUS.get()));
-				entityToSpawn.setPickUpDelay(10);
-				serverLevel.addFreshEntity(entityToSpawn);
-			}
-		}
-	}
-		
-	public static void spawnBabyAndFetusZombies(@NonNull AbstractTamablePregnantZombieGirl zombieGirl, boolean discardedBabies) {		
+	public static void spawnBabyAndFetus(@NonNull AbstractTamablePregnantZombieGirl zombieGirl) {		
 		if (!(zombieGirl.level() instanceof ServerLevel serverLevel)) {
 			return;
 		}
@@ -834,7 +811,7 @@ public class PreggoMobHelper {
 		final var pregnancyStage = pregnancyData.getCurrentPregnancyPhase();
 
 		if (pregnancyStage.compareTo(PregnancyPhase.P3) >= 0) {
-			final var alive = getSpawnProbabilityBasedPregnancy(zombieGirl, 0.6F, 0.3F, 0.1F, 0.15F);
+			final var alive = getSpawnProbabilityBasedPregnancy(zombieGirl, 0.65F, 0.3F, 0.1F, 0.15F);
 			PregnancySystemHelper.spawnBabiesOrFetuses(serverLevel, zombieGirl.position(), alive, 0.3f, pregnancyData.getWomb(), zombieGirl.getRandom());
 		}	
 		else {		
@@ -843,7 +820,7 @@ public class PreggoMobHelper {
 		}
 	}
 	
-	public static void spawnBabyAndFetusCreepers(@NonNull AbstractTamablePregnantCreeperGirl creeperGirl, boolean discardedBabies) {
+	public static void spawnBabyAndFetus(@NonNull AbstractTamablePregnantCreeperGirl creeperGirl) {
 		if (!(creeperGirl.level() instanceof ServerLevel serverLevel)) {
 			return;
 		}
@@ -851,17 +828,41 @@ public class PreggoMobHelper {
 		final var pregnancyData = creeperGirl.getPregnancyData();
 		final var pregnancyStage = pregnancyData.getCurrentPregnancyPhase();
 		
-		if (pregnancyStage.compareTo(PregnancyPhase.P3) >= 0) {
-			final var alive = getSpawnProbabilityBasedPregnancy(creeperGirl, 0.6F, 0.3F, 0.1F, 0.15F);
+		if (pregnancyStage.compareTo(PregnancyPhase.P3) >= 0 && creeperGirl.getTypeOfCreature() == Creature.HUMANOID) {
+			final var alive = getSpawnProbabilityBasedPregnancy(creeperGirl, 0.55F, 0.3F, 0.15F, 0.2F);
 			PregnancySystemHelper.spawnBabiesOrFetuses(serverLevel, creeperGirl.position(), alive, 0.3f, pregnancyData.getWomb(), creeperGirl.getRandom());
 		}	
 		else {		
-			final var fetusSpawn = getSpawnProbabilityBasedPregnancy(creeperGirl, 0.3F, 0.3F, 0.5F, 0.9F);
+			final var fetusSpawn = getSpawnProbabilityBasedPregnancy(creeperGirl, 0.3F, 0.3F, 0.7F, 0.9F);
 			PregnancySystemHelper.spawnFetuses(serverLevel, creeperGirl.position(), fetusSpawn, pregnancyData.getWomb(), creeperGirl.getRandom());
 		}
 	}
-		
-	public static void spawnBabyAndFetusCreepers(@NonNull AbstractHostilPregnantCreeperGirl creeperGirl) {			
+			
+	public static void spawnBabyAndFetus(@NonNull AbstractTamablePregnantEnderWoman enderWoman) {
+		if (!(enderWoman.level() instanceof ServerLevel serverLevel)) {
+			return;
+		}
+		final var pregnancyData = enderWoman.getPregnancyData();
+		final var fetusSpawn = getSpawnProbabilityBasedPregnancy(enderWoman, 0.3F, 0.3F, 0.7F, 0.9F);
+		PregnancySystemHelper.spawnFetuses(serverLevel, enderWoman.position(), fetusSpawn, pregnancyData.getWomb(), enderWoman.getRandom());
+	}
+	
+	private static void spawnDeadFetusItem(ServerLevel serverLevel, Position pos, Species species, Creature creature, int count, float chance, RandomSource random) {
+		int tempCount = count;
+		if (tempCount <= 0) {
+			tempCount = 1;
+		}	
+		Item itemToSpawn = PregnancySystemHelper.getDeadBabyItem(species, creature);
+		if (itemToSpawn != null) {
+			for (int i = 0; i < tempCount; i++) {
+				if (random.nextFloat() < chance) {
+					EntityHelper.spawnItemOn(serverLevel, pos, itemToSpawn);
+				}
+			}	
+		}
+	}
+	
+	public static void spawnBabyAndFetus(@NonNull AbstractHostilPregnantCreeperGirl creeperGirl) {			
 		if (!(creeperGirl.level() instanceof ServerLevel serverLevel)) {
 			return;
 		}
@@ -873,20 +874,20 @@ public class PreggoMobHelper {
 		final var t = Mth.clamp(totalDaysPassed / (float) PregnancySystemHelper.DEFAULT_TOTAL_PREGNANCY_DAYS, 0, 1);
 		float p;
 		
-		if (currentPregnancyStage.compareTo(PregnancyPhase.P3) >= 0) {
+		if (currentPregnancyStage.compareTo(PregnancyPhase.P3) >= 0 && creeperGirl.getTypeOfCreature() == Creature.HUMANOID) {
 			p = MathHelper.sigmoid(0.1F, 0.15F, 0.3F, t, 0.6F);
 			spawnBabyOrFetusCreepers(serverLevel, p, numOfBabies, creeperGirl);
 		}
 		else {
 			p = MathHelper.sigmoid(0.5F, 0.9F, 0.3F, t, 0.3F);
-			spawnFetusCreepers(serverLevel, p, numOfBabies, creeperGirl);
+			spawnDeadFetusItem(serverLevel, creeperGirl.position(), creeperGirl.getTypeOfSpecies(), creeperGirl.getTypeOfCreature(), numOfBabies, p, creeperGirl.getRandom());
 		}
 		
 		MinepreggoMod.LOGGER.debug("SPAWN BABY AND FETUS CREEPERS: id={}, class={}, currentPregnancytStage={}, maxPregnancyStage={}, totalDaysPassed={}, t={}",
 				creeperGirl.getId(), creeperGirl.getClass().getSimpleName(), currentPregnancyStage, pregnancyData.getLastPregnancyPhase(), totalDaysPassed, t);
 	}
 	
-	public static void spawnBabyAndFetusZombies(@NonNull AbstractMonsterPregnantZombieGirl zombieGirl) {	
+	public static void spawnBabyAndFetus(@NonNull AbstractHostilPregnantZombieGirl zombieGirl) {	
 		if (!(zombieGirl.level() instanceof ServerLevel serverLevel)) {
 			return;
 		}
@@ -905,12 +906,27 @@ public class PreggoMobHelper {
 		}
 		else {
 			p = MathHelper.sigmoid(0.5F, 0.9F, 0.3F, t, 0.3F);
-			spawnFetusZombies(serverLevel, p, numOfBabies, zombieGirl);
+			spawnDeadFetusItem(serverLevel, zombieGirl.position(), zombieGirl.getTypeOfSpecies(), zombieGirl.getTypeOfCreature(), numOfBabies, p, zombieGirl.getRandom());
 		}
 		
 		MinepreggoMod.LOGGER.debug("SPAWN BABY AND FETUS ZOMBIES: id={}, class={}, currentPregnancytStage={}, maxPregnancyStage={}, totalDaysPassed={}, t={}",
 				zombieGirl.getId(), zombieGirl.getClass().getSimpleName(), currentPregnancyStage, pregnancyData.getLastPregnancyPhase(), totalDaysPassed, t);
 	}	
+	
+	public static void spawnBabyAndFetus(@NonNull AbstractHostilPregnantEnderWoman enderWoman) {
+		if (!(enderWoman.level() instanceof ServerLevel serverLevel)) {
+			return;
+		}
+		
+		final var pregnancyData = enderWoman.getPregnancyData();	
+		final var numOfBabies = pregnancyData.getNumOfBabies();
+		final var totalDaysPassed = pregnancyData.getTotalDaysElapsed();
+		final var t = Mth.clamp(totalDaysPassed / (float) PregnancySystemHelper.DEFAULT_TOTAL_PREGNANCY_DAYS, 0, 1);
+		float p = MathHelper.sigmoid(0.5F, 0.9F, 0.3F, t, 0.3F);
+		
+		spawnDeadFetusItem(serverLevel, enderWoman.position(), enderWoman.getTypeOfSpecies(), enderWoman.getTypeOfCreature(), numOfBabies, p, enderWoman.getRandom());
+	}
+	
 	// SPAWN BABIES AND FETUSES - END
 	
 

@@ -20,6 +20,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.IPreggoMobPregnancySystem;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMobData;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.TamablePregnantPreggoMobDataImpl;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
@@ -248,11 +249,10 @@ public abstract class AbstractTamablePregnantEnderWoman extends AbstractTamableE
 	public void die(DamageSource source) {
 		super.die(source);		
 		if (!this.level().isClientSide) {
-			boolean bellyBurst = source.is(MinepreggoModDamageSources.BELLY_BURST);
-			if (bellyBurst) {
+			if (source.is(MinepreggoModDamageSources.BELLY_BURST)) {
 				PregnancySystemHelper.deathByBellyBurst(this, (ServerLevel) this.level());
 			}
-			// PreggoMobHelper.spawnBabyAndFetusCreepers(this, bellyBurst);
+			PreggoMobHelper.spawnBabyAndFetus(this);
 		}
 	}
 	

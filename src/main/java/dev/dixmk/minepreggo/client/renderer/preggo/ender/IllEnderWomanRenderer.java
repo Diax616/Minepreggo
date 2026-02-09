@@ -1,8 +1,12 @@
 package dev.dixmk.minepreggo.client.renderer.preggo.ender;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+
 import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.client.model.entity.preggo.ender.AbstractEnderWomanModel;
+import dev.dixmk.minepreggo.client.model.entity.preggo.ender.AbstractMonsterEnderWomanModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.ender.IllMonsterEnderWomanModel;
+import dev.dixmk.minepreggo.client.renderer.entity.layer.ExpressiveEyesLayer;
+import dev.dixmk.minepreggo.client.renderer.entity.layer.ExpressiveFaceLayer;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.IllMonsterEnderWoman;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -13,7 +17,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class IllEnderWomanRenderer extends AbstractMonsterEnderWomanRenderer<IllMonsterEnderWoman, IllMonsterEnderWomanModel> {
+public class IllEnderWomanRenderer extends AbstractHostilMonsterEnderWomanRenderer<IllMonsterEnderWoman, IllMonsterEnderWomanModel> {
 
 	private static final RenderType ILL_ENDER_EYES = RenderType.eyes(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/ender/monster/eye/ill_ender_woman_eyes.png"));
 	
@@ -22,11 +26,16 @@ public class IllEnderWomanRenderer extends AbstractMonsterEnderWomanRenderer<Ill
 	}
 	
 	public IllEnderWomanRenderer(EntityRendererProvider.Context context) {
-		this(context, AbstractEnderWomanModel.LAYER_LOCATION, AbstractEnderWomanModel.LAYER_INNER_ARMOR_LOCATION, AbstractEnderWomanModel.LAYER_OUTER_ARMOR_LOCATION);
+		this(context, AbstractMonsterEnderWomanModel.LAYER_LOCATION, AbstractMonsterEnderWomanModel.LAYER_INNER_ARMOR_LOCATION, AbstractMonsterEnderWomanModel.LAYER_OUTER_ARMOR_LOCATION);
 	}
 
 	@Override
 	public ResourceLocation getTextureLocation(IllMonsterEnderWoman p_115812_) {
 		return MONSTER_ENDER_GIRL_LOCATION;
+	}
+
+	@Override
+	protected ImmutablePair<ExpressiveFaceLayer<IllMonsterEnderWoman, IllMonsterEnderWomanModel>, ExpressiveEyesLayer<IllMonsterEnderWoman, IllMonsterEnderWomanModel>> createExpressionLayers() {
+		return null;
 	}
 }

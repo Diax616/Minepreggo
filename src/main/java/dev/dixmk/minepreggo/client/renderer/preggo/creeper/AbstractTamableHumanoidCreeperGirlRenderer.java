@@ -1,6 +1,7 @@
 package dev.dixmk.minepreggo.client.renderer.preggo.creeper;
 
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractTamableHumanoidCreeperGirlModel;
+import dev.dixmk.minepreggo.client.renderer.entity.layer.ExpressiveFaceLayer;
 import dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.creeper.TamableHumanoidCreeperGirlExpressionLayer;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGirl;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
@@ -13,10 +14,10 @@ public abstract class AbstractTamableHumanoidCreeperGirlRenderer
 
 	protected AbstractTamableHumanoidCreeperGirlRenderer(Context context, M main, M inner, M outter, M layer) {
 		super(context, main, inner, outter, layer);
-		this.addLayer(this.createExpressionLayer());
 	}
 	
-	protected TamableHumanoidCreeperGirlExpressionLayer<E, M> createExpressionLayer() {
+	@Override
+	protected ExpressiveFaceLayer<E, M> createExpressiveFaceLayer() {
 		return new TamableHumanoidCreeperGirlExpressionLayer<>(this);
 	}
 }

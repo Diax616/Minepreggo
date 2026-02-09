@@ -27,7 +27,7 @@ import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.item.ItemHelper;
 
-public class IllMonsterEnderWoman extends AbstractHostilMonsterEnderWoman implements Ill {
+public class IllMonsterEnderWoman extends AbstractHostilEnderWoman implements Ill {
 	
 	public IllMonsterEnderWoman(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.ILL_ENDER_WOMAN.get(), world);

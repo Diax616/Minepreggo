@@ -34,8 +34,6 @@ import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMobData;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
-import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.world.item.AbstractBaby;
 import dev.dixmk.minepreggo.world.item.IFemaleArmor;
 import dev.dixmk.minepreggo.world.item.IMaternityArmor;
@@ -162,9 +160,9 @@ public class PregnancySystemHelper {
 	
 	// POST PREGNANCY ATTRIBUTE NERFS - START
 	private static final UUID SPEED_MODIFIER_TIRENESS_UUID = UUID.fromString("fa6a4626-c325-4835-8259-69577a99c9c8");
-	private static final AttributeModifier SPEED_MODIFIER_TIRENESS = new AttributeModifier(SPEED_MODIFIER_TIRENESS_UUID, "Tireness speed boost", -0.1D, AttributeModifier.Operation.MULTIPLY_BASE);
+	private static final AttributeModifier SPEED_MODIFIER_TIRENESS = new AttributeModifier(SPEED_MODIFIER_TIRENESS_UUID, "Tireness speed boost", -0.15D, AttributeModifier.Operation.MULTIPLY_BASE);
 	private static final UUID MAX_HEALTH_MODIFIER_TIRENESS_UUID = UUID.fromString("94d78c8b-0983-4ae4-af65-8e477ee52f2e");
-	private static final AttributeModifier MAX_HEALTH_MODIFIER_TIRENESS = new AttributeModifier(MAX_HEALTH_MODIFIER_TIRENESS_UUID, "Tireness max health", -0.3D, AttributeModifier.Operation.MULTIPLY_BASE);
+	private static final AttributeModifier MAX_HEALTH_MODIFIER_TIRENESS = new AttributeModifier(MAX_HEALTH_MODIFIER_TIRENESS_UUID, "Tireness max health", -0.25D, AttributeModifier.Operation.MULTIPLY_BASE);
 
 	public static void applyPostPregnancyNerf(LivingEntity entity) {
 		AttributeInstance speedAttr = entity.getAttribute(Attributes.MOVEMENT_SPEED);
@@ -265,7 +263,8 @@ public class PregnancySystemHelper {
 	private static final ImmutableMap<Species, Item> MILK_ITEM = ImmutableMap.of(
 			Species.CREEPER, MinepreggoModItems.CREEPER_BREAST_MILK_BOTTLE.get(),
 			Species.ZOMBIE, MinepreggoModItems.ZOMBIE_BREAST_MILK_BOTTLE.get(),
-			Species.HUMAN, MinepreggoModItems.HUMAN_BREAST_MILK_BOTTLE.get()			
+			Species.HUMAN, MinepreggoModItems.HUMAN_BREAST_MILK_BOTTLE.get(),
+			Species.ENDER, MinepreggoModItems.ENDER_BREAST_MILK_BOTTLE.get()
 	);
 		
 	private static final ImmutableMap<Species, ImmutableMap<Craving, List<Item>>> CRAVING_ITEM = ImmutableMap.of(
@@ -279,6 +278,11 @@ public class PregnancySystemHelper {
 					Craving.SWEET, List.of(MinepreggoModItems.BRAIN_WITH_CHOCOLATE.get()), 
 					Craving.SOUR, List.of(MinepreggoModItems.SOUR_BRAIN.get()),
 					Craving.SPICY, List.of(MinepreggoModItems.BRAIN_WITH_HOT_SAUCE.get())),
+			Species.ENDER, ImmutableMap.of(
+					Craving.SALTY, List.of(MinepreggoModItems.ENDER_SLIME_JELLY_WITH_SALT.get()), 
+					Craving.SWEET, List.of(MinepreggoModItems.ENDER_SLIME_JELLY_WITH_CHOCOLATE.get()), 
+					Craving.SOUR, List.of(MinepreggoModItems.SOUR_ENDER_SLIME_JELLY.get()),
+					Craving.SPICY, List.of(MinepreggoModItems.ENDER_SLIME_JELLY_WITH_HOT_SAUCE.get())),
 			Species.HUMAN,	ImmutableMap.of(
 					Craving.SALTY, List.of(MinepreggoModItems.PICKLE.get(), MinepreggoModItems.FRENCH_FRIES.get()), 
 					Craving.SWEET, List.of(MinepreggoModItems.CHOCOLATE_BAR.get(), MinepreggoModItems.CANDY_APPLE.get()), 
@@ -615,6 +619,7 @@ public class PregnancySystemHelper {
     // BELLY RUBBING AND SLAPPING - START
 	public static boolean canTouchBelly(Player source, LivingEntity target) {
 		return source.isShiftKeyDown()
+				&& LivingEntityHelper.isEyeAboveEntity(source, target, 0.5f)
 				&& source.getMainHandItem().isEmpty() 
 				&& source.getDirection() == target.getDirection().getOpposite()
 				&& target.getItemBySlot(EquipmentSlot.CHEST).isEmpty();
@@ -696,7 +701,7 @@ public class PregnancySystemHelper {
     }
     
     public static void playSlappingBellyAnimation(LivingEntity source, LivingEntity target) {
-		final HorizontalPosition position = getHorizontalPosition(source, target, 0.1);
+		final HorizontalPosition position = getHorizontalPosition(source, target, 0.3);
 		byte id;	
 		// TODO: Use contant values for ids, try to link with animation system later
 		if (position == HorizontalPosition.LEFT) {
@@ -711,17 +716,8 @@ public class PregnancySystemHelper {
 		target.level().broadcastEntityEvent(target, id);
     }
     
-    public static void playSlappingBellyAnimation(Player source, Player target) {
-    	playSlappingBellyAnimation((LivingEntity) source, (LivingEntity) target);
-    }
+
     
-    public static void playSlappingBellyAnimation(Player source, AbstractTamablePregnantZombieGirl target) {
-    	playSlappingBellyAnimation((LivingEntity) source, (LivingEntity) target);
-    }
-    
-    public static void playSlappingBellyAnimation(Player source, AbstractTamablePregnantCreeperGirl target) {
-    	playSlappingBellyAnimation((LivingEntity) source, (LivingEntity) target);
-    }
     // BELLY RUBBING AND SLAPPING - START
 
  
@@ -797,14 +793,14 @@ public class PregnancySystemHelper {
 
 		if (species == Species.ZOMBIE) {
 			if (random.nextBoolean()) {
-				entity = MinepreggoModEntities.MONSTER_ZOMBIE_GIRL.get().spawn(serverLevel, blockPos, MobSpawnType.MOB_SUMMONED);
+				entity = MinepreggoModEntities.HOSTILE_ZOMBIE_GIRL.get().spawn(serverLevel, blockPos, MobSpawnType.MOB_SUMMONED);
 			}
 			else {
 				entity = EntityType.ZOMBIE.spawn(serverLevel, blockPos, MobSpawnType.MOB_SUMMONED);
 			}
 		}
 		else if (species == Species.CREEPER) {
-			entity = MinepreggoModEntities.MONSTER_HUMANOID_CREEPER_GIRL.get().spawn(serverLevel, blockPos, MobSpawnType.MOB_SUMMONED);
+			entity = MinepreggoModEntities.HOSTILE_HUMANOID_CREEPER_GIRL.get().spawn(serverLevel, blockPos, MobSpawnType.MOB_SUMMONED);
 		}
 		else if (species == Species.VILLAGER) {
 			entity = EntityType.VILLAGER.spawn(serverLevel, blockPos, MobSpawnType.MOB_SUMMONED);

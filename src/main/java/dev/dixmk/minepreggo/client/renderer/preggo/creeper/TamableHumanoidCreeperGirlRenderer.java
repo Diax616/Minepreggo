@@ -4,6 +4,7 @@ import javax.annotation.Nullable;
 
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractHumanoidCreeperGirlModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.TamableHumanoidCreeperGirlModel;
+import dev.dixmk.minepreggo.client.renderer.entity.layer.ExpressiveFaceLayer;
 import dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.creeper.TamableHumanoidCreeperGirlExpressionLayer;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableHumanoidCreeperGirl;
 import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
@@ -31,7 +32,7 @@ public class TamableHumanoidCreeperGirlRenderer extends AbstractTamableHumanoidC
 	}
 	
 	@Override
-	protected TamableHumanoidCreeperGirlExpressionLayer<TamableHumanoidCreeperGirl, TamableHumanoidCreeperGirlModel> createExpressionLayer() {
+	protected ExpressiveFaceLayer<TamableHumanoidCreeperGirl, TamableHumanoidCreeperGirlModel> createExpressiveFaceLayer() {
 		return new TamableHumanoidCreeperGirlExpressionLayer<>(this) {
 			@Override
 			public @Nullable RenderType renderType(TamableHumanoidCreeperGirl creeperGirl) {	

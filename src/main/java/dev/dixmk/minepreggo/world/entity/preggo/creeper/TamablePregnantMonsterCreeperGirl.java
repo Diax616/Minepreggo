@@ -68,7 +68,7 @@ public class TamablePregnantMonsterCreeperGirl {
 		}
 
 		public static AttributeSupplier.Builder createAttributes() {
-			return MonsterCreeperHelper.createBasicAttributes(0.24);
+			return MonsterCreeperHelper.createTamableAttributes(0.27);
 		}
 	}
 
@@ -114,7 +114,7 @@ public class TamablePregnantMonsterCreeperGirl {
 		}
 
 		public static AttributeSupplier.Builder createAttributes() {
-			return MonsterCreeperHelper.createBasicAttributes(0.24);
+			return MonsterCreeperHelper.createTamableAttributes(0.27);
 		}
 	}
 	
@@ -160,7 +160,7 @@ public class TamablePregnantMonsterCreeperGirl {
 		}
 
 		public static AttributeSupplier.Builder createAttributes() {
-			return MonsterCreeperHelper.createBasicAttributes(0.235);
+			return MonsterCreeperHelper.createTamableAttributes(0.26);
 		}
 	}
 	
@@ -206,7 +206,7 @@ public class TamablePregnantMonsterCreeperGirl {
 		}
 
 		public static AttributeSupplier.Builder createAttributes() {
-			return MonsterCreeperHelper.createBasicAttributes(0.23);
+			return MonsterCreeperHelper.createTamableAttributes(0.25);
 		}
 	}
 
@@ -257,7 +257,7 @@ public class TamablePregnantMonsterCreeperGirl {
 		}
 		
 		public static AttributeSupplier.Builder createAttributes() {
-			return MonsterCreeperHelper.createBasicAttributes(0.22);
+			return MonsterCreeperHelper.createTamableAttributes(0.24);
 		}
 	}
 	
@@ -308,7 +308,7 @@ public class TamablePregnantMonsterCreeperGirl {
 		}
 
 		public static AttributeSupplier.Builder createAttributes() {
-			return MonsterCreeperHelper.createBasicAttributes(0.215);
+			return MonsterCreeperHelper.createTamableAttributes(0.23);
 		}
 	}
 
@@ -359,7 +359,7 @@ public class TamablePregnantMonsterCreeperGirl {
 		}
 		
 		public static AttributeSupplier.Builder createAttributes() {
-			return MonsterCreeperHelper.createBasicAttributes(0.21);
+			return MonsterCreeperHelper.createTamableAttributes(0.22);
 		}
 	}
 	
@@ -410,7 +410,7 @@ public class TamablePregnantMonsterCreeperGirl {
 		}
 		
 		public static AttributeSupplier.Builder createAttributes() {
-			return MonsterCreeperHelper.createBasicAttributes(0.20);
+			return MonsterCreeperHelper.createTamableAttributes(0.21);
 		}
 	}
 	
@@ -459,7 +459,7 @@ public class TamablePregnantMonsterCreeperGirl {
 		}
 
 		public static AttributeSupplier.Builder createAttributes() {
-			return MonsterCreeperHelper.createBasicAttributes(0.19);
+			return MonsterCreeperHelper.createTamableAttributes(0.20);
 		}
 	}
 }

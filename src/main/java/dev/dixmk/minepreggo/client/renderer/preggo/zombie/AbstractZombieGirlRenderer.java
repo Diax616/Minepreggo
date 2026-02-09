@@ -1,9 +1,12 @@
 package dev.dixmk.minepreggo.client.renderer.preggo.zombie;
 
+import javax.annotation.Nullable;
+
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.model.entity.preggo.zombie.AbstractZombieGirlModel;
+import dev.dixmk.minepreggo.client.renderer.entity.layer.ExpressiveFaceLayer;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractZombieGirl;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
@@ -44,6 +47,14 @@ public abstract class AbstractZombieGirlRenderer<E extends AbstractZombieGirl, M
 	
 	protected AbstractZombieGirlRenderer(EntityRendererProvider.Context context, M main, M inner, M outter) {
 		super(context, main, 0.5F);
-		this.addLayer(new HumanoidArmorLayer<>(this, inner, outter, context.getModelManager()));
+		this.addLayer(new HumanoidArmorLayer<>(this, inner, outter, context.getModelManager()));	
+		var expressionLayer = this.createExpressiveFaceLayer();
+		if (expressionLayer != null) {
+			this.addLayer(expressionLayer);
+		}
+	}
+	
+	protected @Nullable ExpressiveFaceLayer<E, M> createExpressiveFaceLayer() {
+		return null;
 	}
 }

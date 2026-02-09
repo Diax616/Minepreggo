@@ -26,7 +26,7 @@ public abstract class AbstractTamablePregnantMonsterEnderWoman extends AbstractT
 	
 	@Override
 	public boolean canTeleportWithOwner() {
-		return MonsterEnderWomanHelper.canTeleportWithOwner(this);
+		return MonsterEnderWomanHelper.canTeleportWithOwnerBeingPregnant(this);
 	}
 	
 	@Override

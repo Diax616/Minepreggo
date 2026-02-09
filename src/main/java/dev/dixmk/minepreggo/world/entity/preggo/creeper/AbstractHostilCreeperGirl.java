@@ -1,7 +1,7 @@
 package dev.dixmk.minepreggo.world.entity.preggo.creeper;
 
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
-import dev.dixmk.minepreggo.world.entity.preggo.IMonsterPreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.IHostilPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -25,7 +25,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 
-public abstract class AbstractHostilCreeperGirl extends AbstractCreeperGirl implements IMonsterPreggoMob {
+public abstract class AbstractHostilCreeperGirl extends AbstractCreeperGirl implements IHostilPreggoMob {
 
 	protected AbstractHostilCreeperGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_, Creature typeOfCreature) {
 		super(p_21803_, p_21804_, typeOfCreature);	

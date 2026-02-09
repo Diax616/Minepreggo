@@ -1,6 +1,6 @@
 package dev.dixmk.minepreggo.client.renderer.preggo.ender;
 
-import dev.dixmk.minepreggo.client.model.entity.preggo.ender.AbstractEnderWomanModel;
+import dev.dixmk.minepreggo.client.model.entity.preggo.ender.AbstractMonsterEnderWomanModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.ender.TamablePregnantMonsterEnderWomanModel;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.TamablePregnantMonsterEnderWoman;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -16,7 +16,7 @@ public class TamablePregnantMonsterEnderWomanRenderer  {
 	public static class TamableMonsterEnderWomanP0Renderer extends AbstractTamablePregnantMonsterEnderWomanRenderer<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP0, TamablePregnantMonsterEnderWomanModel.TamableMonsterEnderWomanP0Model> {
 
 		public TamableMonsterEnderWomanP0Renderer(EntityRendererProvider.Context context) {
-			this(context, AbstractEnderWomanModel.LAYER_LOCATION_P0, AbstractEnderWomanModel.LAYER_INNER_ARMOR_LOCATION, AbstractEnderWomanModel.LAYER_OUTER_ARMOR_LOCATION);
+			this(context, AbstractMonsterEnderWomanModel.LAYER_LOCATION_P0, AbstractMonsterEnderWomanModel.LAYER_INNER_ARMOR_LOCATION, AbstractMonsterEnderWomanModel.LAYER_OUTER_ARMOR_LOCATION);
 		}
 		
 		public TamableMonsterEnderWomanP0Renderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter) {
@@ -33,7 +33,7 @@ public class TamablePregnantMonsterEnderWomanRenderer  {
 	public static class TamableMonsterEnderWomanP1Renderer extends AbstractTamablePregnantMonsterEnderWomanRenderer<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP1, TamablePregnantMonsterEnderWomanModel.TamableMonsterEnderWomanP1Model> {
 
 		public TamableMonsterEnderWomanP1Renderer(EntityRendererProvider.Context context) {
-			this(context, AbstractEnderWomanModel.LAYER_LOCATION_P1, AbstractEnderWomanModel.LAYER_INNER_ARMOR_LOCATION, AbstractEnderWomanModel.LAYER_OUTER_ARMOR_LOCATION);
+			this(context, AbstractMonsterEnderWomanModel.LAYER_LOCATION_P1, AbstractMonsterEnderWomanModel.LAYER_INNER_ARMOR_LOCATION, AbstractMonsterEnderWomanModel.LAYER_OUTER_ARMOR_LOCATION);
 		}
 		
 		public TamableMonsterEnderWomanP1Renderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter) {
@@ -50,7 +50,7 @@ public class TamablePregnantMonsterEnderWomanRenderer  {
 	public static class TamableMonsterEnderWomanP2Renderer extends AbstractTamablePregnantMonsterEnderWomanRenderer<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP2, TamablePregnantMonsterEnderWomanModel.TamableMonsterEnderWomanP2Model> {
 
 		public TamableMonsterEnderWomanP2Renderer(EntityRendererProvider.Context context) {
-			this(context, AbstractEnderWomanModel.LAYER_LOCATION_P2, AbstractEnderWomanModel.LAYER_INNER_ARMOR_LOCATION, AbstractEnderWomanModel.LAYER_OUTER_ARMOR_LOCATION);
+			this(context, AbstractMonsterEnderWomanModel.LAYER_LOCATION_P2, AbstractMonsterEnderWomanModel.LAYER_INNER_ARMOR_LOCATION, AbstractMonsterEnderWomanModel.LAYER_OUTER_ARMOR_LOCATION);
 		}
 		
 		public TamableMonsterEnderWomanP2Renderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter) {
@@ -67,7 +67,7 @@ public class TamablePregnantMonsterEnderWomanRenderer  {
 	public static class TamableMonsterEnderWomanP3Renderer extends AbstractTamablePregnantMonsterEnderWomanRenderer<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP3, TamablePregnantMonsterEnderWomanModel.TamableMonsterEnderWomanP3Model> {
 
 		public TamableMonsterEnderWomanP3Renderer(EntityRendererProvider.Context context) {
-			this(context, AbstractEnderWomanModel.LAYER_LOCATION_P3, AbstractEnderWomanModel.LAYER_INNER_ARMOR_LOCATION, AbstractEnderWomanModel.LAYER_OUTER_ARMOR_LOCATION);
+			this(context, AbstractMonsterEnderWomanModel.LAYER_LOCATION_P3, AbstractMonsterEnderWomanModel.LAYER_INNER_ARMOR_LOCATION, AbstractMonsterEnderWomanModel.LAYER_OUTER_ARMOR_LOCATION);
 		}
 		
 		public TamableMonsterEnderWomanP3Renderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter) {
@@ -84,7 +84,7 @@ public class TamablePregnantMonsterEnderWomanRenderer  {
 	public static class TamableMonsterEnderWomanP4Renderer extends AbstractTamablePregnantMonsterEnderWomanRenderer<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP4, TamablePregnantMonsterEnderWomanModel.TamableMonsterEnderWomanP4Model> {
 
 		public TamableMonsterEnderWomanP4Renderer(EntityRendererProvider.Context context) {
-			this(context, AbstractEnderWomanModel.LAYER_LOCATION_P4, AbstractEnderWomanModel.LAYER_INNER_ARMOR_LOCATION, AbstractEnderWomanModel.LAYER_OUTER_ARMOR_LOCATION);
+			this(context, AbstractMonsterEnderWomanModel.LAYER_LOCATION_P4, AbstractMonsterEnderWomanModel.LAYER_INNER_ARMOR_LOCATION, AbstractMonsterEnderWomanModel.LAYER_OUTER_ARMOR_LOCATION);
 		}
 		
 		public TamableMonsterEnderWomanP4Renderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter) {
@@ -101,7 +101,7 @@ public class TamablePregnantMonsterEnderWomanRenderer  {
 	public static class TamableMonsterEnderWomanP5Renderer extends AbstractTamablePregnantMonsterEnderWomanRenderer<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP5, TamablePregnantMonsterEnderWomanModel.TamableMonsterEnderWomanP5Model> {
 
 		public TamableMonsterEnderWomanP5Renderer(EntityRendererProvider.Context context) {
-			this(context, AbstractEnderWomanModel.LAYER_LOCATION_P5, AbstractEnderWomanModel.LAYER_INNER_ARMOR_LOCATION, AbstractEnderWomanModel.LAYER_OUTER_ARMOR_LOCATION);
+			this(context, AbstractMonsterEnderWomanModel.LAYER_LOCATION_P5, AbstractMonsterEnderWomanModel.LAYER_INNER_ARMOR_LOCATION, AbstractMonsterEnderWomanModel.LAYER_OUTER_ARMOR_LOCATION);
 		}
 		
 		public TamableMonsterEnderWomanP5Renderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter) {
@@ -118,7 +118,7 @@ public class TamablePregnantMonsterEnderWomanRenderer  {
 	public static class TamableMonsterEnderWomanP6Renderer extends AbstractTamablePregnantMonsterEnderWomanRenderer<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP6, TamablePregnantMonsterEnderWomanModel.TamableMonsterEnderWomanP6Model> {
 
 		public TamableMonsterEnderWomanP6Renderer(EntityRendererProvider.Context context) {
-			this(context, AbstractEnderWomanModel.LAYER_LOCATION_P6, AbstractEnderWomanModel.LAYER_INNER_ARMOR_LOCATION, AbstractEnderWomanModel.LAYER_OUTER_ARMOR_LOCATION);
+			this(context, AbstractMonsterEnderWomanModel.LAYER_LOCATION_P6, AbstractMonsterEnderWomanModel.LAYER_INNER_ARMOR_LOCATION, AbstractMonsterEnderWomanModel.LAYER_OUTER_ARMOR_LOCATION);
 		}
 		
 		public TamableMonsterEnderWomanP6Renderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter) {
@@ -135,7 +135,7 @@ public class TamablePregnantMonsterEnderWomanRenderer  {
 	public static class TamableMonsterEnderWomanP7Renderer extends AbstractTamablePregnantMonsterEnderWomanRenderer<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP7, TamablePregnantMonsterEnderWomanModel.TamableMonsterEnderWomanP7Model> {
 
 		public TamableMonsterEnderWomanP7Renderer(EntityRendererProvider.Context context) {
-			this(context, AbstractEnderWomanModel.LAYER_LOCATION_P7, AbstractEnderWomanModel.LAYER_INNER_ARMOR_LOCATION, AbstractEnderWomanModel.LAYER_OUTER_ARMOR_LOCATION);
+			this(context, AbstractMonsterEnderWomanModel.LAYER_LOCATION_P7, AbstractMonsterEnderWomanModel.LAYER_INNER_ARMOR_LOCATION, AbstractMonsterEnderWomanModel.LAYER_OUTER_ARMOR_LOCATION);
 		}
 		
 		public TamableMonsterEnderWomanP7Renderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter) {
@@ -152,7 +152,7 @@ public class TamablePregnantMonsterEnderWomanRenderer  {
 	public static class TamableMonsterEnderWomanP8Renderer extends AbstractTamablePregnantMonsterEnderWomanRenderer<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP8, TamablePregnantMonsterEnderWomanModel.TamableMonsterEnderWomanP8Model> {
 
 		public TamableMonsterEnderWomanP8Renderer(EntityRendererProvider.Context context) {
-			this(context, AbstractEnderWomanModel.LAYER_LOCATION_P8, AbstractEnderWomanModel.LAYER_INNER_ARMOR_LOCATION, AbstractEnderWomanModel.LAYER_OUTER_ARMOR_LOCATION);
+			this(context, AbstractMonsterEnderWomanModel.LAYER_LOCATION_P8, AbstractMonsterEnderWomanModel.LAYER_INNER_ARMOR_LOCATION, AbstractMonsterEnderWomanModel.LAYER_OUTER_ARMOR_LOCATION);
 		}
 		
 		public TamableMonsterEnderWomanP8Renderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter) {

@@ -112,6 +112,6 @@ public class IllMonsterCreeperGirl extends AbstractHostilMonsterCreeperGirl impl
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return AbstractHostilMonsterCreeperGirl.getBasicAttributes(0.25);
+		return MonsterCreeperHelper.createBasicAttributes(0.25);
 	}
 }

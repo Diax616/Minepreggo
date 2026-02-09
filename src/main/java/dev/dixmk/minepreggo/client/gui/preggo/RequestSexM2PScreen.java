@@ -3,13 +3,14 @@ package dev.dixmk.minepreggo.client.gui.preggo;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
+import dev.dixmk.minepreggo.client.gui.ScreenHelper;
 import dev.dixmk.minepreggo.network.packet.c2s.ResponseSexRequestM2PC2SPacket;
-import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableHumanoidCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableMonsterCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractTamableMonsterEnderWoman;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamableZombieGirl;
 import dev.dixmk.minepreggo.world.inventory.preggo.RequestSexM2PMenu;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
@@ -17,7 +18,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Button.OnPress;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
@@ -25,44 +25,74 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class RequestSexM2PScreen extends AbstractRequestSexScreen<PreggoMob, Player, RequestSexM2PMenu> {	
-	private final Component message;
-	private ResourceLocation icon;
+	private Component message = null;
+	private boolean isMonster = false;
+	private float uOffset = 0;
+	private float vOffset = 0;
+	private int uWidth = 16;
+	private int vHeight = 16;
 	
 	public RequestSexM2PScreen(RequestSexM2PMenu container, Inventory inventory, Component text) {
 		super(container, inventory, text);	
 		source.ifPresent(s -> {	
 			if (s instanceof AbstractTamableZombieGirl zombieGirl) {
-				if (zombieGirl instanceof ITamablePregnantPreggoMob pregnancySystemHandler
-						&& pregnancySystemHandler.getPregnancyData().getPregnancySymptoms().containsPregnancySymptom(PregnancySymptom.HORNY)) {
-					this.icon = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/expressions/zombie_girl_face_pain1.png");
+				this.vOffset = 137;
+				if (this.isTamablePregnantAndIsHorny(zombieGirl)) {
+					this.uOffset = 17;
 				}
 				else {			
-					this.icon = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/expressions/zombie_girl_face_horny2.png");
+					this.uOffset = 1;
 				}
 			}
-			else if (s instanceof AbstractTamableCreeperGirl creeperGirl) {
-				if (creeperGirl instanceof ITamablePregnantPreggoMob pregnancySystemHandler
-						&& pregnancySystemHandler.getPregnancyData().getPregnancySymptoms().containsPregnancySymptom(PregnancySymptom.HORNY)) {
-					this.icon = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/humanoid_creeper_girl_face_pain1.png");
+			else if (s instanceof AbstractTamableHumanoidCreeperGirl creeperGirl) {
+				this.vOffset = 105;
+				if (this.isTamablePregnantAndIsHorny(creeperGirl)) {
+					this.uOffset = 17;
 				}
 				else {			
-					this.icon = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/humanoid_creeper_girl_face_horny2.png");
+					this.uOffset = 1;
 				}
-			}			
+			}		
+			else if (s instanceof AbstractTamableMonsterCreeperGirl creeperGirl) {
+				this.vOffset = 201;
+				if (this.isTamablePregnantAndIsHorny(creeperGirl)) {
+					this.uOffset = 17;
+				}
+				else {			
+					this.uOffset = 1;
+				}
+				this.isMonster = true;
+			}	
+			else if (s instanceof AbstractTamableMonsterEnderWoman enderWoman) {
+				this.vOffset = 169;
+				if (this.isTamablePregnantAndIsHorny(enderWoman)) {
+					this.uOffset = 17;
+				}
+				else {			
+					this.uOffset = 1;
+				}
+				this.isMonster = true;
+			}
 		});
-		message = createRandomHornyMessage();
+		
+		if (isMonster) {
+			message = Component.translatable("gui.minepreggo.sex_request.preggo_mob.horny.label.message.monster");
+		}
+		else {
+			message = createRandomHornyMessage();
+		}	
 	}
 	
 	@Override
 	protected void renderRequestorIcon(GuiGraphics guiGraphics) {
-		if (this.icon != null) {
-			guiGraphics.blit(this.icon, this.leftPos + 8, this.topPos + 27, 24, 24, 8, 8, 8, 8, 64, 96);	
-		}
+		guiGraphics.blit(ScreenHelper.MINEPREGGO_ICONS_TEXTURE, this.leftPos + 8, this.topPos + 27, 24, 24, this.uOffset, this.vOffset, this.uWidth, this.vHeight, 256, 256);	
 	}
 	
 	@Override
 	protected void renderRequestorMessage(GuiGraphics guiGraphics) {
-		guiGraphics.drawString(this.font, this.message, 35, 40, -12829636, false);
+		if (message != null) {
+			guiGraphics.drawString(this.font, this.message, 35, 40, -12829636, false);
+		}
 	}
 	
 	@Override
@@ -103,5 +133,10 @@ public class RequestSexM2PScreen extends AbstractRequestSexScreen<PreggoMob, Pla
 	@Override
 	protected boolean renderTargetName() {
 		return true;
+	}
+	
+	private boolean isTamablePregnantAndIsHorny(PreggoMob preggoMob) {
+		return preggoMob instanceof ITamablePregnantPreggoMob pregnancySystemHandler
+				&& pregnancySystemHandler.getPregnancyData().getPregnancySymptoms().containsPregnancySymptom(PregnancySymptom.HORNY);
 	}
 }

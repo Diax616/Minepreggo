@@ -1,9 +1,12 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.creeper;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+
 import dev.dixmk.minepreggo.client.animation.preggo.MonsterCreeperGirlAnimation;
 import dev.dixmk.minepreggo.client.jiggle.EntityJiggleDataFactory;
 import dev.dixmk.minepreggo.client.jiggle.EntityJiggleDataFactory.JigglePositionConfig;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractHostilCreeperGirl;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -15,7 +18,11 @@ public abstract class AbstractHostilMonsterCreeperGirlModel<E extends AbstractHo
 		super(root, null);
 		this.belly.visible = false;
 	}
-
+	
+	protected AbstractHostilMonsterCreeperGirlModel(ModelPart root, PregnancyPhase phase, boolean simpleBellyJiggle) {
+		super(root, ImmutablePair.of(phase, simpleBellyJiggle));
+	}
+	
 	@Override
 	protected JigglePositionConfig createJiggleConfig() {
 		return EntityJiggleDataFactory.JigglePositionConfig.boobs(this.boobs.y);

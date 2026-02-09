@@ -7,13 +7,13 @@ import dev.dixmk.minepreggo.network.capability.PlayerDataProvider;
 import dev.dixmk.minepreggo.network.capability.VillagerDataProvider;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.monster.Ill;
-import dev.dixmk.minepreggo.world.entity.preggo.IMonsterPregnantPreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.IHostilPregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractHostilHumanoidCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractTamablePregnantEnderWoman;
-import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractMonsterZombieGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractHostilZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractZombieGirl;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
@@ -62,14 +62,14 @@ public class EntityEventHandler {
         }
         else if (mob instanceof AbstractHostilHumanoidCreeperGirl) {  	
         	mob.setCanPickUpLoot(mob.getRandom().nextFloat() < 0.35F * event.getDifficulty().getSpecialMultiplier());    	
-        	if (mob.getType() == MinepreggoModEntities.MONSTER_HUMANOID_CREEPER_GIRL.get()
+        	if (mob.getType() == MinepreggoModEntities.HOSTILE_HUMANOID_CREEPER_GIRL.get()
         			&& mob.getRandom().nextFloat() < MinepreggoModConfig.SERVER.getBabyCreeperGirlProbability()) {
             	mob.setBaby(true);
         	}   
         }
-        else if (mob instanceof AbstractMonsterZombieGirl) {     	
+        else if (mob instanceof AbstractHostilZombieGirl) {     	
         	mob.setCanPickUpLoot(mob.getRandom().nextFloat() < 0.55F * event.getDifficulty().getSpecialMultiplier());     
-        	if (mob.getType() == MinepreggoModEntities.MONSTER_ZOMBIE_GIRL.get()
+        	if (mob.getType() == MinepreggoModEntities.HOSTILE_ZOMBIE_GIRL.get()
             		&& mob.getRandom().nextFloat() < MinepreggoModConfig.SERVER.getBabyCreeperGirlProbability()) {
                 mob.setBaby(true);    	
         	}    
@@ -89,8 +89,9 @@ public class EntityEventHandler {
     	if (mob instanceof ITamablePregnantPreggoMob tamablePregnantPreggoMob) {
     		phase = tamablePregnantPreggoMob.getPregnancyData().getCurrentPregnancyPhase();	
     	}
-    	else if (mob instanceof IMonsterPregnantPreggoMob monsterPregnantPreggoMob) {
+    	else if (mob instanceof IHostilPregnantPreggoMob monsterPregnantPreggoMob) {
 			phase = monsterPregnantPreggoMob.getPregnancyData().getCurrentPregnancyPhase();
+			monsterPregnantPreggoMob.getPregnancyData().init();
 		}
     	
     	if (phase != null) {

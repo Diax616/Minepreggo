@@ -5,14 +5,11 @@
     {
       "item": "minepreggo:salt"
     },
+	{
+	  "item": "minepreggo:salt"
+	},
     {
-      "item": "minepreggo:salt"
-    },
-    {
-      "item": "minepreggo:salt"
-    },
-    {
-      "item": "minepreggo:villager_brain"
+      "tag": "minepreggo:brain"
     }
   ],
   "result": {

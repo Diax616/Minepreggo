@@ -14,7 +14,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class AbstractTamableMonsterEnderWomanModel 	
-	<E extends AbstractTamableEnderWoman> extends AbstractEnderWomanModel<E> {
+	<E extends AbstractTamableEnderWoman> extends AbstractMonsterEnderWomanModel<E> {
 	
 	protected AbstractTamableMonsterEnderWomanModel(ModelPart root, MonsterEnderWomanAnimator<E> animator, @Nullable ImmutablePair<PregnancyPhase, Boolean> pregnancyPhaseAndSimpleBellyJiggle) {
 		super(root, animator, pregnancyPhaseAndSimpleBellyJiggle);

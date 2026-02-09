@@ -68,7 +68,7 @@ public class TamablePregnantHumanoidCreeperGirl {
 		}
 
 		public static AttributeSupplier.Builder createAttributes() {
-			return HumanoidCreeperHelper.createBasicAttributes(0.24);
+			return HumanoidCreeperHelper.createTamableAttributes(0.24);
 		}
 	}
 
@@ -114,7 +114,7 @@ public class TamablePregnantHumanoidCreeperGirl {
 		}
 
 		public static AttributeSupplier.Builder createAttributes() {
-			return HumanoidCreeperHelper.createBasicAttributes(0.24);
+			return HumanoidCreeperHelper.createTamableAttributes(0.24);
 		}
 	}
 	
@@ -160,7 +160,7 @@ public class TamablePregnantHumanoidCreeperGirl {
 		}
 
 		public static AttributeSupplier.Builder createAttributes() {
-			return HumanoidCreeperHelper.createBasicAttributes(0.235);
+			return HumanoidCreeperHelper.createTamableAttributes(0.235);
 		}
 	}
 	
@@ -206,7 +206,7 @@ public class TamablePregnantHumanoidCreeperGirl {
 		}
 
 		public static AttributeSupplier.Builder createAttributes() {
-			return HumanoidCreeperHelper.createBasicAttributes(0.23);
+			return HumanoidCreeperHelper.createTamableAttributes(0.23);
 		}
 	}
 
@@ -257,7 +257,7 @@ public class TamablePregnantHumanoidCreeperGirl {
 		}
 		
 		public static AttributeSupplier.Builder createAttributes() {
-			return HumanoidCreeperHelper.createBasicAttributes(0.22);
+			return HumanoidCreeperHelper.createTamableAttributes(0.22);
 		}
 	}
 	
@@ -308,7 +308,7 @@ public class TamablePregnantHumanoidCreeperGirl {
 		}
 
 		public static AttributeSupplier.Builder createAttributes() {
-			return HumanoidCreeperHelper.createBasicAttributes(0.215);
+			return HumanoidCreeperHelper.createTamableAttributes(0.215);
 		}
 	}
 
@@ -359,7 +359,7 @@ public class TamablePregnantHumanoidCreeperGirl {
 		}
 		
 		public static AttributeSupplier.Builder createAttributes() {
-			return HumanoidCreeperHelper.createBasicAttributes(0.21);
+			return HumanoidCreeperHelper.createTamableAttributes(0.21);
 		}
 	}
 	
@@ -410,7 +410,7 @@ public class TamablePregnantHumanoidCreeperGirl {
 		}
 		
 		public static AttributeSupplier.Builder createAttributes() {
-			return HumanoidCreeperHelper.createBasicAttributes(0.20);
+			return HumanoidCreeperHelper.createTamableAttributes(0.20);
 		}
 	}
 	
@@ -459,7 +459,7 @@ public class TamablePregnantHumanoidCreeperGirl {
 		}
 
 		public static AttributeSupplier.Builder createAttributes() {
-			return HumanoidCreeperHelper.createBasicAttributes(0.19);
+			return HumanoidCreeperHelper.createTamableAttributes(0.19);
 		}
 	}
 }

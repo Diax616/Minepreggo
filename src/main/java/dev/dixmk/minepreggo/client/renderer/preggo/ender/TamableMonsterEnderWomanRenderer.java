@@ -3,10 +3,10 @@ package dev.dixmk.minepreggo.client.renderer.preggo.ender;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import dev.dixmk.minepreggo.client.model.entity.preggo.ender.AbstractEnderWomanModel;
+import dev.dixmk.minepreggo.client.model.entity.preggo.ender.AbstractMonsterEnderWomanModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.ender.TamableMonsterEnderWomanModel;
-import dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.ender.MonsterEnderWomanExpressionLayer;
-import dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.ender.MonsterEnderWomanExpressiveEyesLayer;
+import dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.ender.TamableMonsterEnderWomanExpressionLayer;
+import dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.ender.TamableMonsterEnderWomanExpressiveEyesLayer;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.TamableMonsterEnderWoman;
 import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -20,7 +20,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class TamableMonsterEnderWomanRenderer extends AbstractTamableMonsterEnderWomanRenderer<TamableMonsterEnderWoman, TamableMonsterEnderWomanModel> {
 	
 	public TamableMonsterEnderWomanRenderer(EntityRendererProvider.Context context) {
-		this(context, AbstractEnderWomanModel.LAYER_LOCATION, AbstractEnderWomanModel.LAYER_INNER_ARMOR_LOCATION, AbstractEnderWomanModel.LAYER_OUTER_ARMOR_LOCATION);
+		this(context, AbstractMonsterEnderWomanModel.LAYER_LOCATION, AbstractMonsterEnderWomanModel.LAYER_INNER_ARMOR_LOCATION, AbstractMonsterEnderWomanModel.LAYER_OUTER_ARMOR_LOCATION);
 	}
 	
 	public TamableMonsterEnderWomanRenderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter) {
@@ -33,8 +33,8 @@ public class TamableMonsterEnderWomanRenderer extends AbstractTamableMonsterEnde
 	}	
 	
 	@Override
-	protected MonsterEnderWomanExpressionLayer<TamableMonsterEnderWoman, TamableMonsterEnderWomanModel> createExpressiveFaceLayer() {
-		return new MonsterEnderWomanExpressionLayer<>(this) {
+	protected TamableMonsterEnderWomanExpressionLayer<TamableMonsterEnderWoman, TamableMonsterEnderWomanModel> createExpressiveFaceLayer() {
+		return new TamableMonsterEnderWomanExpressionLayer<>(this) {
 			@Override
 			public @Nullable RenderType renderType(TamableMonsterEnderWoman enderWoman) {	
 				PostPregnancy post = enderWoman.getSyncedPostPregnancy().orElse(null);
@@ -47,8 +47,8 @@ public class TamableMonsterEnderWomanRenderer extends AbstractTamableMonsterEnde
 	}
 	
 	@Override
-	protected MonsterEnderWomanExpressiveEyesLayer<TamableMonsterEnderWoman, TamableMonsterEnderWomanModel> createExpressiveEyesLayer() {
-		return new MonsterEnderWomanExpressiveEyesLayer<>(this) {
+	protected TamableMonsterEnderWomanExpressiveEyesLayer<TamableMonsterEnderWoman, TamableMonsterEnderWomanModel> createExpressiveEyesLayer() {
+		return new TamableMonsterEnderWomanExpressiveEyesLayer<>(this) {
 			@Override
 			public @Nonnull RenderType renderType(TamableMonsterEnderWoman enderWoman) {	
 				PostPregnancy post = enderWoman.getSyncedPostPregnancy().orElse(null);

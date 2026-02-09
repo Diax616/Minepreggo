@@ -8,16 +8,12 @@ import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.Womb;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.phys.Vec3;
 
 public class FullOfEnders extends MobEffect {
 
@@ -33,43 +29,19 @@ public class FullOfEnders extends MobEffect {
 					if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
 						var pregnancySystem = femaleData.getPregnancyData();
 						if (serverPlayer.getRandom().nextFloat() < calculateProbabilityToRandomTeleport(pregnancySystem.getCurrentPregnancyPhase(), pregnancySystem.getWomb())) {
-							randomTeleport(entity);
+							double extraBlocks = serverPlayer.getRandom().nextInt(femaleData.getPregnancyData().getCurrentPregnancyPhase().ordinal());
+							LivingEntityHelper.randomTeleport(entity, SoundEvents.ENDERMAN_TELEPORT, 8, 16 + extraBlocks);
+							if (MinepreggoModConfig.SERVER.isBellyColisionsForPlayersEnable()) {
+								var bellyPart = BellyPartManager.getInstance().get(entity);
+								if (bellyPart != null) {
+									bellyPart.teleportTo(entity.getX(), entity.getY(), entity.getZ());
+								}
+							}	
 							LivingEntityHelper.playSoundNearTo(entity, MinepreggoModSounds.getRandomStomachGrowls(entity.getRandom()));
 						}					
 					}
 				})
 			);
-		}
-	}
-	
-	private void randomTeleport(LivingEntity entity) {	
-		var level = entity.level();
-		if (!entity.level().isClientSide) {
-			double d0 = entity.getX();
-			double d1 = entity.getY();
-			double d2 = entity.getZ();
-
-			for(int i = 0; i < 16; ++i) {
-				double d3 = entity.getX() + (entity.getRandom().nextDouble() - 0.5D) * 16.0D;
-				double d4 = Mth.clamp(entity.getY() + (entity.getRandom().nextInt(16) - 8), level.getMinBuildHeight(), (level.getMinBuildHeight() + ((ServerLevel)level).getLogicalHeight() - 1));
-				double d5 = entity.getZ() + (entity.getRandom().nextDouble() - 0.5D) * 16.0D;
-				if (entity.isPassenger()) {
-					entity.stopRiding();
-				}
-				Vec3 vec3 = entity.position();
-				level.gameEvent(GameEvent.TELEPORT, vec3, GameEvent.Context.of(entity));
-				if (entity.randomTeleport(d3, d4, d5, true)) {
-					level.playSound(null, d0, d1, d2, SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
-					break;
-				}
-			}
-			
-			if (MinepreggoModConfig.SERVER.isBellyColisionsForPlayersEnable()) {
-				var bellyPart = BellyPartManager.getInstance().get(entity);
-				if (bellyPart != null) {
-					bellyPart.teleportTo(entity.getX(), entity.getY(), entity.getZ());
-				}
-			}	
 		}
 	}
 	

@@ -38,6 +38,7 @@ public class MinepreggoModTabs {
                 output.accept(MinepreggoModItems.HUMAN_BREAST_MILK_BOTTLE.get());
                 output.accept(MinepreggoModItems.ZOMBIE_BREAST_MILK_BOTTLE.get());
                 output.accept(MinepreggoModItems.CREEPER_BREAST_MILK_BOTTLE.get());
+                output.accept(MinepreggoModItems.ENDER_BREAST_MILK_BOTTLE.get());
 
                 output.accept(MinepreggoModItems.VILLAGER_BRAIN.get());
                 output.accept(MinepreggoModItems.PILLAGER_BRAIN.get());
@@ -162,6 +163,9 @@ public class MinepreggoModTabs {
                 output.accept(MinepreggoModItems.TAMABLE_HUMANOID_CREEPER_GIRL_P8_SPAWN_EGG.get());
      
                 output.accept(MinepreggoModItems.MONSTER_CREEPER_GIRL_SPAWN_EGG.get());
+                output.accept(MinepreggoModItems.HOSTIL_MONSTER_CREEPER_GIRL_P3_SPAWN_EGG.get());
+                output.accept(MinepreggoModItems.HOSTIL_MONSTER_CREEPER_GIRL_P5_SPAWN_EGG.get());
+                output.accept(MinepreggoModItems.HOSTIL_MONSTER_CREEPER_GIRL_P7_SPAWN_EGG.get());
                 output.accept(MinepreggoModItems.TAMABLE_MONSTER_CREEPER_GIRL_SPAWN_EGG.get());
                 output.accept(MinepreggoModItems.TAMABLE_MONSTER_CREEPER_GIRL_SPAWN_EGG.get());
                 output.accept(MinepreggoModItems.TAMABLE_MONSTER_CREEPER_GIRL_P0_SPAWN_EGG.get());
@@ -175,6 +179,9 @@ public class MinepreggoModTabs {
                 output.accept(MinepreggoModItems.TAMABLE_MONSTER_CREEPER_GIRL_P8_SPAWN_EGG.get());
                 
                 output.accept(MinepreggoModItems.MONSTER_ENDER_WOMAN_SPAWN_EGG.get());
+                output.accept(MinepreggoModItems.HOSTIL_MONSTER_ENDER_WOMAN_P3_SPAWN_EGG.get());
+                output.accept(MinepreggoModItems.HOSTIL_MONSTER_ENDER_WOMAN_P5_SPAWN_EGG.get());
+                output.accept(MinepreggoModItems.HOSTIL_MONSTER_ENDER_WOMAN_P7_SPAWN_EGG.get());
                 output.accept(MinepreggoModItems.TAMABLE_MONSTER_ENDER_WOMAN_SPAWN_EGG.get());
                 output.accept(MinepreggoModItems.TAMABLE_MONSTER_ENDER_WOMAN_P0_SPAWN_EGG.get());
                 output.accept(MinepreggoModItems.TAMABLE_MONSTER_ENDER_WOMAN_P1_SPAWN_EGG.get());        

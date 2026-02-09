@@ -31,7 +31,7 @@ public class TamableZombieGirlRenderer extends AbstractTamableZombieGirlRenderer
 	}
 		
 	@Override
-	protected TamableZombieGirlExpressionLayer<TamableZombieGirl, TamableZombieGirlModel> createExpressionLayer() {
+	protected TamableZombieGirlExpressionLayer<TamableZombieGirl, TamableZombieGirlModel> createExpressiveFaceLayer() {
 		return new TamableZombieGirlExpressionLayer<>(this) {
 			@Override
 			public @Nullable RenderType renderType(TamableZombieGirl zombieGirl) {	

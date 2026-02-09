@@ -391,16 +391,20 @@ public abstract class AbstractTamableEnderWoman extends AbstractEnderWoman imple
 	
 	public boolean teleportWithOwner(BlockPos targetPos) {
 	    if (this.canTeleportWithOwner()) {
-	        boolean flag = teleport(targetPos.getX() + 0.5, targetPos.getY() + 1.0, targetPos.getZ() + 0.5);
-	    	if (!this.isVehicle() && this.getOwner() != null) {
-	    		var owner = this.getOwner();
-	    		owner.teleportTo(targetPos.getX() + 0.5, targetPos.getY() + 1.0, targetPos.getZ() + 0.5);		
-	    	}
-	    	if (flag && !this.isSilent()) {
-                this.level().playSound(null, this.xo, this.yo, this.zo, SoundEvents.ENDERMAN_TELEPORT, this.getSoundSource(), 1.0F, 1.0F);
-                this.playSound(SoundEvents.ENDERMAN_TELEPORT, 1.0F, 1.0F);
-	    	}
-	    	return flag;	
+	        double destX = targetPos.getX() + 0.5;
+	        double destY = targetPos.getY() + 1.0;
+	        double destZ = targetPos.getZ() + 0.5;
+	        
+	        boolean flag = teleport(destX, destY, destZ);
+	        if (!this.isVehicle() && this.getOwner() != null) {
+	            var owner = this.getOwner();
+	            owner.teleportTo(destX, destY, destZ + 0.5);		
+	        }
+	        if (flag && !this.isSilent()) {
+	            this.level().playSound(null, destX, destY, destZ, SoundEvents.ENDERMAN_TELEPORT, this.getSoundSource(), 1.0F, 1.0F);
+	            this.playSound(SoundEvents.ENDERMAN_TELEPORT, 1.0F, 1.0F);
+	        }
+	        return flag;	
 	    }
 	    return false;
 	}

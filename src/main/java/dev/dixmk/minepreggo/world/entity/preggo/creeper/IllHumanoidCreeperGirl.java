@@ -128,7 +128,7 @@ public class IllHumanoidCreeperGirl extends AbstractHostilHumanoidCreeperGirl im
 	}
 	
 	public static AttributeSupplier.Builder createAttributes() {
-		return AbstractHostilHumanoidCreeperGirl.getBasicAttributes(0.235);
+		return HumanoidCreeperHelper.createBasicAttributes(0.235);
 	}
 	
 	static<E extends AbstractHostilCreeperGirl & Ill> void addDefaultGoals(E target) {

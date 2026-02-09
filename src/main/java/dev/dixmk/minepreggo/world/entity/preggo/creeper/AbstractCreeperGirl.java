@@ -47,15 +47,17 @@ import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.PowerableMob;
 
 public abstract class AbstractCreeperGirl extends PreggoMob implements PowerableMob, Enemy {
+	public static final ExplosionData DEFAULT_EXPLOSION_DATA = new ExplosionData(3, 1, 30);
+	
 	private static final EntityDataAccessor<Integer> DATA_SWELL_DIR = SynchedEntityData.defineId(AbstractCreeperGirl.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Boolean> DATA_IS_POWERED = SynchedEntityData.defineId(AbstractCreeperGirl.class, EntityDataSerializers.BOOLEAN);
 	private static final EntityDataAccessor<Boolean> DATA_IS_IGNITED = SynchedEntityData.defineId(AbstractCreeperGirl.class, EntityDataSerializers.BOOLEAN);
 	private int oldSwell;
 	private int swell;
 	private int droppedSkulls;
-	protected int maxSwell = 30;
-	protected int explosionRadius = 3;
-	protected int explosionItensity = 1;
+	private int maxSwell = DEFAULT_EXPLOSION_DATA.maxSwell();
+	private int explosionRadius = DEFAULT_EXPLOSION_DATA.explosionRadius();
+	private int explosionItensity = DEFAULT_EXPLOSION_DATA.explosionItensity();
 	protected double maxDistance = 9D;
 	private CombatMode combatMode = CombatMode.EXPLODE;
 	
@@ -64,10 +66,16 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 		this.setRandomCombatMode();
 	}
 		
+	protected void setExplosionData(ExplosionData explosionData) {
+		this.explosionRadius = explosionData.explosionRadius();
+		this.explosionItensity = explosionData.explosionItensity();
+		this.maxSwell = explosionData.maxSwell();
+	}
+	
 	public void setCombatMode(CombatMode value) {
 		this.combatMode = value;
 		if (value == CombatMode.EXPLODE)
-			this.maxDistance = 4D;
+			this.maxDistance = 3D;
 	}
 	
 	public CombatMode getCombatMode() {
@@ -185,7 +193,7 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 		return this.entityData.get(DATA_IS_POWERED);
 	}
 
-	public void setPower(boolean power) {
+	protected void setPower(boolean power) {
 		this.entityData.set(DATA_IS_POWERED, power);
 	}
 	
@@ -411,6 +419,6 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 		
 		public static final String NBT_KEY = "DataCombatMode";
 	}	
+	
+	public static record ExplosionData (int explosionRadius, int explosionItensity, int maxSwell) {}
 }
-
-

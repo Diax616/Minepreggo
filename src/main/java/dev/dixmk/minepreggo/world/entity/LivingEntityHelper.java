@@ -11,6 +11,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -18,7 +20,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 public class LivingEntityHelper {
 
@@ -98,7 +102,6 @@ public class LivingEntityHelper {
 		}
 	}
 	
-	
 	// TODO: Rework this method to evaluate only hostile mobs that can target the source entities, ITamablePreggoMob are hostile by default
     public static boolean areHostileMobsNearby(Level level, LivingEntity source1, LivingEntity source2, @Nonnegative double detectionRadius) {
         double radiusSquared = detectionRadius * detectionRadius;
@@ -114,5 +117,42 @@ public class LivingEntityHelper {
                     if (target == null) return false;
                     return target.getId() == source1.getId() || target.getId() == source2.getId();
                 });
+    }
+    
+    public static void randomTeleport(LivingEntity entity, SoundEvent soundEvent, double minDistance, double maxDistance) {	
+    	var level = entity.level();
+    	if (!entity.level().isClientSide) {
+    		double d0 = entity.getX();
+    		double d1 = entity.getY();
+    		double d2 = entity.getZ();
+
+    		for(int i = 0; i < 16; ++i) {
+    			double randomDistanceX = minDistance + entity.getRandom().nextDouble() * (maxDistance - minDistance);
+    			double randomDistanceZ = minDistance + entity.getRandom().nextDouble() * (maxDistance - minDistance);
+    			
+    			randomDistanceX *= (entity.getRandom().nextBoolean() ? 1 : -1);
+    			randomDistanceZ *= (entity.getRandom().nextBoolean() ? 1 : -1);
+    			
+    			double d3 = entity.getX() + randomDistanceX;
+    			double d4 = Mth.clamp(entity.getY() + (entity.getRandom().nextInt(16) - 8), level.getMinBuildHeight(), (level.getMinBuildHeight() + ((ServerLevel)level).getLogicalHeight() - 1));
+    			double d5 = entity.getZ() + randomDistanceZ;
+    			
+    			if (entity.isPassenger()) {
+    				entity.stopRiding();
+    			}
+    			Vec3 vec3 = entity.position();
+    			level.gameEvent(GameEvent.TELEPORT, vec3, GameEvent.Context.of(entity));
+    			if (entity.randomTeleport(d3, d4, d5, true)) {
+    				level.playSound(null, d0, d1, d2, soundEvent, SoundSource.PLAYERS, 1.0F, 1.0F);
+    				level.playSound(null, d3, d4, d5, soundEvent, SoundSource.PLAYERS, 1.0F, 1.0F);
+    				break;
+    			}
+    		}			
+    	}
+    }
+
+    public static boolean isEyeAboveEntity(LivingEntity source, LivingEntity target, float factor) {
+        double targetMidpointY = target.getY() + (target.getBbHeight() * factor);
+        return source.getEyeY() > targetMidpointY;
     }
 }

@@ -39,7 +39,7 @@ public class HostilHumanoidCreeperGirl extends AbstractHostilHumanoidCreeperGirl
 	private static final EntityDataAccessor<Boolean> DATA_BABY_ID = SynchedEntityData.defineId(HostilHumanoidCreeperGirl.class, EntityDataSerializers.BOOLEAN);
 	
 	public HostilHumanoidCreeperGirl(PlayMessages.SpawnEntity packet, Level world) {
-		this(MinepreggoModEntities.MONSTER_HUMANOID_CREEPER_GIRL.get(), world);
+		this(MinepreggoModEntities.HOSTILE_HUMANOID_CREEPER_GIRL.get(), world);
 	}
 
 	public HostilHumanoidCreeperGirl(EntityType<HostilHumanoidCreeperGirl> type, Level world) {
@@ -121,10 +121,10 @@ public class HostilHumanoidCreeperGirl extends AbstractHostilHumanoidCreeperGirl
 		if (this.level() != null && !this.level().isClientSide) {
 			AttributeInstance attributeinstance = this.getAttribute(Attributes.MOVEMENT_SPEED);
 			attributeinstance.removeModifier(SPEED_MODIFIER_BABY);
-	        this.explosionRadius = 3;
+	        this.setExplosionData(DEFAULT_EXPLOSION_DATA);
 			if (p_34309_) {
 				attributeinstance.addTransientModifier(SPEED_MODIFIER_BABY);
-		        this.explosionRadius = 1;
+		        this.setExplosionData(new ExplosionData(1, 1, DEFAULT_EXPLOSION_DATA.maxSwell()));
 			}
 		}
 	}
@@ -139,13 +139,13 @@ public class HostilHumanoidCreeperGirl extends AbstractHostilHumanoidCreeperGirl
 	
 	@Override
 	public AgeableMob getBreedOffspring(ServerLevel serverWorld, AgeableMob ageable) {
-		HostilHumanoidCreeperGirl retval = MinepreggoModEntities.MONSTER_HUMANOID_CREEPER_GIRL.get().create(serverWorld);
+		HostilHumanoidCreeperGirl retval = MinepreggoModEntities.HOSTILE_HUMANOID_CREEPER_GIRL.get().create(serverWorld);
 		retval.finalizeSpawn(serverWorld, serverWorld.getCurrentDifficultyAt(retval.blockPosition()), MobSpawnType.BREEDING, null, null);
 		retval.setBaby(true);
 		return retval;
 	}
 	
 	public static AttributeSupplier.Builder createAttributes() {
-		return AbstractHostilHumanoidCreeperGirl.getBasicAttributes(0.24);
+		return HumanoidCreeperHelper.createBasicAttributes(0.24);
 	}
 }

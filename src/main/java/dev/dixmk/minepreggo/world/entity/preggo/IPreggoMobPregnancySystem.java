@@ -8,6 +8,6 @@ import net.minecraft.world.entity.player.Player;
 public interface IPreggoMobPregnancySystem extends IPregnancySystem {
 
 	InteractionResult onRightClick(Player source);
-	
+		
 	void evaluateOnSuccessfulHurt(DamageSource damagesource);
 }

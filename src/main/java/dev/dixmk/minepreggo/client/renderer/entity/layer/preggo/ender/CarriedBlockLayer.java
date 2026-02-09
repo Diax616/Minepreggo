@@ -3,7 +3,7 @@ package dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.ender;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 
-import dev.dixmk.minepreggo.client.model.entity.preggo.ender.AbstractEnderWomanModel;
+import dev.dixmk.minepreggo.client.model.entity.preggo.ender.AbstractMonsterEnderWomanModel;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractEnderWoman;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
@@ -16,7 +16,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.ModelData;
 
 @OnlyIn(Dist.CLIENT)
-public class CarriedBlockLayer<E extends AbstractEnderWoman, M extends AbstractEnderWomanModel<E>> extends RenderLayer<E, M> {
+public class CarriedBlockLayer<E extends AbstractEnderWoman, M extends AbstractMonsterEnderWomanModel<E>> extends RenderLayer<E, M> {
 	
 	private final BlockRenderDispatcher blockRenderer;
 	

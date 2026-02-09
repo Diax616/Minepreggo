@@ -10,7 +10,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class AbstractHostilPregnantHumanoidCreeperGirlModel<E extends AbstractHostilPregnantCreeperGirl> extends AbstractHostilHumanoidCreeperGirlModel<E> {
+public abstract class AbstractHostilPregnantHumanoidCreeperGirlModel
+	<E extends AbstractHostilPregnantCreeperGirl> extends AbstractHostilHumanoidCreeperGirlModel<E> {
 
 	protected AbstractHostilPregnantHumanoidCreeperGirlModel(ModelPart root, HumanoidCreeperGirlAnimator<E> animator, @Nonnull PregnancyPhase phase, boolean simpleBellyJiggle) {
 		super(root, animator, phase, simpleBellyJiggle);	

@@ -1,24 +1,23 @@
 package dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.creeper;
 
-import javax.annotation.Nullable;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractHumanoidCreeperGirlModel;
+import dev.dixmk.minepreggo.client.renderer.entity.layer.ExpressiveFaceLayer;
+import dev.dixmk.minepreggo.client.renderer.preggo.creeper.CreeperGirlClientHelper;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractCreeperGirl;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
-import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class AbstractHumanoidCreeperGirlExpressionLayer
-	<E extends AbstractCreeperGirl, M extends AbstractHumanoidCreeperGirlModel<E>> extends RenderLayer<E, M> {
+	<E extends AbstractCreeperGirl, M extends AbstractHumanoidCreeperGirlModel<E>> extends ExpressiveFaceLayer<E, M> {
 
 	protected static final RenderType HOSTIL = RenderType.entityCutoutNoCull(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/humanoid/expressions/humanoid_creeper_girl_face_hostil.png"));
 	protected static final RenderType HOSTIL_PAIN = RenderType.entityTranslucent(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/humanoid/expressions/humanoid_creeper_girl_face_hostil_pain.png"));
@@ -49,32 +48,31 @@ public abstract class AbstractHumanoidCreeperGirlExpressionLayer
 		
 		if (p_117352_.isInvisible())
 			return;
-		
-		final var face = renderType(p_117352_);
-		if (face != null) {	
-			var model = this.getParentModel();	
-			if (model.young) {
-				model.setAllInvisibleLessHead();				
-				model.renderToBuffer(
-						poseStack, 
-						p_117350_.getBuffer(face), 
-						p_117351_, 
-						LivingEntityRenderer.getOverlayCoords(p_117352_, 0.0F),
-						1.0F, 1.0F, 1.0F, 1.0F
-					);
-				model.setAllVisible(true);
-			}
-			else {
-				model.head.render(
-						poseStack, 
-						p_117350_.getBuffer(face), 
-						p_117351_, 
-						LivingEntityRenderer.getOverlayCoords(p_117352_, 0.0F),
-						1.0F, 1.0F, 1.0F, 1.0F
-					);
-			}	
+	
+		var model = this.getParentModel();
+		if (model.young) {
+			final var face = this.renderType(p_117352_);
+			if (face == null)
+				return;
+			
+			var whiteOverlay = CreeperGirlClientHelper.getWhiteOverlayProgress(p_117352_, p_117353_);
+			model.setAllInvisibleLessHead();				
+			model.renderToBuffer(
+					poseStack, 
+					p_117350_.getBuffer(face), 
+					p_117351_, 
+					LivingEntityRenderer.getOverlayCoords(p_117352_, whiteOverlay),
+					1.0F, 1.0F, 1.0F, whiteOverlay
+				);
+			model.setAllVisible(true);
+		}
+		else {
+			super.render(poseStack, p_117350_, p_117351_, p_117352_, p_117353_, p_117354_, p_117355_, p_117356_, p_117357_, p_117358_);
 		}
 	}
 	
-	public abstract @Nullable RenderType renderType(E creeperGirl);
+	@Override
+	protected float getWhiteOverlayProgress(E entity, float partialTicks) {
+		return CreeperGirlClientHelper.getWhiteOverlayProgress(entity, partialTicks);
+	}
 }

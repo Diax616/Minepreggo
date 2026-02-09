@@ -115,7 +115,7 @@ public class TamableMonsterCreeperGirl extends AbstractTamableMonsterCreeperGirl
 	
 	
 	public static AttributeSupplier.Builder createAttributes() {
-		return HumanoidCreeperHelper.createBasicAttributes(0.26);
+		return MonsterCreeperHelper.createTamableAttributes(0.27);
 	}
 	
 	public static<E extends AbstractTamablePregnantCreeperGirl> void onPostPartum(E source) {

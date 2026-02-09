@@ -9,11 +9,15 @@ import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.IMonsterPregnantPreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.IHostilPregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantHumanoidCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantMonsterCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.HumanoidCreeperHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.MonsterCreeperHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractTamablePregnantMonsterEnderWoman;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.MonsterEnderWomanHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancyData;
 import dev.dixmk.minepreggo.world.pregnancy.MapPregnancyPhase;
@@ -72,6 +76,18 @@ public class BabyDuplication extends MobEffect {
     				PreggoMobHelper.copyAllData(creeperGirl, newCreeperGirl);
     				creeperGirl.discard();
         		}
+        		else if (target instanceof AbstractTamablePregnantMonsterCreeperGirl creeperGirl && target.level() instanceof ServerLevel serverLevel) {
+        			var nextPhase = MonsterCreeperHelper.getEntityType(newPhase);   			
+        			var newCreeperGirl = (AbstractTamablePregnantMonsterCreeperGirl) nextPhase.spawn(serverLevel, BlockPos.containing(target.getX(), target.getY(), target.getZ()), MobSpawnType.CONVERSION);
+    				PreggoMobHelper.copyAllData(creeperGirl, newCreeperGirl);
+    				creeperGirl.discard();
+        		}
+        		else if (target instanceof AbstractTamablePregnantMonsterEnderWoman enderWoman && target.level() instanceof ServerLevel serverLevel) {
+        			var nextPhase = MonsterEnderWomanHelper.getEntityType(newPhase);   			
+        			var newEnderWoman = (AbstractTamablePregnantMonsterEnderWoman) nextPhase.spawn(serverLevel, BlockPos.containing(target.getX(), target.getY(), target.getZ()), MobSpawnType.CONVERSION);
+    				PreggoMobHelper.copyAllData(enderWoman, newEnderWoman);
+    				enderWoman.discard();
+        		}
         	} 	
         }  
         else if (target instanceof ServerPlayer player) {
@@ -94,7 +110,7 @@ public class BabyDuplication extends MobEffect {
                 })
             );
         }
-        else if (target instanceof IMonsterPregnantPreggoMob monsterPregnantPreggoMob) {
+        else if (target instanceof IHostilPregnantPreggoMob monsterPregnantPreggoMob) {
         	monsterPregnantPreggoMob.getPregnancyData().incrementNumOfBabies(getExtraBabiesByAmplifier(amplifier));
         	PregnancySystemHelper.tornWomb(target);
         }

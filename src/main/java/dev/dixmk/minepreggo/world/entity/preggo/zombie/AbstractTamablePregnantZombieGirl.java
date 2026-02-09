@@ -272,11 +272,10 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 	public void die(DamageSource source) {
 		super.die(source);		
 		if (!this.level().isClientSide) {
-			boolean bellyBurst = source.is(MinepreggoModDamageSources.BELLY_BURST);
-			if (bellyBurst) {
+			if (source.is(MinepreggoModDamageSources.BELLY_BURST)) {
 				PregnancySystemHelper.deathByBellyBurst(this, (ServerLevel) this.level());
 			}
-			PreggoMobHelper.spawnBabyAndFetusZombies(this, bellyBurst);
+			PreggoMobHelper.spawnBabyAndFetus(this);
 		}
 	}
 	

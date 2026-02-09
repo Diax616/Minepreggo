@@ -2,10 +2,13 @@ package dev.dixmk.minepreggo.world.entity.preggo.creeper;
 
 import java.util.EnumSet;
 
+import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.Inventory;
 import dev.dixmk.minepreggo.world.entity.preggo.InventorySlot;
 import dev.dixmk.minepreggo.world.entity.preggo.InventorySlotMapper;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -23,6 +26,14 @@ public class MonsterCreeperHelper {
 	static AttributeSupplier.Builder createBasicAttributes(double movementSpeed) {
 		return Mob.createMobAttributes()
 				.add(Attributes.MAX_HEALTH, 26D)
+				.add(Attributes.ATTACK_DAMAGE, 2D)
+				.add(Attributes.FOLLOW_RANGE, 35D)
+				.add(Attributes.MOVEMENT_SPEED, movementSpeed);
+	}
+	
+	static AttributeSupplier.Builder createTamableAttributes(double movementSpeed) {
+		return Mob.createMobAttributes()
+				.add(Attributes.MAX_HEALTH, 32D)
 				.add(Attributes.ATTACK_DAMAGE, 2D)
 				.add(Attributes.FOLLOW_RANGE, 35D)
 				.add(Attributes.MOVEMENT_SPEED, movementSpeed);
@@ -73,5 +84,50 @@ public class MonsterCreeperHelper {
 	
 	static Inventory createInventory() {
 		return new Inventory(EnumSet.of(InventorySlot.HEAD, InventorySlot.MOUTH), 6);
+	}
+	
+	public static EntityType<? extends AbstractTamablePregnantMonsterCreeperGirl> getEntityType(PregnancyPhase phase) {	
+		switch (phase) {
+			case P0 -> MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL_P0.get();
+			case P1 -> MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL_P1.get();
+			case P2 -> MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL_P2.get();
+			case P3 -> MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL_P3.get();
+			case P4 -> MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL_P4.get();
+			case P5 -> MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL_P5.get();
+			case P6 -> MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL_P6.get();
+			case P7 -> MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL_P7.get();	
+			case P8 -> MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL_P8.get();	
+		}
+		throw new IllegalArgumentException("Unexpected value: " + phase);	
+	}
+	
+	static AbstractCreeperGirl.ExplosionData getExplosionValuesByPregnancyPhase(PregnancyPhase pregnancyPhase) {
+		int explosionIntensity = AbstractCreeperGirl.DEFAULT_EXPLOSION_DATA.explosionItensity();
+		int explosionRadius = AbstractCreeperGirl.DEFAULT_EXPLOSION_DATA.explosionRadius();
+		int maxSwell = AbstractCreeperGirl.DEFAULT_EXPLOSION_DATA.maxSwell();
+
+		switch (pregnancyPhase) {
+			case P2, P3 -> explosionRadius += 1;		
+			case P4, P5 -> {
+				explosionIntensity += 2;
+				explosionRadius += 2;
+				maxSwell += 3;
+			}
+			case P6, P7 -> {
+				explosionIntensity += 3;
+				explosionRadius += 3;
+				maxSwell += 6;
+			}
+			case P8 -> {
+				explosionIntensity += 4;
+				explosionRadius += 4;
+				maxSwell += 9;
+			}
+			default -> {
+				break;
+			}
+		}
+
+		return new AbstractCreeperGirl.ExplosionData(explosionIntensity, explosionRadius, maxSwell);
 	}
 }

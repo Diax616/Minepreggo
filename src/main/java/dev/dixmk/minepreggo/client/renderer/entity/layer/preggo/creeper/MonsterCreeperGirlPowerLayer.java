@@ -32,7 +32,6 @@ public class MonsterCreeperGirlPowerLayer
 		if (p_116973_.isPowered()) {
 			p_116970_.pushPose();
 			p_116970_.scale(1.05F, 1.05F, 1.05F);
-			p_116970_.translate(0.0D, -0.0175D, 0.0D);
 			super.render(p_116970_, p_116971_, p_116972_, p_116973_, p_116974_, p_116975_, p_116976_, p_116977_, p_116978_, p_116979_);
 			p_116970_.popPose();
 		}

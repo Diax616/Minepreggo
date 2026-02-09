@@ -365,7 +365,7 @@ public class PlayerHelper {
 	}
 	
 	public static boolean isValidCravingBySpecies(Species species) {
-		return species == Species.HUMAN || species == Species.ZOMBIE || species == Species.CREEPER;
+		return species == Species.HUMAN || species == Species.ZOMBIE || species == Species.CREEPER || species == Species.ENDER;
 	}	
 	// PREGNANCY SYSTEM - END
 	

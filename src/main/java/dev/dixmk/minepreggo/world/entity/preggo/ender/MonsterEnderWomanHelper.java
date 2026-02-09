@@ -6,9 +6,12 @@ import java.util.function.Predicate;
 
 import org.apache.commons.lang3.function.ToBooleanBiFunction;
 
+import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.world.entity.preggo.Inventory;
 import dev.dixmk.minepreggo.world.entity.preggo.InventorySlot;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -66,6 +69,10 @@ public class MonsterEnderWomanHelper {
 		return (enderWoman.isVehicle() && enderWoman.getFirstPassenger() instanceof LivingEntity passenger && passenger.getUUID().equals(owner.getUUID())) || enderWoman.distanceToSqr(owner) <= 4.0D;
 	}
 	
+	static boolean canTeleportWithOwnerBeingPregnant(AbstractTamablePregnantEnderWoman enderWoman) {
+		return !enderWoman.getPregnancyData().isIncapacitated() && canTeleportWithOwner(enderWoman);
+	}
+	
 	static double getMyRidingOffset() {
 		return -0.35D;
 	}
@@ -116,4 +123,20 @@ public class MonsterEnderWomanHelper {
 	private static boolean canTravelBeingPregnant(AbstractTamablePregnantEnderWoman enderWoman) {
 		return canTravel(enderWoman) && !enderWoman.getPregnancyData().isIncapacitated();
 	}
+	
+	public static EntityType<? extends AbstractTamablePregnantMonsterEnderWoman> getEntityType(PregnancyPhase phase) {	
+		switch (phase) {
+			case P0 -> MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P0.get();
+			case P1 -> MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P1.get();
+			case P2 -> MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P2.get();
+			case P3 -> MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P3.get();
+			case P4 -> MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P4.get();
+			case P5 -> MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P5.get();
+			case P6 -> MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P6.get();
+			case P7 -> MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P7.get();	
+			case P8 -> MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P8.get();	
+		}
+		throw new IllegalArgumentException("Unexpected value: " + phase);	
+	}
 }
+

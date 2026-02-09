@@ -9,7 +9,7 @@ import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
-import dev.dixmk.minepreggo.world.entity.preggo.zombie.MonsterZombieGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.zombie.HostilZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirl;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
@@ -40,7 +40,7 @@ public class ZombieImpregnation extends Impregnantion {
 			final double y = entity.getY();	
 			final double z = entity.getZ();
 			
-			if (entity instanceof MonsterZombieGirl zombieGirl && !zombieGirl.isBaby()) {
+			if (entity instanceof HostilZombieGirl zombieGirl && !zombieGirl.isBaby()) {
 				var nextStage = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
 				initPregnancy(zombieGirl, nextStage, amplifier);
 			}

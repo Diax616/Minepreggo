@@ -1,8 +1,11 @@
 package dev.dixmk.minepreggo.client.renderer.preggo.creeper;
 
+import javax.annotation.Nullable;
+
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractMonsterCreeperGirlModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.IllMonsterCreeperGirlModel;
+import dev.dixmk.minepreggo.client.renderer.entity.layer.ExpressiveFaceLayer;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.IllMonsterCreeperGirl;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -27,5 +30,10 @@ public class IllMonsterCreeperGirlRenderer extends AbstractHostilMonsterCreeperG
 	@Override
 	public ResourceLocation getTextureLocation(IllMonsterCreeperGirl p_115812_) {
 		return ILL_CREEPER_GIRL;
+	}
+	
+	@Override
+	protected @Nullable ExpressiveFaceLayer<IllMonsterCreeperGirl, IllMonsterCreeperGirlModel> createExpressiveFaceLayer() {
+		return null;
 	}
 }

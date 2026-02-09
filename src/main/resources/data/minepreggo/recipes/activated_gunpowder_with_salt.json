@@ -7,14 +7,14 @@
       "item": "minepreggo:activated_gunpowder"
     },
     {
-      "item": "minepreggo:activated_gunpowder"
-    },
-    {
       "item": "minepreggo:salt"
-    }
+    },
+	{
+	  "item": "minepreggo:salt"
+	}
   ],
   "result": {
     "item": "minepreggo:activated_gunpowder_with_salt",
-    "count": 2
+    "count": 1
   }
 }

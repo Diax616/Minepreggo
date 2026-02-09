@@ -7,15 +7,14 @@ import dev.dixmk.minepreggo.world.entity.BellyPartFactory;
 import dev.dixmk.minepreggo.world.entity.BellyPartManager;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
-import dev.dixmk.minepreggo.world.entity.preggo.IMonsterPreggoMobPregnancyData;
-import dev.dixmk.minepreggo.world.entity.preggo.IMonsterPregnantPreggoMob;
-import dev.dixmk.minepreggo.world.entity.preggo.MonsterPregnantPreggoMobDataImpl;
+import dev.dixmk.minepreggo.world.entity.preggo.IHostilPreggoMobPregnancyData;
+import dev.dixmk.minepreggo.world.entity.preggo.IHostilPregnantPreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.HostilPregnantPreggoMobDataImpl;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
@@ -31,22 +30,24 @@ import net.minecraft.world.entity.animal.Ocelot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
-public abstract class AbstractHostilPregnantCreeperGirl extends AbstractHostilCreeperGirl implements IMonsterPregnantPreggoMob {
+public abstract class AbstractHostilPregnantCreeperGirl extends AbstractHostilCreeperGirl implements IHostilPregnantPreggoMob {
 
-	private static final MonsterPregnantPreggoMobDataImpl.DataAccessor<AbstractHostilPregnantCreeperGirl> DATA_ACCESOR = new MonsterPregnantPreggoMobDataImpl.DataAccessor<>(AbstractHostilPregnantCreeperGirl.class);
-	private final IMonsterPreggoMobPregnancyData pregnancyDataImpl;
+	private static final HostilPregnantPreggoMobDataImpl.DataAccessor<AbstractHostilPregnantCreeperGirl> DATA_ACCESOR = new HostilPregnantPreggoMobDataImpl.DataAccessor<>(AbstractHostilPregnantCreeperGirl.class);
+	private final IHostilPreggoMobPregnancyData pregnancyDataImpl;
 		
 	protected AbstractHostilPregnantCreeperGirl(EntityType<? extends AbstractHostilCreeperGirl> p_21803_, Level p_21804_, Creature typeOfCreature, PregnancyPhase currentPregnancyStage) {
 		super(p_21803_, p_21804_, typeOfCreature);
-		pregnancyDataImpl = new MonsterPregnantPreggoMobDataImpl<>(DATA_ACCESOR, this, currentPregnancyStage);
-		this.setExplosionByCurrentPregnancyStage();	
+		pregnancyDataImpl = new HostilPregnantPreggoMobDataImpl<>(DATA_ACCESOR, this, currentPregnancyStage);
+		setExplosionData(updateExplosionByPregnancyPhase(currentPregnancyStage));
 	}
 	
+	protected abstract ExplosionData updateExplosionByPregnancyPhase(PregnancyPhase pregnancyPhase);
+	
 	@Override
-	public IMonsterPreggoMobPregnancyData getPregnancyData() {
+	public IHostilPreggoMobPregnancyData getPregnancyData() {
 		return pregnancyDataImpl;
 	}
-
+	
 	@Override
 	protected void defineSynchedData() {
 		super.defineSynchedData();
@@ -71,36 +72,10 @@ public abstract class AbstractHostilPregnantCreeperGirl extends AbstractHostilCr
 	public void die(DamageSource source) {
 		super.die(source);		
 		if (!this.level().isClientSide) {
-			boolean bellyBurst = source.is(MinepreggoModDamageSources.BELLY_BURST);
-			if (bellyBurst) {
+			if (source.is(MinepreggoModDamageSources.BELLY_BURST)) {
 				PregnancySystemHelper.deathByBellyBurst(this, (ServerLevel) this.level());
 			}
-			PreggoMobHelper.spawnBabyAndFetusCreepers(this);
-		}
-	}
-	
-	@Override
-	public SoundEvent getDeathSound() {
-		return MinepreggoModSounds.PREGNANT_PREGGO_MOB_DEATH.get();
-	}
-	
-	protected void setExplosionByCurrentPregnancyStage() {	
-		final var currentPregnancyStage = pregnancyDataImpl.getCurrentPregnancyPhase();
-		
-		if (currentPregnancyStage == PregnancyPhase.P2
-				|| currentPregnancyStage == PregnancyPhase.P3) {
-			++this.explosionRadius;
-		}
-		else if (currentPregnancyStage == PregnancyPhase.P4
-				|| currentPregnancyStage == PregnancyPhase.P5
-				|| currentPregnancyStage == PregnancyPhase.P6) {
-			++this.explosionItensity;
-			++this.explosionRadius;
-		}
-		else if (currentPregnancyStage == PregnancyPhase.P7
-				|| currentPregnancyStage == PregnancyPhase.P8) {
-			this.explosionItensity += 2;
-			this.explosionRadius += 2;
+			PreggoMobHelper.spawnBabyAndFetus(this);
 		}
 	}
 	
@@ -132,7 +107,7 @@ public abstract class AbstractHostilPregnantCreeperGirl extends AbstractHostilCr
 
       if (pregnancyDataImpl.isIncapacitated()) {   	  
     	  final var timer = pregnancyDataImpl.getPregnancyPainTimer();
-    	  if (timer > 120) {
+    	  if (timer > pregnancyDataImpl.getIncapacitatedCooldown()) {
     		  pregnancyDataImpl.setPregnancyPainTimer(0);
     		  pregnancyDataImpl.setPregnancyPain(false);
     	  }

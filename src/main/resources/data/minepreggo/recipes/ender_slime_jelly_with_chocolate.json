@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minepreggo:ender_slime_jelly"
+    },
+    {
+      "item": "minepreggo:chocolate_bar"
+    }
+  ],
+  "result": {
+    "item": "minepreggo:ender_slime_jelly_with_chocolate",
+    "count": 1
+  }
+}

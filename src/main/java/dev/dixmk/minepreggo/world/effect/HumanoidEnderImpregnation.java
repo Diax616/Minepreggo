@@ -30,6 +30,7 @@ public class HumanoidEnderImpregnation extends Impregnantion {
 				MinepreggoMod.LOGGER.info("Player {} could not become pregnant.", serverPlayer.getName().getString());
 			}							
 		}
+
 		else {
 			entity.hurt(new DamageSource(entity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.GENERIC)), 1);
 		}

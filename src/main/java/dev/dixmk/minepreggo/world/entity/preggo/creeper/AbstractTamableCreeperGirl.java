@@ -1,6 +1,7 @@
 package dev.dixmk.minepreggo.world.entity.preggo.creeper;
 
 import java.util.Set;
+import java.util.UUID;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -22,21 +23,19 @@ import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlMenuHelper
 import dev.dixmk.minepreggo.world.pregnancy.IFemaleEntity;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
@@ -61,7 +60,16 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 
 public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl implements ITamablePreggoMob<IFemaleEntity> {
-    private static final TamablePreggoMobDataImpl.DataAccessor<AbstractTamableCreeperGirl> DATA_HOLDER = new TamablePreggoMobDataImpl.DataAccessor<>(AbstractTamableCreeperGirl.class);
+	private static final UUID SPEED_MOVEMENT_MODIFIER_POWERED_UUID = UUID.fromString("fb757759-2912-4bb0-b0bf-ddc3c9ce14ec");
+	private static final AttributeModifier SPEED_MOVEMENT_MODIFIER_POWERED = new AttributeModifier(SPEED_MOVEMENT_MODIFIER_POWERED_UUID, "Powered speed boost", 0.2D, AttributeModifier.Operation.MULTIPLY_BASE);
+	private static final UUID MAX_HEALTH_MODIFIER_POWERED_UUID = UUID.fromString("d94dbd2e-ddcb-43c8-9613-9b3c1f3b21c4");
+	private static final AttributeModifier MAX_HEALTH_MODIFIER_POWERED = new AttributeModifier(MAX_HEALTH_MODIFIER_POWERED_UUID, "Powered max health boost", 0.25D, AttributeModifier.Operation.MULTIPLY_BASE);
+	private static final UUID ARMOR_MODIFIER_POWERED_UUID = UUID.fromString("d8d59260-a23f-4045-847c-d981e8c1bf6a");
+	private static final AttributeModifier ARMOR_MODIFIER_POWERED = new AttributeModifier(ARMOR_MODIFIER_POWERED_UUID, "Powered armor boost", 2D, AttributeModifier.Operation.ADDITION);
+	private static final UUID ATTACK_DAMAGE_MODIFIER_POWERED_UUID = UUID.fromString("80923b32-eb56-4fff-8364-c49f27b0e515");
+	private static final AttributeModifier ATTACK_DAMAGE_MODIFIER_POWERED = new AttributeModifier(ATTACK_DAMAGE_MODIFIER_POWERED_UUID, "Powered attack damage boost", 3D, AttributeModifier.Operation.ADDITION);
+	
+	private static final TamablePreggoMobDataImpl.DataAccessor<AbstractTamableCreeperGirl> DATA_HOLDER = new TamablePreggoMobDataImpl.DataAccessor<>(AbstractTamableCreeperGirl.class);
 	   
 	protected final ITamablePreggoMobSystem preggoMobSystem;
 	
@@ -109,6 +117,8 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 		compound.put("InventoryCustom", inventory.getHandler().serializeNBT());
 		compound.put("defaultFemaleEntityImpl", this.femaleEntityData.serializeNBT());
 		compound.put("TamableData", tamablePreggoMobData.serializeNBT());
+		compound.putBoolean("breakBlocks", this.breakBlocks);
+		compound.putInt("poweredTimer", this.poweredTimer);
 	}	
 	
 	@Override
@@ -116,12 +126,10 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 		super.readAdditionalSaveData(compound);
 		if (compound.get("InventoryCustom") instanceof CompoundTag inventoryTag)
 			inventory.getHandler().deserializeNBT(inventoryTag);		
-		if (compound.contains("defaultFemaleEntityImpl", Tag.TAG_COMPOUND)) {
-			femaleEntityData.deserializeNBT(compound.getCompound("defaultFemaleEntityImpl"));
-		}
-		if (compound.contains("TamableData", Tag.TAG_COMPOUND)) {
-			tamablePreggoMobData.deserializeNBT(compound.getCompound("TamableData"));
-		}
+		femaleEntityData.deserializeNBT(compound.getCompound("defaultFemaleEntityImpl"));
+		tamablePreggoMobData.deserializeNBT(compound.getCompound("TamableData"));
+		this.breakBlocks = compound.getBoolean("breakBlocks");
+		this.poweredTimer = compound.getInt("poweredTimer");
 	}
 	
 	@Override
@@ -326,6 +334,65 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 	}
 	
 	@Override
+	protected void setPower(boolean power) {
+		super.setPower(power);
+		if (!power) {
+			this.poweredTimer = 0;	
+			this.removePoweredAttributeModifier();
+		} else {
+			this.addPoweredAttributeModifier();
+		}
+	}
+	
+	protected void removePoweredAttributeModifier() {
+		var attribute = this.getAttribute(Attributes.MOVEMENT_SPEED);
+		 if (attribute != null && attribute.hasModifier(SPEED_MOVEMENT_MODIFIER_POWERED)) {
+			 attribute.removeModifier(SPEED_MOVEMENT_MODIFIER_POWERED);
+		 }
+		 attribute = this.getAttribute(Attributes.MAX_HEALTH);
+		 if (attribute != null && attribute.hasModifier(MAX_HEALTH_MODIFIER_POWERED)) {
+			 attribute.removeModifier(MAX_HEALTH_MODIFIER_POWERED);
+		 }
+		 attribute = this.getAttribute(Attributes.ARMOR);
+		 if (attribute != null && attribute.hasModifier(ARMOR_MODIFIER_POWERED)) {
+			 attribute.removeModifier(ARMOR_MODIFIER_POWERED);
+		 }
+		 attribute = this.getAttribute(Attributes.ATTACK_DAMAGE);
+		 if (attribute != null && attribute.hasModifier(ATTACK_DAMAGE_MODIFIER_POWERED)) {
+			 attribute.removeModifier(ATTACK_DAMAGE_MODIFIER_POWERED);
+		 }
+		 
+		 this.setHealth(this.getHealth() - this.getMaxHealth() * 0.5F); 
+		 if (this.getHealth() > this.getMaxHealth()) {
+			 this.setHealth(this.getMaxHealth());
+		 }
+	}
+	
+	protected void addPoweredAttributeModifier() {
+		var attribute = this.getAttribute(Attributes.MOVEMENT_SPEED);
+		if (attribute != null && !attribute.hasModifier(SPEED_MOVEMENT_MODIFIER_POWERED)) {
+			attribute.addPermanentModifier(SPEED_MOVEMENT_MODIFIER_POWERED);
+		}
+		 attribute = this.getAttribute(Attributes.MAX_HEALTH);
+		 if (attribute != null && !attribute.hasModifier(MAX_HEALTH_MODIFIER_POWERED)) {
+			 attribute.addPermanentModifier(MAX_HEALTH_MODIFIER_POWERED);
+		 }
+		 attribute = this.getAttribute(Attributes.ARMOR);
+		 if (attribute != null && !attribute.hasModifier(ARMOR_MODIFIER_POWERED)) {
+			 attribute.addPermanentModifier(ARMOR_MODIFIER_POWERED);
+		 }
+		 var attributeAttackDamage = this.getAttribute(Attributes.ATTACK_DAMAGE);
+		 if (attributeAttackDamage != null && !attributeAttackDamage.hasModifier(ATTACK_DAMAGE_MODIFIER_POWERED)) {
+			 attributeAttackDamage.addPermanentModifier(ATTACK_DAMAGE_MODIFIER_POWERED);
+		 }
+		 	 
+		 this.setHealth(this.getHealth() + this.getMaxHealth() * 0.5F);
+		 if (this.getHealth() > this.getMaxHealth()) {
+			 this.setHealth(this.getMaxHealth());
+		 }
+	}
+	
+	@Override
 	public void tick() {
 		super.tick();
 			
@@ -334,7 +401,7 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 		preggoMobSystem.cinematicTick();
 				
 		if (this.isPowered()) {		
-			if (this.poweredTimer > 24000) {
+			if (this.poweredTimer > 48000) {
 				this.poweredTimer = 0;
 				this.setPower(false);
 			}
@@ -343,17 +410,7 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 			}
 		}
 	}
-	
-	@Override
-	public void thunderHit(ServerLevel p_32286_, LightningBolt p_32287_) {
-		super.thunderHit(p_32286_, p_32287_);
-		if (this.isTame() && !this.level().isClientSide()) {
-			this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 24000, 0, false, true));
-			this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 24000, 0, false, true));
-			this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 24000, 0, false, true));
-		}
-	}
-	
+
 	@Override
 	protected void pickUpItem(ItemEntity p_21471_) {	
 		if (this.getTypeOfCreature() != Creature.HUMANOID) return;

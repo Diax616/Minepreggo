@@ -13,7 +13,7 @@ import net.minecraft.world.level.Level;
 public class RefinedChorusShardsItem extends Item {
 
 	public RefinedChorusShardsItem() {
-		super(new Item.Properties().stacksTo(64).rarity(Rarity.UNCOMMON).food((new FoodProperties.Builder()).nutrition(6).saturationMod(0.3f).build()));
+		super(new Item.Properties().stacksTo(64).rarity(Rarity.UNCOMMON).food((new FoodProperties.Builder()).nutrition(7).saturationMod(0.3f).build()));
 	}
 
 	@Override
@@ -25,7 +25,7 @@ public class RefinedChorusShardsItem extends Item {
 	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {	
 		if (!player.hasEffect(MinepreggoModMobEffects.FULL_OF_ENDERS.get())) {
 			return InteractionResultHolder.fail(player.getItemInHand(hand));
-		}
+		}	
 		return super.use(level, player, hand);
 	}
 }

@@ -10,6 +10,7 @@ import dev.dixmk.minepreggo.client.animation.preggo.MonsterEnderWomanAnimation;
 import dev.dixmk.minepreggo.client.animation.preggo.FetalMovementIntensity;
 import dev.dixmk.minepreggo.client.model.entity.preggo.PregnantPreggoMobAnimator;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractEnderWoman;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractHostilPregnantEnderWoman;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractTamableEnderWoman;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractTamablePregnantEnderWoman;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
@@ -69,6 +70,35 @@ public abstract class MonsterEnderWomanAnimator<T extends AbstractEnderWoman> ex
 		protected void animatePregnancyPain(E enderWoman, float ageInTicks) {}
 	}
 	
+    @OnlyIn(Dist.CLIENT)
+	public static class HostilPregnantEnderWomanAnimator<E extends AbstractHostilPregnantEnderWoman> extends MonsterEnderWomanAnimator<E> {
+  		private final BellyInflation bellyInflation;
+  		private final @Nullable FetalMovementIntensity fetalMovementIntensity;
+  			
+    	public HostilPregnantEnderWomanAnimator(ModelPart root, BellyInflation bellyInflation, @Nullable FetalMovementIntensity fetalMovementIntensity) {
+			super(root);
+			this.bellyInflation = bellyInflation;
+			this.fetalMovementIntensity = fetalMovementIntensity;
+		}
+
+  		@Override
+  		protected void animateBelly(E enderWoman, float ageInTicks) {
+  			if (fetalMovementIntensity != null && enderWoman.getPregnancyData().isIncapacitated()) {
+  				this.animate(enderWoman.loopAnimationState, fetalMovementIntensity.animation, ageInTicks);		    
+  			}
+  			else {
+  				this.animate(enderWoman.loopAnimationState, bellyInflation.animation, ageInTicks);		    
+  			}	
+  		}
+
+  		@Override
+  		protected void animatePregnancyPain(E creeperGirl, float ageInTicks) {
+  			if (creeperGirl.getPregnancyData().isIncapacitated()) {
+  			    this.animate(creeperGirl.loopAnimationState, MonsterEnderWomanAnimation.CONTRACTION, ageInTicks);	
+  			}
+  		}
+	}
+    
     @OnlyIn(Dist.CLIENT)
 	public static class TamableMonsterEnderWomanAnimator<E extends AbstractTamableEnderWoman> extends MonsterEnderWomanAnimator<E> {
 		public TamableMonsterEnderWomanAnimator(ModelPart root) {

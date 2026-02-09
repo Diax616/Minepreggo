@@ -27,7 +27,7 @@ import dev.dixmk.minepreggo.world.entity.BellyPartManager;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
-import dev.dixmk.minepreggo.world.entity.preggo.IMonsterPregnantPreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.IHostilPregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.inventory.preggo.PlayerJoinsWorldMenu;
@@ -869,7 +869,7 @@ public class PlayerEventHandler {
 				);
 			}
 			else if ((entity instanceof ITamablePregnantPreggoMob pregnantTamableMob && !PregnancySystemHelper.canMountEntity(pregnantTamableMob.getPregnancyData().getCurrentPregnancyPhase()))
-					|| entity instanceof IMonsterPregnantPreggoMob pregnantMonsterMob && !PregnancySystemHelper.canMountEntity(pregnantMonsterMob.getPregnancyData().getCurrentPregnancyPhase())) {
+					|| entity instanceof IHostilPregnantPreggoMob pregnantMonsterMob && !PregnancySystemHelper.canMountEntity(pregnantMonsterMob.getPregnancyData().getCurrentPregnancyPhase())) {
 				event.setCanceled(true);
 			}
 		}

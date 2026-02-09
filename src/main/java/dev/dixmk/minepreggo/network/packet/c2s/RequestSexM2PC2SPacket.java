@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractTamableEnderWoman;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamableZombieGirl;
 import dev.dixmk.minepreggo.world.inventory.preggo.RequestSexM2PMenu;
 import dev.dixmk.minepreggo.world.pregnancy.SexHelper;
@@ -40,7 +41,10 @@ public record RequestSexM2PC2SPacket(int preggoMobId, int playerId) {
 					}
 					else if (source instanceof AbstractTamableCreeperGirl creeperGirl && SexHelper.canFuck(target, creeperGirl)) {
 						RequestSexM2PMenu.create(target, creeperGirl);
-					}			
+					}	
+					else if (source instanceof AbstractTamableEnderWoman enderWoman && SexHelper.canFuck(target, enderWoman)) {
+						RequestSexM2PMenu.create(target, enderWoman);
+					}	
 				}
 			}
 		});

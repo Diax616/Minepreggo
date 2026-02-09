@@ -25,7 +25,7 @@ import net.minecraft.server.level.ServerLevel;
 
 import javax.annotation.Nullable;
 
-public class IllZombieGirl extends AbstractMonsterZombieGirl implements Ill {
+public class IllZombieGirl extends AbstractHostilZombieGirl implements Ill {
 	
 	public IllZombieGirl(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.ILL_ZOMBIE_GIRL.get(), world);
@@ -120,6 +120,6 @@ public class IllZombieGirl extends AbstractMonsterZombieGirl implements Ill {
 	}
 	
 	public static AttributeSupplier.Builder createAttributes() {
-		return AbstractMonsterZombieGirl.getBasicAttributes(0.235);
+		return AbstractHostilZombieGirl.getBasicAttributes(0.235);
 	}
 }

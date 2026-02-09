@@ -26,11 +26,19 @@ public class HumanoidCreeperHelper {
 	
 	static AttributeSupplier.Builder createBasicAttributes(double movementSpeed) {
 		return Mob.createMobAttributes()
-				.add(Attributes.MAX_HEALTH, 22D)
+				.add(Attributes.MAX_HEALTH, 20D)
 				.add(Attributes.ATTACK_DAMAGE, 2D)
 				.add(Attributes.FOLLOW_RANGE, 35D)
 				.add(Attributes.MOVEMENT_SPEED, movementSpeed);
 	}
+	
+	static AttributeSupplier.Builder createTamableAttributes(double movementSpeed) {
+		return Mob.createMobAttributes()
+				.add(Attributes.MAX_HEALTH, 22D)
+				.add(Attributes.ATTACK_DAMAGE, 2D)
+				.add(Attributes.FOLLOW_RANGE, 35D)
+				.add(Attributes.MOVEMENT_SPEED, movementSpeed);
+	} 
 	
 	public static EntityType<? extends AbstractTamablePregnantHumanoidCreeperGirl> getEntityType(PregnancyPhase phase) {	
 		switch (phase) {
@@ -121,5 +129,30 @@ public class HumanoidCreeperHelper {
 				&& !creeperGirl.getPregnancyData().isIncapacitated();
 			}
 		});
+	}
+	
+	static AbstractCreeperGirl.ExplosionData getExplosionValuesByPregnancyPhase(PregnancyPhase pregnancyPhase) {
+		int explosionIntensity = AbstractCreeperGirl.DEFAULT_EXPLOSION_DATA.explosionItensity();
+		int explosionRadius = AbstractCreeperGirl.DEFAULT_EXPLOSION_DATA.explosionRadius();
+		int maxSwell = AbstractCreeperGirl.DEFAULT_EXPLOSION_DATA.maxSwell();
+	
+		switch (pregnancyPhase) {
+			case P3, P4 -> explosionRadius++;
+			case P5, P6, P7 -> {
+				explosionIntensity++;
+				explosionRadius++;
+				maxSwell += 6;
+			}
+			case P8 -> {
+				explosionIntensity += 2;
+				explosionRadius += 2;
+				maxSwell += 12;
+			}
+			default -> {
+				break;
+			}
+		}
+		
+		return new AbstractCreeperGirl.ExplosionData(explosionIntensity, explosionRadius, maxSwell);
 	}
 }

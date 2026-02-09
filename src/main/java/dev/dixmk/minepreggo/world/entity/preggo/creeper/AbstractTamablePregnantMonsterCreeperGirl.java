@@ -27,4 +27,9 @@ public abstract class AbstractTamablePregnantMonsterCreeperGirl extends Abstract
 	public String getSimpleName() {
 		return MonsterCreeperHelper.SIMPLE_NAME;
 	}
+	
+	@Override
+	protected ExplosionData updateExplosionByPregnancyPhase(PregnancyPhase pregnancyPhase) {
+		return MonsterCreeperHelper.getExplosionValuesByPregnancyPhase(pregnancyPhase);
+	}
 }

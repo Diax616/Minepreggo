@@ -8,18 +8,20 @@ import dev.dixmk.minepreggo.world.entity.preggo.creeper.IllHumanoidCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.IllMonsterCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.HostilHumanoidCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.HostilPregnantHumanoidCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.HostilPregnantMonsterCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.HostilMonsterCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableHumanoidCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableMonsterCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamablePregnantHumanoidCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamablePregnantMonsterCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.HostilPregnantMonsterEnderWoman;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.IllMonsterEnderWoman;
-import dev.dixmk.minepreggo.world.entity.preggo.ender.MonsterEnderWoman;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.HostilMonsterEnderWoman;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.TamableMonsterEnderWoman;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.TamablePregnantMonsterEnderWoman;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.IllZombieGirl;
-import dev.dixmk.minepreggo.world.entity.preggo.zombie.MonsterPregnantZombieGirl;
-import dev.dixmk.minepreggo.world.entity.preggo.zombie.MonsterZombieGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.zombie.HostilPregnantZombieGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.zombie.HostilZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirl;
 import net.minecraft.world.entity.Entity;
@@ -35,100 +37,181 @@ public class MinepreggoModEntities {
 	
 	public static final DeferredRegister<EntityType<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, MinepreggoMod.MODID);
 	
-	public static final RegistryObject<EntityType<MonsterZombieGirl>> MONSTER_ZOMBIE_GIRL = register("monster_zombie_girl",
-			EntityType.Builder.<MonsterZombieGirl>of(MonsterZombieGirl::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(MonsterZombieGirl::new).sized(0.6f, 1.8f));
+	public static final RegistryObject<EntityType<HostilZombieGirl>> HOSTILE_ZOMBIE_GIRL = register("hostile_zombie_girl",
+			EntityType.Builder.<HostilZombieGirl>of(HostilZombieGirl::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilZombieGirl::new).sized(0.6f, 1.8f));
 
-	public static final RegistryObject<EntityType<MonsterPregnantZombieGirl.MonsterZombieGirlP3>> MONSTER_ZOMBIE_GIRL_P3 = register("monster_zombie_girl_p3",
-			EntityType.Builder.<MonsterPregnantZombieGirl.MonsterZombieGirlP3>of(MonsterPregnantZombieGirl.MonsterZombieGirlP3::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(MonsterPregnantZombieGirl.MonsterZombieGirlP3::new).sized(0.625f, 1.8f));
+	public static final RegistryObject<EntityType<HostilPregnantZombieGirl.MonsterZombieGirlP3>> HOSTILE_ZOMBIE_GIRL_P3 = register("hostile_pregnant_zombie_girl_p3",
+			EntityType.Builder.<HostilPregnantZombieGirl.MonsterZombieGirlP3>of(HostilPregnantZombieGirl.MonsterZombieGirlP3::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilPregnantZombieGirl.MonsterZombieGirlP3::new).sized(0.625f, 1.8f));
 	
-	public static final RegistryObject<EntityType<MonsterPregnantZombieGirl.MonsterZombieGirlP5>> MONSTER_ZOMBIE_GIRL_P5 = register("monster_zombie_girl_p5",
-			EntityType.Builder.<MonsterPregnantZombieGirl.MonsterZombieGirlP5>of(MonsterPregnantZombieGirl.MonsterZombieGirlP5::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(MonsterPregnantZombieGirl.MonsterZombieGirlP5::new).sized(0.725f, 1.8f));
+	public static final RegistryObject<EntityType<HostilPregnantZombieGirl.MonsterZombieGirlP5>> HOSTILE_ZOMBIE_GIRL_P5 = register("hostile_pregnant_zombie_girl_p5",
+			EntityType.Builder.<HostilPregnantZombieGirl.MonsterZombieGirlP5>of(HostilPregnantZombieGirl.MonsterZombieGirlP5::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilPregnantZombieGirl.MonsterZombieGirlP5::new).sized(0.725f, 1.8f));
 	
-	public static final RegistryObject<EntityType<MonsterPregnantZombieGirl.MonsterZombieGirlP7>> MONSTER_ZOMBIE_GIRL_P7 = register("monster_zombie_girl_p7",
-			EntityType.Builder.<MonsterPregnantZombieGirl.MonsterZombieGirlP7>of(MonsterPregnantZombieGirl.MonsterZombieGirlP7::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(MonsterPregnantZombieGirl.MonsterZombieGirlP7::new).sized(0.8f, 1.8f));
+	public static final RegistryObject<EntityType<HostilPregnantZombieGirl.MonsterZombieGirlP7>> HOSTILE_ZOMBIE_GIRL_P7 = register("hostile_pregnant_zombie_girl_p7",
+			EntityType.Builder.<HostilPregnantZombieGirl.MonsterZombieGirlP7>of(HostilPregnantZombieGirl.MonsterZombieGirlP7::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilPregnantZombieGirl.MonsterZombieGirlP7::new).sized(0.8f, 1.8f));
 	
 	public static final RegistryObject<EntityType<TamableZombieGirl>> TAMABLE_ZOMBIE_GIRL = register("tamable_zombie_girl",
 			EntityType.Builder.<TamableZombieGirl>of(TamableZombieGirl::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamableZombieGirl::new).sized(0.6f, 1.8f));
 	
-	public static final RegistryObject<EntityType<TamablePregnantZombieGirl.TamableZombieGirlP0>> TAMABLE_ZOMBIE_GIRL_P0 = register("tamable_zombie_girl_p0",
+	public static final RegistryObject<EntityType<TamablePregnantZombieGirl.TamableZombieGirlP0>> TAMABLE_ZOMBIE_GIRL_P0 = register("tamable_pregnant_zombie_girl_p0",
 			EntityType.Builder.<TamablePregnantZombieGirl.TamableZombieGirlP0>of(TamablePregnantZombieGirl.TamableZombieGirlP0::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantZombieGirl.TamableZombieGirlP0::new).sized(0.6f, 1.8f));
 
-	public static final RegistryObject<EntityType<TamablePregnantZombieGirl.TamableZombieGirlP1>> TAMABLE_ZOMBIE_GIRL_P1 = register("tamable_zombie_girl_p1",
+	public static final RegistryObject<EntityType<TamablePregnantZombieGirl.TamableZombieGirlP1>> TAMABLE_ZOMBIE_GIRL_P1 = register("tamable_pregnant_zombie_girl_p1",
 			EntityType.Builder.<TamablePregnantZombieGirl.TamableZombieGirlP1>of(TamablePregnantZombieGirl.TamableZombieGirlP1::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantZombieGirl.TamableZombieGirlP1::new).sized(0.6f, 1.8f));
 	
-	public static final RegistryObject<EntityType<TamablePregnantZombieGirl.TamableZombieGirlP2>> TAMABLE_ZOMBIE_GIRL_P2 = register("tamable_zombie_girl_p2",
+	public static final RegistryObject<EntityType<TamablePregnantZombieGirl.TamableZombieGirlP2>> TAMABLE_ZOMBIE_GIRL_P2 = register("tamable_pregnant_zombie_girl_p2",
 			EntityType.Builder.<TamablePregnantZombieGirl.TamableZombieGirlP2>of(TamablePregnantZombieGirl.TamableZombieGirlP2::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantZombieGirl.TamableZombieGirlP2::new).sized(0.6f, 1.8f));
 	
-	public static final RegistryObject<EntityType<TamablePregnantZombieGirl.TamableZombieGirlP3>> TAMABLE_ZOMBIE_GIRL_P3 = register("tamable_zombie_girl_p3",
+	public static final RegistryObject<EntityType<TamablePregnantZombieGirl.TamableZombieGirlP3>> TAMABLE_ZOMBIE_GIRL_P3 = register("tamable_pregnant_zombie_girl_p3",
 			EntityType.Builder.<TamablePregnantZombieGirl.TamableZombieGirlP3>of(TamablePregnantZombieGirl.TamableZombieGirlP3::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantZombieGirl.TamableZombieGirlP3::new).sized(0.6f, 1.8f));
 	
-	public static final RegistryObject<EntityType<TamablePregnantZombieGirl.TamableZombieGirlP4>> TAMABLE_ZOMBIE_GIRL_P4 = register("tamable_zombie_girl_p4",
+	public static final RegistryObject<EntityType<TamablePregnantZombieGirl.TamableZombieGirlP4>> TAMABLE_ZOMBIE_GIRL_P4 = register("tamable_pregnant_zombie_girl_p4",
 			EntityType.Builder.<TamablePregnantZombieGirl.TamableZombieGirlP4>of(TamablePregnantZombieGirl.TamableZombieGirlP4::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantZombieGirl.TamableZombieGirlP4::new).sized(0.65f, 1.8f));
 	
-	public static final RegistryObject<EntityType<TamablePregnantZombieGirl.TamableZombieGirlP5>> TAMABLE_ZOMBIE_GIRL_P5 = register("tamable_zombie_girl_p5",
+	public static final RegistryObject<EntityType<TamablePregnantZombieGirl.TamableZombieGirlP5>> TAMABLE_ZOMBIE_GIRL_P5 = register("tamable_pregnant_zombie_girl_p5",
 			EntityType.Builder.<TamablePregnantZombieGirl.TamableZombieGirlP5>of(TamablePregnantZombieGirl.TamableZombieGirlP5::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantZombieGirl.TamableZombieGirlP5::new).sized(0.675f, 1.8f));
 	
-	public static final RegistryObject<EntityType<TamablePregnantZombieGirl.TamableZombieGirlP6>> TAMABLE_ZOMBIE_GIRL_P6 = register("tamable_zombie_girl_p6",
+	public static final RegistryObject<EntityType<TamablePregnantZombieGirl.TamableZombieGirlP6>> TAMABLE_ZOMBIE_GIRL_P6 = register("tamable_pregnant_zombie_girl_p6",
 			EntityType.Builder.<TamablePregnantZombieGirl.TamableZombieGirlP6>of(TamablePregnantZombieGirl.TamableZombieGirlP6::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantZombieGirl.TamableZombieGirlP6::new).sized(0.7f, 1.8f));
 	
-	public static final RegistryObject<EntityType<TamablePregnantZombieGirl.TamableZombieGirlP7>> TAMABLE_ZOMBIE_GIRL_P7 = register("tamable_zombie_girl_p7",
+	public static final RegistryObject<EntityType<TamablePregnantZombieGirl.TamableZombieGirlP7>> TAMABLE_ZOMBIE_GIRL_P7 = register("tamable_pregnant_zombie_girl_p7",
 			EntityType.Builder.<TamablePregnantZombieGirl.TamableZombieGirlP7>of(TamablePregnantZombieGirl.TamableZombieGirlP7::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantZombieGirl.TamableZombieGirlP7::new).sized(0.75f, 1.8f));
 	
-	public static final RegistryObject<EntityType<TamablePregnantZombieGirl.TamableZombieGirlP8>> TAMABLE_ZOMBIE_GIRL_P8 = register("tamable_zombie_girl_p8",
+	public static final RegistryObject<EntityType<TamablePregnantZombieGirl.TamableZombieGirlP8>> TAMABLE_ZOMBIE_GIRL_P8 = register("tamable_pregnant_zombie_girl_p8",
 			EntityType.Builder.<TamablePregnantZombieGirl.TamableZombieGirlP8>of(TamablePregnantZombieGirl.TamableZombieGirlP8::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantZombieGirl.TamableZombieGirlP8::new).sized(0.8f, 1.8f));
 	
-	public static final RegistryObject<EntityType<HostilHumanoidCreeperGirl>> MONSTER_HUMANOID_CREEPER_GIRL = register("monster_humanoid_creeper_girl",
+	public static final RegistryObject<EntityType<HostilHumanoidCreeperGirl>> HOSTILE_HUMANOID_CREEPER_GIRL = register("hostile_humanoid_creeper_girl",
 			EntityType.Builder.<HostilHumanoidCreeperGirl>of(HostilHumanoidCreeperGirl::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilHumanoidCreeperGirl::new).sized(0.6f, 1.8f));
 
-	public static final RegistryObject<EntityType<HostilPregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP3>> MONSTER_HUMANOID_CREEPER_GIRL_P3 = register("monster_humanoid_creeper_girl_p3",
+	public static final RegistryObject<EntityType<HostilPregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP3>> HOSTILE_HUMANOID_CREEPER_GIRL_P3 = register("hostile_pregnant_humanoid_creeper_girl_p3",
 			EntityType.Builder.<HostilPregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP3>of(HostilPregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP3::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilPregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP3::new).sized(0.625f, 1.8f));
 	
-	public static final RegistryObject<EntityType<HostilPregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP5>> MONSTER_HUMANOID_CREEPER_GIRL_P5 = register("monster_humanoid_creeper_girl_p5",
+	public static final RegistryObject<EntityType<HostilPregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP5>> HOSTILE_HUMANOID_CREEPER_GIRL_P5 = register("hostile_pregnant_humanoid_creeper_girl_p5",
 			EntityType.Builder.<HostilPregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP5>of(HostilPregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP5::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilPregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP5::new).sized(0.7f, 1.8f));
 	
-	public static final RegistryObject<EntityType<HostilPregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP7>> MONSTER_HUMANOID_CREEPER_GIRL_P7 = register("monster_humanoid_creeper_girl_p7",
+	public static final RegistryObject<EntityType<HostilPregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP7>> HOSTILE_HUMANOID_CREEPER_GIRL_P7 = register("hostile_pregnant_humanoid_creeper_girl_p7",
 			EntityType.Builder.<HostilPregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP7>of(HostilPregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP7::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilPregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP7::new).sized(0.775f, 1.8f));
 	
 	public static final RegistryObject<EntityType<TamableHumanoidCreeperGirl>> TAMABLE_HUMANOID_CREEPER_GIRL = register("tamable_humanoid_creeper_girl",
 			EntityType.Builder.<TamableHumanoidCreeperGirl>of(TamableHumanoidCreeperGirl::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamableHumanoidCreeperGirl::new).sized(0.6f, 1.8f));
 	
-	public static final RegistryObject<EntityType<TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP0>> TAMABLE_HUMANOID_CREEPER_GIRL_P0 = register("tamable_humanoid_creeper_girl_p0",
+	public static final RegistryObject<EntityType<TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP0>> TAMABLE_HUMANOID_CREEPER_GIRL_P0 = register("tamable_pregnant_humanoid_creeper_girl_p0",
 			EntityType.Builder.<TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP0>of(TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP0::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP0::new).sized(0.6f, 1.8f));
 	
-	public static final RegistryObject<EntityType<TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP1>> TAMABLE_HUMANOID_CREEPER_GIRL_P1 = register("tamable_humanoid_creeper_girl_p1",
+	public static final RegistryObject<EntityType<TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP1>> TAMABLE_HUMANOID_CREEPER_GIRL_P1 = register("tamable_pregnant_humanoid_creeper_girl_p1",
 			EntityType.Builder.<TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP1>of(TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP1::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP1::new).sized(0.6f, 1.8f));
 	
-	public static final RegistryObject<EntityType<TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP2>> TAMABLE_HUMANOID_CREEPER_GIRL_P2 = register("tamable_humanoid_creeper_girl_p2",
+	public static final RegistryObject<EntityType<TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP2>> TAMABLE_HUMANOID_CREEPER_GIRL_P2 = register("tamable_pregnant_humanoid_creeper_girl_p2",
 			EntityType.Builder.<TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP2>of(TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP2::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP2::new).sized(0.6f, 1.8f));
 	
-	public static final RegistryObject<EntityType<TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP3>> TAMABLE_HUMANOID_CREEPER_GIRL_P3 = register("tamable_humanoid_creeper_girl_p3",
+	public static final RegistryObject<EntityType<TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP3>> TAMABLE_HUMANOID_CREEPER_GIRL_P3 = register("tamable_pregnant_humanoid_creeper_girl_p3",
 			EntityType.Builder.<TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP3>of(TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP3::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP3::new).sized(0.6f, 1.8f));
 	
-	public static final RegistryObject<EntityType<TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP4>> TAMABLE_HUMANOID_CREEPER_GIRL_P4 = register("tamable_humanoid_creeper_girl_p4",
+	public static final RegistryObject<EntityType<TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP4>> TAMABLE_HUMANOID_CREEPER_GIRL_P4 = register("tamable_pregnant_humanoid_creeper_girl_p4",
 			EntityType.Builder.<TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP4>of(TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP4::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP4::new).sized(0.65f, 1.8f));
 	
-	public static final RegistryObject<EntityType<TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP5>> TAMABLE_HUMANOID_CREEPER_GIRL_P5 = register("tamable_humanoid_creeper_girl_p5",
+	public static final RegistryObject<EntityType<TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP5>> TAMABLE_HUMANOID_CREEPER_GIRL_P5 = register("tamable_pregnant_humanoid_creeper_girl_p5",
 			EntityType.Builder.<TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP5>of(TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP5::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP5::new).sized(0.7f, 1.8f));
 	
-	public static final RegistryObject<EntityType<TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP6>> TAMABLE_HUMANOID_CREEPER_GIRL_P6 = register("tamable_humanoid_creeper_girl_p6",
+	public static final RegistryObject<EntityType<TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP6>> TAMABLE_HUMANOID_CREEPER_GIRL_P6 = register("tamable_pregnant_humanoid_creeper_girl_p6",
 			EntityType.Builder.<TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP6>of(TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP6::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP6::new).sized(0.725f, 1.8f));
 	
-	public static final RegistryObject<EntityType<TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP7>> TAMABLE_HUMANOID_CREEPER_GIRL_P7 = register("tamable_humanoid_creeper_girl_p7",
+	public static final RegistryObject<EntityType<TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP7>> TAMABLE_HUMANOID_CREEPER_GIRL_P7 = register("tamable_pregnant_humanoid_creeper_girl_p7",
 			EntityType.Builder.<TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP7>of(TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP7::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP7::new).sized(0.775f, 1.8f));
 	
-	public static final RegistryObject<EntityType<TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP8>> TAMABLE_HUMANOID_CREEPER_GIRL_P8 = register("tamable_humanoid_creeper_girl_p8",
+	public static final RegistryObject<EntityType<TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP8>> TAMABLE_HUMANOID_CREEPER_GIRL_P8 = register("tamable_pregnant_humanoid_creeper_girl_p8",
 			EntityType.Builder.<TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP8>of(TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP8::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP8::new).sized(0.8f, 1.8f));
 	
-	public static final RegistryObject<EntityType<HostilMonsterCreeperGirl>> MONSTER_CREEPER_GIRL = register("monster_creeper_girl",
+	public static final RegistryObject<EntityType<HostilMonsterCreeperGirl>> HOSTILE_MONSTER_CREEPER_GIRL = register("hostile_monster_creeper_girl",
 			EntityType.Builder.<HostilMonsterCreeperGirl>of(HostilMonsterCreeperGirl::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilMonsterCreeperGirl::new).sized(0.6f, 1.5f));
+	
+	public static final RegistryObject<EntityType<HostilPregnantMonsterCreeperGirl.MonsterCreeperGirlP3>> HOSTILE_PREGNANT_MONSTER_CREEPER_GIRL_P3 = register("hostile_pregnant_monster_creeper_girl_p3",
+			EntityType.Builder.<HostilPregnantMonsterCreeperGirl.MonsterCreeperGirlP3>of(HostilPregnantMonsterCreeperGirl.MonsterCreeperGirlP3::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilPregnantMonsterCreeperGirl.MonsterCreeperGirlP3::new).sized(0.6f, 1.5f));
+	
+	public static final RegistryObject<EntityType<HostilPregnantMonsterCreeperGirl.MonsterCreeperGirlP5>> HOSTILE_PREGNANT_MONSTER_CREEPER_GIRL_P5 = register("hostile_pregnant_monster_creeper_girl_p5",
+			EntityType.Builder.<HostilPregnantMonsterCreeperGirl.MonsterCreeperGirlP5>of(HostilPregnantMonsterCreeperGirl.MonsterCreeperGirlP5::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilPregnantMonsterCreeperGirl.MonsterCreeperGirlP5::new).sized(0.7f, 1.5f));
+	
+	public static final RegistryObject<EntityType<HostilPregnantMonsterCreeperGirl.MonsterCreeperGirlP7>> HOSTILE_PREGNANT_MONSTER_CREEPER_GIRL_P7 = register("hostile_pregnant_monster_creeper_girl_p7",
+			EntityType.Builder.<HostilPregnantMonsterCreeperGirl.MonsterCreeperGirlP7>of(HostilPregnantMonsterCreeperGirl.MonsterCreeperGirlP7::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilPregnantMonsterCreeperGirl.MonsterCreeperGirlP7::new).sized(0.8f, 1.5f));
+
+	public static final RegistryObject<EntityType<TamableMonsterCreeperGirl>> TAMABLE_MONSTER_CREEPER_GIRL = register("tamable_monster_creeper_girl",
+			EntityType.Builder.<TamableMonsterCreeperGirl>of(TamableMonsterCreeperGirl::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamableMonsterCreeperGirl::new).sized(0.6f, 1.8f));
+	
+	public static final RegistryObject<EntityType<TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP0>> TAMABLE_MONSTER_CREEPER_GIRL_P0 = register("tamable_pregnant_monster_creeper_girl_p0",
+			EntityType.Builder.<TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP0>of(TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP0::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP0::new).sized(0.6f, 1.8f));
+	
+	public static final RegistryObject<EntityType<TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP1>> TAMABLE_MONSTER_CREEPER_GIRL_P1 = register("tamable_pregnant_monster_creeper_girl_p1",
+			EntityType.Builder.<TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP1>of(TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP1::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP1::new).sized(0.6f, 1.8f));
+	
+	public static final RegistryObject<EntityType<TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP2>> TAMABLE_MONSTER_CREEPER_GIRL_P2 = register("tamable_pregnant_monster_creeper_girl_p2",
+			EntityType.Builder.<TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP2>of(TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP2::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP2::new).sized(0.6f, 1.8f));
+	
+	public static final RegistryObject<EntityType<TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP3>> TAMABLE_MONSTER_CREEPER_GIRL_P3 = register("tamable_pregnant_monster_creeper_girl_p3",
+			EntityType.Builder.<TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP3>of(TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP3::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP3::new).sized(0.6f, 1.8f));
+	
+	public static final RegistryObject<EntityType<TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP4>> TAMABLE_MONSTER_CREEPER_GIRL_P4 = register("tamable_pregnant_monster_creeper_girl_p4",
+			EntityType.Builder.<TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP4>of(TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP4::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP4::new).sized(0.65f, 1.8f));
+	
+	public static final RegistryObject<EntityType<TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP5>> TAMABLE_MONSTER_CREEPER_GIRL_P5 = register("tamable_pregnant_monster_creeper_girl_p5",
+			EntityType.Builder.<TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP5>of(TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP5::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP5::new).sized(0.7f, 1.8f));
+	
+	public static final RegistryObject<EntityType<TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP6>> TAMABLE_MONSTER_CREEPER_GIRL_P6 = register("tamable_pregnant_monster_creeper_girl_p6",
+			EntityType.Builder.<TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP6>of(TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP6::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP6::new).sized(0.725f, 1.8f));
+	
+	public static final RegistryObject<EntityType<TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP7>> TAMABLE_MONSTER_CREEPER_GIRL_P7 = register("tamable_pregnant_monster_creeper_girl_p7",
+			EntityType.Builder.<TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP7>of(TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP7::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP7::new).sized(0.775f, 1.8f));
+	
+	public static final RegistryObject<EntityType<TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP8>> TAMABLE_MONSTER_CREEPER_GIRL_P8 = register("tamable_pregnant_monster_creeper_girl_p8",
+			EntityType.Builder.<TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP8>of(TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP8::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP8::new).sized(0.8f, 1.8f));
+	
+	public static final RegistryObject<EntityType<HostilMonsterEnderWoman>> HOSTILE_MONSTER_ENDER_WOMAN = register("hostile_monster_ender_woman",
+			EntityType.Builder.<HostilMonsterEnderWoman>of(HostilMonsterEnderWoman::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilMonsterEnderWoman::new).sized(0.6f, 2.9f));
+	
+	public static final RegistryObject<EntityType<HostilPregnantMonsterEnderWoman.MonsterEnderWomanP3>> HOSTILE_PREGNANT_MONSTER_ENDER_WOMAN_P3 = register("hostile_pregnant_monster_ender_woman_p3",
+			EntityType.Builder.<HostilPregnantMonsterEnderWoman.MonsterEnderWomanP3>of(HostilPregnantMonsterEnderWoman.MonsterEnderWomanP3::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilPregnantMonsterEnderWoman.MonsterEnderWomanP3::new).sized(0.6f, 2.9f));
+	
+	public static final RegistryObject<EntityType<HostilPregnantMonsterEnderWoman.MonsterEnderWomanP5>> HOSTILE_PREGNANT_MONSTER_ENDER_WOMAN_P5 = register("hostile_pregnant_monster_ender_woman_p5",
+			EntityType.Builder.<HostilPregnantMonsterEnderWoman.MonsterEnderWomanP5>of(HostilPregnantMonsterEnderWoman.MonsterEnderWomanP5::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilPregnantMonsterEnderWoman.MonsterEnderWomanP5::new).sized(0.7f, 2.9f));
+	
+	public static final RegistryObject<EntityType<HostilPregnantMonsterEnderWoman.MonsterEnderWomanP7>> HOSTILE_PREGNANT_MONSTER_ENDER_WOMAN_P7 = register("hostile_pregnant_monster_ender_woman_p7",
+			EntityType.Builder.<HostilPregnantMonsterEnderWoman.MonsterEnderWomanP7>of(HostilPregnantMonsterEnderWoman.MonsterEnderWomanP7::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilPregnantMonsterEnderWoman.MonsterEnderWomanP7::new).sized(0.8f, 2.9f));
+
+	public static final RegistryObject<EntityType<TamableMonsterEnderWoman>> TAMABLE_MONSTER_ENDER_WOMAN = register("tamable_monster_ender_woman",
+			EntityType.Builder.<TamableMonsterEnderWoman>of(TamableMonsterEnderWoman::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamableMonsterEnderWoman::new).sized(0.6f, 2.9f));
+	
+	public static final RegistryObject<EntityType<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP0>> TAMABLE_MONSTER_ENDER_WOMAN_P0 = register("tamable_pregnant_monster_ender_woman_p0",
+			EntityType.Builder.<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP0>of(TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP0::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP0::new).sized(0.6f, 2.9f));
+	
+	public static final RegistryObject<EntityType<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP1>> TAMABLE_MONSTER_ENDER_WOMAN_P1 = register("tamable_pregnant_monster_ender_woman_p1",
+			EntityType.Builder.<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP1>of(TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP1::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP1::new).sized(0.6f, 2.9f));
+	
+	public static final RegistryObject<EntityType<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP2>> TAMABLE_MONSTER_ENDER_WOMAN_P2 = register("tamable_pregnant_monster_ender_woman_p2",
+			EntityType.Builder.<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP2>of(TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP2::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP2::new).sized(0.6f, 2.9f));
+	
+	public static final RegistryObject<EntityType<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP3>> TAMABLE_MONSTER_ENDER_WOMAN_P3 = register("tamable_pregnant_monster_ender_woman_p3",
+			EntityType.Builder.<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP3>of(TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP3::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP3::new).sized(0.6f, 2.9f));
+	
+	public static final RegistryObject<EntityType<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP4>> TAMABLE_MONSTER_ENDER_WOMAN_P4 = register("tamable_pregnant_monster_ender_woman_p4",
+			EntityType.Builder.<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP4>of(TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP4::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP4::new).sized(0.65f, 2.9f));
+	
+	public static final RegistryObject<EntityType<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP5>> TAMABLE_MONSTER_ENDER_WOMAN_P5 = register("tamable_pregnant_monster_ender_woman_p5",
+			EntityType.Builder.<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP5>of(TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP5::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP5::new).sized(0.7f, 2.9f));
+	
+	public static final RegistryObject<EntityType<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP6>> TAMABLE_MONSTER_ENDER_WOMAN_P6 = register("tamable_pregnant_monster_ender_woman_p6",
+			EntityType.Builder.<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP6>of(TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP6::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP6::new).sized(0.725f, 2.9f));
+	
+	public static final RegistryObject<EntityType<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP7>> TAMABLE_MONSTER_ENDER_WOMAN_P7 = register("tamable_pregnant_monster_ender_woman_p7",
+			EntityType.Builder.<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP7>of(TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP7::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP7::new).sized(0.775f, 2.9f));
+	
+	public static final RegistryObject<EntityType<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP8>> TAMABLE_MONSTER_ENDER_WOMAN_P8 = register("tamable_pregnant_monster_ender_woman_p8",
+			EntityType.Builder.<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP8>of(TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP8::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP8::new).sized(0.8f, 2.9f));
 	
 	public static final RegistryObject<EntityType<ScientificIllager>> SCIENTIFIC_ILLAGER = register("scientific_illager",
 			EntityType.Builder.<ScientificIllager>of(ScientificIllager::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(ScientificIllager::new).sized(0.6f, 1.95f));
 	
-	public static final RegistryObject<EntityType<IllMonsterEnderWoman>> ILL_ENDER_WOMAN = register("ill_ender_woman",
+	public static final RegistryObject<EntityType<IllMonsterEnderWoman>> ILL_ENDER_WOMAN = register("ill_monster_ender_woman",
 			EntityType.Builder.<IllMonsterEnderWoman>of(IllMonsterEnderWoman::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(IllMonsterEnderWoman::new).sized(0.6f, 2.9f));
 	
-	public static final RegistryObject<EntityType<IllMonsterCreeperGirl>> ILL_CREEPER_GIRL = register("ill_creeper_girl",
+	public static final RegistryObject<EntityType<IllMonsterCreeperGirl>> ILL_CREEPER_GIRL = register("ill_monster_creeper_girl",
 			EntityType.Builder.<IllMonsterCreeperGirl>of(IllMonsterCreeperGirl::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(IllMonsterCreeperGirl::new).sized(0.6f, 1.5f));
 	
 	public static final RegistryObject<EntityType<IllHumanoidCreeperGirl>> ILL_HUMANOID_CREEPER_GIRL = register("ill_humanoid_creeper_girl",
@@ -140,71 +223,8 @@ public class MinepreggoModEntities {
 	public static final RegistryObject<EntityType<FertilityWitch>> FERTILITY_WITCH = register("fertility_witch",
 			EntityType.Builder.<FertilityWitch>of(FertilityWitch::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(FertilityWitch::new).sized(0.6f, 1.8f));
 	
-	public static final RegistryObject<EntityType<MonsterEnderWoman>> MONSTER_ENDER_WOMAN = register("monster_ender_woman",
-			EntityType.Builder.<MonsterEnderWoman>of(MonsterEnderWoman::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(MonsterEnderWoman::new).sized(0.6f, 2.9f));
-	
 	public static final RegistryObject<EntityType<BellyPart>> BELLY_PART = register("belly_part",
 			EntityType.Builder.<BellyPart>of(BellyPart::new, MobCategory.MISC).clientTrackingRange(10).setUpdateInterval(1));
-	
-	public static final RegistryObject<EntityType<TamableMonsterEnderWoman>> TAMABLE_MONSTER_ENDER_WOMAN = register("tamable_monster_ender_woman",
-			EntityType.Builder.<TamableMonsterEnderWoman>of(TamableMonsterEnderWoman::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamableMonsterEnderWoman::new).sized(0.6f, 2.9f));
-	
-	public static final RegistryObject<EntityType<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP0>> TAMABLE_MONSTER_ENDER_WOMAN_P0 = register("tamable_monster_ender_woman_p0",
-			EntityType.Builder.<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP0>of(TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP0::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP0::new).sized(0.6f, 2.9f));
-	
-	public static final RegistryObject<EntityType<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP1>> TAMABLE_MONSTER_ENDER_WOMAN_P1 = register("tamable_monster_ender_woman_p1",
-			EntityType.Builder.<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP1>of(TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP1::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP1::new).sized(0.6f, 2.9f));
-	
-	public static final RegistryObject<EntityType<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP2>> TAMABLE_MONSTER_ENDER_WOMAN_P2 = register("tamable_monster_ender_woman_p2",
-			EntityType.Builder.<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP2>of(TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP2::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP2::new).sized(0.6f, 2.9f));
-	
-	public static final RegistryObject<EntityType<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP3>> TAMABLE_MONSTER_ENDER_WOMAN_P3 = register("tamable_monster_ender_woman_p3",
-			EntityType.Builder.<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP3>of(TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP3::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP3::new).sized(0.6f, 2.9f));
-	
-	public static final RegistryObject<EntityType<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP4>> TAMABLE_MONSTER_ENDER_WOMAN_P4 = register("tamable_monster_ender_woman_p4",
-			EntityType.Builder.<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP4>of(TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP4::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP4::new).sized(0.65f, 2.9f));
-	
-	public static final RegistryObject<EntityType<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP5>> TAMABLE_MONSTER_ENDER_WOMAN_P5 = register("tamable_monster_ender_woman_p5",
-			EntityType.Builder.<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP5>of(TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP5::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP5::new).sized(0.7f, 2.9f));
-	
-	public static final RegistryObject<EntityType<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP6>> TAMABLE_MONSTER_ENDER_WOMAN_P6 = register("tamable_monster_ender_woman_p6",
-			EntityType.Builder.<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP6>of(TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP6::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP6::new).sized(0.725f, 2.9f));
-	
-	public static final RegistryObject<EntityType<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP7>> TAMABLE_MONSTER_ENDER_WOMAN_P7 = register("tamable_monster_ender_woman_p7",
-			EntityType.Builder.<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP7>of(TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP7::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP7::new).sized(0.775f, 2.9f));
-	
-	public static final RegistryObject<EntityType<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP8>> TAMABLE_MONSTER_ENDER_WOMAN_P8 = register("tamable_monster_ender_woman_p8",
-			EntityType.Builder.<TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP8>of(TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP8::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP8::new).sized(0.8f, 2.9f));
-	
-	public static final RegistryObject<EntityType<TamableMonsterCreeperGirl>> TAMABLE_MONSTER_CREEPER_GIRL = register("tamable_monster_creeper_girl",
-			EntityType.Builder.<TamableMonsterCreeperGirl>of(TamableMonsterCreeperGirl::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamableMonsterCreeperGirl::new).sized(0.6f, 1.8f));
-	
-	public static final RegistryObject<EntityType<TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP0>> TAMABLE_MONSTER_CREEPER_GIRL_P0 = register("tamable_monster_creeper_girl_p0",
-			EntityType.Builder.<TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP0>of(TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP0::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP0::new).sized(0.6f, 1.8f));
-	
-	public static final RegistryObject<EntityType<TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP1>> TAMABLE_MONSTER_CREEPER_GIRL_P1 = register("tamable_monster_creeper_girl_p1",
-			EntityType.Builder.<TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP1>of(TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP1::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP1::new).sized(0.6f, 1.8f));
-	
-	public static final RegistryObject<EntityType<TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP2>> TAMABLE_MONSTER_CREEPER_GIRL_P2 = register("tamable_monster_creeper_girl_p2",
-			EntityType.Builder.<TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP2>of(TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP2::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP2::new).sized(0.6f, 1.8f));
-	
-	public static final RegistryObject<EntityType<TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP3>> TAMABLE_MONSTER_CREEPER_GIRL_P3 = register("tamable_monster_creeper_girl_p3",
-			EntityType.Builder.<TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP3>of(TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP3::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP3::new).sized(0.6f, 1.8f));
-	
-	public static final RegistryObject<EntityType<TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP4>> TAMABLE_MONSTER_CREEPER_GIRL_P4 = register("tamable_monster_creeper_girl_p4",
-			EntityType.Builder.<TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP4>of(TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP4::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP4::new).sized(0.65f, 1.8f));
-	
-	public static final RegistryObject<EntityType<TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP5>> TAMABLE_MONSTER_CREEPER_GIRL_P5 = register("tamable_monster_creeper_girl_p5",
-			EntityType.Builder.<TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP5>of(TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP5::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP5::new).sized(0.7f, 1.8f));
-	
-	public static final RegistryObject<EntityType<TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP6>> TAMABLE_MONSTER_CREEPER_GIRL_P6 = register("tamable_monster_creeper_girl_p6",
-			EntityType.Builder.<TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP6>of(TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP6::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP6::new).sized(0.725f, 1.8f));
-	
-	public static final RegistryObject<EntityType<TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP7>> TAMABLE_MONSTER_CREEPER_GIRL_P7 = register("tamable_monster_creeper_girl_p7",
-			EntityType.Builder.<TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP7>of(TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP7::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP7::new).sized(0.775f, 1.8f));
-	
-	public static final RegistryObject<EntityType<TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP8>> TAMABLE_MONSTER_CREEPER_GIRL_P8 = register("tamable_monster_creeper_girl_p8",
-			EntityType.Builder.<TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP8>of(TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP8::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP8::new).sized(0.8f, 1.8f));
 	
 	private static <T extends Entity> RegistryObject<EntityType<T>> register(String registryname, EntityType.Builder<T> entityTypeBuilder) {
 		return REGISTRY.register(registryname, () -> entityTypeBuilder.build(registryname));
