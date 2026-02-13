@@ -1,0 +1,34 @@
+{
+  "type": "forge:add_spawns",
+  "biomes": "#minecraft:warped_forest",
+  
+  "spawners":  [
+    {
+        "type": "minepreggo:hostile_monster_ender_woman",
+        "weight": 20,
+        "minCount": 1,
+        "maxCount": 1
+    },
+    {
+        "type": "minepreggo:hostile_pregnant_monster_ender_woman_p3",
+        "weight": 5,
+        "minCount": 1,
+        "maxCount": 1,
+		"rarity": 20
+    },
+    {
+        "type": "minepreggo:hostile_pregnant_monster_ender_woman_p5",
+        "weight": 5,
+        "minCount": 1,
+        "maxCount": 1,
+		"rarity": 25
+    },
+        {
+        "type": "minepreggo:hostile_pregnant_monster_ender_woman_p7",
+        "weight": 5,
+        "minCount": 1,
+        "maxCount": 1,
+		"rarity": 30
+    }
+   ]
+}

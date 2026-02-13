@@ -17,7 +17,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class IllEnderWomanRenderer extends AbstractHostilMonsterEnderWomanRenderer<IllMonsterEnderWoman, IllMonsterEnderWomanModel> {
+public class IllEnderWomanRenderer extends AbstractHostileMonsterEnderWomanRenderer<IllMonsterEnderWoman, IllMonsterEnderWomanModel> {
 
 	private static final RenderType ILL_ENDER_EYES = RenderType.eyes(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/ender/monster/eye/ill_ender_woman_eyes.png"));
 	

@@ -124,11 +124,6 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
 	}
 	
 	@Override
-	public boolean canBeLeashed(Player p_21813_) {
-		return false;
-	}
-	
-	@Override
 	public boolean isFoodToTame(ItemStack stack) {
 		return stack.is(MinepreggoModItems.REFINED_CHORUS_SHARDS.get()) || stack.is(MinepreggoModItems.ENDER_SLIME_JELLY.get());
 	}
@@ -415,11 +410,17 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
     	return this.getCarriedBlock() != null;
     }
     
+    protected boolean cannotTeleportByDamage(DamageSource damageSource) {
+    	return false;
+	}
     
     @Override
     public boolean hurt(DamageSource p_32494_, float p_32495_) {
         if (this.isInvulnerableTo(p_32494_)) {
             return false;
+        }
+        else if (this.cannotTeleportByDamage(p_32494_)) {
+        	return super.hurt(p_32494_, p_32495_);
         }
         else {
             boolean flag = p_32494_.getDirectEntity() instanceof ThrownPotion;
@@ -665,90 +666,90 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
     }
     
     protected static class EnderWomanLeaveBlockGoal extends Goal {
-        private final AbstractEnderWoman abstractEnderGirl;
+        protected final AbstractEnderWoman abstractEnderWoman;
 
         public EnderWomanLeaveBlockGoal(AbstractEnderWoman p_32556_) {
-            this.abstractEnderGirl = p_32556_;
+            this.abstractEnderWoman = p_32556_;
         }
 
         @Override
         public boolean canUse() {
-            if (this.abstractEnderGirl.getCarriedBlock() == null) {
+            if (this.abstractEnderWoman.getCarriedBlock() == null) {
                 return false;
             }
-            else if (!net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.abstractEnderGirl.level(), this.abstractEnderGirl)) {
+            else if (!net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.abstractEnderWoman.level(), this.abstractEnderWoman)) {
                 return false;
             }
             else {
-                return this.abstractEnderGirl.getRandom().nextInt(reducedTickDelay(2000)) == 0;
+                return this.abstractEnderWoman.getRandom().nextInt(reducedTickDelay(2000)) == 0;
             }
         }
 
         @Override
         public void tick() {
-            RandomSource randomsource = this.abstractEnderGirl.getRandom();
-            Level level = this.abstractEnderGirl.level();
-            int i = Mth.floor(this.abstractEnderGirl.getX() - 1.0D + randomsource.nextDouble() * 2.0D);
-            int j = Mth.floor(this.abstractEnderGirl.getY() + randomsource.nextDouble() * 2.0D);
-            int k = Mth.floor(this.abstractEnderGirl.getZ() - 1.0D + randomsource.nextDouble() * 2.0D);
+            RandomSource randomsource = this.abstractEnderWoman.getRandom();
+            Level level = this.abstractEnderWoman.level();
+            int i = Mth.floor(this.abstractEnderWoman.getX() - 1.0D + randomsource.nextDouble() * 2.0D);
+            int j = Mth.floor(this.abstractEnderWoman.getY() + randomsource.nextDouble() * 2.0D);
+            int k = Mth.floor(this.abstractEnderWoman.getZ() - 1.0D + randomsource.nextDouble() * 2.0D);
             BlockPos blockpos = new BlockPos(i, j, k);
             BlockState blockstate = level.getBlockState(blockpos);
             BlockPos blockpos1 = blockpos.below();
             BlockState blockstate1 = level.getBlockState(blockpos1);
-            BlockState blockstate2 = this.abstractEnderGirl.getCarriedBlock();
+            BlockState blockstate2 = this.abstractEnderWoman.getCarriedBlock();
             if (blockstate2 != null) {
-                blockstate2 = Block.updateFromNeighbourShapes(blockstate2, this.abstractEnderGirl.level(), blockpos);
-                if (this.canPlaceBlock(level, blockpos, blockstate2, blockstate, blockstate1, blockpos1) && !net.minecraftforge.event.ForgeEventFactory.onBlockPlace(abstractEnderGirl, net.minecraftforge.common.util.BlockSnapshot.create(level.dimension(), level, blockpos1), net.minecraft.core.Direction.UP)) {
+                blockstate2 = Block.updateFromNeighbourShapes(blockstate2, this.abstractEnderWoman.level(), blockpos);
+                if (this.canPlaceBlock(level, blockpos, blockstate2, blockstate, blockstate1, blockpos1) && !net.minecraftforge.event.ForgeEventFactory.onBlockPlace(abstractEnderWoman, net.minecraftforge.common.util.BlockSnapshot.create(level.dimension(), level, blockpos1), net.minecraft.core.Direction.UP)) {
                     level.setBlock(blockpos, blockstate2, 3);
-                    level.gameEvent(GameEvent.BLOCK_PLACE, blockpos, GameEvent.Context.of(this.abstractEnderGirl, blockstate2));
-                    this.abstractEnderGirl.setCarriedBlock((BlockState)null);
+                    level.gameEvent(GameEvent.BLOCK_PLACE, blockpos, GameEvent.Context.of(this.abstractEnderWoman, blockstate2));
+                    this.abstractEnderWoman.setCarriedBlock((BlockState)null);
                 }
 
             }
         }
 
         private boolean canPlaceBlock(Level p_32559_, BlockPos p_32560_, BlockState p_32561_, BlockState p_32562_, BlockState p_32563_, BlockPos p_32564_) {
-            return !p_32559_.isClientSide() && p_32562_.isAir() && !p_32563_.isAir() && !p_32563_.is(Blocks.BEDROCK) && !p_32563_.is(net.minecraftforge.common.Tags.Blocks.ENDERMAN_PLACE_ON_BLACKLIST) && p_32563_.isCollisionShapeFullBlock(p_32559_, p_32564_) && p_32561_.canSurvive(p_32559_, p_32560_) && p_32559_.getEntities(this.abstractEnderGirl, AABB.unitCubeFromLowerCorner(Vec3.atLowerCornerOf(p_32560_))).isEmpty();
+            return !p_32559_.isClientSide() && p_32562_.isAir() && !p_32563_.isAir() && !p_32563_.is(Blocks.BEDROCK) && !p_32563_.is(net.minecraftforge.common.Tags.Blocks.ENDERMAN_PLACE_ON_BLACKLIST) && p_32563_.isCollisionShapeFullBlock(p_32559_, p_32564_) && p_32561_.canSurvive(p_32559_, p_32560_) && p_32559_.getEntities(this.abstractEnderWoman, AABB.unitCubeFromLowerCorner(Vec3.atLowerCornerOf(p_32560_))).isEmpty();
         }
     }
 
     protected static class EnderWomanTakeBlockGoal extends Goal {
-        private final AbstractEnderWoman abstractEnderGirl;
+    	protected final AbstractEnderWoman abstractEnderWoman;
 
         public EnderWomanTakeBlockGoal(AbstractEnderWoman p_32585_) {
-            this.abstractEnderGirl = p_32585_;
+            this.abstractEnderWoman = p_32585_;
         }
         
         @Override
         public boolean canUse() {
-            if (this.abstractEnderGirl.getCarriedBlock() != null) {
+            if (this.abstractEnderWoman.getCarriedBlock() != null) {
                 return false;
             }
-            else if (!net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.abstractEnderGirl.level(), this.abstractEnderGirl)) {
+            else if (!net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.abstractEnderWoman.level(), this.abstractEnderWoman)) {
                 return false;
             }
             else {
-                return this.abstractEnderGirl.getRandom().nextInt(reducedTickDelay(20)) == 0;
+                return this.abstractEnderWoman.getRandom().nextInt(reducedTickDelay(20)) == 0;
             }
         }
 
         @Override
         public void tick() {
-            RandomSource randomsource = this.abstractEnderGirl.getRandom();
-            Level level = this.abstractEnderGirl.level();
-            int i = Mth.floor(this.abstractEnderGirl.getX() - 2.0D + randomsource.nextDouble() * 4.0D);
-            int j = Mth.floor(this.abstractEnderGirl.getY() + randomsource.nextDouble() * 3.0D);
-            int k = Mth.floor(this.abstractEnderGirl.getZ() - 2.0D + randomsource.nextDouble() * 4.0D);
+            RandomSource randomsource = this.abstractEnderWoman.getRandom();
+            Level level = this.abstractEnderWoman.level();
+            int i = Mth.floor(this.abstractEnderWoman.getX() - 2.0D + randomsource.nextDouble() * 4.0D);
+            int j = Mth.floor(this.abstractEnderWoman.getY() + randomsource.nextDouble() * 3.0D);
+            int k = Mth.floor(this.abstractEnderWoman.getZ() - 2.0D + randomsource.nextDouble() * 4.0D);
             BlockPos blockpos = new BlockPos(i, j, k);
             BlockState blockstate = level.getBlockState(blockpos);
-            Vec3 vec3 = new Vec3((double)this.abstractEnderGirl.getBlockX() + 0.5D, (double)j + 0.5D, (double)this.abstractEnderGirl.getBlockZ() + 0.5D);
+            Vec3 vec3 = new Vec3((double)this.abstractEnderWoman.getBlockX() + 0.5D, (double)j + 0.5D, (double)this.abstractEnderWoman.getBlockZ() + 0.5D);
             Vec3 vec31 = new Vec3((double)i + 0.5D, (double)j + 0.5D, (double)k + 0.5D);
-            BlockHitResult blockhitresult = level.clip(new ClipContext(vec3, vec31, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, this.abstractEnderGirl));
+            BlockHitResult blockhitresult = level.clip(new ClipContext(vec3, vec31, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, this.abstractEnderWoman));
             boolean flag = !level.isClientSide() && blockhitresult.getBlockPos().equals(blockpos);
             if (blockstate.is(BlockTags.ENDERMAN_HOLDABLE) && flag) {
                 level.removeBlock(blockpos, false);
-                level.gameEvent(GameEvent.BLOCK_DESTROY, blockpos, GameEvent.Context.of(this.abstractEnderGirl, blockstate));
-                this.abstractEnderGirl.setCarriedBlock(blockstate.getBlock().defaultBlockState());
+                level.gameEvent(GameEvent.BLOCK_DESTROY, blockpos, GameEvent.Context.of(this.abstractEnderWoman, blockstate));
+                this.abstractEnderWoman.setCarriedBlock(blockstate.getBlock().defaultBlockState());
             }
 
         }
@@ -803,5 +804,52 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
                 super.tick();
             }
         }
+    }
+
+    public static boolean forceDropCarriedBlock(AbstractEnderWoman enderWoman) {
+        BlockState carriedBlock = enderWoman.getCarriedBlock();
+        if (carriedBlock == null) {
+            return false;
+        }
+        
+        Level level = enderWoman.level();
+        if (!net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(level, enderWoman)) {
+            return false;
+        }
+        
+        RandomSource random = enderWoman.getRandom();
+        int i = Mth.floor(enderWoman.getX() - 1.0D + random.nextDouble() * 2.0D);
+        int j = Mth.floor(enderWoman.getY() + random.nextDouble() * 2.0D);
+        int k = Mth.floor(enderWoman.getZ() - 1.0D + random.nextDouble() * 2.0D);
+        BlockPos placePos = new BlockPos(i, j, k);
+        
+        BlockState blockstate = level.getBlockState(placePos);
+        BlockPos blockpos1 = placePos.below();
+        BlockState blockstate1 = level.getBlockState(blockpos1);
+        BlockState blockstate2 = Block.updateFromNeighbourShapes(carriedBlock, level, placePos);
+        
+        if (canPlaceBlockStatic(level, placePos, blockstate2, blockstate, blockstate1, blockpos1, enderWoman) && !net.minecraftforge.event.ForgeEventFactory.onBlockPlace(enderWoman, 
+                    net.minecraftforge.common.util.BlockSnapshot.create(level.dimension(), level, blockpos1), 
+                    net.minecraft.core.Direction.UP)) {
+            level.setBlock(placePos, blockstate2, 3);
+            level.gameEvent(GameEvent.BLOCK_PLACE, placePos, GameEvent.Context.of(enderWoman, blockstate2));
+            enderWoman.setCarriedBlock(null);
+            return true;
+        }
+        
+        
+        return false;
+    }
+    
+    private static boolean canPlaceBlockStatic(Level level, BlockPos placePos, BlockState blockToPlace, 
+            BlockState currentState, BlockState belowState, BlockPos belowPos, AbstractEnderWoman enderWoman) {
+        return !level.isClientSide() 
+            && currentState.isAir() 
+            && !belowState.isAir() 
+            && !belowState.is(Blocks.BEDROCK) 
+            && !belowState.is(net.minecraftforge.common.Tags.Blocks.ENDERMAN_PLACE_ON_BLACKLIST) 
+            && belowState.isCollisionShapeFullBlock(level, belowPos) 
+            && blockToPlace.canSurvive(level, placePos) 
+            && level.getEntities(enderWoman, AABB.unitCubeFromLowerCorner(Vec3.atLowerCornerOf(placePos))).isEmpty();
     }
 }

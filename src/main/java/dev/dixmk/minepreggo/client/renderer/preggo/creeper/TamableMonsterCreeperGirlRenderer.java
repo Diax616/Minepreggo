@@ -16,7 +16,7 @@ public class TamableMonsterCreeperGirlRenderer extends AbstractTamableMonsterCre
 		this(context, AbstractMonsterCreeperGirlModel.LAYER_LOCATION, AbstractMonsterCreeperGirlModel.LAYER_ENERGY_ARMOR_LOCATION, AbstractMonsterCreeperGirlModel.LAYER_OUTER_ARMOR_LOCATION);
 	}
 	
-	public TamableMonsterCreeperGirlRenderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation eneryArmor, ModelLayerLocation outterArmor) {
+	protected TamableMonsterCreeperGirlRenderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation eneryArmor, ModelLayerLocation outterArmor) {
 		super(context, new TamableMonsterCreeperGirlModel(context.bakeLayer(main)), new TamableMonsterCreeperGirlModel(context.bakeLayer(eneryArmor)), new TamableMonsterCreeperGirlModel(context.bakeLayer(outterArmor)));
 	}	
 	

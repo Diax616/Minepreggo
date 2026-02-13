@@ -4,7 +4,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import dev.dixmk.minepreggo.network.packet.c2s.MountEntityC2SPacket;
+import dev.dixmk.minepreggo.network.packet.c2s.MountEnderWomanC2SPacket;
 import dev.dixmk.minepreggo.network.packet.c2s.RequestBellyRubbingAnimationC2SPacket;
 import dev.dixmk.minepreggo.network.packet.c2s.RequestPlayerMedicalCheckUpC2SPacket;
 import dev.dixmk.minepreggo.network.packet.c2s.RequestPreggoMobInventoryMenuC2SPacket;
@@ -24,6 +24,7 @@ import dev.dixmk.minepreggo.network.packet.c2s.UpdatePreggoMobPickUpItemC2SPacke
 import dev.dixmk.minepreggo.network.packet.c2s.UpdatePreggoMobWaitC2SPacket;
 import dev.dixmk.minepreggo.network.packet.c2s.UpdateShowPlayerMainMenuC2SPacket;
 import dev.dixmk.minepreggo.network.packet.s2c.RemovePlayerJigglePhysicsS2CPacket;
+import dev.dixmk.minepreggo.network.packet.s2c.PlaySoundPacketS2C;
 import dev.dixmk.minepreggo.network.packet.s2c.RemoveMobEffectS2CPacket;
 import dev.dixmk.minepreggo.network.packet.s2c.RemovePostPregnancyDataS2CPacket;
 import dev.dixmk.minepreggo.network.packet.s2c.RemovePreggoMobJigglePhysicsS2CPacket;
@@ -94,7 +95,8 @@ public class MinepreggoModPacketHandler {
 		addNetworkMessage(UpdateShowPlayerMainMenuC2SPacket.class, UpdateShowPlayerMainMenuC2SPacket::encode, UpdateShowPlayerMainMenuC2SPacket::decode, UpdateShowPlayerMainMenuC2SPacket::handler);	
 		addNetworkMessage(SyncJigglePhysicsS2CPacket.class, SyncJigglePhysicsS2CPacket::encode, SyncJigglePhysicsS2CPacket::decode, SyncJigglePhysicsS2CPacket::handler);	
 		addNetworkMessage(RemovePreggoMobJigglePhysicsS2CPacket.class, RemovePreggoMobJigglePhysicsS2CPacket::encode, RemovePreggoMobJigglePhysicsS2CPacket::decode, RemovePreggoMobJigglePhysicsS2CPacket::handler);
-		addNetworkMessage(MountEntityC2SPacket.class, MountEntityC2SPacket::encode, MountEntityC2SPacket::decode, MountEntityC2SPacket::handler);
+		addNetworkMessage(MountEnderWomanC2SPacket.class, MountEnderWomanC2SPacket::encode, MountEnderWomanC2SPacket::decode, MountEnderWomanC2SPacket::handler);
 		addNetworkMessage(TeleportWithEnderWomanC2SPacket.class, TeleportWithEnderWomanC2SPacket::encode, TeleportWithEnderWomanC2SPacket::decode, TeleportWithEnderWomanC2SPacket::handler);
+		addNetworkMessage(PlaySoundPacketS2C.class, PlaySoundPacketS2C::encode, PlaySoundPacketS2C::decode, PlaySoundPacketS2C::handler);
 	}
 }

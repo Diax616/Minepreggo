@@ -61,6 +61,11 @@ public class MinepreggoModTabs {
                 output.accept(MinepreggoModItems.ENDER_SLIME_JELLY_WITH_SALT.get());
                 output.accept(MinepreggoModItems.SOUR_ENDER_SLIME_JELLY.get());
                 
+                output.accept(MinepreggoModItems.CHORUS_FRUIT_WITH_CHOCOLATE.get());
+                output.accept(MinepreggoModItems.CHORUS_FRUIT_WITH_HOT_SAUCE.get());
+                output.accept(MinepreggoModItems.CHORUS_FRUIT_WITH_SALT.get());
+                output.accept(MinepreggoModItems.SOUR_CHORUS_FRUIT.get());
+
                 output.accept(MinepreggoModItems.MEDICAL_TABLE.get());
         
                 output.accept(MinepreggoModItems.FEMALE_CHAINMAIL_P0_CHESTPLATE.get());
@@ -114,6 +119,7 @@ public class MinepreggoModTabs {
                 output.accept(MinepreggoModItems.CREEPER_LIFE_SUBSTANCE.get());
                 output.accept(MinepreggoModItems.ENDER_LIFE_SUBSTANCE.get());
                 output.accept(MinepreggoModItems.VILLAGER_LIFE_SUBSTANCE.get());
+                output.accept(MinepreggoModItems.CONCENTRATED_ENDER_LIFE_SUBSTANCE.get());
                 output.accept(MinepreggoModItems.SPECIMEN_TUBE.get());
                 output.accept(MinepreggoModItems.CUM_SPECIMEN_TUBE.get());
                
@@ -124,6 +130,7 @@ public class MinepreggoModTabs {
                 output.accept(MinepreggoModItems.BABY_HUMANOID_ENDER.get());
                 output.accept(MinepreggoModItems.BABY_ENDER.get());
                 output.accept(MinepreggoModItems.BABY_VILLAGER.get());
+                output.accept(MinepreggoModItems.BABY_ENDER_DRAGON_BLOCK.get());
                 output.accept(MinepreggoModItems.DEAD_HUMAN_FETUS.get());
                 output.accept(MinepreggoModItems.DEAD_ZOMBIE_FETUS.get());
                 output.accept(MinepreggoModItems.DEAD_HUMANOID_CREEPER_FETUS.get());

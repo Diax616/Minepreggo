@@ -15,7 +15,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class IllHumanoidCreeperGirlRenderer extends AbstractHostilHumanoidCreeperGirlRenderer<IllHumanoidCreeperGirl, IllHumanoidCreeperGirlModel> {
+public class IllHumanoidCreeperGirlRenderer extends AbstractHostileHumanoidCreeperGirlRenderer<IllHumanoidCreeperGirl, IllHumanoidCreeperGirlModel> {
 	
 	private static final ResourceLocation ILL_CREEPER_GIRL = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/humanoid/ill_humanoid_creeper_girl.png");
 

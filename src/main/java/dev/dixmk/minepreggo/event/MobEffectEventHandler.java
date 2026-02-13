@@ -105,7 +105,11 @@ public class MobEffectEventHandler {
             return;
         }
         
-        if ((effect == MinepreggoModMobEffects.ETERNAL_PREGNANCY.get() || effect == MinepreggoModMobEffects.ZERO_GRAVITY_BELLY.get()) && !PregnancySystemHelper.canHavePregnancyEffects(entity)) {
+        if ((effect == MobEffects.POISON && entity.hasEffect(MinepreggoModMobEffects.POISON_IMMUNITY.get()))
+        		|| (effect == MobEffects.WITHER && entity.hasEffect(MinepreggoModMobEffects.WIHER_IMMUNITY.get()))) {
+            event.setResult(Event.Result.DENY);
+        }   
+        else if ((effect == MinepreggoModMobEffects.ETERNAL_PREGNANCY.get() || effect == MinepreggoModMobEffects.ZERO_GRAVITY_BELLY.get()) && !PregnancySystemHelper.canHavePregnancyEffects(entity)) {
             event.setResult(Event.Result.DENY);
             entity.hurt(new DamageSource(entity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.MAGIC)), 1);
         }

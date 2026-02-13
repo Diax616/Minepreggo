@@ -19,8 +19,8 @@
     "custom_criteria": {
 		"trigger": "minepreggo:give_birth",
 	    "conditions": {
-		  "successfulBirths": {
-		  	"species": ["ZOMBIE", "CREEPER", "HUMAN", "ENDER", "VILLAGER"]
+		  "successful_births": {
+		  	"species": ["ZOMBIE", "CREEPER", "HUMAN", "ENDER", "VILLAGER", "DRAGON"]
 		  }
 	    }
     }

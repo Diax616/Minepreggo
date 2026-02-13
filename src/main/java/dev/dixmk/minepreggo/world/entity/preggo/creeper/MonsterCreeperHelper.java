@@ -7,6 +7,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.Inventory;
 import dev.dixmk.minepreggo.world.entity.preggo.InventorySlot;
 import dev.dixmk.minepreggo.world.entity.preggo.InventorySlotMapper;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -81,6 +82,38 @@ public class MonsterCreeperHelper {
     
         return false;
 	}
+	
+    public static boolean replaceItemstackInMouth(AbstractTamableCreeperGirl creeperGirl, ItemStack itemStack) {
+    	if (creeperGirl.getTypeOfCreature() != Creature.MONSTER) {
+			return false;
+		}
+    	  	
+    	Inventory inventory = creeperGirl.getInventory();
+        InventorySlotMapper slotMapper = inventory.getSlotMapper();
+        
+        if (!slotMapper.hasSlot(InventorySlot.MOUTH)) {
+            return false;
+        }
+        
+        int slotIndex = slotMapper.getSlotIndex(InventorySlot.MOUTH);
+        
+        if (slotIndex == InventorySlotMapper.DEFAULT_INVALID_SLOT_INDEX) {
+            return false;
+        }
+        
+        ItemStack currentStack = inventory.getHandler().getStackInSlot(slotIndex);
+        
+        if (!currentStack.isEmpty()) {
+        	PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(creeperGirl, InventorySlot.MOUTH);
+        	creeperGirl.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
+        }
+        
+        ItemStack copy = itemStack.copy();
+        inventory.getHandler().setStackInSlot(slotIndex, copy);         
+        creeperGirl.setItemSlot(EquipmentSlot.MAINHAND, copy);
+	
+        return true;      
+    }
 	
 	static Inventory createInventory() {
 		return new Inventory(EnumSet.of(InventorySlot.HEAD, InventorySlot.MOUTH), 6);

@@ -24,7 +24,7 @@ public class PlayerPregnancySystemP2 extends PlayerPregnancySystemP1 {
 	protected void initPregnancyTimers() {
 		totalTicksOfCraving = MinepreggoModConfig.SERVER.getTotalTicksOfCravingP2();
 		morningSicknessProb = PregnancySystemHelper.MEDIUM_MORNING_SICKNESS_PROBABILITY;
-		pregnancyExhaustion = 1.02f;
+		pregnancyExhaustion = 0.02f;
 	}
 	
 	@Override

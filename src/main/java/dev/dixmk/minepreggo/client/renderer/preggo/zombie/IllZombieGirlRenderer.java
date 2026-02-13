@@ -15,7 +15,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class IllZombieGirlRenderer extends AbstractHostilZombieGirlRenderer<IllZombieGirl, IllZombieGirlP0Model> {
+public class IllZombieGirlRenderer extends AbstractHostileZombieGirlRenderer<IllZombieGirl, IllZombieGirlP0Model> {
 
 	private static final ResourceLocation ILL_ZOMBIE_GIRL = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/ill_zombie_girl_p0.png");
 	

@@ -26,21 +26,10 @@ public abstract class AbstractTamableMonsterCreeperGirlModel<E extends AbstractT
 	@Override
 	protected JigglePositionConfig createJiggleConfig() {
 		return EntityJiggleDataFactory.JigglePositionConfig.boobs(this.boobs.y);
-	}
+	}	
 	
 	@Override
-	public void setupAnim(E entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		this.root().getAllParts().forEach(ModelPart::resetPose);
-			
-		if (entity.hasCustomHeadAnimation()) {
-			this.hat.copyFrom(this.head);
-		}
-		else {
-			this.moveHead(netHeadYaw, headPitch);
-		}	
-		
-		this.updateJiggle(entity);
-		
+	protected void animate(E entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		if (entity.isAttacking()) {
 		    this.animate(entity.attackAnimationState, MonsterCreeperGirlAnimation.ATTACK, ageInTicks);
 		}

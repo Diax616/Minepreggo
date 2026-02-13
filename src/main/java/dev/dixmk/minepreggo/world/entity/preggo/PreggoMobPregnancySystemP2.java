@@ -94,11 +94,6 @@ public abstract class PreggoMobPregnancySystemP2
 		}
 		return false;
 	}
-		
-	@Override
-	public boolean canBeAngry() {
-		return super.canBeAngry() || pregnantEntity.getPregnancyData().getMilking() >= PregnancySystemHelper.MAX_MILKING_LEVEL;
-	}
 	
 	@Nullable
 	public Result evaluateMilking(Level level, Player source) {

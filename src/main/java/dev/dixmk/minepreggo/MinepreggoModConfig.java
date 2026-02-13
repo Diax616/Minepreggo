@@ -221,7 +221,7 @@ public class MinepreggoModConfig {
             
             totalTicksOfHungryConfig = builder
                     .comment("Total ticks of hungry for preggo mobs.")
-                    .defineInRange("totalTicksOfHungry", 6000, 100, 24000);
+                    .defineInRange("totalTicksOfHungry", 8400, 100, 24000);
             
             totalTicksOfCravingConfig = builder
                     .comment("Total ticks of craving for pregnant entities.")

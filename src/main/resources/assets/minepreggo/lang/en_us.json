@@ -187,6 +187,7 @@
 	"item.minepreggo.fertility_witch_spawn_egg": "Fertility Witch Spawn Egg",
 	
 	"block.minepreggo.medical_table": "Medical Table",
+	"block.minepreggo.baby_ender_dragon_block": "Baby Ender Dragon Block",
 	
 	"effect.minepreggo.fetal_movement": "Fetal Movement",
 	"effect.minepreggo.zombie_impregnation": "Zombie Impregnation",
@@ -229,6 +230,10 @@
 	"effect.minepreggo.fertile": "Fertile",
 	"effect.minepreggo.fertility": "Fertility",
 	"effect.minepreggo.zero_gravity_belly": "Zero Gravity Belly",
+	"effect.minepreggo.poison_immunity": "Poison Immunity",
+	"effect.minepreggo.wither_immunity": "Wither Immunity",
+	"effect.minepreggo.ender_dragon_impregnation": "Ender Dragon Impregnation",
+	"effect.minepreggo.ender_dragon_pregnancy": "Ender Dragon Pregnancy",
 	
 	"item.minecraft.potion.effect.zombie_impregnation_0": "Potion of Zombie Impregnation",
 	"item.minecraft.potion.effect.zombie_impregnation_1": "Potion of Zombie Impregnation",
@@ -285,6 +290,8 @@
 	"item.minecraft.potion.effect.eternal_pregnancy_0": "Potion of Eternal Pregnancy",
 	"item.minecraft.potion.effect.fertility_0": "Potion of Fertility",
 	"item.minecraft.potion.effect.zero_gravity_belly_0": "Potion of Zero Gravity Belly",
+	"item.minecraft.potion.effect.ender_powerful_impregnation_0": "Potion of Ender Powerful Impregnation",
+	"item.minecraft.potion.effect.ender_dragon_impregnation_0": "Potion of Ender Dragon Impregnation",
 	
 	"item.minecraft.splash_potion.effect.zombie_impregnation_0": "Splash Potion of Zombie Impregnation",
 	"item.minecraft.splash_potion.effect.zombie_impregnation_1": "Splash Potion of Zombie Impregnation",
@@ -341,7 +348,9 @@
 	"item.minecraft.splash_potion.effect.eternal_pregnancy_0": "Splash Potion of Eternal Pregnancy",
 	"item.minecraft.splash_potion.effect.fertility_0": "Splash Potion of Fertility",
 	"item.minecraft.splash_potion.effect.zero_gravity_belly_0": "Splash Potion of Zero Gravity Belly",
-
+	"item.minecraft.splash_potion.effect.ender_powerful_impregnation_0": "Splash Potion of Ender Powerful Impregnation",
+	"item.minecraft.splash_potion.effect.ender_dragon_impregnation_0": "Splash Potion of Ender Dragon Impregnation",
+	
 	"item.minecraft.lingering_potion.effect.zombie_impregnation_0": "Lingering Potion of Zombie Impregnation",
 	"item.minecraft.lingering_potion.effect.zombie_impregnation_1": "Lingering Potion of Zombie Impregnation",
 	"item.minecraft.lingering_potion.effect.zombie_impregnation_2": "Lingering Potion of Zombie Impregnation",
@@ -397,7 +406,9 @@
 	"item.minecraft.lingering_potion.effect.eternal_pregnancy_0": "Lingering Potion of Eternal Pregnancy",
 	"item.minecraft.lingering_potion.effect.fertility_0": "Lingering Potion of Fertility",
 	"item.minecraft.lingering_potion.effect.zero_gravity_belly_0": "Lingering Potion of Zero Gravity Belly",
-
+	"item.minecraft.lingering_potion.effect.ender_powerful_impregnation_0": "Lingering Potion of Ender Powerful Impregnation",
+	"item.minecraft.lingering_potion.effect.ender_dragon_impregnation_0": "Lingering Potion of Ender Dragon Impregnation",
+	
 	"item.minecraft.tipped_arrow.effect.zombie_impregnation_0": "Arrow of Zombie Impregnation",
 	"item.minecraft.tipped_arrow.effect.zombie_impregnation_1": "Arrow of Zombie Impregnation",
 	"item.minecraft.tipped_arrow.effect.zombie_impregnation_2": "Arrow of Zombie Impregnation",
@@ -453,6 +464,8 @@
 	"item.minecraft.tipped_arrow.effect.eternal_pregnancy_0": "Arrow of Eternal Pregnancy",
 	"item.minecraft.tipped_arrow.effect.fertility_0": "Arrow of Fertility",
 	"item.minecraft.tipped_arrow.effect.zero_gravity_belly_0": "Arrow of Zero Gravity Belly",
+	"item.minecraft.tipped_arrow.effect.ender_powerful_impregnation_0": "Arrow of Ender Powerful Impregnation",
+	"item.minecraft.tipped_arrow.effect.ender_dragon_impregnation_0": "Arrow of Ender Dragon Impregnation",
 	
 	"item.minepreggo.female_chainmail_p0_chestplate": "Female Chainmail Chestplate",
 	"item.minepreggo.female_netherite_p0_chestplate": "Female Netherite Chestplate",
@@ -520,7 +533,6 @@
 	"item.minepreggo.creeper_life_substance": "Creeper Life Substance",
 	"item.minepreggo.ender_life_substance": "Ender Life Substance",
 
-	
 	"item.minepreggo.villager_brain": "Villager Brain",
 	"item.minepreggo.human_breast_milk_bottle": "Human Breast Milk Bottle",
 	"item.minepreggo.brain_with_hot_sauce": "Brain With Hot Sauce",
@@ -571,6 +583,14 @@
 	"item.minepreggo.sour_ender_slime_jelly": "Sour Ender Slime Jelly",
 	"item.minepreggo.refined_chorus_shards": "Refined Chorus Shards",
 	
+	"item.minepreggo.concentrated_ender_life_substance": "Concentrated Ender Life Substance",
+	"item.minepreggo.chorus_fruit_with_chocolate": "Chorus Fruit With Chocolate",
+	"item.minepreggo.chorus_fruit_with_hot_sauce": "Chorus Fruit With Hot Sauce",
+	"item.minepreggo.chorus_fruit_with_salt": "Chorus Fruit With Salt",
+	"item.minepreggo.sour_chorus_fruit": "Sour Chorus Fruit",
+
+	"item.minepreggo.baby_ender_dragon_block": "Baby Ender Dragon",
+
 	"subtitles.entity.pregnant.player.miscarriage": "miscarriage",
 	"subtitles.entity.pregnant.preggo_mob.death": "belly explosion",
 	"subtitles.entity.pregnant.belly.touch": "belly touch", 
@@ -580,6 +600,9 @@
 	"subtitles.entity.pregnant.player.push": "push",
 	"subtitles.entity.pregnant.stomach_growls" : "stomach growls",			
 	"subtitles.entity.pregnant.player.nausea": "nausea",
+	
+	"chat.minepreggo.scientific_illager.no_pregnant_entities": "There are no pregnant entities to checkup",
+	"chat.minepreggo.prenatal_checkup.message.warning": "It is necessary to be at least in the %s stage of pregnancy to perform this prenatal check-up",
 	
 	"chat.minepreggo.preggo_mob.armor.message.chestplate_does_not_fit.boobs": "%s's boobs don't fit in this armor!",
 	
@@ -610,7 +633,14 @@
 	"chat.minepreggo.preggo_mob.inventory.message.not_a_block": "%s can only hold blocks in both hands",
 	"chat.minepreggo.preggo_mob.inventory.message.both_hands_block_one_item": "%s can't hold an item in one hand with a block in both hands",
 	"chat.minepreggo.preggo_mob.inventory.message.cannot_place_block_on_mouth": "%s can't place a block on her mouth",
-	
+
+	"chat.minepreggo.preggo_mob.message.same_sex": "<%s> I didn't know you belonged to that 'group', but I don't care if it's you...",
+	"chat.minepreggo.preggo_mob.message.still_not_pregnant": "<%s> When are you gonna make me a mom, %s?",
+	"chat.minepreggo.preggo_mob.message.without_beds": "<%s> Let's go somewhere more private, %s",
+	"chat.minepreggo.preggo_mob.message.rejection_by_its_owner": "<%s> Okay, maybe later... 😖",
+	"chat.minepreggo.preggo_mob.message.without_beds.monster": "<%s> <emits happy and unintelligible sounds while looking for something, maybe a bed?>",
+	"chat.minepreggo.preggo_mob.message.rejection_by_its_owner.monster": "<%s> <emits sad and unintelligible sounds>",
+
 	"chat.minepreggo.player.armor.message.chestplate_does_not_fit.boobs": "Your boobs don't fit in this armor!",
 	
 	"chat.minepreggo.player.armor.message.chestplate_does_not_fit.p1": "Your slightly swollen belly doesn't fit in this armor!",
@@ -636,20 +666,21 @@
 	"chat.minepreggo.player.miscarriage.message.warning": "You feel pain below her pregnant belly, something isn't right...",
 
 	"chat.minepreggo.player.sex.message.tiring": "You feel too tired to have fun...",
-
 	"chat.minepreggo.player.not_enough_fap.message": "You are 'dry'",
-
-	"chat.minepreggo.player.sex.request_sent": "You have sent a request to %s for some fun",
-	
+	"chat.minepreggo.player.sex.request_sent": "You have sent a request to %s for some fun",	
 	"chat.minepreggo.player.sex.request_reject": "%s has rejected your request for some fun",
+	
+	"chat.minepreggo.player.pregnancy.message.cannot_apply_baby_duplication.ender_dragon_pregnancy.1": "You don't feel any change inside your belly; it seems like it didn't work.",
+	"chat.minepreggo.player.pregnancy.message.cannot_apply_baby_duplication.ender_dragon_pregnancy.2": "The potion effect doesn't seem to have worked, and it only annoyed the Ender Dragon.",
 
 	"chat.minepreggo.player.pregnancy.message.cannot_in_labor": "You feel too much pain to do this now",
-	"chat.minepreggo.player.pregnancy.message.cannot_ride.message.1": "You feel too much discomfort to ride now",
-	"chat.minepreggo.player.pregnancy.message.cannot_ride.message.2": "Your belly is too big to ride now",
-
-	"chat.minepreggo.scientific_illager.no_pregnant_entities": "There are no pregnant entities to checkup",
-
-	"chat.minepreggo.prenatal_checkup.message.warning": "It is necessary to be at least in the %s stage of pregnancy to perform this prenatal check-up",
+	"chat.minepreggo.player.pregnancy.message.cannot_ride.generic.1": "You feel too much discomfort to ride now",
+	"chat.minepreggo.player.pregnancy.message.cannot_ride.generic.2": "Your belly is too big to ride now",
+	"chat.minepreggo.player.pregnancy.message.cannot_ride.ender_woman.generic.1": "Your belly is so big that it hits %s's head.",
+	"chat.minepreggo.player.pregnancy.message.cannot_ride.ender_woman.generic.2": "You weigh too much to ride %s.",
+	"chat.minepreggo.player.message.cannot_ride.ender_woman.pregnant.labor": "%s is in labor, you can't ride her now!",
+	"chat.minepreggo.player.message.cannot_ride.ender_woman.pregnant.morning_sickness": "%s is feeling too sick, you can't ride her now!",
+	"chat.minepreggo.player.message.cannot_ride.ender_woman.pregnant.common_pregnancy_pain": "%s is in too much pain, you can't ride her now!",
 
 	"chat.minepreggo.sex.message.mobs": "There are nerby hostil mobs",
 	"chat.minepreggo.sex.message.sexual_appetite": "%s's doesn't have enough sexual appetite to have fun with you",
@@ -657,13 +688,6 @@
 	"chat.minepreggo.sex.message.enough_beds": "There must be a bed to have fun in.",
 	"chat.minepreggo.sex.message.active_cinematic": "%s's is in other cinematic.",
 	
-	"chat.minepreggo.preggo_mob.message.same_sex": "<%s> I didn't know you belonged to that 'group', but I don't care if it's you...",
-	"chat.minepreggo.preggo_mob.message.still_not_pregnant": "<%s> When are you gonna make me a mom, %s?",
-	"chat.minepreggo.pregnant.preggo_mob.message.without_beds": "<%s> Let's go somewhere more private, %s",
-	"chat.minepreggo.pregnant.preggo_mob.message.rejection_by_its_owner": "<%s> Okay, maybe later... 😖",
-	"chat.minepreggo.pregnant.preggo_mob.message.without_beds.monster": "<%s> <emits happy and unintelligible sounds while looking for something, maybe a bed?>",
-	"chat.minepreggo.pregnant.preggo_mob.message.rejection_by_its_owner.monster": "<%s> <emits sad and unintelligible sounds>",
-
 	"book.minepreggo.prenatal_checkup.regular.template.title": "Regular Prenatal Checkup Results",
 	"book.minepreggo.prenatal_checkup.regular.template.page.1.intro": "       Result\n  Regular Checkup\n\n",
 	
@@ -708,6 +732,8 @@
 	"book.minepreggo.prenatal_checkup.paternity_test.template.page.default.result.positive": "He IS the father!",
 	"book.minepreggo.prenatal_checkup.paternity_test.template.page.default.result.negative": "He IS NOT the father!",
 	
+	"book.minepreggo.end.title": "Congratulations!",
+	
 	"key.minepreggo.rub_belly": "Rub Your Pregnant Belly",
 	"key.categories.minepreggo": "Minepreggo Keyboards",
 	"key.minepreggo.teleport_with_ender_woman": "Teleport With Ender Woman",
@@ -734,5 +760,11 @@
 	"advancements.impregnate_all_species.title": "Impregnate All Species",
 	"advancements.impregnate_all_species.description": "Get all species of impregnable entities pregnant by sexual intercourse",	
 	"advancements.good_mother.title": "Good Mother",
-	"advancements.good_mother.description": "Successfully perform all prenatal check-ups on yourself"
+	"advancements.good_mother.description": "Successfully perform all prenatal check-ups on yourself",
+	"advancements.pregnant_with_a_dragon.title": "Pregnant With A Dragon",
+	"advancements.pregnant_with_a_dragon.description": "Get pregnant with an Ender Dragon baby",
+	"advancements.give_birth_a_dragon.title": "The new king of the end",
+	"advancements.give_birth_a_dragon.description": "Give birth to an Ender Dragon baby",
+	"advancements.brewing_an_ender_dragon_potion.title": "Brewing An Ender Dragon Potion",
+	"advancements.brewing_an_ender_dragon_potion.description": "Brew a potion that can get you pregnant with an Ender Dragon baby"
 }

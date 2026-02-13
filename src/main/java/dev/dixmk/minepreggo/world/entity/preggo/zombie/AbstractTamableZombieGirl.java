@@ -105,6 +105,11 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	}
 	
 	@Override
+	public boolean canBeLeashed(Player p_21813_) {
+		return super.canBeLeashed(p_21813_) && !this.tamablePreggoMobData.isSavage();
+	}
+	
+	@Override
 	protected void defineSynchedData() {
 		super.defineSynchedData();
 		DATA_HOLDER.defineSynchedData(this);
@@ -199,7 +204,8 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 		boolean result = super.doHurtTarget(target);	
 		if (result && !this.level().isClientSide) {
 			PreggoMobHelper.tryToDamageItemOnMainHand(this);
-		}
+			this.tamablePreggoMobSystem.onDoHurtTargetSuccessful(target);		
+		}	
 		return result;
 	}
 	
@@ -228,7 +234,7 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
-				&& !getTamableData().isWaiting();
+				&& (getTamableData().isSavage() || !isTame());
 			}
 		});
 		this.goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(this, 1.0D) {

@@ -12,10 +12,14 @@ import net.minecraft.world.level.Level;
 
 public class EnderSlimeJellyItem extends Item {
 
-	public EnderSlimeJellyItem() {
-		super(new Item.Properties().stacksTo(64).rarity(Rarity.UNCOMMON).food((new FoodProperties.Builder()).nutrition(6).saturationMod(0.3f).build()));
+	public EnderSlimeJellyItem(int nutrition) {
+		super(new Item.Properties().stacksTo(64).rarity(Rarity.UNCOMMON).food((new FoodProperties.Builder()).nutrition(nutrition).saturationMod(0.2f).build()));
 	}
 
+	public EnderSlimeJellyItem() {
+		this(10);
+	}
+	
 	@Override
 	public int getUseDuration(ItemStack itemstack) {
 		return 40;

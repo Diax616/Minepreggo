@@ -8,6 +8,8 @@ import dev.dixmk.minepreggo.world.effect.Contraction;
 import dev.dixmk.minepreggo.world.effect.Craving;
 import dev.dixmk.minepreggo.world.effect.CreeperImpregnation;
 import dev.dixmk.minepreggo.world.effect.Depression;
+import dev.dixmk.minepreggo.world.effect.EnderDragonImpregnation;
+import dev.dixmk.minepreggo.world.effect.EnderDragonPregnancy;
 import dev.dixmk.minepreggo.world.effect.EnderImpregnation;
 import dev.dixmk.minepreggo.world.effect.EternalPregnancy;
 import dev.dixmk.minepreggo.world.effect.Fertile;
@@ -43,6 +45,7 @@ import dev.dixmk.minepreggo.world.effect.WaterBreaking;
 import dev.dixmk.minepreggo.world.effect.ZeroGravityBelly;
 import dev.dixmk.minepreggo.world.effect.ZombieImpregnation;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -101,4 +104,9 @@ public class MinepreggoModMobEffects {
 	public static final RegistryObject<MobEffect> PREBIRTH = REGISTRY.register("prebirth", PreBirth::new);
 
 	public static final RegistryObject<MobEffect> ZERO_GRAVITY_BELLY = REGISTRY.register("zero_gravity_belly", ZeroGravityBelly::new);
+
+	public static final RegistryObject<MobEffect> POISON_IMMUNITY = REGISTRY.register("poison_immunity", () -> new MobEffect(MobEffectCategory.BENEFICIAL, 0x4E9331) {});
+	public static final RegistryObject<MobEffect> WIHER_IMMUNITY = REGISTRY.register("wither_immunity", () -> new MobEffect(MobEffectCategory.BENEFICIAL, 0x352A27) {});
+	public static final RegistryObject<MobEffect> ENDER_DRAGON_IMPREGNATION = REGISTRY.register("ender_dragon_impregnation", EnderDragonImpregnation::new);
+	public static final RegistryObject<MobEffect> ENDER_DRAGON_PREGNANCY = REGISTRY.register("ender_dragon_pregnancy", EnderDragonPregnancy::new);	
 }

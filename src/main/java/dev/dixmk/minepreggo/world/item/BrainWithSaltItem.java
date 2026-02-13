@@ -7,7 +7,7 @@ import dev.dixmk.minepreggo.world.pregnancy.Craving;
 
 public class BrainWithSaltItem extends AbstractBrain implements ICravingItem {
 	public BrainWithSaltItem() {
-		super();
+		super(13);
 	}
 	
 	@Override

@@ -27,5 +27,4 @@ public class TagHelper {
 	
 	public static final TagKey<MobEffect> FEMALE_EFFECTS =
 	        TagKey.create(Registries.MOB_EFFECT, MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "female_effects"));
-	
 }

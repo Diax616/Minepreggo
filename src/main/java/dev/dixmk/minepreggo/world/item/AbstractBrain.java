@@ -17,7 +17,7 @@ public abstract class AbstractBrain extends Item {
 	}
 
     protected AbstractBrain() {
-    	this(7);
+    	this(12);
     }
      
 	@Override

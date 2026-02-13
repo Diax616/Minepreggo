@@ -17,13 +17,14 @@ import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.HostilHumanoidCreeperGirl;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.HostilMonsterCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.HostileHumanoidCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.HostileMonsterCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableHumanoidCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableMonsterCreeperGirl;
-import dev.dixmk.minepreggo.world.entity.preggo.ender.HostilMonsterEnderWoman;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractTamableEnderWoman;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.HostileMonsterEnderWoman;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.TamableMonsterEnderWoman;
-import dev.dixmk.minepreggo.world.entity.preggo.zombie.HostilZombieGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.zombie.HostileZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirl;
 import dev.dixmk.minepreggo.world.pregnancy.IFemaleEntity;
 import net.minecraft.core.BlockPos;
@@ -111,32 +112,40 @@ public class Impregnantion extends MobEffect {
 			final double y = entity.getY();	
 			final double z = entity.getZ();
 			
-			if (entity instanceof HostilHumanoidCreeperGirl creeperGirl && !creeperGirl.isBaby()) {
+			if (entity instanceof HostileHumanoidCreeperGirl creeperGirl && !creeperGirl.isBaby()) {
 				var nextStage = MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
+				nextStage.setCombatMode(creeperGirl.getCombatMode());
 				initPregnancy(creeperGirl, nextStage, amplifier);
 			}
-			else if (entity instanceof HostilZombieGirl zombieGirl && !zombieGirl.isBaby()) {
+			else if (entity instanceof HostileZombieGirl zombieGirl && !zombieGirl.isBaby()) {
 				var nextStage = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
 				initPregnancy(zombieGirl, nextStage, amplifier);
 			}
-			else if (entity instanceof HostilMonsterCreeperGirl creeperGirl) {
+			else if (entity instanceof HostileMonsterCreeperGirl creeperGirl) {
 				var nextStage = MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
+				nextStage.setCombatMode(creeperGirl.getCombatMode());
 				initPregnancy(creeperGirl, nextStage, amplifier);
 			}
-			else if (entity instanceof HostilMonsterEnderWoman enderWoman) {
+			else if (entity instanceof HostileMonsterEnderWoman enderWoman) {
 				var nextStage = MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
+				nextStage.setCarriedBlock(enderWoman.getCarriedBlock());
+				AbstractTamableEnderWoman.syncBlockToInventory(nextStage);
 				initPregnancy(enderWoman, nextStage, amplifier);
 			}
 			else if (entity instanceof TamableHumanoidCreeperGirl creeperGirl && creeperGirl.getGenderedData().getPostPregnancyData().isEmpty()) {
 				var nextStage = MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
+				nextStage.setCombatMode(creeperGirl.getCombatMode());
 				initPregnancyInTamable(creeperGirl, nextStage, amplifier);
 			}
 			else if (entity instanceof TamableMonsterCreeperGirl creeperGirl && creeperGirl.getGenderedData().getPostPregnancyData().isEmpty()) {
 				var nextStage = MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
+				nextStage.setCombatMode(creeperGirl.getCombatMode());
 				initPregnancyInTamable(creeperGirl, nextStage, amplifier);
 			}
 			else if (entity instanceof TamableMonsterEnderWoman enderWoman && enderWoman.getGenderedData().getPostPregnancyData().isEmpty()) {
-				var nextStage = MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
+				var nextStage = MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
+				nextStage.setCarriedBlock(enderWoman.getCarriedBlock());
+				AbstractTamableEnderWoman.syncBlockToInventory(nextStage);
 				initPregnancyInTamable(enderWoman, nextStage, amplifier);
 			}
 			else if (entity instanceof TamableZombieGirl zombieGirl && zombieGirl.getGenderedData().getPostPregnancyData().isEmpty()) {

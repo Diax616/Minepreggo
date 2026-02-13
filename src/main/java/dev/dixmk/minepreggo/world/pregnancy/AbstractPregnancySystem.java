@@ -80,7 +80,7 @@ public abstract class AbstractPregnancySystem<E extends LivingEntity> implements
 						player,
 						ParticleTypes.FALLING_DRIPSTONE_WATER,
 						true,
-						target.getX(), (target.getY() + target.getBbHeight() * 0.35), target.getZ(),
+						target.getX(), (target.getY() + target.getBbHeight() * 0.5), target.getZ(),
 						1,
 						0, 0, 0,
 						0.02);
@@ -95,7 +95,7 @@ public abstract class AbstractPregnancySystem<E extends LivingEntity> implements
 						player,
 						ParticleTypes.FALLING_DRIPSTONE_LAVA,
 						true,
-						target.getX(), (target.getY() + target.getBbHeight() * 0.35), target.getZ(),
+						target.getX(), (target.getY() + target.getBbHeight() * 0.5), target.getZ(),
 						1,
 						0, 0, 0,
 						0.02);

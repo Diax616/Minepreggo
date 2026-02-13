@@ -16,7 +16,7 @@ public class EntityHelper {
 	        ItemEntity item = new ItemEntity(
 	            entity.level(),
 	            entity.getX(), entity.getY(), entity.getZ(),
-	            stack
+	            stack.copy()
 	        );
 	        item.setDefaultPickUpDelay();
 	        entity.level().addFreshEntity(item);

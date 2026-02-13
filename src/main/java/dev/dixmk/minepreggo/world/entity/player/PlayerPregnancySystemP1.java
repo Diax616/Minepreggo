@@ -1,7 +1,8 @@
 package dev.dixmk.minepreggo.world.entity.player;
 
-import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -28,14 +29,15 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.item.ItemStack;
 
 public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
-	private int pregnancyPainTicks = 0;
-	private int pregnancysymptonsTicks = 0;
+	private int pregnancyPainCooldown = 0;
+	private int pregnancysymptonsCooldown = 0;
 	
 	protected @Nonnegative int totalTicksOfCraving = MinepreggoModConfig.SERVER.getTotalTicksOfCravingP1();
 	protected @Nonnegative float morningSicknessProb = PregnancySystemHelper.LOW_MORNING_SICKNESS_PROBABILITY;
-	protected @Nonnegative float pregnancyExhaustion = 1.01f;
+	protected @Nonnegative float pregnancyExhaustion = 0.01f;
 	
 	private Set<PregnancySymptom> validPregnancySymptoms = EnumSet.noneOf(PregnancySymptom.class);
 	
@@ -64,12 +66,12 @@ public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
 		}
 		
 		if (!hasPregnancyPain()) {
-			if (pregnancyPainTicks > 20) {
+			if (pregnancyPainCooldown > 20) {
 				tryInitRandomPregnancyPain();
-				pregnancyPainTicks = 0;
+				pregnancyPainCooldown = 0;
 			}
 			else {
-				++pregnancyPainTicks;
+				++pregnancyPainCooldown;
 			}
 		}
 		else {
@@ -77,12 +79,12 @@ public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
 		}
 			
 		if (!hasAllPregnancySymptoms()) {
-			if (pregnancysymptonsTicks > 20) {
+			if (pregnancysymptonsCooldown > 20) {
 				tryInitPregnancySymptom();
-				pregnancysymptonsTicks = 0;
+				pregnancysymptonsCooldown = 0;
 			}
 			else {
-				++pregnancysymptonsTicks;
+				++pregnancysymptonsCooldown;
 			}
 		}
 		if (!pregnancySystem.getPregnancySymptoms().isEmpty()) {
@@ -90,10 +92,9 @@ public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
 		}
 		
 		evaluatePregnancyNeeds();
+		evaluateExtraHungry();
 		
-		var foodData = pregnantEntity.getFoodData();
-		foodData.setExhaustion(foodData.getExhaustionLevel() * pregnancyExhaustion);
-		
+		pregnantEntity.causeFoodExhaustion(pregnancyExhaustion);
 		super.evaluatePregnancySystem();
 	}
 	
@@ -122,8 +123,10 @@ public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
 	@Override
 	protected void evaluateMiscarriage(ServerLevel serverLevel) {		
 		if (pregnancySystem.getPregnancyPainTimer() > PregnancySystemHelper.TOTAL_TICKS_MISCARRIAGE) {				
-			final var deadBabiesItemStacks = new ArrayList<>(PregnancySystemHelper.getDeadBabies(pregnancySystem.getWomb()));   	
        		
+			final List<ItemStack> deadBabiesItemStacks = PregnancySystemHelper.getDeadBabies(pregnancySystem.getWomb());
+        	Iterator<ItemStack> iterator = deadBabiesItemStacks.iterator();
+			
         	MinepreggoMod.LOGGER.debug("Miscarriage delivering {} dead babies: id={}, class={}",
 					deadBabiesItemStacks.size(), pregnantEntity.getId(), pregnantEntity.getClass().getSimpleName());
         	
@@ -131,27 +134,22 @@ public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
 				MinepreggoMod.LOGGER.error("Failed to get dead baby item for miscarriage event. mobId={}, mobClass={}",
 						pregnantEntity.getId(), pregnantEntity.getClass().getSimpleName());
 			}
-        	
+        		
         	// TODO: Babies itemstacks are only removed if player's hands are empty. It should handle stacking unless itemstack is a baby item.
-        	deadBabiesItemStacks.removeIf(baby -> {
-        		if (pregnantEntity.getItemInHand(InteractionHand.MAIN_HAND).isEmpty()) {
-        			PlayerHelper.replaceAndDropItemstackInHand(pregnantEntity, InteractionHand.MAIN_HAND, baby);
-            		return true;
-        		}
-        		else if (pregnantEntity.getItemInHand(InteractionHand.OFF_HAND).isEmpty()) {
-        			PlayerHelper.replaceAndDropItemstackInHand(pregnantEntity, InteractionHand.OFF_HAND, baby);
-            		return true;
-        		}
-        		return false;
-        	});
-        	    	
-        	if (!deadBabiesItemStacks.isEmpty()) {
-            	deadBabiesItemStacks.forEach(baby -> {
-	        		if(!pregnantEntity.getInventory().add(baby)) 
-	        			EntityHelper.dropItemStack(pregnantEntity, baby);
-            	}); 	
-        	}
-			
+    		if (pregnantEntity.getItemInHand(InteractionHand.MAIN_HAND).isEmpty() && iterator.hasNext()) {        			
+    			PlayerHelper.replaceAndDropItemstackInHand(pregnantEntity, InteractionHand.MAIN_HAND, iterator.next());
+    		}
+    		if (pregnantEntity.getItemInHand(InteractionHand.OFF_HAND).isEmpty() && iterator.hasNext()) {
+    			PlayerHelper.replaceAndDropItemstackInHand(pregnantEntity, InteractionHand.OFF_HAND, iterator.next());
+    		}
+        	
+    		while (iterator.hasNext()) {
+				ItemStack baby = iterator.next();
+				if(!pregnantEntity.getInventory().add(baby)) {
+					EntityHelper.dropItemStack(pregnantEntity, baby);
+				}
+			}
+        			
 			initPostMiscarriage();		
 			MinepreggoMod.LOGGER.debug("Player {} miscarriage has ended.", pregnantEntity.getGameProfile().getName());
 		} else {		

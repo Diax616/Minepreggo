@@ -28,6 +28,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.gossip.GossipType;
 import net.minecraft.world.entity.npc.Villager;
@@ -99,10 +101,10 @@ public class SexHelper {
 					
 		if (!hasEnoughBedsForBreeding(target, 1, 8)) {
 			if (target.getTypeOfCreature() == Creature.HUMANOID) {
-				MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.pregnant.preggo_mob.message.without_beds", target.getSimpleNameOrCustom(), owner.getDisplayName().getString()));
+				MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.preggo_mob.message.without_beds", target.getSimpleNameOrCustom(), owner.getDisplayName().getString()));
 			}
 			else {
-				MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.pregnant.preggo_mob.message.without_beds.monster", target.getSimpleNameOrCustom()));
+				MessageHelper.sendTo(owner, Component.translatable("chat.minepreggo.preggo_mob.message.without_beds.monster", target.getSimpleNameOrCustom()));
 			}
 		}
 		else {
@@ -216,6 +218,11 @@ public class SexHelper {
 					
 					targetMob.getGenderedData().reduceSexualAppetite(5);
 					sourcePlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> cap.getBreedableData().ifPresent(breedableData -> breedableData.reduceSexualAppetite(5)));					
+					
+					sourcePlayer.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 600, 0, false, true, true));
+					sourcePlayer.addEffect(new MobEffectInstance(MobEffects.HUNGER, 1200, 1, false, true, true));
+					targetMob.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 600, 0, false, true, true));
+					
 					PlayerHelper.removeHorny(sourcePlayer);
 				});
 		
@@ -253,6 +260,9 @@ public class SexHelper {
 						capVillager.setMotherPlayer(femalePlayer.getUUID());
 						villager.getGossips().add(femalePlayer.getUUID(), GossipType.MAJOR_POSITIVE, 15);
 					});	
+					femalePlayer.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 600, 0, false, true, true));
+					femalePlayer.addEffect(new MobEffectInstance(MobEffects.HUNGER, 1200, 1, false, true, true));
+					villager.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 600, 0, false, true, true));				
 				})
 			);	
 		};
@@ -303,6 +313,10 @@ public class SexHelper {
 					pregnancyData.setHornyTimer(0);
 					source.getGenderedData().setSexualAppetite(0);
 					PlayerHelper.removeHorny(target);
+					
+					target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 600, 0, false, true, true));
+					target.addEffect(new MobEffectInstance(MobEffects.HUNGER, 1200, 1, false, true, true));
+					source.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 600, 0, false, true, true));	
 				});
 		
 	 	final int totalOverlayTicks = 120;
@@ -318,10 +332,10 @@ public class SexHelper {
     public static void rejectSexRequest(ServerPlayer target, PreggoMob source) {
 		
 		if (source.getTypeOfCreature() == Creature.HUMANOID) {
-			MessageHelper.sendTo(target, Component.translatable("chat.minepreggo.pregnant.preggo_mob.message.rejection_by_its_owner", source.getSimpleNameOrCustom()));
+			MessageHelper.sendTo(target, Component.translatable("chat.minepreggo.preggo_mob.message.rejection_by_its_owner", source.getSimpleNameOrCustom()));
 		}
 		else {
-			MessageHelper.sendTo(target, Component.translatable("chat.minepreggo.pregnant.preggo_mob.message.rejection_by_its_owner.monster", source.getSimpleNameOrCustom()));
+			MessageHelper.sendTo(target, Component.translatable("chat.minepreggo.preggo_mob.message.rejection_by_its_owner.monster", source.getSimpleNameOrCustom()));
 		}
 
 		ServerParticleHelper.spawnRandomlyFromServer(target, ParticleTypes.SMOKE);
@@ -357,7 +371,12 @@ public class SexHelper {
 					targetCap.getBreedableData().ifPresent(breedableData -> {
 						breedableData.setFertilityRate(0);
 						breedableData.reduceSexualAppetite(5);
-					});			
+					});		
+					
+					target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 600, 0, false, true, true));
+					target.addEffect(new MobEffectInstance(MobEffects.HUNGER, 1200, 1, false, true, true));
+					source.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 600, 0, false, true, true));
+					source.addEffect(new MobEffectInstance(MobEffects.HUNGER, 1200, 1, false, true, true));
 				})
 			);
 		};

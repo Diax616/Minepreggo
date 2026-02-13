@@ -32,7 +32,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.network.PlayMessages;
  
-public class IllHumanoidCreeperGirl extends AbstractHostilHumanoidCreeperGirl implements Ill {
+public class IllHumanoidCreeperGirl extends AbstractHostileHumanoidCreeperGirl implements Ill {
 
 	public IllHumanoidCreeperGirl(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.ILL_HUMANOID_CREEPER_GIRL.get(), world);
@@ -63,14 +63,14 @@ public class IllHumanoidCreeperGirl extends AbstractHostilHumanoidCreeperGirl im
 
 	@Override
 	public void tameByIllager(ScientificIllager illagerScientific) {
-		this.setTame(true);
 		this.setOwnerUUID(illagerScientific.getUUID());
+		this.setTame(true);
 	}
 	
 	@Override
 	public void removeIllagerOwner() {
-    	this.setTame(false);	
 		this.setOwnerUUID(null);
+    	this.setTame(false);	
 		Ill.addBehaviourGoalsWhenOwnerDies(this);
 	}
 	
@@ -106,6 +106,7 @@ public class IllHumanoidCreeperGirl extends AbstractHostilHumanoidCreeperGirl im
 	@Override
 	protected void registerGoals() {	
 		addDefaultGoals(this);
+		Ill.addBehaviourGoals(this);
 	}
 
 	@Override
@@ -131,12 +132,11 @@ public class IllHumanoidCreeperGirl extends AbstractHostilHumanoidCreeperGirl im
 		return HumanoidCreeperHelper.createBasicAttributes(0.235);
 	}
 	
-	static<E extends AbstractHostilCreeperGirl & Ill> void addDefaultGoals(E target) {
-    	Ill.addTamableBehaviourGoals(target);
-    	target.goalSelector.addGoal(1, new IllMonsterCreeperGirl.SwellGoal<>(target) {		
+	static<E extends AbstractHostileCreeperGirl & Ill> void addDefaultGoals(E target) {
+    	target.goalSelector.addGoal(1, new AbstractCreeperGirl.SwellGoal<>(target) {		
 			@Override
 			public boolean canUse() {												
-				return super.canUse() && target.canExplode();
+				return super.canUse() && (!target.isTame() || target.getOwner() == null);
 			}
 		});
 		
@@ -148,7 +148,7 @@ public class IllHumanoidCreeperGirl extends AbstractHostilHumanoidCreeperGirl im
     	target.goalSelector.addGoal(7, new LookAtPlayerGoal(target, Player.class, 8.0F));
 	}
 	
-	static<E extends AbstractHostilCreeperGirl & Ill> InteractionResult mobInteract(E target, Player sourceentity, InteractionHand hand) {
+	static<E extends AbstractHostileCreeperGirl & Ill> InteractionResult mobInteract(E target, Player sourceentity, InteractionHand hand) {
 		ItemStack itemstack = sourceentity.getItemInHand(hand);
 		if (itemstack.is(ItemTags.CREEPER_IGNITERS)) {	
 			target.setTarget(sourceentity);

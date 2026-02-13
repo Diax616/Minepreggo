@@ -34,8 +34,11 @@ public class TamableMonsterEnderWomanExpressiveEyesLayer
 		if (enderWoman.hasEffect(MobEffects.CONFUSION)) {
 			return SAD_ENDER_EYES_1;
 		}
-		else if (tamableData.isAngry() || (tamableData.isSavage() && enderWoman.isTame())) {
+		else if ((tamableData.isSavage() && enderWoman.isTame())) {
 			return ANGRY_ENDER_EYES_1;
+		}
+		else if (tamableData.isAngry()) {
+			return ANGRY_ENDER_EYES_2;
 		}
 		else if (tamableData.isWaiting()) {
 			return SAD_ENDER_EYES_2;

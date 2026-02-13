@@ -1,7 +1,8 @@
 package dev.dixmk.minepreggo.world.entity.preggo;
 
-import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Nonnegative;
@@ -13,6 +14,8 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem.Result;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.MonsterCreeperHelper;
 import dev.dixmk.minepreggo.world.item.ICravingItem;
 import dev.dixmk.minepreggo.world.pregnancy.AbstractPregnancySystem;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
@@ -133,7 +136,7 @@ public abstract class PreggoMobPregnancySystemP1
         	pregnancyData.setPregnancyPainTimer(pregnancyData.getPregnancyPainTimer() + 1);	        		        	
         	AbstractPregnancySystem.spawnParticulesForMiscarriage(serverLevel, pregnantEntity);
         } else {      	
-        	final var deadBabiesItemStacks = new ArrayList<>(PregnancySystemHelper.getDeadBabies(pregnancyData.getWomb()));   	
+        	final List<ItemStack> deadBabiesItemStacks = PregnancySystemHelper.getDeadBabies(pregnancyData.getWomb());   	
        		
         	MinepreggoMod.LOGGER.debug("Miscarriage delivering {} dead babies: id={}, class={}",
 					deadBabiesItemStacks.size(), pregnantEntity.getId(), pregnantEntity.getClass().getSimpleName());
@@ -143,21 +146,22 @@ public abstract class PreggoMobPregnancySystemP1
 						pregnantEntity.getId(), pregnantEntity.getClass().getSimpleName());
 			}
         	
+        	InventorySlotMapper slotMapper = pregnantEntity.getInventory().getSlotMapper();
+        	Iterator<ItemStack> slotIterator = deadBabiesItemStacks.iterator();
+        	       	
         	// TODO: Babies itemstacks are only removed if player's hands are empty. It should handle stacking unless itemstack is a baby item.
-        	deadBabiesItemStacks.removeIf(baby -> {
-        		if (pregnantEntity.getItemInHand(InteractionHand.MAIN_HAND).isEmpty()) {
-        			PreggoMobHelper.replaceAndDropItemstackInHand(pregnantEntity, InteractionHand.MAIN_HAND, baby);
-            		return true;
-        		}
-        		else if (pregnantEntity.getItemInHand(InteractionHand.OFF_HAND).isEmpty()) {
-        			PreggoMobHelper.replaceAndDropItemstackInHand(pregnantEntity, InteractionHand.OFF_HAND, baby);
-            		return true;
-        		}
-        		return false;
-        	});
-        	    	
-        	if (!deadBabiesItemStacks.isEmpty()) {
-            	deadBabiesItemStacks.forEach(baby -> PreggoMobHelper.storeItemInExtraSlotsOrDrop(pregnantEntity, baby)); 	
+        	if (slotMapper.hasSlot(InventorySlot.MAINHAND) && slotIterator.hasNext()) {
+        		PreggoMobHelper.replaceAndDropItemstackInHand(pregnantEntity, InteractionHand.MAIN_HAND, slotIterator.next());
+        	}
+        	if (slotMapper.hasSlot(InventorySlot.OFFHAND) && slotIterator.hasNext()) {
+        		 PreggoMobHelper.replaceAndDropItemstackInHand(pregnantEntity, InteractionHand.OFF_HAND, slotIterator.next());	
+        	}  	
+        	if (pregnantEntity instanceof AbstractTamableCreeperGirl creeperGirl && creeperGirl.getTypeOfCreature() == Creature.MONSTER && slotIterator.hasNext()) {
+        		MonsterCreeperHelper.replaceItemstackInMouth(creeperGirl, slotIterator.next());	
+        	}
+        	       	
+        	while (slotIterator.hasNext()) {
+        		PreggoMobHelper.storeItemInExtraSlotsOrDrop(pregnantEntity, slotIterator.next());
         	}
 	    	
         	initPostMiscarriage();	 

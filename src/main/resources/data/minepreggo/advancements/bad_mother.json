@@ -26,9 +26,11 @@
                      "minepreggo:baby_creeper",
                      "minepreggo:baby_humanoid_ender",
 					 "minepreggo:baby_ender",
-				 	 "minepreggo:baby_villager"]
+				 	 "minepreggo:baby_villager",
+				 	 "minepreggo:baby_ender_dragon_block"]
 	    },
-		"baby": {
+		"source": {
+			"gender": "FEMALE",
 			"verify_parent": true
 		}
 	  }

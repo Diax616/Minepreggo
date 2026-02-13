@@ -42,33 +42,38 @@ import dev.dixmk.minepreggo.init.MinepreggoModVillagerProfessions;
 import dev.dixmk.minepreggo.network.capability.PlayerDataImpl;
 import dev.dixmk.minepreggo.network.capability.VillagerDataImpl;
 import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractHostilCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractHostileCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.IllHumanoidCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.IllMonsterCreeperGirl;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.HostilHumanoidCreeperGirl;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.HostilMonsterCreeperGirl;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.HostilPregnantHumanoidCreeperGirl;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.HostilPregnantMonsterCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.HostileHumanoidCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.HostileMonsterCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.HostilePregnantHumanoidCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.HostilePregnantMonsterCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableHumanoidCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableMonsterCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamablePregnantHumanoidCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamablePregnantMonsterCreeperGirl;
-import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractHostilEnderWoman;
-import dev.dixmk.minepreggo.world.entity.preggo.ender.HostilPregnantMonsterEnderWoman;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractHostileEnderWoman;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.HostilePregnantMonsterEnderWoman;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.IllMonsterEnderWoman;
-import dev.dixmk.minepreggo.world.entity.preggo.ender.HostilMonsterEnderWoman;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.HostileMonsterEnderWoman;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.TamableMonsterEnderWoman;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.TamablePregnantMonsterEnderWoman;
-import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractHostilZombieGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractHostileZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.IllZombieGirl;
-import dev.dixmk.minepreggo.world.entity.preggo.zombie.HostilPregnantZombieGirl;
-import dev.dixmk.minepreggo.world.entity.preggo.zombie.HostilZombieGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.zombie.HostilePregnantZombieGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.zombie.HostileZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirl;
 import dev.dixmk.minepreggo.world.item.alchemy.CreeperImpregnationPotionBrewingRecipe;
+import dev.dixmk.minepreggo.world.item.alchemy.EnderDragonImpregnationPotionBrewingRecipe;
 import dev.dixmk.minepreggo.world.item.alchemy.EnderImpregnationPotionBrewingRecipe;
+import dev.dixmk.minepreggo.world.item.alchemy.EnderPowerfulImpregnationPotionBrewingRecipe;
 import dev.dixmk.minepreggo.world.item.alchemy.ImpregnationPotionBrewingRecipe;
 import dev.dixmk.minepreggo.world.item.alchemy.PregnancyHealingBrewingRecipe;
+import dev.dixmk.minepreggo.world.item.alchemy.PregnancyResistancePotionBrewingRecipe;
+import dev.dixmk.minepreggo.world.item.alchemy.VillagerImpregnationPotionBrewingRecipe;
+import dev.dixmk.minepreggo.world.item.alchemy.ZeroGravityBellyPotionBrewingRecipe;
 import dev.dixmk.minepreggo.world.item.alchemy.ZombieImpregnationPotionBrewingRecipe;
 
 import org.apache.logging.log4j.LogManager;
@@ -132,97 +137,97 @@ public class MinepreggoMod {
         		MinepreggoModEntities.HOSTILE_HUMANOID_CREEPER_GIRL.get(),
         		SpawnPlacements.Type.ON_GROUND,
         		Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-        		AbstractHostilCreeperGirl::checkSpawnRules,
+        		AbstractHostileCreeperGirl::checkSpawnRules,
         		SpawnPlacementRegisterEvent.Operation.OR);
 		event.register(
         		MinepreggoModEntities.HOSTILE_HUMANOID_CREEPER_GIRL_P3.get(),
         		SpawnPlacements.Type.ON_GROUND,
         		Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-        		HostilPregnantHumanoidCreeperGirl::checkSpawnRules,
+        		HostilePregnantHumanoidCreeperGirl::checkSpawnRules,
         		SpawnPlacementRegisterEvent.Operation.OR);
 		event.register(
         		MinepreggoModEntities.HOSTILE_HUMANOID_CREEPER_GIRL_P5.get(),
         		SpawnPlacements.Type.ON_GROUND,
         		Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-        		HostilPregnantHumanoidCreeperGirl::checkSpawnRules,
+        		HostilePregnantHumanoidCreeperGirl::checkSpawnRules,
         		SpawnPlacementRegisterEvent.Operation.OR);
 		event.register(
         		MinepreggoModEntities.HOSTILE_HUMANOID_CREEPER_GIRL_P7.get(),
         		SpawnPlacements.Type.ON_GROUND,
         		Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-        		HostilPregnantHumanoidCreeperGirl::checkSpawnRules,
+        		HostilePregnantHumanoidCreeperGirl::checkSpawnRules,
         		SpawnPlacementRegisterEvent.Operation.OR);
 		event.register(
         		MinepreggoModEntities.HOSTILE_ZOMBIE_GIRL.get(),
         		SpawnPlacements.Type.ON_GROUND,
         		Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-        		AbstractHostilZombieGirl::checkSpawnRules,
+        		AbstractHostileZombieGirl::checkSpawnRules,
         		SpawnPlacementRegisterEvent.Operation.OR);
 		event.register(
         		MinepreggoModEntities.HOSTILE_ZOMBIE_GIRL_P3.get(),
         		SpawnPlacements.Type.ON_GROUND,
         		Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-        		HostilPregnantZombieGirl::checkSpawnRules,
+        		HostilePregnantZombieGirl::checkSpawnRules,
         		SpawnPlacementRegisterEvent.Operation.OR);
 		event.register(
         		MinepreggoModEntities.HOSTILE_ZOMBIE_GIRL_P5.get(),
         		SpawnPlacements.Type.ON_GROUND,
         		Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-        		HostilPregnantZombieGirl::checkSpawnRules,
+        		HostilePregnantZombieGirl::checkSpawnRules,
         		SpawnPlacementRegisterEvent.Operation.OR);
 		event.register(
         		MinepreggoModEntities.HOSTILE_ZOMBIE_GIRL_P7.get(),
         		SpawnPlacements.Type.ON_GROUND,
         		Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-        		HostilPregnantZombieGirl::checkSpawnRules,
+        		HostilePregnantZombieGirl::checkSpawnRules,
         		SpawnPlacementRegisterEvent.Operation.OR);			
 		event.register(
         		MinepreggoModEntities.HOSTILE_MONSTER_ENDER_WOMAN.get(),
         		SpawnPlacements.Type.NO_RESTRICTIONS,
         		Heightmap.Types.WORLD_SURFACE,
-        		AbstractHostilEnderWoman::checkSpawnRules,
+        		AbstractHostileEnderWoman::checkSpawnRules,
         		SpawnPlacementRegisterEvent.Operation.REPLACE);	
 		event.register(
         		MinepreggoModEntities.HOSTILE_PREGNANT_MONSTER_ENDER_WOMAN_P3.get(),
         		SpawnPlacements.Type.NO_RESTRICTIONS,
         		Heightmap.Types.WORLD_SURFACE,
-        		HostilPregnantMonsterEnderWoman::checkSpawnRules,
+        		HostilePregnantMonsterEnderWoman::checkSpawnRules,
         		SpawnPlacementRegisterEvent.Operation.REPLACE);	
 		event.register(
         		MinepreggoModEntities.HOSTILE_PREGNANT_MONSTER_ENDER_WOMAN_P5.get(),
         		SpawnPlacements.Type.NO_RESTRICTIONS,
         		Heightmap.Types.WORLD_SURFACE,
-        		HostilPregnantMonsterEnderWoman::checkSpawnRules,
+        		HostilePregnantMonsterEnderWoman::checkSpawnRules,
         		SpawnPlacementRegisterEvent.Operation.REPLACE);	
 		event.register(
         		MinepreggoModEntities.HOSTILE_PREGNANT_MONSTER_ENDER_WOMAN_P7.get(),
         		SpawnPlacements.Type.NO_RESTRICTIONS,
         		Heightmap.Types.WORLD_SURFACE,
-        		HostilPregnantMonsterEnderWoman::checkSpawnRules,
+        		HostilePregnantMonsterEnderWoman::checkSpawnRules,
         		SpawnPlacementRegisterEvent.Operation.REPLACE);		
 		event.register(
         		MinepreggoModEntities.HOSTILE_MONSTER_CREEPER_GIRL.get(),
         		SpawnPlacements.Type.ON_GROUND,
         		Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-        		AbstractHostilCreeperGirl::checkSpawnRules,
+        		AbstractHostileCreeperGirl::checkSpawnRules,
         		SpawnPlacementRegisterEvent.Operation.OR);	
 		event.register(
         		MinepreggoModEntities.HOSTILE_PREGNANT_MONSTER_CREEPER_GIRL_P3.get(),
         		SpawnPlacements.Type.ON_GROUND,
         		Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-        		HostilPregnantMonsterCreeperGirl::checkSpawnRules,
+        		HostilePregnantMonsterCreeperGirl::checkSpawnRules,
         		SpawnPlacementRegisterEvent.Operation.OR);	
 		event.register(
         		MinepreggoModEntities.HOSTILE_PREGNANT_MONSTER_CREEPER_GIRL_P5.get(),
         		SpawnPlacements.Type.ON_GROUND,
         		Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-        		HostilPregnantMonsterCreeperGirl::checkSpawnRules,
+        		HostilePregnantMonsterCreeperGirl::checkSpawnRules,
         		SpawnPlacementRegisterEvent.Operation.OR);	
 		event.register(
         		MinepreggoModEntities.HOSTILE_PREGNANT_MONSTER_CREEPER_GIRL_P7.get(),
         		SpawnPlacements.Type.ON_GROUND,
         		Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-        		HostilPregnantMonsterCreeperGirl::checkSpawnRules,
+        		HostilePregnantMonsterCreeperGirl::checkSpawnRules,
         		SpawnPlacementRegisterEvent.Operation.OR);	
 		event.register(
         		MinepreggoModEntities.FERTILITY_WITCH.get(),
@@ -233,10 +238,10 @@ public class MinepreggoMod {
     }
 	
 	private void registerAttributes(EntityAttributeCreationEvent event) {
-		event.put(MinepreggoModEntities.HOSTILE_ZOMBIE_GIRL.get(), HostilZombieGirl.createAttributes().build());
-		event.put(MinepreggoModEntities.HOSTILE_ZOMBIE_GIRL_P3.get(), HostilPregnantZombieGirl.MonsterZombieGirlP3.createAttributes().build());
-		event.put(MinepreggoModEntities.HOSTILE_ZOMBIE_GIRL_P5.get(), HostilPregnantZombieGirl.MonsterZombieGirlP5.createAttributes().build());
-		event.put(MinepreggoModEntities.HOSTILE_ZOMBIE_GIRL_P7.get(), HostilPregnantZombieGirl.MonsterZombieGirlP7.createAttributes().build());
+		event.put(MinepreggoModEntities.HOSTILE_ZOMBIE_GIRL.get(), HostileZombieGirl.createAttributes().build());
+		event.put(MinepreggoModEntities.HOSTILE_ZOMBIE_GIRL_P3.get(), HostilePregnantZombieGirl.MonsterZombieGirlP3.createAttributes().build());
+		event.put(MinepreggoModEntities.HOSTILE_ZOMBIE_GIRL_P5.get(), HostilePregnantZombieGirl.MonsterZombieGirlP5.createAttributes().build());
+		event.put(MinepreggoModEntities.HOSTILE_ZOMBIE_GIRL_P7.get(), HostilePregnantZombieGirl.MonsterZombieGirlP7.createAttributes().build());
 		event.put(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL.get(), TamableZombieGirl.createAttributes().build());
 		event.put(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P0.get(), TamablePregnantZombieGirl.TamableZombieGirlP0.createAttributes().build());
 		event.put(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P1.get(), TamablePregnantZombieGirl.TamableZombieGirlP1.createAttributes().build());
@@ -248,10 +253,10 @@ public class MinepreggoMod {
 		event.put(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P7.get(), TamablePregnantZombieGirl.TamableZombieGirlP7.createAttributes().build());
 		event.put(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P8.get(), TamablePregnantZombieGirl.TamableZombieGirlP8.createAttributes().build());
 	
-		event.put(MinepreggoModEntities.HOSTILE_HUMANOID_CREEPER_GIRL.get(), HostilHumanoidCreeperGirl.createAttributes().build());
-		event.put(MinepreggoModEntities.HOSTILE_HUMANOID_CREEPER_GIRL_P3.get(), HostilPregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP3.createAttributes().build());
-		event.put(MinepreggoModEntities.HOSTILE_HUMANOID_CREEPER_GIRL_P5.get(), HostilPregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP5.createAttributes().build());
-		event.put(MinepreggoModEntities.HOSTILE_HUMANOID_CREEPER_GIRL_P7.get(), HostilPregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP7.createAttributes().build());	
+		event.put(MinepreggoModEntities.HOSTILE_HUMANOID_CREEPER_GIRL.get(), HostileHumanoidCreeperGirl.createAttributes().build());
+		event.put(MinepreggoModEntities.HOSTILE_HUMANOID_CREEPER_GIRL_P3.get(), HostilePregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP3.createAttributes().build());
+		event.put(MinepreggoModEntities.HOSTILE_HUMANOID_CREEPER_GIRL_P5.get(), HostilePregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP5.createAttributes().build());
+		event.put(MinepreggoModEntities.HOSTILE_HUMANOID_CREEPER_GIRL_P7.get(), HostilePregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP7.createAttributes().build());	
 		event.put(MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL.get(), TamableHumanoidCreeperGirl.createAttributes().build());
 		event.put(MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P0.get(), TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP0.createAttributes().build());
 		event.put(MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P1.get(), TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP1.createAttributes().build());
@@ -263,10 +268,10 @@ public class MinepreggoMod {
 		event.put(MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P7.get(), TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP7.createAttributes().build());
 		event.put(MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P8.get(), TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP8.createAttributes().build());
 
-		event.put(MinepreggoModEntities.HOSTILE_MONSTER_CREEPER_GIRL.get(), HostilMonsterCreeperGirl.createAttributes().build());
-		event.put(MinepreggoModEntities.HOSTILE_PREGNANT_MONSTER_CREEPER_GIRL_P3.get(), HostilPregnantMonsterCreeperGirl.MonsterCreeperGirlP3.createAttributes().build());
-		event.put(MinepreggoModEntities.HOSTILE_PREGNANT_MONSTER_CREEPER_GIRL_P5.get(), HostilPregnantMonsterCreeperGirl.MonsterCreeperGirlP5.createAttributes().build());
-		event.put(MinepreggoModEntities.HOSTILE_PREGNANT_MONSTER_CREEPER_GIRL_P7.get(), HostilPregnantMonsterCreeperGirl.MonsterCreeperGirlP7.createAttributes().build());
+		event.put(MinepreggoModEntities.HOSTILE_MONSTER_CREEPER_GIRL.get(), HostileMonsterCreeperGirl.createAttributes().build());
+		event.put(MinepreggoModEntities.HOSTILE_PREGNANT_MONSTER_CREEPER_GIRL_P3.get(), HostilePregnantMonsterCreeperGirl.MonsterCreeperGirlP3.createAttributes().build());
+		event.put(MinepreggoModEntities.HOSTILE_PREGNANT_MONSTER_CREEPER_GIRL_P5.get(), HostilePregnantMonsterCreeperGirl.MonsterCreeperGirlP5.createAttributes().build());
+		event.put(MinepreggoModEntities.HOSTILE_PREGNANT_MONSTER_CREEPER_GIRL_P7.get(), HostilePregnantMonsterCreeperGirl.MonsterCreeperGirlP7.createAttributes().build());
 		event.put(MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL.get(), TamableMonsterCreeperGirl.createAttributes().build());
 		event.put(MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL_P0.get(), TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP0.createAttributes().build());
 		event.put(MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL_P1.get(), TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP1.createAttributes().build());
@@ -278,10 +283,10 @@ public class MinepreggoMod {
 		event.put(MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL_P7.get(), TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP7.createAttributes().build());
 		event.put(MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL_P8.get(), TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP8.createAttributes().build());
 
-		event.put(MinepreggoModEntities.HOSTILE_MONSTER_ENDER_WOMAN.get(), HostilMonsterEnderWoman.createAttributes().build());
-		event.put(MinepreggoModEntities.HOSTILE_PREGNANT_MONSTER_ENDER_WOMAN_P3.get(), HostilPregnantMonsterEnderWoman.MonsterEnderWomanP3.createAttributes().build());
-		event.put(MinepreggoModEntities.HOSTILE_PREGNANT_MONSTER_ENDER_WOMAN_P5.get(), HostilPregnantMonsterEnderWoman.MonsterEnderWomanP5.createAttributes().build());
-		event.put(MinepreggoModEntities.HOSTILE_PREGNANT_MONSTER_ENDER_WOMAN_P7.get(), HostilPregnantMonsterEnderWoman.MonsterEnderWomanP7.createAttributes().build());
+		event.put(MinepreggoModEntities.HOSTILE_MONSTER_ENDER_WOMAN.get(), HostileMonsterEnderWoman.createAttributes().build());
+		event.put(MinepreggoModEntities.HOSTILE_PREGNANT_MONSTER_ENDER_WOMAN_P3.get(), HostilePregnantMonsterEnderWoman.MonsterEnderWomanP3.createAttributes().build());
+		event.put(MinepreggoModEntities.HOSTILE_PREGNANT_MONSTER_ENDER_WOMAN_P5.get(), HostilePregnantMonsterEnderWoman.MonsterEnderWomanP5.createAttributes().build());
+		event.put(MinepreggoModEntities.HOSTILE_PREGNANT_MONSTER_ENDER_WOMAN_P7.get(), HostilePregnantMonsterEnderWoman.MonsterEnderWomanP7.createAttributes().build());
 		event.put(MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN.get(), TamableMonsterEnderWoman.createAttributes().build());
 		event.put(MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P0.get(), TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP0.createAttributes().build());
 		event.put(MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P1.get(), TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP1.createAttributes().build());
@@ -424,12 +429,22 @@ public class MinepreggoMod {
         	BrewingRecipeRegistry.addRecipe(new ZombieImpregnationPotionBrewingRecipe.A2());
         	BrewingRecipeRegistry.addRecipe(new ZombieImpregnationPotionBrewingRecipe.A3());
         	BrewingRecipeRegistry.addRecipe(new ZombieImpregnationPotionBrewingRecipe.A4());
+        	BrewingRecipeRegistry.addRecipe(new VillagerImpregnationPotionBrewingRecipe.A0());
+        	BrewingRecipeRegistry.addRecipe(new VillagerImpregnationPotionBrewingRecipe.A1());
+        	BrewingRecipeRegistry.addRecipe(new VillagerImpregnationPotionBrewingRecipe.A2());
+        	BrewingRecipeRegistry.addRecipe(new VillagerImpregnationPotionBrewingRecipe.A3());
+        	BrewingRecipeRegistry.addRecipe(new VillagerImpregnationPotionBrewingRecipe.A4());
         	BrewingRecipeRegistry.addRecipe(new ImpregnationPotionBrewingRecipe.A0());
         	BrewingRecipeRegistry.addRecipe(new ImpregnationPotionBrewingRecipe.A1());
         	BrewingRecipeRegistry.addRecipe(new ImpregnationPotionBrewingRecipe.A2());
         	BrewingRecipeRegistry.addRecipe(new ImpregnationPotionBrewingRecipe.A3());
         	BrewingRecipeRegistry.addRecipe(new ImpregnationPotionBrewingRecipe.A4());
         	BrewingRecipeRegistry.addRecipe(new PregnancyHealingBrewingRecipe());
+        	BrewingRecipeRegistry.addRecipe(new PregnancyResistancePotionBrewingRecipe());
+        	BrewingRecipeRegistry.addRecipe(new ZeroGravityBellyPotionBrewingRecipe());
+        	BrewingRecipeRegistry.addRecipe(new EnderPowerfulImpregnationPotionBrewingRecipe());
+        	BrewingRecipeRegistry.addRecipe(new EnderDragonImpregnationPotionBrewingRecipe());
+    	
             ComposterBlock.COMPOSTABLES.put(MinepreggoModItems.CHILI_PEPPER.get(), 0.6f);
             ComposterBlock.COMPOSTABLES.put(MinepreggoModItems.CUCUMBER.get(), 0.7f);
             ComposterBlock.COMPOSTABLES.put(MinepreggoModItems.LEMON.get(), 0.6f);

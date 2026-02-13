@@ -19,6 +19,7 @@ public class TamableMonsterEnderWomanExpressionLayer
 	<E extends AbstractTamableEnderWoman, M extends AbstractTamableMonsterEnderWomanModel<E>> extends ExpressiveFaceLayer<E, M> {
 
 	protected static final RenderType ANGRY_MASK = RenderType.entityCutoutNoCull(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/ender/monster/expressions/monster_ender_woman_face_angry.png"));
+	protected static final RenderType ANGRY_AND_BLUSHED_MASK = RenderType.entityCutoutNoCull(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/ender/monster/expressions/monster_ender_woman_face_angry_and_blushed.png"));
 	protected static final RenderType SAD_MASK = RenderType.entityCutoutNoCull(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/ender/monster/expressions/monster_ender_woman_face_sad.png"));
 	protected static final RenderType VERY_SAD_MASK = RenderType.entityCutoutNoCull(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/ender/monster/expressions/monster_ender_woman_face_very_sad.png"));
 	protected static final RenderType SUPRISED_MASK = RenderType.entityCutoutNoCull(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/ender/monster/expressions/monster_ender_woman_face_surprised.png"));
@@ -33,9 +34,12 @@ public class TamableMonsterEnderWomanExpressionLayer
 		if (enderWoman.hasEffect(MobEffects.CONFUSION)) {
 			return SAD_MASK;
 		}
-		if ((tamableData.isSavage() && enderWoman.isTame()) || tamableData.isAngry()) {		
+		if (tamableData.isSavage() && enderWoman.isTame()) {		
 			return ANGRY_MASK;
 		}	
+		else if (tamableData.isAngry()) {
+			return ANGRY_AND_BLUSHED_MASK;
+		}
 		else if (tamableData.getFaceState() == PreggoMobFace.BLUSHED) {
 			return BLUSHED_MASK;
 		}

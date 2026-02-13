@@ -6,7 +6,7 @@ import dev.dixmk.minepreggo.client.model.entity.preggo.ender.AbstractMonsterEnde
 import dev.dixmk.minepreggo.client.model.entity.preggo.ender.MonsterEnderWomanModel;
 import dev.dixmk.minepreggo.client.renderer.entity.layer.ExpressiveEyesLayer;
 import dev.dixmk.minepreggo.client.renderer.entity.layer.ExpressiveFaceLayer;
-import dev.dixmk.minepreggo.world.entity.preggo.ender.HostilMonsterEnderWoman;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.HostileMonsterEnderWoman;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
@@ -14,7 +14,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MonsterlEnderWomanRenderer extends AbstractHostilMonsterEnderWomanRenderer<HostilMonsterEnderWoman, MonsterEnderWomanModel> {
+public class MonsterlEnderWomanRenderer extends AbstractHostileMonsterEnderWomanRenderer<HostileMonsterEnderWoman, MonsterEnderWomanModel> {
 
 	public MonsterlEnderWomanRenderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter) {
 		super(context, new MonsterEnderWomanModel(context.bakeLayer(main)), new MonsterEnderWomanModel(context.bakeLayer(inner)), new MonsterEnderWomanModel(context.bakeLayer(outter)));
@@ -25,12 +25,12 @@ public class MonsterlEnderWomanRenderer extends AbstractHostilMonsterEnderWomanR
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(HostilMonsterEnderWoman p_115812_) {
+	public ResourceLocation getTextureLocation(HostileMonsterEnderWoman p_115812_) {
 		return MONSTER_ENDER_GIRL_LOCATION;
 	}
 
 	@Override
-	protected ImmutablePair<ExpressiveFaceLayer<HostilMonsterEnderWoman, MonsterEnderWomanModel>, ExpressiveEyesLayer<HostilMonsterEnderWoman, MonsterEnderWomanModel>> createExpressionLayers() {
+	protected ImmutablePair<ExpressiveFaceLayer<HostileMonsterEnderWoman, MonsterEnderWomanModel>, ExpressiveEyesLayer<HostileMonsterEnderWoman, MonsterEnderWomanModel>> createExpressionLayers() {
 		return null;
 	}
 }

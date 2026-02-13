@@ -21,7 +21,7 @@ import net.minecraft.server.level.ServerLevel;
 
 import javax.annotation.Nullable;
 
-public class IllMonsterCreeperGirl extends AbstractHostilMonsterCreeperGirl implements Ill {
+public class IllMonsterCreeperGirl extends AbstractHostileMonsterCreeperGirl implements Ill {
 
 	public IllMonsterCreeperGirl(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.ILL_CREEPER_GIRL.get(), world);
@@ -47,14 +47,14 @@ public class IllMonsterCreeperGirl extends AbstractHostilMonsterCreeperGirl impl
 
 	@Override
 	public void tameByIllager(ScientificIllager illagerScientific) {
-		this.setTame(true);
 		this.setOwnerUUID(illagerScientific.getUUID());
+		this.setTame(true);
 	}
 	
 	@Override
 	public void removeIllagerOwner() {
-    	this.setTame(false);	
 		this.setOwnerUUID(null);
+    	this.setTame(false);	
 		Ill.addBehaviourGoalsWhenOwnerDies(this);
 	}
 	
@@ -89,6 +89,7 @@ public class IllMonsterCreeperGirl extends AbstractHostilMonsterCreeperGirl impl
 	
 	@Override
 	protected void registerGoals() {	
+		Ill.addBehaviourGoals(this);
 		IllHumanoidCreeperGirl.addDefaultGoals(this);
 	}
 

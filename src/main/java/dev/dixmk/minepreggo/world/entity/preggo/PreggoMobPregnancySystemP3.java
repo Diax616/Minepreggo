@@ -114,11 +114,6 @@ public abstract class PreggoMobPregnancySystemP3
 	}
 	
 	@Override
-	public boolean canBeAngry() {
-		return super.canBeAngry() || pregnantEntity.getPregnancyData().getBellyRubs() >= PregnancySystemHelper.MAX_BELLY_RUBBING_LEVEL;
-	}
-	
-	@Override
 	protected Result evaluateBellyRubs(Level level, Player source) {		
 		super.evaluateBellyRubs(level, source);	
 		final var pregnancyData = pregnantEntity.getPregnancyData();

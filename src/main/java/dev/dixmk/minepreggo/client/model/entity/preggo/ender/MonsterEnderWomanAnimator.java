@@ -10,7 +10,7 @@ import dev.dixmk.minepreggo.client.animation.preggo.MonsterEnderWomanAnimation;
 import dev.dixmk.minepreggo.client.animation.preggo.FetalMovementIntensity;
 import dev.dixmk.minepreggo.client.model.entity.preggo.PregnantPreggoMobAnimator;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractEnderWoman;
-import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractHostilPregnantEnderWoman;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractHostilePregnantEnderWoman;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractTamableEnderWoman;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractTamablePregnantEnderWoman;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
@@ -71,7 +71,7 @@ public abstract class MonsterEnderWomanAnimator<T extends AbstractEnderWoman> ex
 	}
 	
     @OnlyIn(Dist.CLIENT)
-	public static class HostilPregnantEnderWomanAnimator<E extends AbstractHostilPregnantEnderWoman> extends MonsterEnderWomanAnimator<E> {
+	public static class HostilPregnantEnderWomanAnimator<E extends AbstractHostilePregnantEnderWoman> extends MonsterEnderWomanAnimator<E> {
   		private final BellyInflation bellyInflation;
   		private final @Nullable FetalMovementIntensity fetalMovementIntensity;
   			

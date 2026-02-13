@@ -31,7 +31,7 @@ public class TamableMonsterCreeperGirlExpressionLayer
 			return SAD3;
 		}
 		else if (tamableData.isAngry()) {
-			return ANGRY1;
+			return ANGRY2;
 		}
 		else if (tamableData.getFaceState() == PreggoMobFace.BLUSHED) {
 			return HORNY2;

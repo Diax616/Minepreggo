@@ -35,6 +35,7 @@ import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
@@ -105,6 +106,11 @@ public abstract class AbstractTamableEnderWoman extends AbstractEnderWoman imple
 	@Override
 	public boolean canBreakBlocks() {
 		return this.breakBlocks;
+	}
+	
+	@Override
+	public boolean canBeLeashed(Player p_21813_) {
+		return super.canBeLeashed(p_21813_) && !this.tamablePreggoMobData.isSavage();
 	}
 	
 	@Override
@@ -239,6 +245,7 @@ public abstract class AbstractTamableEnderWoman extends AbstractEnderWoman imple
 		boolean result = super.doHurtTarget(target);	
 		if (result && !this.level().isClientSide) {
 			PreggoMobHelper.tryToDamageItemOnMainHand(this);
+			this.tamablePreggoMobSystem.onDoHurtTargetSuccessful(target);		
 		}
 		return result;
 	}
@@ -269,7 +276,14 @@ public abstract class AbstractTamableEnderWoman extends AbstractEnderWoman imple
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new AbstractEnderWoman.EnderWomanFreezeWhenLookedAt(this));       
 		this.goalSelector.addGoal(10, new AbstractEnderWoman.EnderWomanLeaveBlockGoal(this));
-        this.goalSelector.addGoal(11, new AbstractEnderWoman.EnderWomanTakeBlockGoal(this));
+        this.goalSelector.addGoal(11, new AbstractEnderWoman.EnderWomanTakeBlockGoal(this) {
+            @Override
+            public boolean canUse() {
+            	return super.canUse()
+            			&& abstractEnderWoman.getItemBySlot(EquipmentSlot.MAINHAND).isEmpty()
+            			&& abstractEnderWoman.getItemBySlot(EquipmentSlot.OFFHAND).isEmpty();
+            }
+        });
         this.targetSelector.addGoal(4, new ResetUniversalAngerTargetGoal<>(this, false));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Endermite.class, true, false) {
 			@Override
@@ -413,6 +427,10 @@ public abstract class AbstractTamableEnderWoman extends AbstractEnderWoman imple
 		return false;
 	}
    
+	public boolean canBeMountedBy(LivingEntity target) {
+		return false;
+	}
+	
     public static void syncBlockToInventory(AbstractTamableEnderWoman enderWoman) {
         Inventory inventory = enderWoman.getInventory();
     	InventorySlotMapper slotMapper = inventory.getSlotMapper();

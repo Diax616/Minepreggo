@@ -37,16 +37,18 @@ public class TamableMonsterEnderWoman extends AbstractTamableMonsterEnderWoman i
 		@Override
 		protected void startPregnancy() {		
 			if (preggoMob.level() instanceof ServerLevel serverLevel && !serverLevel.isClientSide) {
-				var creeperGirl = MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P0.get().spawn(serverLevel, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), MobSpawnType.CONVERSION);		
-				LivingEntityHelper.copyRotation(preggoMob, creeperGirl);
-				PreggoMobHelper.copyOwner(preggoMob, creeperGirl);
-				LivingEntityHelper.copyHealth(preggoMob, creeperGirl);
-				EntityHelper.copyName(preggoMob, creeperGirl);
-				PreggoMobHelper.copyTamableData(preggoMob, creeperGirl);				
-				PreggoMobHelper.transferInventory(preggoMob, creeperGirl);					
-				LivingEntityHelper.transferAttackTarget(preggoMob, creeperGirl);
-				LivingEntityHelper.copyMobEffects(preggoMob, creeperGirl);
-				PreggoMobHelper.initPregnancy(creeperGirl);
+				TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP0 enderWoman = MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P0.get().spawn(serverLevel, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), MobSpawnType.CONVERSION);		
+				LivingEntityHelper.copyRotation(preggoMob, enderWoman);
+				PreggoMobHelper.copyOwner(preggoMob, enderWoman);
+				LivingEntityHelper.copyHealth(preggoMob, enderWoman);
+				EntityHelper.copyName(preggoMob, enderWoman);
+				PreggoMobHelper.copyTamableData(preggoMob, enderWoman);				
+				PreggoMobHelper.transferInventory(preggoMob, enderWoman);					
+				LivingEntityHelper.transferAttackTarget(preggoMob, enderWoman);
+				LivingEntityHelper.copyMobEffects(preggoMob, enderWoman);
+				enderWoman.setCarriedBlock(preggoMob.getCarriedBlock());
+				syncBlockToInventory(enderWoman);
+				PreggoMobHelper.initPregnancy(enderWoman);				
 			}			
 		}
 
@@ -125,6 +127,8 @@ public class TamableMonsterEnderWoman extends AbstractTamableMonsterEnderWoman i
 			PreggoMobHelper.transferInventory(source, enderWoman);
 			LivingEntityHelper.transferAttackTarget(source, enderWoman);	
 			enderWoman.getTamableData().setBodyState(null);
+			enderWoman.setCarriedBlock(source.getCarriedBlock());
+			syncBlockToInventory(enderWoman);
 			
 			if (!enderWoman.getGenderedData().tryActivatePostPregnancyPhase(PostPregnancy.PARTUM)) {
 				source.discard();
@@ -147,6 +151,8 @@ public class TamableMonsterEnderWoman extends AbstractTamableMonsterEnderWoman i
 			LivingEntityHelper.copyMobEffects(source, enderWoman);
 			PreggoMobHelper.transferInventory(source, enderWoman);
 			LivingEntityHelper.transferAttackTarget(source, enderWoman);
+			enderWoman.setCarriedBlock(source.getCarriedBlock());
+			syncBlockToInventory(enderWoman);
 			
 			if (!enderWoman.getGenderedData().tryActivatePostPregnancyPhase(PostPregnancy.MISCARRIAGE)) {
 				source.discard();

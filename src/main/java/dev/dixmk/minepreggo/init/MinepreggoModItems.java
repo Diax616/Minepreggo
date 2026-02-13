@@ -19,6 +19,10 @@ import dev.dixmk.minepreggo.world.item.BrainWithSaltItem;
 import dev.dixmk.minepreggo.world.item.CandyAppleItem;
 import dev.dixmk.minepreggo.world.item.ChiliPoppersItem;
 import dev.dixmk.minepreggo.world.item.ChocolateBarItem;
+import dev.dixmk.minepreggo.world.item.ChorusFruitWithChocolateItem;
+import dev.dixmk.minepreggo.world.item.ChorusFruitWithHotSauceItem;
+import dev.dixmk.minepreggo.world.item.ChorusFruitWithSaltItem;
+import dev.dixmk.minepreggo.world.item.ConcentratedEnderLifeSubstanceItem;
 import dev.dixmk.minepreggo.world.item.CreeperBreastMilkBottleItem;
 import dev.dixmk.minepreggo.world.item.CumSpecimenTubeItem;
 import dev.dixmk.minepreggo.world.item.DeadEnderFetusItem;
@@ -58,6 +62,7 @@ import dev.dixmk.minepreggo.world.item.SaltItem;
 import dev.dixmk.minepreggo.world.item.SaltyWaterBottleItem;
 import dev.dixmk.minepreggo.world.item.SourActivatedGunpowderItem;
 import dev.dixmk.minepreggo.world.item.SourBrainItem;
+import dev.dixmk.minepreggo.world.item.SourChorusFruit;
 import dev.dixmk.minepreggo.world.item.SourEnderSlimeJellyItem;
 import dev.dixmk.minepreggo.world.item.SpecimenTubeItem;
 import dev.dixmk.minepreggo.world.item.VillagerBrainItem;
@@ -69,7 +74,6 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemNameBlockItem;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -187,6 +191,11 @@ public class MinepreggoModItems {
 	public static final RegistryObject<Item> SOUR_ENDER_SLIME_JELLY = REGISTRY.register("sour_ender_slime_jelly", SourEnderSlimeJellyItem::new);
 	public static final RegistryObject<Item> REFINED_CHORUS_SHARDS = REGISTRY.register("refined_chorus_shards", RefinedChorusShardsItem::new);
 
+	public static final RegistryObject<Item> CHORUS_FRUIT_WITH_CHOCOLATE = REGISTRY.register("chorus_fruit_with_chocolate", ChorusFruitWithChocolateItem::new);
+	public static final RegistryObject<Item> CHORUS_FRUIT_WITH_HOT_SAUCE = REGISTRY.register("chorus_fruit_with_hot_sauce", ChorusFruitWithHotSauceItem::new);
+	public static final RegistryObject<Item> CHORUS_FRUIT_WITH_SALT = REGISTRY.register("chorus_fruit_with_salt", ChorusFruitWithSaltItem::new);
+	public static final RegistryObject<Item> SOUR_CHORUS_FRUIT = REGISTRY.register("sour_chorus_fruit", SourChorusFruit::new);
+
 	public static final RegistryObject<Item> FEMALE_CHAINMAIL_P0_CHESTPLATE = REGISTRY.register("female_chainmail_p0_chestplate", FemaleChainmailChestPlateItem.ChestplateP0::new);
 	public static final RegistryObject<Item> FEMALE_IRON_P0_CHESTPLATE = REGISTRY.register("female_iron_p0_chestplate", FemaleIronChestPlateItem.ChestplateP0::new);
 	public static final RegistryObject<Item> FEMALE_GOLDEN_P0_CHESTPLATE = REGISTRY.register("female_golden_p0_chestplate", FemaleGoldenChestPlateItem.ChestplateP0::new);
@@ -254,13 +263,12 @@ public class MinepreggoModItems {
 	public static final RegistryObject<Item> CREEPER_LIFE_SUBSTANCE = REGISTRY.register("creeper_life_substance", CreeperLifeSubstanceItem::new);
 	public static final RegistryObject<Item> ENDER_LIFE_SUBSTANCE = REGISTRY.register("ender_life_substance", EnderLifeSubstanceItem::new);
 	public static final RegistryObject<Item> VILLAGER_LIFE_SUBSTANCE = REGISTRY.register("villager_life_substance", VillagerLifeSubstanceItem::new);
-		
+	public static final RegistryObject<Item> CONCENTRATED_ENDER_LIFE_SUBSTANCE = REGISTRY.register("concentrated_ender_life_substance", ConcentratedEnderLifeSubstanceItem::new);
+
 	public static final RegistryObject<Item> SPECIMEN_TUBE = REGISTRY.register("specimen_tube", SpecimenTubeItem::new);
 	public static final RegistryObject<Item> CUM_SPECIMEN_TUBE = REGISTRY.register("cum_specimen_tube", CumSpecimenTubeItem::new);
 
-	public static final RegistryObject<Item> MEDICAL_TABLE = block(MinepreggoModBlocks.MEDICAL_TABLE);
+	public static final RegistryObject<Item> MEDICAL_TABLE = REGISTRY.register(MinepreggoModBlocks.MEDICAL_TABLE.getId().getPath(), () -> new BlockItem(MinepreggoModBlocks.MEDICAL_TABLE.get(), new Item.Properties()));
 
-	private static RegistryObject<Item> block(RegistryObject<Block> block) {
-		return REGISTRY.register(block.getId().getPath(), () -> new BlockItem(block.get(), new Item.Properties()));
-	}
+	public static final RegistryObject<Item> BABY_ENDER_DRAGON_BLOCK = REGISTRY.register(MinepreggoModBlocks.BABY_ENDER_DRAGON_BLOCK.getId().getPath(), () -> new BlockItem(MinepreggoModBlocks.BABY_ENDER_DRAGON_BLOCK.get(), new Item.Properties().rarity(Rarity.EPIC).stacksTo(1)));	
 }

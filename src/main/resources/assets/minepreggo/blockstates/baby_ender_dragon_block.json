@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "minepreggo:block/baby_ender_dragon_block"
+    },
+    "facing=east": {
+      "model": "minepreggo:block/baby_ender_dragon_block",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "minepreggo:block/baby_ender_dragon_block",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "minepreggo:block/baby_ender_dragon_block",
+      "y": 270
+    }
+  }
+}

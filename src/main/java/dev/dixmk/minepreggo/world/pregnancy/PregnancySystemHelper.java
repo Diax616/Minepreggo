@@ -1,11 +1,13 @@
 package dev.dixmk.minepreggo.world.pregnancy;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.UUID;
 import java.util.stream.StreamSupport;
+import java.util.stream.Collectors;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnegative;
@@ -138,9 +140,9 @@ public class PregnancySystemHelper {
 	public static final float MEDIUM_MORNING_SICKNESS_PROBABILITY = 0.0015F;
 	public static final float HIGH_MORNING_SICKNESS_PROBABILITY = 0.002F;
 	
-	public static final float LOW_ANGER_PROBABILITY = 0.005F;
-	public static final float MEDIUM_ANGER_PROBABILITY = 0.0075F;
-	public static final float HIGH_ANGER_PROBABILITY = 0.01F;
+	public static final float LOW_ANGER_PROBABILITY = 0.05F;
+	public static final float MEDIUM_ANGER_PROBABILITY = 0.075F;
+	public static final float HIGH_ANGER_PROBABILITY = 0.1F;
 	
 	public static final int CRAVING_VALUE = 4;
 	public static final int ACTIVATE_CRAVING_SYMPTOM = 16;
@@ -169,10 +171,10 @@ public class PregnancySystemHelper {
 		AttributeInstance maxHealthAttr = entity.getAttribute(Attributes.MAX_HEALTH);			
 
 		if (speedAttr != null && speedAttr.getModifier(SPEED_MODIFIER_TIRENESS_UUID) == null) {
-		    speedAttr.addTransientModifier(SPEED_MODIFIER_TIRENESS);
+		    speedAttr.addPermanentModifier(SPEED_MODIFIER_TIRENESS);
 		}			
 		if (maxHealthAttr != null && maxHealthAttr.getModifier(MAX_HEALTH_MODIFIER_TIRENESS_UUID) == null) {
-			maxHealthAttr.addTransientModifier(MAX_HEALTH_MODIFIER_TIRENESS);
+			maxHealthAttr.addPermanentModifier(MAX_HEALTH_MODIFIER_TIRENESS);
 		}	
 	}
 	
@@ -283,6 +285,11 @@ public class PregnancySystemHelper {
 					Craving.SWEET, List.of(MinepreggoModItems.ENDER_SLIME_JELLY_WITH_CHOCOLATE.get()), 
 					Craving.SOUR, List.of(MinepreggoModItems.SOUR_ENDER_SLIME_JELLY.get()),
 					Craving.SPICY, List.of(MinepreggoModItems.ENDER_SLIME_JELLY_WITH_HOT_SAUCE.get())),
+			Species.DRAGON, ImmutableMap.of(
+					Craving.SALTY, List.of(MinepreggoModItems.CHORUS_FRUIT_WITH_SALT.get()), 
+					Craving.SWEET, List.of(MinepreggoModItems.CHORUS_FRUIT_WITH_CHOCOLATE.get()), 
+					Craving.SOUR, List.of(MinepreggoModItems.SOUR_CHORUS_FRUIT.get()),
+					Craving.SPICY, List.of(MinepreggoModItems.CHORUS_FRUIT_WITH_HOT_SAUCE.get())),
 			Species.HUMAN,	ImmutableMap.of(
 					Craving.SALTY, List.of(MinepreggoModItems.PICKLE.get(), MinepreggoModItems.FRENCH_FRIES.get()), 
 					Craving.SWEET, List.of(MinepreggoModItems.CHOCOLATE_BAR.get(), MinepreggoModItems.CANDY_APPLE.get()), 
@@ -298,6 +305,7 @@ public class PregnancySystemHelper {
 			.put(Species.ENDER, Creature.MONSTER, MinepreggoModItems.BABY_ENDER.get())
 			.put(Species.ENDER, Creature.HUMANOID, MinepreggoModItems.BABY_HUMANOID_ENDER.get())
 			.put(Species.VILLAGER, Creature.HUMANOID, MinepreggoModItems.BABY_VILLAGER.get())
+			.put(Species.DRAGON, Creature.MONSTER, MinepreggoModItems.BABY_ENDER_DRAGON_BLOCK.get())
 			.build();
 
 	private static final Table<Species, Creature, Item> DEAD_BABIES = ImmutableTable.<Species, Creature, Item>builder()
@@ -355,30 +363,41 @@ public class PregnancySystemHelper {
 		return ALIVE_BABIES.get(species, creature);
 	}
 
+    
+    /**
+     * Returns a list of ItemStacks representing the alive babies in the womb. Each ItemStack is created based on the baby data from the womb, using the getAliveBabyItem method to determine the appropriate item for each baby. If a baby does not have a valid item, it is skipped and not included in the resulting list.
+     * @param womb The Womb object containing the baby data to be processed.
+     * @return a mutable list of ItemStacks representing the alive babies in the womb. The list will only include ItemStacks for babies that have a valid item associated with their species and creature type. If no babies have valid items, the resulting list will be empty.
+     */    
 	public static List<ItemStack> getAliveBabies(@NonNull Womb womb) {
 		return womb.stream()
 				.map(babyData -> {
 				Item babyItem = getAliveBabyItem(babyData.typeOfSpecies, babyData.typeOfCreature);
 				if (babyItem != null) {				
-					return AbstractBaby.createBabyItemStack(babyData.motherId, babyData.fatherId.orElse(null), (AbstractBaby) babyItem);
+					return AbstractBaby.createBabyItemStack(babyData.motherId, babyData.fatherId.orElse(null), babyItem);
 				}
 				return ItemStack.EMPTY;
 				})
 				.filter(i -> !i.isEmpty())
-				.toList();
+				.collect(Collectors.toCollection(ArrayList::new));
 	}
 
+	/**
+	 * Returns a list of ItemStacks representing the dead babies in the womb. Each ItemStack is created based on the baby data from the womb, using the getDeadBabyItem method to determine the appropriate item for each baby. If a baby does not have a valid item, it is skipped and not included in the resulting list.
+	 * @param womb The Womb object containing the baby data to be processed.
+	 * @return a mutable list of ItemStacks representing the dead babies in the womb. The list will only include ItemStacks for babies that have a valid item associated with their species and creature type. If no babies have valid items, the resulting list will be empty.
+	 */
 	public static List<ItemStack> getDeadBabies(@NonNull Womb womb) {
 		return womb.stream()
 				.map(babyData -> {
-				var babyItem = getDeadBabyItem(babyData.typeOfSpecies, babyData.typeOfCreature);
+				Item babyItem = getDeadBabyItem(babyData.typeOfSpecies, babyData.typeOfCreature);
 				if (babyItem != null) {
 					return new ItemStack(babyItem);
 				}
 				return ItemStack.EMPTY;
 				})
 				.filter(i -> !i.isEmpty())
-				.toList();
+				.collect(Collectors.toCollection(ArrayList::new));
 	}
 	
 	public static Craving getRandomCraving(RandomSource randomSource) {
@@ -701,7 +720,7 @@ public class PregnancySystemHelper {
     }
     
     public static void playSlappingBellyAnimation(LivingEntity source, LivingEntity target) {
-		final HorizontalPosition position = getHorizontalPosition(source, target, 0.3);
+		final HorizontalPosition position = getHorizontalPosition(source, target, 0.1);
 		byte id;	
 		// TODO: Use contant values for ids, try to link with animation system later
 		if (position == HorizontalPosition.LEFT) {

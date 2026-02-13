@@ -48,7 +48,16 @@ public abstract class AbstractTamablePregnantMonsterCreeperGirlModel
 	@Override
 	public void setupAnim(E creeperGirl, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		super.setupAnim(creeperGirl, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-		
+		if (creeperGirl.getPregnancyData().getSyncedPregnancySymptoms().containsPregnancySymptom(PregnancySymptom.MILKING)) {
+			this.boobs.y += milkingBoobsYPos;
+			this.boobs.xScale = milkingBoobsXScale;
+			this.boobs.zScale = milkingBoobsYScale;
+			this.boobs.yScale = milkingBoobsZScale;			
+		} 
+	}
+	
+	@Override
+	protected void animate(E creeperGirl, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		if (fetalMovementIntensity != null && creeperGirl.getPregnancyData().getPregnancyPain() ==  PregnancyPain.FETAL_MOVEMENT) {
 			this.animate(creeperGirl.bellyAnimationState, fetalMovementIntensity.animation, ageInTicks);		    
 		}
@@ -84,11 +93,6 @@ public abstract class AbstractTamablePregnantMonsterCreeperGirlModel
 			this.animate(creeperGirl.loopAnimationState, MonsterCreeperGirlAnimation.CONTRACTION, ageInTicks);						
 		}
 		
-		if (creeperGirl.getPregnancyData().getSyncedPregnancySymptoms().containsPregnancySymptom(PregnancySymptom.MILKING)) {
-			this.boobs.y += milkingBoobsYPos;
-			this.boobs.xScale = milkingBoobsXScale;
-			this.boobs.zScale = milkingBoobsYScale;
-			this.boobs.yScale = milkingBoobsZScale;			
-		} 
+		super.animate(creeperGirl, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 	}
 }

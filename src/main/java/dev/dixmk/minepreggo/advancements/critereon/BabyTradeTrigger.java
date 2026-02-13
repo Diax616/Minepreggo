@@ -33,44 +33,60 @@ public class BabyTradeTrigger extends SimpleCriterionTrigger<BabyTradeTrigger.Tr
 	protected TriggerInstance createInstance(JsonObject json, ContextAwarePredicate predicate, DeserializationContext context) {
 		ItemPredicate itemPredicate = ItemPredicate.fromJson(json.get("item"));
 		Boolean verifyParent = null;
+		Gender gender = null;
 		
-		if (json.has("baby") && json.get("baby").isJsonObject()) {
-			JsonObject babyObj = json.getAsJsonObject("baby");
-			if (babyObj.has("verify_parent")) {
-				verifyParent = babyObj.get("verify_parent").getAsBoolean();
-			}
+		if (json.has("source") && json.get("source").isJsonObject()) {
+		    JsonObject sourceObj = json.getAsJsonObject("source");
+		    if (sourceObj.has("gender")) {
+		    	gender = Gender.valueOf(sourceObj.get("gender").getAsString().toUpperCase());
+		    }
+		    if (sourceObj.has("verify_parent")) {
+		        verifyParent = sourceObj.get("verify_parent").getAsBoolean();
+		    }
 		}
 
-		return new TriggerInstance(predicate, itemPredicate, verifyParent);
+		return new TriggerInstance(predicate, itemPredicate, verifyParent, gender);
 	}
 
-	public void trigger(ServerPlayer player, ItemStack stack, @Nullable Boolean verifyParent) {
-		super.trigger(player, instance -> instance.matches(player, stack, Optional.ofNullable(verifyParent)));
+	public void trigger(ServerPlayer player, ItemStack stack) {
+		super.trigger(player, instance -> instance.matches(player, stack));
 	}
 
 	public static class TriggerInstance extends AbstractCriterionTriggerInstance {
 		private final @Nullable ItemPredicate itemPredicate;
 		private final Optional<Boolean> verifyParent;
+		private final Optional<Gender> gender;
 
-		public TriggerInstance(ContextAwarePredicate player, ItemPredicate itemPredicate, @Nullable Boolean verifyParent) {
+		public TriggerInstance(ContextAwarePredicate player, ItemPredicate itemPredicate, @Nullable Boolean verifyParent, @Nullable Gender gender) {
 			super(BabyTradeTrigger.ID, player);
 			this.itemPredicate = itemPredicate;
 			this.verifyParent = Optional.ofNullable(verifyParent);
+			this.gender = Optional.ofNullable(gender);
 		}
 
-		public boolean matches(ServerPlayer player, ItemStack stack, Optional<Boolean> verifyParent) {	
-			if (this.itemPredicate != null && !this.itemPredicate.matches(stack)) {
-				return false;
-			}
+		public boolean matches(ServerPlayer player, ItemStack stack) {    
+		    if (this.itemPredicate != null && !this.itemPredicate.matches(stack)) {
+		        return false;
+		    }
 
-			Gender genderPlayer = player.getCapability(MinepreggoCapabilities.PLAYER_DATA).map(IPlayerData::getGender).orElse(Gender.UNKNOWN);
-
-			if (this.verifyParent.isPresent() && (verifyParent.isEmpty() || !this.verifyParent.get().equals(verifyParent.get()))) {
-				return false;
-			}
-		
-			return (genderPlayer == Gender.MALE && AbstractBaby.isFatherOf(stack, player.getUUID())) ||
-					(genderPlayer == Gender.FEMALE && AbstractBaby.isMotherOf(stack, player.getUUID()));
+		    if (this.verifyParent.isEmpty() && this.gender.isEmpty()) {
+		        return true;
+		    }
+		    
+		    Gender genderPlayer = player.getCapability(MinepreggoCapabilities.PLAYER_DATA)
+			        .map(IPlayerData::getGender)
+			        .orElse(Gender.UNKNOWN);
+		    
+		    if ((this.verifyParent.isEmpty() || !this.verifyParent.get()) && this.gender.isPresent()) {
+		        return this.gender.get() == genderPlayer;
+		    }
+		     
+		    if (this.verifyParent.isPresent() && this.gender.isPresent()) {
+			    return (this.gender.get() == Gender.MALE &&	genderPlayer == Gender.MALE && AbstractBaby.isFatherOf(stack, player.getUUID())) ||
+				           (this.gender.get() == Gender.FEMALE && genderPlayer == Gender.FEMALE && AbstractBaby.isMotherOf(stack, player.getUUID()));
+		    }
+		    
+		    return false;
 		}
 	}
 }

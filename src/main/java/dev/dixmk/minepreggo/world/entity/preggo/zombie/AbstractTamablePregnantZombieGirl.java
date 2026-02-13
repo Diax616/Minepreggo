@@ -33,7 +33,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AnimationState;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -140,7 +139,7 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 			public boolean canUse() {
 				return super.canUse() 
 				&& !getPregnancyData().isIncapacitated()
-				&& !getTamableData().isWaiting();
+				&& (getTamableData().isSavage() || !isTame());
 			}
 
 			@Override
@@ -336,15 +335,6 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 		else {
 			return super.mobInteract(sourceentity, hand);
 		}
-	}
-	
-	@Override
-	public boolean doHurtTarget(Entity target) {		
-		boolean result = super.doHurtTarget(target);	
-		if (result && !this.tamablePreggoMobData.isSavage() && target instanceof Player owner && this.isOwnedBy(owner) && this.tamablePreggoMobData.isAngry()) {
-			this.setTarget(null);		
-		}
-		return result;
 	}
 	
     @Override

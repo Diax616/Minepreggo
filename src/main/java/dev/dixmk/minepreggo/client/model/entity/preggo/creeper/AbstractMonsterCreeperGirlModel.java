@@ -143,7 +143,7 @@ public abstract class AbstractMonsterCreeperGirlModel<E extends AbstractCreeperG
 		PartDefinition partdefinition = meshdefinition.getRoot();
 		createBasicBodyLayer(partdefinition);	
 		PartDefinition body = partdefinition.getChild("body");
-		body.addOrReplaceChild("belly", CubeListBuilder.create().texOffs(34, 59).addBox(-2.5F, -0.8F, -2.4F, 5.0F, 4.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 6.0F, 0.0F));
+		body.addOrReplaceChild("belly", CubeListBuilder.create().texOffs(34, 59).addBox(-2.5F, -0.8F, -2.5F, 5.0F, 4.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 6.0F, 0.0F));
 		return LayerDefinition.create(meshdefinition, 64, 96);
 	}
 	
@@ -162,7 +162,7 @@ public abstract class AbstractMonsterCreeperGirlModel<E extends AbstractCreeperG
 		createBasicBodyLayer(partdefinition);	
 		PartDefinition body = partdefinition.getChild("body");
 		PartDefinition belly = body.addOrReplaceChild("belly", CubeListBuilder.create(), PartPose.offset(0.0F, 6.0F, -1.0F));
-		belly.addOrReplaceChild("main_r1", CubeListBuilder.create().texOffs(0, 75).addBox(-3.0F, -2.0F, -1.5F, 6.0F, 4.0F, 3.0F, new CubeDeformation(0.25F)), PartPose.offsetAndRotation(0.0F, 1.5175F, -2.1999F, 0.0175F, 0.0F, 0.0F));
+		belly.addOrReplaceChild("main_r1", CubeListBuilder.create().texOffs(0, 75).addBox(-3.0F, 0.0F, -3.5F, 6.0F, 4.0F, 3.0F, new CubeDeformation(0.25F)), PartPose.offsetAndRotation(0.0F, -0.4825F, -0.1999F, 0.0175F, 0.0F, 0.0F));
 		return LayerDefinition.create(meshdefinition, 64, 96);
 	}
 	
@@ -339,5 +339,23 @@ public abstract class AbstractMonsterCreeperGirlModel<E extends AbstractCreeperG
 	public void setAllVisible(boolean visible) {
 		this.root().getAllParts().forEach(part -> part.visible = visible);
 	}
+	
+	@Override
+	public void setupAnim(E entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+		this.root().getAllParts().forEach(ModelPart::resetPose);
+		
+		this.animate(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+		
+		this.updateJiggle(entity);
+		
+		if (entity.hasCustomHeadAnimation()) {
+			this.hat.copyFrom(this.head);
+		}
+		else {
+			this.moveHead(netHeadYaw, headPitch);
+		}	
+	}
+	
+	protected abstract void animate(E entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch);	
 }
 

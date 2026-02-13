@@ -16,6 +16,7 @@ public abstract class AbstractMonsterCreeperGirlExpressionLayer
 	<E extends AbstractCreeperGirl, M extends AbstractMonsterCreeperGirlModel<E>> extends ExpressiveFaceLayer<E, M> {
 
 	protected static final RenderType ANGRY1 = RenderType.entityCutoutNoCull(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/monster/expressions/monster_creeper_girl_face_angry1.png"));
+	protected static final RenderType ANGRY2 = RenderType.entityCutoutNoCull(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/monster/expressions/monster_creeper_girl_face_angry2.png"));
 	protected static final RenderType HORNY1 = RenderType.entityCutoutNoCull(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/monster/expressions/monster_creeper_girl_face_horny1.png"));
 	protected static final RenderType PAIN1 = RenderType.entityCutoutNoCull(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/monster/expressions/monster_creeper_girl_face_pain1.png"));
 	protected static final RenderType PAIN3 = RenderType.entityCutoutNoCull(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/monster/expressions/monster_creeper_girl_face_pain3.png"));

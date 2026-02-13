@@ -27,7 +27,7 @@ import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.item.ItemHelper;
 
-public class IllMonsterEnderWoman extends AbstractHostilEnderWoman implements Ill {
+public class IllMonsterEnderWoman extends AbstractHostileEnderWoman implements Ill {
 	
 	public IllMonsterEnderWoman(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.ILL_ENDER_WOMAN.get(), world);
@@ -43,8 +43,8 @@ public class IllMonsterEnderWoman extends AbstractHostilEnderWoman implements Il
 		
 	@Override
 	public void tameByIllager(ScientificIllager illagerScientific) {
-		this.setTame(true);
 		this.setOwnerUUID(illagerScientific.getUUID());
+		this.setTame(true);
 	}
 	
 	@Override
@@ -56,8 +56,8 @@ public class IllMonsterEnderWoman extends AbstractHostilEnderWoman implements Il
 	
 	@Override
 	public void removeIllagerOwner() {
+		this.setOwnerUUID(null);
     	this.setTame(false);	
-		this.setOwnerUUID(null);	
 		Ill.addBehaviourGoalsWhenOwnerDies(this);
 	}
 	
@@ -95,6 +95,7 @@ public class IllMonsterEnderWoman extends AbstractHostilEnderWoman implements Il
     @Override
     protected void registerGoals() {
     	this.addBehaviourGoals();
+		Ill.addBehaviourGoals(this);
 		this.goalSelector.addGoal(5, new AbstractEnderWoman.EnderWomanTeleportToTargetGoal(this, 196F, 25F));
         this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.2D, false));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));

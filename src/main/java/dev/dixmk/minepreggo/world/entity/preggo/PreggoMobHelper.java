@@ -25,14 +25,14 @@ import dev.dixmk.minepreggo.world.entity.EntityHelper;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractCreeperGirl;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractHostilPregnantCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractHostilePregnantCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.MonsterCreeperHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractHostilPregnantEnderWoman;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractHostilePregnantEnderWoman;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractTamableEnderWoman;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractTamablePregnantEnderWoman;
-import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractHostilPregnantZombieGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractHostilePregnantZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractZombieGirl;
 import dev.dixmk.minepreggo.world.item.IFemaleArmor;
@@ -326,42 +326,38 @@ public class PreggoMobHelper {
      * @param preggoMob The mob
      * @param hand The hand to replace
      * @param itemStack The new item
-     */
-    public static <E extends PreggoMob & ITamablePreggoMob<?>> void replaceAndDropItemstackInHand(
-            @Nonnull E preggoMob, 
-            @NonNull InteractionHand hand, 
-            @Nonnull ItemStack itemStack) {
-        
-        if (preggoMob.level().isClientSide) return;
-        
+     */    
+    public static <E extends PreggoMob & ITamablePreggoMob<?>> boolean replaceAndDropItemstackInHand(E preggoMob, InteractionHand hand, ItemStack itemStack) {
         Inventory inventory = preggoMob.getInventory();
         InventorySlotMapper slotMapper = inventory.getSlotMapper();
         
         InventorySlot inventorySlot = hand == InteractionHand.MAIN_HAND 
             ? InventorySlot.MAINHAND 
             : InventorySlot.OFFHAND;
-        
+    	
         if (!slotMapper.hasSlot(inventorySlot)) {
-            return;
+            return false;
         }
         
         int slotIndex = slotMapper.getSlotIndex(inventorySlot);
         
         if (slotIndex == InventorySlotMapper.DEFAULT_INVALID_SLOT_INDEX) {
-            return;
+            return false;
         }
         
         ItemStack currentStack = inventory.getHandler().getStackInSlot(slotIndex);
+        
         if (!currentStack.isEmpty()) {
-            removeAndDropItemStackFromEquipmentSlot(preggoMob, inventorySlot);
+        	removeAndDropItemStackFromEquipmentSlot(preggoMob, inventorySlot);
         }
-        
-        inventory.getHandler().setStackInSlot(slotIndex, itemStack.copy());
-        
+
+    	var copy = itemStack.copy();
+        inventory.getHandler().setStackInSlot(slotIndex, copy); 
         if (inventorySlot.vanilla.isPresent()) {
-            preggoMob.setItemSlot(inventorySlot.vanilla.get(), itemStack.copy());
-        }
-    }
+            preggoMob.setItemSlot(inventorySlot.vanilla.get(), copy);
+        } 	     
+        return true;
+	}
     
     /**
      * Removes and drops the item from an equipment slot
@@ -862,7 +858,7 @@ public class PreggoMobHelper {
 		}
 	}
 	
-	public static void spawnBabyAndFetus(@NonNull AbstractHostilPregnantCreeperGirl creeperGirl) {			
+	public static void spawnBabyAndFetus(@NonNull AbstractHostilePregnantCreeperGirl creeperGirl) {			
 		if (!(creeperGirl.level() instanceof ServerLevel serverLevel)) {
 			return;
 		}
@@ -887,7 +883,7 @@ public class PreggoMobHelper {
 				creeperGirl.getId(), creeperGirl.getClass().getSimpleName(), currentPregnancyStage, pregnancyData.getLastPregnancyPhase(), totalDaysPassed, t);
 	}
 	
-	public static void spawnBabyAndFetus(@NonNull AbstractHostilPregnantZombieGirl zombieGirl) {	
+	public static void spawnBabyAndFetus(@NonNull AbstractHostilePregnantZombieGirl zombieGirl) {	
 		if (!(zombieGirl.level() instanceof ServerLevel serverLevel)) {
 			return;
 		}
@@ -913,7 +909,7 @@ public class PreggoMobHelper {
 				zombieGirl.getId(), zombieGirl.getClass().getSimpleName(), currentPregnancyStage, pregnancyData.getLastPregnancyPhase(), totalDaysPassed, t);
 	}	
 	
-	public static void spawnBabyAndFetus(@NonNull AbstractHostilPregnantEnderWoman enderWoman) {
+	public static void spawnBabyAndFetus(@NonNull AbstractHostilePregnantEnderWoman enderWoman) {
 		if (!(enderWoman.level() instanceof ServerLevel serverLevel)) {
 			return;
 		}

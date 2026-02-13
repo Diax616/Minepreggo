@@ -616,7 +616,7 @@ public class PlayerEventHandler {
 	@SubscribeEvent
 	public static void onHurt(LivingHurtEvent event) {
 		if (!(event.getEntity() instanceof ServerPlayer serverPlayer)) return;	
-			
+				
 		serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
 			cap.getFemaleData().ifPresent(femaleData -> {		
 				if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
@@ -859,8 +859,8 @@ public class PlayerEventHandler {
 								&& femaleData.isPregnancyDataInitialized()
 								&& !PregnancySystemHelper.canMountEntity(femaleData.getPregnancyData().getCurrentPregnancyPhase())) {
 							var message = serverPlayer.getRandom().nextBoolean() 
-									? Component.translatable("chat.minepreggo.player.pregnancy.message.cannot_ride.message.1") 
-									: Component.translatable("chat.minepreggo.player.pregnancy.message.cannot_ride.message.2");
+									? Component.translatable("chat.minepreggo.player.pregnancy.message.cannot_ride.generic.1") 
+									: Component.translatable("chat.minepreggo.player.pregnancy.message.cannot_ride.generic.2");
 							MessageHelper.sendTo(serverPlayer, message, true);
 					        event.setCanceled(true);
 						

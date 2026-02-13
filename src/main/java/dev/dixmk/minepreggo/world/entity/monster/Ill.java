@@ -40,19 +40,19 @@ public interface Ill {
 	default void onFinalizeSpawnWithOwner() {}
 		
 	static <E extends PreggoMob & Ill> void addBehaviourGoalsWhenOwnerDies(@NonNull E ill) {
-		ill.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(ill, 1.1D, 0.0F));
 		ill.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(ill, Player.class, false, false));
 	}
 
 	static <E extends PreggoMob & Ill> void addBehaviourGoals(@NonNull E ill) {
 		ill.targetSelector.addGoal(3, new Ill.IllMobHurtByTargetGoal(ill, 12D));		
-		ill.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(ill, AbstractVillager.class, false, false));
-		ill.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(ill, IronGolem.class, false, false));
+		ill.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(ill, AbstractVillager.class, false, false));
+		ill.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(ill, IronGolem.class, false, false));
 	}
 	
 	static <E extends PreggoMob & Ill> void removeTamableBehaviourGoals(@NonNull E ill) {
 		GoalHelper.removeGoalByClass(ill.goalSelector, Set.of(OwnerHurtByTargetGoal.class, FollowOwnerGoal.class));
 		GoalHelper.removeGoalByClass(ill.targetSelector, OwnerHurtTargetGoal.class);
+		GoalHelper.addGoalWithReplacement(ill, 7, new WaterAvoidingRandomStrollGoal(ill, 1.1D, 0.0F));
 	}
 		
 	static <E extends PreggoMob & Ill> void addTamableBehaviourGoals(@NonNull E ill) {		
@@ -70,7 +70,8 @@ public interface Ill {
 				return super.canContinueToUse()
 				&& !LivingEntityHelper.isTargetStillValid(this.tamable);
 			}				
-		});
+		});	
+		GoalHelper.removeGoalByClass(ill.goalSelector, WaterAvoidingRandomStrollGoal.class);
 	}
 	
 	class IllMobHurtByTargetGoal extends TargetGoal {

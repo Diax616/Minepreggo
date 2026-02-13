@@ -11,7 +11,9 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.gui.ScreenHelper;
+import dev.dixmk.minepreggo.client.gui.preggo.AbstractEnderDragonMainScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.creeper.AbstractCreeperGirlMainScreen;
+import dev.dixmk.minepreggo.client.gui.preggo.ender.AbstractEnderWomanMainScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.zombie.AbstractZombieGirlMainScreen;
 import dev.dixmk.minepreggo.client.renderer.entity.layer.player.ClientPlayerHelper;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
@@ -149,6 +151,12 @@ public class ScreenEventHandler {
 		}
 		else if (species == Species.ZOMBIE) {
 			cravingIcon = AbstractZombieGirlMainScreen.getCravingIcon(craving);
+		}
+		else if (species == Species.ENDER) {
+			cravingIcon = AbstractEnderWomanMainScreen.getCravingIcon(craving);
+		}
+		else if (species == Species.DRAGON) {
+			cravingIcon = AbstractEnderDragonMainScreen.getCravingIcon(craving);
 		}
 		else {
 			cravingIcon = null;

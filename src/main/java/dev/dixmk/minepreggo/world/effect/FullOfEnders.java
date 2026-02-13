@@ -28,7 +28,7 @@ public class FullOfEnders extends MobEffect {
 				cap.getFemaleData().ifPresent(femaleData -> {
 					if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
 						var pregnancySystem = femaleData.getPregnancyData();
-						if (serverPlayer.getRandom().nextFloat() < calculateProbabilityToRandomTeleport(pregnancySystem.getCurrentPregnancyPhase(), pregnancySystem.getWomb())) {
+						if (serverPlayer.getRandom().nextFloat() < calculateProbabilityToRandomTeleport(pregnancySystem.getCurrentPregnancyPhase(), pregnancySystem.getLastPregnancyStage(), pregnancySystem.getWomb())) {
 							double extraBlocks = serverPlayer.getRandom().nextInt(femaleData.getPregnancyData().getCurrentPregnancyPhase().ordinal());
 							LivingEntityHelper.randomTeleport(entity, SoundEvents.ENDERMAN_TELEPORT, 8, 16 + extraBlocks);
 							if (MinepreggoModConfig.SERVER.isBellyColisionsForPlayersEnable()) {
@@ -47,12 +47,16 @@ public class FullOfEnders extends MobEffect {
 	
 	@Override
 	public boolean isDurationEffectTick(int duration, int amplifier) {
-		return duration % 3600 == 0;
+		return duration % 2400 == 0;
 	}
 	
-	public static float calculateProbabilityToRandomTeleport(PregnancyPhase phase, Womb womb) {
+	private static float calculateProbabilityToRandomTeleport(PregnancyPhase current, PregnancyPhase last, Womb womb) throws IllegalArgumentException {
+		if (current.compareTo(last) >= 1) {
+			throw new IllegalArgumentException("Current pregnancy phase must be before the last phase.");
+		}
+		
 		int numOfBabiesEnder = womb.calculateNumOfBabiesBySpecies(Species.ENDER);
-		float phaseProgress = phase.ordinal() / (float) (PregnancyPhase.values().length - 1);
+		float phaseProgress = current.ordinal() / (float) last.ordinal();
 		float enderFactor = numOfBabiesEnder / (float) Womb.getMaxNumOfBabies();
 		float prob = phaseProgress * enderFactor;
 		return Mth.clamp(prob, 0.0f, 1.0f);

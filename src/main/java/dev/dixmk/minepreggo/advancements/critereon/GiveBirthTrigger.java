@@ -35,8 +35,8 @@ public class GiveBirthTrigger extends SimpleCriterionTrigger<GiveBirthTrigger.Tr
 		return new TriggerInstance(predicate, successfulBirths);
 	}
 
-    public void trigger(ServerPlayer player, @Nullable Set<Species> successfulBirths) {
-        super.trigger(player, instance -> instance.matches(player, Optional.ofNullable(successfulBirths)));
+    public void trigger(ServerPlayer player) {
+        super.trigger(player, instance -> instance.matches(player));
     }
 
 	public static class TriggerInstance extends AbstractCriterionTriggerInstance {
@@ -47,7 +47,7 @@ public class GiveBirthTrigger extends SimpleCriterionTrigger<GiveBirthTrigger.Tr
 			this.successfulBirths = Optional.ofNullable(successfulBirths);
 		}
 
-        public boolean matches(ServerPlayer player, Optional<Set<Species>> successfulBirths) {  	
+        public boolean matches(ServerPlayer player) {  	
         	return player.getCapability(MinepreggoCapabilities.PLAYER_DATA)
         			.resolve()
         			.flatMap(cap -> {
@@ -57,7 +57,7 @@ public class GiveBirthTrigger extends SimpleCriterionTrigger<GiveBirthTrigger.Tr
             					boolean flag = pregnancyData.getCurrentPregnancyPhase() == pregnancyData.getLastPregnancyStage()
             							&& pregnancyData.getDaysPassed() >= pregnancyData.getDaysByCurrentStage();
             					if (successfulBirths.isPresent()) {
-    								flag = flag && successfulBirths.get().containsAll(cap.getPlayerStatistic().getSuccessfulBirths());
+    								flag = flag && cap.getPlayerStatistic().getSuccessfulBirths().containsAll(successfulBirths.get());
     							}
             					return flag;
     						} 

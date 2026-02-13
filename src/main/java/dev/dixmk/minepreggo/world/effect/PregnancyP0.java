@@ -25,7 +25,7 @@ public class PregnancyP0 extends AbstractPlayerPregnancy<PlayerPregnancySystemP0
             pregnancySystemsCache.put(serverPlayer.getUUID(), pregnancySystem);
         }
     }
-	
+
 	@Override
 	Optional<AttributeModifier> getSpeedModifier() {
 		return Optional.empty();

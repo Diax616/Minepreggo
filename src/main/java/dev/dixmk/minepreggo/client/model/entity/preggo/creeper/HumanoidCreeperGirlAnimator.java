@@ -10,7 +10,7 @@ import dev.dixmk.minepreggo.client.animation.preggo.FetalMovementIntensity;
 import dev.dixmk.minepreggo.client.animation.preggo.HumanoidCreeperGirlAnimation;
 import dev.dixmk.minepreggo.client.model.entity.preggo.PregnantPreggoMobAnimator;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractCreeperGirl;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractHostilPregnantHumanoidCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractHostilePregnantHumanoidCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
@@ -98,7 +98,7 @@ public abstract class HumanoidCreeperGirlAnimator<E extends AbstractCreeperGirl>
   	}	
   	
 	@OnlyIn(Dist.CLIENT)
-  	public static class MonsterPregnantHumanoidCreeperGirlAnimator<E extends AbstractHostilPregnantHumanoidCreeperGirl> extends HumanoidCreeperGirlAnimator<E> {
+  	public static class MonsterPregnantHumanoidCreeperGirlAnimator<E extends AbstractHostilePregnantHumanoidCreeperGirl> extends HumanoidCreeperGirlAnimator<E> {
   		private final BellyInflation bellyInflation;
   		private final @Nullable FetalMovementIntensity fetalMovementIntensity;
   		

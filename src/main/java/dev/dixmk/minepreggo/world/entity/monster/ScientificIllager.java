@@ -1,6 +1,7 @@
 package dev.dixmk.minepreggo.world.entity.monster;
 
 import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.PlayMessages;
 
 import net.minecraft.world.level.Level;
@@ -72,10 +73,12 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.Maps;
 
+import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModAdvancements;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
+import dev.dixmk.minepreggo.network.packet.s2c.PlaySoundPacketS2C;
 import dev.dixmk.minepreggo.world.entity.npc.Trades;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
@@ -83,7 +86,6 @@ import dev.dixmk.minepreggo.world.entity.preggo.creeper.IllHumanoidCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.IllMonsterCreeperGirl;
 import dev.dixmk.minepreggo.world.inventory.preggo.PlayerPrenatalCheckUpMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.SelectPregnantEntityForPrenatalCheckUpMenu;
-import dev.dixmk.minepreggo.world.item.AbstractBaby;
 import dev.dixmk.minepreggo.world.pregnancy.IObstetrician;
 import dev.dixmk.minepreggo.world.pregnancy.PrenatalCheckupCostHolder;
 import dev.dixmk.minepreggo.world.pregnancy.PrenatalCheckupCostHolder.PrenatalCheckupCost;
@@ -164,13 +166,25 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
     @Override
     public void notifyTrade(MerchantOffer offer) {
     	if (!this.level().isClientSide && this.getTradingPlayer() instanceof ServerPlayer serverPlayer) {
-    		ItemStack itemStack = offer.getCostA();
-    		if (itemStack.getItem() instanceof AbstractBaby) {
-    			MinepreggoModAdvancements.BABY_TRADE_TRIGGER.trigger(serverPlayer, itemStack, Boolean.TRUE);
-    		}    		
+			MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new PlaySoundPacketS2C(SoundEvents.VINDICATOR_CELEBRATE, serverPlayer.blockPosition(), 0.75f, 1.0f));
+			
+            ItemStack originalInput1 = findInInventory(serverPlayer, offer.getBaseCostA());
+            ItemStack originalInput2 = offer.getCostB().isEmpty() ? ItemStack.EMPTY : findInInventory(serverPlayer, offer.getCostB());
+            
+			MinepreggoModAdvancements.BABY_TRADE_TRIGGER.trigger(serverPlayer, originalInput1);   
+			MinepreggoModAdvancements.BABY_TRADE_TRIGGER.trigger(serverPlayer, originalInput2);
 		}
     }
 
+    private ItemStack findInInventory(Player player, ItemStack template) {
+        for (ItemStack stack : player.getInventory().items) {
+            if (stack.is(template.getItem()) && stack.getCount() == template.getCount()) {
+                return stack; // Get the stack from the player's inventory conserving the tag and other data, not the one from the offer which is a copy without NBT data
+            }
+        }
+        return ItemStack.EMPTY;
+    }
+    
     @Override
     public void notifyTradeUpdated(ItemStack stack) {
     	// It does not need, It is not a villager

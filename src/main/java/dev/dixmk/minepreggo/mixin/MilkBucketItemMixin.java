@@ -16,6 +16,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
+import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
@@ -33,8 +34,13 @@ public class MilkBucketItemMixin {
 	            	boolean flag = false;
 	            	List<MobEffect> effectsToRemove = null;
 	            	if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {        
-	                	// TODO: Refactor the logic to avoid removing secondary pregnancy effects
-						effectsToRemove = PlayerHelper.removeEffectsByPregnancyPhase(player, femaleData.getPregnancyData().getCurrentPregnancyPhase());
+	                	// TODO: Refactor the logic to avoid removing secondary pregnancy effects	
+	            		if (player.hasEffect(MinepreggoModMobEffects.ENDER_DRAGON_PREGNANCY.get())) {
+		            		effectsToRemove = PlayerHelper.removeEffectsBeingPregnantOfEnderDragon(player, femaleData.getPregnancyData().getCurrentPregnancyPhase());
+	            		}
+	            		else {
+		            		effectsToRemove = PlayerHelper.removeEffectsBeingPregnant(player, femaleData.getPregnancyData().getCurrentPregnancyPhase());
+	            		}	 
 	                	flag = true;
 	                }
 	                else {         

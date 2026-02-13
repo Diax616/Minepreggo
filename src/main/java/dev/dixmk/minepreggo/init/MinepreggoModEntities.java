@@ -6,22 +6,22 @@ import dev.dixmk.minepreggo.world.entity.monster.FertilityWitch;
 import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.IllHumanoidCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.IllMonsterCreeperGirl;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.HostilHumanoidCreeperGirl;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.HostilPregnantHumanoidCreeperGirl;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.HostilPregnantMonsterCreeperGirl;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.HostilMonsterCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.HostileHumanoidCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.HostilePregnantHumanoidCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.HostilePregnantMonsterCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.HostileMonsterCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableHumanoidCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableMonsterCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamablePregnantHumanoidCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamablePregnantMonsterCreeperGirl;
-import dev.dixmk.minepreggo.world.entity.preggo.ender.HostilPregnantMonsterEnderWoman;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.HostilePregnantMonsterEnderWoman;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.IllMonsterEnderWoman;
-import dev.dixmk.minepreggo.world.entity.preggo.ender.HostilMonsterEnderWoman;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.HostileMonsterEnderWoman;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.TamableMonsterEnderWoman;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.TamablePregnantMonsterEnderWoman;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.IllZombieGirl;
-import dev.dixmk.minepreggo.world.entity.preggo.zombie.HostilPregnantZombieGirl;
-import dev.dixmk.minepreggo.world.entity.preggo.zombie.HostilZombieGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.zombie.HostilePregnantZombieGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.zombie.HostileZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirl;
 import net.minecraft.world.entity.Entity;
@@ -37,17 +37,17 @@ public class MinepreggoModEntities {
 	
 	public static final DeferredRegister<EntityType<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, MinepreggoMod.MODID);
 	
-	public static final RegistryObject<EntityType<HostilZombieGirl>> HOSTILE_ZOMBIE_GIRL = register("hostile_zombie_girl",
-			EntityType.Builder.<HostilZombieGirl>of(HostilZombieGirl::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilZombieGirl::new).sized(0.6f, 1.8f));
+	public static final RegistryObject<EntityType<HostileZombieGirl>> HOSTILE_ZOMBIE_GIRL = register("hostile_zombie_girl",
+			EntityType.Builder.<HostileZombieGirl>of(HostileZombieGirl::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostileZombieGirl::new).sized(0.6f, 1.8f));
 
-	public static final RegistryObject<EntityType<HostilPregnantZombieGirl.MonsterZombieGirlP3>> HOSTILE_ZOMBIE_GIRL_P3 = register("hostile_pregnant_zombie_girl_p3",
-			EntityType.Builder.<HostilPregnantZombieGirl.MonsterZombieGirlP3>of(HostilPregnantZombieGirl.MonsterZombieGirlP3::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilPregnantZombieGirl.MonsterZombieGirlP3::new).sized(0.625f, 1.8f));
+	public static final RegistryObject<EntityType<HostilePregnantZombieGirl.MonsterZombieGirlP3>> HOSTILE_ZOMBIE_GIRL_P3 = register("hostile_pregnant_zombie_girl_p3",
+			EntityType.Builder.<HostilePregnantZombieGirl.MonsterZombieGirlP3>of(HostilePregnantZombieGirl.MonsterZombieGirlP3::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilePregnantZombieGirl.MonsterZombieGirlP3::new).sized(0.625f, 1.8f));
 	
-	public static final RegistryObject<EntityType<HostilPregnantZombieGirl.MonsterZombieGirlP5>> HOSTILE_ZOMBIE_GIRL_P5 = register("hostile_pregnant_zombie_girl_p5",
-			EntityType.Builder.<HostilPregnantZombieGirl.MonsterZombieGirlP5>of(HostilPregnantZombieGirl.MonsterZombieGirlP5::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilPregnantZombieGirl.MonsterZombieGirlP5::new).sized(0.725f, 1.8f));
+	public static final RegistryObject<EntityType<HostilePregnantZombieGirl.MonsterZombieGirlP5>> HOSTILE_ZOMBIE_GIRL_P5 = register("hostile_pregnant_zombie_girl_p5",
+			EntityType.Builder.<HostilePregnantZombieGirl.MonsterZombieGirlP5>of(HostilePregnantZombieGirl.MonsterZombieGirlP5::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilePregnantZombieGirl.MonsterZombieGirlP5::new).sized(0.725f, 1.8f));
 	
-	public static final RegistryObject<EntityType<HostilPregnantZombieGirl.MonsterZombieGirlP7>> HOSTILE_ZOMBIE_GIRL_P7 = register("hostile_pregnant_zombie_girl_p7",
-			EntityType.Builder.<HostilPregnantZombieGirl.MonsterZombieGirlP7>of(HostilPregnantZombieGirl.MonsterZombieGirlP7::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilPregnantZombieGirl.MonsterZombieGirlP7::new).sized(0.8f, 1.8f));
+	public static final RegistryObject<EntityType<HostilePregnantZombieGirl.MonsterZombieGirlP7>> HOSTILE_ZOMBIE_GIRL_P7 = register("hostile_pregnant_zombie_girl_p7",
+			EntityType.Builder.<HostilePregnantZombieGirl.MonsterZombieGirlP7>of(HostilePregnantZombieGirl.MonsterZombieGirlP7::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilePregnantZombieGirl.MonsterZombieGirlP7::new).sized(0.8f, 1.8f));
 	
 	public static final RegistryObject<EntityType<TamableZombieGirl>> TAMABLE_ZOMBIE_GIRL = register("tamable_zombie_girl",
 			EntityType.Builder.<TamableZombieGirl>of(TamableZombieGirl::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamableZombieGirl::new).sized(0.6f, 1.8f));
@@ -79,17 +79,17 @@ public class MinepreggoModEntities {
 	public static final RegistryObject<EntityType<TamablePregnantZombieGirl.TamableZombieGirlP8>> TAMABLE_ZOMBIE_GIRL_P8 = register("tamable_pregnant_zombie_girl_p8",
 			EntityType.Builder.<TamablePregnantZombieGirl.TamableZombieGirlP8>of(TamablePregnantZombieGirl.TamableZombieGirlP8::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantZombieGirl.TamableZombieGirlP8::new).sized(0.8f, 1.8f));
 	
-	public static final RegistryObject<EntityType<HostilHumanoidCreeperGirl>> HOSTILE_HUMANOID_CREEPER_GIRL = register("hostile_humanoid_creeper_girl",
-			EntityType.Builder.<HostilHumanoidCreeperGirl>of(HostilHumanoidCreeperGirl::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilHumanoidCreeperGirl::new).sized(0.6f, 1.8f));
+	public static final RegistryObject<EntityType<HostileHumanoidCreeperGirl>> HOSTILE_HUMANOID_CREEPER_GIRL = register("hostile_humanoid_creeper_girl",
+			EntityType.Builder.<HostileHumanoidCreeperGirl>of(HostileHumanoidCreeperGirl::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostileHumanoidCreeperGirl::new).sized(0.6f, 1.8f));
 
-	public static final RegistryObject<EntityType<HostilPregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP3>> HOSTILE_HUMANOID_CREEPER_GIRL_P3 = register("hostile_pregnant_humanoid_creeper_girl_p3",
-			EntityType.Builder.<HostilPregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP3>of(HostilPregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP3::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilPregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP3::new).sized(0.625f, 1.8f));
+	public static final RegistryObject<EntityType<HostilePregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP3>> HOSTILE_HUMANOID_CREEPER_GIRL_P3 = register("hostile_pregnant_humanoid_creeper_girl_p3",
+			EntityType.Builder.<HostilePregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP3>of(HostilePregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP3::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilePregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP3::new).sized(0.625f, 1.8f));
 	
-	public static final RegistryObject<EntityType<HostilPregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP5>> HOSTILE_HUMANOID_CREEPER_GIRL_P5 = register("hostile_pregnant_humanoid_creeper_girl_p5",
-			EntityType.Builder.<HostilPregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP5>of(HostilPregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP5::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilPregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP5::new).sized(0.7f, 1.8f));
+	public static final RegistryObject<EntityType<HostilePregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP5>> HOSTILE_HUMANOID_CREEPER_GIRL_P5 = register("hostile_pregnant_humanoid_creeper_girl_p5",
+			EntityType.Builder.<HostilePregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP5>of(HostilePregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP5::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilePregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP5::new).sized(0.7f, 1.8f));
 	
-	public static final RegistryObject<EntityType<HostilPregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP7>> HOSTILE_HUMANOID_CREEPER_GIRL_P7 = register("hostile_pregnant_humanoid_creeper_girl_p7",
-			EntityType.Builder.<HostilPregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP7>of(HostilPregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP7::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilPregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP7::new).sized(0.775f, 1.8f));
+	public static final RegistryObject<EntityType<HostilePregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP7>> HOSTILE_HUMANOID_CREEPER_GIRL_P7 = register("hostile_pregnant_humanoid_creeper_girl_p7",
+			EntityType.Builder.<HostilePregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP7>of(HostilePregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP7::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilePregnantHumanoidCreeperGirl.MonsterHumanoidCreeperGirlP7::new).sized(0.775f, 1.8f));
 	
 	public static final RegistryObject<EntityType<TamableHumanoidCreeperGirl>> TAMABLE_HUMANOID_CREEPER_GIRL = register("tamable_humanoid_creeper_girl",
 			EntityType.Builder.<TamableHumanoidCreeperGirl>of(TamableHumanoidCreeperGirl::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamableHumanoidCreeperGirl::new).sized(0.6f, 1.8f));
@@ -121,17 +121,17 @@ public class MinepreggoModEntities {
 	public static final RegistryObject<EntityType<TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP8>> TAMABLE_HUMANOID_CREEPER_GIRL_P8 = register("tamable_pregnant_humanoid_creeper_girl_p8",
 			EntityType.Builder.<TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP8>of(TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP8::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP8::new).sized(0.8f, 1.8f));
 	
-	public static final RegistryObject<EntityType<HostilMonsterCreeperGirl>> HOSTILE_MONSTER_CREEPER_GIRL = register("hostile_monster_creeper_girl",
-			EntityType.Builder.<HostilMonsterCreeperGirl>of(HostilMonsterCreeperGirl::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilMonsterCreeperGirl::new).sized(0.6f, 1.5f));
+	public static final RegistryObject<EntityType<HostileMonsterCreeperGirl>> HOSTILE_MONSTER_CREEPER_GIRL = register("hostile_monster_creeper_girl",
+			EntityType.Builder.<HostileMonsterCreeperGirl>of(HostileMonsterCreeperGirl::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostileMonsterCreeperGirl::new).sized(0.6f, 1.5f));
 	
-	public static final RegistryObject<EntityType<HostilPregnantMonsterCreeperGirl.MonsterCreeperGirlP3>> HOSTILE_PREGNANT_MONSTER_CREEPER_GIRL_P3 = register("hostile_pregnant_monster_creeper_girl_p3",
-			EntityType.Builder.<HostilPregnantMonsterCreeperGirl.MonsterCreeperGirlP3>of(HostilPregnantMonsterCreeperGirl.MonsterCreeperGirlP3::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilPregnantMonsterCreeperGirl.MonsterCreeperGirlP3::new).sized(0.6f, 1.5f));
+	public static final RegistryObject<EntityType<HostilePregnantMonsterCreeperGirl.MonsterCreeperGirlP3>> HOSTILE_PREGNANT_MONSTER_CREEPER_GIRL_P3 = register("hostile_pregnant_monster_creeper_girl_p3",
+			EntityType.Builder.<HostilePregnantMonsterCreeperGirl.MonsterCreeperGirlP3>of(HostilePregnantMonsterCreeperGirl.MonsterCreeperGirlP3::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilePregnantMonsterCreeperGirl.MonsterCreeperGirlP3::new).sized(0.6f, 1.5f));
 	
-	public static final RegistryObject<EntityType<HostilPregnantMonsterCreeperGirl.MonsterCreeperGirlP5>> HOSTILE_PREGNANT_MONSTER_CREEPER_GIRL_P5 = register("hostile_pregnant_monster_creeper_girl_p5",
-			EntityType.Builder.<HostilPregnantMonsterCreeperGirl.MonsterCreeperGirlP5>of(HostilPregnantMonsterCreeperGirl.MonsterCreeperGirlP5::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilPregnantMonsterCreeperGirl.MonsterCreeperGirlP5::new).sized(0.7f, 1.5f));
+	public static final RegistryObject<EntityType<HostilePregnantMonsterCreeperGirl.MonsterCreeperGirlP5>> HOSTILE_PREGNANT_MONSTER_CREEPER_GIRL_P5 = register("hostile_pregnant_monster_creeper_girl_p5",
+			EntityType.Builder.<HostilePregnantMonsterCreeperGirl.MonsterCreeperGirlP5>of(HostilePregnantMonsterCreeperGirl.MonsterCreeperGirlP5::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilePregnantMonsterCreeperGirl.MonsterCreeperGirlP5::new).sized(0.7f, 1.5f));
 	
-	public static final RegistryObject<EntityType<HostilPregnantMonsterCreeperGirl.MonsterCreeperGirlP7>> HOSTILE_PREGNANT_MONSTER_CREEPER_GIRL_P7 = register("hostile_pregnant_monster_creeper_girl_p7",
-			EntityType.Builder.<HostilPregnantMonsterCreeperGirl.MonsterCreeperGirlP7>of(HostilPregnantMonsterCreeperGirl.MonsterCreeperGirlP7::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilPregnantMonsterCreeperGirl.MonsterCreeperGirlP7::new).sized(0.8f, 1.5f));
+	public static final RegistryObject<EntityType<HostilePregnantMonsterCreeperGirl.MonsterCreeperGirlP7>> HOSTILE_PREGNANT_MONSTER_CREEPER_GIRL_P7 = register("hostile_pregnant_monster_creeper_girl_p7",
+			EntityType.Builder.<HostilePregnantMonsterCreeperGirl.MonsterCreeperGirlP7>of(HostilePregnantMonsterCreeperGirl.MonsterCreeperGirlP7::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilePregnantMonsterCreeperGirl.MonsterCreeperGirlP7::new).sized(0.8f, 1.5f));
 
 	public static final RegistryObject<EntityType<TamableMonsterCreeperGirl>> TAMABLE_MONSTER_CREEPER_GIRL = register("tamable_monster_creeper_girl",
 			EntityType.Builder.<TamableMonsterCreeperGirl>of(TamableMonsterCreeperGirl::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamableMonsterCreeperGirl::new).sized(0.6f, 1.8f));
@@ -163,17 +163,17 @@ public class MinepreggoModEntities {
 	public static final RegistryObject<EntityType<TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP8>> TAMABLE_MONSTER_CREEPER_GIRL_P8 = register("tamable_pregnant_monster_creeper_girl_p8",
 			EntityType.Builder.<TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP8>of(TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP8::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamablePregnantMonsterCreeperGirl.TamableMonsterCreeperGirlP8::new).sized(0.8f, 1.8f));
 	
-	public static final RegistryObject<EntityType<HostilMonsterEnderWoman>> HOSTILE_MONSTER_ENDER_WOMAN = register("hostile_monster_ender_woman",
-			EntityType.Builder.<HostilMonsterEnderWoman>of(HostilMonsterEnderWoman::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilMonsterEnderWoman::new).sized(0.6f, 2.9f));
+	public static final RegistryObject<EntityType<HostileMonsterEnderWoman>> HOSTILE_MONSTER_ENDER_WOMAN = register("hostile_monster_ender_woman",
+			EntityType.Builder.<HostileMonsterEnderWoman>of(HostileMonsterEnderWoman::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostileMonsterEnderWoman::new).sized(0.6f, 2.9f));
 	
-	public static final RegistryObject<EntityType<HostilPregnantMonsterEnderWoman.MonsterEnderWomanP3>> HOSTILE_PREGNANT_MONSTER_ENDER_WOMAN_P3 = register("hostile_pregnant_monster_ender_woman_p3",
-			EntityType.Builder.<HostilPregnantMonsterEnderWoman.MonsterEnderWomanP3>of(HostilPregnantMonsterEnderWoman.MonsterEnderWomanP3::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilPregnantMonsterEnderWoman.MonsterEnderWomanP3::new).sized(0.6f, 2.9f));
+	public static final RegistryObject<EntityType<HostilePregnantMonsterEnderWoman.MonsterEnderWomanP3>> HOSTILE_PREGNANT_MONSTER_ENDER_WOMAN_P3 = register("hostile_pregnant_monster_ender_woman_p3",
+			EntityType.Builder.<HostilePregnantMonsterEnderWoman.MonsterEnderWomanP3>of(HostilePregnantMonsterEnderWoman.MonsterEnderWomanP3::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilePregnantMonsterEnderWoman.MonsterEnderWomanP3::new).sized(0.6f, 2.9f));
 	
-	public static final RegistryObject<EntityType<HostilPregnantMonsterEnderWoman.MonsterEnderWomanP5>> HOSTILE_PREGNANT_MONSTER_ENDER_WOMAN_P5 = register("hostile_pregnant_monster_ender_woman_p5",
-			EntityType.Builder.<HostilPregnantMonsterEnderWoman.MonsterEnderWomanP5>of(HostilPregnantMonsterEnderWoman.MonsterEnderWomanP5::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilPregnantMonsterEnderWoman.MonsterEnderWomanP5::new).sized(0.7f, 2.9f));
+	public static final RegistryObject<EntityType<HostilePregnantMonsterEnderWoman.MonsterEnderWomanP5>> HOSTILE_PREGNANT_MONSTER_ENDER_WOMAN_P5 = register("hostile_pregnant_monster_ender_woman_p5",
+			EntityType.Builder.<HostilePregnantMonsterEnderWoman.MonsterEnderWomanP5>of(HostilePregnantMonsterEnderWoman.MonsterEnderWomanP5::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilePregnantMonsterEnderWoman.MonsterEnderWomanP5::new).sized(0.7f, 2.9f));
 	
-	public static final RegistryObject<EntityType<HostilPregnantMonsterEnderWoman.MonsterEnderWomanP7>> HOSTILE_PREGNANT_MONSTER_ENDER_WOMAN_P7 = register("hostile_pregnant_monster_ender_woman_p7",
-			EntityType.Builder.<HostilPregnantMonsterEnderWoman.MonsterEnderWomanP7>of(HostilPregnantMonsterEnderWoman.MonsterEnderWomanP7::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilPregnantMonsterEnderWoman.MonsterEnderWomanP7::new).sized(0.8f, 2.9f));
+	public static final RegistryObject<EntityType<HostilePregnantMonsterEnderWoman.MonsterEnderWomanP7>> HOSTILE_PREGNANT_MONSTER_ENDER_WOMAN_P7 = register("hostile_pregnant_monster_ender_woman_p7",
+			EntityType.Builder.<HostilePregnantMonsterEnderWoman.MonsterEnderWomanP7>of(HostilePregnantMonsterEnderWoman.MonsterEnderWomanP7::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(HostilePregnantMonsterEnderWoman.MonsterEnderWomanP7::new).sized(0.8f, 2.9f));
 
 	public static final RegistryObject<EntityType<TamableMonsterEnderWoman>> TAMABLE_MONSTER_ENDER_WOMAN = register("tamable_monster_ender_woman",
 			EntityType.Builder.<TamableMonsterEnderWoman>of(TamableMonsterEnderWoman::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamableMonsterEnderWoman::new).sized(0.6f, 2.9f));

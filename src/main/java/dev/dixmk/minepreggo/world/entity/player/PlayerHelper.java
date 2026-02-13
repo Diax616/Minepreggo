@@ -23,6 +23,7 @@ import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.network.capability.FemalePlayerImpl;
 import dev.dixmk.minepreggo.network.packet.s2c.RemovePlayerJigglePhysicsS2CPacket;
 import dev.dixmk.minepreggo.network.packet.s2c.SyncJigglePhysicsS2CPacket;
+import dev.dixmk.minepreggo.world.effect.EnderDragonPregnancy;
 import dev.dixmk.minepreggo.world.entity.EntityHelper;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
@@ -172,7 +173,15 @@ public class PlayerHelper {
 					if (femaleData.isPregnant() && femaleData.getPrePregnancyData().isPresent()) {	
 						var prePregnancyData = femaleData.getPrePregnancyData().get();
 						
-						final var lastPregnancyStage = PregnancySystemHelper.calculateMaxPregnancyPhaseByTotalNumOfBabies(prePregnancyData.fertilizedEggs());
+						final PregnancyPhase lastPregnancyStage;	
+						final Species speciesOfFather = prePregnancyData.typeOfSpeciesOfFather();
+						if (speciesOfFather == Species.DRAGON) {
+							lastPregnancyStage = PregnancyPhase.P8;
+						}
+						else {
+							lastPregnancyStage = PregnancySystemHelper.calculateMaxPregnancyPhaseByTotalNumOfBabies(prePregnancyData.fertilizedEggs());
+						}
+						
 						final var totalDays = MinepreggoModConfig.SERVER.getTotalPregnancyDays();
 						final var daysByStage = new MapPregnancyPhase(totalDays, lastPregnancyStage);
 						final var pregnancySystem = femaleData.getPregnancyData();
@@ -201,6 +210,10 @@ public class PlayerHelper {
 						pregnancySystem.setWomb(womb);	
 						pregnancySystem.setCurrentPregnancyPhase(PregnancyPhase.P0);	
 									
+						if (speciesOfFather == Species.DRAGON) {
+							player.addEffect(new MobEffectInstance(MinepreggoModMobEffects.ENDER_DRAGON_PREGNANCY.get(), -1, 0, false, false, true));
+						}
+						
 						player.addEffect(new MobEffectInstance(MinepreggoModMobEffects.PREGNANCY_P0.get(), -1, 0, false, false, true));				
 						
 						PlayerHelper.updateJigglePhysics(player, cap.getSkinType(), PregnancyPhase.P0);
@@ -213,10 +226,10 @@ public class PlayerHelper {
 								prePregnancyData.fertilizedEggs(), 
 								totalDays,
 								daysByStage,
-								womb);
-										
-						MinepreggoModAdvancements.GET_PREGNANT_TRIGGER.trigger(player);
+								womb);				
 						
+						MinepreggoModAdvancements.GET_PREGNANT_TRIGGER.trigger(player);
+
 						return Boolean.TRUE;
 					}
 					return Boolean.FALSE;
@@ -293,6 +306,10 @@ public class PlayerHelper {
 	}
 	
 	public static boolean tryStartPregnancyByPotion(ServerPlayer player, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father, int amplifier) {			
+		if (father.middle == Species.DRAGON) {
+			return tryStartEnderDragonPregnancy(player);
+		}
+
 		if (tryToStartPrePregnancy(player, PregnancyType.POTION, father, PregnancySystemHelper.calculateNumOfBabiesByPotion(amplifier))) {
 			return tryToStartPregnancy(player, true);
 		}	
@@ -320,6 +337,13 @@ public class PlayerHelper {
 			})			
 		);
 	}	
+	
+	public static boolean tryStartEnderDragonPregnancy(ServerPlayer player) {			
+		if (tryToStartPrePregnancy(player, PregnancyType.POTION, ImmutableTriple.of(Optional.empty(), Species.DRAGON, Creature.MONSTER), 1)) {
+			return tryToStartPregnancy(player, true);
+		}		
+		return false;
+	}
 	
 	public static @Nonnegative int calculateExplosionLevelByPregnancyPhase(PregnancyPhase phase) {
 		int ordinal = phase.ordinal();
@@ -356,6 +380,13 @@ public class PlayerHelper {
 					}
 					break;
 				}
+				case DRAGON: {
+					if (!serverPlayer.hasEffect(MinepreggoModMobEffects.ENDER_DRAGON_PREGNANCY.get())) {
+						serverPlayer.addEffect(new MobEffectInstance(MinepreggoModMobEffects.ENDER_DRAGON_PREGNANCY.get(), -1, 0, false, false, true));
+						return Species.DRAGON;
+					}
+					break;
+				}
 			default:
 				break;
 			}
@@ -365,7 +396,11 @@ public class PlayerHelper {
 	}
 	
 	public static boolean isValidCravingBySpecies(Species species) {
-		return species == Species.HUMAN || species == Species.ZOMBIE || species == Species.CREEPER || species == Species.ENDER;
+		return species == Species.HUMAN ||
+				species == Species.ZOMBIE ||
+				species == Species.CREEPER ||
+				species == Species.ENDER ||
+				species == Species.DRAGON;
 	}	
 	// PREGNANCY SYSTEM - END
 	
@@ -395,10 +430,18 @@ public class PlayerHelper {
 	
 	
 	// PLAYER MOB EFFECT - START
-	public static List<MobEffect> removeEffectsByPregnancyPhase(Player player, PregnancyPhase phase) {
+	public static List<MobEffect> removeEffectsBeingPregnant(Player player, PregnancyPhase phase) {
 		Predicate<MobEffect> predicate = phase.compareTo(PregnancyPhase.P2) >= 0
 				? effect -> !PregnancySystemHelper.isPregnancyEffect(effect) && !PregnancySystemHelper.isSecondaryPregnancyEffect(effect)
 				: effect -> !PregnancySystemHelper.isPregnancyEffect(effect);
+					
+		return LivingEntityHelper.removeEffects(player, predicate);
+	}
+	
+	public static List<MobEffect> removeEffectsBeingPregnantOfEnderDragon(Player player, PregnancyPhase phase) {
+		Predicate<MobEffect> predicate = phase.compareTo(PregnancyPhase.P2) >= 0
+				? effect -> !EnderDragonPregnancy.isSecondaryEffect(effect, phase) && !PregnancySystemHelper.isPregnancyEffect(effect) && !PregnancySystemHelper.isSecondaryPregnancyEffect(effect)
+				: effect -> !EnderDragonPregnancy.isSecondaryEffect(effect, phase) && !PregnancySystemHelper.isPregnancyEffect(effect);
 					
 		return LivingEntityHelper.removeEffects(player, predicate);
 	}
@@ -418,6 +461,25 @@ public class PlayerHelper {
 	public static MobEffect getPregnancyEffects(PregnancyPhase phase) {
 		return PREGNANCY_EFFECTS.get(phase);
 	}	
+	
+	public static boolean addEnderDragonPregnancyEffects(ServerPlayer player) {	
+		Optional<Boolean> added = player.getCapability(MinepreggoCapabilities.PLAYER_DATA)
+				.resolve()
+				.flatMap(cap -> cap.getFemaleData().resolve())
+				.map(femaleData -> {
+					if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
+						var pre = femaleData.getPrePregnancyData().orElse(null);
+						if (pre != null && pre.typeOfSpeciesOfFather() == Species.DRAGON && !player.hasEffect(MinepreggoModMobEffects.ENDER_DRAGON_PREGNANCY.get())) {
+							player.addEffect(new MobEffectInstance(MinepreggoModMobEffects.ENDER_DRAGON_PREGNANCY.get(), -1, 0, false, false, true));
+							return Boolean.TRUE;
+						}			
+					}
+					return Boolean.FALSE;
+				});
+		
+		return added.orElse(Boolean.FALSE);
+	}
+	
 	// PLAYER MOB EFFECT - END
 	
 	

@@ -3,6 +3,7 @@ package dev.dixmk.minepreggo.init;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -79,6 +80,9 @@ public class MinepreggoModPotions {
 	public static final RegistryObject<Potion> FERTILITY = REGISTRY.register("fertility_0", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.FERTILITY.get(), 1, 0, false, true)));
 	public static final RegistryObject<Potion> ETERNAL_PREGNANCY = REGISTRY.register("eternal_pregnancy_0", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.ETERNAL_PREGNANCY.get(), -1, 0, false, true, true)));
 	public static final RegistryObject<Potion> ZERO_GRAVITY_BELLY = REGISTRY.register("zero_gravity_belly_0", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.ZERO_GRAVITY_BELLY.get(), 12000, 0, false, true, true)));
+
+	public static final RegistryObject<Potion> ENDER_POWERFUL_IMPREGNATION = REGISTRY.register("ender_powerful_impregnation_0", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.ENDER_IMPREGNATION.get(), 300, 4, false, true), new MobEffectInstance(MobEffects.REGENERATION, 300, 0, false, true), new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 12000, 0, false, true)));
+	public static final RegistryObject<Potion> ENDER_DRAGON_IMPREGNATION = REGISTRY.register("ender_dragon_impregnation_0", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.ENDER_DRAGON_IMPREGNATION.get(), 300, 0, false, true)));
 
 	public static Potion getRandomImpregnationPotion(RandomSource random) {
 		return switch (random.nextInt(5)) {

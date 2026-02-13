@@ -30,8 +30,8 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AnimationState;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
@@ -63,10 +63,15 @@ public abstract class AbstractTamablePregnantEnderWoman extends AbstractTamableE
 	protected abstract @Nonnull IPreggoMobPregnancySystem createPregnancySystem();
 	
 	@Override
+    protected boolean cannotTeleportByDamage(DamageSource damageSource) {
+    	return damageSource.is(MinepreggoModDamageSources.PREGNANCY_PAIN);
+	}
+	
+	@Override
 	public ITamablePregnantPreggoMobData getPregnancyData() {
 		return pregnancyData;
 	}
-	
+
 	@Override
 	protected void defineSynchedData() {
 		super.defineSynchedData();	
@@ -103,7 +108,14 @@ public abstract class AbstractTamablePregnantEnderWoman extends AbstractTamableE
 			}
         });       
 		this.goalSelector.addGoal(10, new AbstractEnderWoman.EnderWomanLeaveBlockGoal(this));
-        this.goalSelector.addGoal(11, new AbstractEnderWoman.EnderWomanTakeBlockGoal(this));
+        this.goalSelector.addGoal(11, new AbstractEnderWoman.EnderWomanTakeBlockGoal(this) {
+            @Override
+            public boolean canUse() {
+            	return super.canUse()
+            			&& abstractEnderWoman.getItemBySlot(EquipmentSlot.MAINHAND).isEmpty()
+            			&& abstractEnderWoman.getItemBySlot(EquipmentSlot.OFFHAND).isEmpty();
+            }
+        });
         this.targetSelector.addGoal(4, new ResetUniversalAngerTargetGoal<>(this, false));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Endermite.class, true, false) {
 			@Override
@@ -280,8 +292,11 @@ public abstract class AbstractTamablePregnantEnderWoman extends AbstractTamableE
 	@Override
    	public void aiStep() {
       super.aiStep();  
-      if (this.isAlive()) {	  
-          this.pregnancySystem.onServerTick();       
+      if (!this.level().isClientSide && this.isAlive()) {	  
+          this.pregnancySystem.onServerTick();  
+          if (this.pregnancyData.isIncapacitated() && this.isCarring()) {
+        	  forceDropCarriedBlock(this);
+          }       
       }
 	}
 	
@@ -308,15 +323,6 @@ public abstract class AbstractTamablePregnantEnderWoman extends AbstractTamableE
 		else {
 			return super.mobInteract(sourceentity, hand);
 		}
-	}
-	
-	@Override
-	public boolean doHurtTarget(Entity target) {		
-		boolean result = super.doHurtTarget(target);	
-		if (result && !this.tamablePreggoMobData.isSavage() && target instanceof Player owner && this.isOwnedBy(owner) && this.tamablePreggoMobData.isAngry()) {
-			this.setTarget(null);		
-		}
-		return result;
 	}
 	
 	@Override

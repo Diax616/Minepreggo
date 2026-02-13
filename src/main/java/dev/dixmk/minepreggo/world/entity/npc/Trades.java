@@ -1,7 +1,9 @@
 package dev.dixmk.minepreggo.world.entity.npc;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import javax.annotation.CheckForNull;
 
@@ -18,7 +20,13 @@ import dev.dixmk.minepreggo.world.item.alchemy.PotionItemFactory;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.Util;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
@@ -32,6 +40,7 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.trading.MerchantOffer;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class Trades {
@@ -129,6 +138,7 @@ public class Trades {
 						new EnchantBookForBaby(Species.CREEPER),
 						new EnchantBookForBaby(Species.ZOMBIE),
 						new EnchantBookForBaby(Species.ENDER),
+						new ItemstackForItemstack(() -> MinepreggoModItems.BABY_ENDER_DRAGON_BLOCK.get().getDefaultInstance(), () -> createLootForBabyEnderDragon(2, 16, 8, 1, 32), 1, 10, 0.5f),
 						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.PREGNANCY_ACCELERATION_0.get()), 25, 1, 10, 0),
 						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.IMPREGNATION_POTION_0.get()), 20, 1, 10, 0),
 						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.IMPREGNATION_POTION_1.get()), 30, 1, 10, 0),
@@ -140,7 +150,8 @@ public class Trades {
 						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_HUMAN_FETUS.get(), 2, 30, 10),
 						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_ZOMBIE_FETUS.get(), 3, 30, 10),
 						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_HUMANOID_CREEPER_FETUS.get(), 1, 30, 10),
-						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_CREEPER_FETUS.get(), 2, 30, 10)},	
+						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_CREEPER_FETUS.get(), 2, 30, 10),
+						new ItemsForItems(MinepreggoModItems.BABY_VILLAGER.get(), 1, MinepreggoModItems.ENDER_LIFE_SUBSTANCE.get(), 1, 5)},	
 				new VillagerTrades.ItemListing[]{
 						new ItemsForItems(MinepreggoModItems.HUMAN_BREAST_MILK_BOTTLE.get(), 12, Items.DIAMOND, 16, 10),
 						new ItemsForItems(MinepreggoModItems.CREEPER_BREAST_MILK_BOTTLE.get(), 12, Items.DIAMOND, 12, 10),
@@ -161,11 +172,13 @@ public class Trades {
 						new EnchantBookForBaby(Species.CREEPER),
 						new EnchantBookForBaby(Species.ZOMBIE),
 						new EnchantBookForBaby(Species.ENDER),
+						new ItemstackForItemstack(() -> MinepreggoModItems.BABY_ENDER_DRAGON_BLOCK.get().getDefaultInstance(), () -> createLootForBabyEnderDragon(1, 24, 4, 1, 32), 1, 10, 0.5f),
 						new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.VILLAGER_BRAIN.get(), 12, 24, 10, 0),
 						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_HUMAN_FETUS.get(), 2, 30, 10),
 						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_ZOMBIE_FETUS.get(), 3, 30, 10),
 						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_HUMANOID_CREEPER_FETUS.get(), 1, 30, 10),
-						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_CREEPER_FETUS.get(), 2, 30, 10)},
+						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_CREEPER_FETUS.get(), 2, 30, 10),
+						new ItemsForItems(MinepreggoModItems.BABY_VILLAGER.get(), 1, MinepreggoModItems.CREEPER_LIFE_SUBSTANCE.get(), 1, 5)},
 				new VillagerTrades.ItemListing[]{
 						new ItemsForItems(MinepreggoModItems.HUMAN_BREAST_MILK_BOTTLE.get(), 12, Items.DIAMOND, 16, 10),
 						new ItemsForItems(MinepreggoModItems.CREEPER_BREAST_MILK_BOTTLE.get(), 12, Items.DIAMOND, 12, 10),
@@ -185,18 +198,110 @@ public class Trades {
 						new EnchantBookForBaby(Species.CREEPER),
 						new EnchantBookForBaby(Species.ZOMBIE),
 						new EnchantBookForBaby(Species.ENDER),
+						new ItemstackForItemstack(() -> MinepreggoModItems.BABY_ENDER_DRAGON_BLOCK.get().getDefaultInstance(), () -> createLootForBabyEnderDragon(3, 16, 4, 1, 4), 1, 10, 0.5f),
 						new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.VILLAGER_BRAIN.get(), 12, 24, 10, 0),
 						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_HUMAN_FETUS.get(), 2, 30, 10),
 						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_ZOMBIE_FETUS.get(), 3, 30, 10),
 						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_HUMANOID_CREEPER_FETUS.get(), 1, 30, 10),
-						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_CREEPER_FETUS.get(), 2, 30, 10)});
+						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_CREEPER_FETUS.get(), 2, 30, 10),
+						new ItemsForItems(MinepreggoModItems.BABY_VILLAGER.get(), 1, MinepreggoModItems.ZOMBIE_LIFE_SUBSTANCE.get(), 1, 5)});
 		
 		@NonNull
 		public static VillagerTrades.ItemListing[] getRandomTrades(RandomSource random) {		
 			return TRADES.get(random.nextInt(0, TRADES.size()));	
 		}
 
+		private static ItemStack createLootForBabyEnderDragon(int mendingBooks, int netheriteIngots, int goldenApples, int enchantedGoldenApples, int diamonds) {
+		       ItemStack shulkerBox = new ItemStack(Blocks.SHULKER_BOX);
+		        
+		        NonNullList<ItemStack> inventory = createLoot(27, mendingBooks, netheriteIngots, goldenApples, enchantedGoldenApples, diamonds);
+			    Collections.shuffle(inventory);
+		        
+		        CompoundTag beTag = new CompoundTag();
+		        ContainerHelper.saveAllItems(beTag, inventory);
+		        shulkerBox.getOrCreateTag().put("BlockEntityTag", beTag);     
+		        return shulkerBox;
+		}	
+		
+		private static NonNullList<ItemStack> createLoot(int size, int mendingBooks, int netheriteIngots, int goldenApples, int enchantedGoldenApples, int diamonds) {
+		    NonNullList<ItemStack> inventory = NonNullList.withSize(size, ItemStack.EMPTY);
+		    int currentSlot = 0;
+		    
+		    if (currentSlot < size) {
+		        inventory.set(currentSlot++, createMinepreggoBook());
+		    }
+		    
+		    while (mendingBooks > 0 && currentSlot < size) {
+		        ItemStack enchantedBook = EnchantedBookItem.createForEnchantment(new EnchantmentInstance(Enchantments.MENDING, 1));
+		        int stackSize = Math.min(mendingBooks, enchantedBook.getMaxStackSize());
+		        enchantedBook.setCount(stackSize);
+		        inventory.set(currentSlot++, enchantedBook);
+		        mendingBooks -= stackSize;
+		    }
+		    
+		    while (netheriteIngots > 0 && currentSlot < size) {
+		        int stackSize = Math.min(netheriteIngots, Items.NETHERITE_INGOT.getDefaultInstance().getMaxStackSize());
+		        inventory.set(currentSlot++, new ItemStack(Items.NETHERITE_INGOT, stackSize));
+		        netheriteIngots -= stackSize;
+		    }
+		    
+		    while (goldenApples > 0 && currentSlot < size) {
+		        int stackSize = Math.min(goldenApples, Items.GOLDEN_APPLE.getDefaultInstance().getMaxStackSize());
+		        inventory.set(currentSlot++, new ItemStack(Items.GOLDEN_APPLE, stackSize));
+		        goldenApples -= stackSize;
+		    }
+		    
+		    while (enchantedGoldenApples > 0 && currentSlot < size) {
+		        int stackSize = Math.min(enchantedGoldenApples, Items.ENCHANTED_GOLDEN_APPLE.getDefaultInstance().getMaxStackSize());
+		        inventory.set(currentSlot++, new ItemStack(Items.ENCHANTED_GOLDEN_APPLE, stackSize));
+		        enchantedGoldenApples -= stackSize;
+		    }
+		    
+		    while (diamonds > 0 && currentSlot < size) {
+		        int stackSize = Math.min(diamonds, Items.DIAMOND.getDefaultInstance().getMaxStackSize());
+		        inventory.set(currentSlot++, new ItemStack(Items.DIAMOND, stackSize));
+		        diamonds -= stackSize;
+		    }
+		         
+		    return inventory;
+		}
+		
+		private static ItemStack createMinepreggoBook() {
+	        ItemStack book = new ItemStack(Items.WRITTEN_BOOK);
+	        CompoundTag nbt = book.getOrCreateTag();
+	        nbt.putString("title", Component.translatable("book.minepreggo.end.title").getString());       
+	        nbt.putString("author", "DixMK");
+	        ListTag pages = new ListTag();
+	        
+	        String pageContent = "[{\"text\":\"⠀\",\"color\":\"black\"},{\"text\":\"⢀\",\"color\":\"gray\"},{\"text\":\"⣠\",\"color\":\"dark_gray\"},{\"text\":\"⣤\",\"color\":\"black\"},{\"text\":\"⣾⣿⣿⣿⣿⣿\",\"color\":\"dark_gray\"},{\"text\":\"⣧⡄\",\"color\":\"gray\"},{\"text\":\"⠀⠀⠀⠀\",\"color\":\"black\"},{\"text\":\"⢸⣿\",\"color\":\"gray\"},{\"text\":\"⣿⣿⣿⣿\",\"color\":\"gold\"},{\"text\":\"⣿⣿\",\"color\":\"dark_gray\"},{\"text\":\"⣤\",\"color\":\"black\"},{\"text\":\"⣄\",\"color\":\"dark_gray\"},{\"text\":\"⡀\",\"color\":\"gray\"},{\"text\":\"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\\n⠀\",\"color\":\"black\"},{\"text\":\"⣾⣿\",\"color\":\"dark_gray\"},{\"text\":\"⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣶⣶⣶⣿⣿⣿⣿\",\"color\":\"gray\"},{\"text\":\"⣿⣿\",\"color\":\"gold\"},{\"text\":\"⣿⣿⣿\",\"color\":\"gray\"},{\"text\":\"⣿⣷\",\"color\":\"dark_gray\"},{\"text\":\"⡆\",\"color\":\"gray\"},{\"text\":\"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\\n⠀⣿\",\"color\":\"black\"},{\"text\":\"⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿\",\"color\":\"gray\"},{\"text\":\"⣿\",\"color\":\"gold\"},{\"text\":\"⣿⣿⣿⣿⣿\",\"color\":\"gray\"},{\"text\":\"⣿\",\"color\":\"black\"},{\"text\":\"⡇\",\"color\":\"gray\"},{\"text\":\"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\\n⠀⣿\",\"color\":\"black\"},{\"text\":\"⣿⣿⣿⣿⣿⣿⣿\",\"color\":\"gray\"},{\"text\":\"⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿\",\"color\":\"dark_gray\"},{\"text\":\"⣿⣿⣿⣿⣿⣿⣿\",\"color\":\"gray\"},{\"text\":\"⣿\",\"color\":\"dark_gray\"},{\"text\":\"⡇\",\"color\":\"gray\"},{\"text\":\"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\\n⠀\",\"color\":\"black\"},{\"text\":\"⠘\",\"color\":\"gray\"},{\"text\":\"⢻⣿⣿⣿⣿⣿\",\"color\":\"dark_gray\"},{\"text\":\"⣿⣿\",\"color\":\"gray\"},{\"text\":\"⣿⣿⣿⣿⣿⣿⣿⣿\",\"color\":\"dark_gray\"},{\"text\":\"⣿⣿\",\"color\":\"gray\"},{\"text\":\"⣿⣿⣿⣿⣿⡟\",\"color\":\"dark_gray\"},{\"text\":\"⠃\",\"color\":\"gray\"},{\"text\":\"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\\n⠀⠀⠀⠈⠉\",\"color\":\"black\"},{\"text\":\"⣿⣿⣿⣿⣿\",\"color\":\"dark_gray\"},{\"text\":\"⣿⣿⣿⣿⣿⣿⣿⣿\",\"color\":\"gray\"},{\"text\":\"⣿⣿⣿⣿\",\"color\":\"dark_gray\"},{\"text\":\"⣿⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\\n⠀⠀⠀⠀⢸\",\"color\":\"black\"},{\"text\":\"⣿⣿⣿\",\"color\":\"dark_gray\"},{\"text\":\"⣿⣿⡟⠛⠁\",\"color\":\"gray\"},{\"text\":\"⠀⠀\",\"color\":\"black\"},{\"text\":\"⠈⠛⢻⣿⣿⣿\",\"color\":\"gray\"},{\"text\":\"⣿⣿⣷\",\"color\":\"dark_gray\"},{\"text\":\"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\\n⠀⠀⠀⢸\",\"color\":\"black\"},{\"text\":\"⣿\",\"color\":\"dark_gray\"},{\"text\":\"⣿⡿⠿⠃\",\"color\":\"gray\"},{\"text\":\"⠀⠀⠀\",\"color\":\"black\"},{\"text\":\"⢀⣀⣀⡀\",\"color\":\"gray\"},{\"text\":\"⠀⠀⠀\",\"color\":\"black\"},{\"text\":\"⠘⠿⢿⣿\",\"color\":\"gray\"},{\"text\":\"⣿\",\"color\":\"dark_gray\"},{\"text\":\"⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\\n⠀⠀⠀⢸\",\"color\":\"black\"},{\"text\":\"⡿\",\"color\":\"dark_gray\"},{\"text\":\"⠋\",\"color\":\"gray\"},{\"text\":\"⠀⠀⠀\",\"color\":\"black\"},{\"text\":\"⢀⣰⣾⣿⣿⣿⣿⣷⣆\",\"color\":\"gray\"},{\"text\":\"⠀⠀⠀⠀\",\"color\":\"black\"},{\"text\":\"⠙\",\"color\":\"gray\"},{\"text\":\"⢿\",\"color\":\"dark_gray\"},{\"text\":\"⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\\n⠀⠀⠀⢸⡇⠀⠀⠀⠀\",\"color\":\"black\"},{\"text\":\"⢸⣿⣿⣿⣿⣿⣿⣿⣿⡆\",\"color\":\"gray\"},{\"text\":\"⠀⠀⠀⠀\",\"color\":\"black\"},{\"text\":\"⢸\",\"color\":\"dark_gray\"},{\"text\":\"⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\\n⠀⠀⠀\",\"color\":\"black\"},{\"text\":\"⠈\",\"color\":\"gray\"},{\"text\":\"⢹⣇\",\"color\":\"dark_gray\"},{\"text\":\"⠀⠀⠀\",\"color\":\"black\"},{\"text\":\"⢸⣿⣿⣿\",\"color\":\"gray\"},{\"text\":\"⣿⣿\",\"color\":\"dark_gray\"},{\"text\":\"⣿⣿⣿⡇\",\"color\":\"gray\"},{\"text\":\"⠀⠀⠀\",\"color\":\"black\"},{\"text\":\"⣸\",\"color\":\"gray\"},{\"text\":\"⣿\",\"color\":\"dark_gray\"},{\"text\":\"⠁\",\"color\":\"gray\"},{\"text\":\"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\\n⠀⠀⠀⠀⠀\",\"color\":\"black\"},{\"text\":\"⢿\",\"color\":\"dark_gray\"},{\"text\":\"⣧⣤⡀\",\"color\":\"gray\"},{\"text\":\"⠀\",\"color\":\"black\"},{\"text\":\"⠹⢿⣿⣿⣿⣿⣿⠟⠁⢀⣤⣼\",\"color\":\"gray\"},{\"text\":\"⡿\",\"color\":\"dark_gray\"},{\"text\":\"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\\n⠀⠀⠀⠀⠀⠀⠉\",\"color\":\"black\"},{\"text\":\"⠿\",\"color\":\"dark_gray\"},{\"text\":\"⣷⣆⣀⡈⠉⠉⠉⠉⢁⣀⣰⣾\",\"color\":\"gray\"},{\"text\":\"⡿\",\"color\":\"dark_gray\"},{\"text\":\"⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\\n⠀⠀⠀⠀⠀⠀⠀⠀\",\"color\":\"black\"},{\"text\":\"⠙⠿⢿⣷⣶⣶⣶⣶⣾⡿⠿⠋\",\"color\":\"dark_gray\"},{\"text\":\"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\\n\",\"color\":\"black\"}]";
+	        pages.add(StringTag.valueOf(pageContent));
+	        nbt.put("pages", pages);
+	        return book;
+		}
 	}
+	
+	static class ItemstackForItemstack implements VillagerTrades.ItemListing {
+	      protected final Supplier<ItemStack> sourceItemStack;
+	      protected final Supplier<ItemStack> targetItemStack;         
+	      protected final int maxUses;
+	      protected final int villagerXp;
+	      protected final float priceMultiplier;
+
+	      public ItemstackForItemstack(Supplier<ItemStack> sourceItemStack, Supplier<ItemStack> targetItemStack, int maxUses, int villagerXp, float priceMultiplier) {
+	         this.sourceItemStack = sourceItemStack;
+	         this.targetItemStack = targetItemStack;
+	         this.maxUses = maxUses;
+	         this.villagerXp = villagerXp;
+	         this.priceMultiplier = priceMultiplier;
+	      }
+
+		  public MerchantOffer getOffer(Entity p_219699_, RandomSource p_219700_) {
+	         return new MerchantOffer(
+	        		 sourceItemStack.get(), targetItemStack.get(),
+	        		 this.maxUses, this.villagerXp, this.priceMultiplier);
+	      }
+	  }
+	
 	
 	static class ItemsForItems implements VillagerTrades.ItemListing {
 	      protected final ItemStack sourceItemStack;

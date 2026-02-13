@@ -17,6 +17,8 @@ import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobPregnancySystemP8;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnantPreggoMobSystemP0;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnantPreggoMobSystemP1;
 import dev.dixmk.minepreggo.world.entity.preggo.PregnantPreggoMobSystemP2;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnantPreggoMobSystemP3;
+import dev.dixmk.minepreggo.world.entity.preggo.PregnantPreggoMobSystemP4;
 import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
 import dev.dixmk.minepreggo.world.pregnancy.IFemaleEntity;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
@@ -179,7 +181,7 @@ public class TamablePregnantZombieGirl {
 
 		@Override
 		protected ITamablePreggoMobSystem createTamablePreggoMobSystem() {
-			return new PregnantPreggoMobSystemP2<>(this, MinepreggoModConfig.SERVER.getTotalTicksOfHungryP3(), PregnancySystemHelper.TOTAL_TICKS_SEXUAL_APPETITE_P3);
+			return new PregnantPreggoMobSystemP3<>(this, MinepreggoModConfig.SERVER.getTotalTicksOfHungryP3(), PregnancySystemHelper.TOTAL_TICKS_SEXUAL_APPETITE_P3);
 		}
 		
 		@Override
@@ -225,7 +227,7 @@ public class TamablePregnantZombieGirl {
 
 		@Override
 		protected ITamablePreggoMobSystem createTamablePreggoMobSystem() {
-			return new PregnantPreggoMobSystemP2<>(this, MinepreggoModConfig.SERVER.getTotalTicksOfHungryP4(), PregnancySystemHelper.TOTAL_TICKS_SEXUAL_APPETITE_P4);
+			return new PregnantPreggoMobSystemP4<>(this, MinepreggoModConfig.SERVER.getTotalTicksOfHungryP4(), PregnancySystemHelper.TOTAL_TICKS_SEXUAL_APPETITE_P4);
 		}
 		
 		@Override
@@ -276,7 +278,7 @@ public class TamablePregnantZombieGirl {
 
 		@Override
 		protected ITamablePreggoMobSystem createTamablePreggoMobSystem() {
-			return new PregnantPreggoMobSystemP2<>(this, MinepreggoModConfig.SERVER.getTotalTicksOfHungryP5(), PregnancySystemHelper.TOTAL_TICKS_SEXUAL_APPETITE_P5);
+			return new PregnantPreggoMobSystemP4<>(this, MinepreggoModConfig.SERVER.getTotalTicksOfHungryP5(), PregnancySystemHelper.TOTAL_TICKS_SEXUAL_APPETITE_P5);
 		}
 		
 		@Override
@@ -327,7 +329,7 @@ public class TamablePregnantZombieGirl {
 
 		@Override
 		protected ITamablePreggoMobSystem createTamablePreggoMobSystem() {
-			return new PregnantPreggoMobSystemP2<>(this, MinepreggoModConfig.SERVER.getTotalTicksOfHungryP6(), PregnancySystemHelper.TOTAL_TICKS_SEXUAL_APPETITE_P6);
+			return new PregnantPreggoMobSystemP4<>(this, MinepreggoModConfig.SERVER.getTotalTicksOfHungryP6(), PregnancySystemHelper.TOTAL_TICKS_SEXUAL_APPETITE_P6);
 		}
 		
 		@Override
@@ -378,7 +380,7 @@ public class TamablePregnantZombieGirl {
 		
 		@Override
 		protected ITamablePreggoMobSystem createTamablePreggoMobSystem() {
-			return new PregnantPreggoMobSystemP2<>(this, MinepreggoModConfig.SERVER.getTotalTicksOfHungryP7(), PregnancySystemHelper.TOTAL_TICKS_SEXUAL_APPETITE_P7);
+			return new PregnantPreggoMobSystemP4<>(this, MinepreggoModConfig.SERVER.getTotalTicksOfHungryP7(), PregnancySystemHelper.TOTAL_TICKS_SEXUAL_APPETITE_P7);
 		}
 		
 		@Override
@@ -429,7 +431,7 @@ public class TamablePregnantZombieGirl {
 		
 		@Override
 		protected ITamablePreggoMobSystem createTamablePreggoMobSystem() {
-			return new PregnantPreggoMobSystemP2<>(this, MinepreggoModConfig.SERVER.getTotalTicksOfHungryP8(), PregnancySystemHelper.TOTAL_TICKS_SEXUAL_APPETITE_P8);
+			return new PregnantPreggoMobSystemP4<>(this, MinepreggoModConfig.SERVER.getTotalTicksOfHungryP8(), PregnancySystemHelper.TOTAL_TICKS_SEXUAL_APPETITE_P8);
 		}
 		
 		@Override

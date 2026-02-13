@@ -18,21 +18,22 @@ public abstract class AbstractBaby extends Item {
 		super(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON));
 	}
 	
-	public static ItemStack createBabyItemStack(UUID motherUUID, @Nullable UUID fatherUUID, AbstractBaby babyItem) {
+	public static ItemStack createBabyItemStack(UUID motherUUID, @Nullable UUID fatherUUID, Item babyItem) {
 		ItemStack babyStack = babyItem.getDefaultInstance();
 		CompoundTag nbt = babyStack.getOrCreateTag();	
 		nbt.putUUID(NBT_MOTHER_ID, motherUUID);	
 		if (fatherUUID != null) {
 			nbt.putUUID(NBT_FATHER_ID, fatherUUID);
 		}
-		babyStack.setTag(nbt);
 		return babyStack;
 	}
 	
 	public static boolean isMotherOf(ItemStack babyStack, UUID motherUUID) {
 		if (babyStack.hasTag()) {
 			CompoundTag nbt = babyStack.getTag();
-			return nbt.getUUID(NBT_MOTHER_ID).equals(motherUUID);
+			if (nbt.contains(NBT_MOTHER_ID)) {
+				return nbt.getUUID(NBT_MOTHER_ID).equals(motherUUID);
+			}
 		}
 		return false;
 	}

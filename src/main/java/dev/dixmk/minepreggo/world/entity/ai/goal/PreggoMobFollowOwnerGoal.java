@@ -20,7 +20,7 @@ public class PreggoMobFollowOwnerGoal<T extends PreggoMob & ITamablePreggoMob<?>
 		this.tamable.getLookControl().setLookAt(this.owner, 10.0F, this.tamable.getMaxHeadXRot());
 		if (--this.timeToRecalcPath <= 0) {
 			this.timeToRecalcPath = this.adjustedTickDelay(10);
-			if (MinepreggoModConfig.SERVER.isPreggoMobsTeleportToPlayerEnable() && this.tamable.distanceToSqr(this.owner) >= 256.0D) {
+			if (MinepreggoModConfig.SERVER.isPreggoMobsTeleportToPlayerEnable() && this.tamable.distanceToSqr(this.owner) >= 196.0D) {
 				this.teleportToOwner();
 			}
 			else {

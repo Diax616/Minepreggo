@@ -5,6 +5,10 @@ import dev.dixmk.minepreggo.world.pregnancy.Craving;
 
 public class EnderSlimeJellyWithSaltItem extends EnderSlimeJellyItem implements ICravingItem {
 
+	public EnderSlimeJellyWithSaltItem() {
+		super(11);
+	}
+	
 	@Override
 	public int getGratification() {
 		return 8;

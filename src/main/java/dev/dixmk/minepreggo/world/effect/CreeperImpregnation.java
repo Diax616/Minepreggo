@@ -9,7 +9,7 @@ import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.HostilMonsterCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.HostileMonsterCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableMonsterCreeperGirl;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
@@ -40,12 +40,14 @@ public class CreeperImpregnation extends Impregnantion {
 			final double x = entity.getX();
 			final double y = entity.getY();	
 			final double z = entity.getZ();		
-			if (entity instanceof HostilMonsterCreeperGirl creeperGirl) {
+			if (entity instanceof HostileMonsterCreeperGirl creeperGirl) {
 				var nextStage = MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
+				nextStage.setCombatMode(creeperGirl.getCombatMode());
 				initPregnancy(creeperGirl, nextStage, amplifier);
 			}	
 			if (entity instanceof TamableMonsterCreeperGirl creeperGirl && creeperGirl.getGenderedData().getPostPregnancyData().isEmpty()) {
 				var nextStage = MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
+				nextStage.setCombatMode(creeperGirl.getCombatMode());
 				initPregnancyInTamable(creeperGirl, nextStage, amplifier);
 			}
 			else {

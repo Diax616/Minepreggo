@@ -1,15 +1,21 @@
 package dev.dixmk.minepreggo.world.entity.preggo.ender;
 
 import java.util.EnumSet;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import org.apache.commons.lang3.function.ToBooleanBiFunction;
 
+import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
+import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Inventory;
 import dev.dixmk.minepreggo.world.entity.preggo.InventorySlot;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -25,10 +31,8 @@ public class MonsterEnderWomanHelper {
 	
 	private MonsterEnderWomanHelper() {}
 
-	
 	private static<E extends AbstractTamableEnderWoman> void travel(Predicate<E> predicate, E enderWoman, Vec3 dir, Consumer<Vec3> parentMethod) {
-		if (predicate.test(enderWoman)) {
-			LivingEntity owner = (LivingEntity) enderWoman.getFirstPassenger();
+		if (predicate.test(enderWoman) && enderWoman.getFirstPassenger() instanceof  LivingEntity owner) {
 			enderWoman.setYRot(owner.getYRot());
 			enderWoman.yRotO = enderWoman.getYRot();
 			enderWoman.setXRot(owner.getXRot() * 0.5F);		
@@ -137,6 +141,60 @@ public class MonsterEnderWomanHelper {
 			case P8 -> MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P8.get();	
 		}
 		throw new IllegalArgumentException("Unexpected value: " + phase);	
+	}
+	
+	static boolean canBeMountedBy(AbstractTamableEnderWoman enderWoman, LivingEntity target) {		
+		boolean flag = enderWoman.isOwnedBy(target);
+		if (flag && target instanceof ServerPlayer player) {
+			Optional<Boolean> isTooPregnant = player.getCapability(MinepreggoCapabilities.PLAYER_DATA)
+					.resolve()
+					.flatMap(cap -> cap.getFemaleData().resolve())
+					.map(femaleData -> {
+						return femaleData.isPregnant()
+								&& femaleData.isPregnancyDataInitialized()
+								&& femaleData.getPregnancyData().getCurrentPregnancyPhase().compareTo(PregnancyPhase.P3) >= 0;
+					});
+			
+			if (isTooPregnant.isPresent()) {	
+				boolean result = isTooPregnant.get().booleanValue();
+				if (result) {
+					String message = "chat.minepreggo.player.pregnancy.message.cannot_ride.ender_woman.generic." + enderWoman.getRandom().nextInt(1, 3);
+					MessageHelper.sendTo(player, Component.translatable(message, enderWoman.getSimpleNameOrCustom()), true);
+				}	
+				return !result;
+			}	
+		}
+
+		return flag;
+	}
+	
+	static boolean canBeMountedBeingPregnantBy(AbstractTamablePregnantEnderWoman enderWoman, LivingEntity target) {		
+		if (!canBeMountedBy(enderWoman, target)) {
+			return false;
+		}
+		
+		if (target instanceof ServerPlayer player) {
+			PregnancyPain pregnancyPain = enderWoman.getPregnancyData().getPregnancyPain();
+			if (pregnancyPain == null) {
+				return true;
+			}
+			
+			switch (pregnancyPain) {
+				case MORNING_SICKNESS:
+					MessageHelper.sendTo(player, Component.translatable("chat.minepreggo.player.message.cannot_ride.ender_woman.pregnant.morning_sickness", enderWoman.getSimpleNameOrCustom()), true);
+					return false;
+				case WATER_BREAKING, PREBIRTH, BIRTH:
+					MessageHelper.sendTo(player, Component.translatable("chat.minepreggo.player.message.cannot_ride.ender_woman.pregnant.labor", enderWoman.getSimpleNameOrCustom()), true);
+					return false;
+				case CONTRACTION, MISCARRIAGE:
+					MessageHelper.sendTo(player, Component.translatable("chat.minepreggo.player.message.cannot_ride.ender_woman.pregnant.common_pregnancy_pain", enderWoman.getSimpleNameOrCustom()), true);
+					return false;
+				default:
+					return true;
+			}
+		}
+		
+		return false;
 	}
 }
 

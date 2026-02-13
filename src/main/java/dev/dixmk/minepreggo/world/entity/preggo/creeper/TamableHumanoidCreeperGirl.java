@@ -48,6 +48,7 @@ public class TamableHumanoidCreeperGirl extends AbstractTamableHumanoidCreeperGi
 				PreggoMobHelper.transferInventory(preggoMob, creeperGirl);					
 				LivingEntityHelper.transferAttackTarget(preggoMob, creeperGirl);
 				LivingEntityHelper.copyMobEffects(preggoMob, creeperGirl);
+				creeperGirl.setCombatMode(preggoMob.getCombatMode());
 				PreggoMobHelper.initPregnancy(creeperGirl);
 			}			
 		}
@@ -132,6 +133,7 @@ public class TamableHumanoidCreeperGirl extends AbstractTamableHumanoidCreeperGi
 			PreggoMobHelper.transferInventory(source, creeperGirl);
 			LivingEntityHelper.transferAttackTarget(source, creeperGirl);	
 			creeperGirl.getTamableData().setBodyState(null);
+			creeperGirl.setCombatMode(source.getCombatMode());
 			
 			if (!creeperGirl.getGenderedData().tryActivatePostPregnancyPhase(PostPregnancy.PARTUM)) {
 				source.discard();
@@ -154,6 +156,7 @@ public class TamableHumanoidCreeperGirl extends AbstractTamableHumanoidCreeperGi
 			LivingEntityHelper.copyMobEffects(source, creeperGirl);
 			PreggoMobHelper.transferInventory(source, creeperGirl);
 			LivingEntityHelper.transferAttackTarget(source, creeperGirl);
+			creeperGirl.setCombatMode(source.getCombatMode());
 			
 			if (!creeperGirl.getGenderedData().tryActivatePostPregnancyPhase(PostPregnancy.MISCARRIAGE)) {
 				source.discard();

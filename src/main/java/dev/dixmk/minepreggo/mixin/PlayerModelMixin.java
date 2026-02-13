@@ -26,6 +26,7 @@ public class PlayerModelMixin<T extends LivingEntity> extends HumanoidModel<T> {
 	@Shadow @Final public ModelPart leftPants;
 	@Shadow @Final public ModelPart rightPants;
 	@Shadow @Final public ModelPart jacket;
+	@Shadow @Final public ModelPart cloak;
 	
     public PlayerModelMixin(ModelPart p_170677_) {
 		super(p_170677_);
@@ -60,7 +61,7 @@ public class PlayerModelMixin<T extends LivingEntity> extends HumanoidModel<T> {
          */
   	
         if (!entity.level().isClientSide) return;
-              
+                   
         boolean isAnyLaborAnimActive = false;
         
         for (Player player : entity.level().players()) {
@@ -117,6 +118,8 @@ public class PlayerModelMixin<T extends LivingEntity> extends HumanoidModel<T> {
         cache.registerModelPart("leftSleeve", leftArm);
         cache.registerModelPart("rightPants", rightLeg);
         cache.registerModelPart("leftPants", leftLeg);
+        
+        cache.registerModelPart("cloak", cloak);
     }
     
     private void applyAnimation(PlayerAnimationCache cache) {
@@ -132,5 +135,6 @@ public class PlayerModelMixin<T extends LivingEntity> extends HumanoidModel<T> {
         copyTransform(leftArm, leftSleeve);
         copyTransform(rightLeg, rightPants);
         copyTransform(leftLeg, leftPants);	
+        copyTransform(body, cloak);
     }
 }

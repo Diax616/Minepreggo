@@ -182,9 +182,6 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 		final var phases = PregnancyPhase.values();	
 		final var next = phases[Math.min(previousStage.ordinal() + 1, phases.length - 1)];
 		
-		pregnantEntity.removeEffect(PlayerHelper.getPregnancyEffects(pregnancySystem.getCurrentPregnancyPhase()));
-		pregnantEntity.addEffect(new MobEffectInstance(PlayerHelper.getPregnancyEffects(next), -1, 0, false, false, true));
-
 		PlayerHelper.updateJigglePhysics(pregnantEntity, playerData.getSkinType(), next);
 		
 		pregnancySystem.setCurrentPregnancyPhase(next);
@@ -192,6 +189,9 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 		pregnancySystem.resetDaysPassed();
 		pregnancySystem.syncState(pregnantEntity);		
 			
+		pregnantEntity.removeEffect(PlayerHelper.getPregnancyEffects(previousStage));
+		pregnantEntity.addEffect(new MobEffectInstance(PlayerHelper.getPregnancyEffects(next), -1, 0, false, false, true));
+		
 		if (next.compareTo(PregnancyPhase.P0) > 0) {		
 			var chestplate = pregnantEntity.getItemBySlot(EquipmentSlot.CHEST);
 			var legginds = pregnantEntity.getItemBySlot(EquipmentSlot.LEGS);
@@ -233,10 +233,14 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 
 	@Override
 	protected void startMiscarriage() {
-		// This pregnancy phase does not miscarriage yet	
+		// This pregnancy phase does not support miscarriage yet	
 	}
 
-	protected void removePregnancy() {			
+	protected void evaluateExtraHungry() {
+		// This pregnancy phase does not support extra hungry yet
+	}
+	
+	protected void removePregnancy() {	
 		pregnantEntity.getActiveEffects().forEach(effect -> {
 			var e = effect.getEffect();
 			if (PregnancySystemHelper.isPregnancyEffect(e)) {
@@ -245,11 +249,7 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 		});	
 		
 		pregnantEntity.removeEffect(MinepreggoModMobEffects.ETERNAL_PREGNANCY.get());
-		pregnantEntity.removeEffect(MinepreggoModMobEffects.ZERO_GRAVITY_BELLY.get());
-		
-		if (MinepreggoModConfig.SERVER.isBellyColisionsForPlayersEnable()) {
-			BellyPartManager.getInstance().remove(pregnantEntity);
-		}
+		pregnantEntity.removeEffect(MinepreggoModMobEffects.ZERO_GRAVITY_BELLY.get());	
 		 
 		MinepreggoMod.LOGGER.debug("Pregnancy removed for player {}", pregnantEntity.getGameProfile().getName());
 	}

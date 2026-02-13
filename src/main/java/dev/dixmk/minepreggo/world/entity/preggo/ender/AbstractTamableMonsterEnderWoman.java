@@ -4,6 +4,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.Inventory;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -16,6 +17,11 @@ public abstract class AbstractTamableMonsterEnderWoman extends AbstractTamableEn
 	@Override
 	public double getMyRidingOffset() {
 		return MonsterEnderWomanHelper.getMyRidingOffset();
+	}
+	
+	@Override
+	public float getStepHeight() {
+		return 1.0f;
 	}
 	
 	@Override
@@ -41,5 +47,10 @@ public abstract class AbstractTamableMonsterEnderWoman extends AbstractTamableEn
 	@Override
 	public String getSimpleName() {
 		return MonsterEnderWomanHelper.SIMPLE_NAME;
+	}
+	
+	@Override
+	public boolean canBeMountedBy(LivingEntity target) {
+		return MonsterEnderWomanHelper.canBeMountedBy(this, target);
 	}
 }

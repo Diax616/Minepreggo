@@ -1,0 +1,32 @@
+{
+  "display": {
+	"background": "minecraft:textures/block/stone.png",
+    "icon": {
+      "item": "minepreggo:baby_ender_dragon_block"
+    },
+    "title": {
+      "translate": "advancements.give_birth_a_dragon.title"
+    },
+    "description": {
+      "translate": "advancements.give_birth_a_dragon.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "custom_criteria": {
+      "trigger": "minepreggo:give_birth",
+	  "conditions": {
+	    "successful_births": {
+	    	"species": ["DRAGON"]
+	    }
+	  }
+    }
+  },
+  "rewards": {
+    "experience": 200
+  },
+  "parent": "minepreggo:pregnant_with_a_dragon"
+}

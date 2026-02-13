@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minepreggo:ender_life_substance"
+    },
+    {
+      "item": "minepreggo:ender_breast_milk_bottle"
+    }
+  ],
+  "result": {
+    "item": "minepreggo:concentrated_ender_life_substance",
+    "count": 1
+  }
+}

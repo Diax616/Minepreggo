@@ -63,7 +63,6 @@ public class PrenatalCheckupHelper {
 		    	.append(Component.translatable("book.minepreggo.prenatal_checkup.regular.template.page.3.days_birth", Integer.toString(data.daysToGiveBirth)))
 		    	);	
 		
-	
 		
 		components.forEach(c -> pages.add(StringTag.valueOf(Component.Serializer.toJson(c))));				
 	    ItemStack book = new ItemStack(Items.WRITTEN_BOOK);

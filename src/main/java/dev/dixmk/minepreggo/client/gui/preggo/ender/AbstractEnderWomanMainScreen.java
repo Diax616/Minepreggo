@@ -7,7 +7,7 @@ import com.google.common.collect.ImmutableMap;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.client.gui.preggo.AbstractPreggoMobMainScreen;
-import dev.dixmk.minepreggo.network.packet.c2s.MountEntityC2SPacket;
+import dev.dixmk.minepreggo.network.packet.c2s.MountEnderWomanC2SPacket;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractTamableEnderWoman;
 import dev.dixmk.minepreggo.world.inventory.preggo.ender.AbstractEnderWomanMainMenu;
@@ -46,11 +46,10 @@ public abstract class AbstractEnderWomanMainScreen
 		super.init();	
 		this.preggoMob.ifPresent(mob -> {
 			Button ride = Button.builder(Component.translatable("gui.minepreggo.preggo_mob_main.button.mount"), e -> {
-				MinepreggoModPacketHandler.INSTANCE.sendToServer(new MountEntityC2SPacket(mob.getId()));
+				MinepreggoModPacketHandler.INSTANCE.sendToServer(new MountEnderWomanC2SPacket(mob.getId()));
 				this.minecraft.player.closeContainer();
 			}).bounds(this.leftPos + 190, this.topPos + 1, 46, 20).build();
 			this.addRenderableWidget(ride);
-			this.addBreakBlocksCheckBox();
 			this.addPickUpLootCheckBox();
 		});
 	}	

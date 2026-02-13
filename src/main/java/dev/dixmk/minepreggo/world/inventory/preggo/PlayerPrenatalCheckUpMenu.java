@@ -9,9 +9,11 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.joml.Vector3i;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
+import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModAdvancements;
 import dev.dixmk.minepreggo.init.MinepreggoModMenus;
+import dev.dixmk.minepreggo.network.packet.s2c.PlaySoundPacketS2C;
 import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
 import dev.dixmk.minepreggo.world.item.checkup.PrenatalCheckups;
 import dev.dixmk.minepreggo.world.item.checkup.PrenatalCheckups.PrenatalCheckup;
@@ -22,6 +24,7 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.npc.Villager;
@@ -32,6 +35,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.network.PacketDistributor;
 
 public abstract class PlayerPrenatalCheckUpMenu<T extends Mob> extends AbstractPrenatalCheckUpMenu<Player, T> {
 	
@@ -121,6 +125,14 @@ public abstract class PlayerPrenatalCheckUpMenu<T extends Mob> extends AbstractP
 		}
 		
 		@Override
+		protected void onSuccessful(PrenatalCheckup prenatalCheckup) {		
+			super.onSuccessful(prenatalCheckup);
+			if (this.source.orElse(null) instanceof ServerPlayer serverPlayer) {
+				MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new PlaySoundPacketS2C(SoundEvents.VILLAGER_YES, player.blockPosition(), 0.75f, 1.0f));
+			}
+		}
+		
+		@Override
 		protected void readBuffer(FriendlyByteBuf buffer) {
 			super.readBuffer(buffer);
 			
@@ -207,6 +219,14 @@ public abstract class PlayerPrenatalCheckUpMenu<T extends Mob> extends AbstractP
 		
 		public IllagerMenu(int id, Inventory inv, FriendlyByteBuf buffer) {
 			super(MinepreggoModMenus.PLAYER_PRENATAL_CHECKUP_BY_ILLAGER_MENU.get(), id, inv, buffer);
+		}
+		
+		@Override
+		protected void onSuccessful(PrenatalCheckup prenatalCheckup) {		
+			super.onSuccessful(prenatalCheckup);
+			if (this.source.orElse(null) instanceof ServerPlayer serverPlayer) {
+				MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new PlaySoundPacketS2C(SoundEvents.VINDICATOR_CELEBRATE, player.blockPosition(), 0.75f, 1.0f));
+			}
 		}
 		
 		@Override

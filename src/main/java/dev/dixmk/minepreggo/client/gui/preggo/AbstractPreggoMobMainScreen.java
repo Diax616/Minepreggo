@@ -201,7 +201,7 @@ public abstract class AbstractPreggoMobMainScreen
 	}
 	
 	public static<E extends PreggoMob & ITamablePregnantPreggoMob> void renderScreenP0(GuiGraphics guiGraphics, int leftPos, int topPos, @NonNull E preggoMob) {
-		renderHungryAndHealth(guiGraphics, leftPos, topPos + 10, preggoMob);		
+		renderHungryAndHealth(guiGraphics, leftPos, topPos, preggoMob);		
 	}
 	
 	public static<E extends PreggoMob & ITamablePregnantPreggoMob> void renderScreenP1(GuiGraphics guiGraphics, int leftPos, int topPos, @NonNull E preggoMob, Function<Craving, ResourceLocation> cravingIconProvider) {

@@ -9,11 +9,13 @@ import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 
 public class PlayerPregnancySystemP3 extends PlayerPregnancySystemP2 {
@@ -21,25 +23,42 @@ public class PlayerPregnancySystemP3 extends PlayerPregnancySystemP2 {
 	protected @Nonnegative int totalTicksOfBellyRubs = MinepreggoModConfig.SERVER.getTotalTicksOfBellyRubsP3();
 	protected @Nonnegative float fetalMovementProb = PregnancySystemHelper.LOW_PREGNANCY_PAIN_PROBABILITY;
 	protected @Nonnegative int totalTicksOfFetalMovement = PregnancySystemHelper.TOTAL_TICKS_KICKING_P3;
-
+	private int extraHungryCooldown = 0;
+	private final int extraHungryTotalTicks;
+	private final Species pregnancyType;
+	
 	public PlayerPregnancySystemP3(@NonNull ServerPlayer player) {
 		super(player);
-		var pregnancyType = PlayerHelper.addInterspeciesPregnancy(player);
+		Species tempPregnancyType = PlayerHelper.addInterspeciesPregnancy(player);
+		int tempExtraHungryTotalTicks = 3600;
+		int phase = pregnancySystem.getCurrentPregnancyPhase().ordinal();
+		pregnancyType = tempPregnancyType != null ? tempPregnancyType : Species.HUMAN;
+		
 		if (pregnancyType != null) {
+			int extra = phase * 20;
 			switch(pregnancyType) {
 				case ZOMBIE:
 					fetalMovementProb *= 1.4f;
+					tempExtraHungryTotalTicks = 4600 - extra;
 					break;
 				case CREEPER:
 					fetalMovementProb *= 1.8f;
+					tempExtraHungryTotalTicks = 4400 - extra;
 					break;
 				case ENDER:
 					fetalMovementProb *= 2.2f;
+					tempExtraHungryTotalTicks = 4200 - extra;
+					break;
+				case DRAGON:
+					fetalMovementProb *= 2.6f;
+					tempExtraHungryTotalTicks = 4000 - extra;
 					break;
 				default:
+					tempExtraHungryTotalTicks = 4800 - extra;
 					break;
 			}
 		}	
+		this.extraHungryTotalTicks = tempExtraHungryTotalTicks;
 		addNewValidPregnancySymptoms(PregnancySymptom.BELLY_RUBS);
 	}
 
@@ -48,7 +67,7 @@ public class PlayerPregnancySystemP3 extends PlayerPregnancySystemP2 {
 		totalTicksOfCraving = MinepreggoModConfig.SERVER.getTotalTicksOfCravingP3();
 		totalTicksOfMilking = MinepreggoModConfig.SERVER.getTotalTicksOfMilkingP3();
 		morningSicknessProb = PregnancySystemHelper.HIGH_MORNING_SICKNESS_PROBABILITY;
-		pregnancyExhaustion = 1.03f;
+		pregnancyExhaustion = 0.03f;
 	}
 	
 	@Override
@@ -159,5 +178,16 @@ public class PlayerPregnancySystemP3 extends PlayerPregnancySystemP2 {
 		}
 
 		return false;
+	}
+	
+	@Override
+	protected void evaluateExtraHungry() {
+		if (this.extraHungryCooldown < this.extraHungryTotalTicks) {
+			++this.extraHungryCooldown;		
+		}
+		else if (this.randomSource.nextFloat() < 0.4) {
+			this.extraHungryCooldown = 0;
+			pregnantEntity.addEffect(new MobEffectInstance(MobEffects.HUNGER, 1200, 0, false, true, true));
+		}
 	}
 }

@@ -1,7 +1,7 @@
 package dev.dixmk.minepreggo.world.entity.player;
 
-import java.util.ArrayList;
-import java.util.Set;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.annotation.Nonnegative;
 
@@ -15,7 +15,6 @@ import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.world.entity.EntityHelper;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.pregnancy.AbstractPregnancySystem;
 import dev.dixmk.minepreggo.world.pregnancy.IBreedable;
 import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
@@ -29,6 +28,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
 
 public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 	
@@ -38,7 +38,7 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 	protected @Nonnegative float contractionProb = PregnancySystemHelper.HIGH_PREGNANCY_PAIN_PROBABILITY;
 	
 	private int pushCoolDown = 0;
-	protected float pushProb = 0.35f;
+	protected float pushProb = 0.5f;
 	
 	public PlayerPregnancySystemP4(@NonNull ServerPlayer player) {
 		super(player);
@@ -52,7 +52,7 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 		totalTicksOfBellyRubs = MinepreggoModConfig.SERVER.getTotalTicksOfBellyRubsP4();
 		fetalMovementProb = PregnancySystemHelper.HIGH_PREGNANCY_PAIN_PROBABILITY;
 		totalTicksOfFetalMovement = PregnancySystemHelper.TOTAL_TICKS_KICKING_P4;	
-		pregnancyExhaustion = 1.03f;
+		pregnancyExhaustion = 0.04f;
 	}
 	
 	@Override
@@ -202,37 +202,35 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 			}
 		}
 		else if (pain == PregnancyPain.BIRTH) {
-			if (pregnancySystem.getPregnancyPainTimer() >= totalTicksOfBirth) {			
-				
-	        	final var aliveBabiesItemStacks = new ArrayList<>(PregnancySystemHelper.getAliveBabies(pregnancySystem.getWomb()));   	
-	       		
-	        	MinepreggoMod.LOGGER.debug("Player {} is giving birth to {} babies.", pregnantEntity.getDisplayName().getString(), aliveBabiesItemStacks.size());
+			if (pregnancySystem.getPregnancyPainTimer() >= totalTicksOfBirth) {							
 	        	
+				final List<ItemStack> aliveBabiesItemStacks = PregnancySystemHelper.getAliveBabies(pregnancySystem.getWomb());
+	        	Iterator<ItemStack> iterator = aliveBabiesItemStacks.iterator();
+	
 	        	if (aliveBabiesItemStacks.isEmpty()) {
 					MinepreggoMod.LOGGER.error("Failed to get baby item for pregnancy system {} birth.", pregnancySystem.getCurrentPregnancyPhase());
 				}
 	        	
-	        	// TODO: Babies itemstacks are only removed if player's hands are empty. It should handle stacking unless itemstack is a baby item.
-	        	aliveBabiesItemStacks.removeIf(baby -> {
-	        		if (pregnantEntity.getItemInHand(InteractionHand.MAIN_HAND).isEmpty()) {        			
-	        			PlayerHelper.replaceAndDropItemstackInHand(pregnantEntity, InteractionHand.MAIN_HAND, baby);
-	            		return true;
-	        		}
-	        		else if (pregnantEntity.getItemInHand(InteractionHand.OFF_HAND).isEmpty()) {
-	        			PlayerHelper.replaceAndDropItemstackInHand(pregnantEntity, InteractionHand.OFF_HAND, baby);
-	            		return true;
-	        		}
-	        		return false;
-	        	});
+	        
+        		if (pregnantEntity.getItemInHand(InteractionHand.MAIN_HAND).isEmpty() && iterator.hasNext()) {        			
+        			PlayerHelper.replaceAndDropItemstackInHand(pregnantEntity, InteractionHand.MAIN_HAND, iterator.next());
+        		}
+        		if (pregnantEntity.getItemInHand(InteractionHand.OFF_HAND).isEmpty() && iterator.hasNext()) {
+        			PlayerHelper.replaceAndDropItemstackInHand(pregnantEntity, InteractionHand.OFF_HAND, iterator.next());
+        		}
 	        	
-	        	if (!aliveBabiesItemStacks.isEmpty()) {	              	
-		        	aliveBabiesItemStacks.forEach(baby -> {
-		        		if(!pregnantEntity.getInventory().add(baby)) 
-		        			EntityHelper.dropItemStack(pregnantEntity, baby);
-		        	}); 						
-	        	}
-	        	        	
-				initPostPartum();		
+        		while (iterator.hasNext()) {
+					ItemStack baby = iterator.next();
+					if(!pregnantEntity.getInventory().add(baby)) {
+						EntityHelper.dropItemStack(pregnantEntity, baby);
+					}
+				}
+        		       	
+	        	pregnancySystem.getWomb().forEach(baby -> playerData.getPlayerStatistic().addSuccessfulBirth(baby.typeOfSpecies));
+
+	        	MinepreggoMod.LOGGER.debug("Succesful births for player {}: {}", pregnantEntity.getDisplayName().getString(), playerData.getPlayerStatistic().getSuccessfulBirths());
+	        	
+	        	initPostPartum();		
 				MinepreggoMod.LOGGER.debug("Player {} has given birth.", pregnantEntity.getDisplayName().getString());	
 			}	
 			else {
@@ -305,8 +303,7 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 	// TODO: Redesign the way of resetting pregnancy data after birth
 	@Override
 	protected void initPostPartum() {
-		MinepreggoModAdvancements.GIVE_BIRTH_TRIGGER.trigger(pregnantEntity, null);
-		MinepreggoModAdvancements.GIVE_BIRTH_TRIGGER.trigger(pregnantEntity, Set.of(Species.values()));
+		MinepreggoModAdvancements.GIVE_BIRTH_TRIGGER.trigger(pregnantEntity);
 
 		MessageHelper.sendTo(pregnantEntity, Component.translatable("chat.minepreggo.player.birth.message.post", Integer.toString(pregnancySystem.getWomb().getNumOfBabies())));	
     	

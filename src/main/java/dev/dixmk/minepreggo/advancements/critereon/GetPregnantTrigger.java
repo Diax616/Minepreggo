@@ -9,6 +9,7 @@ import com.google.gson.JsonObject;
 
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyType;
 import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
@@ -32,7 +33,7 @@ public class GetPregnantTrigger extends SimpleCriterionTrigger<GetPregnantTrigge
 		MobEffectsPredicate effectsPredicate = MobEffectsPredicate.fromJson(json.get("effects"));
 		Integer babyCount = null;
 		PregnancyType pregnancyType = null;
-		
+		Species impregnationType = null;
 		if (json.has("babies") && json.get("babies").isJsonObject()) {
 			JsonObject babiesObj = json.getAsJsonObject("babies");
 			if (babiesObj.has("count")) {
@@ -45,9 +46,13 @@ public class GetPregnantTrigger extends SimpleCriterionTrigger<GetPregnantTrigge
 				String typeStr = pregObj.get("type").getAsString();
 				pregnancyType = PregnancyType.valueOf(typeStr);
 			}
+			if (pregObj.has("impregnation_type")) {
+				String impregnationTypeStr = pregObj.get("impregnation_type").getAsString();
+				impregnationType = Species.valueOf(impregnationTypeStr);
+			}
 		}
 		
-		return new TriggerInstance(predicate, effectsPredicate, babyCount, pregnancyType);
+		return new TriggerInstance(predicate, effectsPredicate, babyCount, pregnancyType, impregnationType);
 	}
 
     public void trigger(ServerPlayer player) {
@@ -58,12 +63,14 @@ public class GetPregnantTrigger extends SimpleCriterionTrigger<GetPregnantTrigge
         private final @Nullable MobEffectsPredicate effectsPredicate;
         private final OptionalInt babyCount;
         private final Optional<PregnancyType> pregnancyType;
+        private final Optional<Species> impregnationType;
 
-		public TriggerInstance(ContextAwarePredicate player, MobEffectsPredicate effectsPredicate, @Nullable Integer babyCount, @Nullable PregnancyType pregnancyType) {
+		public TriggerInstance(ContextAwarePredicate player, MobEffectsPredicate effectsPredicate, @Nullable Integer babyCount, @Nullable PregnancyType pregnancyType, @Nullable Species impregnationType) {
 			super(GetPregnantTrigger.ID, player);
 			this.effectsPredicate = effectsPredicate;
 			this.babyCount = babyCount != null ? OptionalInt.of(babyCount.intValue()) : OptionalInt.empty();
 			this.pregnancyType = Optional.ofNullable(pregnancyType);
+			this.impregnationType = Optional.ofNullable(impregnationType);
 		}
 
         public boolean matches(ServerPlayer player) {
@@ -82,6 +89,9 @@ public class GetPregnantTrigger extends SimpleCriterionTrigger<GetPregnantTrigge
         					if (this.pregnancyType.isPresent() && this.pregnancyType.get() != femaleCap.getPrePregnancyData().map(data -> data.pregnancyType()).orElse(null)) {
         						return false;
         					}       						
+        					if (this.impregnationType.isPresent() && this.impregnationType.get() != femaleCap.getPrePregnancyData().map(data -> data.typeOfSpeciesOfFather()).orElse(null)) {
+								return false;
+							}
         					return true;
         				}
         				return false;
