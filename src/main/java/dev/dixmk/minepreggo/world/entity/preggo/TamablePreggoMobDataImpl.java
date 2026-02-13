@@ -58,7 +58,7 @@ public class TamablePreggoMobDataImpl<E extends PreggoMob> implements ITamablePr
 
 	@Override
 	public void setFullness(int hungry) {
-		this.preggomob.getEntityData().set(this.dataAccessor.dataHungry, Mth.clamp(hungry, 0, ITamablePreggoMob.MAX_FULLNESS));
+		this.preggomob.getEntityData().set(this.dataAccessor.dataHungry, Mth.clamp(hungry, 0, ITamablePreggoMob.MAX_FULLNESS + 10));
 	}
 
 	@Override
