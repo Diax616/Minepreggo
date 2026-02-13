@@ -23,13 +23,14 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.animal.Turtle;
+import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 
-public abstract class AbstractMonsterZombieGirl extends AbstractZombieGirl implements IMonsterPreggoMob {
+public abstract class AbstractMonsterZombieGirl extends AbstractZombieGirl implements IMonsterPreggoMob, Enemy {
 
 	protected AbstractMonsterZombieGirl(EntityType<? extends AbstractZombieGirl> p_21803_, Level p_21804_) {
 		super(p_21803_, p_21804_, Creature.HUMANOID);
@@ -37,6 +38,11 @@ public abstract class AbstractMonsterZombieGirl extends AbstractZombieGirl imple
 	
 	@Override
 	public boolean canBeTamedByPlayer() {
+		return false;
+	}
+	
+	@Override
+	public boolean canBeLeashed(Player p_21813_) {
 		return false;
 	}
 	

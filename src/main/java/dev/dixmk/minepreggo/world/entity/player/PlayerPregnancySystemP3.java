@@ -47,7 +47,7 @@ public class PlayerPregnancySystemP3 extends PlayerPregnancySystemP2 {
 		totalTicksOfCraving = MinepreggoModConfig.SERVER.getTotalTicksOfCravingP3();
 		totalTicksOfMilking = MinepreggoModConfig.SERVER.getTotalTicksOfMilkingP3();
 		morningSicknessProb = PregnancySystemHelper.HIGH_MORNING_SICKNESS_PROBABILITY;
-		pregnancyExhaustion = 1.03f;
+		pregnancyExhaustion = 0.03f;
 	}
 	
 	@Override

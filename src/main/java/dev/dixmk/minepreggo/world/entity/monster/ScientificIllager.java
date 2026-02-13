@@ -347,25 +347,21 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
 			IllZombieGirl zombieGirl = MinepreggoModEntities.ILL_ZOMBIE_GIRL.get().spawn(serverLevel, BlockPos.containing(x + 1.25, y, z), MobSpawnType.MOB_SUMMONED);
 			zombieGirl.setYRot(this.random.nextFloat() * 360F);
 			zombieGirl.tameByIllager(this);
-			serverLevel.addFreshEntity(zombieGirl);
 			petsUUID.add(zombieGirl.getUUID());
 						
 			IllHumanoidCreeperGirl humanoidCreeperGirl = MinepreggoModEntities.ILL_HUMANOID_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(x - 1.25, y, z), MobSpawnType.MOB_SUMMONED);
 			humanoidCreeperGirl.setYRot(this.random.nextFloat() * 360F);
 			humanoidCreeperGirl.tameByIllager(this);	
-			serverLevel.addFreshEntity(humanoidCreeperGirl);
 			petsUUID.add(humanoidCreeperGirl.getUUID());
 			
 			IllCreeperGirl creeperGirl = MinepreggoModEntities.ILL_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(x, y, z + 1.25), MobSpawnType.MOB_SUMMONED);
 			creeperGirl.setYRot(this.random.nextFloat() * 360F);
 			creeperGirl.tameByIllager(this);
-			serverLevel.addFreshEntity(creeperGirl);
 			petsUUID.add(creeperGirl.getUUID());
 			
 			IllEnderWoman enderWoman = MinepreggoModEntities.ILL_ENDER_WOMAN.get().spawn(serverLevel, BlockPos.containing(x, y, z - 1.25), MobSpawnType.MOB_SUMMONED);
 			enderWoman.setYRot(this.random.nextFloat() * 360F);
 			enderWoman.tameByIllager(this);
-			serverLevel.addFreshEntity(enderWoman);
 			petsUUID.add(enderWoman.getUUID());					
 			return true;
 		}	

@@ -7,10 +7,9 @@ import javax.annotation.Nonnull;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
-import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
-import dev.dixmk.minepreggo.network.packet.c2s.RequestSexM2PC2SPacket;
+import dev.dixmk.minepreggo.world.inventory.preggo.RequestSexM2PMenu;
 import dev.dixmk.minepreggo.world.pregnancy.AbstractPregnancySystem;
 import dev.dixmk.minepreggo.world.pregnancy.IBreedable;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
@@ -19,6 +18,7 @@ import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import dev.dixmk.minepreggo.world.pregnancy.SyncedSetPregnancySymptom;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -186,7 +186,7 @@ public abstract class PreggoMobPregnancySystemP4
 	
 	@Override
 	public boolean canBeAngry() {
-		return super.canBeAngry() || pregnantEntity.getPregnancyData().getHorny() >= 20;	
+		return super.canBeAngry() || pregnantEntity.getPregnancyData().getHorny() >= PregnancySystemHelper.MAX_HORNY_LEVEL;	
 	}
 	
 	@Override
@@ -282,10 +282,9 @@ public abstract class PreggoMobPregnancySystemP4
 			return false;
 		}
 		
-		var owner = pregnantEntity.getOwner();		
-		if (owner != null && pregnantEntity.distanceToSqr(owner) < 25D && !pregnantEntity.isAggressive()) {
-			sexRequestCooldown = 0;
-			MinepreggoModPacketHandler.INSTANCE.sendToServer(new RequestSexM2PC2SPacket(pregnantEntity.getId(), owner.getId()));
+		if (pregnantEntity.getOwner() instanceof ServerPlayer serverPlayer && pregnantEntity.distanceToSqr(serverPlayer) < 25D && !pregnantEntity.isAggressive()) {
+			sexRequestCooldown = 0;			
+			RequestSexM2PMenu.create(serverPlayer, this.pregnantEntity);
 			return true;
 		}
 		

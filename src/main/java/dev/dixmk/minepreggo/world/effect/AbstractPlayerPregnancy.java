@@ -7,7 +7,9 @@ import java.util.OptionalInt;
 import java.util.UUID;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
+import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
+import dev.dixmk.minepreggo.world.entity.BellyPartManager;
 import dev.dixmk.minepreggo.world.entity.player.PlayerPregnancySystemP0;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.server.level.ServerPlayer;
@@ -120,6 +122,10 @@ public abstract class AbstractPlayerPregnancy<S extends PlayerPregnancySystemP0>
     		
 			PregnancySystemHelper.removeGravityModifier(entity);
 			PregnancySystemHelper.removeKnockbackResistanceModifier(entity);
+			
+			if (MinepreggoModConfig.SERVER.isBellyColisionsForPlayersEnable()) {
+				BellyPartManager.getInstance().remove(entity);
+			}
     	}
     }
     

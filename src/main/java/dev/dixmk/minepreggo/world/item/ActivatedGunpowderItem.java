@@ -12,11 +12,11 @@ import net.minecraft.world.level.Level;
 
 public class ActivatedGunpowderItem extends Item {
 	public ActivatedGunpowderItem(int nutritionValue) {
-		super(new Item.Properties().stacksTo(64).rarity(Rarity.COMMON).food((new FoodProperties.Builder()).nutrition(nutritionValue).saturationMod(0.1f).build()));
+		super(new Item.Properties().stacksTo(64).rarity(Rarity.COMMON).food((new FoodProperties.Builder()).nutrition(nutritionValue).saturationMod(0.2f).build()));
 	}
 	
 	public ActivatedGunpowderItem() {
-		this(5);
+		this(8);
 	}
 	
 	@Override

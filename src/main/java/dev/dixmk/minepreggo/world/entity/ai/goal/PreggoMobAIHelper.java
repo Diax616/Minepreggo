@@ -33,7 +33,7 @@ public class PreggoMobAIHelper {
 	
 	public static<T extends AbstractTamableZombieGirl> void setTamableZombieGirlGoals(T zombieGirl) {
 		setBasicPreggoMobGoals(zombieGirl);
-		
+				
 		zombieGirl.goalSelector.addGoal(1, new RestrictSunGoal(zombieGirl));
 
 		zombieGirl.goalSelector.addGoal(1, new FleeSunGoal(zombieGirl, 1.2D));
@@ -50,7 +50,7 @@ public class PreggoMobAIHelper {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
-				&& !zombieGirl.getTamableData().isWaiting();
+				&& (zombieGirl.getTamableData().isSavage() || !zombieGirl.isTame());
 			}
 		});
 		
@@ -158,8 +158,8 @@ public class PreggoMobAIHelper {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
-				&& !zombieGirl.getPregnancyData().isIncapacitated()
-				&& !zombieGirl.getTamableData().isWaiting();
+				&& (zombieGirl.getTamableData().isSavage() || !zombieGirl.isTame())
+				&& !zombieGirl.getPregnancyData().isIncapacitated();
 			}
 
 			@Override
@@ -256,6 +256,14 @@ public class PreggoMobAIHelper {
 			}	
 		});
 		
+		creeperGirl.goalSelector.addGoal(9, new FloatGoal(creeperGirl) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !creeperGirl.getPregnancyData().isIncapacitated();
+			}
+		});
+		
 		creeperGirl.goalSelector.addGoal(3, new PregnantPreggoMobOwnerHurtByTargetGoal<>(creeperGirl));
 		creeperGirl.targetSelector.addGoal(3, new PregnantPreggoMobOwnerHurtTargetGoal<>(creeperGirl));
 		creeperGirl.goalSelector.addGoal(6, new PregnantPreggoMobFollowOwnerGoal<>(creeperGirl, 1.2D, 6F, 2F, false));	
@@ -290,6 +298,8 @@ public class PreggoMobAIHelper {
 				&& !creeperGirl.getTamableData().isWaiting();		
 			}
 		});
+		
+		creeperGirl.goalSelector.addGoal(9, new FloatGoal(creeperGirl));
 	}
 	
 	private static<T extends PreggoMob & ITamablePreggoMob<?>> void setBasicPreggoMobGoals(T preggoMob) {	
@@ -340,8 +350,6 @@ public class PreggoMobAIHelper {
 				&& (preggoMob.getTamableData().isSavage() || !preggoMob.isTame());		
 			}
 		});
-		
-		preggoMob.goalSelector.addGoal(11, new FloatGoal(preggoMob));
 	}
 	
 	private static<T extends PreggoMob & ITamablePregnantPreggoMob> void setBasicPregnantPreggoMobGoals(T preggoMob) {	
@@ -468,13 +476,6 @@ public class PreggoMobAIHelper {
 			}
 		});
 		
-		preggoMob.goalSelector.addGoal(12, new FloatGoal(preggoMob) {
-			@Override
-			public boolean canUse() {
-				return super.canUse() 
-				&& !preggoMob.getPregnancyData().isIncapacitated();
-			}
-		});
 	}
 
 }

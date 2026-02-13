@@ -119,12 +119,7 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
 	public boolean removeWhenFarAway(double p_27598_) {
 		return !this.isTame();
 	}
-	
-	@Override
-	public boolean canBeLeashed(Player p_21813_) {
-		return false;
-	}
-	
+		
 	@Override
 	protected boolean shouldDespawnInPeaceful() {
 		return !this.isTame();

@@ -7,7 +7,7 @@ import dev.dixmk.minepreggo.world.pregnancy.Craving;
 
 public class BrainWithHotSauceItem extends AbstractBrain implements ICravingItem {
 	public BrainWithHotSauceItem() {
-		super(7);
+		super(17);
 	}
 	
 	@Override

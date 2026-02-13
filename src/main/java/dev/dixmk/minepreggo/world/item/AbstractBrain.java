@@ -13,11 +13,11 @@ import net.minecraft.world.level.Level;
 public abstract class AbstractBrain extends Item {
 
     protected AbstractBrain(int nutritionValue) {
-		super(new Item.Properties().stacksTo(64).rarity(Rarity.UNCOMMON).food((new FoodProperties.Builder()).nutrition(nutritionValue).saturationMod(0.2f).meat().build()));
+		super(new Item.Properties().stacksTo(64).rarity(Rarity.UNCOMMON).food((new FoodProperties.Builder()).nutrition(nutritionValue).saturationMod(0.3f).meat().build()));
 	}
 
     protected AbstractBrain() {
-    	this(7);
+    	this(14);
     }
      
 	@Override

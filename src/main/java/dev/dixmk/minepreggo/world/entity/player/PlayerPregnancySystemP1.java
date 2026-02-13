@@ -35,7 +35,7 @@ public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
 	
 	protected @Nonnegative int totalTicksOfCraving = MinepreggoModConfig.SERVER.getTotalTicksOfCravingP1();
 	protected @Nonnegative float morningSicknessProb = PregnancySystemHelper.LOW_MORNING_SICKNESS_PROBABILITY;
-	protected @Nonnegative float pregnancyExhaustion = 1.01f;
+	protected @Nonnegative float pregnancyExhaustion = 0.01f;
 	
 	private Set<PregnancySymptom> validPregnancySymptoms = EnumSet.noneOf(PregnancySymptom.class);
 	
@@ -91,8 +91,7 @@ public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
 		
 		evaluatePregnancyNeeds();
 		
-		var foodData = pregnantEntity.getFoodData();
-		foodData.setExhaustion(foodData.getExhaustionLevel() * pregnancyExhaustion);
+		pregnantEntity.causeFoodExhaustion(pregnancyExhaustion);
 		
 		super.evaluatePregnancySystem();
 	}

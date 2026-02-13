@@ -68,6 +68,7 @@ public class BabyDuplication extends MobEffect {
         			var nextPhase = AbstractTamablePregnantHumanoidCreeperGirl.getEntityType(newPhase);   			
         			var newCreeperGirl = (AbstractTamablePregnantHumanoidCreeperGirl) nextPhase.spawn(serverLevel, BlockPos.containing(target.getX(), target.getY(), target.getZ()), MobSpawnType.CONVERSION);
     				PreggoMobHelper.transferAllData(creeperGirl, newCreeperGirl);
+    				newCreeperGirl.setCombatMode(creeperGirl.getCombatMode());
     				creeperGirl.discard();
         		}
         	} 	

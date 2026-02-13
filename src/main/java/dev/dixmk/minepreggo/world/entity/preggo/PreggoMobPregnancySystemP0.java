@@ -148,7 +148,7 @@ public abstract class PreggoMobPregnancySystemP0
 			return;
 		}		
 		
-		if (angryTicks > 100) {
+		if (angryTicks > 80) {
 			angryTicks = 0;
 		}
 		else {

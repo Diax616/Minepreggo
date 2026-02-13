@@ -246,10 +246,6 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 		
 		pregnantEntity.removeEffect(MinepreggoModMobEffects.ETERNAL_PREGNANCY.get());
 		pregnantEntity.removeEffect(MinepreggoModMobEffects.ZERO_GRAVITY_BELLY.get());
-		
-		if (MinepreggoModConfig.SERVER.isBellyColisionsForPlayersEnable()) {
-			BellyPartManager.getInstance().remove(pregnantEntity);
-		}
 		 
 		MinepreggoMod.LOGGER.debug("Pregnancy removed for player {}", pregnantEntity.getGameProfile().getName());
 	}

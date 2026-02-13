@@ -32,8 +32,8 @@ public class SelectPregnantEntityForPrenatalCheckUpScreen extends AbstractContai
 	
 	private static final ResourceLocation TEXTURE = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/select_preggo_mob_for_medical_check_up_gui.png");
 
-	private static final ResourceLocation DEFAULT_ICON_CREEPER_GIRL_TEXTURE = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/humanoid_creeper_girl_p0.png");
-	private static final ResourceLocation DEFAULT_ICON_ZOMBIE_GIRL_TEXTURE = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/zombie_girl_p0.png");
+	private static final ResourceLocation DEFAULT_ICON_CREEPER_GIRL_TEXTURE = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/humanoid/humanoid_creeper_girl.png");
+	private static final ResourceLocation DEFAULT_ICON_ZOMBIE_GIRL_TEXTURE = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/zombie_girl.png");
 
 	private final Optional<ScientificIllager> scientificIllager;
 	private final List<? extends LivingEntity> pregnantEntities;

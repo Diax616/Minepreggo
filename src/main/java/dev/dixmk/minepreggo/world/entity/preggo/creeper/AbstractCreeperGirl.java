@@ -1,7 +1,6 @@
 package dev.dixmk.minepreggo.world.entity.preggo.creeper;
 
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -46,7 +45,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.PowerableMob;
 
-public abstract class AbstractCreeperGirl extends PreggoMob implements PowerableMob, Enemy {
+public abstract class AbstractCreeperGirl extends PreggoMob implements PowerableMob {
 	private static final EntityDataAccessor<Integer> DATA_SWELL_DIR = SynchedEntityData.defineId(AbstractCreeperGirl.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Boolean> DATA_IS_POWERED = SynchedEntityData.defineId(AbstractCreeperGirl.class, EntityDataSerializers.BOOLEAN);
 	private static final EntityDataAccessor<Boolean> DATA_IS_IGNITED = SynchedEntityData.defineId(AbstractCreeperGirl.class, EntityDataSerializers.BOOLEAN);
@@ -78,12 +77,7 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 	public boolean hasJigglePhysics() {
 		return true;
 	}
-	
-	@Override
-	public boolean canBeLeashed(Player p_21813_) {
-		return false;
-	}
-	
+		
 	@Override
 	public boolean removeWhenFarAway(double p_27598_) {
 		return !this.isTame();

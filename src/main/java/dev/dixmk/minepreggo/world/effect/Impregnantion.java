@@ -108,6 +108,7 @@ public class Impregnantion extends MobEffect {
 			
 			if (entity instanceof MonsterHumanoidCreeperGirl creeperGirl && !creeperGirl.isBaby()) {
 				var nextStage = MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
+				nextStage.setCombatMode(creeperGirl.getCombatMode());
 				initPregnancy(creeperGirl, nextStage, amplifier);
 			}
 			else if (entity instanceof MonsterZombieGirl zombieGirl && !zombieGirl.isBaby()) {
@@ -116,6 +117,7 @@ public class Impregnantion extends MobEffect {
 			}
 			else if (entity instanceof TamableHumanoidCreeperGirl creeperGirl && creeperGirl.getGenderedData().getPostPregnancyData().isEmpty()) {
 				var nextStage = MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
+				nextStage.setCombatMode(creeperGirl.getCombatMode());
 				initPregnancyInTamable(creeperGirl, nextStage, amplifier);
 			}
 			else if (entity instanceof TamableZombieGirl zombieGirl && zombieGirl.getGenderedData().getPostPregnancyData().isEmpty()) {

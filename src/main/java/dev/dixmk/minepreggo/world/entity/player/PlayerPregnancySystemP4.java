@@ -48,7 +48,7 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 		totalTicksOfBellyRubs = MinepreggoModConfig.SERVER.getTotalTicksOfBellyRubsP4();
 		fetalMovementProb = PregnancySystemHelper.HIGH_PREGNANCY_PAIN_PROBABILITY;
 		totalTicksOfFetalMovement = PregnancySystemHelper.TOTAL_TICKS_KICKING_P4;	
-		pregnancyExhaustion = 1.03f;
+		pregnancyExhaustion = 0.04f;
 	}
 	
 	@Override

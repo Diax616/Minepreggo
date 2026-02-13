@@ -231,9 +231,9 @@ public class PregnancySystemHelper {
 	public static final float MEDIUM_MORNING_SICKNESS_PROBABILITY = 0.0015F;
 	public static final float HIGH_MORNING_SICKNESS_PROBABILITY = 0.002F;
 	
-	public static final float LOW_ANGER_PROBABILITY = 0.005F;
-	public static final float MEDIUM_ANGER_PROBABILITY = 0.0075F;
-	public static final float HIGH_ANGER_PROBABILITY = 0.01F;
+	public static final float LOW_ANGER_PROBABILITY = 0.05F;
+	public static final float MEDIUM_ANGER_PROBABILITY = 0.075F;
+	public static final float HIGH_ANGER_PROBABILITY = 0.1F;
 	
 	public static final int CRAVING_VALUE = 4;
 	public static final int ACTIVATE_CRAVING_SYMPTOM = 16;

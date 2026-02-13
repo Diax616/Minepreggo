@@ -14,12 +14,13 @@ import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 
-public abstract class AbstractMonsterEnderWoman extends AbstractEnderWoman {
+public abstract class AbstractMonsterEnderWoman extends AbstractEnderWoman implements Enemy {
 
 	protected AbstractMonsterEnderWoman(EntityType<? extends AbstractEnderWoman> p_32485_, Level p_32486_) {
 		super(p_32485_, p_32486_, Creature.MONSTER);
@@ -41,6 +42,11 @@ public abstract class AbstractMonsterEnderWoman extends AbstractEnderWoman {
     
 	@Override
 	public boolean canBeTamedByPlayer() {
+		return false;
+	}
+	
+	@Override
+	public boolean canBeLeashed(Player p_21813_) {
 		return false;
 	}
 	

@@ -78,7 +78,7 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> impleme
 				&& preggoMob.getHealth() < preggoMob.getMaxHealth()) {     	
 			if (healingCooldownTimer >= 20) {
 		 	preggoMob.heal(1F);
-		 	tamableData.setFullness(currentHungry - 1);
+		 	tamableData.decrementFullness(1);
 		 	healingCooldownTimer = 0;
 			}
 			else {
@@ -105,7 +105,7 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> impleme
 	    final var currentHungry = tamableData.getFullness();
 	    var currentHungryTimer = tamableData.getHungryTimer();
 		    	
-	    if (currentHungry >= ITamablePreggoMob.MAX_FULLNESS) {
+	    if (currentHungry <= 0) {
 	    	return;
 	    }
 	    
@@ -121,7 +121,7 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> impleme
         
         if (currentHungryTimer >= totalTicksOfHungry) {
         	tamableData.resetHungryTimer();
-        	tamableData.incrementFullness(1);
+        	tamableData.decrementFullness(1);
         }
         else {
         	tamableData.setHungryTimer(currentHungryTimer);

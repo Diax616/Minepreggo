@@ -8,21 +8,22 @@ import dev.dixmk.minepreggo.network.capability.VillagerDataProvider;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.monster.Ill;
 import dev.dixmk.minepreggo.world.entity.preggo.IMonsterPregnantPreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterHumanoidCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractMonsterZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
-import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractZombieGirl;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.IronGolem;
-import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.animal.SnowGolem;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.FakePlayer;
@@ -70,13 +71,19 @@ public class EntityEventHandler {
                 mob.setBaby(true);    	
         	}    
         } 	
-        else if (mob instanceof AbstractVillager villager) {
-			villager.goalSelector.addGoal(2, new AvoidEntityGoal<>(villager, AbstractZombieGirl.class, 6F, 1F, 1.2F));
-		} 
-		else if (mob instanceof IronGolem golem) {
-			golem.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(golem, AbstractZombieGirl.class, false, false));
-		}
+        else if (mob instanceof IronGolem ironGolem) {
+        	// TODO: IronGolem still attack AbstractHostileCreeperGirl because they implements Enemy interface, IronGolem class define their target selector to attack all entities that implements Enemy interface
+        	ironGolem.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(ironGolem, PreggoMob.class, 5, false, false, target -> 
+        		!(target instanceof AbstractCreeperGirl) && target instanceof ITamablePreggoMob<?> tamablePreggoMob && tamablePreggoMob.getTamableData().isSavage()
+            ));	
+        }
+        else if (mob instanceof SnowGolem snowGolem) {
+        	snowGolem.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(snowGolem, PreggoMob.class, 10, true, false, target -> 
+           		target instanceof ITamablePreggoMob<?> tamablePreggoMob && tamablePreggoMob.getTamableData().isSavage()
+        	));	
+        }
     	  	
+    	
     	if (mob instanceof Ill ill) {
     		ill.onFinalizeSpawnWithOwner();
     	}

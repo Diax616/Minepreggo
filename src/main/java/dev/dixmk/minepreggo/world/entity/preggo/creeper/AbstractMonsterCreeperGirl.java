@@ -20,12 +20,13 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.Cat;
 import net.minecraft.world.entity.animal.Ocelot;
+import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 
-public abstract class AbstractMonsterCreeperGirl extends AbstractCreeperGirl implements IMonsterPreggoMob {
+public abstract class AbstractMonsterCreeperGirl extends AbstractCreeperGirl implements IMonsterPreggoMob, Enemy {
 
 	protected AbstractMonsterCreeperGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_, Creature typeOfCreature) {
 		super(p_21803_, p_21804_, typeOfCreature);	
@@ -34,6 +35,11 @@ public abstract class AbstractMonsterCreeperGirl extends AbstractCreeperGirl imp
 
 	@Override
 	public boolean canBeTamedByPlayer() {
+		return false;
+	}
+	
+	@Override
+	public boolean canBeLeashed(Player p_21813_) {
 		return false;
 	}
 	

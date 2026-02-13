@@ -7,7 +7,7 @@ import dev.dixmk.minepreggo.world.pregnancy.Craving;
 
 public class ActivatedGunpowderWithSaltItem extends ActivatedGunpowderItem implements ICravingItem {
 	public ActivatedGunpowderWithSaltItem() {
-		super();
+		super(9);
 	}
 	
 	@Override

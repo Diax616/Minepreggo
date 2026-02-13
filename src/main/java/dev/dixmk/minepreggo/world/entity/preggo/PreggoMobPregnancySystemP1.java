@@ -306,4 +306,9 @@ public abstract class PreggoMobPregnancySystemP1
 	    
 	    return null;
 	}
+	
+	@Override
+	public boolean canBeAngry() {
+		return super.canBeAngry() || pregnantEntity.getPregnancyData().getCraving() >= PregnancySystemHelper.MAX_CRAVING_LEVEL;
+	}
 }

@@ -6,7 +6,7 @@ import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.server.level.ServerPlayer;
 
-public class PlayerPregnancySystemP8 extends PlayerPregnancySystemP6 {
+public class PlayerPregnancySystemP8 extends PlayerPregnancySystemP7 {
 
 	public PlayerPregnancySystemP8(@NonNull ServerPlayer player) {
 		super(player);
@@ -22,6 +22,6 @@ public class PlayerPregnancySystemP8 extends PlayerPregnancySystemP6 {
 		totalTicksOfBirth = PregnancySystemHelper.TOTAL_TICKS_BIRTH_P8;
 		totalTicksOfFetalMovement = PregnancySystemHelper.TOTAL_TICKS_KICKING_P8;
 		fetalMovementProb = PregnancySystemHelper.HIGH_PREGNANCY_PAIN_PROBABILITY;
-		pregnancyExhaustion = 1.05f;
+		pregnancyExhaustion = 0.08f;
 	}
 }

@@ -105,6 +105,9 @@ import dev.dixmk.minepreggo.world.item.alchemy.CreeperImpregnationPotionBrewingR
 import dev.dixmk.minepreggo.world.item.alchemy.EnderImpregnationPotionBrewingRecipe;
 import dev.dixmk.minepreggo.world.item.alchemy.ImpregnationPotionBrewingRecipe;
 import dev.dixmk.minepreggo.world.item.alchemy.PregnancyHealingBrewingRecipe;
+import dev.dixmk.minepreggo.world.item.alchemy.PregnancyResistancePotionBrewingRecipe;
+import dev.dixmk.minepreggo.world.item.alchemy.VillagerImpregnationPotionBrewingRecipe;
+import dev.dixmk.minepreggo.world.item.alchemy.ZeroGravityBellyPotionBrewingRecipe;
 import dev.dixmk.minepreggo.world.item.alchemy.ZombieImpregnationPotionBrewingRecipe;
 
 import org.apache.logging.log4j.LogManager;
@@ -357,12 +360,19 @@ public class MinepreggoMod {
         	BrewingRecipeRegistry.addRecipe(new ZombieImpregnationPotionBrewingRecipe.A2());
         	BrewingRecipeRegistry.addRecipe(new ZombieImpregnationPotionBrewingRecipe.A3());
         	BrewingRecipeRegistry.addRecipe(new ZombieImpregnationPotionBrewingRecipe.A4());
+        	BrewingRecipeRegistry.addRecipe(new VillagerImpregnationPotionBrewingRecipe.A0());
+        	BrewingRecipeRegistry.addRecipe(new VillagerImpregnationPotionBrewingRecipe.A1());
+        	BrewingRecipeRegistry.addRecipe(new VillagerImpregnationPotionBrewingRecipe.A2());
+        	BrewingRecipeRegistry.addRecipe(new VillagerImpregnationPotionBrewingRecipe.A3());
+        	BrewingRecipeRegistry.addRecipe(new VillagerImpregnationPotionBrewingRecipe.A4());
         	BrewingRecipeRegistry.addRecipe(new ImpregnationPotionBrewingRecipe.A0());
         	BrewingRecipeRegistry.addRecipe(new ImpregnationPotionBrewingRecipe.A1());
         	BrewingRecipeRegistry.addRecipe(new ImpregnationPotionBrewingRecipe.A2());
         	BrewingRecipeRegistry.addRecipe(new ImpregnationPotionBrewingRecipe.A3());
         	BrewingRecipeRegistry.addRecipe(new ImpregnationPotionBrewingRecipe.A4());
         	BrewingRecipeRegistry.addRecipe(new PregnancyHealingBrewingRecipe());
+        	BrewingRecipeRegistry.addRecipe(new PregnancyResistancePotionBrewingRecipe());
+        	BrewingRecipeRegistry.addRecipe(new ZeroGravityBellyPotionBrewingRecipe());
             ComposterBlock.COMPOSTABLES.put(MinepreggoModItems.CHILI_PEPPER.get(), 0.6f);
             ComposterBlock.COMPOSTABLES.put(MinepreggoModItems.CUCUMBER.get(), 0.7f);
             ComposterBlock.COMPOSTABLES.put(MinepreggoModItems.LEMON.get(), 0.6f);
