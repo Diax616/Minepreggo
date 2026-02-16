@@ -68,7 +68,7 @@ public class IllMonsterEnderWoman extends AbstractHostileEnderWoman implements I
 		
 		this.setItemSlot(EquipmentSlot.HEAD, helmet);
 		if (this.random.nextFloat() < 0.3F) {
-			this.setCarriedBlock(Blocks.DARK_OAK_WOOD.defaultBlockState());
+			this.setCarriedBlock(Blocks.DARK_OAK_PLANKS.defaultBlockState());
 		}
 	}
 	
