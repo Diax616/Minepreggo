@@ -1,7 +1,5 @@
 package dev.dixmk.minepreggo.world.entity.preggo;
 
-import java.util.ArrayList;
-
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
@@ -113,7 +111,7 @@ public abstract class PreggoMobPregnancySystemP4
 		else if (pain == PregnancyPain.BIRTH) {
 			if (pregnancyData.getPregnancyPainTimer() >= totalTicksOfBirth) {			
 				
-	        	final var aliveBabiesItemStacks = new ArrayList<>(PregnancySystemHelper.getAliveBabies(pregnancyData.getWomb()));   	
+	        	final var aliveBabiesItemStacks = PregnancySystemHelper.getAliveBabies(pregnancyData.getWomb());   	
 	       		
 	        	MinepreggoMod.LOGGER.debug("PreggoMob {} is giving birth to {} babies.", pregnantEntity.getDisplayName().getString(), aliveBabiesItemStacks.size());
 	        	
@@ -135,7 +133,7 @@ public abstract class PreggoMobPregnancySystemP4
 	        	});
 	        	
 	        	if (!aliveBabiesItemStacks.isEmpty()) {	              	
-		        	aliveBabiesItemStacks.forEach(baby -> PreggoMobHelper.storeItemInSpecificRangeOrDrop(pregnantEntity, baby, ITamablePreggoMob.FOOD_INVENTORY_SLOT + 1, pregnantEntity.getInventorySize() - 1)); 						
+		        	aliveBabiesItemStacks.forEach(baby -> PreggoMobHelper.storeItemInSpecificRangeOrDrop(pregnantEntity, baby.copy(), ITamablePreggoMob.FOOD_INVENTORY_SLOT + 1, pregnantEntity.getInventorySize() - 1)); 						
 	        	}
 	        	        	
 	        	MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) pregnantEntity.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.birth.message.post", pregnantEntity.getSimpleName()));

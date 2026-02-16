@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import javax.annotation.CheckForNull;
@@ -44,6 +45,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
+import dev.dixmk.minepreggo.world.item.AbstractBaby;
 import dev.dixmk.minepreggo.world.item.IFemaleArmor;
 import dev.dixmk.minepreggo.world.item.IMaternityArmor;
 import dev.dixmk.minepreggo.world.item.ItemHelper;
@@ -373,12 +375,12 @@ public class PregnancySystemHelper {
 				.map(babyData -> {
 				var babyItem = getAliveBabyItem(babyData.typeOfSpecies, babyData.typeOfCreature);
 				if (babyItem != null) {
-					return new ItemStack(babyItem);
+					return AbstractBaby.createBabyItemStack(babyData.motherId, babyData.fatherId.orElse(null), babyItem);
 				}
 				return ItemStack.EMPTY;
 				})
 				.filter(i -> !i.isEmpty())
-				.toList();
+				.collect(Collectors.toCollection(ArrayList::new));
 	}
 
 	public static List<ItemStack> getDeadBabies(@NonNull Womb womb) {

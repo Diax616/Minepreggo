@@ -70,7 +70,6 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	
 	protected AbstractTamableZombieGirl(EntityType<? extends AbstractZombieGirl> p_21803_, Level p_21804_) {
 	      super(p_21803_, p_21804_, Creature.HUMANOID);
-	      this.reassessTameGoals();	 
 	      this.femaleEntityData = createFemaleEntityData();
 	      this.tamablePreggoMobSystem = createTamablePreggoMobSystem();
 	}

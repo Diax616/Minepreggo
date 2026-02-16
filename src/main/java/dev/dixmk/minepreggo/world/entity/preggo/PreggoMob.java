@@ -9,6 +9,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -95,10 +96,13 @@ public abstract class PreggoMob extends TamableAnimal {
 		}
 		else if (!this.isTame() && this.isFoodToTame(itemstack)) {
 			this.usePlayerItem(sourceentity, hand, itemstack);
-			if (this.random.nextInt(3) == 0 && !net.minecraftforge.event.ForgeEventFactory.onAnimalTame(this, sourceentity)) {
+			if (!this.level().isClientSide && this.random.nextInt(3) == 0 && !net.minecraftforge.event.ForgeEventFactory.onAnimalTame(this, sourceentity)) {
 				this.tame(sourceentity);
 				this.afterTaming();
-				this.level().broadcastEntityEvent(this, (byte) 7);						
+				this.level().broadcastEntityEvent(this, (byte) 7);	
+				for (EquipmentSlot slot : EquipmentSlot.values()) {
+					this.setGuaranteedDrop(slot);
+				}
 			} else {
 				this.level().broadcastEntityEvent(this, (byte) 6);
 			}

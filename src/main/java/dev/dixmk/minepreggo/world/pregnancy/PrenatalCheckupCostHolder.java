@@ -46,19 +46,22 @@ public class PrenatalCheckupCostHolder implements INBTSerializable<CompoundTag> 
 
 	@Override
 	public CompoundTag serializeNBT() { 
+		CompoundTag tag;
         if (isInitialized) {
-            return lazyValue.get().toNBT();
-        }   
-        else if (savedData.contains(PrenatalCheckupCost.NBT_KEY)) {
-            return savedData;
-        }       
-        return new CompoundTag();
+        	tag = lazyValue.get().toNBT();
+        } else if (savedData.contains(PrenatalCheckupCost.NBT_KEY)) {
+        	tag = savedData.copy();
+        } else {
+			tag = new CompoundTag();
+		}
+        tag.putBoolean("PrenatalCheckupCostHolderInitialized", isInitialized);
+        return tag;
 	}
 
 	@Override
 	public void deserializeNBT(CompoundTag nbt) {
         this.savedData = nbt.copy();
-        this.isInitialized = false;
+        this.isInitialized = nbt.getBoolean("PrenatalCheckupCostHolderInitialized");
         this.lazyValue = createLazy();	
 	}
 	

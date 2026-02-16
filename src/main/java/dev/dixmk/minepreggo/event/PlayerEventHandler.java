@@ -475,7 +475,8 @@ public class PlayerEventHandler {
 							return;
 						}
 						
-						int gratification = itemCraving.getSpeciesType() != Species.HUMAN ? (int) (itemCraving.getGratification() * itemCraving.getPenalty()) : itemCraving.getGratification();
+						int realGratification = itemCraving.getGratification();
+						int gratification = itemCraving.getSpeciesType() != Species.HUMAN ? Math.round(realGratification - (realGratification * itemCraving.getPenalty())) : realGratification;
 						MinepreggoMod.LOGGER.debug("Player {} satisfied craving with item: {} by {}", player.getName().getString(), mainHandItem, gratification);
 						pregnancyData.decrementCraving(gratification);
 						pregnancyData.syncEffect(player);

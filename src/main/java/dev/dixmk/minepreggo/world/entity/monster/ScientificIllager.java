@@ -95,6 +95,7 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
     private PrenatalCheckupCostHolder prenatalCheckUpCosts = new PrenatalCheckupCostHolder(3, 10);
 	private boolean spawnedPets = false;
     private Set<UUID> petsUUID = null;
+    private int restockTimer = 0;
     
 	public ScientificIllager(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.SCIENTIFIC_ILLAGER.get(), world);
@@ -107,11 +108,13 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
 		setNoAi(false);
 	}
 	
-    private void updateTrades() {
+    private MerchantOffers createTrades() {
     	final var trades = Trades.Illager.getRandomTrades(this.random);
+    	MerchantOffers newOffers = new MerchantOffers();
 		for (var trade : trades) {
-			this.offers.add(trade.getOffer(this, this.random));
+			newOffers.add(trade.getOffer(this, this.random));
 		}
+		return newOffers;
     }
 	
 	@Override
@@ -143,8 +146,7 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
     @Override
     public MerchantOffers getOffers() {
         if (this.offers == null) {
-            this.offers = new MerchantOffers();
-            this.updateTrades();
+            this.offers = this.createTrades();
          }
          return this.offers;
     }
@@ -161,7 +163,9 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
 
     @Override
     public void notifyTrade(MerchantOffer offer) {
-        // It does not need, It is not a villager
+    	if (!this.level().isClientSide) {
+            offer.increaseUses();
+    	}
     }
 
     @Override
@@ -272,7 +276,7 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
 		super.addAdditionalSaveData(compound);				
 	    MerchantOffers merchantoffers = this.getOffers();
 	    compound.putBoolean("spawnedPets", this.spawnedPets);
-	    
+	    compound.putInt("RestockTimer", this.restockTimer);
 	    if (!merchantoffers.isEmpty()) {
 	    	compound.put("Offers", merchantoffers.createTag());
 	    }
@@ -295,7 +299,7 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
 	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);		
 		this.spawnedPets = compound.getBoolean("spawnedPets");
-		
+		this.restockTimer = compound.getInt("RestockTimer");
 		if (compound.contains("Offers")) {
 			this.offers = new MerchantOffers(compound.getCompound("Offers"));
 		}
@@ -383,6 +387,32 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
 	    return result;
 	}
 
+	@Override
+	public void aiStep() {
+	    super.aiStep();
+	    if (this.level().isClientSide) {
+	        return;
+	    }
+	    
+	    if (this.offers != null && hasOutOfStockOffer()) {          
+            if (this.restockTimer >= 12000 && this.getTradingPlayer() == null) {
+                this.restockTimer = 0;
+                this.offers = this.createTrades();
+            } else {
+            	++this.restockTimer;
+            }
+	    }
+	}
+		
+	private boolean hasOutOfStockOffer() {
+	    for (MerchantOffer offer : this.offers) {
+	        if (offer.isOutOfStock()) {
+	            return true;
+	        }
+	    }
+	    return false;
+	}
+	
 	public boolean removePet(UUID uuid) {
 		if (petsUUID != null) {
 			return petsUUID.remove(uuid);

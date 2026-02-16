@@ -345,7 +345,7 @@ public class PlayerHelper {
 		if (!current.isEmpty()) {
 			PreggoMobHelper.dropItemStack(player, current);		
 		}		
-		player.setItemInHand(hand, itemStack);
+		player.setItemInHand(hand, itemStack.copy());
 	}
 	
 	public static boolean isValidCravingBySpecies(Species species) {

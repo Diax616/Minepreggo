@@ -56,6 +56,9 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> impleme
 		final var tamableData = preggoMob.getTamableData();
 		if (tamableData.getFullness() <= 0) {
 			tamableData.setSavage(true);
+			if (preggoMob.isLeashed()) {
+				preggoMob.dropLeash(true, true);
+			}	
 			return true;
 		}
 		return false;

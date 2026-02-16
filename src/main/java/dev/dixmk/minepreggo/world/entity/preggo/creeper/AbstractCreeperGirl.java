@@ -59,8 +59,7 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 	private CombatMode combatMode = CombatMode.EXPLODE;
 	
 	protected AbstractCreeperGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_, Creature typeOfCreature) {
-      super(p_21803_, p_21804_, Species.CREEPER, typeOfCreature);
-      this.reassessTameGoals();	    
+      super(p_21803_, p_21804_, Species.CREEPER, typeOfCreature);	    
 	}
 		
 	public void setCombatMode(CombatMode value) {

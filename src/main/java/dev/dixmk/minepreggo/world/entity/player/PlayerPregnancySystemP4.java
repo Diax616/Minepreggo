@@ -1,7 +1,5 @@
 package dev.dixmk.minepreggo.world.entity.player;
 
-import java.util.ArrayList;
-
 import javax.annotation.Nonnegative;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -200,7 +198,7 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 		else if (pain == PregnancyPain.BIRTH) {
 			if (pregnancySystem.getPregnancyPainTimer() >= totalTicksOfBirth) {			
 				
-	        	final var aliveBabiesItemStacks = new ArrayList<>(PregnancySystemHelper.getAliveBabies(pregnancySystem.getWomb()));   	
+	        	final var aliveBabiesItemStacks = PregnancySystemHelper.getAliveBabies(pregnancySystem.getWomb());   	
 	       		
 	        	MinepreggoMod.LOGGER.debug("Player {} is giving birth to {} babies.", pregnantEntity.getDisplayName().getString(), aliveBabiesItemStacks.size());
 	        	
@@ -223,8 +221,9 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 	        	
 	        	if (!aliveBabiesItemStacks.isEmpty()) {	              	
 		        	aliveBabiesItemStacks.forEach(baby -> {
-		        		if(!pregnantEntity.getInventory().add(baby)) 
-		        			PreggoMobHelper.dropItemStack(pregnantEntity, baby);
+		        		var copy = baby.copy();
+		        		if(!pregnantEntity.getInventory().add(copy)) 
+		        			PreggoMobHelper.dropItemStack(pregnantEntity, copy);
 		        	}); 						
 	        	}
 	        	        	
