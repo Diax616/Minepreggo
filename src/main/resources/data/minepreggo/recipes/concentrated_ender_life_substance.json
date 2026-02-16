@@ -6,8 +6,11 @@
       "item": "minepreggo:ender_life_substance"
     },
     {
-      "item": "minepreggo:ender_breast_milk_bottle"
-    }
+      "item": "minepreggo:refined_chorus_shards"
+    },
+	{
+	  "item": "minepreggo:ender_breast_milk_bottle"
+	}
   ],
   "result": {
     "item": "minepreggo:concentrated_ender_life_substance",

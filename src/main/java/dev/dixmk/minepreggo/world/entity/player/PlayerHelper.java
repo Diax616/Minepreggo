@@ -29,7 +29,10 @@ import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.item.IMaternityArmor;
+import dev.dixmk.minepreggo.world.pregnancy.Gender;
+import dev.dixmk.minepreggo.world.pregnancy.IBreedable;
 import dev.dixmk.minepreggo.world.pregnancy.MapPregnancyPhase;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
@@ -57,6 +60,8 @@ public class PlayerHelper {
 	// BREEDING ITEMSTACK TAGS - START
 	private static final String FEMALE_PLAYER_ID = "femalePlayerUUID";
 	private static final String PREGNANT_FEMALE_PLAYER_ID = "pregnantFemalePlayerUUID";
+	
+	public static final int DEFAULT_ENDER_POWER_COOLDOWN = 200;
 	
 	public static boolean containsAnyFemalePlayerIdTag(ItemStack stack) {
 		if (stack.isEmpty()) {
@@ -148,7 +153,7 @@ public class PlayerHelper {
 			PregnancyPhase.P6, 2600,
 			PregnancyPhase.P7, 2400,
 			PregnancyPhase.P8, 2200
-			)));
+			)));	
 	
 	public static int maxJumps(PregnancyPhase phase) {
 		return MAX_JUMPS.getInt(phase.compareTo(PregnancyPhase.P3) <= -1 ? PregnancyPhase.P3 : phase);
@@ -244,7 +249,6 @@ public class PlayerHelper {
 				.flatMap(cap -> cap.getFemaleData().resolve()
 				.map(femaleData -> {
 					if (!femaleData.isPregnant() && femaleData.getPostPregnancyData().isEmpty()) {						
-						player.removeEffect(MinepreggoModMobEffects.FERTILE.get());
 						return femaleData.tryImpregnate(pregnancyType, numOfBabies, father);
 					}
 					return false;
@@ -255,6 +259,7 @@ public class PlayerHelper {
 					player.getGameProfile().getName(), 
 					numOfBabies, 
 					father);
+			player.removeEffect(MinepreggoModMobEffects.FERTILE.get());
 			return true;
 		}
 
@@ -290,12 +295,20 @@ public class PlayerHelper {
 		Optional<Integer> numOfBabies = female.getCapability(MinepreggoCapabilities.PLAYER_DATA)
 				.resolve()
 				.flatMap(cap -> cap.getFemaleData().resolve())
-				.map(femaleData -> 
-					PregnancySystemHelper.calculateNumOfBabiesByFertility(
-						villager.getRandom().nextFloat(), 
-						femaleData.getFertilityRate()
-					)
-				);
+				.map(femaleData -> {
+					float femaleFertility = femaleData.getFertilityRate();
+					float villagerFertility = female.hasEffect(MinepreggoModMobEffects.FERTILE.get()) ? IBreedable.MAX_FERTILITY_RATE : Math.min(0.3f + villager.getRandom().nextFloat(), IBreedable.MAX_FERTILITY_RATE);
+					int babies = PregnancySystemHelper.calculateNumOfBabiesByFertility(villagerFertility, femaleFertility, Gender.FEMALE);
+					
+					MinepreggoMod.LOGGER.debug("Calculating number of babies for player {} and villager {} with fertilities {} and {} respectively, result: {}",
+							female.getGameProfile().getName(),
+							villager.getDisplayName().getString(),
+							femaleFertility,
+							villagerFertility,
+							babies);
+					
+					return babies;	
+				});
 		
 		if (numOfBabies.isEmpty() || numOfBabies.get() == 0) {
 			MinepreggoMod.LOGGER.debug("Player {} could not get pregnant by villager {}", female.getGameProfile().getName(), villager.getDisplayName().getString());
@@ -483,6 +496,25 @@ public class PlayerHelper {
 	// PLAYER MOB EFFECT - END
 	
 	
+	// ENDER DRAGON PREGNANCY - START
+	
+	private static final Object2IntMap<PregnancyPhase> ENDER_POWER_TIMERS = Object2IntMaps.unmodifiable(new Object2IntOpenHashMap<>(ImmutableMap.of(
+			PregnancyPhase.P0, 150,
+			PregnancyPhase.P1, 140,
+			PregnancyPhase.P2, 130,
+			PregnancyPhase.P3, 120,
+			PregnancyPhase.P4, 100,
+			PregnancyPhase.P5, 90,
+			PregnancyPhase.P6, 80,
+			PregnancyPhase.P7, 70,
+			PregnancyPhase.P8, 60
+			)));
+	
+	
+	public static int getEnderPowerCoolDownBy(PregnancyPhase phase) {
+		return ENDER_POWER_TIMERS.getOrDefault(phase, DEFAULT_ENDER_POWER_COOLDOWN);
+	}
+		
 	// JIGGLE PHYSICS - START
 	public static void removeJigglePhysics(ServerPlayer player) {
 		MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player), 
@@ -500,8 +532,82 @@ public class PlayerHelper {
 	public static boolean isFemale(Player player) {
 		Optional<Boolean> result = player.getCapability(MinepreggoCapabilities.PLAYER_DATA)
 				.map(cap -> cap.getFemaleData().isPresent());
-		return result.isPresent() && result.get().booleanValue();
+		return result.orElse(Boolean.FALSE);
 	}
+	
+	public static boolean isMale(Player player) {
+		Optional<Boolean> result = player.getCapability(MinepreggoCapabilities.PLAYER_DATA)
+				.map(cap -> cap.getMaleData().isPresent());
+		return result.orElse(Boolean.FALSE);
+	}
+	
+	public static boolean isPregnant(ServerPlayer player) {
+		return player.getCapability(MinepreggoCapabilities.PLAYER_DATA)
+				.resolve()
+				.flatMap(cap -> cap.getFemaleData()
+				.map(femaleData -> femaleData.isPregnant() && femaleData.isPregnancyDataInitialized())).orElse(Boolean.FALSE);
+	}
+	
+	public static boolean hasPregnancyPains(ServerPlayer player) {
+		Optional<Boolean> result = player.getCapability(MinepreggoCapabilities.PLAYER_DATA)
+				.resolve()
+				.flatMap(cap -> cap.getFemaleData().map(femaleData -> {
+					if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
+						return femaleData.getPregnancyData().getPregnancyPain() != null;
+					}
+					return false;
+				}));
+		return result.orElse(Boolean.FALSE);
+	}
+	
+	public static boolean isPregnantAndIncapacitated(ServerPlayer player) {
+		Optional<Boolean> result = player.getCapability(MinepreggoCapabilities.PLAYER_DATA)
+				.resolve()
+				.flatMap(cap -> cap.getFemaleData().map(femaleData -> {
+					if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
+						var pregnancyPain = femaleData.getPregnancyData().getPregnancyPain();
+						return pregnancyPain != null && pregnancyPain.incapacitate;
+					}
+					return false;
+				}));
+		return result.orElse(Boolean.FALSE);
+	}
+	
+	public static boolean isPregnantAndInLabor(ServerPlayer player) {
+		return player.getCapability(MinepreggoCapabilities.PLAYER_DATA)
+				.resolve()
+				.flatMap(cap -> cap.getFemaleData().map(femaleData -> {
+					if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
+						return PregnancyPain.isLaborPain(femaleData.getPregnancyData().getPregnancyPain());
+					}
+					return false;
+				})).orElse(Boolean.FALSE);
+	}
+	
+	
+	public static boolean hasPregnancySymptoms(ServerPlayer player) {
+		Optional<Boolean> result = player.getCapability(MinepreggoCapabilities.PLAYER_DATA)
+				.resolve()
+				.flatMap(cap -> cap.getFemaleData().map(femaleData -> {
+					if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
+						return !femaleData.getPregnancyData().getPregnancySymptoms().isEmpty();
+					}
+					return false;
+				}));
+		return result.orElse(Boolean.FALSE);
+	}
+		
+	public static Optional<PregnancyPhase> getCurrentPregnancyPhase(ServerPlayer player) {
+		return player.getCapability(MinepreggoCapabilities.PLAYER_DATA)
+				.resolve()
+				.flatMap(cap -> cap.getFemaleData().resolve().flatMap(femaleData -> {
+					if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
+						return Optional.of(femaleData.getPregnancyData().getCurrentPregnancyPhase());
+					}
+					return Optional.empty();
+					}));
+	}
+	
 	
 	public static boolean isInvencible(Player player) {
 		return player.getAbilities().instabuild || player.isSpectator();

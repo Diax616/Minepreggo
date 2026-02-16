@@ -81,7 +81,7 @@ public abstract class ZombieGirlAnimator<T extends AbstractZombieGirl> extends P
 		@Override
 	    protected void animateLoopState(E zombieGirl, float ageInTicks) {
 			final var tamableData = zombieGirl.getTamableData();
-			if (tamableData.isPanic()) {
+			if (tamableData.isPanic() || tamableData.isSavage() || zombieGirl.isAggressive()) {
 				this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.IDLE, ageInTicks);						
 			} 		
 			else if (tamableData.isWaiting()) {

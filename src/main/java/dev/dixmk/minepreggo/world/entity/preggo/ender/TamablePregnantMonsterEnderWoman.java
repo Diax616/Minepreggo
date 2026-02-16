@@ -216,7 +216,7 @@ public class TamablePregnantMonsterEnderWoman {
 		}
 
 		public static AttributeSupplier.Builder createAttributes() {
-			return MonsterEnderWomanHelper.createTamableAttributes(0.23);
+			return MonsterEnderWomanHelper.createTamableAttributes(0.27);
 		}
 	}
 
@@ -269,7 +269,7 @@ public class TamablePregnantMonsterEnderWoman {
 		}
 		
 		public static AttributeSupplier.Builder createAttributes() {
-			return MonsterEnderWomanHelper.createTamableAttributes(0.28);
+			return MonsterEnderWomanHelper.createTamableAttributes(0.26);
 		}
 	}
 	
@@ -322,7 +322,7 @@ public class TamablePregnantMonsterEnderWoman {
 		}
 
 		public static AttributeSupplier.Builder createAttributes() {
-			return MonsterEnderWomanHelper.createTamableAttributes(0.27);
+			return MonsterEnderWomanHelper.createTamableAttributes(0.25);
 		}
 	}
 
@@ -375,7 +375,7 @@ public class TamablePregnantMonsterEnderWoman {
 		}
 		
 		public static AttributeSupplier.Builder createAttributes() {
-			return MonsterEnderWomanHelper.createTamableAttributes(0.21);
+			return MonsterEnderWomanHelper.createTamableAttributes(0.24);
 		}
 	}
 	
@@ -428,7 +428,7 @@ public class TamablePregnantMonsterEnderWoman {
 		}
 		
 		public static AttributeSupplier.Builder createAttributes() {
-			return MonsterEnderWomanHelper.createTamableAttributes(0.26);
+			return MonsterEnderWomanHelper.createTamableAttributes(0.23);
 		}
 	}
 	
@@ -477,7 +477,7 @@ public class TamablePregnantMonsterEnderWoman {
 		}
 
 		public static AttributeSupplier.Builder createAttributes() {
-			return MonsterEnderWomanHelper.createTamableAttributes(0.25);
+			return MonsterEnderWomanHelper.createTamableAttributes(0.21);
 		}
 	}
 

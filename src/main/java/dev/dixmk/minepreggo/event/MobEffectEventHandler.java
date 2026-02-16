@@ -6,6 +6,7 @@ import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.effect.Impregnantion;
 import dev.dixmk.minepreggo.world.effect.MobEffectHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.core.registries.Registries;
@@ -52,11 +53,16 @@ public class MobEffectEventHandler {
     		MobEffectHelper.syncRemovedMobEffect(player, effect);
     		if (effect == MinepreggoModMobEffects.FERTILE.get()) {           		
         		removeMobAttacks(player);
+        		resetFertilityRate(player);
         	}
     		MinepreggoMod.LOGGER.debug("Removed mob effect {} from player {}", effect.getDescriptionId(), player.getScoreboardName());
     	}
-    	else if (entity instanceof PreggoMob && effect == MobEffects.CONFUSION) {
-    		MobEffectHelper.syncRemovedMobEffect(entity, effect);
+    	else if (entity instanceof PreggoMob && entity instanceof ITamablePreggoMob<?> tamablePreggoMob) {  		
+    		if (effect == MinepreggoModMobEffects.FERTILE.get()) {
+				resetFertilityRate(tamablePreggoMob);
+			} else if (effect == MobEffects.CONFUSION) {
+	    		MobEffectHelper.syncRemovedMobEffect(entity, effect);
+			}
             MinepreggoMod.LOGGER.debug("Removed mob effect {} from preggo mob {}", effect.getDescriptionId(), entity.getDisplayName().getString());
     	}
     }
@@ -81,11 +87,16 @@ public class MobEffectEventHandler {
         	MobEffectHelper.syncRemovedMobEffect(player, effect);
         	if (effect == MinepreggoModMobEffects.FERTILE.get()) {
         		removeMobAttacks(player);
+        		resetFertilityRate(player);
         	}
         	MinepreggoMod.LOGGER.debug("Expired mob effect {} from player {}", effect.getDescriptionId(), player.getScoreboardName());
         }
-    	else if (entity instanceof PreggoMob && effect == MobEffects.CONFUSION) {
-    		MobEffectHelper.syncRemovedMobEffect(entity, effect);
+    	else if (entity instanceof PreggoMob && entity instanceof ITamablePreggoMob<?> tamablePreggoMob) {
+    		if (effect == MinepreggoModMobEffects.FERTILE.get()) {
+				resetFertilityRate(tamablePreggoMob);
+			} else if (effect == MobEffects.CONFUSION) {
+	    		MobEffectHelper.syncRemovedMobEffect(entity, effect);
+			}
             MinepreggoMod.LOGGER.debug("Expired mob effect {} from preggo mob {}", effect.getDescriptionId(), entity.getDisplayName().getString());
     	}
     }
@@ -146,4 +157,18 @@ public class MobEffectEventHandler {
     		})	
     	);
     }
+    
+    private static void resetFertilityRate(ServerPlayer player) {
+		player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap ->
+			cap.getBreedableData().ifPresent(breedableData -> {
+				breedableData.resetFertilityRate();
+				breedableData.resetFertilityRateTimer();
+			})
+		);
+	}
+    
+    private static void resetFertilityRate(ITamablePreggoMob<?> tamablePreggoMob) {
+    	tamablePreggoMob.getGenderedData().resetFertilityRate();
+    	tamablePreggoMob.getGenderedData().resetFertilityRateTimer();
+	}
 }

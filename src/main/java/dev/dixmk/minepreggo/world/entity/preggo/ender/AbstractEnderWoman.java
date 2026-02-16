@@ -526,7 +526,7 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
     }
     
     protected static class EnderWomanLookForPlayerGoal extends NearestAttackableTargetGoal<Player> {
-        private final AbstractEnderWoman abstractEnderGirl;
+        protected final AbstractEnderWoman abstractEnderWoman;
         @Nullable protected Player pendingTarget;
         private int aggroTime;
         private int teleportTime;
@@ -536,7 +536,7 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
 
         public EnderWomanLookForPlayerGoal(AbstractEnderWoman p_32573_, @Nullable Predicate<LivingEntity> p_32574_) {
             super(p_32573_, Player.class, 10, false, false, p_32574_);
-            this.abstractEnderGirl = p_32573_;
+            this.abstractEnderWoman = p_32573_;
             this.isAngerInducing = (p_269940_) -> {
                 return (p_32573_.isLookingAtMe((Player)p_269940_) || p_32573_.isAngryAt(p_269940_)) && !p_32573_.hasIndirectPassenger(p_269940_);
             };
@@ -545,7 +545,7 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
 
         @Override
         public boolean canUse() {
-            this.pendingTarget = this.abstractEnderGirl.level().getNearestPlayer(this.startAggroTargetConditions, this.abstractEnderGirl);
+            this.pendingTarget = this.abstractEnderWoman.level().getNearestPlayer(this.startAggroTargetConditions, this.abstractEnderWoman);
             return this.pendingTarget != null;
         }
 
@@ -553,7 +553,7 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
         public void start() {
             this.aggroTime = this.adjustedTickDelay(5);
             this.teleportTime = 0;
-            this.abstractEnderGirl.setBeingStaredAt();
+            this.abstractEnderWoman.setBeingStaredAt();
         }
 
         @Override
@@ -569,17 +569,17 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
                     return false;
                 }
                 else {
-                    this.abstractEnderGirl.lookAt(this.pendingTarget, 10.0F, 10.0F);
+                    this.abstractEnderWoman.lookAt(this.pendingTarget, 10.0F, 10.0F);
                     return true;
                 }
             }
             else {
                 if (this.target != null) {
-                    if (this.abstractEnderGirl.hasIndirectPassenger(this.target)) {
+                    if (this.abstractEnderWoman.hasIndirectPassenger(this.target)) {
                         return false;
                     }
 
-                    if (this.continueAggroTargetConditions.test(this.abstractEnderGirl, this.target)) {
+                    if (this.continueAggroTargetConditions.test(this.abstractEnderWoman, this.target)) {
                         return true;
                     }
                 }
@@ -590,7 +590,7 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
 
         @Override
         public void tick() {
-            if (this.abstractEnderGirl.getTarget() == null) {
+            if (this.abstractEnderWoman.getTarget() == null) {
                 super.setTarget((LivingEntity)null);
             }
 
@@ -602,15 +602,15 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
                 }
             }
             else {
-                if (this.target != null && !this.abstractEnderGirl.isPassenger()) {
-                    if (this.abstractEnderGirl.isLookingAtMe((Player)this.target)) {
-                        if (this.target.distanceToSqr(this.abstractEnderGirl) < 16.0D) {
-                            this.abstractEnderGirl.teleport();
+                if (this.target != null && !this.abstractEnderWoman.isPassenger()) {
+                    if (this.abstractEnderWoman.isLookingAtMe((Player)this.target)) {
+                        if (this.target.distanceToSqr(this.abstractEnderWoman) < 16.0D) {
+                            this.abstractEnderWoman.teleport();
                         }
 
                         this.teleportTime = 0;
                     }
-                    else if (this.target.distanceToSqr(this.abstractEnderGirl) > 256.0D && this.teleportTime++ >= this.adjustedTickDelay(30) && this.abstractEnderGirl.teleportTowards(this.target)) {
+                    else if (this.target.distanceToSqr(this.abstractEnderWoman) > 256.0D && this.teleportTime++ >= this.adjustedTickDelay(30) && this.abstractEnderWoman.teleportTowards(this.target)) {
                         this.teleportTime = 0;
                     }
                 }

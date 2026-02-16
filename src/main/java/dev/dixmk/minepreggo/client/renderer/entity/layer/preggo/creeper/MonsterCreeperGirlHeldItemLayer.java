@@ -32,10 +32,9 @@ public class MonsterCreeperGirlHeldItemLayer
 		p_117349_.translate(parentModel.head.x / 16.0F, parentModel.head.y / 16.0F, parentModel.head.z / 16.0F);
 		p_117349_.mulPose(Axis.YP.rotationDegrees(p_117357_));
 		p_117349_.mulPose(Axis.XP.rotationDegrees(p_117358_));
-	
-		p_117349_.translate(0, -0.05F, -0.3F);
+		p_117349_.translate(0, -0.05F, -0.25F);
 		p_117349_.mulPose(Axis.XP.rotationDegrees(90.0F));
-		p_117349_.mulPose(Axis.ZP.rotationDegrees(190.0F));
+		p_117349_.mulPose(Axis.ZP.rotationDegrees(200.0F));
 		
 		ItemStack itemstack = p_117352_.getItemBySlot(EquipmentSlot.MAINHAND);
 		this.itemInHandRenderer.renderItem(p_117352_, itemstack, ItemDisplayContext.GROUND, false, p_117349_, p_117350_, p_117351_);

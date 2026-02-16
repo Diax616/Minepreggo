@@ -121,7 +121,7 @@ public abstract class AbstractTamablePregnantEnderWoman extends AbstractTamableE
 			@Override
 			public boolean canUse() {
 				return super.canUse()
-						&& !getTamableData().isWaiting()
+						&& ((isTame() && !getTamableData().isWaiting()) || getTamableData().isSavage())
 						&& !getPregnancyData().isIncapacitated();		
 			}
 			
@@ -135,7 +135,7 @@ public abstract class AbstractTamablePregnantEnderWoman extends AbstractTamableE
 			@Override
 			public boolean canUse() {
 				return super.canUse()
-						&& !getTamableData().isWaiting()
+						&& ((isTame() && !getTamableData().isWaiting()) || getTamableData().isSavage())
 						&& !getPregnancyData().isIncapacitated();		
 			}	
 			@Override
@@ -204,7 +204,7 @@ public abstract class AbstractTamablePregnantEnderWoman extends AbstractTamableE
 			public boolean canUse() {
 				return super.canUse() 
 				&& !getPregnancyData().isIncapacitated()
-				&& getOwner() != null && pendingTarget != null && !getOwner().getUUID().equals(pendingTarget.getUUID());		
+				&& pendingTarget != null && !abstractEnderWoman.isOwnedBy(pendingTarget);	
 			}
 		});
 	}
@@ -231,6 +231,7 @@ public abstract class AbstractTamablePregnantEnderWoman extends AbstractTamableE
 				@Override
 				public boolean canUse() {
 					return super.canUse() 
+					&& !getTamableData().isSavage()
 					&& !getTamableData().isWaiting()
 					&& !getPregnancyData().isIncapacitated();			
 				}

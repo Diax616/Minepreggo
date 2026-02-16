@@ -5,7 +5,6 @@ import dev.dixmk.minepreggo.init.MinepreggoModPotions;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraftforge.common.brewing.IBrewingRecipe;
@@ -15,8 +14,7 @@ public class PregnancyHealingBrewingRecipe implements IBrewingRecipe {
 	@Override
 	public boolean isInput(ItemStack input) {
 		Item inputItem = input.getItem();
-		Potion potion = PotionUtils.getPotion(input);
-		return (inputItem == Items.POTION || inputItem == Items.SPLASH_POTION || inputItem == Items.LINGERING_POTION) && (potion == Potions.HEALING || potion == Potions.STRONG_HEALING);
+		return (inputItem == Items.POTION || inputItem == Items.SPLASH_POTION || inputItem == Items.LINGERING_POTION) && PotionUtils.getPotion(input) == Potions.HEALING;
 	}
 
 	@Override

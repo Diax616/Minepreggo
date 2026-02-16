@@ -9,7 +9,7 @@ import com.google.gson.JsonObject;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.network.capability.IPlayerData;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
-import dev.dixmk.minepreggo.world.item.AbstractBaby;
+import dev.dixmk.minepreggo.world.item.BabyItem;
 import dev.dixmk.minepreggo.world.pregnancy.Gender;
 import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
@@ -82,8 +82,8 @@ public class BabyTradeTrigger extends SimpleCriterionTrigger<BabyTradeTrigger.Tr
 		    }
 		     
 		    if (this.verifyParent.isPresent() && this.gender.isPresent()) {
-			    return (this.gender.get() == Gender.MALE &&	genderPlayer == Gender.MALE && AbstractBaby.isFatherOf(stack, player.getUUID())) ||
-				           (this.gender.get() == Gender.FEMALE && genderPlayer == Gender.FEMALE && AbstractBaby.isMotherOf(stack, player.getUUID()));
+			    return (this.gender.get() == Gender.MALE &&	genderPlayer == Gender.MALE && BabyItem.isFatherOf(stack, player.getUUID())) ||
+				           (this.gender.get() == Gender.FEMALE && genderPlayer == Gender.FEMALE && BabyItem.isMotherOf(stack, player.getUUID()));
 		    }
 		    
 		    return false;

@@ -1,7 +1,7 @@
 package dev.dixmk.minepreggo.world.entity.preggo.ender;
 
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
-import dev.dixmk.minepreggo.world.entity.preggo.IHostilPreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.IHostilePreggoMob;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
@@ -19,7 +19,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 
-public abstract class AbstractHostileEnderWoman extends AbstractEnderWoman implements IHostilPreggoMob, Enemy {
+public abstract class AbstractHostileEnderWoman extends AbstractEnderWoman implements IHostilePreggoMob, Enemy {
 
 	protected AbstractHostileEnderWoman(EntityType<? extends AbstractEnderWoman> p_32485_, Level p_32486_, Creature creatureType) {
 		super(p_32485_, p_32486_, creatureType);

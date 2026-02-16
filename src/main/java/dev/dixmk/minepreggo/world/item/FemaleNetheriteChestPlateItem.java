@@ -42,7 +42,7 @@ public abstract class FemaleNetheriteChestPlateItem extends ArmorItem implements
 	}
 	
 	
-	public static class ChestplateP0 extends FemaleNetheriteChestPlateItem {
+	public static class Chestplate extends FemaleNetheriteChestPlateItem {
 		@Override
 		public void initializeClient(Consumer<IClientItemExtensions> consumer) {
 			consumer.accept(new IClientItemExtensions() {
@@ -56,7 +56,7 @@ public abstract class FemaleNetheriteChestPlateItem extends ArmorItem implements
 
 		@Override
 		public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
-			return "minepreggo:textures/models/armor/netherite_p0_layer_1.png";
+			return "minepreggo:textures/models/armor/netherite_layer_1.png";
 		}
 	}
 	

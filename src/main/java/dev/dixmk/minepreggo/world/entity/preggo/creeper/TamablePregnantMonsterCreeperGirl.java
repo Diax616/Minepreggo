@@ -428,7 +428,7 @@ public class TamablePregnantMonsterCreeperGirl {
 		}
 		
 		public static AttributeSupplier.Builder createAttributes() {
-			return MonsterCreeperHelper.createTamableAttributes(0.21);
+			return MonsterCreeperHelper.createTamableAttributes(0.20);
 		}
 	}
 	

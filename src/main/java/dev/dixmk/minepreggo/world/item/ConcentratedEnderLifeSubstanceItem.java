@@ -1,10 +1,25 @@
 package dev.dixmk.minepreggo.world.item;
 
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Rarity;
+import java.util.List;
 
-public class ConcentratedEnderLifeSubstanceItem extends Item {
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+
+public class ConcentratedEnderLifeSubstanceItem extends LifeSubstanceItem {
 	public ConcentratedEnderLifeSubstanceItem() {
-		super(new Item.Properties().stacksTo(16).rarity(Rarity.RARE));
+		super(Rarity.RARE);
+	}
+
+	@Override
+	public void appendHoverText(ItemStack itemstack, Level level, List<Component> list, TooltipFlag flag) {
+		list.add(Component.translatable("item.minepreggo.concentrated_ender_life_substance.tooltip"));
+	}
+	
+	@Override
+	public boolean isFoil(ItemStack p_41172_) {
+		return true;
 	}
 }

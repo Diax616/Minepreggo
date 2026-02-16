@@ -23,7 +23,7 @@ public abstract class ZombieImpregnationPotionBrewingRecipe implements IBrewingR
 		return ingredient.is(MinepreggoModItems.ZOMBIE_LIFE_SUBSTANCE.get());
 	}
 	
-	public static class A0 extends ZombieImpregnationPotionBrewingRecipe {		
+	public static class Amplifier0 extends ZombieImpregnationPotionBrewingRecipe {		
 		@Override
 		public boolean isInput(ItemStack input) {
 			Item inputItem = input.getItem();
@@ -41,7 +41,7 @@ public abstract class ZombieImpregnationPotionBrewingRecipe implements IBrewingR
 		}				
 	}
 	
-	public static class A1 extends ZombieImpregnationPotionBrewingRecipe {
+	public static class Amplifier1 extends ZombieImpregnationPotionBrewingRecipe {
 		@Override
 		public boolean isInput(ItemStack input) {
 			Item inputItem = input.getItem();
@@ -59,7 +59,7 @@ public abstract class ZombieImpregnationPotionBrewingRecipe implements IBrewingR
 		}	
 	}
 	
-	public static class A2 extends ZombieImpregnationPotionBrewingRecipe {
+	public static class Amplifier2 extends ZombieImpregnationPotionBrewingRecipe {
 		@Override
 		public boolean isInput(ItemStack input) {
 			Item inputItem = input.getItem();
@@ -77,7 +77,7 @@ public abstract class ZombieImpregnationPotionBrewingRecipe implements IBrewingR
 		}	
 	}
 	
-	public static class A3 extends ZombieImpregnationPotionBrewingRecipe {
+	public static class Amplifier3 extends ZombieImpregnationPotionBrewingRecipe {
 		@Override
 		public boolean isInput(ItemStack input) {
 			Item inputItem = input.getItem();
@@ -95,7 +95,7 @@ public abstract class ZombieImpregnationPotionBrewingRecipe implements IBrewingR
 		}	
 	}
 	
-	public static class A4 extends ZombieImpregnationPotionBrewingRecipe {
+	public static class Amplifier4 extends ZombieImpregnationPotionBrewingRecipe {
 		@Override
 		public boolean isInput(ItemStack input) {
 			Item inputItem = input.getItem();

@@ -32,6 +32,6 @@ public class ChorusFruitWithChocolateItem extends ChorusFruitItem implements ICr
 
 	@Override
 	public @Nonnegative float getPenalty() {
-		return 0.2f;
+		return 0.1f;
 	}
 }

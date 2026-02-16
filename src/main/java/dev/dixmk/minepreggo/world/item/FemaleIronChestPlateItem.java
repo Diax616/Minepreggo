@@ -43,7 +43,7 @@ public abstract class FemaleIronChestPlateItem extends ArmorItem implements IFem
 	}
 	
 	
-	public static class ChestplateP0 extends FemaleIronChestPlateItem {
+	public static class Chestplate extends FemaleIronChestPlateItem {
 		@Override
 		public void initializeClient(Consumer<IClientItemExtensions> consumer) {
 			consumer.accept(new IClientItemExtensions() {
@@ -57,7 +57,7 @@ public abstract class FemaleIronChestPlateItem extends ArmorItem implements IFem
 
 		@Override
 		public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
-			return "minepreggo:textures/models/armor/iron_p0_layer_1.png";
+			return "minepreggo:textures/models/armor/iron_layer_1.png";
 		}
 	}
 	

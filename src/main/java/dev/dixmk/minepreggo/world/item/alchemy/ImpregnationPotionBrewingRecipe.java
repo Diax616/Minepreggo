@@ -19,7 +19,7 @@ public abstract class ImpregnationPotionBrewingRecipe implements IBrewingRecipe 
 		
 	private ImpregnationPotionBrewingRecipe() {}
 	
-	public static class A0 extends ImpregnationPotionBrewingRecipe {		
+	public static class Amplifier0 extends ImpregnationPotionBrewingRecipe {		
 		@Override
 		public boolean isInput(ItemStack input) {
 			Item inputItem = input.getItem();
@@ -42,7 +42,7 @@ public abstract class ImpregnationPotionBrewingRecipe implements IBrewingRecipe 
 		}				
 	}
 	
-	public static class A1 extends ImpregnationPotionBrewingRecipe {
+	public static class Amplifier1 extends ImpregnationPotionBrewingRecipe {
 		@Override
 		public boolean isInput(ItemStack input) {
 			Item inputItem = input.getItem();
@@ -65,7 +65,7 @@ public abstract class ImpregnationPotionBrewingRecipe implements IBrewingRecipe 
 		}	
 	}
 	
-	public static class A2 extends ImpregnationPotionBrewingRecipe {
+	public static class Amplifier2 extends ImpregnationPotionBrewingRecipe {
 		@Override
 		public boolean isInput(ItemStack input) {
 			Item inputItem = input.getItem();
@@ -88,7 +88,7 @@ public abstract class ImpregnationPotionBrewingRecipe implements IBrewingRecipe 
 		}	
 	}
 	
-	public static class A3 extends ImpregnationPotionBrewingRecipe {
+	public static class Amplifier3 extends ImpregnationPotionBrewingRecipe {
 		@Override
 		public boolean isInput(ItemStack input) {
 			Item inputItem = input.getItem();
@@ -111,7 +111,7 @@ public abstract class ImpregnationPotionBrewingRecipe implements IBrewingRecipe 
 		}	
 	}
 	
-	public static class A4 extends ImpregnationPotionBrewingRecipe {
+	public static class Amplifier4 extends ImpregnationPotionBrewingRecipe {
 		@Override
 		public boolean isInput(ItemStack input) {
 			Item inputItem = input.getItem();

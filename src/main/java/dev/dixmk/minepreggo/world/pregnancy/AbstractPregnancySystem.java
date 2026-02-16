@@ -74,13 +74,17 @@ public abstract class AbstractPregnancySystem<E extends LivingEntity> implements
 	protected abstract void startMiscarriage();
 	
 	public static void spawnParticulesForWaterBreaking(ServerLevel serverLevel, LivingEntity target) {	
+		spawnParticulesForWaterBreaking(serverLevel, target, target.getBbHeight() * 0.35);
+	}
+	
+	public static void spawnParticulesForWaterBreaking(ServerLevel serverLevel, LivingEntity target, double extraYOffset) {	
 		for (ServerPlayer player : serverLevel.getServer().getPlayerList().getPlayers()) {
 		    if (player.distanceToSqr(target) <= 256.0) { // 16 blocks
 				serverLevel.sendParticles(
 						player,
 						ParticleTypes.FALLING_DRIPSTONE_WATER,
 						true,
-						target.getX(), (target.getY() + target.getBbHeight() * 0.5), target.getZ(),
+						target.getX(), (target.getY() + extraYOffset), target.getZ(),
 						1,
 						0, 0, 0,
 						0.02);
@@ -89,13 +93,17 @@ public abstract class AbstractPregnancySystem<E extends LivingEntity> implements
 	}
 	
 	public static void spawnParticulesForMiscarriage(ServerLevel serverLevel, LivingEntity target) {	
+		spawnParticulesForMiscarriage(serverLevel, target, target.getBbHeight() * 0.35);
+	}
+	
+	public static void spawnParticulesForMiscarriage(ServerLevel serverLevel, LivingEntity target, double extraYOffset) {	
 		for (ServerPlayer player : serverLevel.getServer().getPlayerList().getPlayers()) {
 		    if (player.distanceToSqr(target) <= 256.0) { // 16 blocks
 				serverLevel.sendParticles(
 						player,
 						ParticleTypes.FALLING_DRIPSTONE_LAVA,
 						true,
-						target.getX(), (target.getY() + target.getBbHeight() * 0.5), target.getZ(),
+						target.getX(), (target.getY() + extraYOffset), target.getZ(),
 						1,
 						0, 0, 0,
 						0.02);

@@ -36,7 +36,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMobData;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
-import dev.dixmk.minepreggo.world.item.AbstractBaby;
+import dev.dixmk.minepreggo.world.item.BabyItem;
 import dev.dixmk.minepreggo.world.item.IFemaleArmor;
 import dev.dixmk.minepreggo.world.item.IMaternityArmor;
 import dev.dixmk.minepreggo.world.item.ItemHelper;
@@ -374,7 +374,7 @@ public class PregnancySystemHelper {
 				.map(babyData -> {
 				Item babyItem = getAliveBabyItem(babyData.typeOfSpecies, babyData.typeOfCreature);
 				if (babyItem != null) {				
-					return AbstractBaby.createBabyItemStack(babyData.motherId, babyData.fatherId.orElse(null), babyItem);
+					return BabyItem.createBabyItemStack(babyData.motherId, babyData.fatherId.orElse(null), babyItem);
 				}
 				return ItemStack.EMPTY;
 				})
@@ -791,6 +791,21 @@ public class PregnancySystemHelper {
 	public static int calculateNumOfBabiesByFertility(@Nonnegative float maleFertility, @Nonnegative float femaleFertility) {
 		float averageFertility = (maleFertility + femaleFertility) * 0.5f;
 		int numOfBabies = Math.round(averageFertility / IBreedable.MAX_FERTILITY_RATE * MAX_NUMBER_OF_BABIES);
+		return Mth.clamp(numOfBabies, 0, MAX_NUMBER_OF_BABIES);
+	}
+	
+	public static int calculateNumOfBabiesByFertility(@Nonnegative float maleFertility, @Nonnegative float femaleFertility, Gender dominantFertilityGender) {
+		float dominantWeight = 0.7f;
+		float otherWeight = 0.3f;
+		
+		float weightedFertility;
+		if (dominantFertilityGender == Gender.MALE) {
+			weightedFertility = (maleFertility * dominantWeight) + (femaleFertility * otherWeight);
+		} else {
+			weightedFertility = (femaleFertility * dominantWeight) + (maleFertility * otherWeight);
+		}
+		
+		int numOfBabies = Math.round(weightedFertility / IBreedable.MAX_FERTILITY_RATE * MAX_NUMBER_OF_BABIES);
 		return Mth.clamp(numOfBabies, 0, MAX_NUMBER_OF_BABIES);
 	}
 

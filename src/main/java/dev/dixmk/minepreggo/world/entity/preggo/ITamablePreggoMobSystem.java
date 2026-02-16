@@ -2,6 +2,7 @@ package dev.dixmk.minepreggo.world.entity.preggo;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
@@ -20,4 +21,6 @@ public interface ITamablePreggoMobSystem {
     void setCinematicEndTime(long time);
     
     void onDoHurtTargetSuccessful(Entity source);
+    
+    boolean onHurtSuccessful(DamageSource source);
 }

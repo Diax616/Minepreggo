@@ -30,6 +30,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
@@ -37,6 +38,8 @@ import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.Cat;
+import net.minecraft.world.entity.animal.Ocelot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
@@ -96,6 +99,34 @@ public abstract class AbstractTamablePregnantCreeperGirl extends AbstractTamable
 				&& !pregnancyData.isIncapacitated();								
 			}
 		});
+		
+		this.goalSelector.addGoal(2, new AvoidEntityGoal<>(this, Ocelot.class, 6F, 1, 1.2) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !getPregnancyData().isIncapacitated();
+			}
+
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse()
+				&& !getPregnancyData().isIncapacitated();
+			}
+		});
+		
+		this.goalSelector.addGoal(2, new AvoidEntityGoal<>(this, Cat.class, 6F, 1, 1.2) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !getPregnancyData().isIncapacitated();
+			}
+
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse()
+				&& !getPregnancyData().isIncapacitated();
+			}
+		});	
 		
 		this.goalSelector.addGoal(2, new FloatGoal(this) {
 			@Override

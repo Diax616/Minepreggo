@@ -42,7 +42,7 @@ public abstract class FemaleLeatherChestPlateItem extends DyeableArmorItem imple
 	}
 	
 	
-	public static class ChestplateP0 extends FemaleLeatherChestPlateItem {		
+	public static class Chestplate extends FemaleLeatherChestPlateItem {		
 		@Override
 		public void initializeClient(Consumer<IClientItemExtensions> consumer) {
 			consumer.accept(new IClientItemExtensions() {
@@ -57,9 +57,9 @@ public abstract class FemaleLeatherChestPlateItem extends DyeableArmorItem imple
 		@Override
 		public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {		    
 		    if ("overlay".equals(type)) {
-		        return "minepreggo:textures/models/armor/leather_p0_layer_1_overlay.png";
+		        return "minepreggo:textures/models/armor/leather_layer_1_overlay.png";
 		    }
-		    return "minepreggo:textures/models/armor/leather_p0_layer_1.png";
+		    return "minepreggo:textures/models/armor/leather_layer_1.png";
 		}
 	}	
 	

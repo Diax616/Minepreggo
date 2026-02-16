@@ -43,7 +43,7 @@ public abstract class AbstractTamableMonsterCreeperGirlModel<E extends AbstractT
 			}
 		} 
 		final var tamableData = entity.getTamableData();
-		if (tamableData.isPanic()) {
+		if (tamableData.isPanic() || tamableData.isSavage() || entity.isAggressive()) {
 			this.animate(entity.loopAnimationState, MonsterCreeperGirlAnimation.IDLE, ageInTicks);						
 		} 		
 		else if (tamableData.isWaiting()) {

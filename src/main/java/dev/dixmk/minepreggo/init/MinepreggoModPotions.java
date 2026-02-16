@@ -74,15 +74,24 @@ public class MinepreggoModPotions {
 	public static final RegistryObject<Potion> PREGNANCY_ACCELERATION_3 = REGISTRY.register("pregnancy_acceleration_3", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.PREGNANCY_ACCELERATION.get(), 1, 3, false, true)));
 	public static final RegistryObject<Potion> PREGNANCY_ACCELERATION_4 = REGISTRY.register("pregnancy_acceleration_4", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.PREGNANCY_ACCELERATION.get(), 1, 4, false, true)));
 	
-	public static final RegistryObject<Potion> PREGNANCY_RESISTANCE = REGISTRY.register("pregnancy_resistance_0", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.PREGNANCY_RESISTANCE.get(), 12000, 0, false, true)));
-	public static final RegistryObject<Potion> PREGNANCY_HEALING = REGISTRY.register("pregnancy_healing_0", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.PREGNANCY_HEALING.get(), 1, 0, false, true)));	
+	public static final RegistryObject<Potion> PREGNANCY_RESISTANCE = REGISTRY.register("pregnancy_resistance", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.PREGNANCY_RESISTANCE.get(), 9600, 0, false, true)));
+	public static final RegistryObject<Potion> LONG_PREGNANCY_RESISTANCE = REGISTRY.register("long_pregnancy_resistance", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.PREGNANCY_RESISTANCE.get(), 19200, 0, false, true)));
 
-	public static final RegistryObject<Potion> FERTILITY = REGISTRY.register("fertility_0", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.FERTILITY.get(), 1, 0, false, true)));
-	public static final RegistryObject<Potion> ETERNAL_PREGNANCY = REGISTRY.register("eternal_pregnancy_0", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.ETERNAL_PREGNANCY.get(), -1, 0, false, true, true)));
-	public static final RegistryObject<Potion> ZERO_GRAVITY_BELLY = REGISTRY.register("zero_gravity_belly_0", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.ZERO_GRAVITY_BELLY.get(), 12000, 0, false, true, true)));
+	public static final RegistryObject<Potion> PREGNANCY_HEALING = REGISTRY.register("pregnancy_healing", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.PREGNANCY_HEALING.get(), 1, 0, false, true)));	
+	public static final RegistryObject<Potion> PREGNANCY_HARMING = REGISTRY.register("pregnancy_harming", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.PREGNANCY_HARMING.get(), 1, 0, false, true)));	
 
-	public static final RegistryObject<Potion> ENDER_POWERFUL_IMPREGNATION = REGISTRY.register("ender_powerful_impregnation_0", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.ENDER_IMPREGNATION.get(), 300, 4, false, true), new MobEffectInstance(MobEffects.REGENERATION, 300, 0, false, true), new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 12000, 0, false, true)));
-	public static final RegistryObject<Potion> ENDER_DRAGON_IMPREGNATION = REGISTRY.register("ender_dragon_impregnation_0", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.ENDER_DRAGON_IMPREGNATION.get(), 300, 0, false, true)));
+	public static final RegistryObject<Potion> FERTILITY = REGISTRY.register("fertility", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.FERTILITY.get(), 1, 0, false, true)));
+	public static final RegistryObject<Potion> INFERTILITY = REGISTRY.register("infertility", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.INFERTILITY.get(), 1, 0, false, true)));
+	public static final RegistryObject<Potion> METABOLISM_CONTROL = REGISTRY.register("metabolism_control", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.METABOLISM_CONTROL.get(), 6000, 0, false, false, true)));
+	public static final RegistryObject<Potion> STRONG_METABOLISM_CONTROL = REGISTRY.register("strong_metabolism_control", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.METABOLISM_CONTROL.get(), 6000, 1, false, false, true)));
+	public static final RegistryObject<Potion> LONG_METABOLISM_CONTROL = REGISTRY.register("long_metabolism_control", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.METABOLISM_CONTROL.get(), 12000, 0, false, false, true)));
+
+	public static final RegistryObject<Potion> ETERNAL_PREGNANCY = REGISTRY.register("eternal_pregnancy", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.ETERNAL_PREGNANCY.get(), -1, 0, false, true, true)));
+	public static final RegistryObject<Potion> ZERO_GRAVITY_BELLY = REGISTRY.register("zero_gravity_belly", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.ZERO_GRAVITY_BELLY.get(), 9600, 0, false, true, true)));
+	public static final RegistryObject<Potion> LONG_ZERO_GRAVITY_BELLY = REGISTRY.register("long_zero_gravity_belly", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.ZERO_GRAVITY_BELLY.get(), 19200, 0, false, true, true)));
+
+	public static final RegistryObject<Potion> ENDER_POWERFUL_IMPREGNATION = REGISTRY.register("ender_powerful_impregnation", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.ENDER_IMPREGNATION.get(), 300, 4, false, true), new MobEffectInstance(MobEffects.REGENERATION, 300, 0, false, true), new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 12000, 0, false, true)));
+	public static final RegistryObject<Potion> ENDER_DRAGON_IMPREGNATION = REGISTRY.register("ender_dragon_impregnation", () -> new Potion(new MobEffectInstance(MinepreggoModMobEffects.ENDER_DRAGON_IMPREGNATION.get(), 300, 0, false, true)));
 
 	public static Potion getRandomImpregnationPotion(RandomSource random) {
 		return switch (random.nextInt(5)) {

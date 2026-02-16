@@ -67,6 +67,7 @@ import dev.dixmk.minepreggo.init.MinepreggoModItems;
 import dev.dixmk.minepreggo.init.MinepreggoModKeyMappings;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.NoopRenderer;
+import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeableLeatherItem;
@@ -180,6 +181,8 @@ public class ClientSetupHandler {
 		event.registerEntityRenderer(MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL_P8.get(), TamablePregnantMonsterCreeperGirlRenderer.TamablePregnantCreeperGirlP8Renderer::new);
 
 		event.registerEntityRenderer(MinepreggoModEntities.BELLY_PART.get(), NoopRenderer::new);
+		
+		event.registerEntityRenderer(MinepreggoModEntities.EXPLOSIVE_DRAGON_FIREBALL.get(), ThrownItemRenderer::new);
 	}
 	
 	@SubscribeEvent
@@ -294,5 +297,7 @@ public class ClientSetupHandler {
     public static void registerKeyBindings(RegisterKeyMappingsEvent event) {
         event.register(MinepreggoModKeyMappings.RUB_BELLY_KEY);
         event.register(MinepreggoModKeyMappings.TELEPORT_WITH_ENDER_WOMAN);
+        event.register(MinepreggoModKeyMappings.TELEPORT_USING_ENDER_POWER);
+        event.register(MinepreggoModKeyMappings.SHOOT_DRAGON_FIRE_BALL);
     }
 }

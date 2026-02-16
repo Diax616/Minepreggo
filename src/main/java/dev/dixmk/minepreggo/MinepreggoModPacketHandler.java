@@ -14,7 +14,9 @@ import dev.dixmk.minepreggo.network.packet.c2s.RequestSexM2PC2SPacket;
 import dev.dixmk.minepreggo.network.packet.c2s.RequestSexP2PC2SPacket;
 import dev.dixmk.minepreggo.network.packet.c2s.ResponseSexRequestM2PC2SPacket;
 import dev.dixmk.minepreggo.network.packet.c2s.ResponseSexRequestP2PC2SPacket;
+import dev.dixmk.minepreggo.network.packet.c2s.ShootEnderDragonExplosiveBallC2SPacket;
 import dev.dixmk.minepreggo.network.packet.c2s.StopPlayerAnimationC2SPacket;
+import dev.dixmk.minepreggo.network.packet.c2s.TeleportUsingEnderPowerC2SPacket;
 import dev.dixmk.minepreggo.network.packet.c2s.TeleportWithEnderWomanC2SPacket;
 import dev.dixmk.minepreggo.network.packet.c2s.UpdateBellyRubbingStateC2SPacket;
 import dev.dixmk.minepreggo.network.packet.c2s.UpdateCreeperGirlCombatModeC2SPacket;
@@ -33,6 +35,7 @@ import dev.dixmk.minepreggo.network.packet.s2c.ResetPregnancyS2CPacket;
 import dev.dixmk.minepreggo.network.packet.s2c.SexCinematicControlP2MS2CPacket;
 import dev.dixmk.minepreggo.network.packet.s2c.SexCinematicControlP2PS2CPacket;
 import dev.dixmk.minepreggo.network.packet.s2c.SyncCinematicStateS2CPacket;
+import dev.dixmk.minepreggo.network.packet.s2c.SyncEnderPowerDataS2CPacket;
 import dev.dixmk.minepreggo.network.packet.s2c.SyncFemalePlayerDataS2CPacket;
 import dev.dixmk.minepreggo.network.packet.s2c.SyncJigglePhysicsS2CPacket;
 import dev.dixmk.minepreggo.network.packet.s2c.SyncMobEffectS2CPacket;
@@ -98,5 +101,8 @@ public class MinepreggoModPacketHandler {
 		addNetworkMessage(MountEnderWomanC2SPacket.class, MountEnderWomanC2SPacket::encode, MountEnderWomanC2SPacket::decode, MountEnderWomanC2SPacket::handler);
 		addNetworkMessage(TeleportWithEnderWomanC2SPacket.class, TeleportWithEnderWomanC2SPacket::encode, TeleportWithEnderWomanC2SPacket::decode, TeleportWithEnderWomanC2SPacket::handler);
 		addNetworkMessage(PlaySoundPacketS2C.class, PlaySoundPacketS2C::encode, PlaySoundPacketS2C::decode, PlaySoundPacketS2C::handler);
+		addNetworkMessage(SyncEnderPowerDataS2CPacket.class, SyncEnderPowerDataS2CPacket::encode, SyncEnderPowerDataS2CPacket::decode, SyncEnderPowerDataS2CPacket::handler);
+		addNetworkMessage(TeleportUsingEnderPowerC2SPacket.class, TeleportUsingEnderPowerC2SPacket::encode, TeleportUsingEnderPowerC2SPacket::decode, TeleportUsingEnderPowerC2SPacket::handler);
+		addNetworkMessage(ShootEnderDragonExplosiveBallC2SPacket.class, ShootEnderDragonExplosiveBallC2SPacket::encode, ShootEnderDragonExplosiveBallC2SPacket::decode, ShootEnderDragonExplosiveBallC2SPacket::handler);
 	}
 }

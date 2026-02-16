@@ -16,6 +16,7 @@ import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem.Result;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.MonsterCreeperHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractEnderWoman;
 import dev.dixmk.minepreggo.world.item.ICravingItem;
 import dev.dixmk.minepreggo.world.pregnancy.AbstractPregnancySystem;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
@@ -134,7 +135,12 @@ public abstract class PreggoMobPregnancySystemP1
 		
 		if (pregnancyData.getPregnancyPainTimer() < PregnancySystemHelper.TOTAL_TICKS_MISCARRIAGE) {
         	pregnancyData.setPregnancyPainTimer(pregnancyData.getPregnancyPainTimer() + 1);	        		        	
-        	AbstractPregnancySystem.spawnParticulesForMiscarriage(serverLevel, pregnantEntity);
+			if (pregnantEntity instanceof AbstractEnderWoman) {
+	    		AbstractPregnancySystem.spawnParticulesForWaterBreaking(serverLevel, pregnantEntity, pregnantEntity.getBbHeight() * 0.65);
+			}
+			else {
+	    		AbstractPregnancySystem.spawnParticulesForWaterBreaking(serverLevel, pregnantEntity);
+			}
         } else {      	
         	final List<ItemStack> deadBabiesItemStacks = PregnancySystemHelper.getDeadBabies(pregnancyData.getWomb());   	
        		

@@ -28,7 +28,7 @@ public abstract class CreeperImpregnationPotionBrewingRecipe implements IBrewing
 		return ingredient.is(MinepreggoModItems.CREEPER_LIFE_SUBSTANCE.get());
 	}
 	
-	public static class A0 extends CreeperImpregnationPotionBrewingRecipe {		
+	public static class Amplifier0 extends CreeperImpregnationPotionBrewingRecipe {		
 		@Override
 		public boolean isInput(ItemStack input) {
 			Item inputItem = input.getItem();
@@ -46,7 +46,7 @@ public abstract class CreeperImpregnationPotionBrewingRecipe implements IBrewing
 		}				
 	}
 	
-	public static class A1 extends CreeperImpregnationPotionBrewingRecipe {
+	public static class Amplifier1 extends CreeperImpregnationPotionBrewingRecipe {
 		@Override
 		public boolean isInput(ItemStack input) {
 			Item inputItem = input.getItem();
@@ -64,7 +64,7 @@ public abstract class CreeperImpregnationPotionBrewingRecipe implements IBrewing
 		}	
 	}
 	
-	public static class A2 extends CreeperImpregnationPotionBrewingRecipe {
+	public static class Amplifier2 extends CreeperImpregnationPotionBrewingRecipe {
 		@Override
 		public boolean isInput(ItemStack input) {
 			Item inputItem = input.getItem();
@@ -82,7 +82,7 @@ public abstract class CreeperImpregnationPotionBrewingRecipe implements IBrewing
 		}	
 	}
 	
-	public static class A3 extends CreeperImpregnationPotionBrewingRecipe {
+	public static class Amplifier3 extends CreeperImpregnationPotionBrewingRecipe {
 		@Override
 		public boolean isInput(ItemStack input) {
 			Item inputItem = input.getItem();
@@ -100,7 +100,7 @@ public abstract class CreeperImpregnationPotionBrewingRecipe implements IBrewing
 		}	
 	}
 	
-	public static class A4 extends CreeperImpregnationPotionBrewingRecipe {
+	public static class Amplifier4 extends CreeperImpregnationPotionBrewingRecipe {
 		@Override
 		public boolean isInput(ItemStack input) {
 			Item inputItem = input.getItem();

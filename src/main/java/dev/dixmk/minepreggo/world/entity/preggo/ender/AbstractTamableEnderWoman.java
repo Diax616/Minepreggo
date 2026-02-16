@@ -152,12 +152,19 @@ public abstract class AbstractTamableEnderWoman extends AbstractEnderWoman imple
 	protected void dropEquipment() {
 		super.dropEquipment();
 		var handler = inventory.getHandler();
+		var slotMapper = inventory.getSlotMapper();
 		for (int i = inventory.getSlotMapper().getExtraSlotsRange().leftInt(); i < handler.getSlots(); ++i) {
 			ItemStack itemstack = handler.getStackInSlot(i);
 			if (!itemstack.isEmpty() && !EnchantmentHelper.hasVanishingCurse(itemstack)) {
 				this.spawnAtLocation(itemstack);
 			}
 		}
+		slotMapper.getCustomSlots().forEach(slot -> {
+			ItemStack itemstack = inventory.getHandler().getStackInSlot(slotMapper.getSlotIndex(slot));
+			if (!itemstack.isEmpty() && !EnchantmentHelper.hasVanishingCurse(itemstack)) {
+				this.spawnAtLocation(itemstack);
+			}
+		});
 	}	
 	
 	@Override
@@ -236,6 +243,8 @@ public abstract class AbstractTamableEnderWoman extends AbstractEnderWoman imple
 					&& (serverPlayer.containerMenu instanceof AbstractEnderWomanInventoryMenu<?> || serverPlayer.containerMenu instanceof AbstractEnderWomanMainMenu<?>)) {
 				serverPlayer.closeContainer();
 			}			
+			
+			this.tamablePreggoMobSystem.onHurtSuccessful(damagesource);
 		}		
 		return result;
 	}
@@ -288,14 +297,15 @@ public abstract class AbstractTamableEnderWoman extends AbstractEnderWoman imple
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Endermite.class, true, false) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() && !getTamableData().isWaiting();		
+				return super.canUse()
+				&& ((isTame() && !getTamableData().isWaiting()) || getTamableData().isSavage());		
 			}
 		});
 		this.goalSelector.addGoal(5, new AbstractEnderWoman.EnderWomanTeleportToTargetGoal(this, 196F, 25F) {
 			@Override
 			public boolean canUse() {
 				return super.canUse()
-						&& !getTamableData().isWaiting();		
+						&& ((isTame() && !getTamableData().isWaiting()) || getTamableData().isSavage());		
 			}
 		});
 		this.targetSelector.addGoal(2, new HurtByTargetGoal(this));		
@@ -331,8 +341,7 @@ public abstract class AbstractTamableEnderWoman extends AbstractEnderWoman imple
         this.targetSelector.addGoal(1, new AbstractEnderWoman.EnderWomanLookForPlayerGoal(this, this::isAngryAt) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() 
-				&& getOwner() != null && pendingTarget != null && !getOwner().getUUID().equals(pendingTarget.getUUID());		
+				return super.canUse() && pendingTarget != null && !abstractEnderWoman.isOwnedBy(pendingTarget);	
 			}
 		});
 	}
@@ -345,6 +354,7 @@ public abstract class AbstractTamableEnderWoman extends AbstractEnderWoman imple
 				@Override
 				public boolean canUse() {
 					return super.canUse() 
+					&& !getTamableData().isSavage()
 					&& !getTamableData().isWaiting();	
 				}
 			});
@@ -352,6 +362,7 @@ public abstract class AbstractTamableEnderWoman extends AbstractEnderWoman imple
 				@Override
 				public boolean canUse() {
 					return super.canUse() 
+					&& !getTamableData().isSavage()
 					&& !getTamableData().isWaiting();			
 				}
 			}, true);
@@ -360,6 +371,7 @@ public abstract class AbstractTamableEnderWoman extends AbstractEnderWoman imple
 				@Override
 				public boolean canUse() {
 					return super.canUse() 
+					&& !getTamableData().isSavage()		
 					&& !getTamableData().isWaiting();			
 				}
 			});

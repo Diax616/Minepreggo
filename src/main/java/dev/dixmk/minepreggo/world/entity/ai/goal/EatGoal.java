@@ -152,7 +152,7 @@ public class EatGoal<E extends PreggoMob & ITamablePreggoMob<?>> extends Goal {
     	int foodSlotIndex = slotMapper.getSlotIndex(InventorySlot.FOOD);
 	
     	if (foodSlotIndex == InventorySlotMapper.DEFAULT_INVALID_SLOT_INDEX) {
-    		MinepreggoMod.LOGGER.error("Mob {} has no food slot mapped in its inventory!", mob.getDisplayName().getString());
+    		MinepreggoMod.LOGGER.warn("Mob {} has no food slot mapped in its inventory!", mob.getDisplayName().getString());
 			return false;
 		}
     	

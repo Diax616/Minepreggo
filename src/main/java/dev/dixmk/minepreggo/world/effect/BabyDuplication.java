@@ -12,7 +12,7 @@ import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.IHostilPregnantPreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.IHostilePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantHumanoidCreeperGirl;
@@ -134,7 +134,7 @@ public class BabyDuplication extends MobEffect {
                 })
             );
         }
-        else if (target instanceof IHostilPregnantPreggoMob monsterPregnantPreggoMob) {
+        else if (target instanceof IHostilePregnantPreggoMob monsterPregnantPreggoMob) {
         	monsterPregnantPreggoMob.getPregnancyData().incrementNumOfBabies(getExtraBabiesByAmplifier(amplifier));
         	PregnancySystemHelper.tornWomb(target);
         }

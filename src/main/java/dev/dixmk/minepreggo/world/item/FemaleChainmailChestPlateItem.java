@@ -42,7 +42,7 @@ public abstract class FemaleChainmailChestPlateItem extends ArmorItem implements
 		}
 	}
 		
-	public static class ChestplateP0 extends FemaleChainmailChestPlateItem {	
+	public static class Chestplate extends FemaleChainmailChestPlateItem {	
 		@Override
 		public void initializeClient(Consumer<IClientItemExtensions> consumer) {
 			consumer.accept(new IClientItemExtensions() {
@@ -56,7 +56,7 @@ public abstract class FemaleChainmailChestPlateItem extends ArmorItem implements
 
 		@Override
 		public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
-			return "minepreggo:textures/models/armor/chainmail_p0_layer_1.png";
+			return "minepreggo:textures/models/armor/chainmail_layer_1.png";
 		}
 	}
 	

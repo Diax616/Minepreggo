@@ -1,0 +1,40 @@
+{
+  "display": {
+	"background": "minecraft:textures/block/stone.png",
+    "icon": {
+      "item": "minepreggo:baby_villager"
+    },
+    "title": {
+      "translate": "advancements.new_member_for_the_village.title"
+    },
+    "description": {
+      "translate": "advancements.new_member_for_the_village.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "custom_criteria": {
+      "trigger": "minepreggo:check_parent",
+	  "conditions": {
+		"entity": {
+		  "type": "minecraft:villager"
+		},
+	    "item": {
+	      "items": ["minepreggo:baby_human",
+				 	 "minepreggo:baby_villager"]
+	    },
+		"baby": {
+			"verify_father": true,
+			"verify_mother": true		
+		}
+	  }
+    }
+  },
+  "rewards": {
+    "experience": 75
+  },
+  "parent": "minepreggo:breeder_of_the_village"
+}

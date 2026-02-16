@@ -23,14 +23,14 @@ public class PlayerPregnancySystemP3 extends PlayerPregnancySystemP2 {
 	protected @Nonnegative int totalTicksOfBellyRubs = MinepreggoModConfig.SERVER.getTotalTicksOfBellyRubsP3();
 	protected @Nonnegative float fetalMovementProb = PregnancySystemHelper.LOW_PREGNANCY_PAIN_PROBABILITY;
 	protected @Nonnegative int totalTicksOfFetalMovement = PregnancySystemHelper.TOTAL_TICKS_KICKING_P3;
-	private int extraHungryCooldown = 0;
-	private final int extraHungryTotalTicks;
+	private int randomWeaknessCooldown = 0;
+	private final int randomWeaknessTotalTicks;
 	private final Species pregnancyType;
 	
 	public PlayerPregnancySystemP3(@NonNull ServerPlayer player) {
 		super(player);
 		Species tempPregnancyType = PlayerHelper.addInterspeciesPregnancy(player);
-		int tempExtraHungryTotalTicks = 3600;
+		int tempRandomWeaknessTotalTicks = 3600;
 		int phase = pregnancySystem.getCurrentPregnancyPhase().ordinal();
 		pregnancyType = tempPregnancyType != null ? tempPregnancyType : Species.HUMAN;
 		
@@ -39,27 +39,31 @@ public class PlayerPregnancySystemP3 extends PlayerPregnancySystemP2 {
 			switch(pregnancyType) {
 				case ZOMBIE:
 					fetalMovementProb *= 1.4f;
-					tempExtraHungryTotalTicks = 4600 - extra;
+					tempRandomWeaknessTotalTicks = 4200 - extra;
+					pregnancyExhaustion *= 1.05;
 					break;
 				case CREEPER:
 					fetalMovementProb *= 1.8f;
-					tempExtraHungryTotalTicks = 4400 - extra;
+					tempRandomWeaknessTotalTicks = 4400 - extra;
+					pregnancyExhaustion *= 1.15;
 					break;
 				case ENDER:
 					fetalMovementProb *= 2.2f;
-					tempExtraHungryTotalTicks = 4200 - extra;
+					tempRandomWeaknessTotalTicks = 4600 - extra;
+					pregnancyExhaustion *= 1.25;
 					break;
 				case DRAGON:
 					fetalMovementProb *= 2.6f;
-					tempExtraHungryTotalTicks = 4000 - extra;
+					tempRandomWeaknessTotalTicks = 5200 - extra;
+					pregnancyExhaustion *= 1.4;
 					break;
 				default:
-					tempExtraHungryTotalTicks = 4800 - extra;
+					tempRandomWeaknessTotalTicks = 4800 - extra;
 					break;
 			}
 		}	
-		this.extraHungryTotalTicks = tempExtraHungryTotalTicks;
-		addNewValidPregnancySymptoms(PregnancySymptom.BELLY_RUBS);
+		this.randomWeaknessTotalTicks = tempRandomWeaknessTotalTicks;
+		addNewValidPregnancySymptoms(PregnancySymptom.BELLY_RUBS);		
 	}
 
 	@Override
@@ -181,13 +185,13 @@ public class PlayerPregnancySystemP3 extends PlayerPregnancySystemP2 {
 	}
 	
 	@Override
-	protected void evaluateExtraHungry() {
-		if (this.extraHungryCooldown < this.extraHungryTotalTicks) {
-			++this.extraHungryCooldown;		
+	protected void evaluateRandomWeakness() {
+		if (this.randomWeaknessCooldown < this.randomWeaknessTotalTicks) {
+			++this.randomWeaknessCooldown;		
 		}
 		else if (this.randomSource.nextFloat() < 0.4) {
-			this.extraHungryCooldown = 0;
-			pregnantEntity.addEffect(new MobEffectInstance(MobEffects.HUNGER, 1200, 0, false, true, true));
+			this.randomWeaknessCooldown = 0;
+			pregnantEntity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 1200, 0, false, true, true));
 		}
 	}
 }

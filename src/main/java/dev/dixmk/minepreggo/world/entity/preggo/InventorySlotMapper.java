@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -118,6 +119,18 @@ public class InventorySlotMapper {
     
     public IntIntPair getExtraSlotsRange() {
     	return extraSlotsRange;
+    }
+    
+    public Set<InventorySlot> getVanillaSlots() {	
+		return availableSlots.stream()
+			.filter(slot -> slot.vanilla.isPresent())
+			.collect(Collectors.toUnmodifiableSet());
+	}
+    
+    public Set<InventorySlot> getCustomSlots() {
+    	return availableSlots.stream()
+    		.filter(slot -> slot.vanilla.isEmpty())
+    		.collect(Collectors.toUnmodifiableSet());
     }
     
     @VisibleForTesting

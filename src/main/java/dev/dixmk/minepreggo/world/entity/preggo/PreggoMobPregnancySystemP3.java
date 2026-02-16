@@ -6,6 +6,8 @@ import javax.annotation.Nonnull;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoModSounds;
+import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem.Result;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
@@ -91,6 +93,7 @@ public abstract class PreggoMobPregnancySystemP3
 		if (randomSource.nextFloat() < newFetalMovementProb) {
 			pregnancyData.setPregnancyPain(PregnancyPain.FETAL_MOVEMENT);
 			pregnancyData.resetPregnancyPainTimer();
+			LivingEntityHelper.playSoundNearTo(pregnantEntity, MinepreggoModSounds.getRandomStomachGrowls(randomSource));
 			PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, InventorySlot.CHEST);				
 			return true;
 		}     

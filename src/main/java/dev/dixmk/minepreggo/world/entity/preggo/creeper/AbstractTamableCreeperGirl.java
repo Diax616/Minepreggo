@@ -14,6 +14,8 @@ import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMobData;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMobSystem;
 import dev.dixmk.minepreggo.world.entity.preggo.Inventory;
+import dev.dixmk.minepreggo.world.entity.preggo.InventorySlot;
+import dev.dixmk.minepreggo.world.entity.preggo.InventorySlotMapper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.TamablePreggoMobDataImpl;
@@ -198,6 +200,7 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 				@Override
 				public boolean canUse() {
 					return super.canUse() 
+					&& !getTamableData().isSavage()
 					&& !getTamableData().isWaiting();				
 				}
 			});
@@ -205,6 +208,7 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 				@Override
 				public boolean canUse() {
 					return super.canUse() 
+					&& !getTamableData().isSavage()
 					&& !getTamableData().isWaiting();			
 				}
 			}, true);
@@ -254,12 +258,23 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 	@Override
 	protected void dropEquipment() {
 		super.dropEquipment();
-		for (int i = inventory.getSlotMapper().getExtraSlotsRange().leftInt(); i < inventory.getHandler().getSlots(); ++i) {
+		InventorySlotMapper slotMapper = inventory.getSlotMapper();
+		for (int i = slotMapper.getExtraSlotsRange().leftInt(); i < inventory.getHandler().getSlots(); ++i) {
 			ItemStack itemstack = inventory.getHandler().getStackInSlot(i);
 			if (!itemstack.isEmpty() && !EnchantmentHelper.hasVanishingCurse(itemstack)) {
 				this.spawnAtLocation(itemstack);
 			}
 		}
+		slotMapper.getCustomSlots().forEach(slot -> {		
+			if (slot == InventorySlot.MOUTH && this.getTypeOfCreature() == Creature.MONSTER) {
+				return;
+			}
+			
+			ItemStack itemstack = inventory.getHandler().getStackInSlot(slotMapper.getSlotIndex(slot));
+			if (!itemstack.isEmpty() && !EnchantmentHelper.hasVanishingCurse(itemstack)) {
+				this.spawnAtLocation(itemstack);
+			}
+		});
 	}
 	
 	@Override
@@ -285,7 +300,9 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 			if (this.getOwner() instanceof ServerPlayer serverPlayer
 					&& (serverPlayer.containerMenu instanceof AbstractCreeperGirlMainMenu<?> || serverPlayer.containerMenu instanceof AbstractHumanoidCreeperGirlInventoryMenu<?>)) {
 				serverPlayer.closeContainer();
-			}			
+			}	
+			
+			this.preggoMobSystem.onHurtSuccessful(damagesource);
 		}		
 		return result;
 	}

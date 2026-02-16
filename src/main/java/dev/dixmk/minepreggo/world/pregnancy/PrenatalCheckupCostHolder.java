@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.annotation.Nonnegative;
 
+import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.world.item.checkup.PrenatalCheckups.PrenatalCheckup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -28,14 +29,17 @@ public class PrenatalCheckupCostHolder implements INBTSerializable<CompoundTag> 
     
     private Lazy<PrenatalCheckupCost> createLazy() {
         return Lazy.of(() -> {
+        	MinepreggoMod.LOGGER.debug("PrenatalCheckupCost was initialized");
             isInitialized = true;
             if (savedData.contains(PrenatalCheckupCost.NBT_KEY)) {
+            	MinepreggoMod.LOGGER.debug("PrenatalCheckupCost was loaded from NBT");
                 return PrenatalCheckupCost.fromNBT(savedData);
             }
+            MinepreggoMod.LOGGER.debug("PrenatalCheckupCost was generated with random values");
             return new PrenatalCheckupCost(min, max);
         });
     }
-    
+
     public PrenatalCheckupCost getValue() {
         return lazyValue.get();
     }
@@ -46,19 +50,22 @@ public class PrenatalCheckupCostHolder implements INBTSerializable<CompoundTag> 
 
 	@Override
 	public CompoundTag serializeNBT() { 
+		CompoundTag tag;
         if (isInitialized) {
-            return lazyValue.get().toNBT();
-        }   
-        else if (savedData.contains(PrenatalCheckupCost.NBT_KEY)) {
-            return savedData;
-        }       
-        return new CompoundTag();
+        	tag = lazyValue.get().toNBT();
+        } else if (savedData.contains(PrenatalCheckupCost.NBT_KEY)) {
+        	tag = savedData.copy();
+        } else {
+			tag = new CompoundTag();
+		}
+        tag.putBoolean("PrenatalCheckupCostHolderInitialized", isInitialized);
+        return tag;
 	}
 
 	@Override
 	public void deserializeNBT(CompoundTag nbt) {
         this.savedData = nbt.copy();
-        this.isInitialized = false;
+        this.isInitialized = nbt.getBoolean("PrenatalCheckupCostHolderInitialized");
         this.lazyValue = createLazy();	
 	}
 	

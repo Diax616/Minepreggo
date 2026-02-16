@@ -2,10 +2,14 @@ package dev.dixmk.minepreggo.world.effect;
 
 import java.util.UUID;
 
+import com.google.common.collect.ImmutableMap;
+
 import dev.dixmk.minepreggo.MinepreggoMod;
+import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.effect.MobEffect;
@@ -36,14 +40,24 @@ public class EnderDragonPregnancy extends MobEffect {
 
 	private static final UUID ATTACK_SPEED_MODIFIER_UUID = UUID.fromString("eeaa13eb-dacd-43ba-8423-1b18327adea9");
 	private static final AttributeModifier ATTACK_SPEED_MODIFIER = new AttributeModifier(ATTACK_SPEED_MODIFIER_UUID, "Movement speed nerf", -0.1D, AttributeModifier.Operation.MULTIPLY_BASE);
-
+	
+	private static final int INACTIVE_TICKS = 2200;
+	private static final Object2IntMap<PregnancyPhase> PARTICLE_CYCLE_DURATION = Object2IntMaps.unmodifiable(new Object2IntOpenHashMap<>(ImmutableMap.of(
+			PregnancyPhase.P0, 2400,
+			PregnancyPhase.P1, 2700,
+			PregnancyPhase.P2, 3100,
+			PregnancyPhase.P3, 3600,
+			PregnancyPhase.P4, 4200,
+			PregnancyPhase.P5, 4900,
+			PregnancyPhase.P6, 5700,
+			PregnancyPhase.P7, 6600,
+			PregnancyPhase.P8, 7600
+			)));
+				
 	private final Object2IntMap<UUID> particleTimer = new Object2IntOpenHashMap<>();
 	
-	private static final int CYCLE_DURATION = 3600;
-	private static final int INACTIVE_TICKS = 3000;
-	
 	public EnderDragonPregnancy() {
-		super(MobEffectCategory.HARMFUL, -16751053);
+		super(MobEffectCategory.BENEFICIAL, -10092493);
 	}
 	
 	@Override
@@ -52,23 +66,30 @@ public class EnderDragonPregnancy extends MobEffect {
 	        return;
 	    }
 	    
-	    UUID entityUUID = entity.getUUID();
-	    particleTimer.computeInt(entityUUID, (uuid, timer) -> {
-	        if (timer == null) {
-	            spawnParticles(entity);
-	            return CYCLE_DURATION - 1;
-	        }
-	        
-	        int currentTimer = timer;
-	        if (currentTimer > INACTIVE_TICKS) {
-	            spawnParticles(entity);
-	        }
-	        
-	        currentTimer--;
-	        if (currentTimer <= 0) {
-	            currentTimer = CYCLE_DURATION;
-	        } 
-	        return currentTimer;
+	    entity.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(playerData -> {
+	    	playerData.getFemaleData().ifPresent(femaleData -> {
+	    		if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
+	    			UUID entityUUID = entity.getUUID();
+	    		    particleTimer.computeInt(entityUUID, (uuid, timer) -> { 	
+	    		    	int cycleParticleDuration = PARTICLE_CYCLE_DURATION.getInt(femaleData.getPregnancyData().getCurrentPregnancyPhase());
+	    		    	
+	    		        if (timer == null) {
+	    		            return cycleParticleDuration - 1;
+	    		        }
+	    		        
+	    		        int currentTimer = timer;
+	    		        if (currentTimer > INACTIVE_TICKS) {
+	    		            spawnParticles(entity);
+	    		        }
+	    		        
+	    		        currentTimer--;
+	    		        if (currentTimer <= 0) {
+	    		            currentTimer = cycleParticleDuration;
+	    		        } 
+	    		        return currentTimer;
+	    		    });		
+	    		}
+	    	});
 	    });
 	}
 
@@ -86,7 +107,7 @@ public class EnderDragonPregnancy extends MobEffect {
 	        );
 	    } 
 	}
-	
+
 	@Override
 	public boolean isDurationEffectTick(int duration, int amplifier) {
 		return true;
@@ -147,6 +168,9 @@ public class EnderDragonPregnancy extends MobEffect {
 		player.removeEffect(MobEffects.DAMAGE_BOOST);
 		player.removeEffect(MobEffects.DAMAGE_RESISTANCE);
 		player.removeEffect(MobEffects.REGENERATION);	
+		player.removeEffect(MinepreggoModMobEffects.ENDER_ESSENCE.get());
+		player.removeEffect(MinepreggoModMobEffects.ENDER_DRAGON_RECOGNITION.get());	
+		player.removeEffect(MinepreggoModMobEffects.ENDER_DRAGON_ESSENCE.get());
 	}
 	
     private static void applyEffectsForP0(LivingEntity entity) {
@@ -205,11 +229,13 @@ public class EnderDragonPregnancy extends MobEffect {
     	applyEffectsForP5(entity);
     	entity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, -1, 1, false, false, false));
 		addKnockBack(2, entity);
+    	entity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.ENDER_ESSENCE.get(), -1, 0, false, false, true));
     }
     
     private static void applyEffectsForP7(LivingEntity entity) {
     	applyEffectsForP6(entity);
     	entity.addEffect(new MobEffectInstance(MobEffects.REGENERATION, -1, 0, false, false, false));
+    	entity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.ENDER_DRAGON_RECOGNITION.get(), -1, 0, false, false, true));
     }
     
     private static void applyEffectsForP8(LivingEntity entity) {
@@ -217,6 +243,7 @@ public class EnderDragonPregnancy extends MobEffect {
 		addKnockBack(3, entity);
     	entity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, -1, 1, false, false, false));
     	entity.addEffect(new MobEffectInstance(MobEffects.REGENERATION, -1, 1, false, false, false));
+    	entity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.ENDER_DRAGON_ESSENCE.get(), -1, 0, false, false, true));
     }
     
     private static void addKnockBack(int level, LivingEntity entity) {
@@ -240,7 +267,8 @@ public class EnderDragonPregnancy extends MobEffect {
 			case P4 -> isEffectInPhaseP3(effect) || isEffectInPhaseP4(effect);
 			case P5 -> isEffectInPhaseP3(effect) || isEffectInPhaseP4(effect) || isEffectInPhaseP5(effect);
 			case P6 -> isEffectInPhaseP3(effect) || isEffectInPhaseP4(effect) || isEffectInPhaseP5(effect) || isEffectInPhaseP6(effect);
-			case P7, P8 -> isEffectInPhaseP3(effect) || isEffectInPhaseP4(effect) || isEffectInPhaseP5(effect) || isEffectInPhaseP6(effect) || isEffectInPhaseP7(effect);
+			case P7 -> isEffectInPhaseP3(effect) || isEffectInPhaseP4(effect) || isEffectInPhaseP5(effect) || isEffectInPhaseP6(effect) || isEffectInPhaseP7(effect);
+			case P8 -> isEffectInPhaseP3(effect) || isEffectInPhaseP4(effect) || isEffectInPhaseP5(effect) || isEffectInPhaseP6(effect) || isEffectInPhaseP7(effect) || isEffectInPhaseP8(effect);
 			default -> false;
     	};
 	}
@@ -258,11 +286,14 @@ public class EnderDragonPregnancy extends MobEffect {
 	}
     
     private static boolean isEffectInPhaseP6(MobEffect effect) {
-    	return effect == MobEffects.DAMAGE_RESISTANCE;
+    	return effect == MobEffects.DAMAGE_RESISTANCE || effect == MinepreggoModMobEffects.ENDER_ESSENCE.get();
     }
     
     private static boolean isEffectInPhaseP7(MobEffect effect) {
-		return effect == MobEffects.REGENERATION;
+		return effect == MobEffects.REGENERATION || effect == MinepreggoModMobEffects.ENDER_DRAGON_RECOGNITION.get();
 	}
-
+    
+    private static boolean isEffectInPhaseP8(MobEffect effect) {
+		return effect == MobEffects.DAMAGE_BOOST || effect == MinepreggoModMobEffects.ENDER_DRAGON_ESSENCE.get() || effect == MobEffects.REGENERATION;
+	}
 }

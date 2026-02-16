@@ -6,10 +6,10 @@ import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.world.entity.BellyPartFactory;
 import dev.dixmk.minepreggo.world.entity.BellyPartManager;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.IHostilPreggoMobPregnancyData;
-import dev.dixmk.minepreggo.world.entity.preggo.IHostilPregnantPreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.IHostilePreggoMobPregnancyData;
+import dev.dixmk.minepreggo.world.entity.preggo.IHostilePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.HostilPregnantPreggoMobDataImpl;
+import dev.dixmk.minepreggo.world.entity.preggo.HostilePregnantPreggoMobDataImpl;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.nbt.CompoundTag;
@@ -28,14 +28,14 @@ import net.minecraft.world.entity.monster.Endermite;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
-public abstract class AbstractHostilePregnantEnderWoman extends AbstractHostileMonsterEnderWoman implements IHostilPregnantPreggoMob {
+public abstract class AbstractHostilePregnantEnderWoman extends AbstractHostileMonsterEnderWoman implements IHostilePregnantPreggoMob {
 
-	private static final HostilPregnantPreggoMobDataImpl.DataAccessor<AbstractHostilePregnantEnderWoman> DATA_ACCESOR = new HostilPregnantPreggoMobDataImpl.DataAccessor<>(AbstractHostilePregnantEnderWoman.class);
-	private final IHostilPreggoMobPregnancyData pregnancyData;
+	private static final HostilePregnantPreggoMobDataImpl.DataAccessor<AbstractHostilePregnantEnderWoman> DATA_ACCESOR = new HostilePregnantPreggoMobDataImpl.DataAccessor<>(AbstractHostilePregnantEnderWoman.class);
+	private final IHostilePreggoMobPregnancyData pregnancyData;
 	
 	protected AbstractHostilePregnantEnderWoman(EntityType<? extends AbstractHostileMonsterEnderWoman> p_32485_, Level p_32486_, PregnancyPhase currentPregnancyStage) {
 		super(p_32485_, p_32486_);
-		pregnancyData = new HostilPregnantPreggoMobDataImpl<>(DATA_ACCESOR, this, currentPregnancyStage);
+		pregnancyData = new HostilePregnantPreggoMobDataImpl<>(DATA_ACCESOR, this, currentPregnancyStage);
 	}
 	
 	@Override
@@ -45,21 +45,21 @@ public abstract class AbstractHostilePregnantEnderWoman extends AbstractHostileM
 	}
 	
 	@Override
-	public IHostilPreggoMobPregnancyData getPregnancyData() {
+	public IHostilePreggoMobPregnancyData getPregnancyData() {
 		return this.pregnancyData;
 	}
 	
 	@Override
 	public void addAdditionalSaveData(CompoundTag compoundTag) {
 		super.addAdditionalSaveData(compoundTag);
-		compoundTag.put("MonsterPregnantPreggoMobData", pregnancyData.serializeNBT());
+		compoundTag.put("HostilePregnantMonsterEnderWomanData", pregnancyData.serializeNBT());
 	}
 	
 	@Override
 	public void readAdditionalSaveData(CompoundTag compoundTag) {
 		super.readAdditionalSaveData(compoundTag);	
-		if (compoundTag.contains("MonsterPregnantPreggoMobData")) {
-			pregnancyData.deserializeNBT(compoundTag.getCompound("MonsterPregnantPreggoMobData"));
+		if (compoundTag.contains("HostilePregnantMonsterEnderWomanData")) {
+			pregnancyData.deserializeNBT(compoundTag.getCompound("HostilePregnantMonsterEnderWomanData"));
 		}
 	}
 	

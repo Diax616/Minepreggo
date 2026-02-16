@@ -92,7 +92,7 @@ public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
 		}
 		
 		evaluatePregnancyNeeds();
-		evaluateExtraHungry();
+		evaluateRandomWeakness();
 		
 		pregnantEntity.causeFoodExhaustion(pregnancyExhaustion);
 		super.evaluatePregnancySystem();

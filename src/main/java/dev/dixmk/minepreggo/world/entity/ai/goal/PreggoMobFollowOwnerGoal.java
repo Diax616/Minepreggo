@@ -38,8 +38,8 @@ public class PreggoMobFollowOwnerGoal<T extends PreggoMob & ITamablePreggoMob<?>
 	@Override
 	public boolean canUse() {
 		return super.canUse() 
-		&& !preggoMob.getTamableData().isWaiting()
 		&& !preggoMob.getTamableData().isSavage()
+		&& !preggoMob.getTamableData().isWaiting()		
 		&& !LivingEntityHelper.hasValidTarget(this.tamable);
 	}
 

@@ -246,22 +246,26 @@ public class SexHelper {
 			villager.setTradingPlayer(null);
 			femalePlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
 				cap.getFemaleData().ifPresent(femaleData -> {		
-					if (!femaleData.isPregnant()) {
+					if (!femaleData.isPregnant() && femaleData.getPostPregnancyData().isEmpty()) {
 						PlayerHelper.tryStartPregnancyBySex(femalePlayer, villager);
 					}	
-					else {
+					else if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
 						PlayerHelper.removeHorny(femalePlayer);
 					}
 					
 					femaleData.resetFertilityRate();
 					villager.eatAndDigestFood();
 					villager.eatAndDigestFood();
+									
 					villager.getCapability(MinepreggoCapabilities.VILLAGER_DATA).ifPresent(capVillager -> {
-						capVillager.setMotherPlayer(femalePlayer.getUUID());
-						villager.getGossips().add(femalePlayer.getUUID(), GossipType.MAJOR_POSITIVE, 15);
+						if (capVillager.addPlayerThatHadSexWithVillager(femalePlayer.getUUID())) {
+							villager.getGossips().add(femalePlayer.getUUID(), GossipType.MAJOR_POSITIVE, 5);
+							MinepreggoMod.LOGGER.debug("Villager {} now has player {} in the list of players that had sex with them", villager.getName().getString(), femalePlayer.getName().getString());
+						}
 					});	
+							
 					femalePlayer.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 600, 0, false, true, true));
-					femalePlayer.addEffect(new MobEffectInstance(MobEffects.HUNGER, 1200, 1, false, true, true));
+					femalePlayer.addEffect(new MobEffectInstance(MobEffects.HUNGER, 1200, 0, false, true, true));
 					villager.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 600, 0, false, true, true));				
 				})
 			);	
@@ -315,7 +319,7 @@ public class SexHelper {
 					PlayerHelper.removeHorny(target);
 					
 					target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 600, 0, false, true, true));
-					target.addEffect(new MobEffectInstance(MobEffects.HUNGER, 1200, 1, false, true, true));
+					target.addEffect(new MobEffectInstance(MobEffects.HUNGER, 1200, 0, false, true, true));
 					source.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 600, 0, false, true, true));	
 				});
 		
@@ -374,9 +378,9 @@ public class SexHelper {
 					});		
 					
 					target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 600, 0, false, true, true));
-					target.addEffect(new MobEffectInstance(MobEffects.HUNGER, 1200, 1, false, true, true));
+					target.addEffect(new MobEffectInstance(MobEffects.HUNGER, 1200, 0, false, true, true));
 					source.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 600, 0, false, true, true));
-					source.addEffect(new MobEffectInstance(MobEffects.HUNGER, 1200, 1, false, true, true));
+					source.addEffect(new MobEffectInstance(MobEffects.HUNGER, 1200, 0, false, true, true));
 				})
 			);
 		};

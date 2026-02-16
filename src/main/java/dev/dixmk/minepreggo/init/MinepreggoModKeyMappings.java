@@ -33,6 +33,22 @@ public class MinepreggoModKeyMappings {
     	GLFW.GLFW_KEY_U,
     	KEY_CATEGORY
 		);
+    
+    public static final KeyMapping TELEPORT_USING_ENDER_POWER = new KeyMapping(
+        	Component.translatable("key.minepreggo.teleport_using_ender_power").getString(),
+        	KeyConflictContext.IN_GAME,
+        	InputConstants.Type.KEYSYM,
+        	GLFW.GLFW_KEY_I,
+        	KEY_CATEGORY
+    		);
+    
+    public static final KeyMapping SHOOT_DRAGON_FIRE_BALL = new KeyMapping(
+        	Component.translatable("key.minepreggo.shoot_dragon_fire_ball").getString(),
+        	KeyConflictContext.IN_GAME,
+        	InputConstants.Type.KEYSYM,
+        	GLFW.GLFW_KEY_O,
+        	KEY_CATEGORY
+    		);
 }
 
 

@@ -3,11 +3,12 @@ package dev.dixmk.minepreggo.event;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
+import dev.dixmk.minepreggo.network.capability.EnderPowerDataProvider;
 import dev.dixmk.minepreggo.network.capability.PlayerDataProvider;
 import dev.dixmk.minepreggo.network.capability.VillagerDataProvider;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.monster.Ill;
-import dev.dixmk.minepreggo.world.entity.preggo.IHostilPregnantPreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.IHostilePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
@@ -41,10 +42,11 @@ public class EntityEventHandler {
 	@SubscribeEvent
 	public static void onAttachCapabilities(AttachCapabilitiesEvent<Entity> event) {
 		if (event.getObject() instanceof Player && !(event.getObject() instanceof FakePlayer)) {
-			event.addCapability(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "minepreggo_player_data"), new PlayerDataProvider());
+			event.addCapability(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "player_data"), new PlayerDataProvider());
+			event.addCapability(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "ender_power_data"), new EnderPowerDataProvider());
 		}
 		else if(event.getObject() instanceof Villager) {
-			event.addCapability(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "minepreggo_villager_data"), new VillagerDataProvider());
+			event.addCapability(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "villager_data"), new VillagerDataProvider());
 		}
 	}
 		
@@ -95,7 +97,7 @@ public class EntityEventHandler {
     	if (mob instanceof ITamablePregnantPreggoMob tamablePregnantPreggoMob) {
     		phase = tamablePregnantPreggoMob.getPregnancyData().getCurrentPregnancyPhase();	
     	}
-    	else if (mob instanceof IHostilPregnantPreggoMob monsterPregnantPreggoMob) {
+    	else if (mob instanceof IHostilePregnantPreggoMob monsterPregnantPreggoMob) {
 			phase = monsterPregnantPreggoMob.getPregnancyData().getCurrentPregnancyPhase();
 			monsterPregnantPreggoMob.getPregnancyData().init();
 		}

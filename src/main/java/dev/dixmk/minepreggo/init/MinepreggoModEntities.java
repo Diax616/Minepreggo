@@ -24,6 +24,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.zombie.HostilePregnantZombieGirl
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.HostileZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirl;
+import dev.dixmk.minepreggo.world.entity.projectile.ExplosiveDragonFireball;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -225,6 +226,14 @@ public class MinepreggoModEntities {
 	
 	public static final RegistryObject<EntityType<BellyPart>> BELLY_PART = register("belly_part",
 			EntityType.Builder.<BellyPart>of(BellyPart::new, MobCategory.MISC).clientTrackingRange(10).setUpdateInterval(1));
+	
+	public static final RegistryObject<EntityType<ExplosiveDragonFireball>> EXPLOSIVE_DRAGON_FIREBALL = register("explosive_dragon_fireball",
+			EntityType.Builder
+			.<ExplosiveDragonFireball>of(ExplosiveDragonFireball::new, MobCategory.MISC)
+            .sized(1.0F, 1.0F)
+            .clientTrackingRange(4)
+            .updateInterval(10)
+            .fireImmune());
 	
 	private static <T extends Entity> RegistryObject<EntityType<T>> register(String registryname, EntityType.Builder<T> entityTypeBuilder) {
 		return REGISTRY.register(registryname, () -> entityTypeBuilder.build(registryname));

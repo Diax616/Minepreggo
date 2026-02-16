@@ -117,7 +117,7 @@ public abstract class MonsterEnderWomanAnimator<T extends AbstractEnderWoman> ex
 	    	if (enderWoman.isCarring()) {
 			    this.animate(enderWoman.loopAnimationState, MonsterEnderWomanAnimation.CARRING, ageInTicks);
 			}
-			if (tamableData.isPanic()) {
+			if (tamableData.isPanic() || tamableData.isSavage() || enderWoman.isAggressive()) {
 				this.animate(enderWoman.loopAnimationState, MonsterEnderWomanAnimation.IDLE, ageInTicks);						
 			} 		
 			else if (tamableData.isWaiting()) {

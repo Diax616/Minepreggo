@@ -194,9 +194,9 @@ public abstract class AbstractMonsterEnderWomanModel<E extends AbstractEnderWoma
 		PartDefinition rightBoob = boobs.addOrReplaceChild("right_boob", CubeListBuilder.create(), PartPose.offset(-2.5F, 0.0F, 0.0F));
 		rightBoob.addOrReplaceChild("rightCubeBoob_r1", CubeListBuilder.create().texOffs(37, 38).addBox(-1.5F, -1.5F, -2.0F, 3.0F, 3.0F, 4.0F, new CubeDeformation(0.25F)), PartPose.offsetAndRotation(0.6746F, 2.1966F, -1.3782F, 0.3491F, 0.1309F, 0.0436F));
 		PartDefinition belly = body.addOrReplaceChild("belly", CubeListBuilder.create(), PartPose.offset(0.0F, 3.0F, -1.8F));
-		belly.addOrReplaceChild("right_kick", CubeListBuilder.create().texOffs(8, 71).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.4F)), PartPose.offset(0.5F, 4.0F, -2.3F));
+		belly.addOrReplaceChild("right_kick", CubeListBuilder.create().texOffs(8, 71).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.4F)), PartPose.offset(-0.1F, 4.0F, -2.3F));
 		belly.addOrReplaceChild("front_kick", CubeListBuilder.create().texOffs(8, 71).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.4F)), PartPose.offset(1.5F, 2.8F, -2.7F));
-		belly.addOrReplaceChild("left_kick", CubeListBuilder.create().texOffs(8, 71).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.4F)), PartPose.offset(-0.5F, 2.9F, -2.2F));
+		belly.addOrReplaceChild("left_kick", CubeListBuilder.create().texOffs(8, 71).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.4F)), PartPose.offset(1.2F, 2.9F, -2.2F));
 		belly.addOrReplaceChild("main_r1", CubeListBuilder.create().texOffs(29, 75).addBox(1.0F, 2.0F, -5.0F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.4F, 2.1F, -0.2F, 0.0524F, 0.0F, 0.0F));
 		belly.addOrReplaceChild("main_r2", CubeListBuilder.create().texOffs(6, 66).addBox(-4.0F, -3.0F, -5.0F, 6.0F, 6.0F, 5.0F, new CubeDeformation(0.2F)), PartPose.offsetAndRotation(1.1F, 3.3F, 0.5F, 0.0524F, 0.0F, 0.0F));
 	}
@@ -226,8 +226,8 @@ public abstract class AbstractMonsterEnderWomanModel<E extends AbstractEnderWoma
 		PartDefinition rightBoob = boobs.addOrReplaceChild("right_boob", CubeListBuilder.create(), PartPose.offset(-2.5F, 0.0F, 0.0F));
 		rightBoob.addOrReplaceChild("rightCubeBoob_r1", CubeListBuilder.create().texOffs(37, 38).addBox(-1.5F, -1.5F, -2.0F, 3.0F, 3.0F, 4.0F, new CubeDeformation(0.3F)), PartPose.offsetAndRotation(0.5746F, 2.1966F, -1.3782F, 0.3491F, 0.1309F, 0.0436F));
 		PartDefinition belly = body.addOrReplaceChild("belly", CubeListBuilder.create(), PartPose.offset(0.0F, 3.0F, -0.8F));
-		belly.addOrReplaceChild("front_kick", CubeListBuilder.create().texOffs(8, 72).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.2F)), PartPose.offset(0.5F, 4.8F, -2.7F));
-		belly.addOrReplaceChild("right_kick", CubeListBuilder.create().texOffs(8, 72).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.2F)), PartPose.offset(0.5F, 6.0F, -2.3F));
+		belly.addOrReplaceChild("front_kick", CubeListBuilder.create().texOffs(8, 72).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.2F)), PartPose.offset(-0.9F, 3.7F, -3.3F));
+		belly.addOrReplaceChild("right_kick", CubeListBuilder.create().texOffs(8, 72).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.2F)), PartPose.offset(0.5F, 3.6F, -3.3F));
 		belly.addOrReplaceChild("left_kick", CubeListBuilder.create().texOffs(8, 72).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.2F)), PartPose.offset(0.5F, 4.9F, -2.2F));
 		belly.addOrReplaceChild("main_r1", CubeListBuilder.create().texOffs(29, 75).addBox(-0.5F, -0.5F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.1F, 5.8321F, -7.263F, 0.0524F, 0.0F, 0.0F));
 		belly.addOrReplaceChild("extra1_r1", CubeListBuilder.create().texOffs(9, 70).addBox(-3.5F, -3.5F, -0.5F, 7.0F, 7.0F, 1.0F, new CubeDeformation(-0.2F)), PartPose.offsetAndRotation(0.2F, 4.0872F, -6.9663F, 0.0524F, 0.0F, 0.0F));
@@ -261,7 +261,7 @@ public abstract class AbstractMonsterEnderWomanModel<E extends AbstractEnderWoma
 		PartDefinition belly = body.addOrReplaceChild("belly", CubeListBuilder.create(), PartPose.offset(0.0F, 3.0F, -1.6F));
 		belly.addOrReplaceChild("left_kick", CubeListBuilder.create().texOffs(7, 72).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.2F)), PartPose.offset(0.5F, 3.8128F, -4.3981F));
 		belly.addOrReplaceChild("right_kick", CubeListBuilder.create().texOffs(7, 72).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.2F)), PartPose.offset(0.5F, 4.9128F, -4.4981F));
-		belly.addOrReplaceChild("front_kick", CubeListBuilder.create().texOffs(7, 72).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.1F)), PartPose.offset(2.5F, 3.7128F, -4.8981F));
+		belly.addOrReplaceChild("front_kick", CubeListBuilder.create().texOffs(7, 72).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.1F)), PartPose.offset(2.5F, 3.7128F, -3.4981F));
 		belly.addOrReplaceChild("main_r1", CubeListBuilder.create().texOffs(29, 75).addBox(-0.5F, -0.5F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.1F, 6.0321F, -7.763F, 0.0524F, 0.0F, 0.0F));
 		belly.addOrReplaceChild("extra1_r1", CubeListBuilder.create().texOffs(8, 70).addBox(-4.5F, -3.5F, -0.5F, 8.0F, 7.0F, 1.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(0.7F, 4.2872F, -7.4663F, 0.0524F, 0.0F, 0.0F));
 		belly.addOrReplaceChild("main_r2", CubeListBuilder.create().texOffs(2, 64).addBox(-4.5F, -3.0F, -4.0F, 8.0F, 7.0F, 7.0F, new CubeDeformation(0.3F)), PartPose.offsetAndRotation(0.6F, 3.457F, -2.7959F, 0.0524F, 0.0F, 0.0F));
@@ -292,11 +292,11 @@ public abstract class AbstractMonsterEnderWomanModel<E extends AbstractEnderWoma
 		PartDefinition rightBoob = boobs.addOrReplaceChild("right_boob", CubeListBuilder.create(), PartPose.offset(-2.5F, 0.0F, 0.0F));
 		rightBoob.addOrReplaceChild("rightCubeBoob_r1", CubeListBuilder.create().texOffs(37, 38).addBox(-1.5F, -1.5F, -2.0F, 3.0F, 3.0F, 4.0F, new CubeDeformation(0.4F)), PartPose.offsetAndRotation(0.4746F, 2.1966F, -1.3782F, 0.3514F, 0.1719F, 0.0588F));
 		PartDefinition belly = body.addOrReplaceChild("belly", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 3.0F, -2.0F, 0.0175F, 0.0F, 0.0F));
-		belly.addOrReplaceChild("bottom_kick", CubeListBuilder.create().texOffs(7, 76).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.1F)), PartPose.offset(-0.5F, 6.502F, -4.2731F));
-		belly.addOrReplaceChild("top_kick", CubeListBuilder.create().texOffs(7, 76).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.1F)), PartPose.offset(1.5F, 3.502F, -6.2731F));
-		belly.addOrReplaceChild("front_kick", CubeListBuilder.create().texOffs(7, 76).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.1F)), PartPose.offset(2.5F, 4.502F, -5.2731F));
-		belly.addOrReplaceChild("right_kick", CubeListBuilder.create().texOffs(7, 76).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.1F)), PartPose.offset(0.5F, 6.502F, -5.2731F));
-		belly.addOrReplaceChild("left_kick", CubeListBuilder.create().texOffs(7, 76).addBox(-1.0F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(-0.1F)), PartPose.offset(-2.0F, 4.502F, -3.2731F));
+		belly.addOrReplaceChild("bottom_kick", CubeListBuilder.create().texOffs(7, 76).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(-0.5F, 6.502F, -4.2731F));
+		belly.addOrReplaceChild("top_kick", CubeListBuilder.create().texOffs(7, 76).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(1.5F, 3.502F, -6.2731F));
+		belly.addOrReplaceChild("front_kick", CubeListBuilder.create().texOffs(7, 76).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(2.5F, 4.502F, -5.2731F));
+		belly.addOrReplaceChild("right_kick", CubeListBuilder.create().texOffs(7, 76).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(0.5F, 4.602F, -5.2731F));
+		belly.addOrReplaceChild("left_kick", CubeListBuilder.create().texOffs(7, 76).addBox(-1.0F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(-2.0F, 4.502F, -3.2731F));
 		belly.addOrReplaceChild("main_r1", CubeListBuilder.create().texOffs(29, 75).addBox(-0.5F, -0.5F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.1F, 7.1321F, -9.463F, 0.0524F, 0.0F, 0.0F));
 		belly.addOrReplaceChild("extra5_r1", CubeListBuilder.create().texOffs(0, 65).addBox(-4.0F, -4.0F, -4.5F, 8.0F, 1.0F, 9.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(0.1F, 3.6341F, -3.9415F, 0.0524F, 0.0F, 0.0F));
 		belly.addOrReplaceChild("extra4_r1", CubeListBuilder.create().texOffs(0, 65).addBox(-4.0F, -0.5F, -4.5F, 8.0F, 1.0F, 9.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(0.1F, 8.8294F, -3.7583F, 0.0524F, 0.0F, 0.0F));
@@ -334,20 +334,20 @@ public abstract class AbstractMonsterEnderWomanModel<E extends AbstractEnderWoma
 		rightBoob.addOrReplaceChild("rightCubeBoob3_r1", CubeListBuilder.create().texOffs(42, 45).addBox(-0.5F, -0.5F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(-0.209F, 3.4008F, -3.827F, 0.3514F, 0.1719F, 0.0588F));
 		rightBoob.addOrReplaceChild("rightCubeBoob2_r1", CubeListBuilder.create().texOffs(40, 41).addBox(-1.5005F, -1.5999F, -1.9951F, 3.0F, 3.0F, 1.0F, new CubeDeformation(0.2F)), PartPose.offsetAndRotation(0.1746F, 2.4966F, -2.0782F, 0.3514F, 0.1719F, 0.0588F));
 		rightBoob.addOrReplaceChild("rightCubeBoob1_r1", CubeListBuilder.create().texOffs(37, 38).addBox(-1.5F, -1.5F, -2.0F, 3.0F, 3.0F, 4.0F, new CubeDeformation(0.5F)), PartPose.offsetAndRotation(0.2746F, 2.1966F, -1.3782F, 0.3514F, 0.1719F, 0.0588F));	
-		PartDefinition belly = body.addOrReplaceChild("belly", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 3.0F, -1.7F, 0.0262F, 0.0F, 0.0F));	
-		belly.addOrReplaceChild("main_r1", CubeListBuilder.create().texOffs(41, 86).addBox(-0.5F, -0.5F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.1F, 7.4321F, -11.663F, 0.0524F, 0.0F, 0.0F));
-		belly.addOrReplaceChild("extra5_r1", CubeListBuilder.create().texOffs(5, 69).addBox(-4.0F, -4.0F, -5.5F, 8.0F, 1.0F, 10.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(0.1F, 3.6341F, -4.4415F, 0.0524F, 0.0F, 0.0F));
-		belly.addOrReplaceChild("extra4_r1", CubeListBuilder.create().texOffs(5, 69).addBox(-4.0F, -0.5F, -5.5F, 8.0F, 1.0F, 10.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(0.1F, 9.9293F, -4.2583F, 0.0524F, 0.0F, 0.0F));
+		PartDefinition belly = body.addOrReplaceChild("belly", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 7.0F, -1.7F, 0.0262F, 0.0F, 0.0F));
+		belly.addOrReplaceChild("main_r1", CubeListBuilder.create().texOffs(41, 86).addBox(-0.5F, -0.5F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.1F, 3.4321F, -11.663F, 0.0524F, 0.0F, 0.0F));
+		belly.addOrReplaceChild("extra5_r1", CubeListBuilder.create().texOffs(5, 69).addBox(-4.0F, -4.0F, -5.5F, 8.0F, 1.0F, 10.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(0.1F, -0.3659F, -4.4415F, 0.0524F, 0.0F, 0.0F));
+		belly.addOrReplaceChild("extra4_r1", CubeListBuilder.create().texOffs(5, 69).addBox(-4.0F, -0.5F, -5.5F, 8.0F, 1.0F, 10.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(0.1F, 5.9293F, -4.2583F, 0.0524F, 0.0F, 0.0F));
 		belly.addOrReplaceChild("extra3_r1", CubeListBuilder.create().texOffs(12, 69).addBox(-0.5F, -4.0F, -5.5F, 1.0F, 9.0F, 10.0F, new CubeDeformation(-0.1F))
 		.texOffs(5, 69).addBox(-9.6F, -4.0F, -5.5F, 1.0F, 9.0F, 10.0F, new CubeDeformation(-0.1F))
-		.texOffs(5, 69).addBox(-8.6F, -4.0F, -5.5F, 8.0F, 9.0F, 10.0F, new CubeDeformation(0.5F)), PartPose.offsetAndRotation(4.7F, 4.5341F, -4.4415F, 0.0524F, 0.0F, 0.0F));
-		belly.addOrReplaceChild("extra2_r1", CubeListBuilder.create().texOffs(14, 78).addBox(-4.0F, -4.0F, -0.5F, 8.0F, 9.0F, 1.0F, new CubeDeformation(-0.3F)), PartPose.offsetAndRotation(0.2F, 4.9865F, -11.3401F, 0.0524F, 0.0F, 0.0F));
-		belly.addOrReplaceChild("extra1_r1", CubeListBuilder.create().texOffs(14, 78).addBox(-4.0F, -4.0F, -0.5F, 8.0F, 9.0F, 1.0F, new CubeDeformation(0.1F)), PartPose.offsetAndRotation(0.2F, 4.9865F, -10.5401F, 0.0524F, 0.0F, 0.0F));
-		belly.addOrReplaceChild("left_kick", CubeListBuilder.create().texOffs(11, 80).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(-0.3F)), PartPose.offset(-2.0F, 4.1055F, -6.1812F));
-		belly.addOrReplaceChild("right_kick", CubeListBuilder.create().texOffs(11, 80).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(-0.3F)), PartPose.offset(0.0F, 4.1055F, -8.1812F));
-		belly.addOrReplaceChild("front_kick", CubeListBuilder.create().texOffs(11, 80).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(-0.3F)), PartPose.offset(2.0F, 3.1055F, -7.1812F));
-		belly.addOrReplaceChild("bottom_kick", CubeListBuilder.create().texOffs(11, 80).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(-0.3F)), PartPose.offset(-1.0F, 6.1055F, -8.1812F));
-		belly.addOrReplaceChild("top_kick", CubeListBuilder.create().texOffs(11, 80).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(-0.3F)), PartPose.offset(1.0F, 3.1055F, -9.1812F));
+		.texOffs(5, 69).addBox(-8.6F, -4.0F, -5.5F, 8.0F, 9.0F, 10.0F, new CubeDeformation(0.5F)), PartPose.offsetAndRotation(4.7F, 0.5341F, -4.4415F, 0.0524F, 0.0F, 0.0F));
+		belly.addOrReplaceChild("extra2_r1", CubeListBuilder.create().texOffs(14, 78).addBox(-4.0F, -4.0F, -0.5F, 8.0F, 9.0F, 1.0F, new CubeDeformation(-0.3F)), PartPose.offsetAndRotation(0.2F, 0.9865F, -11.3401F, 0.0524F, 0.0F, 0.0F));
+		belly.addOrReplaceChild("extra1_r1", CubeListBuilder.create().texOffs(14, 78).addBox(-4.0F, -4.0F, -0.5F, 8.0F, 9.0F, 1.0F, new CubeDeformation(0.1F)), PartPose.offsetAndRotation(0.2F, 0.9865F, -10.5401F, 0.0524F, 0.0F, 0.0F));
+		belly.addOrReplaceChild("left_kick", CubeListBuilder.create().texOffs(11, 80).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(-0.3F)), PartPose.offset(-2.0F, 0.1055F, -6.1812F));
+		belly.addOrReplaceChild("right_kick", CubeListBuilder.create().texOffs(11, 80).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(-0.3F)), PartPose.offset(0.0F, 0.1055F, -8.1812F));
+		belly.addOrReplaceChild("front_kick", CubeListBuilder.create().texOffs(11, 80).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(-0.3F)), PartPose.offset(2.0F, -0.8945F, -7.1812F));
+		belly.addOrReplaceChild("bottom_kick", CubeListBuilder.create().texOffs(11, 80).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(-0.3F)), PartPose.offset(-1.0F, 2.1055F, -8.1812F));
+		belly.addOrReplaceChild("top_kick", CubeListBuilder.create().texOffs(11, 80).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(-0.3F)), PartPose.offset(1.0F, -0.8945F, -9.1812F));
 	}
 	
 	public static LayerDefinition createBellyP7Layer() {	
@@ -378,20 +378,20 @@ public abstract class AbstractMonsterEnderWomanModel<E extends AbstractEnderWoma
 		rightBoob.addOrReplaceChild("extra2_r2", CubeListBuilder.create().texOffs(42, 45).addBox(-0.5F, -0.5F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(-0.109F, 3.5008F, -3.827F, 0.3514F, 0.1719F, 0.0588F));
 		rightBoob.addOrReplaceChild("extra1_r2", CubeListBuilder.create().texOffs(40, 41).addBox(-1.5005F, -1.5999F, -1.9951F, 3.0F, 3.0F, 1.0F, new CubeDeformation(0.2F)), PartPose.offsetAndRotation(0.2746F, 2.5966F, -2.0782F, 0.3514F, 0.1719F, 0.0588F));
 		rightBoob.addOrReplaceChild("rightCubeBoob_r1", CubeListBuilder.create().texOffs(37, 38).addBox(-1.5F, -1.5F, -2.0F, 3.0F, 3.0F, 4.0F, new CubeDeformation(0.6F)), PartPose.offsetAndRotation(0.3746F, 2.1966F, -1.3782F, 0.3514F, 0.1719F, 0.0588F));
-		PartDefinition belly = body.addOrReplaceChild("belly", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 3.0F, -1.4F, 0.0262F, 0.0F, 0.0F));
-		belly.addOrReplaceChild("top_kick", CubeListBuilder.create().texOffs(12, 88).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(-0.2F)), PartPose.offset(1.0F, 5.1048F, -9.2335F));
-		belly.addOrReplaceChild("bottom_kick", CubeListBuilder.create().texOffs(12, 88).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(-0.2F)), PartPose.offset(-1.0F, 8.1048F, -8.2335F));
-		belly.addOrReplaceChild("front_kick", CubeListBuilder.create().texOffs(12, 88).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(-0.2F)), PartPose.offset(2.0F, 5.1048F, -7.2335F));
-		belly.addOrReplaceChild("left_kick", CubeListBuilder.create().texOffs(12, 88).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(-0.2F)), PartPose.offset(-2.0F, 6.1048F, -6.2335F));
-		belly.addOrReplaceChild("right_kick", CubeListBuilder.create().texOffs(12, 88).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(-0.2F)), PartPose.offset(0.0F, 6.1048F, -8.2335F));
-		belly.addOrReplaceChild("main_r1", CubeListBuilder.create().texOffs(41, 86).addBox(-0.5F, -0.5F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.1F, 8.9321F, -14.163F, 0.0524F, 0.0F, 0.0F));
-		belly.addOrReplaceChild("extra5_r1", CubeListBuilder.create().texOffs(3, 67).addBox(-4.0F, -4.0F, -7.5F, 8.0F, 1.0F, 12.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(0.6F, 3.6341F, -4.5415F, 0.0524F, 0.0F, 0.0F));
-		belly.addOrReplaceChild("extra4_r1", CubeListBuilder.create().texOffs(2, 67).addBox(-5.0F, -0.5F, -7.5F, 9.0F, 1.0F, 12.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(0.6F, 10.9293F, -4.3583F, 0.0524F, 0.0F, 0.0F));
+		PartDefinition belly = body.addOrReplaceChild("belly", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 8.0F, -1.4F, 0.0262F, 0.0F, 0.0F));
+		belly.addOrReplaceChild("main_r1", CubeListBuilder.create().texOffs(41, 86).addBox(-0.5F, -0.5F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.1F, 3.9321F, -14.163F, 0.0524F, 0.0F, 0.0F));
+		belly.addOrReplaceChild("extra5_r1", CubeListBuilder.create().texOffs(3, 67).addBox(-4.0F, -4.0F, -7.5F, 8.0F, 1.0F, 12.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(0.6F, -1.3659F, -4.5415F, 0.0524F, 0.0F, 0.0F));
+		belly.addOrReplaceChild("extra4_r1", CubeListBuilder.create().texOffs(2, 67).addBox(-5.0F, -0.5F, -7.5F, 9.0F, 1.0F, 12.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(0.6F, 5.9293F, -4.3583F, 0.0524F, 0.0F, 0.0F));
 		belly.addOrReplaceChild("extra3_r1", CubeListBuilder.create().texOffs(10, 67).addBox(-0.5F, -4.0F, -7.5F, 1.0F, 10.0F, 12.0F, new CubeDeformation(-0.1F))
 		.texOffs(3, 67).addBox(-10.6F, -4.0F, -7.5F, 1.0F, 10.0F, 12.0F, new CubeDeformation(-0.1F))
-		.texOffs(2, 67).addBox(-9.6F, -4.0F, -7.5F, 9.0F, 10.0F, 12.0F, new CubeDeformation(0.5F)), PartPose.offsetAndRotation(5.2F, 4.5341F, -4.5415F, 0.0524F, 0.0F, 0.0F));
-		belly.addOrReplaceChild("extra2_r3", CubeListBuilder.create().texOffs(13, 78).addBox(-5.0F, -4.0F, -0.5F, 9.0F, 10.0F, 1.0F, new CubeDeformation(-0.3F)), PartPose.offsetAndRotation(0.7F, 4.9865F, -13.8401F, 0.0524F, 0.0F, 0.0F));
-		belly.addOrReplaceChild("extra1_r3", CubeListBuilder.create().texOffs(13, 78).addBox(-5.0F, -4.0F, -0.5F, 9.0F, 10.0F, 1.0F, new CubeDeformation(0.1F)), PartPose.offsetAndRotation(0.7F, 4.9865F, -13.0401F, 0.0524F, 0.0F, 0.0F));
+		.texOffs(2, 67).addBox(-9.6F, -4.0F, -7.5F, 9.0F, 10.0F, 12.0F, new CubeDeformation(0.5F)), PartPose.offsetAndRotation(5.2F, -0.4659F, -4.5415F, 0.0524F, 0.0F, 0.0F));
+		belly.addOrReplaceChild("extra2_r3", CubeListBuilder.create().texOffs(13, 78).addBox(-5.0F, -4.0F, -0.5F, 9.0F, 10.0F, 1.0F, new CubeDeformation(-0.3F)), PartPose.offsetAndRotation(0.7F, -0.0135F, -13.8401F, 0.0524F, 0.0F, 0.0F));
+		belly.addOrReplaceChild("extra1_r3", CubeListBuilder.create().texOffs(13, 78).addBox(-5.0F, -4.0F, -0.5F, 9.0F, 10.0F, 1.0F, new CubeDeformation(0.1F)), PartPose.offsetAndRotation(0.7F, -0.0135F, -13.0401F, 0.0524F, 0.0F, 0.0F));
+		belly.addOrReplaceChild("top_kick", CubeListBuilder.create().texOffs(11, 81).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(-0.2F)), PartPose.offset(1.0F, 0.1048F, -9.2335F));
+		belly.addOrReplaceChild("bottom_kick", CubeListBuilder.create().texOffs(11, 81).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(-0.2F)), PartPose.offset(-1.0F, 3.1048F, -8.2335F));
+		belly.addOrReplaceChild("front_kick", CubeListBuilder.create().texOffs(11, 81).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(-0.2F)), PartPose.offset(2.0F, 0.1048F, -7.2335F));
+		belly.addOrReplaceChild("left_kick", CubeListBuilder.create().texOffs(11, 81).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(-0.2F)), PartPose.offset(-2.0F, 1.1048F, -6.2335F));
+		belly.addOrReplaceChild("right_kick", CubeListBuilder.create().texOffs(11, 81).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(-0.2F)), PartPose.offset(0.0F, 1.1048F, -8.2335F));
 	}
 	
 	public static LayerDefinition createBellyP8Layer() {

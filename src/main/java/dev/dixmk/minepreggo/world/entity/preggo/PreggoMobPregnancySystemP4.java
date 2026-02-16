@@ -9,9 +9,13 @@ import javax.annotation.Nonnull;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
+import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantMonsterCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.MonsterCreeperHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractEnderWoman;
 import dev.dixmk.minepreggo.world.inventory.preggo.RequestSexM2PMenu;
 import dev.dixmk.minepreggo.world.pregnancy.AbstractPregnancySystem;
 import dev.dixmk.minepreggo.world.pregnancy.IBreedable;
@@ -110,7 +114,15 @@ public abstract class PreggoMobPregnancySystemP4
 			}	
 			else {
 				pregnancyData.incrementPregnancyPainTimer();
-	    		AbstractPregnancySystem.spawnParticulesForWaterBreaking(serverLevel, pregnantEntity);
+				if (pregnantEntity instanceof AbstractEnderWoman) {
+		    		AbstractPregnancySystem.spawnParticulesForWaterBreaking(serverLevel, pregnantEntity, pregnantEntity.getBbHeight() * 0.55);
+				}
+				else if (pregnantEntity instanceof AbstractTamablePregnantMonsterCreeperGirl) {
+		    		AbstractPregnancySystem.spawnParticulesForWaterBreaking(serverLevel, pregnantEntity, pregnantEntity.getBbHeight() * 0.315);
+				}
+				else {
+		    		AbstractPregnancySystem.spawnParticulesForWaterBreaking(serverLevel, pregnantEntity);
+				}
 			}
 		}
 		else if (pain == PregnancyPain.BIRTH) {
@@ -173,7 +185,15 @@ public abstract class PreggoMobPregnancySystemP4
 		}
 		else {
 			pregnancyData.incrementPregnancyPainTimer();
-    		AbstractPregnancySystem.spawnParticulesForWaterBreaking(serverLevel, pregnantEntity);
+			if (pregnantEntity instanceof AbstractEnderWoman) {
+	    		AbstractPregnancySystem.spawnParticulesForWaterBreaking(serverLevel, pregnantEntity, pregnantEntity.getBbHeight() * 0.55);
+			}
+			else if (pregnantEntity instanceof AbstractTamablePregnantMonsterCreeperGirl) {
+	    		AbstractPregnancySystem.spawnParticulesForWaterBreaking(serverLevel, pregnantEntity, pregnantEntity.getBbHeight() * 0.315);
+			}
+			else {
+	    		AbstractPregnancySystem.spawnParticulesForWaterBreaking(serverLevel, pregnantEntity);
+			}
 		}
 	}
 	
@@ -232,6 +252,7 @@ public abstract class PreggoMobPregnancySystemP4
 				&& randomSource.nextFloat() < contractionProb) {
 			pregnancyData.setPregnancyPain(PregnancyPain.CONTRACTION);
 			pregnancyData.resetPregnancyPainTimer();
+			LivingEntityHelper.playSoundNearTo(pregnantEntity, MinepreggoModSounds.getRandomStomachGrowls(randomSource));
 			PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, InventorySlot.CHEST);					
 			return true;
 		}     

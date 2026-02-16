@@ -82,7 +82,7 @@ public abstract class HumanoidCreeperGirlAnimator<E extends AbstractCreeperGirl>
   		@Override
   	    protected void animateLoopState(E creeperGirl, float ageInTicks) {
   			final var tamableData = creeperGirl.getTamableData();
-  			if (tamableData.isPanic()) {
+  			if (tamableData.isPanic() || tamableData.isSavage() || creeperGirl.isAggressive()) {
   				this.animate(creeperGirl.loopAnimationState, HumanoidCreeperGirlAnimation.IDLE, ageInTicks);						
   			} 		
   			else if (tamableData.isWaiting()) {

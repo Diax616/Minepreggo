@@ -85,7 +85,6 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	
 	protected AbstractTamableZombieGirl(EntityType<? extends AbstractZombieGirl> p_21803_, Level p_21804_) {
 	      super(p_21803_, p_21804_, Creature.HUMANOID);
-	      this.reassessTameGoals();	 
 	      this.femaleEntityData = createFemaleEntityData();
 	      this.tamablePreggoMobSystem = createTamablePreggoMobSystem();
 	}
@@ -153,12 +152,19 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	protected void dropEquipment() {
 		super.dropEquipment();
 		var handler = inventory.getHandler();
-		for (int i = inventory.getSlotMapper().getExtraSlotsRange().leftInt(); i < handler.getSlots(); ++i) {
+		var slotMapper = inventory.getSlotMapper();
+		for (int i = slotMapper.getExtraSlotsRange().leftInt(); i < handler.getSlots(); ++i) {
 			ItemStack itemstack = handler.getStackInSlot(i);
 			if (!itemstack.isEmpty() && !EnchantmentHelper.hasVanishingCurse(itemstack)) {
 				this.spawnAtLocation(itemstack);
 			}
 		}
+		slotMapper.getCustomSlots().forEach(slot -> {
+			ItemStack itemstack = inventory.getHandler().getStackInSlot(slotMapper.getSlotIndex(slot));
+			if (!itemstack.isEmpty() && !EnchantmentHelper.hasVanishingCurse(itemstack)) {
+				this.spawnAtLocation(itemstack);
+			}
+		});
 	}	
    
 	@Override
@@ -195,6 +201,8 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 					&& (serverPlayer.containerMenu instanceof AbstractZombieGirlMainMenu<?> || serverPlayer.containerMenu instanceof AbstractZombieGirlInventoryMenu<?>)) {
 				serverPlayer.closeContainer();
 			}	
+			
+			this.tamablePreggoMobSystem.onHurtSuccessful(damagesource);
 		}		
 		return result;
 	}
@@ -215,6 +223,7 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
+				&& !isOnFire()
 				&& !tamablePreggoMobData.isWaiting();
 			}
 		});	
@@ -226,7 +235,8 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 		this.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false, false) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() 
+				return super.canUse()
+				&& !isOnFire()
 				&& (getTamableData().isSavage() || !isTame());
 			}
 		});		
@@ -234,6 +244,7 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
+				&& !isOnFire()		
 				&& (getTamableData().isSavage() || !isTame());
 			}
 		});
@@ -248,6 +259,7 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
+				&& !isOnFire()		
 				&& (getTamableData().isSavage() || !isTame());		
 			}
 		});		
@@ -255,13 +267,15 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
-				&& !getTamableData().isWaiting();
+				&& !isOnFire()
+				&& ((isTame() && !getTamableData().isWaiting()) || getTamableData().isSavage());
 			}
 		});	
 		this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 6F) {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
+				&& !isOnFire()
 				&& !getTamableData().isWaiting()
 				&& !LivingEntityHelper.hasValidTarget(mob);
 			}
@@ -269,6 +283,7 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 			@Override
 			public boolean canContinueToUse() {
 				return super.canContinueToUse()
+				&& !isOnFire()
 				&& !LivingEntityHelper.isTargetStillValid(mob);
 			}
 		});			
@@ -276,6 +291,7 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
+				&& !isOnFire()
 				&& (getTamableData().isSavage() || !isTame());		
 			}
 		});	
@@ -288,13 +304,14 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 				@Override
 				public boolean canUse() {
 					return super.canUse() 
+					&& !getTamableData().isSavage()
 					&& !getTamableData().isWaiting()
 					&& !isOnFire();				
 				}
 
 				@Override
 				public boolean canContinueToUse() {
-					return super.canContinueToUse()
+					return super.canContinueToUse()			
 					&& !isOnFire();	
 				}
 			});
@@ -302,6 +319,7 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 				@Override
 				public boolean canUse() {
 					return super.canUse() 
+					&& !getTamableData().isSavage()		
 					&& !getTamableData().isWaiting()
 					&& !isOnFire();				
 				}
@@ -316,7 +334,6 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 				@Override
 				public boolean canUse() {
 					return super.canUse() 
-					&& !getTamableData().isWaiting()
 					&& !isOnFire();				
 				}
 

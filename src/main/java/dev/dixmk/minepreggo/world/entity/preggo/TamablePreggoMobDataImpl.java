@@ -33,7 +33,7 @@ public class TamablePreggoMobDataImpl<E extends PreggoMob> implements ITamablePr
     	
     	public void defineSynchedData(E preggomob) {
     		SynchedEntityData entityData = preggomob.getEntityData();
-        	entityData.define(dataHungry, 12);		
+        	entityData.define(dataHungry, 14);		
         	entityData.define(dataSavage, true);
         	entityData.define(dataWaiting, false);
         	entityData.define(dataAngry, false);

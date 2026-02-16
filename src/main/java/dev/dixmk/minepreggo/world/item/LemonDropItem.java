@@ -15,7 +15,7 @@ public class LemonDropItem extends Item implements ICravingItem {
 
 	@Override
 	public @Nonnegative int getGratification() {
-		return 3;
+		return 4;
 	}
 
 	@Override

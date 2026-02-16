@@ -19,7 +19,7 @@
     "brewed_potion": {
       "trigger": "minecraft:brewed_potion",
       "conditions": {
-        "potion": "minepreggo:ender_dragon_impregnation_0"
+        "potion": "minepreggo:ender_dragon_impregnation"
       }
     }
   },

@@ -3,7 +3,6 @@ package dev.dixmk.minepreggo.world.entity.npc;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 
 import javax.annotation.CheckForNull;
 
@@ -16,7 +15,6 @@ import dev.dixmk.minepreggo.init.MinepreggoModItems;
 import dev.dixmk.minepreggo.init.MinepreggoModPotions;
 import dev.dixmk.minepreggo.init.MinepreggoModVillagerProfessions;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
-import dev.dixmk.minepreggo.world.item.alchemy.PotionItemFactory;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.Util;
@@ -35,6 +33,8 @@ import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
@@ -91,17 +91,17 @@ public class Trades {
 			
 			p_35633_.put(MinepreggoModVillagerProfessions.VILLAGER_DOCTOR.get(), new Int2ObjectOpenHashMap<>(ImmutableMap.of(
 					1, new VillagerTrades.ItemListing[]
-					{ new PotionsForEmeralds(PotionItemFactory.createPotion(Potions.HEALING), 15, 1, 20, 15),
-					  new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.FERTILITY.get()), 15, 1, 20, 15)},
+					{ new PotionForEmeralds(Potions.HEALING, PotionForEmeralds.PotionType.REGULAR, 15, 20, 15),
+					  new PotionForEmeralds(MinepreggoModPotions.FERTILITY.get(), PotionForEmeralds.PotionType.REGULAR, 15, 20, 15)},
 					2, new VillagerTrades.ItemListing[]
-					{ new PotionsForEmeralds(PotionItemFactory.createSplashPotion(Potions.STRONG_HEALING), 17, 1, 20, 17),
-						new PotionsForEmeralds(PotionItemFactory.createSplashPotion(Potions.HEALING), 16, 1, 20, 17)},
+					{ new PotionForEmeralds(Potions.STRONG_HEALING, PotionForEmeralds.PotionType.SPLASH, 17, 20, 17),
+						new PotionForEmeralds(Potions.HEALING, PotionForEmeralds.PotionType.SPLASH, 16, 20, 17)},
 					3, new VillagerTrades.ItemListing[]
-					{ new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.ZERO_GRAVITY_BELLY.get()), 15, 1, 20, 15)},
+					{ new PotionForEmeralds(MinepreggoModPotions.ZERO_GRAVITY_BELLY.get(), PotionForEmeralds.PotionType.REGULAR, 15, 20, 15)},
 					4, new VillagerTrades.ItemListing[]
-					{ new PotionsForEmeralds(PotionItemFactory.createSplashPotion(MinepreggoModPotions.PREGNANCY_HEALING.get()), 20, 1, 20, 20)},
+					{ new PotionForEmeralds(MinepreggoModPotions.PREGNANCY_HEALING.get(), PotionForEmeralds.PotionType.REGULAR, 20, 20, 20)},
 					5, new VillagerTrades.ItemListing[]
-					{ new PotionsForEmeralds(PotionItemFactory.createSplashPotion(MinepreggoModPotions.PREGNANCY_RESISTANCE.get()), 25, 1, 20, 25)}))); 
+					{ new PotionForEmeralds(MinepreggoModPotions.PREGNANCY_RESISTANCE.get(), PotionForEmeralds.PotionType.SPLASH, 25, 20, 25)}))); 
 		});
 		
 		@CheckForNull
@@ -138,14 +138,14 @@ public class Trades {
 						new EnchantBookForBaby(Species.CREEPER),
 						new EnchantBookForBaby(Species.ZOMBIE),
 						new EnchantBookForBaby(Species.ENDER),
-						new ItemstackForItemstack(() -> MinepreggoModItems.BABY_ENDER_DRAGON_BLOCK.get().getDefaultInstance(), () -> createLootForBabyEnderDragon(2, 16, 8, 1, 32), 1, 10, 0.5f),
-						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.PREGNANCY_ACCELERATION_0.get()), 25, 1, 10, 0),
-						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.IMPREGNATION_POTION_0.get()), 20, 1, 10, 0),
-						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.IMPREGNATION_POTION_1.get()), 30, 1, 10, 0),
-						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.ZOMBIE_IMPREGNATION_0.get()), 15, 1, 10, 0),
-						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.PREGNANCY_RESISTANCE.get()), 27, 1, 10, 0),
-						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.PREGNANCY_HEALING.get()), 27, 1, 10, 0),
-						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.ZERO_GRAVITY_BELLY.get()), 20, 1, 10, 0),
+						new ItemstackForItemstack(MinepreggoModItems.BABY_ENDER_DRAGON_BLOCK.get().getDefaultInstance(), createLootForBabyEnderDragon(2, 16, 8, 1, 32), 1, 10, 0.5f),
+						new PotionForEmeralds(MinepreggoModPotions.PREGNANCY_ACCELERATION_0.get(), PotionForEmeralds.PotionType.REGULAR, 25, 10, 0),
+						new PotionForEmeralds(MinepreggoModPotions.IMPREGNATION_POTION_0.get(), PotionForEmeralds.PotionType.REGULAR, 20, 10, 0),
+						new PotionForEmeralds(MinepreggoModPotions.IMPREGNATION_POTION_1.get(), PotionForEmeralds.PotionType.REGULAR, 30, 10, 0),
+						new PotionForEmeralds(MinepreggoModPotions.ZOMBIE_IMPREGNATION_0.get(), PotionForEmeralds.PotionType.REGULAR, 15, 10, 0),
+						new PotionForEmeralds(MinepreggoModPotions.PREGNANCY_RESISTANCE.get(), PotionForEmeralds.PotionType.REGULAR, 27, 10, 0),
+						new PotionForEmeralds(MinepreggoModPotions.PREGNANCY_HEALING.get(), PotionForEmeralds.PotionType.REGULAR, 27, 10, 0),
+						new PotionForEmeralds(MinepreggoModPotions.ZERO_GRAVITY_BELLY.get(), PotionForEmeralds.PotionType.REGULAR, 20, 10, 0),
 						new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.VILLAGER_BRAIN.get(), 12, 24, 10, 0),
 						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_HUMAN_FETUS.get(), 2, 30, 10),
 						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_ZOMBIE_FETUS.get(), 3, 30, 10),
@@ -162,17 +162,17 @@ public class Trades {
 						new ItemsForItems(MinepreggoModItems.BABY_ENDER.get(), 1, Items.DIAMOND, 40, 20),
 						new ItemsForItems(MinepreggoModItems.BABY_ZOMBIE.get(), 1, Items.DIAMOND, 20, 15),
 						new ItemsForItems(MinepreggoModItems.BABY_CREEPER.get(), 1, Items.DIAMOND, 16, 10),
-						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.IMPREGNATION_POTION_1.get()), 30, 1, 10, 0),
-						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.ZOMBIE_IMPREGNATION_2.get()), 33, 1, 10, 0),
-						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.CREEPER_IMPREGNATION_1.get()), 35, 1, 10, 0),
-						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.PREGNANCY_ACCELERATION_1.get()), 27, 1, 10, 0),
-						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.PREGNANCY_HEALING.get()), 27, 1, 10, 0),
-						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.ZERO_GRAVITY_BELLY.get()), 20, 1, 10, 0),
+						new PotionForEmeralds(MinepreggoModPotions.IMPREGNATION_POTION_1.get(), PotionForEmeralds.PotionType.REGULAR, 30, 10, 0),
+						new PotionForEmeralds(MinepreggoModPotions.ZOMBIE_IMPREGNATION_2.get(), PotionForEmeralds.PotionType.REGULAR, 33, 10, 0),
+						new PotionForEmeralds(MinepreggoModPotions.CREEPER_IMPREGNATION_1.get(), PotionForEmeralds.PotionType.REGULAR, 35, 10, 0),
+						new PotionForEmeralds(MinepreggoModPotions.PREGNANCY_ACCELERATION_0.get(), PotionForEmeralds.PotionType.REGULAR, 27, 10, 0),
+						new PotionForEmeralds(MinepreggoModPotions.PREGNANCY_HEALING.get(), PotionForEmeralds.PotionType.REGULAR, 27, 10, 0),
+						new PotionForEmeralds(MinepreggoModPotions.ZERO_GRAVITY_BELLY.get(), PotionForEmeralds.PotionType.REGULAR, 20, 10, 0),
 						new EnchantBookForBaby(Species.HUMAN),
 						new EnchantBookForBaby(Species.CREEPER),
 						new EnchantBookForBaby(Species.ZOMBIE),
 						new EnchantBookForBaby(Species.ENDER),
-						new ItemstackForItemstack(() -> MinepreggoModItems.BABY_ENDER_DRAGON_BLOCK.get().getDefaultInstance(), () -> createLootForBabyEnderDragon(1, 24, 4, 1, 32), 1, 10, 0.5f),
+						new ItemstackForItemstack(MinepreggoModItems.BABY_ENDER_DRAGON_BLOCK.get().getDefaultInstance(), createLootForBabyEnderDragon(1, 24, 4, 1, 32), 1, 10, 0.5f),
 						new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.VILLAGER_BRAIN.get(), 12, 24, 10, 0),
 						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_HUMAN_FETUS.get(), 2, 30, 10),
 						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_ZOMBIE_FETUS.get(), 3, 30, 10),
@@ -189,16 +189,16 @@ public class Trades {
 						new ItemsForItems(MinepreggoModItems.BABY_ENDER.get(), 1, Items.DIAMOND, 40, 20),
 						new ItemsForItems(MinepreggoModItems.BABY_ZOMBIE.get(), 1, Items.DIAMOND, 20, 15),
 						new ItemsForItems(MinepreggoModItems.BABY_CREEPER.get(), 1, Items.DIAMOND, 16, 10),	
-						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.ZOMBIE_IMPREGNATION_3.get()), 15, 1, 15, 0),
-						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.IMPREGNATION_POTION_2.get()), 36, 1, 15, 0),
-						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.PREGNANCY_ACCELERATION_3.get()), 27, 1, 20, 0),
-						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.PREGNANCY_RESISTANCE.get()), 27, 1, 25, 0),
-						new PotionsForEmeralds(PotionItemFactory.createPotion(MinepreggoModPotions.ZERO_GRAVITY_BELLY.get()), 20, 1, 10, 0),
+						new PotionForEmeralds(MinepreggoModPotions.ZOMBIE_IMPREGNATION_3.get(), PotionForEmeralds.PotionType.REGULAR, 15, 15, 0),
+						new PotionForEmeralds(MinepreggoModPotions.IMPREGNATION_POTION_2.get(), PotionForEmeralds.PotionType.REGULAR, 36, 15, 0),
+						new PotionForEmeralds(MinepreggoModPotions.LONG_METABOLISM_CONTROL.get(), PotionForEmeralds.PotionType.REGULAR, 20, 20, 0),
+						new PotionForEmeralds(MinepreggoModPotions.PREGNANCY_RESISTANCE.get(), PotionForEmeralds.PotionType.REGULAR, 27, 25, 0),
+						new PotionForEmeralds(MinepreggoModPotions.ZERO_GRAVITY_BELLY.get(), PotionForEmeralds.PotionType.REGULAR, 20, 10, 0),
 						new EnchantBookForBaby(Species.HUMAN),
 						new EnchantBookForBaby(Species.CREEPER),
 						new EnchantBookForBaby(Species.ZOMBIE),
 						new EnchantBookForBaby(Species.ENDER),
-						new ItemstackForItemstack(() -> MinepreggoModItems.BABY_ENDER_DRAGON_BLOCK.get().getDefaultInstance(), () -> createLootForBabyEnderDragon(3, 16, 4, 1, 4), 1, 10, 0.5f),
+						new ItemstackForItemstack(MinepreggoModItems.BABY_ENDER_DRAGON_BLOCK.get().getDefaultInstance(), createLootForBabyEnderDragon(3, 16, 4, 1, 4), 1, 10, 0.5f),
 						new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.VILLAGER_BRAIN.get(), 12, 24, 10, 0),
 						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_HUMAN_FETUS.get(), 2, 30, 10),
 						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_ZOMBIE_FETUS.get(), 3, 30, 10),
@@ -212,25 +212,27 @@ public class Trades {
 		}
 
 		private static ItemStack createLootForBabyEnderDragon(int mendingBooks, int netheriteIngots, int goldenApples, int enchantedGoldenApples, int diamonds) {
-		       ItemStack shulkerBox = new ItemStack(Blocks.SHULKER_BOX);
+		       ItemStack shulkerBox = new ItemStack(Blocks.SHULKER_BOX);		        
+		       NonNullList<ItemStack> inventory = createLoot(27, mendingBooks, netheriteIngots, goldenApples, enchantedGoldenApples, diamonds);
+		       Collections.shuffle(inventory);
 		        
-		        NonNullList<ItemStack> inventory = createLoot(27, mendingBooks, netheriteIngots, goldenApples, enchantedGoldenApples, diamonds);
-			    Collections.shuffle(inventory);
-		        
-		        CompoundTag beTag = new CompoundTag();
-		        ContainerHelper.saveAllItems(beTag, inventory);
-		        shulkerBox.getOrCreateTag().put("BlockEntityTag", beTag);     
-		        return shulkerBox;
+		       for (int index = inventory.size() - 1; index >= 0; index--) {
+		    	   if (inventory.get(index).isEmpty()) {
+		    		   inventory.set(index, createMinepreggoBook());
+		    		   break;
+		    	   }
+		       }
+			      
+		       CompoundTag beTag = new CompoundTag();
+		       ContainerHelper.saveAllItems(beTag, inventory);
+		       shulkerBox.getOrCreateTag().put("BlockEntityTag", beTag);     
+		       return shulkerBox;
 		}	
 		
 		private static NonNullList<ItemStack> createLoot(int size, int mendingBooks, int netheriteIngots, int goldenApples, int enchantedGoldenApples, int diamonds) {
 		    NonNullList<ItemStack> inventory = NonNullList.withSize(size, ItemStack.EMPTY);
 		    int currentSlot = 0;
-		    
-		    if (currentSlot < size) {
-		        inventory.set(currentSlot++, createMinepreggoBook());
-		    }
-		    
+		    		    
 		    while (mendingBooks > 0 && currentSlot < size) {
 		        ItemStack enchantedBook = EnchantedBookItem.createForEnchantment(new EnchantmentInstance(Enchantments.MENDING, 1));
 		        int stackSize = Math.min(mendingBooks, enchantedBook.getMaxStackSize());
@@ -281,26 +283,27 @@ public class Trades {
 	}
 	
 	static class ItemstackForItemstack implements VillagerTrades.ItemListing {
-	      protected final Supplier<ItemStack> sourceItemStack;
-	      protected final Supplier<ItemStack> targetItemStack;         
+	      protected final ItemStack sourceItemStack;
+	      protected final ItemStack targetItemStack;         
 	      protected final int maxUses;
 	      protected final int villagerXp;
 	      protected final float priceMultiplier;
 
-	      public ItemstackForItemstack(Supplier<ItemStack> sourceItemStack, Supplier<ItemStack> targetItemStack, int maxUses, int villagerXp, float priceMultiplier) {
+	      public ItemstackForItemstack(ItemStack sourceItemStack, ItemStack targetItemStack, int maxUses, int villagerXp, float priceMultiplier) {
 	         this.sourceItemStack = sourceItemStack;
 	         this.targetItemStack = targetItemStack;
 	         this.maxUses = maxUses;
 	         this.villagerXp = villagerXp;
 	         this.priceMultiplier = priceMultiplier;
 	      }
-
+	      
+	      @Override
 		  public MerchantOffer getOffer(Entity p_219699_, RandomSource p_219700_) {
 	         return new MerchantOffer(
-	        		 sourceItemStack.get(), targetItemStack.get(),
+	        		 sourceItemStack.copy(), targetItemStack.copy(),
 	        		 this.maxUses, this.villagerXp, this.priceMultiplier);
 	      }
-	  }
+	}
 	
 	
 	static class ItemsForItems implements VillagerTrades.ItemListing {
@@ -329,7 +332,12 @@ public class Trades {
 	      public ItemsForItems(Item sourceItem, int numberOfSourceItems, Item targetItem, int numberOfTargetItems, int maxUses) {
 	    	  this(new ItemStack(sourceItem), numberOfSourceItems, new ItemStack(targetItem), numberOfTargetItems, maxUses, 0, 0.05F);
 	      }
-	       
+	      
+	      public ItemsForItems(Item sourceItem, int numberOfSourceItems, Item targetItem, int numberOfTargetItems) {
+	    	  this(new ItemStack(sourceItem), numberOfSourceItems, new ItemStack(targetItem), numberOfTargetItems, 12, 0, 0.05F);
+	      }
+	      
+	      @Override
 		  public MerchantOffer getOffer(Entity p_219699_, RandomSource p_219700_) {
 	         return new MerchantOffer(
 	        		 new ItemStack(sourceItemStack.getItem(), numberOfSourceItems),
@@ -339,16 +347,35 @@ public class Trades {
 	  }
 	
 
-	static class PotionsForEmeralds extends VillagerTrades.ItemsForEmeralds {
-		public PotionsForEmeralds(ItemStack p_35765_, int p_35766_, int p_35767_, int p_35768_, int p_35769_) {
-			super(p_35765_, p_35766_, p_35767_, p_35768_, p_35769_);
+	static class PotionForEmeralds extends VillagerTrades.ItemsForEmeralds {
+		public PotionForEmeralds(Potion potion, PotionType potionType, int p_35766_, int p_35768_, int p_35769_) {
+			super(createPotionStack(potion, potionType), p_35766_, 1, p_35768_, p_35769_);
 		}
 		
 		@Override
 		public MerchantOffer getOffer(Entity p_219699_, RandomSource p_219700_) {
-			ItemStack sellingStack = this.itemStack.copy();
-			sellingStack.setCount(1);
-			return new MerchantOffer(new ItemStack(Items.EMERALD, this.emeraldCost), sellingStack, this.maxUses, this.villagerXp, this.priceMultiplier);
+			return new MerchantOffer(new ItemStack(Items.EMERALD, this.emeraldCost), this.itemStack.copy(), this.maxUses, this.villagerXp, this.priceMultiplier);
+		}
+		
+		private enum PotionType {
+			REGULAR,
+			SPLASH,
+			LINGERING;
+		}
+		
+		private static ItemStack createPotionStack(Potion potion, PotionType type) throws IllegalArgumentException {
+			switch (type) {
+				case REGULAR -> {
+					return PotionUtils.setPotion(new ItemStack(Items.POTION, 1), potion);
+				}
+				case SPLASH -> {
+					return PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION, 1), potion);
+				}
+				case LINGERING -> {
+					return PotionUtils.setPotion(new ItemStack(Items.LINGERING_POTION, 1), potion);
+				}
+				default -> throw new IllegalArgumentException("Invalid potion type");
+			}
 		}
 	}
 

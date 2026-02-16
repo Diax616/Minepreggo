@@ -7,9 +7,9 @@ import dev.dixmk.minepreggo.world.entity.BellyPartFactory;
 import dev.dixmk.minepreggo.world.entity.BellyPartManager;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
-import dev.dixmk.minepreggo.world.entity.preggo.IHostilPreggoMobPregnancyData;
-import dev.dixmk.minepreggo.world.entity.preggo.IHostilPregnantPreggoMob;
-import dev.dixmk.minepreggo.world.entity.preggo.HostilPregnantPreggoMobDataImpl;
+import dev.dixmk.minepreggo.world.entity.preggo.IHostilePreggoMobPregnancyData;
+import dev.dixmk.minepreggo.world.entity.preggo.IHostilePregnantPreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.HostilePregnantPreggoMobDataImpl;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
@@ -30,21 +30,21 @@ import net.minecraft.world.entity.animal.Ocelot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
-public abstract class AbstractHostilePregnantCreeperGirl extends AbstractHostileCreeperGirl implements IHostilPregnantPreggoMob {
+public abstract class AbstractHostilePregnantCreeperGirl extends AbstractHostileCreeperGirl implements IHostilePregnantPreggoMob {
 
-	private static final HostilPregnantPreggoMobDataImpl.DataAccessor<AbstractHostilePregnantCreeperGirl> DATA_ACCESOR = new HostilPregnantPreggoMobDataImpl.DataAccessor<>(AbstractHostilePregnantCreeperGirl.class);
-	private final IHostilPreggoMobPregnancyData pregnancyDataImpl;
+	private static final HostilePregnantPreggoMobDataImpl.DataAccessor<AbstractHostilePregnantCreeperGirl> DATA_ACCESOR = new HostilePregnantPreggoMobDataImpl.DataAccessor<>(AbstractHostilePregnantCreeperGirl.class);
+	private final IHostilePreggoMobPregnancyData pregnancyDataImpl;
 		
 	protected AbstractHostilePregnantCreeperGirl(EntityType<? extends AbstractHostileCreeperGirl> p_21803_, Level p_21804_, Creature typeOfCreature, PregnancyPhase currentPregnancyStage) {
 		super(p_21803_, p_21804_, typeOfCreature);
-		pregnancyDataImpl = new HostilPregnantPreggoMobDataImpl<>(DATA_ACCESOR, this, currentPregnancyStage);
+		pregnancyDataImpl = new HostilePregnantPreggoMobDataImpl<>(DATA_ACCESOR, this, currentPregnancyStage);
 		setExplosionData(updateExplosionByPregnancyPhase(currentPregnancyStage));
 	}
 	
 	protected abstract ExplosionData updateExplosionByPregnancyPhase(PregnancyPhase pregnancyPhase);
 	
 	@Override
-	public IHostilPreggoMobPregnancyData getPregnancyData() {
+	public IHostilePreggoMobPregnancyData getPregnancyData() {
 		return pregnancyDataImpl;
 	}
 	
@@ -57,14 +57,14 @@ public abstract class AbstractHostilePregnantCreeperGirl extends AbstractHostile
 	@Override
 	public void addAdditionalSaveData(CompoundTag compoundTag) {
 		super.addAdditionalSaveData(compoundTag);
-		compoundTag.put("MonsterPregnantPreggoMobData", pregnancyDataImpl.serializeNBT());
+		compoundTag.put("HostilePregnantCreeperGirlData", pregnancyDataImpl.serializeNBT());
 	}
 	
 	@Override
 	public void readAdditionalSaveData(CompoundTag compoundTag) {
 		super.readAdditionalSaveData(compoundTag);	
-		if (compoundTag.contains("MonsterPregnantPreggoMobData")) {
-			pregnancyDataImpl.deserializeNBT(compoundTag.getCompound("MonsterPregnantPreggoMobData"));
+		if (compoundTag.contains("HostilePregnantCreeperGirlData")) {
+			pregnancyDataImpl.deserializeNBT(compoundTag.getCompound("HostilePregnantCreeperGirlData"));
 		}
 	}
 	

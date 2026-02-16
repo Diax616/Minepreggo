@@ -26,6 +26,6 @@ public class EnderSlimeJellyWithSaltItem extends EnderSlimeJellyItem implements 
 
 	@Override
 	public float getPenalty() {
-		return 0.1f;
+		return 0.2f;
 	}
 }

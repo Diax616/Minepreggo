@@ -41,7 +41,7 @@ public class MinepreggoModTabs {
                 output.accept(MinepreggoModItems.ENDER_BREAST_MILK_BOTTLE.get());
 
                 output.accept(MinepreggoModItems.VILLAGER_BRAIN.get());
-                output.accept(MinepreggoModItems.PILLAGER_BRAIN.get());
+                output.accept(MinepreggoModItems.ILLAGER_BRAIN.get());
                 output.accept(MinepreggoModItems.WITCH_BRAIN.get());
                 output.accept(MinepreggoModItems.BRAIN_WITH_CHOCOLATE.get());
                 output.accept(MinepreggoModItems.BRAIN_WITH_SALT.get());
@@ -122,7 +122,8 @@ public class MinepreggoModTabs {
                 output.accept(MinepreggoModItems.CONCENTRATED_ENDER_LIFE_SUBSTANCE.get());
                 output.accept(MinepreggoModItems.SPECIMEN_TUBE.get());
                 output.accept(MinepreggoModItems.CUM_SPECIMEN_TUBE.get());
-               
+                output.accept(MinepreggoModItems.POWERED_CUM_SPECIMEN_TUBE.get());
+
                 output.accept(MinepreggoModItems.BABY_HUMAN.get());
                 output.accept(MinepreggoModItems.BABY_ZOMBIE.get());
                 output.accept(MinepreggoModItems.BABY_HUMANOID_CREEPER.get());

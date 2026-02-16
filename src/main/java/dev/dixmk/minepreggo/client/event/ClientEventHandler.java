@@ -13,7 +13,9 @@ import dev.dixmk.minepreggo.common.animation.CommonPlayerAnimationRegistry;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModKeyMappings;
 import dev.dixmk.minepreggo.network.packet.c2s.RequestBellyRubbingAnimationC2SPacket;
+import dev.dixmk.minepreggo.network.packet.c2s.ShootEnderDragonExplosiveBallC2SPacket;
 import dev.dixmk.minepreggo.network.packet.c2s.StopPlayerAnimationC2SPacket;
+import dev.dixmk.minepreggo.network.packet.c2s.TeleportUsingEnderPowerC2SPacket;
 import dev.dixmk.minepreggo.network.packet.c2s.TeleportWithEnderWomanC2SPacket;
 import dev.dixmk.minepreggo.network.packet.c2s.UpdateBellyRubbingStateC2SPacket;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
@@ -190,17 +192,33 @@ public class ClientEventHandler {
         	);	
         }
     	else if (MinepreggoModKeyMappings.TELEPORT_WITH_ENDER_WOMAN.consumeClick()) {
-			BlockPos targetPos = performTeleport();
+			BlockPos targetPos = getTargetBlock();
 			if (targetPos != null) {
 				MinepreggoModPacketHandler.INSTANCE.sendToServer(
 					new TeleportWithEnderWomanC2SPacket(targetPos)
 				);
 			}   		    	
-    	}		
+    	}	
+    	else if (MinepreggoModKeyMappings.TELEPORT_USING_ENDER_POWER.consumeClick()) {
+			BlockPos targetPos = getTargetBlock();
+			if (targetPos != null) {
+				MinepreggoModPacketHandler.INSTANCE.sendToServer(
+					new TeleportUsingEnderPowerC2SPacket(targetPos)
+				);
+			}   		    	
+    	}
+    	else if (MinepreggoModKeyMappings.SHOOT_DRAGON_FIRE_BALL.consumeClick()) {
+			BlockPos targetPos = getTargetBlock();
+			if (targetPos != null) {
+				MinepreggoModPacketHandler.INSTANCE.sendToServer(
+					new ShootEnderDragonExplosiveBallC2SPacket(targetPos)
+				);
+			}   		    	
+    	}	
     }	
     
     @CheckForNull
-    private static BlockPos performTeleport() {
+    private static BlockPos getTargetBlock() {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || mc.level == null)
         	return null;

@@ -19,6 +19,10 @@ public class PregnancyHealing extends MobEffect {
 	
 	@Override
 	public void applyInstantenousEffect(@Nullable Entity p_19462_, @Nullable Entity p_19463_, LivingEntity p_19464_, int p_19465_, double p_19466_) { 
+		if (p_19464_.level().isClientSide) {
+			return;
+		}
+		
 		if (p_19464_ instanceof ITamablePregnantPreggoMob p) {		
 			p.getPregnancyData().setPregnancyHealth(PregnancySystemHelper.MAX_PREGNANCY_HEALTH);
 		}
@@ -26,16 +30,14 @@ public class PregnancyHealing extends MobEffect {
 		else if (p_19464_ instanceof ServerPlayer player) {										
 			player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 			
 				cap.getFemaleData().ifPresent(femaleData -> {
-					if (!femaleData.isPregnant()) {
-						return;
+					if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
+						femaleData.getPregnancyData().setPregnancyHealth(PregnancySystemHelper.MAX_PREGNANCY_HEALTH);
 					}	
-					femaleData.getPregnancyData().setPregnancyHealth(PregnancySystemHelper.MAX_PREGNANCY_HEALTH);
 				})
 			);			
 		}
 	}
 	
-
 	@Override
 	public boolean isInstantenous() {
 		return true;

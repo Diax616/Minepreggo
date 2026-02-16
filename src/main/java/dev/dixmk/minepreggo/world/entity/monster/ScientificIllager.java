@@ -73,6 +73,7 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.Maps;
 
+import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModAdvancements;
@@ -99,6 +100,7 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
     private PrenatalCheckupCostHolder prenatalCheckUpCosts = new PrenatalCheckupCostHolder(3, 10);
 	private boolean spawnedPets = false;
     private Set<UUID> petsUUID = null;
+    private int restockTimer = 0;
     
 	public ScientificIllager(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.SCIENTIFIC_ILLAGER.get(), world);
@@ -110,13 +112,6 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
 		xpReward = 12;
 		setNoAi(false);
 	}
-	
-    private void updateTrades() {
-    	final var trades = Trades.Illager.getRandomTrades(this.random);
-		for (var trade : trades) {
-			this.offers.add(trade.getOffer(this, this.random));
-		}
-    }
 	
 	@Override
 	public boolean canJoinRaid() {
@@ -133,88 +128,16 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
 		return false;
 	}
     
-    @Override
-    public void setTradingPlayer(@Nullable Player player) {
-        this.tradingPlayer = player;
-    }
-
-    @Override
-    @Nullable
-    public Player getTradingPlayer() {
-        return this.tradingPlayer;
-    }
-
-    @Override
-    public MerchantOffers getOffers() {
-        if (this.offers == null) {
-            this.offers = new MerchantOffers();
-            this.updateTrades();
-         }
-         return this.offers;
-    }
+	@Override
+	public SoundEvent getNotifyTradeSound() {
+		return SoundEvents.PILLAGER_CELEBRATE;
+	}
     
     @Override
     public PrenatalCheckupCost getPrenatalCheckupCosts() {
     	return this.prenatalCheckUpCosts.getValue();
     }
-    
-    @Override
-    public void overrideOffers(MerchantOffers offers) {
-        this.offers = offers;
-    }
-
-    @Override
-    public void notifyTrade(MerchantOffer offer) {
-    	if (!this.level().isClientSide && this.getTradingPlayer() instanceof ServerPlayer serverPlayer) {
-			MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new PlaySoundPacketS2C(SoundEvents.VINDICATOR_CELEBRATE, serverPlayer.blockPosition(), 0.75f, 1.0f));
-			
-            ItemStack originalInput1 = findInInventory(serverPlayer, offer.getBaseCostA());
-            ItemStack originalInput2 = offer.getCostB().isEmpty() ? ItemStack.EMPTY : findInInventory(serverPlayer, offer.getCostB());
-            
-			MinepreggoModAdvancements.BABY_TRADE_TRIGGER.trigger(serverPlayer, originalInput1);   
-			MinepreggoModAdvancements.BABY_TRADE_TRIGGER.trigger(serverPlayer, originalInput2);
-		}
-    }
-
-    private ItemStack findInInventory(Player player, ItemStack template) {
-        for (ItemStack stack : player.getInventory().items) {
-            if (stack.is(template.getItem()) && stack.getCount() == template.getCount()) {
-                return stack; // Get the stack from the player's inventory conserving the tag and other data, not the one from the offer which is a copy without NBT data
-            }
-        }
-        return ItemStack.EMPTY;
-    }
-    
-    @Override
-    public void notifyTradeUpdated(ItemStack stack) {
-    	// It does not need, It is not a villager
-    }
-    
-    @Override
-    public int getVillagerXp() {
-        return 0;
-    }
-
-    @Override
-    public void overrideXp(int xp) {
-    	// It does not need, It is not a villager
-    }
-
-    @Override
-    public boolean isClientSide() {
-        return this.level().isClientSide;
-    }
-        
-	@Override
-	public boolean showProgressBar() {
-		return false;
-	}
-
-	@Override
-	public SoundEvent getNotifyTradeSound() {
-	      return SoundEvents.PILLAGER_CELEBRATE;
-	}
-    
+    	
     @Override
     public InteractionResult mobInteract(Player player, InteractionHand hand) {
         	
@@ -234,7 +157,6 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
 		     
         return InteractionResult.sidedSuccess(this.level().isClientSide);
     }
-  
     
     private boolean tryOpenPrenatalCheckUpMenu(ServerPlayer serverPlayer) {   	
     	if (serverPlayer.level().isClientSide) {
@@ -294,6 +216,8 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
 	    MerchantOffers merchantoffers = this.getOffers();
 	    compound.putBoolean("spawnedPets", this.spawnedPets);
 	    
+	    compound.putInt("RestockTimer", this.restockTimer);
+	    
 	    if (!merchantoffers.isEmpty()) {
 	    	compound.put("Offers", merchantoffers.createTag());
 	    }
@@ -316,6 +240,8 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
 	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);		
 		this.spawnedPets = compound.getBoolean("spawnedPets");
+		
+		this.restockTimer = compound.getInt("RestockTimer");
 		
 		if (compound.contains("Offers")) {
 			this.offers = new MerchantOffers(compound.getCompound("Offers"));
@@ -411,6 +337,24 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
 		return false;
 	}
 	
+	@Override
+	public void aiStep() {
+	    super.aiStep();
+	    if (this.level().isClientSide) {
+	        return;
+	    }
+	    
+	    if (this.offers != null && hasOutOfStockOffer()) {          
+            if (this.restockTimer >= 12000 && this.getTradingPlayer() == null) {
+            	MinepreggoMod.LOGGER.debug("Restocking offers for Scientific Illager at position {} after {} ticks", this.blockPosition(), this.restockTimer);
+                this.restockTimer = 0;
+                this.offers = this.createTrades();
+            } else {
+            	++this.restockTimer;
+            }
+	    }
+	}
+
 	@Override
 	protected void customServerAiStep() {
 	    if (!this.isNoAi() && GoalUtils.hasGroundPathNavigation(this)) {
@@ -519,4 +463,99 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
 
 	      this.setItemSlot(EquipmentSlot.MAINHAND, itemstack);
 	}
+	
+    @Override
+    public void setTradingPlayer(@Nullable Player player) {
+        this.tradingPlayer = player;
+    }
+
+    @Override
+    @Nullable
+    public Player getTradingPlayer() {
+        return this.tradingPlayer;
+    }
+
+    @Override
+    public MerchantOffers getOffers() {
+        if (this.offers == null) {
+            this.offers = this.createTrades();
+         }
+         return this.offers;
+    }
+
+    @Override
+    public void overrideOffers(MerchantOffers offers) {
+        this.offers = offers;
+    }
+
+    @Override
+    public void notifyTrade(MerchantOffer offer) {
+    	if (this.level().isClientSide) {
+    		return;
+    	}
+    	
+        offer.increaseUses();
+    	
+    	if (this.getTradingPlayer() instanceof ServerPlayer serverPlayer) {
+			MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new PlaySoundPacketS2C(SoundEvents.VINDICATOR_CELEBRATE, serverPlayer.blockPosition(), 0.75f, 1.0f));
+			
+            ItemStack originalInput1 = findInInventory(serverPlayer, offer.getBaseCostA());
+            ItemStack originalInput2 = offer.getCostB().isEmpty() ? ItemStack.EMPTY : findInInventory(serverPlayer, offer.getCostB());
+            
+			MinepreggoModAdvancements.BABY_TRADE_TRIGGER.trigger(serverPlayer, originalInput1);   
+			MinepreggoModAdvancements.BABY_TRADE_TRIGGER.trigger(serverPlayer, originalInput2);
+		}
+    }
+   
+    @Override
+    public void notifyTradeUpdated(ItemStack stack) {
+    	// It does not need, It is not a villager
+    }
+    
+    @Override
+    public int getVillagerXp() {
+        return 0;
+    }
+
+    @Override
+    public void overrideXp(int xp) {
+    	// It does not need, It is not a villager
+    }
+
+    @Override
+    public boolean isClientSide() {
+        return this.level().isClientSide;
+    }
+        
+	@Override
+	public boolean showProgressBar() {
+		return false;
+	}
+
+	private boolean hasOutOfStockOffer() {
+	    for (MerchantOffer offer : this.offers) {
+	        if (offer.isOutOfStock()) {
+	            return true;
+	        }
+	    }
+	    return false;
+	}
+	
+    private ItemStack findInInventory(Player player, ItemStack template) {
+        for (ItemStack stack : player.getInventory().items) {
+            if (stack.is(template.getItem()) && stack.getCount() == template.getCount()) {
+                return stack; // Get the stack from the player's inventory conserving the tag and other data, not the one from the offer which is a copy without NBT data
+            }
+        }
+        return ItemStack.EMPTY;
+    }
+	
+    private MerchantOffers createTrades() {
+    	final var trades = Trades.Illager.getRandomTrades(this.random);
+    	MerchantOffers newOffers = new MerchantOffers();
+		for (var trade : trades) {
+			newOffers.add(trade.getOffer(this, this.random));
+		}
+		return newOffers;
+    }
 }

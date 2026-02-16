@@ -18,26 +18,24 @@ public class Fertility extends MobEffect {
 
 	@Override
 	public void applyInstantenousEffect(@Nullable Entity p_19462_, @Nullable Entity p_19463_, LivingEntity p_19464_, int p_19465_, double p_19466_) { 		
+		if (p_19464_.level().isClientSide) {
+			return;
+		}
+		
 		if (p_19464_ instanceof ITamablePreggoMob<?> p) {		
-			p.getGenderedData().incrementFertilityRate(1.0f);
+			p.getGenderedData().incrementFertilityRate(0.3f);
+			p.getGenderedData().resetFertilityRateTimer();
 		}		
 		else if (p_19464_ instanceof ServerPlayer player) {										
-			player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> {					
-				if (cap.isFemale()) {	
-					cap.getFemaleData().ifPresent(femaleData -> {
-						if (!femaleData.isPregnant() && femaleData.getPostPregnancyData().isEmpty()) {
-							femaleData.incrementFertilityRate(1.0F);
-						}
-					});	
-				}
-				else if (cap.isMale()) {
-					cap.getMaleData().ifPresent(maleData -> maleData.incrementFertilityRate(0.9F));	
-				}	
-			});			
+			player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 				
+				cap.getBreedableData().ifPresent(breedableData -> {
+					breedableData.incrementFertilityRate(0.3f);
+					breedableData.resetFertilityRateTimer();
+				})
+			);			
 		}
 	}
 	
-
 	@Override
 	public boolean isInstantenous() {
 		return true;
