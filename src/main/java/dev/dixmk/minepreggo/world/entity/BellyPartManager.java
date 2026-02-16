@@ -14,9 +14,11 @@ import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import net.minecraft.world.entity.LivingEntity;
 
 public class BellyPartManager {
-    private final Map<UUID, BellyPart> bellyParts = new HashMap<>();
+    private final Map<UUID, BellyPart> bellyParts;
     
-    private BellyPartManager() {}
+    private BellyPartManager() {
+    	bellyParts = new HashMap<>();
+    }
 
     private static class Holder {
         private static final BellyPartManager INSTANCE = new BellyPartManager();

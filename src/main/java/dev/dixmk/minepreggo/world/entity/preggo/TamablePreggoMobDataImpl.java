@@ -31,7 +31,7 @@ public class TamablePreggoMobDataImpl<E extends PreggoMob> implements ITamablePr
             this.dataBody = SynchedEntityData.defineId(entityClass, MinepreggoModEntityDataSerializers.OPTIONAL_PREGGO_MOB_BODY);
     	}
     	
-    	public void defineSynchedData(E preggomob) {
+    	public void defineSynchedData(E preggomob) {	
     		SynchedEntityData entityData = preggomob.getEntityData();
         	entityData.define(dataHungry, 14);		
         	entityData.define(dataSavage, true);

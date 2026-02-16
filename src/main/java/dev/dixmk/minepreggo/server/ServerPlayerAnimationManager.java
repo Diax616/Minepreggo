@@ -13,7 +13,9 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 
 public class ServerPlayerAnimationManager {
     
-	private ServerPlayerAnimationManager() {}
+	private ServerPlayerAnimationManager() {
+		lastSyncedState = new HashMap<>();
+	}
 	
     private static class Holder {
         private static final ServerPlayerAnimationManager INSTANCE = new ServerPlayerAnimationManager();
@@ -33,7 +35,7 @@ public class ServerPlayerAnimationManager {
     }
     
 	private static final int SYNC_INTERVAL = 20;
-    private final Map<UUID, AnimationState> lastSyncedState = new HashMap<>();
+    private final Map<UUID, AnimationState> lastSyncedState;
     private int tickCounter = 0;
 
     private void syncAnimations() {

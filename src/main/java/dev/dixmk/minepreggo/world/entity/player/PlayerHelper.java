@@ -476,7 +476,7 @@ public class PlayerHelper {
 	}	
 	
 	public static boolean addEnderDragonPregnancyEffects(ServerPlayer player) {	
-		Optional<Boolean> added = player.getCapability(MinepreggoCapabilities.PLAYER_DATA)
+		return player.getCapability(MinepreggoCapabilities.PLAYER_DATA)
 				.resolve()
 				.flatMap(cap -> cap.getFemaleData().resolve())
 				.map(femaleData -> {
@@ -488,9 +488,7 @@ public class PlayerHelper {
 						}			
 					}
 					return Boolean.FALSE;
-				});
-		
-		return added.orElse(Boolean.FALSE);
+				}).orElse(Boolean.FALSE);	
 	}
 	
 	// PLAYER MOB EFFECT - END

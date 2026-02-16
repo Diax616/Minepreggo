@@ -23,6 +23,7 @@ import dev.dixmk.minepreggo.network.packet.s2c.SyncMobEffectS2CPacket;
 import dev.dixmk.minepreggo.network.packet.s2c.SyncPlayerDataS2CPacket;
 import dev.dixmk.minepreggo.network.packet.s2c.SyncPregnancySystemS2CPacket;
 import dev.dixmk.minepreggo.server.ServerCinematicManager;
+import dev.dixmk.minepreggo.server.ServerPendingPlayerTaskManager;
 import dev.dixmk.minepreggo.server.ServerPlayerAnimationManager;
 import dev.dixmk.minepreggo.world.entity.BellyPart;
 import dev.dixmk.minepreggo.world.entity.BellyPartFactory;
@@ -50,6 +51,7 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Position;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -118,6 +120,7 @@ public class PlayerEventHandler {
 				}
 			});
 			serverPlayer.getCapability(MinepreggoCapabilities.ENDER_POWER_DATA).ifPresent(c -> c.sync(serverPlayer));
+			ServerPendingPlayerTaskManager.getInstance().executePendingTasks(serverPlayer);
 		}
 	}
 
@@ -405,14 +408,22 @@ public class PlayerEventHandler {
 					femaleData.getPrePregnancyData().ifPresent(prePregnancyData -> {
 						if (prePregnancyData.pregnancyType() == PregnancyType.SEX
 								&& prePregnancyData.fatherId() != null
+								&& prePregnancyData.typeOfSpeciesOfFather() == Species.HUMAN
 								&& serverPlayer.level() instanceof ServerLevel serverLevel) {
 							
-							// TODO: This only works if father player is currently online, the father player will not obtain the advancement if the father is offline during the initialization tick.
 							Optional<ServerPlayer> fatherPlayerOpt = serverLevel.getServer().getPlayerList().getPlayers().stream()
 									.filter(p -> p.getUUID().equals(prePregnancyData.fatherId()))
 									.findFirst();
 							
-							fatherPlayerOpt.ifPresent(fatherPlayer -> MinepreggoModAdvancements.IMPREGNATE_ENTITY_TRIGGER.trigger(fatherPlayer, serverPlayer));
+							if (fatherPlayerOpt.isPresent()) {
+								MinepreggoModAdvancements.IMPREGNATE_ENTITY_TRIGGER.trigger(fatherPlayerOpt.get(), serverPlayer);
+							}
+							else {
+					            CompoundTag data = new CompoundTag();
+					            data.putUUID("target", serverPlayer.getUUID());					            
+					            ServerPendingPlayerTaskManager.getInstance().addTask(prePregnancyData.fatherId(), "impregnate_player", data);
+								MinepreggoMod.LOGGER.debug("Player {} impregnated by offline player with UUID {}, advancement will not be triggered", serverPlayer.getName().getString(), prePregnancyData.fatherId());
+							}		
 						}
 					});
 		

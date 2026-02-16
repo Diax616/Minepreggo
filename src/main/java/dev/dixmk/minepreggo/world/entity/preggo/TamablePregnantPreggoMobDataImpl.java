@@ -53,7 +53,7 @@ public class TamablePregnantPreggoMobDataImpl<E extends PreggoMob & ITamablePreg
     		entityData.define(dataHorny, 0);
     		entityData.define(dataPregnancySymptom, (byte) 0);
     		entityData.define(dataPregnancyPain, Optional.empty());
-    		entityData.define(dataCravingChosen, Optional.empty());		
+    		entityData.define(dataCravingChosen, Optional.empty());
     	}
     	
     	public EntityDataAccessor<Integer> getDataCraving() {

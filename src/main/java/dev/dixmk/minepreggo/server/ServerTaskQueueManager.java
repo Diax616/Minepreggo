@@ -9,9 +9,11 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import net.minecraftforge.fml.util.thread.SidedThreadGroups;
 
 public class ServerTaskQueueManager {
-    private final Collection<AbstractMap.SimpleEntry<Runnable, Integer>> workQueue = new ConcurrentLinkedQueue<>();
+    private final Collection<AbstractMap.SimpleEntry<Runnable, Integer>> workQueue;
 
-    private ServerTaskQueueManager() {}
+    private ServerTaskQueueManager() {
+    	workQueue = new ConcurrentLinkedQueue<>();
+    }
 
     private static class Holder {
         private static final ServerTaskQueueManager INSTANCE = new ServerTaskQueueManager();
