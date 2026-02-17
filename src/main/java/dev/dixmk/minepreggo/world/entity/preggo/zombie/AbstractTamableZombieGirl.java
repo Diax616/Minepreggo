@@ -4,16 +4,34 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.FleeSunGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.RestrictSunGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.OwnerHurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.OwnerHurtTargetGoal;
 import net.minecraft.world.level.Level;
+
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import dev.dixmk.minepreggo.world.entity.ai.goal.PreggoMobAIHelper;
+import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
+import dev.dixmk.minepreggo.world.entity.ai.goal.BreakBlocksToFollowOwnerGoal;
+import dev.dixmk.minepreggo.world.entity.ai.goal.EatGoal;
+import dev.dixmk.minepreggo.world.entity.ai.goal.GoalHelper;
+import dev.dixmk.minepreggo.world.entity.ai.goal.PreggoMobFollowOwnerGoal;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMobData;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMobSystem;
+import dev.dixmk.minepreggo.world.entity.preggo.Inventory;
+import dev.dixmk.minepreggo.world.entity.preggo.InventorySlotMapper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.TamablePreggoMobDataImpl;
 import dev.dixmk.minepreggo.world.inventory.preggo.zombie.AbstractZombieGirlInventoryMenu;
@@ -37,9 +55,12 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraft.world.entity.animal.Turtle;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Ghast;
+import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -47,16 +68,8 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.wrapper.CombinedInvWrapper;
-import net.minecraftforge.items.wrapper.EntityArmorInvWrapper;
-import net.minecraftforge.items.wrapper.EntityHandsInvWrapper;
 
 public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl implements ITamablePreggoMob<IFemaleEntity> {
-	
-	private final ItemStackHandler inventory = new ItemStackHandler(INVENTORY_SIZE);
-	private final CombinedInvWrapper combined = new CombinedInvWrapper(inventory, new EntityHandsInvWrapper(this), new EntityArmorInvWrapper(this));
-	public static final int INVENTORY_SIZE = 15;
 
     private static final TamablePreggoMobDataImpl.DataAccessor<AbstractTamableZombieGirl> DATA_HOLDER = new TamablePreggoMobDataImpl.DataAccessor<>(AbstractTamableZombieGirl.class);
 	
@@ -66,11 +79,12 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 
 	protected final ITamablePreggoMobData tamablePreggoMobData = new TamablePreggoMobDataImpl<>(DATA_HOLDER, this);
 	
+	protected final Inventory inventory = new Inventory(InventorySlotMapper.createHumanoidDefault(), 8);
+	
 	protected boolean breakBlocks = false;
 	
 	protected AbstractTamableZombieGirl(EntityType<? extends AbstractZombieGirl> p_21803_, Level p_21804_) {
 	      super(p_21803_, p_21804_, Creature.HUMANOID);
-	      this.reassessTameGoals();	 
 	      this.femaleEntityData = createFemaleEntityData();
 	      this.tamablePreggoMobSystem = createTamablePreggoMobSystem();
 	}
@@ -90,6 +104,11 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	}
 	
 	@Override
+	public boolean canBeLeashed(Player p_21813_) {
+		return super.canBeLeashed(p_21813_) && this.isOwnedBy(p_21813_) && !this.tamablePreggoMobData.isSavage();
+	}
+	
+	@Override
 	protected void defineSynchedData() {
 		super.defineSynchedData();
 		DATA_HOLDER.defineSynchedData(this);
@@ -98,7 +117,7 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	@Override
 	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
-		compound.put("InventoryCustom", inventory.serializeNBT());
+		compound.put("InventoryCustom", inventory.getHandler().serializeNBT());
 		compound.put("defaultFemaleEntityImpl", this.femaleEntityData.serializeNBT());
 		compound.put("TamableData", tamablePreggoMobData.serializeNBT());
 	}
@@ -107,7 +126,7 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
 		if (compound.get("InventoryCustom") instanceof CompoundTag inventoryTag)	
-			inventory.deserializeNBT(inventoryTag);		
+			inventory.getHandler().deserializeNBT(inventoryTag);		
 		
 		if (compound.contains("defaultFemaleEntityImpl", Tag.TAG_COMPOUND)) {
 			femaleEntityData.deserializeNBT(compound.getCompound("defaultFemaleEntityImpl"));
@@ -125,19 +144,27 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
 		if (this.isAlive() && capability == ForgeCapabilities.ITEM_HANDLER && side == null)
-			return LazyOptional.of(() -> combined).cast();
+			return LazyOptional.of(inventory::getHandler).cast();
 		return super.getCapability(capability, side);
 	}
 
 	@Override
 	protected void dropEquipment() {
 		super.dropEquipment();
-		for (int i = ITamablePreggoMob.FOOD_INVENTORY_SLOT; i < inventory.getSlots(); ++i) {
-			ItemStack itemstack = inventory.getStackInSlot(i);
+		var handler = inventory.getHandler();
+		var slotMapper = inventory.getSlotMapper();
+		for (int i = slotMapper.getExtraSlotsRange().leftInt(); i < handler.getSlots(); ++i) {
+			ItemStack itemstack = handler.getStackInSlot(i);
 			if (!itemstack.isEmpty() && !EnchantmentHelper.hasVanishingCurse(itemstack)) {
 				this.spawnAtLocation(itemstack);
 			}
 		}
+		slotMapper.getCustomSlots().forEach(slot -> {
+			ItemStack itemstack = inventory.getHandler().getStackInSlot(slotMapper.getSlotIndex(slot));
+			if (!itemstack.isEmpty() && !EnchantmentHelper.hasVanishingCurse(itemstack)) {
+				this.spawnAtLocation(itemstack);
+			}
+		});
 	}	
    
 	@Override
@@ -156,7 +183,7 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	@Override
 	public boolean hurt(DamageSource damagesource, float amount) {
 		boolean result = super.hurt(damagesource, amount);	
-		if (result) {
+		if (!this.level().isClientSide && result) {
 			PreggoMobHelper.tryToDamageArmor(this, damagesource);
 			
 			if (tamablePreggoMobData.canBePanicking()) {	
@@ -174,6 +201,8 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 					&& (serverPlayer.containerMenu instanceof AbstractZombieGirlMainMenu<?> || serverPlayer.containerMenu instanceof AbstractZombieGirlInventoryMenu<?>)) {
 				serverPlayer.closeContainer();
 			}	
+			
+			this.tamablePreggoMobSystem.onHurtSuccessful(damagesource);
 		}		
 		return result;
 	}
@@ -183,20 +212,167 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 		boolean result = super.doHurtTarget(target);	
 		if (result && !this.level().isClientSide) {
 			PreggoMobHelper.tryToDamageItemOnMainHand(this);
-		}
+			this.tamablePreggoMobSystem.onDoHurtTargetSuccessful(target);		
+		}	
 		return result;
 	}
 	
 	@Override
 	protected void registerGoals() {
-		PreggoMobAIHelper.setTamableZombieGirlGoals(this);
 		this.goalSelector.addGoal(8, new AbstractZombieGirl.ZombieGirlAttackTurtleEggGoal(this, 1.0D, 3){
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
+				&& !isOnFire()
 				&& !tamablePreggoMobData.isWaiting();
 			}
 		});	
+		
+		this.goalSelector.addGoal(1, new RestrictSunGoal(this));
+		this.goalSelector.addGoal(1, new FleeSunGoal(this, 1.2D));
+		this.targetSelector.addGoal(2, new HurtByTargetGoal(this));	
+		this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.2D, false));	
+		this.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false, false) {
+			@Override
+			public boolean canUse() {
+				return super.canUse()
+				&& !isOnFire()
+				&& (getTamableData().isSavage() || !isTame());
+			}
+		});		
+		this.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(this, IronGolem.class, false, false){
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !isOnFire()		
+				&& (getTamableData().isSavage() || !isTame());
+			}
+		});
+		this.goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(this, 1.0D) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& (getTamableData().isSavage() || !isTame());	
+			}
+		});
+		this.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(this, Player.class, false, false) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !isOnFire()		
+				&& (getTamableData().isSavage() || !isTame());		
+			}
+		});		
+		this.targetSelector.addGoal(8, new NearestAttackableTargetGoal<>(this, Turtle.class, 10, true, false, Turtle.BABY_ON_LAND_SELECTOR){
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !isOnFire()
+				&& ((isTame() && !getTamableData().isWaiting()) || getTamableData().isSavage());
+			}
+		});	
+		this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 6F) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !isOnFire()
+				&& !getTamableData().isWaiting()
+				&& !LivingEntityHelper.hasValidTarget(mob);
+			}
+			
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse()
+				&& !isOnFire()
+				&& !LivingEntityHelper.isTargetStillValid(mob);
+			}
+		});			
+		this.goalSelector.addGoal(10, new RandomLookAroundGoal(this) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !isOnFire()
+				&& (getTamableData().isSavage() || !isTame());		
+			}
+		});	
+	}
+	
+	@Override
+	protected void reassessTameGoals() {
+		if (this.isTame()) {
+			GoalHelper.addGoalWithReplacement(this, 3, new OwnerHurtByTargetGoal(this) {
+				@Override
+				public boolean canUse() {
+					return super.canUse() 
+					&& !getTamableData().isSavage()
+					&& !getTamableData().isWaiting()
+					&& !isOnFire();				
+				}
+
+				@Override
+				public boolean canContinueToUse() {
+					return super.canContinueToUse()			
+					&& !isOnFire();	
+				}
+			});
+			GoalHelper.addGoalWithReplacement(this, 3, new OwnerHurtTargetGoal(this) {
+				@Override
+				public boolean canUse() {
+					return super.canUse() 
+					&& !getTamableData().isSavage()		
+					&& !getTamableData().isWaiting()
+					&& !isOnFire();				
+				}
+
+				@Override
+				public boolean canContinueToUse() {
+					return super.canContinueToUse()
+					&& !isOnFire();	
+				}
+			}, true);		
+			GoalHelper.addGoalWithReplacement(this, 6, new PreggoMobFollowOwnerGoal<>(this, 1.2D, 6F, 2F, false) {
+				@Override
+				public boolean canUse() {
+					return super.canUse() 
+					&& !isOnFire();				
+				}
+
+				@Override
+				public boolean canContinueToUse() {
+					return super.canContinueToUse()
+					&& !isOnFire();	
+				}
+			});
+			GoalHelper.addGoalWithReplacement(this, 4, new BreakBlocksToFollowOwnerGoal<>(this, 2, 5) {
+				@Override
+				public boolean canUse() {
+					return super.canUse() 
+					&& !isOnFire();				
+				}
+
+				@Override
+				public boolean canContinueToUse() {
+					return super.canContinueToUse()
+					&& !isOnFire();	
+				}
+			}, true);
+			GoalHelper.addGoalWithReplacement(this, 6, new EatGoal<>(this, 0.6F, 20) {
+				@Override
+				public boolean canUse() {
+					return super.canUse() 
+					&& !isOnFire();				
+				}
+
+				@Override
+				public boolean canContinueToUse() {
+					return super.canContinueToUse()
+					&& !isOnFire();	
+				}
+			});
+		} else {
+			GoalHelper.removeGoalByClass(this.targetSelector, Set.of(BreakBlocksToFollowOwnerGoal.class, OwnerHurtTargetGoal.class));
+			GoalHelper.removeGoalByClass(this.goalSelector, Set.of(EatGoal.class, PreggoMobFollowOwnerGoal.class, OwnerHurtByTargetGoal.class));
+		}
 	}
 	
 	@Override
@@ -246,7 +422,6 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 		}	
 	}
 	
-
 	@Override
 	public boolean wantsToAttack(LivingEntity target, LivingEntity owner) {		
 		return !(target instanceof Ghast 
@@ -282,7 +457,7 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 			}
 		}
 		else {
-			PreggoMobHelper.storeItemInSpecificRange(this, p_21471_, ITamablePreggoMob.FOOD_INVENTORY_SLOT + 1, INVENTORY_SIZE - 1);	
+			PreggoMobHelper.storeItemInExtraSlots(this, p_21471_);	
 		}
 	}
 	
@@ -294,10 +469,10 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	
 	// ITamablePreggomob START
 	@Override
-	public int getInventorySize() {
-		return INVENTORY_SIZE;
+	public Inventory getInventory() {
+		return inventory;
 	}
-	
+
 	@Override
 	public void setCinematicOwner(ServerPlayer player) {
 		this.tamablePreggoMobSystem.setCinematicOwner(player);

@@ -4,10 +4,11 @@ import javax.annotation.Nonnegative;
 
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.pregnancy.Craving;
+import net.minecraft.world.item.Rarity;
 
-public class BrainWithSaltItem extends AbstractBrain implements ICravingItem {
+public class BrainWithSaltItem extends BrainItem implements ICravingItem {
 	public BrainWithSaltItem() {
-		super();
+		super(13, Rarity.COMMON);
 	}
 	
 	@Override

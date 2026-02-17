@@ -1,0 +1,9 @@
+{
+  "parent": "minepreggo:custom/baby_ender_dragon",
+  "textures": {
+    "all": "minepreggo:block/baby_ender_dragon",
+    "particle": "minepreggo:block/baby_ender_dragon",
+    "0": "minepreggo:block/baby_ender_dragon"
+  },
+  "render_type": "solid"
+}

@@ -15,7 +15,12 @@ import net.minecraft.world.entity.npc.Villager;
 
 public class ServerCinematicManager {
 	
-	private ServerCinematicManager() {}
+	private ServerCinematicManager() {
+	    activeSessions = new HashMap<>();
+	    playersInCinematic = new HashSet<>();
+	    preggoMobsInCinematic = new HashSet<>();
+	    villagerInCinematic = new HashSet<>();
+	}
 	
     private static class Holder {
         private static final ServerCinematicManager INSTANCE = new ServerCinematicManager();
@@ -25,10 +30,10 @@ public class ServerCinematicManager {
         return Holder.INSTANCE;
     }
 	
-    private final Map<UUID, CinematicSession<?>> activeSessions = new HashMap<>();
-    private final Set<UUID> playersInCinematic = new HashSet<>();
-    private final Set<UUID> preggoMobsInCinematic = new HashSet<>();
-    private final Set<UUID> villagerInCinematic = new HashSet<>();
+    private final Map<UUID, CinematicSession<?>> activeSessions;
+    private final Set<UUID> playersInCinematic;
+    private final Set<UUID> preggoMobsInCinematic;
+    private final Set<UUID> villagerInCinematic;
     
     public void start(ServerPlayer playerA, ServerPlayer playerB, @Nullable Runnable onStart, @Nullable Runnable onEnd) {
         if (isInCinematic(playerA) || isInCinematic(playerB)) return;
@@ -98,7 +103,7 @@ public class ServerCinematicManager {
         return villagerInCinematic.contains(villager.getUUID());
     }
 
-    public abstract static class CinematicSession<E extends LivingEntity> {
+    private class CinematicSession<E extends LivingEntity> {
         public final UUID source;
         public final UUID target;
         
@@ -128,19 +133,19 @@ public class ServerCinematicManager {
         }
     }
        
-    public static class CinematicP2PSession extends CinematicSession<ServerPlayer> {     
+    private class CinematicP2PSession extends CinematicSession<ServerPlayer> {     
         public CinematicP2PSession(ServerPlayer a, ServerPlayer b, @Nullable Runnable onStart, @Nullable Runnable onEnd) {
         	super(a, b, onStart, onEnd);
         }
     }
     
-    public static class CinematicP2MSession extends CinematicSession<PreggoMob> {        
+    private class CinematicP2MSession extends CinematicSession<PreggoMob> {        
         public CinematicP2MSession(ServerPlayer a, PreggoMob b, @Nullable Runnable onStart, @Nullable Runnable onEnd) {
         	super(a, b, onStart, onEnd);
         }
     }
     
-    public static class CinematicP2VSession extends CinematicSession<Villager> {        
+    private class CinematicP2VSession extends CinematicSession<Villager> {        
         public CinematicP2VSession(ServerPlayer a, Villager b, @Nullable Runnable onStart, @Nullable Runnable onEnd) {
         	super(a, b, onStart, onEnd);
         }

@@ -5,7 +5,6 @@ import javax.annotation.Nullable;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.model.entity.preggo.zombie.AbstractTamablePregnantZombieGirlModel;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobFace;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
 import net.minecraft.client.renderer.RenderType;
@@ -17,21 +16,19 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class TamablePregnantZombieGirlExpressionLayer 
 	<E extends AbstractTamablePregnantZombieGirl, M extends AbstractTamablePregnantZombieGirlModel<E>> extends TamableZombieGirlExpressionLayer<E, M> {
 
-	protected static final RenderType ANGRY1 = RenderType.entityCutoutNoCull(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/expressions/zombie_girl_face_angry1.png"));
 	protected static final RenderType HORNY2 = RenderType.entityCutoutNoCull(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/expressions/zombie_girl_face_horny2.png"));
 	protected static final RenderType PAIN1 = RenderType.entityCutoutNoCull(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/expressions/zombie_girl_face_pain1.png"));
 	protected static final RenderType PAIN3 = RenderType.entityCutoutNoCull(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/expressions/zombie_girl_face_pain3.png"));
 	protected static final RenderType PAIN2 = RenderType.entityCutoutNoCull(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/expressions/zombie_girl_face_pain2.png"));
-	protected static final RenderType SAD1 = RenderType.entityCutoutNoCull(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/expressions/zombie_girl_face_sad1.png"));
 	protected static final RenderType SURPRISED1 = RenderType.entityCutoutNoCull(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/expressions/zombie_girl_face_surprised1.png"));
-	
+	protected static final RenderType SAD1 = RenderType.entityCutoutNoCull(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/expressions/zombie_girl_face_sad1.png"));
+
 	public TamablePregnantZombieGirlExpressionLayer(RenderLayerParent<E, M> p_117346_) {
 		super(p_117346_);
 	}
 
 	@Override
-	public @Nullable RenderType renderType(E zombieGirl) {		
-		
+	public @Nullable RenderType renderType(E zombieGirl) {			
 		final var pregnancyData = zombieGirl.getPregnancyData();
 		final var pain = pregnancyData.getPregnancyPain();
 		
@@ -44,7 +41,7 @@ public class TamablePregnantZombieGirlExpressionLayer
 			case MORNING_SICKNESS: {		
 				return PAIN4;
 			}
-			case FETAL_MOVEMENT: {		
+			case FETAL_MOVEMENT, BIRTH: {		
 				return PAIN1;
 			}
 			case CONTRACTION: {		
@@ -56,30 +53,16 @@ public class TamablePregnantZombieGirlExpressionLayer
 			case PREBIRTH: {		
 				return PAIN3;
 			}
-			case BIRTH: {		
-				return PAIN1;
-			}
 			default:
 				break;
 			}
 		}
-		
-		var tamableData = zombieGirl.getTamableData();
-		
+
 		if (!pregnancyData.getSyncedPregnancySymptoms().isEmpty()) {
 			return SAD1;
 		}
-		else if (tamableData.getFaceState() == PreggoMobFace.BLUSHED) {
-			return HORNY2;
-		}
-		else if (tamableData.isWaiting()) {
-			return SAD2;
-		}
-		else if (tamableData.isSavage()) {
-			return SAD3;
-		}
 
-		return null;
+		return super.renderType(zombieGirl);
 	}
 }
 

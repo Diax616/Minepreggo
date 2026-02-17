@@ -13,7 +13,7 @@ public interface IPregnancyData extends IPregnant {
 	int getDaysByCurrentStage();
 	boolean setDaysByStage(@Nonnegative int days, PregnancyPhase phase);
 	
-	void setMapPregnancyPhase(MapPregnancyPhase map);
+	void setMapPregnancyPhase(@NonNull MapPregnancyPhase map);
 	MapPregnancyPhase getMapPregnancyPhase();
 	
 	int getTotalDaysOfPregnancy();
@@ -49,7 +49,7 @@ public interface IPregnancyData extends IPregnant {
 	void setCurrentPregnancyPhase(PregnancyPhase stage);
 	
 	SetPregnancySymptom getPregnancySymptoms();
-	void setPregnancySymptoms(SetPregnancySymptom symptoms);
+	void setPregnancySymptoms(@NonNull SetPregnancySymptom symptoms);
 	
 	@Nullable PregnancyPain getPregnancyPain();
 	void setPregnancyPain(@Nullable PregnancyPain pain);

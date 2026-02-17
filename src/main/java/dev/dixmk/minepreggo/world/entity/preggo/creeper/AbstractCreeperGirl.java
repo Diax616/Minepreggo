@@ -1,7 +1,6 @@
 package dev.dixmk.minepreggo.world.entity.preggo.creeper;
 
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -46,42 +45,61 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.PowerableMob;
 
-public abstract class AbstractCreeperGirl extends PreggoMob implements PowerableMob, Enemy {
+public abstract class AbstractCreeperGirl extends PreggoMob implements PowerableMob {
+	public static final ExplosionData DEFAULT_EXPLOSION_DATA = new ExplosionData(3, 1, 30);
+	
 	private static final EntityDataAccessor<Integer> DATA_SWELL_DIR = SynchedEntityData.defineId(AbstractCreeperGirl.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Boolean> DATA_IS_POWERED = SynchedEntityData.defineId(AbstractCreeperGirl.class, EntityDataSerializers.BOOLEAN);
 	private static final EntityDataAccessor<Boolean> DATA_IS_IGNITED = SynchedEntityData.defineId(AbstractCreeperGirl.class, EntityDataSerializers.BOOLEAN);
 	private int oldSwell;
 	private int swell;
 	private int droppedSkulls;
-	protected int maxSwell = 30;
-	protected int explosionRadius = 3;
-	protected int explosionItensity = 1;
+	private int maxSwell = DEFAULT_EXPLOSION_DATA.maxSwell();
+	private int explosionRadius = DEFAULT_EXPLOSION_DATA.explosionRadius();
+	private int explosionItensity = DEFAULT_EXPLOSION_DATA.explosionItensity();
 	protected double maxDistance = 9D;
 	private CombatMode combatMode = CombatMode.EXPLODE;
 	
 	protected AbstractCreeperGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_, Creature typeOfCreature) {
-      super(p_21803_, p_21804_, Species.CREEPER, typeOfCreature);
-      this.reassessTameGoals();	    
+		super(p_21803_, p_21804_, Species.CREEPER, typeOfCreature);   
+		this.setRandomCombatMode();
 	}
 		
+	protected void setExplosionData(ExplosionData explosionData) {
+		this.explosionRadius = explosionData.explosionRadius();
+		this.explosionItensity = explosionData.explosionItensity();
+		this.maxSwell = explosionData.maxSwell();
+	}
+	
 	public void setCombatMode(CombatMode value) {
 		this.combatMode = value;
 		if (value == CombatMode.EXPLODE)
-			this.maxDistance = 4D;
+			this.maxDistance = 3D;
 	}
 	
 	public CombatMode getCombatMode() {
 		return combatMode;
 	}
 	
-	@Override
-	public boolean hasJigglePhysics() {
-		return true;
+	protected void setRandomCombatMode() {		
+		if (this.level().isClientSide()) {
+			return;
+		}	
+		final var p = this.getRandom().nextFloat();		
+	    if (p < 0.4F) {    	
+	    	this.setCombatMode(CombatMode.FIGHT_AND_EXPLODE);
+	    }
+	    else if (p < 0.9F) {
+	    	this.setCombatMode(CombatMode.EXPLODE);
+	    }
+	    else {
+	    	this.setCombatMode(CombatMode.DONT_EXPLODE);
+	    }
 	}
 	
 	@Override
-	public boolean canBeLeashed(Player p_21813_) {
-		return false;
+	public boolean hasJigglePhysics() {
+		return true;
 	}
 	
 	@Override
@@ -107,11 +125,6 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 	@Override
 	public boolean isFoodToTame(ItemStack stack) {
 		return stack.is(MinepreggoModItems.ACTIVATED_GUNPOWDER.get());
-	}
-	
-	@Override
-	public String getSimpleName() {
-		return this.hasCustomName() ? this.getDisplayName().getString() : "Creeper Girl";
 	}
 	
 	@Override
@@ -174,7 +187,7 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 		return this.entityData.get(DATA_IS_POWERED);
 	}
 
-	public void setPower(boolean power) {
+	protected void setPower(boolean power) {
 		this.entityData.set(DATA_IS_POWERED, power);
 	}
 	
@@ -400,6 +413,6 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 		
 		public static final String NBT_KEY = "DataCombatMode";
 	}	
+	
+	public static record ExplosionData (int explosionRadius, int explosionItensity, int maxSwell) {}
 }
-
-

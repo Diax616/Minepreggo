@@ -6,7 +6,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class IllZombieGirlP0Model extends AbstractMonsterZombieGirlModel<IllZombieGirl> {
+public class IllZombieGirlP0Model extends AbstractHostileZombieGirlModel<IllZombieGirl> {
 	public IllZombieGirlP0Model(ModelPart root) {
 		super(root);
 	}

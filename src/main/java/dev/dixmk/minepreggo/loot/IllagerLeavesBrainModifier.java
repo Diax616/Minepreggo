@@ -28,7 +28,7 @@ public class IllagerLeavesBrainModifier extends LootModifier {
 	@Override
 	protected @NotNull ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
 		if (context.getParamOrNull(LootContextParams.THIS_ENTITY) instanceof AbstractIllager) {
-			generatedLoot.add(new ItemStack(MinepreggoModItems.PILLAGER_BRAIN.get()));
+			generatedLoot.add(new ItemStack(MinepreggoModItems.ILLAGER_BRAIN.get()));
 		}        
 		return generatedLoot;
 	}

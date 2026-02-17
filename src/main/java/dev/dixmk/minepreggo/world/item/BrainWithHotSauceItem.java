@@ -4,10 +4,11 @@ import javax.annotation.Nonnegative;
 
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.pregnancy.Craving;
+import net.minecraft.world.item.Rarity;
 
-public class BrainWithHotSauceItem extends AbstractBrain implements ICravingItem {
+public class BrainWithHotSauceItem extends BrainItem implements ICravingItem {
 	public BrainWithHotSauceItem() {
-		super(7);
+		super(15, Rarity.COMMON);
 	}
 	
 	@Override

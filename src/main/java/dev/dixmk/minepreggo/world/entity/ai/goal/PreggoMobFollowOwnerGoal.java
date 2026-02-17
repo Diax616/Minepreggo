@@ -1,8 +1,9 @@
 package dev.dixmk.minepreggo.world.entity.ai.goal;
 
+import dev.dixmk.minepreggo.MinepreggoModConfig;
+import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
-import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import net.minecraft.world.entity.ai.goal.FollowOwnerGoal;
 
 public class PreggoMobFollowOwnerGoal<T extends PreggoMob & ITamablePreggoMob<?>> extends FollowOwnerGoal {
@@ -19,7 +20,12 @@ public class PreggoMobFollowOwnerGoal<T extends PreggoMob & ITamablePreggoMob<?>
 		this.tamable.getLookControl().setLookAt(this.owner, 10.0F, this.tamable.getMaxHeadXRot());
 		if (--this.timeToRecalcPath <= 0) {
 			this.timeToRecalcPath = this.adjustedTickDelay(10);
-			this.navigation.moveTo(this.owner, this.speedModifier);
+			if (MinepreggoModConfig.SERVER.isPreggoMobsTeleportToPlayerEnable() && this.tamable.distanceToSqr(this.owner) >= 196.0D) {
+				this.teleportToOwner();
+			}
+			else {
+				this.navigation.moveTo(this.owner, this.speedModifier);
+			}
 		}		
 		
 		if (this.tamable.getTarget() != null
@@ -32,14 +38,14 @@ public class PreggoMobFollowOwnerGoal<T extends PreggoMob & ITamablePreggoMob<?>
 	@Override
 	public boolean canUse() {
 		return super.canUse() 
-		&& !preggoMob.getTamableData().isWaiting()
 		&& !preggoMob.getTamableData().isSavage()
-		&& !PreggoMobHelper.hasValidTarget(this.tamable);
+		&& !preggoMob.getTamableData().isWaiting()		
+		&& !LivingEntityHelper.hasValidTarget(this.tamable);
 	}
 
 	@Override
 	public boolean canContinueToUse() {
 		return super.canContinueToUse()
-		&& !PreggoMobHelper.isTargetStillValid(this.tamable);
+		&& !LivingEntityHelper.isTargetStillValid(this.tamable);
 	}
 }

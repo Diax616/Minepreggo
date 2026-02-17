@@ -22,4 +22,6 @@ public interface IPlayerData {
 	
 	LazyOptional<MalePlayerImpl> getMaleData();	
 	LazyOptional<FemalePlayerImpl> getFemaleData();
+	
+	IPlayerStatistic getPlayerStatistic();
 }

@@ -29,25 +29,25 @@ public class TamableZombieGirlRenderer extends AbstractTamableZombieGirlRenderer
 	public ResourceLocation getTextureLocation(TamableZombieGirl p_115812_) {
 		return ZOMBIE_GIRL_LOCATION;
 	}
-	
+		
 	@Override
-	protected void addFacialExpresions() {
-		this.addLayer(new TamableZombieGirlExpressionLayer<>(this) {
+	protected TamableZombieGirlExpressionLayer<TamableZombieGirl, TamableZombieGirlModel> createExpressiveFaceLayer() {
+		return new TamableZombieGirlExpressionLayer<>(this) {
 			@Override
 			public @Nullable RenderType renderType(TamableZombieGirl zombieGirl) {	
-				var result = super.renderType(zombieGirl);
-				if (result != null) {
-					return result;
-				}
 				PostPregnancy post = zombieGirl.getSyncedPostPregnancy().orElse(null);
 				if (post == PostPregnancy.MISCARRIAGE) {
 					return POST_MISCARRIAGE;
-				}
+				}		
+				var result = super.renderType(zombieGirl);
+				if (result != null) {
+					return result;
+				}			
 				else if (post == PostPregnancy.PARTUM) {
 					return POST_PARTUM;
 				}
 				return null;
 			}
-		});
+		};
 	}
 }

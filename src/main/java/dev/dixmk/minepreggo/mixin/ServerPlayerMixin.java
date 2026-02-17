@@ -2,7 +2,6 @@ package dev.dixmk.minepreggo.mixin;
 
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
-import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -22,22 +21,14 @@ public class ServerPlayerMixin {
     private void onDrop(ItemStack stack, boolean dropAround, boolean traceItem, CallbackInfoReturnable<ItemEntity> cir) {
         ServerPlayer player = ServerPlayer.class.cast(this);
         player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
-        	cap.getFemaleData().ifPresent(femaleData -> {	
-        		if (!femaleData.isPregnant()
-        				&& femaleData.getPostPregnancyData().isEmpty()
-        				&& Villager.FOOD_POINTS.containsKey(stack.getItem())) {
-        			PlayerHelper.addFemalePlayerIdTag(stack, player.getUUID());
-        		}
-        		else if (femaleData.isPregnant()
-        				&& femaleData.isPregnancyDataInitialized()
-        				&& Villager.FOOD_POINTS.containsKey(stack.getItem())) {
-        			
-        			var pregnancySystem = femaleData.getPregnancyData();
-        			var phase = pregnancySystem.getCurrentPregnancyPhase();
-        			
-        			if (phase.compareTo(PregnancyPhase.P4) >= 0) {
-        				PlayerHelper.addPregnantFemalePlayerIdTag(stack, player.getUUID());
-        			}   			
+        	cap.getFemaleData().ifPresent(femaleData -> {	       		
+        		if (Villager.FOOD_POINTS.containsKey(stack.getItem())) {
+            		if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {      			
+        				PlayerHelper.addPregnantFemalePlayerIdTag(stack, player.getUUID());  			
+            		}
+            		else {
+            			PlayerHelper.addFemalePlayerIdTag(stack, player.getUUID());
+            		}
         		}
         	})
         );

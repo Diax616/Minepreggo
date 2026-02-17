@@ -5,7 +5,8 @@ public enum Species {
 	CREEPER,
 	ENDER,
 	VILLAGER,
-	HUMAN;
+	HUMAN,
+	DRAGON;
 	
 	public static final String NBT_KEY = "SpeciesType";
 

@@ -1,0 +1,171 @@
+package dev.dixmk.minepreggo.world.entity.preggo.creeper;
+
+import java.util.Optional;
+import java.util.OptionalInt;
+
+import dev.dixmk.minepreggo.MinepreggoModConfig;
+import dev.dixmk.minepreggo.init.MinepreggoModEntities;
+import dev.dixmk.minepreggo.world.entity.EntityHelper;
+import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.FemaleFertilitySystem;
+import dev.dixmk.minepreggo.world.entity.preggo.IPostPregnancyEntity;
+import dev.dixmk.minepreggo.world.entity.preggo.ISyncedFemaleEntity;
+import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMobSystem;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem;
+import dev.dixmk.minepreggo.world.entity.preggo.SyncedFemaleEntityImpl;
+import dev.dixmk.minepreggo.world.entity.preggo.SyncedPostPregnancyData;
+import dev.dixmk.minepreggo.world.pregnancy.IFemaleEntity;
+import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.network.PlayMessages;
+
+public class TamableMonsterCreeperGirl extends AbstractTamableMonsterCreeperGirl implements IPostPregnancyEntity {
+
+	private static final SyncedPostPregnancyData.DataAccessor<TamableMonsterCreeperGirl> DATA_HOLDER = new SyncedPostPregnancyData.DataAccessor<>(TamableMonsterCreeperGirl.class);
+	
+	private final FemaleFertilitySystem<TamableMonsterCreeperGirl> fertilitySystem = new FemaleFertilitySystem<>(this) {
+		@Override
+		protected void startPregnancy() {		
+			if (preggoMob.level() instanceof ServerLevel serverLevel && !serverLevel.isClientSide) {
+				var creeperGirl = MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), MobSpawnType.CONVERSION);		
+				LivingEntityHelper.copyRotation(preggoMob, creeperGirl);
+				PreggoMobHelper.copyOwner(preggoMob, creeperGirl);
+				LivingEntityHelper.copyHealth(preggoMob, creeperGirl);
+				EntityHelper.copyName(preggoMob, creeperGirl);
+				PreggoMobHelper.copyTamableData(preggoMob, creeperGirl);				
+				PreggoMobHelper.transferInventory(preggoMob, creeperGirl);					
+				LivingEntityHelper.transferAttackTarget(preggoMob, creeperGirl);
+				LivingEntityHelper.copyMobEffects(preggoMob, creeperGirl);
+				creeperGirl.setCombatMode(preggoMob.getCombatMode());
+				MonsterCreeperHelper.syncItemOnMouthToVanillaIfChanged(creeperGirl);
+				PreggoMobHelper.initPregnancy(creeperGirl);	
+			}			
+		}
+
+		@Override
+		protected void afterPostPregnancy() {
+			PregnancySystemHelper.removePostPregnancyNeft(preggoMob);			
+		}
+	};
+	
+	public TamableMonsterCreeperGirl(PlayMessages.SpawnEntity packet, Level world) {
+		this(MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL.get(), world);
+	}
+
+	public TamableMonsterCreeperGirl(EntityType<TamableMonsterCreeperGirl> type, Level world) {
+		super(type, world);
+		xpReward = 10;
+		setNoAi(false);
+		setMaxUpStep(0.6f);
+	}
+	
+	@Override
+	protected ITamablePreggoMobSystem createTamablePreggoMobSystem() {
+		return new PreggoMobSystem<>(this, MinepreggoModConfig.SERVER.getTotalTicksOfHungryP0(), PregnancySystemHelper.TOTAL_TICKS_SEXUAL_APPETITE_P0);
+	}
+
+	@Override
+	protected IFemaleEntity createFemaleEntityData() {
+		return new SyncedFemaleEntityImpl<>(DATA_HOLDER, this);
+	}
+	
+	@Override
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		DATA_HOLDER.defineSynchedData(this);
+	}
+
+	@Override
+   	public void aiStep() {
+      super.aiStep();
+      fertilitySystem.onServerTick();  
+	}
+	
+	@Override
+	public InteractionResult mobInteract(Player sourceentity, InteractionHand hand) {				
+		var retval = fertilitySystem.onRightClick(sourceentity);			
+		if (retval == InteractionResult.SUCCESS || retval == InteractionResult.CONSUME) {
+			return retval;
+		}			
+		return super.mobInteract(sourceentity, hand);
+	}
+	
+	@Override
+	public Optional<PostPregnancy> getSyncedPostPregnancy() {
+		return this.entityData.get(DATA_HOLDER.getDataPostPregnancy());
+	}
+
+	@Override
+	public OptionalInt getSyncedPostPartumLactation() {
+		return this.entityData.get(DATA_HOLDER.getDataLactation());
+	}
+
+	@Override
+	public ISyncedFemaleEntity<?> getSyncedFemaleEntity() {
+		return (SyncedFemaleEntityImpl<?>) this.femaleEntityData;
+	}
+	
+	
+	public static AttributeSupplier.Builder createAttributes() {
+		return MonsterCreeperHelper.createTamableAttributes(0.27);
+	}
+	
+	public static<E extends AbstractTamablePregnantCreeperGirl> void onPostPartum(E source) {
+		if (source.level() instanceof ServerLevel serverLevel) {
+			TamableMonsterCreeperGirl creeperGirl = MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(source.getX(), source.getY(), source.getZ()), MobSpawnType.CONVERSION);	
+			LivingEntityHelper.copyRotation(source, creeperGirl);
+			PreggoMobHelper.copyOwner(source, creeperGirl);
+			LivingEntityHelper.copyHealth(source, creeperGirl);
+			EntityHelper.copyName(source, creeperGirl);
+			PreggoMobHelper.copyTamableData(source, creeperGirl);	
+			LivingEntityHelper.copyMobEffects(source, creeperGirl);
+			PreggoMobHelper.transferInventory(source, creeperGirl);
+			LivingEntityHelper.transferAttackTarget(source, creeperGirl);	
+			creeperGirl.getTamableData().setBodyState(null);
+			creeperGirl.setCombatMode(source.getCombatMode());
+			MonsterCreeperHelper.syncItemOnMouthToVanillaIfChanged(creeperGirl);
+			
+			if (!creeperGirl.getGenderedData().tryActivatePostPregnancyPhase(PostPregnancy.PARTUM)) {
+				source.discard();
+				creeperGirl.discard();
+				throw new IllegalStateException("Failed to activate PostPregnancy.PARTUM phase on TamableHumanoidCreeperGirl after giving birth");
+			}
+			
+			PregnancySystemHelper.applyPostPregnancyNerf(creeperGirl);
+		}
+	}
+	
+	public static<E extends AbstractTamablePregnantCreeperGirl> void onPostMiscarriage(E source) {
+		if (source.level() instanceof ServerLevel serverLevel) {
+			TamableMonsterCreeperGirl creeperGirl = MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(source.getX(), source.getY(), source.getZ()), MobSpawnType.CONVERSION);	
+			LivingEntityHelper.copyRotation(source, creeperGirl);
+			PreggoMobHelper.copyOwner(source, creeperGirl);
+			LivingEntityHelper.copyHealth(source, creeperGirl);
+			EntityHelper.copyName(source, creeperGirl);
+			PreggoMobHelper.copyTamableData(source, creeperGirl);	
+			LivingEntityHelper.copyMobEffects(source, creeperGirl);
+			PreggoMobHelper.transferInventory(source, creeperGirl);
+			LivingEntityHelper.transferAttackTarget(source, creeperGirl);
+			creeperGirl.setCombatMode(source.getCombatMode());
+			MonsterCreeperHelper.syncItemOnMouthToVanillaIfChanged(creeperGirl);
+			
+			if (!creeperGirl.getGenderedData().tryActivatePostPregnancyPhase(PostPregnancy.MISCARRIAGE)) {
+				source.discard();
+				creeperGirl.discard();
+                throw new IllegalStateException("Failed to activate PostPregnancy.MISCARRIAGE phase on TamableHumanoidCreeperGirl after miscarriage");
+			}
+			
+			PregnancySystemHelper.applyPostPregnancyNerf(creeperGirl);
+		}
+	}
+}

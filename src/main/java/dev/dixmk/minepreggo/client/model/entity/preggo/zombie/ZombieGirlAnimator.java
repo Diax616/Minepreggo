@@ -9,7 +9,7 @@ import dev.dixmk.minepreggo.client.animation.preggo.BellyInflation;
 import dev.dixmk.minepreggo.client.animation.preggo.FetalMovementIntensity;
 import dev.dixmk.minepreggo.client.animation.preggo.ZombieGirlAnimation;
 import dev.dixmk.minepreggo.client.model.entity.preggo.PregnantPreggoMobAnimator;
-import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractMonsterPregnantZombieGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractHostilePregnantZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamableZombieGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractZombieGirl;
@@ -81,7 +81,7 @@ public abstract class ZombieGirlAnimator<T extends AbstractZombieGirl> extends P
 		@Override
 	    protected void animateLoopState(E zombieGirl, float ageInTicks) {
 			final var tamableData = zombieGirl.getTamableData();
-			if (tamableData.isPanic()) {
+			if (tamableData.isPanic() || tamableData.isSavage() || zombieGirl.isAggressive()) {
 				this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.IDLE, ageInTicks);						
 			} 		
 			else if (tamableData.isWaiting()) {
@@ -97,7 +97,7 @@ public abstract class ZombieGirlAnimator<T extends AbstractZombieGirl> extends P
 	}	
 	
     @OnlyIn(Dist.CLIENT)
-	public static class MonsterPregnantZombieGirlAnimator<E extends AbstractMonsterPregnantZombieGirl> extends ZombieGirlAnimator<E> {
+	public static class MonsterPregnantZombieGirlAnimator<E extends AbstractHostilePregnantZombieGirl> extends ZombieGirlAnimator<E> {
 		private final BellyInflation bellyInflation;
 		private final @Nullable FetalMovementIntensity fetalMovementIntensity;
 		

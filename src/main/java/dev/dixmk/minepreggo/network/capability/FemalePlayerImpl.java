@@ -21,6 +21,7 @@ import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
 import dev.dixmk.minepreggo.world.pregnancy.IPostPregnancyData;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyType;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.nbt.CompoundTag;
@@ -45,8 +46,8 @@ public class FemalePlayerImpl extends FemaleEntityImpl implements IFemalePlayer 
 	}
 	
 	@Override
-	public boolean tryImpregnate(@Nonnegative int fertilizedEggs, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father) {
-		if (super.tryImpregnate(fertilizedEggs, father)) {
+	public boolean tryImpregnate(PregnancyType pregnancyType, @Nonnegative int fertilizedEggs, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father) {
+		if (super.tryImpregnate(pregnancyType, fertilizedEggs, father)) {
 			attacks.clear();
 			pregnancySystemHolder.reset();
 			return true;

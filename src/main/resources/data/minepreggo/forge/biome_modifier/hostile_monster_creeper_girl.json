@@ -1,0 +1,32 @@
+{
+  "type": "forge:add_spawns",
+  "biomes": "#minecraft:is_overworld",
+  "spawners":  [
+    {
+        "type": "minepreggo:hostile_monster_creeper_girl",
+        "weight": 30,
+        "minCount": 1,
+        "maxCount": 1
+    },
+    {
+        "type": "minepreggo:hostile_pregnant_monster_creeper_girl_p3",
+        "weight": 5,
+        "minCount": 1,
+        "maxCount": 1,
+		"rarity": 20
+    },
+    {
+        "type": "minepreggo:hostile_pregnant_monster_creeper_girl_p5",
+        "weight": 5,
+        "minCount": 1,
+        "maxCount": 25
+    },
+        {
+        "type": "minepreggo:hostile_pregnant_monster_creeper_girl_p7",
+        "weight": 5,
+        "minCount": 1,
+        "maxCount": 1,
+		"rarity": 30
+    }
+  ]
+}

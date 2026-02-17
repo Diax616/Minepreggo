@@ -46,7 +46,7 @@ public abstract class FemaleGoldenChestPlateItem extends ArmorItem implements IF
 		}
 	}
 	
-	public static class ChestplateP0 extends FemaleGoldenChestPlateItem {
+	public static class Chestplate extends FemaleGoldenChestPlateItem {
 		@Override
 		public void initializeClient(Consumer<IClientItemExtensions> consumer) {
 			consumer.accept(new IClientItemExtensions() {
@@ -60,7 +60,7 @@ public abstract class FemaleGoldenChestPlateItem extends ArmorItem implements IF
 
 		@Override
 		public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
-			return "minepreggo:textures/models/armor/gold_p0_layer_1.png";
+			return "minepreggo:textures/models/armor/gold_layer_1.png";
 		}
 	}
 	

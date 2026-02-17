@@ -90,7 +90,7 @@ public abstract class AbstractPrenatalCheckUpMenu
 	protected abstract PrenatalCheckups createTradesForThisSession();
 	
 	// Called when all trades have been successfully completed, only on server side
-	protected abstract void onSuccessful();
+	protected abstract void onSuccessful(PrenatalCheckup prenatalCheckup);
 	
 	
 	@Override
@@ -132,82 +132,6 @@ public abstract class AbstractPrenatalCheckUpMenu
 		}
 			
 		return itemstack;
-	}
-
-	@Override
-	protected boolean moveItemStackTo(ItemStack p_38904_, int p_38905_, int p_38906_, boolean p_38907_) {
-		boolean flag = false;
-		int i = p_38905_;
-		if (p_38907_) {
-			i = p_38906_ - 1;
-		}
-		if (p_38904_.isStackable()) {
-			while (!p_38904_.isEmpty()) {
-				if (p_38907_) {
-					if (i < p_38905_) {
-						break;
-					}
-				} else if (i >= p_38906_) {
-					break;
-				}
-				Slot slot = this.slots.get(i);
-				ItemStack itemstack = slot.getItem();
-				if (slot.mayPlace(itemstack) && !itemstack.isEmpty() && ItemStack.isSameItemSameTags(p_38904_, itemstack)) {
-					int j = itemstack.getCount() + p_38904_.getCount();
-					int maxSize = Math.min(slot.getMaxStackSize(), p_38904_.getMaxStackSize());
-					if (j <= maxSize) {
-						p_38904_.setCount(0);
-						itemstack.setCount(j);
-						slot.set(itemstack);
-						flag = true;
-					} else if (itemstack.getCount() < maxSize) {
-						p_38904_.shrink(maxSize - itemstack.getCount());
-						itemstack.setCount(maxSize);
-						slot.set(itemstack);
-						flag = true;
-					}
-				}
-				if (p_38907_) {
-					--i;
-				} else {
-					++i;
-				}
-			}
-		}
-		if (!p_38904_.isEmpty()) {
-			if (p_38907_) {
-				i = p_38906_ - 1;
-			} else {
-				i = p_38905_;
-			}
-			while (true) {
-				if (p_38907_) {
-					if (i < p_38905_) {
-						break;
-					}
-				} else if (i >= p_38906_) {
-					break;
-				}
-				Slot slot1 = this.slots.get(i);
-				ItemStack itemstack1 = slot1.getItem();
-				if (itemstack1.isEmpty() && slot1.mayPlace(p_38904_)) {
-					if (p_38904_.getCount() > slot1.getMaxStackSize()) {
-						slot1.setByPlayer(p_38904_.split(slot1.getMaxStackSize()));
-					} else {
-						slot1.setByPlayer(p_38904_.split(p_38904_.getCount()));
-					}
-					slot1.setChanged();
-					flag = true;
-					break;
-				}
-				if (p_38907_) {
-					--i;
-				} else {
-					++i;
-				}
-			}
-		}
-		return flag;
 	}
 
 	@Override
@@ -325,6 +249,7 @@ public abstract class AbstractPrenatalCheckUpMenu
                 inputStack.shrink(trade.emeraldCount);
                 tradeCompleted.computeIfPresent(inputIndex, (key, value) -> value = true);                
                 container.setItem(this.getSlotIndex(), ItemStack.EMPTY);  
+                onSuccessful(this.prenatalCheckup);
             }
             
             super.onTake(player, stack);

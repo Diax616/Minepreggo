@@ -9,20 +9,22 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.joml.Vector3i;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
+import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
+import dev.dixmk.minepreggo.init.MinepreggoModAdvancements;
 import dev.dixmk.minepreggo.init.MinepreggoModMenus;
+import dev.dixmk.minepreggo.network.packet.s2c.PlaySoundPacketS2C;
 import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
 import dev.dixmk.minepreggo.world.item.checkup.PrenatalCheckups;
 import dev.dixmk.minepreggo.world.item.checkup.PrenatalCheckups.PrenatalCheckup;
 import dev.dixmk.minepreggo.world.item.checkup.PrenatalCheckups.PrenatalCheckupData;
-import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import dev.dixmk.minepreggo.world.pregnancy.PrenatalCheckupCostHolder.PrenatalCheckupCost;
+import dev.dixmk.minepreggo.world.pregnancy.PrenatalCheckupHelper;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.npc.Villager;
@@ -33,13 +35,22 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.network.PacketDistributor;
 
 public abstract class PlayerPrenatalCheckUpMenu<T extends Mob> extends AbstractPrenatalCheckUpMenu<Player, T> {
 	
 	protected PlayerPrenatalCheckUpMenu(MenuType<?> menu, int id, Inventory inv, FriendlyByteBuf buffer) {
 		super(menu, id, inv, buffer);
 	}	
-	
+		
+	@Override
+	protected void onSuccessful(PrenatalCheckup prenatalCheckup) {		
+		if (this.source.orElse(null) instanceof ServerPlayer serverPlayer) {
+			serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> cap.getPlayerStatistic().addPrenatalCheckupDoneMyself(prenatalCheckup));
+			MinepreggoModAdvancements.PRENATAL_CHECKUP_TRIGGER.trigger(serverPlayer);
+		}
+	}
+		
 	@Override
 	protected void readBuffer(FriendlyByteBuf buffer) {
 		Vector3i p = null;
@@ -76,13 +87,13 @@ public abstract class PlayerPrenatalCheckUpMenu<T extends Mob> extends AbstractP
 		LocalDateTime date = LocalDateTime.now();
 		String autor = target.get().getName().getString();
 		
-		Supplier<ItemStack> f1 = () -> PregnancySystemHelper.createPrenatalCheckUpResult(
-				new PregnancySystemHelper.PrenatalCheckUpInfo(playerName, emeraldForRegularCheckUp, date),
+		Supplier<ItemStack> f1 = () -> PrenatalCheckupHelper.createPrenatalCheckUpResult(
+				new PrenatalCheckupHelper.PrenatalCheckUpInfo(playerName, emeraldForRegularCheckUp, date),
 				pregnancySystem.createRegularCheckUpData(),
 				autor);
 
-		Supplier<ItemStack> f2 = () -> PregnancySystemHelper.createPrenatalCheckUpResult(
-				new PregnancySystemHelper.PrenatalCheckUpInfo(playerName, emeraldForUltrasoundScan, date),
+		Supplier<ItemStack> f2 = () -> PrenatalCheckupHelper.createPrenatalCheckUpResult(
+				new PrenatalCheckupHelper.PrenatalCheckUpInfo(playerName, emeraldForUltrasoundScan, date),
 				pregnancySystem.createUltrasoundScanData(),
 				autor);
 	
@@ -92,11 +103,11 @@ public abstract class PlayerPrenatalCheckUpMenu<T extends Mob> extends AbstractP
 			final var c = p.getCapability(MinepreggoCapabilities.PLAYER_DATA).resolve();
 			return !(c.isEmpty() || c.get().isFemale());
 		}).stream()
-		  .map(p -> new PregnancySystemHelper.PrenatalPaternityTestData(p.getId(), p.getName().getString(), p.getUUID().equals(motherId)))
+		  .map(p -> new PrenatalCheckupHelper.PrenatalPaternityTestData(p.getId(), p.getName().getString(), p.getUUID().equals(motherId)))
 		  .toList();
 		
-		Supplier<ItemStack> f3 = () -> PregnancySystemHelper.createPrenatalCheckUpResult(
-				new PregnancySystemHelper.PrenatalCheckUpInfo(playerName, emeraldForPaternityTest, date),
+		Supplier<ItemStack> f3 = () -> PrenatalCheckupHelper.createPrenatalCheckUpResult(
+				new PrenatalCheckupHelper.PrenatalCheckUpInfo(playerName, emeraldForPaternityTest, date),
 				malePlayers,
 				autor);
 				
@@ -111,6 +122,14 @@ public abstract class PlayerPrenatalCheckUpMenu<T extends Mob> extends AbstractP
 		
 		public VillagerMenu(int id, Inventory inv, FriendlyByteBuf buffer) {
 			super(MinepreggoModMenus.PLAYER_PRENATAL_CHECKUP_BY_VILLAGER_MENU.get(), id, inv, buffer);	
+		}
+		
+		@Override
+		protected void onSuccessful(PrenatalCheckup prenatalCheckup) {		
+			super.onSuccessful(prenatalCheckup);
+			if (this.source.orElse(null) instanceof ServerPlayer serverPlayer) {
+				MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new PlaySoundPacketS2C(SoundEvents.VILLAGER_YES, player.blockPosition(), 0.75f, 1.0f));
+			}
 		}
 		
 		@Override
@@ -160,16 +179,7 @@ public abstract class PlayerPrenatalCheckUpMenu<T extends Mob> extends AbstractP
 				this.target.ifPresent(t -> t.setTradingPlayer(null));
 			}
 		}
-		
-		@Override
-		protected void onSuccessful() {		
-			this.source.ifPresent(s -> {
-				if (this.level.isClientSide) {
-					this.level.playLocalSound(s.getX(), s.getY(), s.getZ(), SoundEvents.VILLAGER_CELEBRATE, SoundSource.AMBIENT, 1, 1, false);
-				}
-			});
-		}
-		
+
 		public static void showPrenatalCheckUpMenu(@NonNull ServerPlayer serverPlayer, @NonNull Villager villager) {						
 			final var pos = serverPlayer.blockPosition();
 			final var playerId = serverPlayer.getId();
@@ -209,6 +219,14 @@ public abstract class PlayerPrenatalCheckUpMenu<T extends Mob> extends AbstractP
 		
 		public IllagerMenu(int id, Inventory inv, FriendlyByteBuf buffer) {
 			super(MinepreggoModMenus.PLAYER_PRENATAL_CHECKUP_BY_ILLAGER_MENU.get(), id, inv, buffer);
+		}
+		
+		@Override
+		protected void onSuccessful(PrenatalCheckup prenatalCheckup) {		
+			super.onSuccessful(prenatalCheckup);
+			if (this.source.orElse(null) instanceof ServerPlayer serverPlayer) {
+				MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new PlaySoundPacketS2C(SoundEvents.VINDICATOR_CELEBRATE, player.blockPosition(), 0.75f, 1.0f));
+			}
 		}
 		
 		@Override
@@ -257,15 +275,6 @@ public abstract class PlayerPrenatalCheckUpMenu<T extends Mob> extends AbstractP
 				MinepreggoMod.LOGGER.error("Target={} or Source={} was null",
 						this.source.isPresent(), this.target.isPresent());
 			}
-		}
-
-		@Override
-		protected void onSuccessful() {		
-			this.source.ifPresent(s -> {
-				if (this.level.isClientSide) {
-					this.level.playLocalSound(s.getX(), s.getY(), s.getZ(), SoundEvents.PILLAGER_CELEBRATE, SoundSource.AMBIENT, 1, 1, false);
-				}
-			});
 		}
 		
 		public static void showPrenatalCheckUpMenu(@NonNull ServerPlayer serverPlayer, @NonNull ScientificIllager scientificIllager) {						

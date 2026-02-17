@@ -1,0 +1,32 @@
+{
+  "display": {
+	"background": "minecraft:textures/block/stone.png",
+    "icon": {
+      "item": "minepreggo:maternity_netherite_p1_chestplate"
+    },
+    "title": {
+      "translate": "advancements.give_birth_by_all_species.title"
+    },
+    "description": {
+      "translate": "advancements.give_birth_by_all_species.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "custom_criteria": {
+		"trigger": "minepreggo:give_birth",
+	    "conditions": {
+		  "successful_births": {
+		  	"species": ["ZOMBIE", "CREEPER", "HUMAN", "ENDER", "VILLAGER", "DRAGON"]
+		  }
+	    }
+    }
+  },
+  "rewards": {
+    "experience": 100
+  },
+  "parent": "minepreggo:i_am_pregnant"
+}

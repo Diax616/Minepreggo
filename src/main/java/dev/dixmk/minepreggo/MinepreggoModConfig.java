@@ -50,6 +50,11 @@ public class MinepreggoModConfig {
         	SERVER.enableBellyColisionsForPlayer = SERVER.enableBellyColisionsForPlayerConfig.get();
         	SERVER.enableBellyColisionsForPreggoMob = SERVER.enableBellyColisionsForPreggoMobConfig.get();
         	SERVER.enableMountingEntitiesInLaterPregnancyPhases = SERVER.enableMountingEntitiesInLaterPregnancyPhasesConfig.get();
+        	SERVER.enablePreggoMobsTeleportToPlayer = SERVER.enablePreggoMobsTeleportToPlayerConfig.get();
+        	SERVER.enableSpawningHostilPregnantZombieGirls = SERVER.enableSpawningHostilPregnantZombieGirlsConfig.get();
+        	SERVER.enableSpawningHostilPregnantMonsterCreeperGirls = SERVER.enableSpawningHostilPregnantMonsterCreeperGirlsConfig.get();
+        	SERVER.enableSpawningHostilPregnantHumanoidCreeperGirls = SERVER.enableSpawningHostilPregnantHumanoidCreeperGirlsConfig.get();
+        	SERVER.enableSpawningHostilPregnantMonsterEnderWomen = SERVER.enableSpawningHostilPregnantMonsterEnderWomenConfig.get();
         	
         	SERVER.calculateHungryValues();
         	SERVER.calculateCravingValues();
@@ -117,7 +122,12 @@ public class MinepreggoModConfig {
         private final ForgeConfigSpec.BooleanValue enableBellyColisionsForPlayerConfig;
         private final ForgeConfigSpec.BooleanValue enableBellyColisionsForPreggoMobConfig;
         private final ForgeConfigSpec.BooleanValue enableMountingEntitiesInLaterPregnancyPhasesConfig;
-        
+        private final ForgeConfigSpec.BooleanValue enablePreggoMobsTeleportToPlayerConfig;
+        private final ForgeConfigSpec.BooleanValue enableSpawningHostilPregnantZombieGirlsConfig;
+        private final ForgeConfigSpec.BooleanValue enableSpawningHostilPregnantMonsterCreeperGirlsConfig;
+        private final ForgeConfigSpec.BooleanValue enableSpawningHostilPregnantHumanoidCreeperGirlsConfig;
+        private final ForgeConfigSpec.BooleanValue enableSpawningHostilPregnantMonsterEnderWomenConfig;
+
         private int totalTickByPregnancyDays;
         private int totalPregnancyDays;
         private int totalTicksToStartPregnancy;
@@ -172,7 +182,12 @@ public class MinepreggoModConfig {
         
         // It only applies in final phase of pregnancy from P5 to P8
         private boolean enableMountingEntitiesInLaterPregnancyPhases;
-        
+        private boolean enablePreggoMobsTeleportToPlayer;
+        private boolean enableSpawningHostilPregnantZombieGirls;
+        private boolean enableSpawningHostilPregnantMonsterCreeperGirls;
+        private boolean enableSpawningHostilPregnantHumanoidCreeperGirls;
+        private boolean enableSpawningHostilPregnantMonsterEnderWomen;
+            
         private Server(ForgeConfigSpec.Builder builder) {
             builder.push("Server");
             
@@ -206,7 +221,7 @@ public class MinepreggoModConfig {
             
             totalTicksOfHungryConfig = builder
                     .comment("Total ticks of hungry for preggo mobs.")
-                    .defineInRange("totalTicksOfHungry", 6000, 100, 24000);
+                    .defineInRange("totalTicksOfHungry", 8400, 100, 24000);
             
             totalTicksOfCravingConfig = builder
                     .comment("Total ticks of craving for pregnant entities.")
@@ -235,6 +250,26 @@ public class MinepreggoModConfig {
             enableMountingEntitiesInLaterPregnancyPhasesConfig = builder
 					.comment("Enable or disable the ability to mount entities in later pregnancy phases (P6 to P8).")
 					.define("enableMountingEntitiesInLaterPregnancyPhases", true);
+            
+            enablePreggoMobsTeleportToPlayerConfig = builder
+            		.comment("Enable or disable preggo mobs teleporting to player when the distance is too far.")
+            		.define("enablePreggoMobsTeleportToPlayer", false);
+            
+            enableSpawningHostilPregnantZombieGirlsConfig = builder
+					.comment("Enable or disable the natural spawning of hostile pregnant zombie girls.")
+					.define("enableSpawningHostilPregnantZombieGirls", true);
+            
+            enableSpawningHostilPregnantMonsterCreeperGirlsConfig = builder
+            		.comment("Enable or disable the natural spawning of hostile pregnant monster creeper girls.")
+            		.define("enableSpawningHostilPregnantMonsterCreeperGirls", true);
+            
+            enableSpawningHostilPregnantHumanoidCreeperGirlsConfig = builder
+            		.comment("Enable or disable the natural spawning of hostile pregnant humanoid creeper girls.")
+            		.define("enableSpawningHostilPregnantHumanoidCreeperGirls", true);
+            
+            enableSpawningHostilPregnantMonsterEnderWomenConfig = builder
+            		.comment("Enable or disable the natural spawning of hostile pregnant monster ender women.")
+            		.define("enableSpawningHostilPregnantMonsterEnderWomen", true);
             
             builder.pop();
         }
@@ -417,6 +452,26 @@ public class MinepreggoModConfig {
         
         public boolean isMountingEntitiesInLaterPregnancyPhasesEnable() {
 			return enableMountingEntitiesInLaterPregnancyPhases;
+		}
+        
+        public boolean isPreggoMobsTeleportToPlayerEnable() {
+			return enablePreggoMobsTeleportToPlayer;
+		}
+        
+        public boolean isSpawningHostilPregnantZombieGirlsEnable() {
+        	return enableSpawningHostilPregnantZombieGirls;
+        }
+        
+        public boolean isSpawningHostilPregnantMonsterCreeperGirlsEnable() {
+			return enableSpawningHostilPregnantMonsterCreeperGirls;
+		}
+        
+        public boolean isSpawningHostilPregnantHumanoidCreeperGirlsEnable() {
+        	return enableSpawningHostilPregnantHumanoidCreeperGirls;
+        }
+        
+        public boolean isSpawningHostilPregnantMonsterEnderWomenEnable() {
+			return enableSpawningHostilPregnantMonsterEnderWomen;
 		}
         
         private void calculateHungryValues() { 	

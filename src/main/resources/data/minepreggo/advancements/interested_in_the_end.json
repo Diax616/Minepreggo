@@ -1,0 +1,34 @@
+{
+  "display": {
+	"background": "minecraft:textures/block/stone.png",
+    "icon": {
+      "item": "minepreggo:concentrated_ender_life_substance"
+    },
+    "title": {
+      "translate": "advancements.interested_in_the_end.title"
+    },
+    "description": {
+      "translate": "advancements.interested_in_the_end.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "custom_criteria": {
+      "trigger": "minecraft:inventory_changed",
+	  "conditions": {
+		"items": [
+		  {
+		    "items": ["minepreggo:concentrated_ender_life_substance"]
+		  }
+		]
+	  }
+    }
+  },
+  "rewards": {
+    "experience": 30
+  },
+  "parent": "minecraft:adventure/root"
+}

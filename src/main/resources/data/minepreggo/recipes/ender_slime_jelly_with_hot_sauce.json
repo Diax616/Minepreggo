@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minepreggo:ender_slime_jelly"
+    },
+    {
+      "item": "minepreggo:hot_sauce"
+    }
+  ],
+  "result": {
+    "item": "minepreggo:ender_slime_jelly_with_hot_sauce",
+    "count": 1
+  }
+}

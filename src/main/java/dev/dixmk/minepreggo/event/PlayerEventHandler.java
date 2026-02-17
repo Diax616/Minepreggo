@@ -1,16 +1,20 @@
 package dev.dixmk.minepreggo.event;
 
+import java.util.List;
 import java.util.Optional;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
+import dev.dixmk.minepreggo.event.entity.living.EnderWomanAngerEvent;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
+import dev.dixmk.minepreggo.init.MinepreggoModAdvancements;
 import dev.dixmk.minepreggo.init.MinepreggoModDamageSources;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.network.capability.FemalePlayerImpl;
+import dev.dixmk.minepreggo.network.capability.IEnderPowerData;
 import dev.dixmk.minepreggo.network.capability.IMalePlayer;
 import dev.dixmk.minepreggo.network.capability.MalePlayerImpl;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
@@ -19,14 +23,18 @@ import dev.dixmk.minepreggo.network.packet.s2c.SyncMobEffectS2CPacket;
 import dev.dixmk.minepreggo.network.packet.s2c.SyncPlayerDataS2CPacket;
 import dev.dixmk.minepreggo.network.packet.s2c.SyncPregnancySystemS2CPacket;
 import dev.dixmk.minepreggo.server.ServerCinematicManager;
+import dev.dixmk.minepreggo.server.ServerPendingPlayerTaskManager;
 import dev.dixmk.minepreggo.server.ServerPlayerAnimationManager;
 import dev.dixmk.minepreggo.world.entity.BellyPart;
 import dev.dixmk.minepreggo.world.entity.BellyPartFactory;
 import dev.dixmk.minepreggo.world.entity.BellyPartManager;
+import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.IMonsterPregnantPreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.Creature;
+import dev.dixmk.minepreggo.world.entity.preggo.IHostilePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractEnderWoman;
 import dev.dixmk.minepreggo.world.inventory.preggo.PlayerJoinsWorldMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.RequestSexP2PMenu;
 import dev.dixmk.minepreggo.world.item.CumSpecimenTubeItem;
@@ -37,10 +45,13 @@ import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyType;
+import dev.dixmk.minepreggo.world.pregnancy.SexHelper;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Position;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -53,8 +64,13 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.monster.Zombie;
@@ -66,10 +82,13 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.Level.ExplosionInteraction;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
+import net.minecraftforge.event.entity.EntityTeleportEvent;
+import net.minecraftforge.event.entity.living.EnderManAngerEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
@@ -100,6 +119,8 @@ public class PlayerEventHandler {
 					showPlayerMainMenu(serverPlayer);
 				}
 			});
+			serverPlayer.getCapability(MinepreggoCapabilities.ENDER_POWER_DATA).ifPresent(c -> c.sync(serverPlayer));
+			ServerPendingPlayerTaskManager.getInstance().executePendingTasks(serverPlayer);
 		}
 	}
 
@@ -125,7 +146,8 @@ public class PlayerEventHandler {
 				if (c.canShowMainMenu()) {
 					showPlayerMainMenu(serverPlayer);
 				}
-			});				
+			});	
+			serverPlayer.getCapability(MinepreggoCapabilities.ENDER_POWER_DATA).ifPresent(c -> c.sync(serverPlayer));
 		}
 	}
 
@@ -161,6 +183,8 @@ public class PlayerEventHandler {
 					}
 				});
 			});
+			
+			serverPlayer.getCapability(MinepreggoCapabilities.ENDER_POWER_DATA).ifPresent(c -> c.sync(serverPlayer));
 		}
 	}
 
@@ -173,25 +197,47 @@ public class PlayerEventHandler {
 					showPlayerMainMenu(serverPlayer);
 				}	
 			});
+			serverPlayer.getCapability(MinepreggoCapabilities.ENDER_POWER_DATA).ifPresent(c -> c.sync(serverPlayer));
 		}
 	}
 	
 	@SubscribeEvent
 	public static void clonePlayer(PlayerEvent.Clone event) {	
         final var originalPlayer = event.getOriginal();
-
-        if (!event.isWasDeath()) {
+        final var newPlayer = event.getEntity();
+        final var wasDeath = event.isWasDeath();
+        if (!wasDeath) {
             originalPlayer.revive();
         }
 
-        final var newPlayer = event.getEntity();
-        
+        clonePlayerData(originalPlayer, newPlayer, wasDeath);
+        cloneEnderPowerData(originalPlayer, newPlayer, wasDeath);
+	}
+	
+	private static void cloneEnderPowerData(Player originalPlayer, Player newPlayer, boolean wasDeath) {
+		var origialEnderPowerData = originalPlayer.getCapability(MinepreggoCapabilities.ENDER_POWER_DATA).resolve();
+		var newEnderPowerData = newPlayer.getCapability(MinepreggoCapabilities.ENDER_POWER_DATA).resolve();
+		
+		if (origialEnderPowerData.isEmpty() || newEnderPowerData.isEmpty()) return;
+
+		if (wasDeath) {
+			newEnderPowerData.get().reset();
+		} else {
+			newEnderPowerData.get().deserializeNBT(origialEnderPowerData.get().serializeNBT());
+		}
+
+		if (newPlayer instanceof ServerPlayer serverPlayer && !serverPlayer.level().isClientSide) {
+			newEnderPowerData.ifPresent(c -> c.sync(serverPlayer));
+		}     
+	}
+	
+	private static void clonePlayerData(Player originalPlayer, Player newPlayer, boolean wasDeath) {
         var origialPlayerData = originalPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).resolve();
         var newPlayerData = newPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).resolve();
         
         if (origialPlayerData.isEmpty() || newPlayerData.isEmpty()) return;
 
-        if (event.isWasDeath()) {
+        if (wasDeath) {
             newPlayerData.get().invalidate();
         } else {
             newPlayerData.get().deserializeNBT(origialPlayerData.get().serializeNBT());
@@ -204,7 +250,7 @@ public class PlayerEventHandler {
                     showPlayerMainMenu(serverPlayer);
                 }
             });
-        }     
+        }  
 	}
 	
 	@SubscribeEvent
@@ -235,7 +281,7 @@ public class PlayerEventHandler {
 	            );
 	            
 	            // Sync expired/removed pregnancy effects to ensure proper state synchronization
-	            PregnancySystemHelper.syncExpiredMobEffectsToTracker(trackedPlayer, trackerPlayer);
+	            PregnancySystemHelper.syncExpiredPregnancyMobEffectsToTracker(trackedPlayer, trackerPlayer);
 	    	});
 	    }
 	}	
@@ -307,7 +353,25 @@ public class PlayerEventHandler {
 			else {
 				cap.getMaleData().ifPresent(maleData -> evalualeMalePlayerOnTick(serverPlayer, maleData));				
 			}	
-		});		
+		});	
+		
+		if (serverPlayer.hasEffect(MinepreggoModMobEffects.ENDER_ESSENCE.get()) || serverPlayer.hasEffect(MinepreggoModMobEffects.ENDER_DRAGON_ESSENCE.get()) ) {
+			serverPlayer.getCapability(MinepreggoCapabilities.ENDER_POWER_DATA).ifPresent(cap -> {			
+				if (cap.getEnderPowerLevel() >= IEnderPowerData.MAX_ENDER_POWER_LEVEL) {
+					return;
+				}		
+				PregnancyPhase phase = PlayerHelper.getCurrentPregnancyPhase(serverPlayer).orElse(null);
+				int cooldown = phase != null ? PlayerHelper.getEnderPowerCoolDownBy(phase) : PlayerHelper.DEFAULT_ENDER_POWER_COOLDOWN;		
+				if (cap.getEnderPowerTimer() > cooldown) {
+					cap.resetEnderPowerTimer();
+					cap.incrementEnderPowerLevel(1);
+					cap.sync(serverPlayer);
+				}
+				else {
+					cap.incrementEnderPowerTimer();
+				}
+			});
+		}	
 	}
 	
 	private static void evalualeMalePlayerOnTick(ServerPlayer serverPlayer, MalePlayerImpl maleData) {
@@ -321,7 +385,7 @@ public class PlayerEventHandler {
 			}
 		}
 		if (maleData.getFap() < IMalePlayer.MAX_FAP) {
-			if (maleData.getFapTimer() > 2400) {
+			if (maleData.getFapTimer() > 1200) {
 				maleData.incrementFap(1);
 				maleData.resetFapTimer();
 			}
@@ -340,9 +404,29 @@ public class PlayerEventHandler {
 					if (!PlayerHelper.tryToStartPregnancy(serverPlayer, false)) {					
 						throw new IllegalStateException("Failed to initialize pregnancy system for player " + serverPlayer.getName().getString());	
 					}
-					
 					femaleData.setPregnancyInitializerTimer(0);
-					
+					femaleData.getPrePregnancyData().ifPresent(prePregnancyData -> {
+						if (prePregnancyData.pregnancyType() == PregnancyType.SEX
+								&& prePregnancyData.fatherId() != null
+								&& prePregnancyData.typeOfSpeciesOfFather() == Species.HUMAN
+								&& serverPlayer.level() instanceof ServerLevel serverLevel) {
+							
+							Optional<ServerPlayer> fatherPlayerOpt = serverLevel.getServer().getPlayerList().getPlayers().stream()
+									.filter(p -> p.getUUID().equals(prePregnancyData.fatherId()))
+									.findFirst();
+							
+							if (fatherPlayerOpt.isPresent()) {
+								MinepreggoModAdvancements.IMPREGNATE_ENTITY_TRIGGER.trigger(fatherPlayerOpt.get(), serverPlayer);
+							}
+							else {
+					            CompoundTag data = new CompoundTag();
+					            data.putUUID("target", serverPlayer.getUUID());					            
+					            ServerPendingPlayerTaskManager.getInstance().addTask(prePregnancyData.fatherId(), "impregnate_player", data);
+								MinepreggoMod.LOGGER.debug("Player {} impregnated by offline player with UUID {}, advancement will not be triggered", serverPlayer.getName().getString(), prePregnancyData.fatherId());
+							}		
+						}
+					});
+		
 					MinepreggoMod.LOGGER.debug("Player {} pregnancy system initialized", serverPlayer.getName().getString());
 				}					
 				else {
@@ -404,7 +488,7 @@ public class PlayerEventHandler {
 				}
 			}
 			else if (!serverPlayer.hasEffect(MinepreggoModMobEffects.FERTILE.get()) && femaleData.getPostPregnancyData().isEmpty() && femaleData.getFertilityRate() >= IBreedable.MAX_FERTILITY_RATE) {
-				serverPlayer.addEffect(new MobEffectInstance(MinepreggoModMobEffects.FERTILE.get(), 12000, 0, false, true, true));
+				serverPlayer.addEffect(new MobEffectInstance(MinepreggoModMobEffects.FERTILE.get(), 9600, 0, false, true, true));
 			}
 			else {
 				evaluatePostPartum(serverPlayer);
@@ -475,7 +559,8 @@ public class PlayerEventHandler {
 							return;
 						}
 						
-						int gratification = itemCraving.getSpeciesType() != Species.HUMAN ? (int) (itemCraving.getGratification() * itemCraving.getPenalty()) : itemCraving.getGratification();
+						int realGratification = itemCraving.getGratification();
+						int gratification = itemCraving.getSpeciesType() != Species.HUMAN ? Math.round(realGratification - (realGratification * itemCraving.getPenalty())) : realGratification;
 						MinepreggoMod.LOGGER.debug("Player {} satisfied craving with item: {} by {}", player.getName().getString(), mainHandItem, gratification);
 						pregnancyData.decrementCraving(gratification);
 						pregnancyData.syncEffect(player);
@@ -519,7 +604,7 @@ public class PlayerEventHandler {
 								&& pregnancySystem.getCurrentPregnancyPhase().compareTo(PregnancyPhase.P2) >= 0
 								&& pregnancySystem.getMilking() >= PregnancySystemHelper.MILKING_VALUE) {
 							
-							PlayerHelper.playSoundNearTo(serverPlayer, SoundEvents.COW_MILK, 0.7f);
+							LivingEntityHelper.playSoundNearTo(serverPlayer, SoundEvents.COW_MILK, 0.7f);
 							
 							pregnancySystem.decrementMilking(PregnancySystemHelper.MILKING_VALUE);
 							pregnancySystem.syncEffect(serverPlayer);
@@ -549,7 +634,7 @@ public class PlayerEventHandler {
 							if (post.getPostPregnancy() == PostPregnancy.PARTUM
 									&& itemstack.is(Items.GLASS_BOTTLE)
 									&& post.getPostPartumLactation() >= PregnancySystemHelper.MILKING_VALUE) {						
-								PlayerHelper.playSoundNearTo(serverPlayer, SoundEvents.COW_MILK, 0.7f);					
+								LivingEntityHelper.playSoundNearTo(serverPlayer, SoundEvents.COW_MILK, 0.7f);					
 								itemstack.shrink(1);	
 					            if (itemstack.isEmpty()) {
 					            	serverPlayer.setItemInHand(event.getHand(), ItemStack.EMPTY);
@@ -573,7 +658,7 @@ public class PlayerEventHandler {
 				cap.getMaleData().ifPresent(maleData -> {	
 					if (maleData.canFap()) {
 						
-						PlayerHelper.playSoundNearTo(serverPlayer, SoundEvents.BOTTLE_FILL, 0.7f);
+						LivingEntityHelper.playSoundNearTo(serverPlayer, SoundEvents.BOTTLE_FILL, 0.7f);
 						
 						itemstack.shrink(1);					
 			            if (itemstack.isEmpty()) {
@@ -599,20 +684,67 @@ public class PlayerEventHandler {
 	
 	@SubscribeEvent
 	public static void onHurt(LivingHurtEvent event) {
-		if (!(event.getEntity() instanceof ServerPlayer serverPlayer)) return;	
+		LivingEntity entity = event.getEntity();
+		if (entity.level().isClientSide) {
+			return;
+		}
 			
+		Entity source = event.getSource().getEntity();
+		
+		if (entity instanceof ServerPlayer serverPlayer) {
+			evaluatePregnantPlayerOnHurt(serverPlayer, event.getSource());
+					
+			if (serverPlayer.hasEffect(MinepreggoModMobEffects.ENDER_DRAGON_RECOGNITION.get())
+					&& source instanceof LivingEntity entitySource
+					&& !entitySource.hasEffect(MinepreggoModMobEffects.ENDER_DRAGON_RECOGNITION.get())
+					&& !(entitySource instanceof EnderDragon)) {
+				
+				getNearbyEndermen(serverPlayer).forEach(mob -> {	
+					if (mob.getTarget() != null && mob.getTarget().getUUID().equals(serverPlayer.getUUID())) {
+						return;
+					}
+					mob.setTarget(entitySource);
+				});				
+			}		
+		}
+				
+		if (source instanceof ServerPlayer sourcePlayer && sourcePlayer.hasEffect(MinepreggoModMobEffects.ENDER_DRAGON_RECOGNITION.get())
+				&& !(entity instanceof EnderMan) && !(entity instanceof AbstractEnderWoman) && !(entity instanceof EnderDragon)
+				&& !entity.hasEffect(MinepreggoModMobEffects.ENDER_DRAGON_RECOGNITION.get())
+				&& !(entity instanceof TamableAnimal tamableAnimal && tamableAnimal.isOwnedBy(sourcePlayer))) {
+			
+			getNearbyEndermen(sourcePlayer).forEach(mob -> {	
+				if (mob.getTarget() != null && mob.getTarget().getUUID().equals(sourcePlayer.getUUID())) {
+					return;
+				}
+				mob.setTarget(entity);
+			});	
+		}
+	}
+	
+	private static List<? extends Mob> getNearbyEndermen(ServerPlayer player) {
+		Level level = player.level();
+		TargetingConditions conditions = TargetingConditions.forCombat()
+			    .range(24)
+			    .selector(e -> e instanceof EnderMan || e instanceof AbstractEnderWoman);
+		
+		return level.getNearbyEntities(Mob.class, conditions, player, player.getBoundingBox().inflate(24));
+	}
+	
+	
+	private static void evaluatePregnantPlayerOnHurt(ServerPlayer serverPlayer, DamageSource damageSource) {
 		serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
 			cap.getFemaleData().ifPresent(femaleData -> {		
 				if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
 					var pregnancySystem = femaleData.getPregnancyData();
 					if (pregnancySystem.getPregnancyPain() != PregnancyPain.MISCARRIAGE) {
 											
-						PregnancySystemHelper.calculatePregnancyDamage(serverPlayer, pregnancySystem.getCurrentPregnancyPhase(), event.getSource()).ifPresent(damage -> {
+						PregnancySystemHelper.calculatePregnancyDamage(serverPlayer, pregnancySystem.getCurrentPregnancyPhase(), damageSource).ifPresent(damage -> {
 														
 							pregnancySystem.reducePregnancyHealth(damage);
 							final var health = pregnancySystem.getPregnancyHealth();
 							if (health <= 0) {
-								PlayerHelper.playSoundNearTo(serverPlayer, MinepreggoModSounds.PLAYER_MISCARRIAGE.get(), 0.7f);
+								LivingEntityHelper.playSoundNearTo(serverPlayer, MinepreggoModSounds.PLAYER_MISCARRIAGE.get(), 0.7f);
 								MessageHelper.sendTo(serverPlayer, Component.translatable("chat.minepreggo.player.miscarriage.message.start", serverPlayer.getDisplayName().getString()));
 								pregnancySystem.resetPregnancyPainTimer();
 								pregnancySystem.setPregnancyPain(PregnancyPain.MISCARRIAGE);
@@ -629,26 +761,30 @@ public class PlayerEventHandler {
 				else if(!femaleData.isPregnant() 
 						&& femaleData.getPostPregnancyData().isEmpty()
 						&& serverPlayer.hasEffect(MinepreggoModMobEffects.FERTILE.get())
-						&& event.getSource().getEntity() instanceof Mob source
+						&& damageSource.getEntity() instanceof Mob source
 						&& serverPlayer.getRandom().nextFloat() < 0.65f) {
 					
 					Species species = null;
+					Creature creature = null;
 					boolean flag = false;
 					
 					if (source instanceof Zombie && !source.isBaby()) {
 						species = Species.ZOMBIE;
+						creature = Creature.HUMANOID;
 						flag = femaleData.tryImpregnateByHurting(species);
 					}
 					else if (source instanceof Creeper) {
 						species = Species.CREEPER;
+						creature = Creature.MONSTER;
 						flag = femaleData.tryImpregnateByHurting(species);
 					}
 					else if (source instanceof EnderMan) {
 						species = Species.ENDER;
+						creature = Creature.MONSTER;
 						flag = femaleData.tryImpregnateByHurting(species);
 					}		
 					
-					if (flag && !PlayerHelper.tryStartPregnancyByMobAttack(serverPlayer, species)) {
+					if (flag && !PlayerHelper.tryStartPregnancyByMobAttack(serverPlayer, species, creature)) {
 						MinepreggoMod.LOGGER.error("Failed to start pregnancy by mob attack for player {}", serverPlayer.getName().getString());
 					}				
 				}
@@ -702,13 +838,17 @@ public class PlayerEventHandler {
 		if (event.getHand() != InteractionHand.MAIN_HAND || event.getLevel().isClientSide) return;
 
 		if (event.getEntity() instanceof ServerPlayer sourcePlayer) {	
-			Optional<Boolean> isInLabor = sourcePlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).map(cap -> 
-				cap.getFemaleData().map(femaleData -> 
-					femaleData.isPregnant()
-					&& femaleData.isPregnancyDataInitialized() 
-					&& PregnancyPain.isLaborPain(femaleData.getPregnancyData().getPregnancyPain())
-				)
-			).orElse(Optional.empty());
+			Optional<Boolean> isInLabor = sourcePlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA)
+				.resolve()
+				.flatMap(cap -> cap.getFemaleData().resolve()
+				.map(femaleData -> {
+						if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
+							var pregnancySystem = femaleData.getPregnancyData();
+							return PregnancyPain.isLaborPain(pregnancySystem.getPregnancyPain());
+						}
+						return false;
+					})
+			);
 			
 			if (isInLabor.isPresent() && isInLabor.get().booleanValue()) {
 				MessageHelper.sendTo(sourcePlayer, Component.translatable("chat.minepreggo.player.pregnancy.message.cannot_in_labor"), true);
@@ -723,7 +863,7 @@ public class PlayerEventHandler {
 			        sourcePlayer.swing(InteractionHand.MAIN_HAND);
 			        event.setCanceled(true);
 				}
-				else if (PregnancySystemHelper.hasEnoughBedsForBreeding(targetPlayer, 1, 12) && PregnancySystemHelper.canFuck(sourcePlayer, targetPlayer)) {		        		        				
+				else if (SexHelper.hasEnoughBedsForBreeding(targetPlayer, 1, 12) && SexHelper.canFuck(sourcePlayer, targetPlayer)) {		        		        				
 					MessageHelper.sendTo(sourcePlayer, Component.translatable("chat.minepreggo.player.sex.request_sent", targetPlayer.getDisplayName().getString()), true);
 					RequestSexP2PMenu.create(targetPlayer, sourcePlayer);
 			        event.setCancellationResult(InteractionResult.SUCCESS);
@@ -754,7 +894,7 @@ public class PlayerEventHandler {
             			if (player.level() instanceof ServerLevel serverLevel) {	
                         	if (event.getSource().is(MinepreggoModDamageSources.BELLY_BURST)) {
                         		PregnancySystemHelper.deathByBellyBurst(entity, serverLevel);
-                        		PlayerHelper.playSoundNearTo(player, MinepreggoModSounds.PREGNANT_PREGGO_MOB_DEATH.get(), 0.8f);
+                        		LivingEntityHelper.playSoundNearTo(player, MinepreggoModSounds.PREGNANT_PREGGO_MOB_DEATH.get(), 0.8f);
                         		explode = true;
                         	}
 
@@ -764,7 +904,7 @@ public class PlayerEventHandler {
             					serverLevel.explode(player, deathPos.x(), deathPos.y(), deathPos.z(), PlayerHelper.calculateExplosionLevelByPregnancyPhase(phase), ExplosionInteraction.MOB);
             				}
                 			if (phase.compareTo(PregnancyPhase.P3) >= 0) {
-                    			float alive = PregnancySystemHelper.getSpawnProbabilityBasedPregnancy(pregnancySystem, 0.6F, 0.3F, 0.1F, 0.3F);
+                    			float alive = PregnancySystemHelper.calculateSpawnProbabilityBasedPregnancy(pregnancySystem, 0.6F, 0.3F, 0.1F, 0.3F);
                     			PregnancySystemHelper.spawnBabiesOrFetuses(serverLevel, deathPos, alive, 0.35f, pregnancySystem.getWomb(), player.getRandom());
                 			}
                 			else {
@@ -777,6 +917,20 @@ public class PlayerEventHandler {
         }
     }   
 	
+    @SubscribeEvent
+    public static void onEnderManAngerEvent(EnderManAngerEvent event) {
+		if (!event.getEntity().level().isClientSide && event.getPlayer().hasEffect(MinepreggoModMobEffects.ENDER_DRAGON_RECOGNITION.get())) {
+			event.setCanceled(true);
+		}		
+    }
+      
+    @SubscribeEvent
+    public static void onEnderWomanAngerEvent(EnderWomanAngerEvent event) {
+		if (!event.getEntity().level().isClientSide && event.getPlayer().hasEffect(MinepreggoModMobEffects.ENDER_DRAGON_RECOGNITION.get())) {
+			event.setCanceled(true);
+		}			
+    }   
+    
     @SubscribeEvent
     public static void onItemPickup(ItemPickupEvent event) {
         if (event.getEntity().level().isClientSide) {
@@ -839,8 +993,8 @@ public class PlayerEventHandler {
 								&& femaleData.isPregnancyDataInitialized()
 								&& !PregnancySystemHelper.canMountEntity(femaleData.getPregnancyData().getCurrentPregnancyPhase())) {
 							var message = serverPlayer.getRandom().nextBoolean() 
-									? Component.translatable("chat.minepreggo.player.pregnancy.message.cannot_ride.message.1") 
-									: Component.translatable("chat.minepreggo.player.pregnancy.message.cannot_ride.message.2");
+									? Component.translatable("chat.minepreggo.player.pregnancy.message.cannot_ride.generic.1") 
+									: Component.translatable("chat.minepreggo.player.pregnancy.message.cannot_ride.generic.2");
 							MessageHelper.sendTo(serverPlayer, message, true);
 					        event.setCanceled(true);
 						
@@ -849,11 +1003,34 @@ public class PlayerEventHandler {
 				);
 			}
 			else if ((entity instanceof ITamablePregnantPreggoMob pregnantTamableMob && !PregnancySystemHelper.canMountEntity(pregnantTamableMob.getPregnancyData().getCurrentPregnancyPhase()))
-					|| entity instanceof IMonsterPregnantPreggoMob pregnantMonsterMob && !PregnancySystemHelper.canMountEntity(pregnantMonsterMob.getPregnancyData().getCurrentPregnancyPhase())) {
+					|| entity instanceof IHostilePregnantPreggoMob pregnantMonsterMob && !PregnancySystemHelper.canMountEntity(pregnantMonsterMob.getPregnancyData().getCurrentPregnancyPhase())) {
 				event.setCanceled(true);
 			}
 		}
 	}
+    
+    @SubscribeEvent
+    public static void onEatChorusFruit(EntityTeleportEvent.ChorusFruit event) {
+    	LivingEntity entity = event.getEntityLiving();
+    	if (entity.level().isClientSide) {
+			return;
+		}
+    	
+    	if (entity.hasEffect(MinepreggoModMobEffects.ENDER_DRAGON_ESSENCE.get()) || entity.hasEffect(MinepreggoModMobEffects.ENDER_ESSENCE.get())) {
+			event.setCanceled(true);
+    	}
+    	else if (entity instanceof ServerPlayer serverPlayer) {
+    		PregnancyPhase phase = PlayerHelper.getCurrentPregnancyPhase(serverPlayer).orElse(null);
+    		if (phase == null) {
+				return;
+			}
+    		
+  			if ((serverPlayer.hasEffect(MinepreggoModMobEffects.ENDER_DRAGON_PREGNANCY.get()) && phase.compareTo(PregnancyPhase.P1) >= 0)
+  					|| (serverPlayer.hasEffect(MinepreggoModMobEffects.FULL_OF_ENDERS.get()) && phase.compareTo(PregnancyPhase.P4) >= 0)) {
+				event.setCanceled(true);
+  			}
+    	}
+    }
     
     @SubscribeEvent
     public static void onFall(LivingFallEvent event) {

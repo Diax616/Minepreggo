@@ -24,7 +24,9 @@ public class PlayerDataImpl implements IPlayerData {
 	
 	private LazyOptional<FemalePlayerImpl> femalePlayerData = LazyOptional.empty();
 	private LazyOptional<MalePlayerImpl> malePlayerData = LazyOptional.empty();
-		
+
+	private final IPlayerStatistic playerStatistic = new PlayerStatisticImpl();
+	
 	@Override
 	public SkinType getSkinType() {
 		return skinType;
@@ -119,10 +121,7 @@ public class PlayerDataImpl implements IPlayerData {
     		}	
     		return Optional.ofNullable(data);
     	}
-    	
 
-    	
-    	
     	return Optional.empty();
     }
     
@@ -142,20 +141,22 @@ public class PlayerDataImpl implements IPlayerData {
 		nbt.putString("DataSkinType", skinType.name());
 		nbt.putBoolean("DataShowMainMenu", showMainMenu);	
 		nbt.putString(Gender.NBT_KEY, gender.name());	
-	
+		nbt.put("PlayerStatistic", playerStatistic.serializeNBT());
+		
 		if (isFemale()) {			
 	        this.femalePlayerData.resolve().ifPresentOrElse(data -> nbt.put("FemalePlayerImpl", data.serializeNBT()), () -> MinepreggoMod.LOGGER.error("Player is female, but female data is not PRESENT"));		
 		}
 		else if (isMale()) {
 	        this.malePlayerData.resolve().ifPresentOrElse(data -> nbt.put("MalePlayerImpl", data.serializeNBT()), () -> MinepreggoMod.LOGGER.error("Player is male, but male data is not PRESENT"));
 		}		
-
+		
 		return nbt;
 	}
 	
 	public void deserializeNBT(CompoundTag nbt) {
 		skinType = SkinType.valueOf(nbt.getString("DataSkinType"));
 		showMainMenu = nbt.getBoolean("DataShowMainMenu");		
+		playerStatistic.deserializeNBT(nbt.getCompound("PlayerStatistic"));
 		
 	    if (nbt.contains(Gender.NBT_KEY, Tag.TAG_STRING)) {
             Gender loadedGender = Gender.valueOf(nbt.getString(Gender.NBT_KEY));
@@ -182,7 +183,8 @@ public class PlayerDataImpl implements IPlayerData {
                 	}
             	});
             }
-	    } 			
+	    } 	
+
 	}
 	
 	public void invalidate() {
@@ -201,8 +203,7 @@ public class PlayerDataImpl implements IPlayerData {
 	public void syncAllClientData(ServerPlayer serverPlayer) {
 		sync(serverPlayer);			
 		getFemaleData().ifPresent(cap -> {
-			cap.sync(serverPlayer);		
-			
+			cap.sync(serverPlayer);				
 			if (cap.isPregnant() && cap.isPregnancyDataInitialized()) {
 				var pregnancyData = cap.getPregnancyData();
 				pregnancyData.syncState(serverPlayer);
@@ -210,8 +211,12 @@ public class PlayerDataImpl implements IPlayerData {
 			}
 			else if (cap.getPostPregnancyData().isPresent() && cap.getPostPregnancyData().get().getPostPregnancy() == PostPregnancy.PARTUM) {
 				cap.syncLactation(serverPlayer);
-			}
-			
+			}		
 		});
+	}
+
+	@Override
+	public IPlayerStatistic getPlayerStatistic() {
+		return playerStatistic;
 	}
 }

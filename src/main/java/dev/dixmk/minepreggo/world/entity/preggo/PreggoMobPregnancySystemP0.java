@@ -14,12 +14,9 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.AABB;
 
 public abstract class PreggoMobPregnancySystemP0
 	<E extends PreggoMob & ITamablePregnantPreggoMob> extends AbstractPregnancySystem<E> implements IPreggoMobPregnancySystem {
-
-	private int angryTicks = 0;
 	
 	protected PreggoMobPregnancySystemP0(E pregnantEntity) {
 		super(pregnantEntity);
@@ -39,22 +36,20 @@ public abstract class PreggoMobPregnancySystemP0
 			
 			if (!chestplate.isEmpty()
 					&& (!PregnancySystemHelper.canUseChestplate(chestplate.getItem(), next) || pregnancyData.getSyncedPregnancySymptoms().containsPregnancySymptom(PregnancySymptom.MILKING))) {
-				PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.CHEST);
+				PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, InventorySlot.CHEST);
 			}
 			
 			if (!leggings.isEmpty()
-					&& PregnancySystemHelper.canUseLegging(leggings.getItem(), next)) {
-				PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.LEGS);
+					&& !PregnancySystemHelper.canUseLegging(leggings.getItem(), next)) {
+				PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, InventorySlot.LEGS);
 			}
 			
 			advanceToNextPregnancyPhase();
 			
 			pregnantEntity.discard();
-			MinepreggoMod.LOGGER.debug("Pregnancy phase advanced from {} for entity {}", pregnancyData.getCurrentPregnancyPhase(), pregnantEntity.getSimpleName());
+			MinepreggoMod.LOGGER.debug("Pregnancy phase advanced from {} for entity {}", pregnancyData.getCurrentPregnancyPhase(), pregnantEntity.getSimpleNameOrCustom());
 			return;
-		}
-		
-		evaluateAngry(PregnancySystemHelper.LOW_ANGER_PROBABILITY);		
+		}	
 	}
 	
 	protected void evaluatePregnancyPains() {	
@@ -87,7 +82,7 @@ public abstract class PreggoMobPregnancySystemP0
         	pregnancyData.resetPregnancyTimer();
         	pregnancyData.incrementDaysPassed();
         	pregnancyData.reduceDaysToGiveBirth();
-        	MinepreggoMod.LOGGER.debug("Pregnancy day advanced to {} for entity {}", pregnancyData.getDaysPassed(), pregnantEntity.getSimpleName());
+        	MinepreggoMod.LOGGER.debug("Pregnancy day advanced to {} for entity {}", pregnancyData.getDaysPassed(), pregnantEntity.getSimpleNameOrCustom());
         } else {
         	pregnancyData.incrementPregnancyTimer();
         }
@@ -128,44 +123,6 @@ public abstract class PreggoMobPregnancySystemP0
 	@Override
 	protected boolean tryInitPregnancySymptom() {
 		return false;
-	}
-
-	public boolean canBeAngry() {
-		return pregnantEntity.getTamableData().getFullness() <= 4;
-	}
-
-	protected void evaluateAngry(final float angerProbability) {
-	   final var angry = pregnantEntity.getTamableData().isAngry();
-		
-		if (!angry && this.canBeAngry()) {
-			pregnantEntity.getTamableData().setAngry(true);
-	    	return;
-	    } 
-
-		
-		if (!canBeAngry()) {
-			pregnantEntity.getTamableData().setAngry(false);
-			return;
-		}		
-		
-		if (angryTicks > 100) {
-			angryTicks = 0;
-		}
-		else {
-			++angryTicks;
-			return;
-		}
-			
-        if (!PreggoMobHelper.hasValidTarget(pregnantEntity) && randomSource.nextFloat() < angerProbability) {     
-            var players = pregnantEntity.level().getEntitiesOfClass(Player.class, new AABB(pregnantEntity.blockPosition()).inflate(12), pregnantEntity::isOwnedBy);
-                  
-            if (!players.isEmpty()) {
-            	var owner = players.get(0);
-	            if (!PreggoMobHelper.isPlayerInCreativeOrSpectator(owner)) {
-	            	pregnantEntity.setTarget(owner);
-	            } 
-            }
-        }
 	}
 	
 	// RIGHT CLICK	

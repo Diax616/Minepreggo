@@ -1,0 +1,30 @@
+{
+  "display": {
+	"background": "minecraft:textures/block/stone.png",
+    "icon": {
+      "item": "minepreggo:baby_ender_dragon_block"
+    },
+    "title": {
+      "translate": "advancements.brewing_an_ender_dragon_potion.title"
+    },
+    "description": {
+      "translate": "advancements.brewing_an_ender_dragon_potion.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "brewed_potion": {
+      "trigger": "minecraft:brewed_potion",
+      "conditions": {
+        "potion": "minepreggo:ender_dragon_impregnation"
+      }
+    }
+  },
+  "rewards": {
+    "experience": 50
+  },
+  "parent": "minecraft:end/dragon_egg"
+}

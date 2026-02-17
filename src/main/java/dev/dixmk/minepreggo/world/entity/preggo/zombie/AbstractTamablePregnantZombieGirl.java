@@ -1,5 +1,7 @@
 package dev.dixmk.minepreggo.world.entity.preggo.zombie;
 
+import java.util.Set;
+
 import javax.annotation.Nonnull;
 
 import dev.dixmk.minepreggo.MinepreggoModConfig;
@@ -10,7 +12,13 @@ import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.world.entity.BellyPartFactory;
 import dev.dixmk.minepreggo.world.entity.BellyPartManager;
-import dev.dixmk.minepreggo.world.entity.ai.goal.PreggoMobAIHelper;
+import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
+import dev.dixmk.minepreggo.world.entity.ai.goal.BreakBlocksToFollowOwnerGoal;
+import dev.dixmk.minepreggo.world.entity.ai.goal.EatGoal;
+import dev.dixmk.minepreggo.world.entity.ai.goal.GoalHelper;
+import dev.dixmk.minepreggo.world.entity.ai.goal.PregnantPreggoMobFollowOwnerGoal;
+import dev.dixmk.minepreggo.world.entity.ai.goal.PregnantPreggoMobOwnerHurtByTargetGoal;
+import dev.dixmk.minepreggo.world.entity.ai.goal.PregnantPreggoMobOwnerHurtTargetGoal;
 import dev.dixmk.minepreggo.world.entity.preggo.IPreggoMobPregnancySystem;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMobData;
@@ -26,10 +34,20 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AnimationState;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.FleeSunGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.RestrictSunGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraft.world.entity.animal.Turtle;
+import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -77,11 +95,258 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 		this.goalSelector.addGoal(8, new AbstractZombieGirl.ZombieGirlAttackTurtleEggGoal(this, 1.0D, 3){
 			@Override
 			public boolean canUse() {
-				return super.canUse() && !tamablePreggoMobData.isWaiting() && !pregnancyData.isIncapacitated();
+				return super.canUse()
+				&& !isOnFire()	
+				&& !tamablePreggoMobData.isWaiting()
+				&& !pregnancyData.isIncapacitated();
 			}
 		});	
-		PreggoMobAIHelper.setTamablePregnantZombieGirlGoals(this);
+		this.goalSelector.addGoal(1, new RestrictSunGoal(this) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !getPregnancyData().isIncapacitated();			
+			}
+
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() 
+				&& !getPregnancyData().isIncapacitated();	
+			}
+		});
+		this.goalSelector.addGoal(1, new FleeSunGoal(this, 1.2D) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !getPregnancyData().isIncapacitated();			
+			}
+
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() 
+				&& !getPregnancyData().isIncapacitated();	
+			}
+		});
+		
+		this.targetSelector.addGoal(2, new HurtByTargetGoal(this) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !getPregnancyData().isIncapacitated();
+			}
+
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse()
+				&& !getPregnancyData().isIncapacitated();
+			}
+		});
+			
+		this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.2D, false){
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !getPregnancyData().isIncapacitated();
+			}
+
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse()
+				&& !getPregnancyData().isIncapacitated();
+			}
+		});
+		
+		this.goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(this, 1.0D) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& (getTamableData().isSavage() || !isTame())
+				&& !getPregnancyData().isIncapacitated();	
+			}
+			
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() 
+				&& !getPregnancyData().isIncapacitated();	
+			}
+		});
+		this.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false, false) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !isOnFire()	
+				&& (getTamableData().isSavage() || !isTame())
+				&& !getPregnancyData().isIncapacitated();
+			}
+
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() 
+				&& !getPregnancyData().isIncapacitated();
+			}
+		});
+		this.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(this, IronGolem.class, false, false){
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !isOnFire()			
+				&& !getPregnancyData().isIncapacitated()
+				&& (getTamableData().isSavage() || !isTame());
+			}
+
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() 
+				&& !getPregnancyData().isIncapacitated();
+			}
+		});
+		this.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(this, Player.class, false, false) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !isOnFire()
+				&& !getPregnancyData().isIncapacitated()
+				&& (getTamableData().isSavage() || !isTame());
+			}
+
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() 
+				&& !getPregnancyData().isIncapacitated();
+			}
+		});	
+		this.targetSelector.addGoal(8, new NearestAttackableTargetGoal<>(this, Turtle.class, 10, true, false, Turtle.BABY_ON_LAND_SELECTOR){
+			@Override
+			public boolean canUse() {
+				return super.canUse()
+				&& !isOnFire()
+				&& !getPregnancyData().isIncapacitated()
+				&& ((isTame() && !getTamableData().isWaiting()) || getTamableData().isSavage());
+			}
+
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() 
+				&& !getPregnancyData().isIncapacitated();
+			}
+		});
+		
+		this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 6F) {
+			@Override
+			public boolean canUse() {
+				return super.canUse()
+				&& !isOnFire()		
+				&& !getTamableData().isWaiting()
+				&& !LivingEntityHelper.hasValidTarget(mob)
+				&& !getPregnancyData().isIncapacitated();
+			}
+			
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse()
+				&& !isOnFire()
+				&& !LivingEntityHelper.isTargetStillValid(mob)
+				&& !getPregnancyData().isIncapacitated();
+			}
+		});			
+		
+		this.goalSelector.addGoal(10, new RandomLookAroundGoal(this) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !isOnFire()
+				&& (getTamableData().isSavage() || !isTame())		
+				&& !getPregnancyData().isIncapacitated();
+			}
+
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() 
+				&& !isOnFire()
+				&& !getPregnancyData().isIncapacitated();
+			}
+		});
 	}
+	
+	@Override
+	protected void reassessTameGoals() {
+		if (this.isTame()) {		
+			GoalHelper.addGoalWithReplacement(this, 3, new PregnantPreggoMobOwnerHurtByTargetGoal<>(this) {
+				@Override
+				public boolean canUse() {
+					return super.canUse() 
+					&& !isOnFire();				
+				}
+
+				@Override
+				public boolean canContinueToUse() {
+					return super.canContinueToUse()
+					&& !isOnFire();	
+				}
+			});	
+			GoalHelper.addGoalWithReplacement(this, 3, new PregnantPreggoMobOwnerHurtTargetGoal<>(this) {
+				@Override
+				public boolean canUse() {
+					return super.canUse() 
+					&& !isOnFire();				
+				}
+
+				@Override
+				public boolean canContinueToUse() {
+					return super.canContinueToUse()
+					&& !isOnFire();	
+				}
+			}, true);
+			GoalHelper.addGoalWithReplacement(this, 6, new PregnantPreggoMobFollowOwnerGoal<>(this, 1.2D, 7F, 2F, false) {
+				@Override
+				public boolean canUse() {
+					return super.canUse() 
+					&& !isOnFire();				
+				}
+
+				@Override
+				public boolean canContinueToUse() {
+					return super.canContinueToUse()
+					&& !isOnFire();	
+				}
+			});
+			GoalHelper.addGoalWithReplacement(this, 4, new BreakBlocksToFollowOwnerGoal<>(this, 2, 7) {
+				@Override
+				public boolean canUse() {
+					return super.canUse() 
+					&& !isOnFire()
+					&& !getPregnancyData().isIncapacitated();
+				}
+
+				@Override
+				public boolean canContinueToUse() {
+					return super.canContinueToUse()	
+					&& !isOnFire()
+					&& !getPregnancyData().isIncapacitated();
+				}
+			}, true);	
+			GoalHelper.addGoalWithReplacement(this, 6, new EatGoal<>(this, 0.6F, 30) {
+				@Override
+				public boolean canUse() {
+					return super.canUse()
+					&& !isOnFire()
+					&& !getPregnancyData().isIncapacitated();
+				}
+				
+				@Override
+				public boolean canContinueToUse() {
+					return super.canContinueToUse() 
+					&& !isOnFire()
+					&& !getPregnancyData().isIncapacitated();
+				}
+			});
+		}
+		else {
+			GoalHelper.removeGoalByClass(this.goalSelector, Set.of(PregnantPreggoMobOwnerHurtByTargetGoal.class, PregnantPreggoMobFollowOwnerGoal.class, EatGoal.class));
+			GoalHelper.removeGoalByClass(this.targetSelector, Set.of(PregnantPreggoMobOwnerHurtTargetGoal.class, BreakBlocksToFollowOwnerGoal.class));
+		}
+	}
+	
 	
 	@Override
 	public SoundEvent getDeathSound() {
@@ -97,11 +362,10 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 	public void die(DamageSource source) {
 		super.die(source);		
 		if (!this.level().isClientSide) {
-			boolean bellyBurst = source.is(MinepreggoModDamageSources.BELLY_BURST);
-			if (bellyBurst) {
+			if (source.is(MinepreggoModDamageSources.BELLY_BURST)) {
 				PregnancySystemHelper.deathByBellyBurst(this, (ServerLevel) this.level());
 			}
-			PreggoMobHelper.spawnBabyAndFetusZombies(this, bellyBurst);
+			PreggoMobHelper.spawnBabyAndFetus(this);
 		}
 	}
 	
@@ -109,7 +373,7 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 	public boolean hurt(DamageSource damagesource, float amount) {
 		boolean result = super.hurt(damagesource, amount);	
 		
-		if (result) {
+		if (!this.level().isClientSide && result) {
 			pregnancySystem.evaluateOnSuccessfulHurt(damagesource);
 		}
 		
@@ -164,15 +428,6 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 		}
 	}
 	
-	@Override
-	public boolean doHurtTarget(Entity target) {		
-		boolean result = super.doHurtTarget(target);	
-		if (result && !this.tamablePreggoMobData.isSavage() && target instanceof Player owner && this.isOwnedBy(owner) && this.tamablePreggoMobData.isAngry()) {
-			this.setTarget(null);		
-		}
-		return result;
-	}
-	
     @Override
     public void handleEntityEvent(byte id) {
         if (this.level().isClientSide) {
@@ -201,35 +456,16 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 	
 	public static EntityType<? extends AbstractTamablePregnantZombieGirl> getEntityType(PregnancyPhase phase) {	
 		switch (phase) {
-		case P0: {
-			return MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P0.get();
+			case P0 -> MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P0.get();
+			case P1 -> MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P1.get();
+			case P2 -> MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P2.get();
+			case P3 -> MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P3.get();
+			case P4 -> MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P4.get();
+			case P5 -> MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P5.get();
+			case P6 -> MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P6.get();
+			case P7 -> MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P7.get();
+			case P8 -> MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P8.get();
 		}
-		case P1: {
-			return MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P1.get();
-		}
-		case P2: {
-			return MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P2.get();
-		}
-		case P3: {
-			return MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P3.get();
-		}
-		case P4: {
-			return MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P4.get();
-		}
-		case P5: {
-			return MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P5.get();
-		}
-		case P6: {
-			return MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P6.get();
-		}
-		case P7: {
-			return MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P7.get();
-		}
-		case P8: {
-			return MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P8.get();
-		}
-		default:
-			throw new IllegalArgumentException("Unexpected value: " + phase);
-		}		
+		throw new IllegalArgumentException("Unexpected value: " + phase);
 	}
 }

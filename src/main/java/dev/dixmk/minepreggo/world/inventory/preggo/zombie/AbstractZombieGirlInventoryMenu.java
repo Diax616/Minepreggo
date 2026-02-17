@@ -1,7 +1,5 @@
 package dev.dixmk.minepreggo.world.inventory.preggo.zombie;
 
-import dev.dixmk.minepreggo.utils.TagHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamableZombieGirl;
 import dev.dixmk.minepreggo.world.inventory.preggo.AbstractPreggoMobInventaryMenu;
@@ -9,28 +7,21 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
+
 import net.minecraftforge.items.SlotItemHandler;
 
 public abstract class AbstractZombieGirlInventoryMenu<E extends AbstractTamableZombieGirl> extends AbstractPreggoMobInventaryMenu<E> {
 
 	protected AbstractZombieGirlInventoryMenu(MenuType<?> menuType, int id, Inventory inv, FriendlyByteBuf extraData, Class<E> zombieGirlClass) {
-		super(menuType, id, inv, extraData, AbstractTamableZombieGirl.INVENTORY_SIZE, zombieGirlClass);	
+		super(menuType, id, inv, extraData, zombieGirlClass);	
 	}
 
 	@Override
 	protected void createInventory(Inventory inv) {
 		this.preggoMob.ifPresent(zombieGirl -> {
 					
-			this.initVanillaEquipmentSlots(inv);
-			
-			this.addSlot(new SlotItemHandler(internal, ITamablePreggoMob.FOOD_INVENTORY_SLOT, 113, 62) {
-				@Override
-				public boolean mayPlace(ItemStack itemstack) {
-					return itemstack.is(TagHelper.ZOMBIE_FOOD);
-				}
-			});
-			
+			this.createDefaultHumanoidInventory();
+
 			this.addSlot(new SlotItemHandler(internal, 7, 134, 8));
 			this.addSlot(new SlotItemHandler(internal, 8, 152, 8));
 			this.addSlot(new SlotItemHandler(internal, 9, 134, 26));

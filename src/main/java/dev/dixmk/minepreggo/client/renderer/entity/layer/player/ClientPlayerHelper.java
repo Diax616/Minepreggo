@@ -44,10 +44,10 @@ public class ClientPlayerHelper {
 			Craving.SALTY, List.of(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/salty_pickle.png"),
 					MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/french_fries.png")), 
 			Craving.SWEET, List.of(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/chocolate_bar.png"),
-					MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/lemon_drops.png")), 
+					MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/candy_apple.png")), 
 			Craving.SOUR, List.of(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/lemon_ice_popsicles.png"),
 					MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/lemon_ice_cream.png"),
-					MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/lemon_drops.png")),
+					MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/lemon_drop.png")),
 			Craving.SPICY, List.of(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/spicy_chicken.png"),
 					MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/chili_poppers.png"))
 			);

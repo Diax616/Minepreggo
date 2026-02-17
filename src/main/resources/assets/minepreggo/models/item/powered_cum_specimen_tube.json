@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "minepreggo:item/powered_cum_specimen_tube"
+  }
+}

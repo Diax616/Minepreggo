@@ -3,7 +3,7 @@ package dev.dixmk.minepreggo.world.pregnancy;
 import javax.annotation.Nonnull;
 
 import dev.dixmk.minepreggo.init.MinepreggoModSounds;
-import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
+import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -74,13 +74,17 @@ public abstract class AbstractPregnancySystem<E extends LivingEntity> implements
 	protected abstract void startMiscarriage();
 	
 	public static void spawnParticulesForWaterBreaking(ServerLevel serverLevel, LivingEntity target) {	
+		spawnParticulesForWaterBreaking(serverLevel, target, target.getBbHeight() * 0.35);
+	}
+	
+	public static void spawnParticulesForWaterBreaking(ServerLevel serverLevel, LivingEntity target, double extraYOffset) {	
 		for (ServerPlayer player : serverLevel.getServer().getPlayerList().getPlayers()) {
 		    if (player.distanceToSqr(target) <= 256.0) { // 16 blocks
 				serverLevel.sendParticles(
 						player,
 						ParticleTypes.FALLING_DRIPSTONE_WATER,
 						true,
-						target.getX(), (target.getY() + target.getBbHeight() * 0.35), target.getZ(),
+						target.getX(), (target.getY() + extraYOffset), target.getZ(),
 						1,
 						0, 0, 0,
 						0.02);
@@ -89,13 +93,17 @@ public abstract class AbstractPregnancySystem<E extends LivingEntity> implements
 	}
 	
 	public static void spawnParticulesForMiscarriage(ServerLevel serverLevel, LivingEntity target) {	
+		spawnParticulesForMiscarriage(serverLevel, target, target.getBbHeight() * 0.35);
+	}
+	
+	public static void spawnParticulesForMiscarriage(ServerLevel serverLevel, LivingEntity target, double extraYOffset) {	
 		for (ServerPlayer player : serverLevel.getServer().getPlayerList().getPlayers()) {
 		    if (player.distanceToSqr(target) <= 256.0) { // 16 blocks
 				serverLevel.sendParticles(
 						player,
 						ParticleTypes.FALLING_DRIPSTONE_LAVA,
 						true,
-						target.getX(), (target.getY() + target.getBbHeight() * 0.35), target.getZ(),
+						target.getX(), (target.getY() + extraYOffset), target.getZ(),
 						1,
 						0, 0, 0,
 						0.02);
@@ -110,7 +118,7 @@ public abstract class AbstractPregnancySystem<E extends LivingEntity> implements
 		}
 		stomachGrowlCoolDown = 0;	
 		if (randomSource.nextFloat() < stomachGrowlProb) {
-			PlayerHelper.playSoundNearTo(pregnantEntity, MinepreggoModSounds.getRandomStomachGrowls(randomSource), 0.2f);	
+			LivingEntityHelper.playSoundNearTo(pregnantEntity, MinepreggoModSounds.getRandomStomachGrowls(randomSource), 0.2f);	
 			return true;
 		}	
 		return false;

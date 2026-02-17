@@ -7,7 +7,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-
+import net.minecraft.world.entity.player.Player;
 import dev.dixmk.minepreggo.server.ServerPlayerAnimationManager;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import net.minecraft.server.level.ServerPlayer;
@@ -21,10 +21,11 @@ public class PreBirth extends AbstractPlayerPregnancyPain {
 	}
 	
 	@Override
-	public void addAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {		
-
-		if (!PlayerHelper.isPlayerValid(entity)) return;
- 			
+	public void addAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {	
+		if (!(entity instanceof Player player) || !PlayerHelper.isFemale(player)) {
+        	return;
+        }
+		
 		if (!entity.level().isClientSide) {
 	        ServerPlayerAnimationManager.getInstance().triggerAnimation((ServerPlayer) entity, "prebirth");
 			
@@ -44,8 +45,10 @@ public class PreBirth extends AbstractPlayerPregnancyPain {
 	
 	@Override
 	public void removeAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {
-		if (!PlayerHelper.isPlayerValid(entity)) return;
-
+		if (!(entity instanceof Player player) || !PlayerHelper.isFemale(player)) {
+        	return;
+        }
+		
 		if (!entity.level().isClientSide) {
 			ServerPlayerAnimationManager.getInstance().stopAnimation((ServerPlayer) entity);
 

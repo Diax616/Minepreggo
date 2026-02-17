@@ -1,6 +1,7 @@
 package dev.dixmk.minepreggo.world.item.checkup;
 
 import java.util.EnumMap;
+import java.util.Map;
 import java.util.function.Supplier;
 
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
@@ -8,7 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public final class PrenatalCheckups {
-	private EnumMap<PrenatalCheckup, PrenatalCheckupData> map = new EnumMap<>(PrenatalCheckup.class);
+	private Map<PrenatalCheckup, PrenatalCheckupData> map = new EnumMap<>(PrenatalCheckup.class);
 	
 	private PrenatalCheckups() {
 		for (var key : PrenatalCheckup.values()) {

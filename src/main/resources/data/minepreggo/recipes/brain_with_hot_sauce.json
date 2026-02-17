@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "item": "minepreggo:villager_brain"
+      "tag": "minepreggo:brain"
     },
     {
       "item": "minepreggo:hot_sauce"

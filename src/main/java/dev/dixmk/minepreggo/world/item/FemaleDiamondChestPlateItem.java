@@ -24,7 +24,7 @@ public abstract class FemaleDiamondChestPlateItem extends ArmorItem implements I
 		super(ArmorMaterials.DIAMOND, ArmorItem.Type.CHESTPLATE, new Item.Properties());
 	}
 	
-	public static class ChestplateP0 extends FemaleDiamondChestPlateItem {
+	public static class Chestplate extends FemaleDiamondChestPlateItem {
 		@Override
 		public void initializeClient(Consumer<IClientItemExtensions> consumer) {
 			consumer.accept(new IClientItemExtensions() {
@@ -38,7 +38,7 @@ public abstract class FemaleDiamondChestPlateItem extends ArmorItem implements I
 
 		@Override
 		public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
-			return "minepreggo:textures/models/armor/diamond_p0_layer_1.png";
+			return "minepreggo:textures/models/armor/diamond_layer_1.png";
 		}
 	}
 	

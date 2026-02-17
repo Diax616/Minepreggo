@@ -14,9 +14,11 @@ import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import net.minecraft.world.entity.LivingEntity;
 
 public class BellyPartManager {
-    private final Map<UUID, BellyPart> bellyParts = new HashMap<>();
-
-    private BellyPartManager() {}
+    private final Map<UUID, BellyPart> bellyParts;
+    
+    private BellyPartManager() {
+    	bellyParts = new HashMap<>();
+    }
 
     private static class Holder {
         private static final BellyPartManager INSTANCE = new BellyPartManager();
@@ -41,7 +43,6 @@ public class BellyPartManager {
         }    
         else if (part == null || part.isRemoved()) {
             // TODO: BellyPart creates unnecessary when player change dimension. Fix it.
-        	
         	if (part != null && !part.isRemoved()) {
                 part.discard();
             }    
@@ -58,13 +59,14 @@ public class BellyPartManager {
     }
     
     public boolean remove(LivingEntity entity) {
-		BellyPart part = bellyParts.remove(entity.getUUID());
-		if (part != null && !part.isRemoved()) {
-			part.discard();
-			return true;
-		}
-		return false;
-	}
+        UUID entityId = entity.getUUID();
+        BellyPart part = bellyParts.remove(entityId);
+        if (part != null) {
+            part.discard();
+            return true;
+        }
+        return false;
+    }
 
     public BellyPart create(@Nonnull LivingEntity entity, @Nonnull BellyPartConfig bellyPartConfig) {
     	UUID entityId = entity.getUUID();

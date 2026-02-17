@@ -8,11 +8,14 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.init.MinepreggoModSounds;
+import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 
 public class PlayerPregnancySystemP3 extends PlayerPregnancySystemP2 {
@@ -20,26 +23,47 @@ public class PlayerPregnancySystemP3 extends PlayerPregnancySystemP2 {
 	protected @Nonnegative int totalTicksOfBellyRubs = MinepreggoModConfig.SERVER.getTotalTicksOfBellyRubsP3();
 	protected @Nonnegative float fetalMovementProb = PregnancySystemHelper.LOW_PREGNANCY_PAIN_PROBABILITY;
 	protected @Nonnegative int totalTicksOfFetalMovement = PregnancySystemHelper.TOTAL_TICKS_KICKING_P3;
-
+	private int randomWeaknessCooldown = 0;
+	private final int randomWeaknessTotalTicks;
+	private final Species pregnancyType;
+	
 	public PlayerPregnancySystemP3(@NonNull ServerPlayer player) {
 		super(player);
-		var pregnancyType = PlayerHelper.addInterspeciesPregnancy(player);
+		Species tempPregnancyType = PlayerHelper.addInterspeciesPregnancy(player);
+		int tempRandomWeaknessTotalTicks = 3600;
+		int phase = pregnancySystem.getCurrentPregnancyPhase().ordinal();
+		pregnancyType = tempPregnancyType != null ? tempPregnancyType : Species.HUMAN;
+		
 		if (pregnancyType != null) {
+			int extra = phase * 20;
 			switch(pregnancyType) {
 				case ZOMBIE:
 					fetalMovementProb *= 1.4f;
+					tempRandomWeaknessTotalTicks = 4200 - extra;
+					pregnancyExhaustion *= 1.05;
 					break;
 				case CREEPER:
 					fetalMovementProb *= 1.8f;
+					tempRandomWeaknessTotalTicks = 4400 - extra;
+					pregnancyExhaustion *= 1.15;
 					break;
 				case ENDER:
 					fetalMovementProb *= 2.2f;
+					tempRandomWeaknessTotalTicks = 4600 - extra;
+					pregnancyExhaustion *= 1.25;
+					break;
+				case DRAGON:
+					fetalMovementProb *= 2.6f;
+					tempRandomWeaknessTotalTicks = 5200 - extra;
+					pregnancyExhaustion *= 1.4;
 					break;
 				default:
+					tempRandomWeaknessTotalTicks = 4800 - extra;
 					break;
 			}
 		}	
-		addNewValidPregnancySymptoms(PregnancySymptom.BELLY_RUBS);
+		this.randomWeaknessTotalTicks = tempRandomWeaknessTotalTicks;
+		addNewValidPregnancySymptoms(PregnancySymptom.BELLY_RUBS);		
 	}
 
 	@Override
@@ -47,7 +71,7 @@ public class PlayerPregnancySystemP3 extends PlayerPregnancySystemP2 {
 		totalTicksOfCraving = MinepreggoModConfig.SERVER.getTotalTicksOfCravingP3();
 		totalTicksOfMilking = MinepreggoModConfig.SERVER.getTotalTicksOfMilkingP3();
 		morningSicknessProb = PregnancySystemHelper.HIGH_MORNING_SICKNESS_PROBABILITY;
-		pregnancyExhaustion = 1.03f;
+		pregnancyExhaustion = 0.03f;
 	}
 	
 	@Override
@@ -126,7 +150,7 @@ public class PlayerPregnancySystemP3 extends PlayerPregnancySystemP2 {
 		}
 		
 		if (randomSource.nextFloat() < newFetalMovementProb) {
-			PlayerHelper.playSoundNearTo(pregnantEntity, MinepreggoModSounds.getRandomPregnancyPain(randomSource));	
+			LivingEntityHelper.playSoundNearTo(pregnantEntity, MinepreggoModSounds.getRandomPregnancyPain(randomSource));	
 			
 			pregnancySystem.setPregnancyPain(PregnancyPain.FETAL_MOVEMENT);
 			pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.FETAL_MOVEMENT.get(), totalTicksOfFetalMovement, 0, false, false, true));
@@ -158,5 +182,16 @@ public class PlayerPregnancySystemP3 extends PlayerPregnancySystemP2 {
 		}
 
 		return false;
+	}
+	
+	@Override
+	protected void evaluateRandomWeakness() {
+		if (this.randomWeaknessCooldown < this.randomWeaknessTotalTicks) {
+			++this.randomWeaknessCooldown;		
+		}
+		else if (this.randomSource.nextFloat() < 0.4) {
+			this.randomWeaknessCooldown = 0;
+			pregnantEntity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 1200, 0, false, true, true));
+		}
 	}
 }

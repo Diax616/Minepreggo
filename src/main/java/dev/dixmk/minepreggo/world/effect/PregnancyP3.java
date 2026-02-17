@@ -15,6 +15,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 
 public class PregnancyP3 extends AbstractPlayerPregnancy<PlayerPregnancySystemP3> {
 	private static final AttributeModifier SPEED_MODIFIER = new AttributeModifier(SPEED_MODIFIER_UUID, "pregnancy speed nerf", -0.15, AttributeModifier.Operation.MULTIPLY_BASE);
@@ -39,7 +40,9 @@ public class PregnancyP3 extends AbstractPlayerPregnancy<PlayerPregnancySystemP3
 	@Override
 	public void addAttributeModifiers(LivingEntity entity, AttributeMap p_19479_, int p_19480_) {
 		super.addAttributeModifiers(entity, p_19479_, p_19480_);
-		if (!PlayerHelper.isPlayerValid(entity)) return;
+		if (!(entity instanceof Player player) || !PlayerHelper.isFemale(player)) {
+        	return;
+        }
 		
 		if (!entity.level().isClientSide && !entity.hasEffect(MinepreggoModMobEffects.ZERO_GRAVITY_BELLY.get())) {
 			entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, -1, 0, false, false));			
@@ -60,7 +63,9 @@ public class PregnancyP3 extends AbstractPlayerPregnancy<PlayerPregnancySystemP3
     @Override
     public void removeAttributeModifiers(LivingEntity entity, AttributeMap p_19470_, int p_19471_) {
     	super.removeAttributeModifiers(entity, p_19470_, p_19471_);
-		if (!PlayerHelper.isPlayerValid(entity)) return;
+		if (!(entity instanceof Player player) || !PlayerHelper.isFemale(player)) {
+        	return;
+        }
 		
 		if (!entity.level().isClientSide) {
 			entity.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);

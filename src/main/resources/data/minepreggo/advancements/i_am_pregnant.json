@@ -1,0 +1,31 @@
+{
+  "display": {
+	"background": "minecraft:textures/block/stone.png",
+    "icon": {
+      "item": "minepreggo:maternity_leather_p1_chestplate"
+    },
+    "title": {
+      "translate": "advancements.i_am_pregnant.title"
+    },
+    "description": {
+      "translate": "advancements.i_am_pregnant.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "custom_criteria": {
+      "trigger": "minepreggo:get_pregnant",
+	  "conditions": {
+	    "effects": {
+	      "minepreggo:pregnancy_p0": {}
+	    }
+	  }
+    }
+  },
+  "rewards": {
+    "experience": 20
+  }
+}

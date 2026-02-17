@@ -1,7 +1,6 @@
 package dev.dixmk.minepreggo.init;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
-
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -39,9 +38,10 @@ public class MinepreggoModTabs {
                 output.accept(MinepreggoModItems.HUMAN_BREAST_MILK_BOTTLE.get());
                 output.accept(MinepreggoModItems.ZOMBIE_BREAST_MILK_BOTTLE.get());
                 output.accept(MinepreggoModItems.CREEPER_BREAST_MILK_BOTTLE.get());
+                output.accept(MinepreggoModItems.ENDER_BREAST_MILK_BOTTLE.get());
 
                 output.accept(MinepreggoModItems.VILLAGER_BRAIN.get());
-                output.accept(MinepreggoModItems.PILLAGER_BRAIN.get());
+                output.accept(MinepreggoModItems.ILLAGER_BRAIN.get());
                 output.accept(MinepreggoModItems.WITCH_BRAIN.get());
                 output.accept(MinepreggoModItems.BRAIN_WITH_CHOCOLATE.get());
                 output.accept(MinepreggoModItems.BRAIN_WITH_SALT.get());
@@ -54,11 +54,18 @@ public class MinepreggoModTabs {
                 output.accept(MinepreggoModItems.ACTIVATED_GUNPOWDER_WITH_HOT_SAUCE.get());
                 output.accept(MinepreggoModItems.SOUR_ACTIVATED_GUNPOWDER.get());
                
-                /*
                 output.accept(MinepreggoModItems.ENDER_SLIME_JELLY.get());
                 output.accept(MinepreggoModItems.REFINED_CHORUS_SHARDS.get());
-                */
+                output.accept(MinepreggoModItems.ENDER_SLIME_JELLY_WITH_CHOCOLATE.get());
+                output.accept(MinepreggoModItems.ENDER_SLIME_JELLY_WITH_HOT_SAUCE.get());
+                output.accept(MinepreggoModItems.ENDER_SLIME_JELLY_WITH_SALT.get());
+                output.accept(MinepreggoModItems.SOUR_ENDER_SLIME_JELLY.get());
                 
+                output.accept(MinepreggoModItems.CHORUS_FRUIT_WITH_CHOCOLATE.get());
+                output.accept(MinepreggoModItems.CHORUS_FRUIT_WITH_HOT_SAUCE.get());
+                output.accept(MinepreggoModItems.CHORUS_FRUIT_WITH_SALT.get());
+                output.accept(MinepreggoModItems.SOUR_CHORUS_FRUIT.get());
+
                 output.accept(MinepreggoModItems.MEDICAL_TABLE.get());
         
                 output.accept(MinepreggoModItems.FEMALE_CHAINMAIL_P0_CHESTPLATE.get());
@@ -112,9 +119,11 @@ public class MinepreggoModTabs {
                 output.accept(MinepreggoModItems.CREEPER_LIFE_SUBSTANCE.get());
                 output.accept(MinepreggoModItems.ENDER_LIFE_SUBSTANCE.get());
                 output.accept(MinepreggoModItems.VILLAGER_LIFE_SUBSTANCE.get());
+                output.accept(MinepreggoModItems.CONCENTRATED_ENDER_LIFE_SUBSTANCE.get());
                 output.accept(MinepreggoModItems.SPECIMEN_TUBE.get());
                 output.accept(MinepreggoModItems.CUM_SPECIMEN_TUBE.get());
-               
+                output.accept(MinepreggoModItems.POWERED_CUM_SPECIMEN_TUBE.get());
+
                 output.accept(MinepreggoModItems.BABY_HUMAN.get());
                 output.accept(MinepreggoModItems.BABY_ZOMBIE.get());
                 output.accept(MinepreggoModItems.BABY_HUMANOID_CREEPER.get());
@@ -122,6 +131,7 @@ public class MinepreggoModTabs {
                 output.accept(MinepreggoModItems.BABY_HUMANOID_ENDER.get());
                 output.accept(MinepreggoModItems.BABY_ENDER.get());
                 output.accept(MinepreggoModItems.BABY_VILLAGER.get());
+                output.accept(MinepreggoModItems.BABY_ENDER_DRAGON_BLOCK.get());
                 output.accept(MinepreggoModItems.DEAD_HUMAN_FETUS.get());
                 output.accept(MinepreggoModItems.DEAD_ZOMBIE_FETUS.get());
                 output.accept(MinepreggoModItems.DEAD_HUMANOID_CREEPER_FETUS.get());
@@ -161,7 +171,36 @@ public class MinepreggoModTabs {
                 output.accept(MinepreggoModItems.TAMABLE_HUMANOID_CREEPER_GIRL_P8_SPAWN_EGG.get());
      
                 output.accept(MinepreggoModItems.MONSTER_CREEPER_GIRL_SPAWN_EGG.get());
+                output.accept(MinepreggoModItems.HOSTIL_MONSTER_CREEPER_GIRL_P3_SPAWN_EGG.get());
+                output.accept(MinepreggoModItems.HOSTIL_MONSTER_CREEPER_GIRL_P5_SPAWN_EGG.get());
+                output.accept(MinepreggoModItems.HOSTIL_MONSTER_CREEPER_GIRL_P7_SPAWN_EGG.get());
+                output.accept(MinepreggoModItems.TAMABLE_MONSTER_CREEPER_GIRL_SPAWN_EGG.get());
+                output.accept(MinepreggoModItems.TAMABLE_MONSTER_CREEPER_GIRL_SPAWN_EGG.get());
+                output.accept(MinepreggoModItems.TAMABLE_MONSTER_CREEPER_GIRL_P0_SPAWN_EGG.get());
+                output.accept(MinepreggoModItems.TAMABLE_MONSTER_CREEPER_GIRL_P1_SPAWN_EGG.get());        
+                output.accept(MinepreggoModItems.TAMABLE_MONSTER_CREEPER_GIRL_P2_SPAWN_EGG.get());
+                output.accept(MinepreggoModItems.TAMABLE_MONSTER_CREEPER_GIRL_P3_SPAWN_EGG.get());
+                output.accept(MinepreggoModItems.TAMABLE_MONSTER_CREEPER_GIRL_P4_SPAWN_EGG.get());
+                output.accept(MinepreggoModItems.TAMABLE_MONSTER_CREEPER_GIRL_P5_SPAWN_EGG.get());
+                output.accept(MinepreggoModItems.TAMABLE_MONSTER_CREEPER_GIRL_P6_SPAWN_EGG.get());
+                output.accept(MinepreggoModItems.TAMABLE_MONSTER_CREEPER_GIRL_P7_SPAWN_EGG.get());
+                output.accept(MinepreggoModItems.TAMABLE_MONSTER_CREEPER_GIRL_P8_SPAWN_EGG.get());
+                
                 output.accept(MinepreggoModItems.MONSTER_ENDER_WOMAN_SPAWN_EGG.get());
+                output.accept(MinepreggoModItems.HOSTIL_MONSTER_ENDER_WOMAN_P3_SPAWN_EGG.get());
+                output.accept(MinepreggoModItems.HOSTIL_MONSTER_ENDER_WOMAN_P5_SPAWN_EGG.get());
+                output.accept(MinepreggoModItems.HOSTIL_MONSTER_ENDER_WOMAN_P7_SPAWN_EGG.get());
+                output.accept(MinepreggoModItems.TAMABLE_MONSTER_ENDER_WOMAN_SPAWN_EGG.get());
+                output.accept(MinepreggoModItems.TAMABLE_MONSTER_ENDER_WOMAN_P0_SPAWN_EGG.get());
+                output.accept(MinepreggoModItems.TAMABLE_MONSTER_ENDER_WOMAN_P1_SPAWN_EGG.get());        
+                output.accept(MinepreggoModItems.TAMABLE_MONSTER_ENDER_WOMAN_P2_SPAWN_EGG.get());
+                output.accept(MinepreggoModItems.TAMABLE_MONSTER_ENDER_WOMAN_P3_SPAWN_EGG.get());
+                output.accept(MinepreggoModItems.TAMABLE_MONSTER_ENDER_WOMAN_P4_SPAWN_EGG.get());
+                output.accept(MinepreggoModItems.TAMABLE_MONSTER_ENDER_WOMAN_P5_SPAWN_EGG.get());
+                output.accept(MinepreggoModItems.TAMABLE_MONSTER_ENDER_WOMAN_P6_SPAWN_EGG.get());
+                output.accept(MinepreggoModItems.TAMABLE_MONSTER_ENDER_WOMAN_P7_SPAWN_EGG.get());
+                output.accept(MinepreggoModItems.TAMABLE_MONSTER_ENDER_WOMAN_P8_SPAWN_EGG.get());
+                
                 output.accept(MinepreggoModItems.SCIENTIFIC_ILLAGER_SPAWN_EGG.get());
                 output.accept(MinepreggoModItems.FERTILITY_WITCH_SPAWN_EGG.get());
  

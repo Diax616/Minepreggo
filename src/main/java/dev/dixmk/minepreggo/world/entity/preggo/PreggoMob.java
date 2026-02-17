@@ -2,6 +2,7 @@ package dev.dixmk.minepreggo.world.entity.preggo;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.InteractionHand;
@@ -9,6 +10,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -21,13 +23,32 @@ public abstract class PreggoMob extends TamableAnimal {
 	
 	private final Species typeOfSpecies;
 	private final Creature typeOfCreature;
+	private boolean wasTamed = false;
 	
 	protected PreggoMob(EntityType<? extends TamableAnimal> p_21803_, Level p_21804_, Species typeOfSpecies, Creature typeOfCreature) {
 		super(p_21803_, p_21804_);
 		this.typeOfSpecies = typeOfSpecies;
 		this.typeOfCreature = typeOfCreature;
 	}
+	
+    @Override
+    public void addAdditionalSaveData(CompoundTag nbt) {
+    	super.addAdditionalSaveData(nbt);
+    	nbt.putBoolean("WasTamed", this.wasTamed);  	
+    }
 
+    @Override
+    public void readAdditionalSaveData(CompoundTag nbt) {
+    	super.readAdditionalSaveData(nbt);
+    	if (nbt.contains("WasTamed")) {
+			this.wasTamed = nbt.getBoolean("WasTamed");
+		}
+    }
+    
+	public String getSimpleNameOrCustom() {
+		return this.hasCustomName() ? this.getCustomName().getString() : this.getSimpleName();
+	}
+	
 	public abstract String getSimpleName();
 	
 	public abstract boolean canBeTamedByPlayer();
@@ -40,6 +61,10 @@ public abstract class PreggoMob extends TamableAnimal {
 	
 	protected void afterTaming() {
 		
+	}
+	
+	public boolean wasTamed() {
+		return this.wasTamed;
 	}
 	
 	public @NonNull Species getTypeOfSpecies() {
@@ -89,21 +114,25 @@ public abstract class PreggoMob extends TamableAnimal {
 	@Override
 	public InteractionResult mobInteract(Player sourceentity, InteractionHand hand) {	
 		ItemStack itemstack = sourceentity.getItemInHand(hand);
-
+		
 		if (this.isBaby() || !this.canBeTamedByPlayer() ) {
 			return InteractionResult.FAIL;	
 		}
 		else if (!this.isTame() && this.isFoodToTame(itemstack)) {
 			this.usePlayerItem(sourceentity, hand, itemstack);
-			if (this.random.nextInt(3) == 0 && !net.minecraftforge.event.ForgeEventFactory.onAnimalTame(this, sourceentity)) {
+			if (!this.level().isClientSide && this.random.nextInt(3) == 0 && !net.minecraftforge.event.ForgeEventFactory.onAnimalTame(this, sourceentity)) {
 				this.tame(sourceentity);
 				this.afterTaming();
-				this.level().broadcastEntityEvent(this, (byte) 7);						
+				this.wasTamed = true;
+				this.level().broadcastEntityEvent(this, (byte) 7);		
+				for (EquipmentSlot slot : EquipmentSlot.values()) {
+					this.setGuaranteedDrop(slot);
+				}
 			} else {
 				this.level().broadcastEntityEvent(this, (byte) 6);
 			}
 			this.setPersistenceRequired();
-			return InteractionResult.sidedSuccess(this.level().isClientSide());
+			return InteractionResult.sidedSuccess(this.level().isClientSide);
 		} 
 		
 		return InteractionResult.PASS;

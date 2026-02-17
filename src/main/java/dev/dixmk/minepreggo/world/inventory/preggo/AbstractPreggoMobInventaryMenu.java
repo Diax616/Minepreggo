@@ -4,10 +4,11 @@ import java.util.Optional;
 
 import org.joml.Vector3i;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.InventorySlot;
+import dev.dixmk.minepreggo.world.entity.preggo.InventorySlotMapper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.item.ItemHelper;
@@ -15,6 +16,7 @@ import dev.dixmk.minepreggo.world.pregnancy.IFemaleEntity;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -22,7 +24,6 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -39,40 +40,51 @@ public abstract class AbstractPreggoMobInventaryMenu
 	protected Optional<Vector3i> pos;
 	protected IItemHandler internal;
 	protected final Optional<E> preggoMob;
-	protected final int invetorySize;
+	protected int invetorySize;
 	
-	protected AbstractPreggoMobInventaryMenu(MenuType<?> container, int id, Inventory inv, FriendlyByteBuf extraData, int invetorySize, Class<E> preggoMobClass) {
+	protected AbstractPreggoMobInventaryMenu(MenuType<?> container, int id, Inventory inv, FriendlyByteBuf extraData, Class<E> preggoMobClass) {
 		super(container, id);		
 		this.player = inv.player;
 		this.level = inv.player.level();
 		this.preggoMobClass = preggoMobClass;		
-		this.invetorySize = invetorySize;
 		this.preggoMob = this.readBuffer(extraData);
-		
-		this.preggoMob.ifPresentOrElse(mob -> 
-			mob.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(capability -> this.internal = capability),
-			() -> MinepreggoMod.LOGGER.error("PREGGO MOB IS NULL"));
-			
-		
+		this.preggoMob.ifPresent(mob -> {
+			var inventory = mob.getInventory();
+			this.internal = inventory.getHandler();
+			this.invetorySize = inventory.getSlotMapper().getTotalSlots();		
+		});	
 		this.createInventory(inv);	
 	}
 
 	protected abstract void createInventory(Inventory inv);
 	
-	protected void initVanillaEquipmentSlots(Inventory inv) {
-		this.preggoMob.ifPresent(mob -> {
-			this.addSlot(new SlotItemHandler(internal, ITamablePreggoMob.HEAD_INVENTORY_SLOT, 8, 8) {
+	protected void createDefaultHumanoidInventory() throws IllegalStateException {
+		this.preggoMob.ifPresent(mob -> {	
+			InventorySlotMapper inventoryMapper = mob.getInventory().getSlotMapper();
+			
+			if (!InventorySlotMapper.isHumanoidDefault(inventoryMapper)) {
+				throw new IllegalStateException("Mob " + mob.getSimpleNameOrCustom() + " does not have humanoid default inventory");
+			}
+					
+			var slotMapper = mob.getInventory().getSlotMapper();
+
+			this.addSlot(new SlotItemHandler(internal, slotMapper.getSlotIndex(InventorySlot.HEAD), 8, 8) {
 				@Override
 				public boolean mayPlace(ItemStack itemstack) {
-					return ItemHelper.isHelmet(itemstack);
+					return super.mayPlace(itemstack) && itemstack.canEquip(EquipmentSlot.HEAD, mob);
 				}
+				
+			    @Override
+			    public boolean mayPickup(Player playerIn) {
+			        return super.mayPickup(playerIn) && ItemHelper.canPickUp(playerIn, getItem());
+			    }
 			});
-			
-			this.addSlot(new SlotItemHandler(internal, ITamablePreggoMob.CHEST_INVENTORY_SLOT, 8, 26) {
+	
+			this.addSlot(new SlotItemHandler(internal, slotMapper.getSlotIndex(InventorySlot.CHEST), 8, 26) {
 				@Override
 				public boolean mayPlace(ItemStack itemstack) {	
 					var armor = itemstack.getItem();
-					boolean flag = ItemHelper.isChest(armor);			
+					boolean flag = super.mayPlace(itemstack) && itemstack.canEquip(EquipmentSlot.CHEST, mob);			
 					
 					if (!flag) {
 						return false;
@@ -86,28 +98,31 @@ public abstract class AbstractPreggoMobInventaryMenu
 			                flag = false;
 						}	
 						else if (!PreggoMobHelper.canUseChestPlateInLactation(tamablePregnantPreggoMob.getGenderedData(), armor)) {
-							MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) mob.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.armor.message.lactating", mob.getSimpleName()));
+							MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) mob.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.armor.message.lactating", mob.getSimpleNameOrCustom()));
 			                flag = false;
 						}
 					}		
 					else {                      							
 						if (mob.getGenderedData() instanceof IFemaleEntity femaleData && !PreggoMobHelper.canUseChestPlateInLactation(femaleData, armor)) {
-							MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) mob.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.armor.message.lactating", mob.getSimpleName()));
+							MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) mob.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.armor.message.lactating", mob.getSimpleNameOrCustom()));
 							flag = false;
 						}
 					}
 			
 					return flag;			
 				}
+				
+			    @Override
+			    public boolean mayPickup(Player playerIn) {
+			        return super.mayPickup(playerIn) && ItemHelper.canPickUp(playerIn, getItem());
+			    }
 			});
-			
-			this.addSlot(new SlotItemHandler(internal, ITamablePreggoMob.LEGS_INVENTORY_SLOT, 8, 44) {
+
+			this.addSlot(new SlotItemHandler(internal, slotMapper.getSlotIndex(InventorySlot.LEGS), 8, 44) {
 				@Override
 				public boolean mayPlace(ItemStack itemstack) {
 					var armor = itemstack.getItem();
-					boolean flag = ItemHelper.isLegging(armor);			
-					
-					if (!flag) {
+					if (!itemstack.canEquip(EquipmentSlot.LEGS, mob)) {
 						return false;
 					}
 					
@@ -115,24 +130,44 @@ public abstract class AbstractPreggoMobInventaryMenu
 						final var pregnancyData = tamablePregnantPreggoMob.getPregnancyData();
 						final var pregnancyPhase = pregnancyData.getCurrentPregnancyPhase();					
 						if (!PregnancySystemHelper.canUseLegging(armor, pregnancyPhase)) {
-							MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) mob.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.armor.message.leggings_does_not_fit", mob.getSimpleName()));
+							MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) mob.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.armor.message.leggings_does_not_fit", mob.getSimpleNameOrCustom()));
 			                return false;
 						}			
 					}												
 					return true;			
 				}
+				
+			    @Override
+			    public boolean mayPickup(Player playerIn) {
+			        return super.mayPickup(playerIn) && ItemHelper.canPickUp(playerIn, getItem());
+			    }
 			});
-	
-			this.addSlot(new SlotItemHandler(internal, ITamablePreggoMob.FEET_INVENTORY_SLOT, 8, 62) {
+
+			this.addSlot(new SlotItemHandler(internal, slotMapper.getSlotIndex(InventorySlot.FEET), 8, 62) {
 				@Override
 				public boolean mayPlace(ItemStack itemstack) {
-					return ItemHelper.isBoot(itemstack);
+					return itemstack.canEquip(EquipmentSlot.FEET, mob);
 				}
+				
+			    @Override
+			    public boolean mayPickup(Player playerIn) {
+			        return super.mayPickup(playerIn) && ItemHelper.canPickUp(playerIn, getItem());
+			    }
 			});
 			
-			this.addSlot(new SlotItemHandler(internal, ITamablePreggoMob.MAINHAND_INVENTORY_SLOT, 77, 62));
-			this.addSlot(new SlotItemHandler(internal, ITamablePreggoMob.OFFHAND_INVENTORY_SLOT, 95, 62));
+			
+			this.addSlot(new SlotItemHandler(internal, slotMapper.getSlotIndex(InventorySlot.MAINHAND), 77, 62));
+			
+			this.addSlot(new SlotItemHandler(internal, slotMapper.getSlotIndex(InventorySlot.OFFHAND), 95, 62));
+
+			this.addSlot(new SlotItemHandler(internal, slotMapper.getSlotIndex(InventorySlot.FOOD), 113, 62) {
+				@Override
+				public boolean mayPlace(ItemStack itemstack) {
+					return mob.isFood(itemstack);
+				}
+			});		
 		});
+		
 	}
 	
 	protected Optional<E> readBuffer(FriendlyByteBuf extraData) {		
@@ -162,82 +197,6 @@ public abstract class AbstractPreggoMobInventaryMenu
 	@Override
 	public boolean stillValid(Player player) {	
 		return this.preggoMob.isPresent() && this.preggoMob.get().isAlive();
-	}
-
-	@Override
-	protected boolean moveItemStackTo(ItemStack p_38904_, int p_38905_, int p_38906_, boolean p_38907_) {
-		boolean flag = false;
-		int i = p_38905_;
-		if (p_38907_) {
-			i = p_38906_ - 1;
-		}
-		if (p_38904_.isStackable()) {
-			while (!p_38904_.isEmpty()) {
-				if (p_38907_) {
-					if (i < p_38905_) {
-						break;
-					}
-				} else if (i >= p_38906_) {
-					break;
-				}
-				Slot slot = this.slots.get(i);
-				ItemStack itemstack = slot.getItem();
-				if (slot.mayPlace(itemstack) && !itemstack.isEmpty() && ItemStack.isSameItemSameTags(p_38904_, itemstack)) {
-					int j = itemstack.getCount() + p_38904_.getCount();
-					int maxSize = Math.min(slot.getMaxStackSize(), p_38904_.getMaxStackSize());
-					if (j <= maxSize) {
-						p_38904_.setCount(0);
-						itemstack.setCount(j);
-						slot.set(itemstack);
-						flag = true;
-					} else if (itemstack.getCount() < maxSize) {
-						p_38904_.shrink(maxSize - itemstack.getCount());
-						itemstack.setCount(maxSize);
-						slot.set(itemstack);
-						flag = true;
-					}
-				}
-				if (p_38907_) {
-					--i;
-				} else {
-					++i;
-				}
-			}
-		}
-		if (!p_38904_.isEmpty()) {
-			if (p_38907_) {
-				i = p_38906_ - 1;
-			} else {
-				i = p_38905_;
-			}
-			while (true) {
-				if (p_38907_) {
-					if (i < p_38905_) {
-						break;
-					}
-				} else if (i >= p_38906_) {
-					break;
-				}
-				Slot slot1 = this.slots.get(i);
-				ItemStack itemstack1 = slot1.getItem();
-				if (itemstack1.isEmpty() && slot1.mayPlace(p_38904_)) {
-					if (p_38904_.getCount() > slot1.getMaxStackSize()) {
-						slot1.setByPlayer(p_38904_.split(slot1.getMaxStackSize()));
-					} else {
-						slot1.setByPlayer(p_38904_.split(p_38904_.getCount()));
-					}
-					slot1.setChanged();
-					flag = true;
-					break;
-				}
-				if (p_38907_) {
-					--i;
-				} else {
-					++i;
-				}
-			}
-		}
-		return flag;
 	}
 	
 	@Override
@@ -274,8 +233,7 @@ public abstract class AbstractPreggoMobInventaryMenu
 	
 	@SubscribeEvent
 	public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-		Player player = event.player;
-		if (event.phase == TickEvent.Phase.END && player.containerMenu instanceof AbstractPreggoMobInventaryMenu<?> container) {						
+		if (event.phase == TickEvent.Phase.END && event.player.containerMenu instanceof AbstractPreggoMobInventaryMenu<?> container) {						
 			container.getPreggoMob().ifPresent(PreggoMobHelper::syncFromInventoryToEquipmentSlot);
 		}
 	}

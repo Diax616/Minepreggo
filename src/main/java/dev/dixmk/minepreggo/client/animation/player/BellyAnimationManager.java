@@ -7,6 +7,7 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractTamablePregnantEnderWoman;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.world.entity.AnimationState;
@@ -18,7 +19,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class BellyAnimationManager {
 	
-	private BellyAnimationManager() {}
+	private BellyAnimationManager() {
+	    animationStates = new HashMap<>();
+	    currentAnimations = new HashMap<>();
+	}
 	
     private static class Holder {
         private static final BellyAnimationManager INSTANCE = new BellyAnimationManager();
@@ -28,8 +32,8 @@ public class BellyAnimationManager {
         return Holder.INSTANCE;
     }
 	
-    private final Map<UUID, AnimationState> animationStates = new HashMap<>();
-    private final Map<UUID, AnimationDefinition> currentAnimations = new HashMap<>();
+    private final Map<UUID, AnimationState> animationStates;
+    private final Map<UUID, AnimationDefinition> currentAnimations;
     
     private void startAnimation(LivingEntity entity, AnimationDefinition definition) {
         UUID id = entity.getUUID();
@@ -51,6 +55,10 @@ public class BellyAnimationManager {
     	startAnimation((LivingEntity) zombieGirl, definition);
     }
     
+    public void startAnimation(AbstractTamablePregnantEnderWoman enderWoman, AnimationDefinition definition) {
+    	startAnimation((LivingEntity) enderWoman, definition);
+    }
+       
     @Nullable
     public AnimationState getAnimationState(UUID playerId) {
         return animationStates.get(playerId);

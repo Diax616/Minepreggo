@@ -28,7 +28,7 @@ public abstract class EnderImpregnationPotionBrewingRecipe implements IBrewingRe
 		return ingredient.is(MinepreggoModItems.ENDER_LIFE_SUBSTANCE.get());
 	}
 	
-	public static class A0 extends EnderImpregnationPotionBrewingRecipe {		
+	public static class Amplifier0 extends EnderImpregnationPotionBrewingRecipe {		
 		@Override
 		public boolean isInput(ItemStack input) {
 			Item inputItem = input.getItem();
@@ -46,7 +46,7 @@ public abstract class EnderImpregnationPotionBrewingRecipe implements IBrewingRe
 		}				
 	}
 	
-	public static class A1 extends EnderImpregnationPotionBrewingRecipe {
+	public static class Amplifier1 extends EnderImpregnationPotionBrewingRecipe {
 		@Override
 		public boolean isInput(ItemStack input) {
 			Item inputItem = input.getItem();
@@ -64,7 +64,7 @@ public abstract class EnderImpregnationPotionBrewingRecipe implements IBrewingRe
 		}	
 	}
 	
-	public static class A2 extends EnderImpregnationPotionBrewingRecipe {
+	public static class Amplifier2 extends EnderImpregnationPotionBrewingRecipe {
 		@Override
 		public boolean isInput(ItemStack input) {
 			Item inputItem = input.getItem();
@@ -82,7 +82,7 @@ public abstract class EnderImpregnationPotionBrewingRecipe implements IBrewingRe
 		}	
 	}
 	
-	public static class A3 extends EnderImpregnationPotionBrewingRecipe {
+	public static class Amplifier3 extends EnderImpregnationPotionBrewingRecipe {
 		@Override
 		public boolean isInput(ItemStack input) {
 			Item inputItem = input.getItem();
@@ -100,7 +100,7 @@ public abstract class EnderImpregnationPotionBrewingRecipe implements IBrewingRe
 		}	
 	}
 	
-	public static class A4 extends EnderImpregnationPotionBrewingRecipe {
+	public static class Amplifier4 extends EnderImpregnationPotionBrewingRecipe {
 		@Override
 		public boolean isInput(ItemStack input) {
 			Item inputItem = input.getItem();

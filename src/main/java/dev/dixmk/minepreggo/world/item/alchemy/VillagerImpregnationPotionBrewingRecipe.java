@@ -23,7 +23,7 @@ public abstract class VillagerImpregnationPotionBrewingRecipe implements IBrewin
 		return ingredient.is(MinepreggoModItems.VILLAGER_LIFE_SUBSTANCE.get());
 	}
 	
-	public static class A0 extends VillagerImpregnationPotionBrewingRecipe {		
+	public static class Amplifier0 extends VillagerImpregnationPotionBrewingRecipe {		
 		@Override
 		public boolean isInput(ItemStack input) {
 			Item inputItem = input.getItem();
@@ -41,7 +41,7 @@ public abstract class VillagerImpregnationPotionBrewingRecipe implements IBrewin
 		}				
 	}
 	
-	public static class A1 extends VillagerImpregnationPotionBrewingRecipe {
+	public static class Amplifier1 extends VillagerImpregnationPotionBrewingRecipe {
 		@Override
 		public boolean isInput(ItemStack input) {
 			Item inputItem = input.getItem();
@@ -59,7 +59,7 @@ public abstract class VillagerImpregnationPotionBrewingRecipe implements IBrewin
 		}	
 	}
 	
-	public static class A2 extends VillagerImpregnationPotionBrewingRecipe {
+	public static class Amplifier2 extends VillagerImpregnationPotionBrewingRecipe {
 		@Override
 		public boolean isInput(ItemStack input) {
 			Item inputItem = input.getItem();
@@ -77,7 +77,7 @@ public abstract class VillagerImpregnationPotionBrewingRecipe implements IBrewin
 		}	
 	}
 	
-	public static class A3 extends VillagerImpregnationPotionBrewingRecipe {
+	public static class Amplifier3 extends VillagerImpregnationPotionBrewingRecipe {
 		@Override
 		public boolean isInput(ItemStack input) {
 			Item inputItem = input.getItem();
@@ -95,7 +95,7 @@ public abstract class VillagerImpregnationPotionBrewingRecipe implements IBrewin
 		}	
 	}
 	
-	public static class A4 extends VillagerImpregnationPotionBrewingRecipe {
+	public static class Amplifier4 extends VillagerImpregnationPotionBrewingRecipe {
 		@Override
 		public boolean isInput(ItemStack input) {
 			Item inputItem = input.getItem();

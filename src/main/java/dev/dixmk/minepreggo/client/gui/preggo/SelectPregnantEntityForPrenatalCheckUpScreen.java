@@ -13,27 +13,28 @@ import net.minecraft.client.gui.GuiGraphics;
 import java.util.List;
 import java.util.Optional;
 
+import javax.annotation.CheckForNull;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
+import dev.dixmk.minepreggo.client.gui.ScreenHelper;
 import dev.dixmk.minepreggo.client.gui.component.PreggoMobScrollList;
 import dev.dixmk.minepreggo.network.packet.c2s.RequestPlayerMedicalCheckUpC2SPacket;
 import dev.dixmk.minepreggo.network.packet.c2s.RequestPreggoMobMedicalCheckUpC2SPacket;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
+import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractEnderWoman;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractZombieGirl;
 import dev.dixmk.minepreggo.world.inventory.preggo.SelectPregnantEntityForPrenatalCheckUpMenu;
 
 @OnlyIn(Dist.CLIENT)
-public class SelectPregnantEntityForPrenatalCheckUpScreen extends AbstractContainerScreen<SelectPregnantEntityForPrenatalCheckUpMenu> {
-	
+public class SelectPregnantEntityForPrenatalCheckUpScreen extends AbstractContainerScreen<SelectPregnantEntityForPrenatalCheckUpMenu> {	
 	private static final ResourceLocation TEXTURE = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/select_preggo_mob_for_medical_check_up_gui.png");
-
-	private static final ResourceLocation DEFAULT_ICON_CREEPER_GIRL_TEXTURE = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/humanoid_creeper_girl_p0.png");
-	private static final ResourceLocation DEFAULT_ICON_ZOMBIE_GIRL_TEXTURE = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/zombie_girl_p0.png");
 
 	private final Optional<ScientificIllager> scientificIllager;
 	private final List<? extends LivingEntity> pregnantEntities;
@@ -84,33 +85,43 @@ public class SelectPregnantEntityForPrenatalCheckUpScreen extends AbstractContai
 		
 		this.pregnantEntities.forEach(entity -> {		
 			if (entity instanceof AbstractCreeperGirl creeperGirl) {
-				list.addEntry(creeperGirl.getSimpleName(), DEFAULT_ICON_CREEPER_GIRL_TEXTURE, 64, 96, this.createRequestMedicalCheckUpPacket(creeperGirl));
+				if (creeperGirl.getTypeOfCreature() == Creature.HUMANOID) {
+					list.addEntry(creeperGirl.getSimpleNameOrCustom(), ScreenHelper.MINEPREGGO_ICONS_TEXTURE, 1, 89, 16, 16, 256, 256, this.createRequestMedicalCheckUpPacket(creeperGirl));
+				} 
+				else {
+					list.addEntry(creeperGirl.getSimpleNameOrCustom(), ScreenHelper.MINEPREGGO_ICONS_TEXTURE, 1, 185, 16, 16, 256, 256, this.createRequestMedicalCheckUpPacket(creeperGirl));
+				}
 			}
 			else if (entity instanceof AbstractZombieGirl zombieGirl) {
-				list.addEntry(zombieGirl.getSimpleName(), DEFAULT_ICON_ZOMBIE_GIRL_TEXTURE, 64, 96, this.createRequestMedicalCheckUpPacket(zombieGirl));
+				list.addEntry(zombieGirl.getSimpleNameOrCustom(), ScreenHelper.MINEPREGGO_ICONS_TEXTURE, 1, 121, 16, 16, 256, 256, this.createRequestMedicalCheckUpPacket(zombieGirl));
+			}
+			else if (entity instanceof AbstractEnderWoman enderWoman) {
+				list.addEntry(enderWoman.getSimpleNameOrCustom(), ScreenHelper.MINEPREGGO_ICONS_TEXTURE, 1, 153, 16, 16, 256, 256, this.createRequestMedicalCheckUpPacket(enderWoman));
 			}
 			else if (entity instanceof AbstractClientPlayer abstractClientPlayer) {
-				list.addEntry(abstractClientPlayer.getDisplayName().getString(), abstractClientPlayer.getSkinTextureLocation(), 64, 64, this.createRequestMedicalCheckUpPacket());
+				list.addEntry(abstractClientPlayer.getDisplayName().getString(), abstractClientPlayer.getSkinTextureLocation(), 8, 8, 8, 8, 64, 64, this.createRequestMedicalCheckUpPacket());
 			}
 		});
 		
 		this.addRenderableWidget(list);	
 	}
 	
-	private Optional<Runnable> createRequestMedicalCheckUpPacket(PreggoMob preggoMob) {	
+	@CheckForNull
+	private Runnable createRequestMedicalCheckUpPacket(PreggoMob preggoMob) {	
 		Runnable onClick = null;			
 		if (this.scientificIllager.isPresent()) {
 			onClick = () -> MinepreggoModPacketHandler.INSTANCE.sendToServer(new RequestPreggoMobMedicalCheckUpC2SPacket(preggoMob.getId(), this.scientificIllager.get().getId()));
 		}	
-		return Optional.ofNullable(onClick);
+		return onClick;
 	}
 	
-	private Optional<Runnable> createRequestMedicalCheckUpPacket() {	
+	@CheckForNull
+	private Runnable createRequestMedicalCheckUpPacket() {	
 		Runnable onClick = null;			
 		if (this.scientificIllager.isPresent()) {
 			onClick = () -> MinepreggoModPacketHandler.INSTANCE.sendToServer(new RequestPlayerMedicalCheckUpC2SPacket(this.scientificIllager.get().getId()));			
 		}	
-		return Optional.ofNullable(onClick);
+		return onClick;
 	}
 }
 

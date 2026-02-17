@@ -3,7 +3,6 @@ package dev.dixmk.minepreggo.world.entity.preggo.zombie;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.ai.goal.RemoveBlockGoal;
-import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.monster.ZombieVillager;
 import net.minecraft.world.entity.npc.Villager;
@@ -40,7 +39,9 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
 
-public abstract class AbstractZombieGirl extends PreggoMob implements Enemy {
+public abstract class AbstractZombieGirl extends PreggoMob {
+	
+	private static final String SIMPLE_NAME = "Zombie Girl";
 	
 	protected AbstractZombieGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_, Creature typeOfCreature) {
 	      super(p_21803_, p_21804_, Species.ZOMBIE, typeOfCreature);
@@ -71,13 +72,8 @@ public abstract class AbstractZombieGirl extends PreggoMob implements Enemy {
 	}
 	
 	@Override
-	public boolean canBeLeashed(Player p_21813_) {
-		return false;
-	}
-	
-	@Override
 	public String getSimpleName() {
-		return this.hasCustomName() ? this.getDisplayName().getString() : "Zombie Girl";
+		return SIMPLE_NAME;
 	}
 	
 	@Override

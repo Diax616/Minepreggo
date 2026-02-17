@@ -20,7 +20,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public abstract class AbstractZombieGirlMainScreen
 	<E extends AbstractTamableZombieGirl, G extends AbstractZombieGirlMainMenu<E>> extends AbstractPreggoMobMainScreen<E, G> {
 	
-	protected static final ImmutableMap<Craving, ResourceLocation> CRAVING_ICONS = ImmutableMap.of(
+	private static final ImmutableMap<Craving, ResourceLocation> CRAVING_ICONS = ImmutableMap.of(
 			Craving.SALTY, MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/brain_with_salt.png"), 
 			Craving.SWEET, MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/brain_with_chocolate.png"), 
 			Craving.SOUR, MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/sour_brain.png"),
@@ -29,6 +29,13 @@ public abstract class AbstractZombieGirlMainScreen
 	protected AbstractZombieGirlMainScreen(G container, Inventory inventory, Component text) {
 		super(container, inventory, text, 1, 121);
 	}
+	
+	@Override
+	public void init() {
+		super.init();
+		this.addBreakBlocksCheckBox();
+		this.addPickUpLootCheckBox();	
+	}	
 	
 	@CheckForNull
 	public static ResourceLocation getCravingIcon(Craving craving) {

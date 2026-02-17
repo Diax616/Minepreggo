@@ -2,27 +2,13 @@ package dev.dixmk.minepreggo.network.packet.c2s;
 
 import java.util.function.Supplier;
 
-import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
-import dev.dixmk.minepreggo.network.chat.MessageHelper;
-import dev.dixmk.minepreggo.network.packet.s2c.RenderSexOverlayS2CPacket;
-import dev.dixmk.minepreggo.network.packet.s2c.SexCinematicControlP2MS2CPacket;
-import dev.dixmk.minepreggo.server.ServerCinematicManager;
-import dev.dixmk.minepreggo.server.ServerParticleHelper;
-import dev.dixmk.minepreggo.server.ServerTaskQueueManager;
-import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
-import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobFace;
-import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
-import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
-import net.minecraft.core.particles.ParticleTypes;
+import dev.dixmk.minepreggo.world.pregnancy.SexHelper;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.network.PacketDistributor;
 
 public record ResponseSexRequestM2PC2SPacket(int preggoMobId, int playerId, boolean accept) {
 
@@ -52,64 +38,21 @@ public record ResponseSexRequestM2PC2SPacket(int preggoMobId, int playerId, bool
 				if (source != null && target != null) {
 					// TODO: Sex event requested by a PreggoMob can only happen if the PreggoMob is pregnant, but She can't request if she's not pregnant. It should allow even if not pregnant.  
 					if (message.accept) {																
-						if (PreggoMobHelper.canActivateSexEvent(target, source)) {			
+						if (SexHelper.canActivateSexEvent(level, target, source)) {			
 							if (source instanceof AbstractTamablePregnantZombieGirl zombieGirl) {
-								accept(target, zombieGirl);
+								SexHelper.acceptSexRequest(target, zombieGirl);
 							}
 							else if (source instanceof AbstractTamablePregnantCreeperGirl creeperGirl) {
-								accept(target, creeperGirl);
+								SexHelper.acceptSexRequest(target, creeperGirl);
 							}
 						}	
 					}
 					else {
-						reject(target, source);
+						SexHelper.rejectSexRequest(target, source);
 					}
 				}
 			}
 		});
 		context.setPacketHandled(true);
-	}
-	
-	private static<E extends PreggoMob & ITamablePregnantPreggoMob> void accept(ServerPlayer target, E source) {
-		
-		var manager =  ServerTaskQueueManager.getInstance();
-		
-		manager.queueTask(20, () -> ServerParticleHelper.spawnRandomlyFromServer(target, ParticleTypes.HEART));
-		manager.queueTask(40, () -> ServerParticleHelper.spawnRandomlyFromServer(target, ParticleTypes.HEART));
-		manager.queueTask(60, () -> ServerParticleHelper.spawnRandomlyFromServer(target, ParticleTypes.HEART));			
-			
-		ServerCinematicManager.getInstance().start(
-				target,
-				source,
-				() -> {
-					ServerParticleHelper.spawnRandomlyFromServer(source, ParticleTypes.HEART);
-					source.getTamableData().setFaceState(PreggoMobFace.BLUSHED);  
-				}, () -> {
-					source.getTamableData().cleanFaceState();
-					var pregnancyData = source.getPregnancyData();
-					pregnancyData.setHorny(0);
-					pregnancyData.getSyncedPregnancySymptoms().removePregnancySymptom(PregnancySymptom.HORNY);
-					pregnancyData.setHornyTimer(0);
-					source.getGenderedData().setSexualAppetite(0);
-					PlayerHelper.removeHorny(target);
-				});
-		
-		source.setCinematicOwner(target);
-		source.setCinematicEndTime(target.level().getGameTime() + 120 * 2 + 60);
-  
-        MinepreggoModPacketHandler.INSTANCE.send(
-            PacketDistributor.PLAYER.with(() -> target),
-            new SexCinematicControlP2MS2CPacket(true, source.getId())
-        );	               
-		MinepreggoModPacketHandler.INSTANCE.send(
-			PacketDistributor.PLAYER.with(() -> target),
-			new RenderSexOverlayS2CPacket(120, 60)); 
-		
-		return;
-	}
-	
-	private static void reject(ServerPlayer target, PreggoMob source) {
-		MessageHelper.sendTo(target, Component.translatable("chat.minepreggo.pregnant.preggo_mob.message.rejection_by_its_owner", source.getSimpleName()));
-		ServerParticleHelper.spawnRandomlyFromServer(target, ParticleTypes.SMOKE);
 	}
 }

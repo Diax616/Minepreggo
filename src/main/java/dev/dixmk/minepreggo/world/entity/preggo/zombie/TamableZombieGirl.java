@@ -17,6 +17,7 @@ import java.util.OptionalInt;
 
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
+import dev.dixmk.minepreggo.world.entity.EntityHelper;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.FemaleFertilitySystem;
 import dev.dixmk.minepreggo.world.entity.preggo.SyncedFemaleEntityImpl;
@@ -39,13 +40,13 @@ public class TamableZombieGirl extends AbstractTamableZombieGirl implements IPos
 		protected void startPregnancy() {
 			if (preggoMob.level() instanceof ServerLevel serverLevel && !serverLevel.isClientSide) {
 				var zombieGirl = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), MobSpawnType.CONVERSION);		
-				PreggoMobHelper.copyRotation(preggoMob, zombieGirl);
+				LivingEntityHelper.copyRotation(preggoMob, zombieGirl);
 				PreggoMobHelper.copyOwner(preggoMob, zombieGirl);
-				PreggoMobHelper.copyHealth(preggoMob, zombieGirl);
-				PreggoMobHelper.copyName(preggoMob, zombieGirl);
+				LivingEntityHelper.copyHealth(preggoMob, zombieGirl);
+				EntityHelper.copyName(preggoMob, zombieGirl);
 				PreggoMobHelper.copyTamableData(preggoMob, zombieGirl);				
 				PreggoMobHelper.transferInventory(preggoMob, zombieGirl);
-				PreggoMobHelper.transferAttackTarget(preggoMob, zombieGirl);
+				LivingEntityHelper.transferAttackTarget(preggoMob, zombieGirl);
 				PreggoMobHelper.initPregnancy(zombieGirl);
 			}
 		}
@@ -107,14 +108,14 @@ public class TamableZombieGirl extends AbstractTamableZombieGirl implements IPos
 	static<E extends AbstractTamablePregnantZombieGirl> void onPostMiscarriage(E source) {
 		if (source.level() instanceof ServerLevel serverLevel) {
 			var zombieGirl = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL.get().spawn(serverLevel, BlockPos.containing(source.getX(), source.getY(), source.getZ()), MobSpawnType.CONVERSION);	
-			PreggoMobHelper.copyRotation(source, zombieGirl);
+			LivingEntityHelper.copyRotation(source, zombieGirl);
 			PreggoMobHelper.copyOwner(source, zombieGirl);
-			PreggoMobHelper.copyHealth(source, zombieGirl);
-			PreggoMobHelper.copyName(source, zombieGirl);
+			LivingEntityHelper.copyHealth(source, zombieGirl);
+			EntityHelper.copyName(source, zombieGirl);
 			PreggoMobHelper.copyTamableData(source, zombieGirl);	
 			LivingEntityHelper.copyMobEffects(source, zombieGirl);
 			PreggoMobHelper.transferInventory(source, zombieGirl);
-			PreggoMobHelper.transferAttackTarget(source, zombieGirl);
+			LivingEntityHelper.transferAttackTarget(source, zombieGirl);
 							
 			if (!zombieGirl.getGenderedData().tryActivatePostPregnancyPhase(PostPregnancy.MISCARRIAGE)) {
 				source.discard();
@@ -129,14 +130,14 @@ public class TamableZombieGirl extends AbstractTamableZombieGirl implements IPos
 	static<E extends AbstractTamablePregnantZombieGirl> void onPostPartum(E source) {
 		if (source.level() instanceof ServerLevel serverLevel) {
 			var zombieGirl = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL.get().spawn(serverLevel, BlockPos.containing(source.getX(), source.getY(), source.getZ()), MobSpawnType.CONVERSION);	
-			PreggoMobHelper.copyRotation(source, zombieGirl);
+			LivingEntityHelper.copyRotation(source, zombieGirl);
 			PreggoMobHelper.copyOwner(source, zombieGirl);
-			PreggoMobHelper.copyHealth(source, zombieGirl);
-			PreggoMobHelper.copyName(source, zombieGirl);
+			LivingEntityHelper.copyHealth(source, zombieGirl);
+			EntityHelper.copyName(source, zombieGirl);
 			PreggoMobHelper.copyTamableData(source, zombieGirl);
 			LivingEntityHelper.copyMobEffects(source, zombieGirl);
 			PreggoMobHelper.transferInventory(source, zombieGirl);
-			PreggoMobHelper.transferAttackTarget(source, zombieGirl);
+			LivingEntityHelper.transferAttackTarget(source, zombieGirl);
 			zombieGirl.getTamableData().setBodyState(null);
 			
 			if (!zombieGirl.getGenderedData().tryActivatePostPregnancyPhase(PostPregnancy.PARTUM)) {

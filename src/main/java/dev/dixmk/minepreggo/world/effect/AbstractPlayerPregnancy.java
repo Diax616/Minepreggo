@@ -7,7 +7,11 @@ import java.util.OptionalInt;
 import java.util.UUID;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
+import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
+import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.world.entity.BellyPartManager;
+import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.player.PlayerPregnancySystemP0;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.server.level.ServerPlayer;
@@ -61,15 +65,21 @@ public abstract class AbstractPlayerPregnancy<S extends PlayerPregnancySystemP0>
 
 	@Override
 	public void addAttributeModifiers(LivingEntity entity, AttributeMap p_19479_, int p_19480_) {
-    	if (entity instanceof ServerPlayer serverPlayer) {
-    		ensurePregnancySystemInitialized(serverPlayer);
-    		
+    	if (entity instanceof ServerPlayer serverPlayer && !serverPlayer.level().isClientSide) {
+    		ensurePregnancySystemInitialized(serverPlayer); 		
     		serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
     			cap.getFemaleData().ifPresent(femaleData -> {
     				if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
     					var phase = femaleData.getPregnancyData().getCurrentPregnancyPhase();
     					PregnancySystemHelper.applyGravityModifier(entity, phase);
-    					PregnancySystemHelper.applyKnockbackResistanceModifier(entity, phase);		
+    					PregnancySystemHelper.applyKnockbackResistanceModifier(entity, phase);	
+    							
+    					PlayerHelper.addEnderDragonPregnancyEffects(serverPlayer);	
+    					
+    					if (serverPlayer.hasEffect(MinepreggoModMobEffects.ENDER_DRAGON_PREGNANCY.get())) {
+    						MinepreggoMod.LOGGER.debug("Applying Ender Dragon pregnancy effects for player: {} in phase: {}", serverPlayer.getName().getString(), phase);
+    						EnderDragonPregnancy.applyEffects(serverPlayer, phase);
+    					}
     				}
     			})
     		); 	
@@ -120,6 +130,10 @@ public abstract class AbstractPlayerPregnancy<S extends PlayerPregnancySystemP0>
     		
 			PregnancySystemHelper.removeGravityModifier(entity);
 			PregnancySystemHelper.removeKnockbackResistanceModifier(entity);
+			
+			if (MinepreggoModConfig.SERVER.isBellyColisionsForPlayersEnable()) {
+				BellyPartManager.getInstance().remove(entity);
+			}
     	}
     }
     

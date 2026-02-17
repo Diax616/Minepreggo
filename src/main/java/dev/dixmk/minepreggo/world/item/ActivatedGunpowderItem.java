@@ -16,7 +16,7 @@ public class ActivatedGunpowderItem extends Item {
 	}
 	
 	public ActivatedGunpowderItem() {
-		this(5);
+		this(8);
 	}
 	
 	@Override

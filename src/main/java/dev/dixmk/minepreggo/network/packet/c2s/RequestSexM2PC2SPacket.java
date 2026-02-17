@@ -4,9 +4,10 @@ import java.util.function.Supplier;
 
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractTamableEnderWoman;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamableZombieGirl;
 import dev.dixmk.minepreggo.world.inventory.preggo.RequestSexM2PMenu;
-import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
+import dev.dixmk.minepreggo.world.pregnancy.SexHelper;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;
@@ -35,12 +36,15 @@ public record RequestSexM2PC2SPacket(int preggoMobId, int playerId) {
 				final ServerPlayer target = level.getEntity(message.playerId) instanceof ServerPlayer t ? t : null;
 								
 				if (source != null && target != null) {
-					if (source instanceof AbstractTamableZombieGirl zombieGirl && PregnancySystemHelper.canFuck(target, zombieGirl)) {
+					if (source instanceof AbstractTamableZombieGirl zombieGirl && SexHelper.canFuck(target, zombieGirl)) {
 						RequestSexM2PMenu.create(target, zombieGirl);
 					}
-					else if (source instanceof AbstractTamableCreeperGirl creeperGirl && PregnancySystemHelper.canFuck(target, creeperGirl)) {
+					else if (source instanceof AbstractTamableCreeperGirl creeperGirl && SexHelper.canFuck(target, creeperGirl)) {
 						RequestSexM2PMenu.create(target, creeperGirl);
-					}			
+					}	
+					else if (source instanceof AbstractTamableEnderWoman enderWoman && SexHelper.canFuck(target, enderWoman)) {
+						RequestSexM2PMenu.create(target, enderWoman);
+					}	
 				}
 			}
 		});

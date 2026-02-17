@@ -123,7 +123,7 @@ public class EntityJiggleDataFactory {
 			this.originalYBellyPos = originalYBellyPos;
 			this.originalYButtPos = originalYButtPos;
 		}
-    	
+		
 		public static JigglePositionConfig boobs(float originalYBoobsPos) {
 			return new JigglePositionConfig(originalYBoobsPos, -1F, -1F);
 		}
@@ -135,7 +135,7 @@ public class EntityJiggleDataFactory {
 		public static JigglePositionConfig boobsAndBellyAndButt(float originalYBoobsPos, float originalYBellyPos, float originalYButtPos) {
 			return new JigglePositionConfig(originalYBoobsPos, originalYBellyPos, originalYButtPos);
 		}
-		
+
 		@Override
 		public String toString() {
 			return "JigglePositionConfig [originalYBoobsPos=" + originalYBoobsPos + ", originalYBellyPos="

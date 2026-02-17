@@ -8,6 +8,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 
 public class WaterBreaking extends AbstractPlayerPregnancyPain {
 	private static final AttributeModifier SPEED_MODIFIER = new AttributeModifier(SPEED_MODIFIER_UUID, "water breaking speed nerf", -0.3, AttributeModifier.Operation.MULTIPLY_BASE);
@@ -20,7 +21,9 @@ public class WaterBreaking extends AbstractPlayerPregnancyPain {
 
 	@Override
 	public void addAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {
-		if (!PlayerHelper.isPlayerValid(entity)) return;
+		if (!(entity instanceof Player player) || !PlayerHelper.isFemale(player)) {
+        	return;
+        }
 		
 		if (!entity.level().isClientSide) {		
 	        ServerPlayerAnimationManager.getInstance().triggerAnimation((ServerPlayer) entity, "water_breaking");
@@ -39,7 +42,9 @@ public class WaterBreaking extends AbstractPlayerPregnancyPain {
 	
 	@Override
 	public void removeAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {
-		if (!PlayerHelper.isPlayerValid(entity)) return;
+		if (!(entity instanceof Player player) || !PlayerHelper.isFemale(player)) {
+        	return;
+        }
 		
 		if (!entity.level().isClientSide) {
 			ServerPlayerAnimationManager.getInstance().stopAnimation((ServerPlayer) entity);

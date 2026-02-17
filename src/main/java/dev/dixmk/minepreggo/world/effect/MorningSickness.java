@@ -9,6 +9,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 
 public class MorningSickness extends AbstractPlayerPregnancyPain {
 	private static final AttributeModifier ATTACK_SPEED_MODIFIER = new AttributeModifier(ATTACK_SPEED_MODIFIER_UUID, "morning sickness attack speed nerf", -0.25, AttributeModifier.Operation.MULTIPLY_BASE);
@@ -19,7 +20,9 @@ public class MorningSickness extends AbstractPlayerPregnancyPain {
 
 	@Override
 	public void addAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {
-		if (!PlayerHelper.isPlayerValid(entity)) return;
+		if (!(entity instanceof Player player) || !PlayerHelper.isFemale(player)) {
+        	return;
+        }
 		
 		if (!entity.level().isClientSide) {	
 			entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, PregnancySystemHelper.TOTAL_TICKS_MORNING_SICKNESS, 0, false, false));
@@ -32,7 +35,9 @@ public class MorningSickness extends AbstractPlayerPregnancyPain {
 	
 	@Override
 	public void removeAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {
-		if (!PlayerHelper.isPlayerValid(entity)) return;
+		if (!(entity instanceof Player player) || !PlayerHelper.isFemale(player)) {
+        	return;
+        }
 		
 		if (!entity.level().isClientSide) {
 			entity.removeEffect(MobEffects.CONFUSION);		

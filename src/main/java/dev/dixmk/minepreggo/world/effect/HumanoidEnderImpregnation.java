@@ -17,7 +17,7 @@ import net.minecraft.world.entity.LivingEntity;
 public class HumanoidEnderImpregnation extends Impregnantion {
 
 	public HumanoidEnderImpregnation() {
-		super(-13434829);
+		super(-6750106);
 	}
 	
 	@Override
@@ -30,6 +30,7 @@ public class HumanoidEnderImpregnation extends Impregnantion {
 				MinepreggoMod.LOGGER.info("Player {} could not become pregnant.", serverPlayer.getName().getString());
 			}							
 		}
+
 		else {
 			entity.hurt(new DamageSource(entity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.GENERIC)), 1);
 		}

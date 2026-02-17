@@ -7,7 +7,7 @@ import dev.dixmk.minepreggo.world.pregnancy.Craving;
 
 public class SourActivatedGunpowderItem extends ActivatedGunpowderItem implements ICravingItem {
 	public SourActivatedGunpowderItem() {
-		super();
+		super(10);
 	}
 	
 	@Override
@@ -28,7 +28,7 @@ public class SourActivatedGunpowderItem extends ActivatedGunpowderItem implement
 
 	@Override
 	public @Nonnegative float getPenalty() {
-		return 0.1f;
+		return 0.3f;
 	}
 }
 

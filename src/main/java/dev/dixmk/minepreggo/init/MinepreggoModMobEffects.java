@@ -8,9 +8,9 @@ import dev.dixmk.minepreggo.world.effect.Contraction;
 import dev.dixmk.minepreggo.world.effect.Craving;
 import dev.dixmk.minepreggo.world.effect.CreeperImpregnation;
 import dev.dixmk.minepreggo.world.effect.Depression;
+import dev.dixmk.minepreggo.world.effect.EnderDragonImpregnation;
+import dev.dixmk.minepreggo.world.effect.EnderDragonPregnancy;
 import dev.dixmk.minepreggo.world.effect.EnderImpregnation;
-import dev.dixmk.minepreggo.world.effect.EternalPregnancy;
-import dev.dixmk.minepreggo.world.effect.Fertile;
 import dev.dixmk.minepreggo.world.effect.Fertility;
 import dev.dixmk.minepreggo.world.effect.FetalMovement;
 import dev.dixmk.minepreggo.world.effect.FullOfCreepers;
@@ -20,13 +20,16 @@ import dev.dixmk.minepreggo.world.effect.Horny;
 import dev.dixmk.minepreggo.world.effect.HumanoidCreeperImpregnation;
 import dev.dixmk.minepreggo.world.effect.HumanoidEnderImpregnation;
 import dev.dixmk.minepreggo.world.effect.Impregnantion;
+import dev.dixmk.minepreggo.world.effect.Infertility;
 import dev.dixmk.minepreggo.world.effect.Lactation;
 import dev.dixmk.minepreggo.world.effect.Maternity;
+import dev.dixmk.minepreggo.world.effect.MetabolismControl;
 import dev.dixmk.minepreggo.world.effect.Miscarriage;
 import dev.dixmk.minepreggo.world.effect.MorningSickness;
 import dev.dixmk.minepreggo.world.effect.PreBirth;
 import dev.dixmk.minepreggo.world.effect.PregnancyAcceleration;
 import dev.dixmk.minepreggo.world.effect.PregnancyDelay;
+import dev.dixmk.minepreggo.world.effect.PregnancyHarming;
 import dev.dixmk.minepreggo.world.effect.PregnancyHealing;
 import dev.dixmk.minepreggo.world.effect.PregnancyP0;
 import dev.dixmk.minepreggo.world.effect.PregnancyP1;
@@ -43,6 +46,7 @@ import dev.dixmk.minepreggo.world.effect.WaterBreaking;
 import dev.dixmk.minepreggo.world.effect.ZeroGravityBelly;
 import dev.dixmk.minepreggo.world.effect.ZombieImpregnation;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -63,6 +67,8 @@ public class MinepreggoModMobEffects {
 	public static final RegistryObject<MobEffect> VILLAGER_IMPREGNATION = REGISTRY.register("villager_impregnation", VillagerImpregnation::new);
 
 	public static final RegistryObject<MobEffect> PREGNANCY_HEALING = REGISTRY.register("pregnancy_healing", PregnancyHealing::new);
+	public static final RegistryObject<MobEffect> PREGNANCY_HARMING = REGISTRY.register("pregnancy_harming", PregnancyHarming::new);
+
 	public static final RegistryObject<MobEffect> PREGNANCY_DELAY = REGISTRY.register("pregnancy_delay", PregnancyDelay::new);
 	public static final RegistryObject<MobEffect> PREGNANCY_ACCELERATION = REGISTRY.register("pregnancy_acceleration", PregnancyAcceleration::new);
 	public static final RegistryObject<MobEffect> BABY_DUPLICATION = REGISTRY.register("baby_duplication", BabyDuplication::new);
@@ -87,9 +93,9 @@ public class MinepreggoModMobEffects {
 	public static final RegistryObject<MobEffect> CRAVING = REGISTRY.register("craving", Craving::new);
 	public static final RegistryObject<MobEffect> DEPRESSION = REGISTRY.register("depression", Depression::new);
 
-	public static final RegistryObject<MobEffect> ETERNAL_PREGNANCY = REGISTRY.register("eternal_pregnancy", EternalPregnancy::new);
+	public static final RegistryObject<MobEffect> ETERNAL_PREGNANCY = REGISTRY.register("eternal_pregnancy", () -> new MobEffect(MobEffectCategory.HARMFUL, -44381978) {});
 	public static final RegistryObject<MobEffect> FERTILITY = REGISTRY.register("fertility", Fertility::new);
-	public static final RegistryObject<MobEffect> FERTILE = REGISTRY.register("fertile", Fertile::new);
+	public static final RegistryObject<MobEffect> FERTILE = REGISTRY.register("fertile", () -> new MobEffect(MobEffectCategory.BENEFICIAL, -10027213) {});
 	public static final RegistryObject<MobEffect> FETAL_MOVEMENT = REGISTRY.register("fetal_movement", FetalMovement::new);
 	public static final RegistryObject<MobEffect> WATER_BREAKING = REGISTRY.register("water_breaking", WaterBreaking::new);
 
@@ -101,4 +107,16 @@ public class MinepreggoModMobEffects {
 	public static final RegistryObject<MobEffect> PREBIRTH = REGISTRY.register("prebirth", PreBirth::new);
 
 	public static final RegistryObject<MobEffect> ZERO_GRAVITY_BELLY = REGISTRY.register("zero_gravity_belly", ZeroGravityBelly::new);
-}
+
+	public static final RegistryObject<MobEffect> METABOLISM_CONTROL = REGISTRY.register("metabolism_control", MetabolismControl::new);
+	public static final RegistryObject<MobEffect> INFERTILITY = REGISTRY.register("infertility", Infertility::new);
+	public static final RegistryObject<MobEffect> POISON_IMMUNITY = REGISTRY.register("poison_immunity", () -> new MobEffect(MobEffectCategory.BENEFICIAL, -10027213) {});
+	public static final RegistryObject<MobEffect> WIHER_IMMUNITY = REGISTRY.register("wither_immunity", () -> new MobEffect(MobEffectCategory.BENEFICIAL, -13210) {});
+	public static final RegistryObject<MobEffect> ENDER_DRAGON_IMPREGNATION = REGISTRY.register("ender_dragon_impregnation", EnderDragonImpregnation::new);
+	public static final RegistryObject<MobEffect> ENDER_DRAGON_PREGNANCY = REGISTRY.register("ender_dragon_pregnancy", EnderDragonPregnancy::new);	
+
+	public static final RegistryObject<MobEffect> ENDER_DRAGON_RECOGNITION = REGISTRY.register("ender_dragon_recognition", () -> new MobEffect(MobEffectCategory.BENEFICIAL, -3407668) {});	
+	public static final RegistryObject<MobEffect> ENDER_ESSENCE = REGISTRY.register("ender_essence", () -> new MobEffect(MobEffectCategory.BENEFICIAL, -13434829) {});	
+	public static final RegistryObject<MobEffect> ENDER_DRAGON_ESSENCE = REGISTRY.register("ender_dragon_essence", () -> new MobEffect(MobEffectCategory.BENEFICIAL, -3407668) {});	
+
+}																																																			

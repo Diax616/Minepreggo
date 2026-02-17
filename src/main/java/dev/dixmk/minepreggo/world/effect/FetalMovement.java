@@ -6,6 +6,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 
 public class FetalMovement extends AbstractPlayerPregnancyPain {
 	private static final AttributeModifier SPEED_MODIFIER = new AttributeModifier(SPEED_MODIFIER_UUID, "fetal movement speed nerf", -0.2, AttributeModifier.Operation.MULTIPLY_BASE);
@@ -18,7 +19,9 @@ public class FetalMovement extends AbstractPlayerPregnancyPain {
 
 	@Override
 	public void addAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {
-		if (!PlayerHelper.isPlayerValid(entity)) return;
+		if (!(entity instanceof Player player) || !PlayerHelper.isFemale(player)) {
+        	return;
+        }
 		
 		if (!entity.level().isClientSide) {			
 			AttributeInstance speedAttr = entity.getAttribute(Attributes.MOVEMENT_SPEED);
@@ -35,7 +38,9 @@ public class FetalMovement extends AbstractPlayerPregnancyPain {
 	
 	@Override
 	public void removeAttributeModifiers(LivingEntity entity, AttributeMap attributeMap, int amplifier) {
-		if (!PlayerHelper.isPlayerValid(entity)) return;
+		if (!(entity instanceof Player player) || !PlayerHelper.isFemale(player)) {
+        	return;
+        }
 		
 		if (!entity.level().isClientSide) {		
 			AttributeInstance speedAttr = entity.getAttribute(Attributes.MOVEMENT_SPEED);

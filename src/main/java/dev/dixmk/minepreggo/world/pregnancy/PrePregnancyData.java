@@ -12,7 +12,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 
-public record PrePregnancyData(@Nonnegative int fertilizedEggs, Species typeOfSpeciesOfFather, Creature typeOfCreatureOfFather, @Nullable UUID fatherId) {		
+public record PrePregnancyData(PregnancyType pregnancyType, @Nonnegative int fertilizedEggs, Species typeOfSpeciesOfFather, Creature typeOfCreatureOfFather, @Nullable UUID fatherId) {		
 	
 	private static final String NBT_KEY = "NBTPrePregnancyData";
 	
@@ -25,7 +25,8 @@ public record PrePregnancyData(@Nonnegative int fertilizedEggs, Species typeOfSp
 			nbt.putUUID("DataFatherId", fatherId);
 		}
 		nbt.putString(Species.NBT_KEY, typeOfSpeciesOfFather.name());
-		nbt.putString(Creature.NBT_KEY, typeOfCreatureOfFather.name());		
+		nbt.putString(Creature.NBT_KEY, typeOfCreatureOfFather.name());	
+		nbt.putString(PregnancyType.NBT_KEY, pregnancyType.name());
 		wrapper.put(NBT_KEY, nbt);
 		return wrapper;
     }
@@ -38,7 +39,8 @@ public record PrePregnancyData(@Nonnegative int fertilizedEggs, Species typeOfSp
 			UUID fatherId = data.contains("DataFatherId") ? data.getUUID("DataFatherId") : null;
 			Species typeOfSpeciesOfFather = Species.valueOf(data.getString(Species.NBT_KEY));
 			Creature typeOfCreatureOfFather = Creature.valueOf(data.getString(Creature.NBT_KEY));
-		    return new PrePregnancyData(fertilizedEggs, typeOfSpeciesOfFather, typeOfCreatureOfFather, fatherId);
+		    PregnancyType pregnancyType = PregnancyType.valueOf(data.getString(PregnancyType.NBT_KEY));
+			return new PrePregnancyData(pregnancyType, fertilizedEggs, typeOfSpeciesOfFather, typeOfCreatureOfFather, fatherId);
 		}	
 		return null;
 	}

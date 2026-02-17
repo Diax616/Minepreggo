@@ -3,50 +3,54 @@ package dev.dixmk.minepreggo.network.packet.c2s;
 import java.util.function.Supplier;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
+import dev.dixmk.minepreggo.world.entity.preggo.Creature;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractTamableEnderWoman;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamableZombieGirl;
 import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlMenuHelper;
+import dev.dixmk.minepreggo.world.inventory.preggo.ender.EnderWomanMenuHelper;
 import dev.dixmk.minepreggo.world.inventory.preggo.zombie.ZombieGirlMenuHelper;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.TamableAnimal;
 import net.minecraftforge.network.NetworkEvent;
 
-public record RequestPreggoMobInventoryMenuC2SPacket(int x, int y, int z, int preggoMobId) {
+public record RequestPreggoMobInventoryMenuC2SPacket(int preggoMobId) {
 
 	public static RequestPreggoMobInventoryMenuC2SPacket decode(FriendlyByteBuf buffer) {	
 		return new RequestPreggoMobInventoryMenuC2SPacket(
-				buffer.readInt(),
-				buffer.readInt(),
-				buffer.readInt(),
 				buffer.readVarInt());
 	}
 	
 	public static void encode(RequestPreggoMobInventoryMenuC2SPacket message, FriendlyByteBuf buffer) {
-		buffer.writeInt(message.x);
-		buffer.writeInt(message.y);
-		buffer.writeInt(message.z);
 		buffer.writeVarInt(message.preggoMobId);
 	}
 	
-	@SuppressWarnings("deprecation")
 	public static void handler(RequestPreggoMobInventoryMenuC2SPacket message, Supplier<NetworkEvent.Context> contextSupplier) {
 		NetworkEvent.Context context = contextSupplier.get();
 		context.enqueueWork(() -> {		
             if (context.getDirection().getReceptionSide().isServer()) {
     			var serverPlayer = context.getSender();			
-    			var world = serverPlayer.level();  			
-    			// security measure to prevent arbitrary chunk generation
-    			if (!world.hasChunkAt(new BlockPos(message.x, message.y, message.z))) return;
-    						
-    			if (world.getEntity(message.preggoMobId) instanceof TamableAnimal tamableAnimal) {			
-    				if (tamableAnimal instanceof AbstractTamableCreeperGirl creeperGirl) {
-    					CreeperGirlMenuHelper.showInventoryMenu(serverPlayer, creeperGirl);
-    					MinepreggoMod.LOGGER.debug("INVENTARY CREEPER GIRL: id={}, class={}", creeperGirl.getId(), creeperGirl.getClass().getSimpleName());
+    			var level = serverPlayer.level();  			
+		
+    			if (level.getEntity(message.preggoMobId) instanceof PreggoMob preggoMob) {			
+    				if (preggoMob instanceof AbstractTamableCreeperGirl creeperGirl) { 					
+    					if (creeperGirl.getTypeOfCreature() == Creature.HUMANOID) {
+        					CreeperGirlMenuHelper.showInventoryMenuForHumanoid(serverPlayer, creeperGirl);
+    					}
+    					else {
+        					CreeperGirlMenuHelper.showInventoryMenuForMonster(serverPlayer, creeperGirl);
+    					}			
     				}	
-    				else if (tamableAnimal instanceof AbstractTamableZombieGirl zombieGirl) {
+    				else if (preggoMob instanceof AbstractTamableZombieGirl zombieGirl) {
     					ZombieGirlMenuHelper.showInventoryMenu(serverPlayer, zombieGirl);
-    					MinepreggoMod.LOGGER.debug("INVENTARY ZOMBIE GIRL: id={}, class={}", zombieGirl.getId(), zombieGirl.getClass().getSimpleName());
+    				}
+    				else if (preggoMob instanceof AbstractTamableEnderWoman enderWoman) {
+    					if (enderWoman.getTypeOfCreature() == Creature.HUMANOID) {
+    						MinepreggoMod.LOGGER.debug("Still not implemented");
+    					}
+						else {
+							EnderWomanMenuHelper.showInventoryMenuForMonster(serverPlayer, enderWoman);
+						}
     				}
     				else {
     					MinepreggoMod.LOGGER.error("PREGGO MOB CLASS COULD NOT BE RESOLVED");

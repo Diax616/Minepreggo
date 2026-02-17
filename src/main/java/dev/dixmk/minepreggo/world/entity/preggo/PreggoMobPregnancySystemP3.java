@@ -6,12 +6,13 @@ import javax.annotation.Nonnull;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoModSounds;
+import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem.Result;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import dev.dixmk.minepreggo.world.pregnancy.SyncedSetPregnancySymptom;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
@@ -71,7 +72,7 @@ public abstract class PreggoMobPregnancySystemP3
 			pregnancySymptoms.addPregnancySymptom(PregnancySymptom.BELLY_RUBS);
 	    	
 			MinepreggoMod.LOGGER.debug("Player {} has developed pregnancy symptom: {}, all pregnancy symptoms: {}",
-					pregnantEntity.getSimpleName(), PregnancySymptom.BELLY_RUBS, pregnancySymptoms.toSet());	
+					pregnantEntity.getSimpleNameOrCustom(), PregnancySymptom.BELLY_RUBS, pregnancySymptoms.toSet());	
 	    	return true;		
 		}
 		return false;
@@ -92,7 +93,8 @@ public abstract class PreggoMobPregnancySystemP3
 		if (randomSource.nextFloat() < newFetalMovementProb) {
 			pregnancyData.setPregnancyPain(PregnancyPain.FETAL_MOVEMENT);
 			pregnancyData.resetPregnancyPainTimer();
-			PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.CHEST);				
+			LivingEntityHelper.playSoundNearTo(pregnantEntity, MinepreggoModSounds.getRandomStomachGrowls(randomSource));
+			PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, InventorySlot.CHEST);				
 			return true;
 		}     
 	    return false;
@@ -112,11 +114,6 @@ public abstract class PreggoMobPregnancySystemP3
 				tryHurtByCooldown();
 			}
 		}
-	}
-	
-	@Override
-	public boolean canBeAngry() {
-		return super.canBeAngry() || pregnantEntity.getPregnancyData().getBellyRubs() >= PregnancySystemHelper.MAX_BELLY_RUBBING_LEVEL;
 	}
 	
 	@Override

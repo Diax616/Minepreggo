@@ -17,6 +17,7 @@ import java.util.OptionalInt;
 
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
+import dev.dixmk.minepreggo.world.entity.EntityHelper;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.FemaleFertilitySystem;
 import dev.dixmk.minepreggo.world.entity.preggo.SyncedFemaleEntityImpl;
@@ -39,14 +40,15 @@ public class TamableHumanoidCreeperGirl extends AbstractTamableHumanoidCreeperGi
 		protected void startPregnancy() {		
 			if (preggoMob.level() instanceof ServerLevel serverLevel && !serverLevel.isClientSide) {
 				var creeperGirl = MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), MobSpawnType.CONVERSION);		
-				PreggoMobHelper.copyRotation(preggoMob, creeperGirl);
+				LivingEntityHelper.copyRotation(preggoMob, creeperGirl);
 				PreggoMobHelper.copyOwner(preggoMob, creeperGirl);
-				PreggoMobHelper.copyHealth(preggoMob, creeperGirl);
-				PreggoMobHelper.copyName(preggoMob, creeperGirl);
+				LivingEntityHelper.copyHealth(preggoMob, creeperGirl);
+				EntityHelper.copyName(preggoMob, creeperGirl);
 				PreggoMobHelper.copyTamableData(preggoMob, creeperGirl);				
 				PreggoMobHelper.transferInventory(preggoMob, creeperGirl);					
-				PreggoMobHelper.transferAttackTarget(preggoMob, creeperGirl);
+				LivingEntityHelper.transferAttackTarget(preggoMob, creeperGirl);
 				LivingEntityHelper.copyMobEffects(preggoMob, creeperGirl);
+				creeperGirl.setCombatMode(preggoMob.getCombatMode());
 				PreggoMobHelper.initPregnancy(creeperGirl);
 			}			
 		}
@@ -98,23 +100,40 @@ public class TamableHumanoidCreeperGirl extends AbstractTamableHumanoidCreeperGi
 		}			
 		return super.mobInteract(sourceentity, hand);
 	}
+
+	@Override
+	public Optional<PostPregnancy> getSyncedPostPregnancy() {
+		return this.entityData.get(DATA_HOLDER.getDataPostPregnancy());
+	}
+
+	@Override
+	public OptionalInt getSyncedPostPartumLactation() {
+		return this.entityData.get(DATA_HOLDER.getDataLactation());
+	}
+
+	@Override
+	public ISyncedFemaleEntity<?> getSyncedFemaleEntity() {
+		return (SyncedFemaleEntityImpl<?>) this.femaleEntityData;
+	}
+	
 	
 	public static AttributeSupplier.Builder createAttributes() {
-		return createBasicAttributes(0.24);
+		return HumanoidCreeperHelper.createTamableAttributes(0.24);
 	}
 	
 	public static<E extends AbstractTamablePregnantCreeperGirl> void onPostPartum(E source) {
 		if (source.level() instanceof ServerLevel serverLevel) {
 			TamableHumanoidCreeperGirl creeperGirl = MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(source.getX(), source.getY(), source.getZ()), MobSpawnType.CONVERSION);	
-			PreggoMobHelper.copyRotation(source, creeperGirl);
+			LivingEntityHelper.copyRotation(source, creeperGirl);
 			PreggoMobHelper.copyOwner(source, creeperGirl);
-			PreggoMobHelper.copyHealth(source, creeperGirl);
-			PreggoMobHelper.copyName(source, creeperGirl);
+			LivingEntityHelper.copyHealth(source, creeperGirl);
+			EntityHelper.copyName(source, creeperGirl);
 			PreggoMobHelper.copyTamableData(source, creeperGirl);	
 			LivingEntityHelper.copyMobEffects(source, creeperGirl);
 			PreggoMobHelper.transferInventory(source, creeperGirl);
-			PreggoMobHelper.transferAttackTarget(source, creeperGirl);	
+			LivingEntityHelper.transferAttackTarget(source, creeperGirl);	
 			creeperGirl.getTamableData().setBodyState(null);
+			creeperGirl.setCombatMode(source.getCombatMode());
 			
 			if (!creeperGirl.getGenderedData().tryActivatePostPregnancyPhase(PostPregnancy.PARTUM)) {
 				source.discard();
@@ -129,14 +148,15 @@ public class TamableHumanoidCreeperGirl extends AbstractTamableHumanoidCreeperGi
 	public static<E extends AbstractTamablePregnantCreeperGirl> void onPostMiscarriage(E source) {
 		if (source.level() instanceof ServerLevel serverLevel) {
 			TamableHumanoidCreeperGirl creeperGirl = MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(source.getX(), source.getY(), source.getZ()), MobSpawnType.CONVERSION);	
-			PreggoMobHelper.copyRotation(source, creeperGirl);
+			LivingEntityHelper.copyRotation(source, creeperGirl);
 			PreggoMobHelper.copyOwner(source, creeperGirl);
-			PreggoMobHelper.copyHealth(source, creeperGirl);
-			PreggoMobHelper.copyName(source, creeperGirl);
+			LivingEntityHelper.copyHealth(source, creeperGirl);
+			EntityHelper.copyName(source, creeperGirl);
 			PreggoMobHelper.copyTamableData(source, creeperGirl);	
 			LivingEntityHelper.copyMobEffects(source, creeperGirl);
 			PreggoMobHelper.transferInventory(source, creeperGirl);
-			PreggoMobHelper.transferAttackTarget(source, creeperGirl);
+			LivingEntityHelper.transferAttackTarget(source, creeperGirl);
+			creeperGirl.setCombatMode(source.getCombatMode());
 			
 			if (!creeperGirl.getGenderedData().tryActivatePostPregnancyPhase(PostPregnancy.MISCARRIAGE)) {
 				source.discard();
@@ -146,20 +166,5 @@ public class TamableHumanoidCreeperGirl extends AbstractTamableHumanoidCreeperGi
 			
 			PregnancySystemHelper.applyPostPregnancyNerf(creeperGirl);
 		}
-	}
-	
-	@Override
-	public Optional<PostPregnancy> getSyncedPostPregnancy() {
-		return this.entityData.get(DATA_HOLDER.getDataPostPregnancy());
-	}
-
-	@Override
-	public OptionalInt getSyncedPostPartumLactation() {
-		return this.entityData.get(DATA_HOLDER.getDataLactation());
-	}
-
-	@Override
-	public ISyncedFemaleEntity<?> getSyncedFemaleEntity() {
-		return (SyncedFemaleEntityImpl<?>) this.femaleEntityData;
 	}
 }

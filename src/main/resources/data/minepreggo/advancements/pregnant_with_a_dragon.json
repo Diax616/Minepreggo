@@ -1,0 +1,35 @@
+{
+  "display": {
+	"background": "minecraft:textures/block/stone.png",
+    "icon": {
+      "item": "minepreggo:baby_ender_dragon_block"
+    },
+    "title": {
+      "translate": "advancements.pregnant_with_a_dragon.title"
+    },
+    "description": {
+      "translate": "advancements.pregnant_with_a_dragon.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+	"custom_criteria": {
+	  "trigger": "minepreggo:get_pregnant",
+	  "conditions": {
+	    "effects": {
+	      "minepreggo:pregnancy_p0": {}
+	    },
+		"pregnancy": {
+			"impregnation_type": "DRAGON"
+		}
+	  }
+	}
+  },
+  "rewards": {
+    "experience": 100
+  },
+  "parent": "minepreggo:brewing_an_ender_dragon_potion"
+}

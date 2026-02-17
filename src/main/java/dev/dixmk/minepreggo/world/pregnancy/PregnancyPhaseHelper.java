@@ -2,7 +2,7 @@ package dev.dixmk.minepreggo.world.pregnancy;
 
 import javax.annotation.CheckForNull;
 
-public final class PregnancyPhaseHelper {
+public class PregnancyPhaseHelper {
 
     private PregnancyPhaseHelper() {}
 

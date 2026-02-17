@@ -2,6 +2,8 @@ package dev.dixmk.minepreggo.client.gui.component;
 
 import java.util.Optional;
 
+import javax.annotation.Nullable;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
@@ -23,32 +25,40 @@ public class PreggoMobScrollList extends ObjectSelectionList<PreggoMobScrollList
         this.setRenderTopAndBottom(false);
     }
     
-    public void addEntry(String entityName, ResourceLocation icon, int textureWidth, int textureHeight) {
-        this.addEntry(new PreggoMobEntry(entityName, icon, textureWidth, textureHeight));
+    public void addEntry(String entityName, ResourceLocation icon, int uOffset, int vOffset, int uWidth, int vHeight, int textureWidth, int textureHeight) {
+        this.addEntry(new PreggoMobEntry(entityName, icon, uOffset, vOffset, uWidth, vHeight, textureWidth, textureHeight));
     }
     
-    public void addEntry(String entityName, ResourceLocation icon, int textureWidth, int textureHeight, Optional<Runnable> onClick) {
-        this.addEntry(new PreggoMobEntry(entityName, icon, textureWidth, textureHeight, onClick));
+    public void addEntry(String entityName, ResourceLocation icon, int uOffset, int vOffset, int uWidth, int vHeight, int textureWidth, int textureHeight, @Nullable Runnable onClick) {
+        this.addEntry(new PreggoMobEntry(entityName, icon, uOffset, vOffset, uWidth, vHeight, textureWidth, textureHeight, onClick));
     } 
     
     @OnlyIn(Dist.CLIENT)
     class PreggoMobEntry extends ObjectSelectionList.Entry<PreggoMobEntry> {
         private final String entityName;    
-        private final Optional<Runnable> onClick;   
+        private final Optional<Runnable> onClick; 
+        private final int uOffset;
+        private final int vOffset;
+        private final int uWidth;
+        private final int vHeight;
         private final int textureWidth;
         private final int textureHeight;
         private final ResourceLocation icon;
         
-        public PreggoMobEntry(String entityName, ResourceLocation icon, int textureWidth, int textureHeight, Optional<Runnable> onClick) {
+        public PreggoMobEntry(String entityName, ResourceLocation icon, int uOffset, int vOffset, int uWidth, int vHeight, int textureWidth, int textureHeight, @Nullable Runnable onClick) {
             this.entityName = entityName;
             this.icon = icon;
-			this.textureHeight = textureHeight;
+            this.uOffset = uOffset;
+            this.vOffset = vOffset;
+			this.uWidth = uWidth;
+			this.vHeight = vHeight;
+			this.onClick = Optional.ofNullable(onClick);
 			this.textureWidth = textureWidth;
-			this.onClick = onClick;
+			this.textureHeight = textureHeight;
         }
 
-        public PreggoMobEntry(String entityName, ResourceLocation icon, int textureWidth, int textureHeight) {
-        	this(entityName, icon, textureWidth, textureHeight, Optional.empty());
+        public PreggoMobEntry(String entityName, ResourceLocation icon, int uOffset, int vOffset, int uWidth, int vHeight, int textureWidth, int textureHeight) {
+			this(entityName, icon, uOffset, vOffset, uWidth, vHeight, textureWidth, textureHeight, null);
         }
            
         @Override
@@ -58,7 +68,7 @@ public class PreggoMobScrollList extends ObjectSelectionList<PreggoMobScrollList
     		RenderSystem.enableBlend();
     		RenderSystem.defaultBlendFunc();      
     		guiGraphics.drawString(minecraft.font, this.entityName, left + 25, top + 3, 0xFFFFFF);     
-            guiGraphics.blit(icon, left, top, 16, 16, 8, 8, 8, 8, textureWidth, textureHeight);      	          
+            guiGraphics.blit(icon, left, top, 16, 16, uOffset, vOffset, uWidth, vHeight, textureWidth, textureHeight);      	          
             
     		if (mouseX > left && mouseX < left + 16 && mouseY > top && mouseY < top + 16)
     			guiGraphics.renderTooltip(minecraft.font, Component.translatable("gui.minepreggo.scientific_illager.tooltip_make_medical_checkup"), mouseX, mouseY);

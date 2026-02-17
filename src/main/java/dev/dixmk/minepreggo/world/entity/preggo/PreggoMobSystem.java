@@ -5,20 +5,33 @@ import javax.annotation.Nonnull;
 
 import org.jetbrains.annotations.Nullable;
 
+import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
+import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.network.packet.s2c.SexCinematicControlP2MS2CPacket;
 import dev.dixmk.minepreggo.server.ServerCinematicManager;
 import dev.dixmk.minepreggo.server.ServerParticleHelper;
+import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
+import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractCreeperGirl.CombatMode;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractEnderWoman;
 import dev.dixmk.minepreggo.world.item.AbstractBreastMilk;
 import dev.dixmk.minepreggo.world.item.ItemHelper;
 import dev.dixmk.minepreggo.world.pregnancy.IBreedable;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -26,8 +39,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.network.PacketDistributor;
 
@@ -41,34 +52,45 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> impleme
 	protected int healingCooldownTimer = 0;
 	protected final int totalTicksOfHungry;
 	protected final int totalTicksOfSexualAppetive;
-	
+	protected final float attackOwnerBeingAngryProbability;
+	private int angryTicks = 0;
     private long cinematicEndTime = -1; 
     private ServerPlayer cinematicOwner = null;
+    private int angryParticlesTimer = 0;
     
-	public PreggoMobSystem(@Nonnull E preggoMob, @Nonnegative int totalTicksOfHungry, @Nonnegative int totalTicksOfSexualAppetitve) {
+	public PreggoMobSystem(@Nonnull E preggoMob, @Nonnegative int totalTicksOfHungry, @Nonnegative int totalTicksOfSexualAppetitve, float attackOwnerBeingAngryProbability) {
 		this.preggoMob = preggoMob;	
 		this.randomSource = preggoMob.getRandom();
 		this.totalTicksOfHungry = totalTicksOfHungry;
 		this.totalTicksOfSexualAppetive = totalTicksOfSexualAppetitve;	
+		this.attackOwnerBeingAngryProbability = attackOwnerBeingAngryProbability;
+	}
+	
+	public PreggoMobSystem(@Nonnull E preggoMob, @Nonnegative int totalTicksOfHungry, @Nonnegative int totalTicksOfSexualAppetitve) {
+		this(preggoMob, totalTicksOfHungry, totalTicksOfSexualAppetitve, PregnancySystemHelper.LOW_ANGER_PROBABILITY);
 	}
 	
 	protected boolean tryStartSavage() {
 		final var tamableData = preggoMob.getTamableData();
-		if (tamableData.getFullness() <= 0) {
+		if (tamableData.getFullness() <= 0 && !tamableData.isSavage()) {
+			this.sendMessageToOwner(Component.translatable("chat.minepreggo.preggo_mob.message.is_savage", preggoMob.getSimpleNameOrCustom()));		
 			tamableData.setSavage(true);
+			if (preggoMob.isLeashed()) {
+				preggoMob.dropLeash(true, true);
+			}	
 			return true;
 		}
 		return false;
 	}
 
-	protected void evaluateSavage(Level level) {		
-		if (preggoMob.getTarget() == null && preggoMob.isTame()) {
-	        final Vec3 center = new Vec3(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ());      
-	        var player = level.getEntitiesOfClass(Player.class, new AABB(center, center).inflate(32)).stream()
-	        		.sorted((p1, p2) -> Double.compare(p1.distanceToSqr(preggoMob), p2.distanceToSqr(preggoMob)))
-	        		.findFirst();          
-	        player.ifPresent(preggoMob::setTarget);        
-		}       
+	protected void evaluateSavage() {		
+		if (this.angryParticlesTimer > 200) {
+			this.angryParticlesTimer = 0;
+			spawnParticles(preggoMob, Result.ANGRY);
+		}
+		else {
+			++this.angryParticlesTimer;
+		}
 	}
 	
 	protected void evaluateHealing() {  
@@ -78,7 +100,7 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> impleme
 				&& preggoMob.getHealth() < preggoMob.getMaxHealth()) {     	
 			if (healingCooldownTimer >= 20) {
 		 	preggoMob.heal(1F);
-		 	tamableData.setFullness(currentHungry - 1);
+		 	tamableData.decrementFullness(1);
 		 	healingCooldownTimer = 0;
 			}
 			else {
@@ -105,7 +127,7 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> impleme
 	    final var currentHungry = tamableData.getFullness();
 	    var currentHungryTimer = tamableData.getHungryTimer();
 		    	
-	    if (currentHungry >= ITamablePreggoMob.MAX_FULLNESS) {
+	    if (currentHungry <= 0) {
 	    	return;
 	    }
 	    
@@ -121,7 +143,7 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> impleme
         
         if (currentHungryTimer >= totalTicksOfHungry) {
         	tamableData.resetHungryTimer();
-        	tamableData.incrementFullness(1);
+        	tamableData.decrementFullness(1);
         }
         else {
         	tamableData.setHungryTimer(currentHungryTimer);
@@ -129,14 +151,12 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> impleme
 	}
 		
 	public final void onServerTick() {
-		final var level = preggoMob.level();
-		
-		if (level.isClientSide) {
+		if (preggoMob.level().isClientSide || !preggoMob.isTame()) {
 			return;
 		}
 		
 		if (preggoMob.getTamableData().isSavage()) {
-			evaluateSavage(level);
+			evaluateSavage();
 			return;
 		}
 		else {
@@ -146,6 +166,7 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> impleme
 		evaluateHungryTimer();
 		evaluateHealing();
 		evaluateSexualAppetiteTimer();
+		evaluateAngry();
 	}
 	
 	public InteractionResult onRightClick(Player source) {
@@ -214,6 +235,12 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> impleme
                 
                 if (tamableData.isSavage() && preggoMob.isTame() && currentFullness >= MIN_FULLNESS_TO_TAME_AGAIN) {
                 	tamableData.setSavage(false);
+                	
+        			this.sendMessageToOwner(Component.translatable("chat.minepreggo.preggo_mob.message.is_no_longer_savage", preggoMob.getSimpleNameOrCustom()));		
+
+                	if (preggoMob.getTarget() != null && preggoMob.isOwnedBy(preggoMob.getTarget())) {
+						preggoMob.setTarget(null);
+					}
                 } 
             }
 
@@ -327,5 +354,88 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> impleme
 			return;
 					
 		ServerParticleHelper.spawnRandomlyFromServer(preggoMob, particleoptions);
+	}
+
+	@Override
+	public void onDoHurtTargetSuccessful(Entity source) {
+		var tamableData = preggoMob.getTamableData();
+		if (source instanceof Player player && !tamableData.isSavage() && preggoMob.isOwnedBy(player) && tamableData.isAngry()) {
+			preggoMob.setTarget(null);
+			spawnParticles(preggoMob, Result.ANGRY);		
+		}	
+	}
+	
+	@Override
+	public boolean onHurtSuccessful(DamageSource damagesource) {
+		if (damagesource.getEntity() instanceof Player player && preggoMob.isOwnedBy(player) && preggoMob.getTamableData().isSavage()) {
+			LivingEntity target = preggoMob.getTarget();
+			if (target == null || !target.getUUID().equals(player.getUUID())) {
+				preggoMob.setTarget(player);
+			}
+			return true;
+		}	
+		return false;
+	}
+	
+	public boolean canBeAngry() {
+		return preggoMob.getTamableData().getFullness() <= 4;
+	}
+	
+	protected void evaluateAngry() {
+	    final var angry = preggoMob.getTamableData().isAngry();
+	    
+	    if (!canBeAngry()) {
+	        if (angry) {
+	        	MinepreggoMod.LOGGER.debug("PreggoMob {} stopped being angry", preggoMob.getSimpleName());
+    			this.sendMessageToOwner(Component.translatable("chat.minepreggo.preggo_mob.message.is_no_longer_angry", preggoMob.getSimpleNameOrCustom()));		
+	        	preggoMob.getTamableData().setAngry(false);
+	            angryTicks = 0;
+	            if (preggoMob.getTarget() instanceof Player player && preggoMob.isOwnedBy(player)) {
+	            	preggoMob.setTarget(null);
+	            }
+	        }	        
+	        return;
+	    }
+	    
+	    if (!angry) {
+	    	MinepreggoMod.LOGGER.debug("PreggoMob {} became angry", preggoMob.getSimpleName());
+			this.sendMessageToOwner(Component.translatable("chat.minepreggo.preggo_mob.message.is_angry", preggoMob.getSimpleNameOrCustom()));		
+	    	preggoMob.getTamableData().setAngry(true);
+	    }    
+	    
+	    if (angryTicks < 100) {
+	    	++angryTicks;
+	    	return;
+	    }   
+	    angryTicks = 0;
+	        
+	    if (randomSource.nextFloat() < attackOwnerBeingAngryProbability) {
+	        Player owner = preggoMob.level().getNearestPlayer(
+	        	preggoMob.getX(), 
+	            preggoMob.getY(), 
+	            preggoMob.getZ(), 
+	            144, 
+	            entity -> entity instanceof Player livingEntity && preggoMob.isOwnedBy(livingEntity)
+	        );
+	        
+	        if (owner != null && !PlayerHelper.isInvencible(owner) && !LivingEntityHelper.hasValidTarget(preggoMob)) {        	
+	        	if (preggoMob instanceof AbstractEnderWoman && owner.hasEffect(MinepreggoModMobEffects.ENDER_DRAGON_RECOGNITION.get())) {
+	        		return;
+	        	}	      		        	
+	        	else if (preggoMob instanceof AbstractCreeperGirl creeperGirl) {
+	        		var combatMode = creeperGirl.getCombatMode();
+	        		if (combatMode == CombatMode.EXPLODE || combatMode == CombatMode.FIGHT_AND_EXPLODE) {
+	        			creeperGirl.setCombatMode(CombatMode.DONT_EXPLODE);
+	        		}
+	        	}
+	        	preggoMob.setTarget(owner);
+	        }
+	    }
+	}
+	
+	private void sendMessageToOwner(Component message) {
+		if (preggoMob.getOwner() instanceof ServerPlayer serverPlayer) {
+			MessageHelper.sendTo(serverPlayer, message, true);
+		}
 	}
 }

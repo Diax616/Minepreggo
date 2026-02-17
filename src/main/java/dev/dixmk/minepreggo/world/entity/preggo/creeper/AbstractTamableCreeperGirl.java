@@ -1,38 +1,55 @@
 package dev.dixmk.minepreggo.world.entity.preggo.creeper;
 
+import java.util.Set;
+import java.util.UUID;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.world.entity.ai.goal.PreggoMobAIHelper;
+import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
+import dev.dixmk.minepreggo.world.entity.ai.goal.GoalHelper;
+import dev.dixmk.minepreggo.world.entity.ai.goal.PreggoMobFollowOwnerGoal;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMobData;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMobSystem;
+import dev.dixmk.minepreggo.world.entity.preggo.Inventory;
+import dev.dixmk.minepreggo.world.entity.preggo.InventorySlot;
+import dev.dixmk.minepreggo.world.entity.preggo.InventorySlotMapper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.TamablePreggoMobDataImpl;
-import dev.dixmk.minepreggo.world.inventory.preggo.creeper.AbstractCreeperGirlInventoryMenu;
+import dev.dixmk.minepreggo.world.inventory.preggo.creeper.AbstractHumanoidCreeperGirlInventoryMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.creeper.AbstractCreeperGirlMainMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlMenuHelper;
 import dev.dixmk.minepreggo.world.pregnancy.IFemaleEntity;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.OwnerHurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.OwnerHurtTargetGoal;
+import net.minecraft.world.entity.animal.Cat;
+import net.minecraft.world.entity.animal.Ocelot;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Ghast;
@@ -43,44 +60,42 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.wrapper.CombinedInvWrapper;
-import net.minecraftforge.items.wrapper.EntityArmorInvWrapper;
-import net.minecraftforge.items.wrapper.EntityHandsInvWrapper;
 
 public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl implements ITamablePreggoMob<IFemaleEntity> {
-	public static final int INVENTORY_SIZE = 13;
-	private final ItemStackHandler inventory = new ItemStackHandler(INVENTORY_SIZE);
-	private final CombinedInvWrapper combined = new CombinedInvWrapper(inventory, new EntityHandsInvWrapper(this), new EntityArmorInvWrapper(this));	
+	private static final UUID SPEED_MOVEMENT_MODIFIER_POWERED_UUID = UUID.fromString("fb757759-2912-4bb0-b0bf-ddc3c9ce14ec");
+	private static final AttributeModifier SPEED_MOVEMENT_MODIFIER_POWERED = new AttributeModifier(SPEED_MOVEMENT_MODIFIER_POWERED_UUID, "Powered speed boost", 0.2D, AttributeModifier.Operation.MULTIPLY_BASE);
+	private static final UUID MAX_HEALTH_MODIFIER_POWERED_UUID = UUID.fromString("d94dbd2e-ddcb-43c8-9613-9b3c1f3b21c4");
+	private static final AttributeModifier MAX_HEALTH_MODIFIER_POWERED = new AttributeModifier(MAX_HEALTH_MODIFIER_POWERED_UUID, "Powered max health boost", 0.25D, AttributeModifier.Operation.MULTIPLY_BASE);
+	private static final UUID ARMOR_MODIFIER_POWERED_UUID = UUID.fromString("d8d59260-a23f-4045-847c-d981e8c1bf6a");
+	private static final AttributeModifier ARMOR_MODIFIER_POWERED = new AttributeModifier(ARMOR_MODIFIER_POWERED_UUID, "Powered armor boost", 2D, AttributeModifier.Operation.ADDITION);
+	private static final UUID ATTACK_DAMAGE_MODIFIER_POWERED_UUID = UUID.fromString("80923b32-eb56-4fff-8364-c49f27b0e515");
+	private static final AttributeModifier ATTACK_DAMAGE_MODIFIER_POWERED = new AttributeModifier(ATTACK_DAMAGE_MODIFIER_POWERED_UUID, "Powered attack damage boost", 3D, AttributeModifier.Operation.ADDITION);
 	
-    private static final TamablePreggoMobDataImpl.DataAccessor<AbstractTamableCreeperGirl> DATA_HOLDER = new TamablePreggoMobDataImpl.DataAccessor<>(AbstractTamableCreeperGirl.class);
-	
+	private static final TamablePreggoMobDataImpl.DataAccessor<AbstractTamableCreeperGirl> DATA_HOLDER = new TamablePreggoMobDataImpl.DataAccessor<>(AbstractTamableCreeperGirl.class);
+	   
 	protected final ITamablePreggoMobSystem preggoMobSystem;
 	
 	protected final IFemaleEntity femaleEntityData;
 
 	protected final ITamablePreggoMobData tamablePreggoMobData = new TamablePreggoMobDataImpl<>(DATA_HOLDER, this);
+
+    protected final Inventory inventory;
 	
 	protected boolean breakBlocks = false;
 	private	int poweredTimer = 0;
 	
 	protected AbstractTamableCreeperGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_, Creature typeOfCreature) {
 	      super(p_21803_, p_21804_, typeOfCreature);
-	      this.reassessTameGoals();	   
 	      this.femaleEntityData = createFemaleEntityData();
-	      this.preggoMobSystem = createTamablePreggoMobSystem();
-	      
-	      if (this.getTamableData() == null) {
-	    	  MinepreggoMod.LOGGER.error("TamablePreggoMobData is null for entity {}", this);
-	      }
-	      else {
-	    	  MinepreggoMod.LOGGER.info("TamablePreggoMobData created for entity {}", this);
-	      }
+	      this.preggoMobSystem = createTamablePreggoMobSystem();    
+	      this.inventory = createInventory();
 	}
 		 
 	protected abstract @Nonnull ITamablePreggoMobSystem createTamablePreggoMobSystem();
 	
 	protected abstract @Nonnull IFemaleEntity createFemaleEntityData();
+	
+	protected abstract @Nonnull Inventory createInventory();
 	
 	@Override
 	public void setBreakBlocks(boolean breakBlocks) {
@@ -93,6 +108,11 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 	}
 
 	@Override
+	public boolean canBeLeashed(Player p_21813_) {
+		return super.canBeLeashed(p_21813_) && this.isOwnedBy(p_21813_) && !this.tamablePreggoMobData.isSavage();
+	}
+	
+	@Override
 	protected void defineSynchedData() {
 		super.defineSynchedData();
 		DATA_HOLDER.defineSynchedData(this);
@@ -101,22 +121,22 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 	@Override
 	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
-		compound.put("InventoryCustom", inventory.serializeNBT());
+		compound.put("InventoryCustom", inventory.getHandler().serializeNBT());
 		compound.put("defaultFemaleEntityImpl", this.femaleEntityData.serializeNBT());
 		compound.put("TamableData", tamablePreggoMobData.serializeNBT());
+		compound.putBoolean("breakBlocks", this.breakBlocks);
+		compound.putInt("poweredTimer", this.poweredTimer);
 	}	
 	
 	@Override
 	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
 		if (compound.get("InventoryCustom") instanceof CompoundTag inventoryTag)
-			inventory.deserializeNBT(inventoryTag);		
-		if (compound.contains("defaultFemaleEntityImpl", Tag.TAG_COMPOUND)) {
-			femaleEntityData.deserializeNBT(compound.getCompound("defaultFemaleEntityImpl"));
-		}
-		if (compound.contains("TamableData", Tag.TAG_COMPOUND)) {
-			tamablePreggoMobData.deserializeNBT(compound.getCompound("TamableData"));
-		}
+			inventory.getHandler().deserializeNBT(inventoryTag);		
+		femaleEntityData.deserializeNBT(compound.getCompound("defaultFemaleEntityImpl"));
+		tamablePreggoMobData.deserializeNBT(compound.getCompound("TamableData"));
+		this.breakBlocks = compound.getBoolean("breakBlocks");
+		this.poweredTimer = compound.getInt("poweredTimer");
 	}
 	
 	@Override
@@ -127,10 +147,78 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 				return super.canUse() && canExplode();								
 			}
 		});
-		PreggoMobAIHelper.setTamableCreeperGirlGoals(this);
+		
+		this.goalSelector.addGoal(2, new FloatGoal(this));
+		this.goalSelector.addGoal(2, new AvoidEntityGoal<>(this, Ocelot.class, 6F, 1, 1.2));
+		this.goalSelector.addGoal(2, new AvoidEntityGoal<>(this, Cat.class, 6F, 1, 1.2));		
+		this.targetSelector.addGoal(2, new HurtByTargetGoal(this));		
+		this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.2D, false));
+		this.goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(this, 1.0D) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& (getTamableData().isSavage() || !isTame());	
+			}
+		});
+		
+		this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 6F) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !getTamableData().isWaiting()
+				&& !LivingEntityHelper.hasValidTarget(mob);
+			}
+			
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse()
+				&& !LivingEntityHelper.isTargetStillValid(mob);
+			}
+		});			
+		
+		this.goalSelector.addGoal(10, new RandomLookAroundGoal(this) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& (getTamableData().isSavage() || !isTame());		
+			}
+		});
+		
+		this.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(this, Player.class, false, false) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& (getTamableData().isSavage() || !isTame());		
+			}
+		});	
 	}
 	
-
+	@Override
+	protected void reassessTameGoals() {
+		if (this.isTame()) {	
+			GoalHelper.addGoalWithReplacement(this, 3, new OwnerHurtByTargetGoal(this) {
+				@Override
+				public boolean canUse() {
+					return super.canUse() 
+					&& !getTamableData().isSavage()
+					&& !getTamableData().isWaiting();				
+				}
+			});
+			GoalHelper.addGoalWithReplacement(this, 3, new OwnerHurtTargetGoal(this) {
+				@Override
+				public boolean canUse() {
+					return super.canUse() 
+					&& !getTamableData().isSavage()
+					&& !getTamableData().isWaiting();			
+				}
+			}, true);
+			GoalHelper.addGoalWithReplacement(this, 6, new PreggoMobFollowOwnerGoal<>(this, 1.2D, 7F, 2F, false));				
+		} else {
+			GoalHelper.removeGoalByClass(this.goalSelector, Set.of(PreggoMobFollowOwnerGoal.class, OwnerHurtByTargetGoal.class));
+			GoalHelper.removeGoalByClass(this.targetSelector, OwnerHurtTargetGoal.class);
+		}
+	}
+	
 	@Override
 	public boolean canBeTamedByPlayer() {
 		return true;
@@ -163,19 +251,30 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
 		if (this.isAlive() && capability == ForgeCapabilities.ITEM_HANDLER && side == null)
-			return LazyOptional.of(() -> combined).cast();
+			return LazyOptional.of(inventory::getHandler).cast();
 		return super.getCapability(capability, side);
 	}
-
+	
 	@Override
 	protected void dropEquipment() {
 		super.dropEquipment();
-		for (int i = ITamablePreggoMob.FOOD_INVENTORY_SLOT; i < inventory.getSlots(); ++i) {
-			ItemStack itemstack = inventory.getStackInSlot(i);
+		InventorySlotMapper slotMapper = inventory.getSlotMapper();
+		for (int i = slotMapper.getExtraSlotsRange().leftInt(); i < inventory.getHandler().getSlots(); ++i) {
+			ItemStack itemstack = inventory.getHandler().getStackInSlot(i);
 			if (!itemstack.isEmpty() && !EnchantmentHelper.hasVanishingCurse(itemstack)) {
 				this.spawnAtLocation(itemstack);
 			}
 		}
+		slotMapper.getCustomSlots().forEach(slot -> {		
+			if (slot == InventorySlot.MOUTH && this.getTypeOfCreature() == Creature.MONSTER) {
+				return;
+			}
+			
+			ItemStack itemstack = inventory.getHandler().getStackInSlot(slotMapper.getSlotIndex(slot));
+			if (!itemstack.isEmpty() && !EnchantmentHelper.hasVanishingCurse(itemstack)) {
+				this.spawnAtLocation(itemstack);
+			}
+		});
 	}
 	
 	@Override
@@ -199,9 +298,11 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 			}	
 			
 			if (this.getOwner() instanceof ServerPlayer serverPlayer
-					&& (serverPlayer.containerMenu instanceof AbstractCreeperGirlMainMenu<?> || serverPlayer.containerMenu instanceof AbstractCreeperGirlInventoryMenu<?>)) {
+					&& (serverPlayer.containerMenu instanceof AbstractCreeperGirlMainMenu<?> || serverPlayer.containerMenu instanceof AbstractHumanoidCreeperGirlInventoryMenu<?>)) {
 				serverPlayer.closeContainer();
-			}			
+			}	
+			
+			this.preggoMobSystem.onHurtSuccessful(damagesource);
 		}		
 		return result;
 	}
@@ -211,6 +312,7 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 		boolean result = super.doHurtTarget(target);	
 		if (result && !this.level().isClientSide) {
 			PreggoMobHelper.tryToDamageItemOnMainHand(this);
+			this.preggoMobSystem.onDoHurtTargetSuccessful(target);		
 		}
 		return result;
 	}
@@ -230,7 +332,13 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 		}		
 		if (preggoMobSystem.canOwnerAccessGUI(sourceentity)) {			
 			if (!this.level().isClientSide && sourceentity instanceof ServerPlayer serverPlayer) {
-				CreeperGirlMenuHelper.showMainMenu(serverPlayer, this);			
+	
+				if (this.getTypeOfCreature() == Creature.HUMANOID) {
+					CreeperGirlMenuHelper.showMainMenuForHumanoid(serverPlayer, this);	
+				}
+				else {
+					CreeperGirlMenuHelper.showMainMenuForMonster(serverPlayer, this);	
+				}
 				
 				// TODO: Find a better way to stop panicking when owner interacts with the mob.
 				if (this.tamablePreggoMobData.isPanic())
@@ -249,6 +357,65 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 	}
 	
 	@Override
+	protected void setPower(boolean power) {
+		super.setPower(power);
+		if (!power) {
+			this.poweredTimer = 0;	
+			this.removePoweredAttributeModifier();
+		} else {
+			this.addPoweredAttributeModifier();
+		}
+	}
+	
+	protected void removePoweredAttributeModifier() {
+		var attribute = this.getAttribute(Attributes.MOVEMENT_SPEED);
+		 if (attribute != null && attribute.hasModifier(SPEED_MOVEMENT_MODIFIER_POWERED)) {
+			 attribute.removeModifier(SPEED_MOVEMENT_MODIFIER_POWERED);
+		 }
+		 attribute = this.getAttribute(Attributes.MAX_HEALTH);
+		 if (attribute != null && attribute.hasModifier(MAX_HEALTH_MODIFIER_POWERED)) {
+			 attribute.removeModifier(MAX_HEALTH_MODIFIER_POWERED);
+		 }
+		 attribute = this.getAttribute(Attributes.ARMOR);
+		 if (attribute != null && attribute.hasModifier(ARMOR_MODIFIER_POWERED)) {
+			 attribute.removeModifier(ARMOR_MODIFIER_POWERED);
+		 }
+		 attribute = this.getAttribute(Attributes.ATTACK_DAMAGE);
+		 if (attribute != null && attribute.hasModifier(ATTACK_DAMAGE_MODIFIER_POWERED)) {
+			 attribute.removeModifier(ATTACK_DAMAGE_MODIFIER_POWERED);
+		 }
+		 
+		 this.setHealth(this.getHealth() - this.getMaxHealth() * 0.5F); 
+		 if (this.getHealth() > this.getMaxHealth()) {
+			 this.setHealth(this.getMaxHealth());
+		 }
+	}
+	
+	protected void addPoweredAttributeModifier() {
+		var attribute = this.getAttribute(Attributes.MOVEMENT_SPEED);
+		if (attribute != null && !attribute.hasModifier(SPEED_MOVEMENT_MODIFIER_POWERED)) {
+			attribute.addPermanentModifier(SPEED_MOVEMENT_MODIFIER_POWERED);
+		}
+		 attribute = this.getAttribute(Attributes.MAX_HEALTH);
+		 if (attribute != null && !attribute.hasModifier(MAX_HEALTH_MODIFIER_POWERED)) {
+			 attribute.addPermanentModifier(MAX_HEALTH_MODIFIER_POWERED);
+		 }
+		 attribute = this.getAttribute(Attributes.ARMOR);
+		 if (attribute != null && !attribute.hasModifier(ARMOR_MODIFIER_POWERED)) {
+			 attribute.addPermanentModifier(ARMOR_MODIFIER_POWERED);
+		 }
+		 var attributeAttackDamage = this.getAttribute(Attributes.ATTACK_DAMAGE);
+		 if (attributeAttackDamage != null && !attributeAttackDamage.hasModifier(ATTACK_DAMAGE_MODIFIER_POWERED)) {
+			 attributeAttackDamage.addPermanentModifier(ATTACK_DAMAGE_MODIFIER_POWERED);
+		 }
+		 	 
+		 this.setHealth(this.getHealth() + this.getMaxHealth() * 0.5F);
+		 if (this.getHealth() > this.getMaxHealth()) {
+			 this.setHealth(this.getMaxHealth());
+		 }
+	}
+	
+	@Override
 	public void tick() {
 		super.tick();
 			
@@ -257,7 +424,7 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 		preggoMobSystem.cinematicTick();
 				
 		if (this.isPowered()) {		
-			if (this.poweredTimer > 24000) {
+			if (this.poweredTimer > 48000) {
 				this.poweredTimer = 0;
 				this.setPower(false);
 			}
@@ -266,17 +433,7 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 			}
 		}
 	}
-	
-	@Override
-	public void thunderHit(ServerLevel p_32286_, LightningBolt p_32287_) {
-		super.thunderHit(p_32286_, p_32287_);
-		if (this.isTame() && !this.level().isClientSide()) {
-			this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 24000, 0, false, true));
-			this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 24000, 0, false, true));
-			this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 24000, 0, false, true));
-		}
-	}
-	
+
 	@Override
 	protected void pickUpItem(ItemEntity p_21471_) {	
 		if (this.getTypeOfCreature() != Creature.HUMANOID) return;
@@ -292,7 +449,7 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 			}
 		}
 		else {
-			PreggoMobHelper.storeItemInSpecificRange(this, p_21471_, ITamablePreggoMob.FOOD_INVENTORY_SLOT + 1, INVENTORY_SIZE - 1);	
+			PreggoMobHelper.storeItemInExtraSlots(this, p_21471_);	
 		}
 	}
 	
@@ -302,9 +459,10 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 	}
 	
 	// ITamablePreggoMob START
+	
 	@Override
-	public int getInventorySize() {
-		return INVENTORY_SIZE;
+	public Inventory getInventory() {
+		return this.inventory;
 	}
 	
 	@Override

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:popped_chorus_fruit"
+    },
+	{
+	  "item": "minecraft:blaze_powder"
+	},
+    {
+      "item": "minecraft:gold_nugget"
+    }
+  ],
+  "result": {
+    "item": "minepreggo:refined_chorus_shards",
+    "count": 1
+  }
+}

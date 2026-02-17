@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.IMonsterPregnantPreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.IHostilePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.server.level.ServerPlayer;
@@ -57,7 +57,7 @@ public class ZeroGravityBelly extends MobEffect {
 				})
 			);		
 		}
-		else if (entity instanceof ITamablePregnantPreggoMob || entity instanceof IMonsterPregnantPreggoMob) {
+		else if (entity instanceof ITamablePregnantPreggoMob || entity instanceof IHostilePregnantPreggoMob) {
 			AttributeInstance speedAttr = entity.getAttribute(Attributes.MOVEMENT_SPEED);
 			if (speedAttr != null && speedAttr.getModifier(SPEED_MODIFIER_UUID) == null) {
 			    speedAttr.addPermanentModifier(SPEED_MODIFIER);
@@ -98,7 +98,7 @@ public class ZeroGravityBelly extends MobEffect {
 				})
 			);		
 		}
-		else if (entity instanceof ITamablePregnantPreggoMob || entity instanceof IMonsterPregnantPreggoMob) {
+		else if (entity instanceof ITamablePregnantPreggoMob || entity instanceof IHostilePregnantPreggoMob) {
 			AttributeInstance speedAttr = entity.getAttribute(Attributes.MOVEMENT_SPEED);
 			if (speedAttr != null && speedAttr.getModifier(SPEED_MODIFIER_UUID) != null) {
 				speedAttr.removeModifier(SPEED_MODIFIER);
@@ -108,7 +108,7 @@ public class ZeroGravityBelly extends MobEffect {
 				PregnancySystemHelper.applyGravityModifier(entity, tamablePreggo.getPregnancyData().getCurrentPregnancyPhase());
 				PregnancySystemHelper.applyKnockbackResistanceModifier(entity, tamablePreggo.getPregnancyData().getCurrentPregnancyPhase());
 			}
-			else if (entity instanceof IMonsterPregnantPreggoMob monsterPreggo) {
+			else if (entity instanceof IHostilePregnantPreggoMob monsterPreggo) {
 				PregnancySystemHelper.applyGravityModifier(entity, monsterPreggo.getPregnancyData().getCurrentPregnancyPhase());
 				PregnancySystemHelper.applyKnockbackResistanceModifier(entity, monsterPreggo.getPregnancyData().getCurrentPregnancyPhase());
 			}

@@ -13,13 +13,10 @@
     },
     {
       "item": "minepreggo:activated_gunpowder"
-    },
-    {
-      "item": "minepreggo:activated_gunpowder"
     }
   ],
   "result": {
     "item": "minepreggo:activated_gunpowder_with_chocolate",
-    "count": 4
+    "count": 3
   }
 }

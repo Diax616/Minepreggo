@@ -1,8 +1,11 @@
 package dev.dixmk.minepreggo.client.renderer.preggo.creeper;
 
+import javax.annotation.Nullable;
+
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractHumanoidCreeperGirlModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.IllHumanoidCreeperGirlModel;
+import dev.dixmk.minepreggo.client.renderer.entity.layer.ExpressiveFaceLayer;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.IllHumanoidCreeperGirl;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -12,7 +15,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class IllHumanoidCreeperGirlRenderer extends AbstractHumanoidMonsterCreeperGirlRenderer<IllHumanoidCreeperGirl, IllHumanoidCreeperGirlModel> {
+public class IllHumanoidCreeperGirlRenderer extends AbstractHostileHumanoidCreeperGirlRenderer<IllHumanoidCreeperGirl, IllHumanoidCreeperGirlModel> {
 	
 	private static final ResourceLocation ILL_CREEPER_GIRL = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/humanoid/ill_humanoid_creeper_girl.png");
 
@@ -21,11 +24,16 @@ public class IllHumanoidCreeperGirlRenderer extends AbstractHumanoidMonsterCreep
 	}
 	
 	public IllHumanoidCreeperGirlRenderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter, ModelLayerLocation armor) {
-		super(context, new IllHumanoidCreeperGirlModel(context.bakeLayer(main)), new IllHumanoidCreeperGirlModel(context.bakeLayer(inner)), new IllHumanoidCreeperGirlModel(context.bakeLayer(outter)), new IllHumanoidCreeperGirlModel(context.bakeLayer(armor)), false);
+		super(context, new IllHumanoidCreeperGirlModel(context.bakeLayer(main)), new IllHumanoidCreeperGirlModel(context.bakeLayer(inner)), new IllHumanoidCreeperGirlModel(context.bakeLayer(outter)), new IllHumanoidCreeperGirlModel(context.bakeLayer(armor)));
 	}
 
 	@Override
 	public ResourceLocation getTextureLocation(IllHumanoidCreeperGirl p_115812_) {
 		return ILL_CREEPER_GIRL;
+	}
+	
+	@Override
+	protected @Nullable ExpressiveFaceLayer<IllHumanoidCreeperGirl, IllHumanoidCreeperGirlModel> createExpressiveFaceLayer() {
+		return null;
 	}
 }

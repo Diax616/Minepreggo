@@ -10,9 +10,9 @@ import dev.dixmk.minepreggo.client.animation.preggo.FetalMovementIntensity;
 import dev.dixmk.minepreggo.client.animation.preggo.HumanoidCreeperGirlAnimation;
 import dev.dixmk.minepreggo.client.model.entity.preggo.PregnantPreggoMobAnimator;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractCreeperGirl;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterPregnantHumanoidCreeperGirl;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableHumanoidCreeperGirl;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantHumanoidCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractHostilePregnantHumanoidCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
 import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.client.model.geom.ModelPart;
@@ -68,7 +68,7 @@ public abstract class HumanoidCreeperGirlAnimator<E extends AbstractCreeperGirl>
   	}
   	
     @OnlyIn(Dist.CLIENT)
-  	public static class TamableHumanoidCreeperGirlAnimator<E extends AbstractTamableHumanoidCreeperGirl> extends HumanoidCreeperGirlAnimator<E> {
+  	public static class TamableHumanoidCreeperGirlAnimator<E extends AbstractTamableCreeperGirl> extends HumanoidCreeperGirlAnimator<E> {
   		public TamableHumanoidCreeperGirlAnimator(ModelPart root) {
   			super(root);
   		}
@@ -82,7 +82,7 @@ public abstract class HumanoidCreeperGirlAnimator<E extends AbstractCreeperGirl>
   		@Override
   	    protected void animateLoopState(E creeperGirl, float ageInTicks) {
   			final var tamableData = creeperGirl.getTamableData();
-  			if (tamableData.isPanic()) {
+  			if (tamableData.isPanic() || tamableData.isSavage() || creeperGirl.isAggressive()) {
   				this.animate(creeperGirl.loopAnimationState, HumanoidCreeperGirlAnimation.IDLE, ageInTicks);						
   			} 		
   			else if (tamableData.isWaiting()) {
@@ -98,7 +98,7 @@ public abstract class HumanoidCreeperGirlAnimator<E extends AbstractCreeperGirl>
   	}	
   	
 	@OnlyIn(Dist.CLIENT)
-  	public static class MonsterPregnantHumanoidCreeperGirlAnimator<E extends AbstractMonsterPregnantHumanoidCreeperGirl> extends HumanoidCreeperGirlAnimator<E> {
+  	public static class MonsterPregnantHumanoidCreeperGirlAnimator<E extends AbstractHostilePregnantHumanoidCreeperGirl> extends HumanoidCreeperGirlAnimator<E> {
   		private final BellyInflation bellyInflation;
   		private final @Nullable FetalMovementIntensity fetalMovementIntensity;
   		
@@ -129,7 +129,7 @@ public abstract class HumanoidCreeperGirlAnimator<E extends AbstractCreeperGirl>
   	}
   	
 	@OnlyIn(Dist.CLIENT)
-  	public static class TamablePregnantHumanoidCreeperGirlAnimator<E extends AbstractTamablePregnantHumanoidCreeperGirl> extends HumanoidCreeperGirlAnimator<E> {
+  	public static class TamablePregnantHumanoidCreeperGirlAnimator<E extends AbstractTamablePregnantCreeperGirl> extends TamableHumanoidCreeperGirlAnimator<E> {
   		private final BellyInflation bellyInflation;
   		private final @Nullable FetalMovementIntensity fetalMovementIntensity;
   		
@@ -181,22 +181,5 @@ public abstract class HumanoidCreeperGirlAnimator<E extends AbstractCreeperGirl>
   				this.animate(creeperGirl.loopAnimationState, HumanoidCreeperGirlAnimation.CONTRACTION1, ageInTicks);						
   			}
   		}
-  		
-  		@Override
-  	    protected void animateLoopState(E creeperGirl, float ageInTicks) {
-  			final var tamableData = creeperGirl.getTamableData();
-  			if (tamableData.isPanic()) {
-  				this.animate(creeperGirl.loopAnimationState, HumanoidCreeperGirlAnimation.IDLE, ageInTicks);						
-  			} 		
-  			else if (tamableData.isWaiting()) {
-  				this.animate(creeperGirl.loopAnimationState, HumanoidCreeperGirlAnimation.WAIT1, ageInTicks);										
-  			}
-  			else if (creeperGirl.isPassenger()) {
-  				this.animate(creeperGirl.loopAnimationState, HumanoidCreeperGirlAnimation.RIDING, ageInTicks);						
-  			}
-  			else {
-  				this.animate(creeperGirl.loopAnimationState, HumanoidCreeperGirlAnimation.IDLE, ageInTicks);						
-  			}
-  	    }
   	}
 }

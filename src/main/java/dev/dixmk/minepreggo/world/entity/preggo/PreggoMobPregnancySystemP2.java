@@ -88,16 +88,11 @@ public abstract class PreggoMobPregnancySystemP2
 			pregnancyData.getSyncedPregnancySymptoms().addPregnancySymptom(PregnancySymptom.MILKING);
 		
 			MinepreggoMod.LOGGER.debug("Player {} has developed pregnancy symptom: {}, all pregnancy symptoms: {}",
-					pregnantEntity.getSimpleName(), PregnancySymptom.MILKING, pregnancyData.getSyncedPregnancySymptoms().toSet());
+					pregnantEntity.getSimpleNameOrCustom(), PregnancySymptom.MILKING, pregnancyData.getSyncedPregnancySymptoms().toSet());
 	    	
 	    	return true;		
 		}
 		return false;
-	}
-		
-	@Override
-	public boolean canBeAngry() {
-		return super.canBeAngry() || pregnantEntity.getPregnancyData().getMilking() >= PregnancySystemHelper.MAX_MILKING_LEVEL;
 	}
 	
 	@Nullable

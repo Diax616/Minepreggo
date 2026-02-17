@@ -18,6 +18,7 @@ public class TamablePreggoMobDataImpl<E extends PreggoMob> implements ITamablePr
     	private final EntityDataAccessor<Integer> dataHungry;
     	private final EntityDataAccessor<Boolean> dataSavage;
     	private final EntityDataAccessor<Boolean> dataWaiting;	
+    	private final EntityDataAccessor<Boolean> dataAngry;	
     	private final EntityDataAccessor<Optional<PreggoMobFace>> dataFace;
     	private final EntityDataAccessor<Optional<PreggoMobBody>> dataBody;
     	 	
@@ -25,15 +26,17 @@ public class TamablePreggoMobDataImpl<E extends PreggoMob> implements ITamablePr
             this.dataHungry = SynchedEntityData.defineId(entityClass, EntityDataSerializers.INT);
             this.dataSavage = SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN);
             this.dataWaiting = SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN);
+            this.dataAngry = SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN);
             this.dataFace = SynchedEntityData.defineId(entityClass, MinepreggoModEntityDataSerializers.OPTIONAL_PREGGO_MOB_FACE);
             this.dataBody = SynchedEntityData.defineId(entityClass, MinepreggoModEntityDataSerializers.OPTIONAL_PREGGO_MOB_BODY);
     	}
     	
-    	public void defineSynchedData(E preggomob) {
+    	public void defineSynchedData(E preggomob) {	
     		SynchedEntityData entityData = preggomob.getEntityData();
-        	entityData.define(dataHungry, 12);		
+        	entityData.define(dataHungry, 14);		
         	entityData.define(dataSavage, true);
         	entityData.define(dataWaiting, false);
+        	entityData.define(dataAngry, false);
         	entityData.define(dataFace, Optional.empty());
         	entityData.define(dataBody, Optional.empty());
         }
@@ -43,7 +46,6 @@ public class TamablePreggoMobDataImpl<E extends PreggoMob> implements ITamablePr
 	private final E preggomob;
 	
 	private boolean panic = false;
-	private boolean angry = false;
 	private int hungryTimer = 0;
 	
 	public TamablePreggoMobDataImpl(DataAccessor<E> dataAccessors, E preggomob) {	
@@ -58,7 +60,7 @@ public class TamablePreggoMobDataImpl<E extends PreggoMob> implements ITamablePr
 
 	@Override
 	public void setFullness(int hungry) {
-		this.preggomob.getEntityData().set(this.dataAccessor.dataHungry, Mth.clamp(hungry, 0, ITamablePreggoMob.MAX_FULLNESS));
+		this.preggomob.getEntityData().set(this.dataAccessor.dataHungry, Mth.clamp(hungry, 0, ITamablePreggoMob.MAX_FULLNESS + 10));
 	}
 
 	@Override
@@ -113,12 +115,12 @@ public class TamablePreggoMobDataImpl<E extends PreggoMob> implements ITamablePr
 	
 	@Override
 	public boolean isAngry() {
-		return angry;
+		return this.preggomob.getEntityData().get(dataAccessor.dataAngry);
 	}
 
 	@Override
 	public void setAngry(boolean angry) {
-		this.angry = angry;
+		this.preggomob.getEntityData().set(dataAccessor.dataAngry, angry);
 	}
 
 	@Override
@@ -173,7 +175,7 @@ public class TamablePreggoMobDataImpl<E extends PreggoMob> implements ITamablePr
 		compound.putInt("DataHungryTimer", hungryTimer);
 		compound.putBoolean("DataSavage", this.preggomob.getEntityData().get(dataAccessor.dataSavage));
 		compound.putBoolean("DataWaiting", this.preggomob.getEntityData().get(dataAccessor.dataWaiting));
-		compound.putBoolean("DataAngry", angry);
+		compound.putBoolean("DataAngry", this.preggomob.getEntityData().get(dataAccessor.dataAngry));
 		compound.putBoolean("DataPanic", this.panic);	
 		final var face = getFaceState();
 		if (face != null) {
@@ -192,7 +194,7 @@ public class TamablePreggoMobDataImpl<E extends PreggoMob> implements ITamablePr
 		this.hungryTimer = compound.getInt("DataHungryTimer");		
 		this.preggomob.getEntityData().set(dataAccessor.dataSavage, compound.getBoolean("DataSavage"));		
 		this.preggomob.getEntityData().set(dataAccessor.dataWaiting, compound.getBoolean("DataWaiting"));		
-		this.angry = compound.getBoolean("DataAngry");		
+		this.preggomob.getEntityData().set(dataAccessor.dataAngry, compound.getBoolean("DataAngry"));	
 		this.panic = compound.getBoolean("DataPanic");
 		
 		if (compound.contains(PreggoMobFace.NBT_KEY, Tag.TAG_STRING)) {
@@ -202,5 +204,4 @@ public class TamablePreggoMobDataImpl<E extends PreggoMob> implements ITamablePr
 			setBodyState(PreggoMobBody.valueOf(compound.getString(PreggoMobBody.NBT_KEY)));
 		}
 	}
-
 }
