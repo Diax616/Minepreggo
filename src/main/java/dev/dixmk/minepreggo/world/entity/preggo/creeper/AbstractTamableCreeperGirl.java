@@ -109,7 +109,7 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 
 	@Override
 	public boolean canBeLeashed(Player p_21813_) {
-		return super.canBeLeashed(p_21813_) && !this.tamablePreggoMobData.isSavage();
+		return super.canBeLeashed(p_21813_) && this.isOwnedBy(p_21813_) && !this.tamablePreggoMobData.isSavage();
 	}
 	
 	@Override
