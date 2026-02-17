@@ -17,7 +17,7 @@ import net.minecraft.world.entity.LivingEntity;
 public class HumanoidEnderImpregnation extends Impregnantion {
 
 	public HumanoidEnderImpregnation() {
-		super(-13434829);
+		super(-6750106);
 	}
 	
 	@Override

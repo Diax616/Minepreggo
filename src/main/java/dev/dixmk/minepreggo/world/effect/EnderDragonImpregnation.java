@@ -11,7 +11,7 @@ import net.minecraft.world.entity.LivingEntity;
 public class EnderDragonImpregnation extends Impregnantion {
 	
 	public EnderDragonImpregnation() {
-		super(-6750106);
+		super(-13434829);
 	}
 
 	@Override
