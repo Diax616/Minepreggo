@@ -208,12 +208,9 @@ public class ClientEventHandler {
 			}   		    	
     	}
     	else if (MinepreggoModKeyMappings.SHOOT_DRAGON_FIRE_BALL.consumeClick()) {
-			BlockPos targetPos = getTargetBlock();
-			if (targetPos != null) {
-				MinepreggoModPacketHandler.INSTANCE.sendToServer(
-					new ShootEnderDragonExplosiveBallC2SPacket(targetPos)
-				);
-			}   		    	
+			MinepreggoModPacketHandler.INSTANCE.sendToServer(
+					new ShootEnderDragonExplosiveBallC2SPacket(player.getLookAngle())
+				);		    	
     	}	
     }	
     

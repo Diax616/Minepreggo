@@ -29,7 +29,7 @@ public class ExplosiveDragonFireball extends AbstractHurtingProjectile implement
    private static final float CLOUD_RADIUS = 2.0F;
    private static final int CLOUD_DURATION = 200;
    
-   private static final float DIRECT_DAMAGE = 8.0F;
+   private static final float DIRECT_DAMAGE = 9.0F;
 
    public ExplosiveDragonFireball(EntityType<? extends ExplosiveDragonFireball> entityType, Level level) {
       super(entityType, level);
@@ -66,7 +66,7 @@ public class ExplosiveDragonFireball extends AbstractHurtingProjectile implement
           effectCloud.setRadiusPerTick((7.0F - effectCloud.getRadius()) / effectCloud.getDuration());
           
           effectCloud.addEffect(new MobEffectInstance(MobEffects.HARM, 1, 1));
-          effectCloud.addEffect(new MobEffectInstance(MobEffects.WITHER, 100, 0));
+          effectCloud.addEffect(new MobEffectInstance(MobEffects.WITHER, 200, 0));
           
           if (!nearbyEntities.isEmpty()) {
              for(LivingEntity entity : nearbyEntities) {

@@ -9,20 +9,22 @@ import dev.dixmk.minepreggo.world.entity.EnderPowerHelper;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkEvent;
 
-public record ShootEnderDragonExplosiveBallC2SPacket(BlockPos targetPos) {
+public record ShootEnderDragonExplosiveBallC2SPacket(Vec3 direction) {
 
 	public static ShootEnderDragonExplosiveBallC2SPacket decode(FriendlyByteBuf buffer) {	
 		return new ShootEnderDragonExplosiveBallC2SPacket(
-				buffer.readBlockPos());
+				new Vec3(buffer.readDouble(), buffer.readDouble(), buffer.readDouble()));
 	}
 	
 	public static void encode(ShootEnderDragonExplosiveBallC2SPacket message, FriendlyByteBuf buffer) {
-		buffer.writeBlockPos(message.targetPos);
+		buffer.writeDouble(message.direction.x);
+		buffer.writeDouble(message.direction.y);
+		buffer.writeDouble(message.direction.z);
 	}
 	
 	public static void handler(ShootEnderDragonExplosiveBallC2SPacket message, Supplier<NetworkEvent.Context> contextSupplier) {
@@ -35,7 +37,7 @@ public record ShootEnderDragonExplosiveBallC2SPacket(BlockPos targetPos) {
     					MessageHelper.sendTo(serverPlayer, Component.translatable("chat.minepreggo.ender_power.message.in_labor"), true);
 						return;
 					}
-    				if (EnderPowerHelper.tryShootFireball(serverPlayer, message.targetPos)) {
+    				if (EnderPowerHelper.tryShootFireball(serverPlayer, message.direction)) {
     					PlayerHelper.getCurrentPregnancyPhase(serverPlayer).ifPresent(phase -> {
     						if (phase.compareTo(PregnancyPhase.P4) >= 0) {
     							LivingEntityHelper.playSoundNearTo(serverPlayer, MinepreggoModSounds.getRandomStomachGrowls(serverPlayer.getRandom()));

@@ -26,11 +26,12 @@ public class EnderPowerHelper {
 		Optional<Boolean> teleportResult = player.getCapability(MinepreggoCapabilities.ENDER_POWER_DATA)
 				.resolve()
 				.map(enderPowerData -> {									
-					if (enderPowerData.getEnderPowerLevel() >= IEnderPowerData.EnderPower.TELEPORT.baseLevelCost
-							&& teleportTo(player, targetPos.getX() + 0.5, targetPos.getY() + 1d, targetPos.getZ() + 0.5)) {
-						enderPowerData.decrementEnderPowerLevel(IEnderPowerData.EnderPower.TELEPORT.baseLevelCost);	
-						enderPowerData.sync(player);
-						return true;
+					if (enderPowerData.getEnderPowerLevel() >= IEnderPowerData.EnderPower.TELEPORT.baseLevelCost) {						
+						if (teleportTo(player, targetPos.getX() + 0.5, targetPos.getY() + 1d, targetPos.getZ() + 0.5)) {
+							enderPowerData.decrementEnderPowerLevel(IEnderPowerData.EnderPower.TELEPORT.baseLevelCost);	
+							enderPowerData.sync(player);
+							return true;
+						}
 					}
 					else {
 						MessageHelper.sendTo(player, Component.translatable("chat.minepreggo.ender_power.message.without_ender_energy"), true);
@@ -40,7 +41,7 @@ public class EnderPowerHelper {
 		return teleportResult.orElse(false);
 	}
 		
-    public static boolean tryShootFireball(ServerPlayer player, BlockPos target) {
+    public static boolean tryShootFireball(ServerPlayer player, Vec3 target) {
     	Optional<Boolean> shootResult = player.getCapability(MinepreggoCapabilities.ENDER_POWER_DATA)
     			.resolve()
     			.map(enderPowerData -> {			
@@ -98,12 +99,11 @@ public class EnderPowerHelper {
 	    return false;
 	}
     
-    private static void shootFireball(ServerPlayer player, BlockPos target) {
+    private static void shootFireball(ServerPlayer player, Vec3 direction) {
         Vec3 eyePosition = player.getEyePosition();       
-        Vec3 targetPosition = Vec3.atCenterOf(target);
-        double deltaX = (targetPosition.x - eyePosition.x) * 2.5;
-        double deltaY = (targetPosition.y - eyePosition.y) * 2.5;
-        double deltaZ = (targetPosition.z - eyePosition.z) * 2.5;
+        double deltaX = direction.x * 3.5;
+        double deltaY = direction.y * 3.5;
+        double deltaZ = direction.z * 3.5;
         ExplosiveDragonFireball fireball = new ExplosiveDragonFireball(player.level(), player, deltaX, deltaY, deltaZ, 2);
         fireball.setPos(eyePosition.x, eyePosition.y, eyePosition.z);
         player.level().addFreshEntity(fireball);

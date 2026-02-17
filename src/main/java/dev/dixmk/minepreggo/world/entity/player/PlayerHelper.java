@@ -500,12 +500,12 @@ public class PlayerHelper {
 			PregnancyPhase.P0, 150,
 			PregnancyPhase.P1, 140,
 			PregnancyPhase.P2, 130,
-			PregnancyPhase.P3, 120,
+			PregnancyPhase.P3, 115,
 			PregnancyPhase.P4, 100,
-			PregnancyPhase.P5, 90,
-			PregnancyPhase.P6, 80,
-			PregnancyPhase.P7, 70,
-			PregnancyPhase.P8, 60
+			PregnancyPhase.P5, 85,
+			PregnancyPhase.P6, 65,
+			PregnancyPhase.P7, 45,
+			PregnancyPhase.P8, 30
 			)));
 	
 	

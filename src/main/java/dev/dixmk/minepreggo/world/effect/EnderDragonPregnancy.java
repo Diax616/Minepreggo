@@ -22,15 +22,18 @@ import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.common.ForgeMod;
 
 public class EnderDragonPregnancy extends MobEffect {
 	private static final UUID MAX_HEALTH_MODIFIER_UUID = UUID.fromString("dcba27df-80b9-403b-b90f-fa4d212d13a3");
-	private static final AttributeModifier MAX_HEALTH_MODIFIER = new AttributeModifier(MAX_HEALTH_MODIFIER_UUID, "Max health boost", 0.2D, AttributeModifier.Operation.MULTIPLY_BASE);
+	private static final AttributeModifier MAX_HEALTH_MODIFIER = new AttributeModifier(MAX_HEALTH_MODIFIER_UUID, "Max health boost", 0.3D, AttributeModifier.Operation.MULTIPLY_BASE);
 	private static final UUID ARMOR_MODIFIER_UUID = UUID.fromString("1eb705bf-86e1-4fec-a5ac-56c56d84f37a");
 	private static final AttributeModifier ARMOR_MODIFIER = new AttributeModifier(ARMOR_MODIFIER_UUID, "Armor boost", 0.2D, AttributeModifier.Operation.MULTIPLY_BASE);
 	private static final UUID ATTACK_KNOCKBACK_MODIFIER_UUID = UUID.fromString("1460fcf6-1ded-4654-9f55-a8b93eba6cc6");
 	private static final AttributeModifier ATTACK_KNOCKBACK_MODIFIER = new AttributeModifier(ATTACK_KNOCKBACK_MODIFIER_UUID, "Attack knockback boost", 0.1D, AttributeModifier.Operation.ADDITION);
-
+	private static final UUID GRAVITY_MODIFIER_UUID = UUID.fromString("c6a3ca0b-9dbb-4572-a064-f452572394cd");
+	private static final AttributeModifier GRAVITY_MODIFIER = new AttributeModifier(GRAVITY_MODIFIER_UUID, "Gravity boost", 0.15D, AttributeModifier.Operation.MULTIPLY_BASE);
+	
 	private static final UUID MOVEMENT_SPEED_MODIFIER_UUID = UUID.fromString("f15966b6-8474-4821-bb43-b0a6650c4a6f");
 	private static final AttributeModifier MOVEMENT_SPEED_MODIFIER = new AttributeModifier(MOVEMENT_SPEED_MODIFIER_UUID, "Movement speed nerf", -0.1D, AttributeModifier.Operation.MULTIPLY_BASE);
 	private static final UUID KNOCKBACK_RESISTANCE_MODIFIER_UUID = UUID.fromString("685b396f-7eca-4a8c-8ce9-2c56641819e5");
@@ -160,6 +163,11 @@ public class EnderDragonPregnancy extends MobEffect {
 		if (attackSpeedAttribute != null && attackSpeedAttribute.getModifier(ATTACK_SPEED_MODIFIER_UUID) != null) {
 			attackSpeedAttribute.removeModifier(ATTACK_SPEED_MODIFIER_UUID);
 		}
+		AttributeInstance gravityAttribute = player.getAttribute(ForgeMod.ENTITY_GRAVITY.get());
+		if (gravityAttribute != null && gravityAttribute.getModifier(GRAVITY_MODIFIER_UUID) != null) {
+			gravityAttribute.removeModifier(GRAVITY_MODIFIER_UUID);
+		}
+		
 		player.removeEffect(MobEffects.NIGHT_VISION);
 		player.removeEffect(MinepreggoModMobEffects.PREGNANCY_RESISTANCE.get());
 		player.removeEffect(MobEffects.FIRE_RESISTANCE);
@@ -223,6 +231,10 @@ public class EnderDragonPregnancy extends MobEffect {
     private static void applyEffectsForP5(LivingEntity entity) {
     	applyEffectsForP4(entity);
     	entity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, -1, 0, false, false, false));
+    	AttributeInstance gravityAttribute = entity.getAttribute(ForgeMod.ENTITY_GRAVITY.get());
+    	if (gravityAttribute != null && gravityAttribute.getModifier(GRAVITY_MODIFIER_UUID) == null) {
+			gravityAttribute.addPermanentModifier(GRAVITY_MODIFIER);
+		}
     }
 
     private static void applyEffectsForP6(LivingEntity entity) {
