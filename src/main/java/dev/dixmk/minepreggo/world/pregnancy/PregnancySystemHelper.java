@@ -132,9 +132,9 @@ public class PregnancySystemHelper {
 	
 	public static final int TOTAL_TICKS_CALM_BELLY_RUGGING_DOWN = 120;
 	
-	public static final float LOW_PREGNANCY_PAIN_PROBABILITY = 0.001F;
-	public static final float MEDIUM_PREGNANCY_PAIN_PROBABILITY = 0.00125F;
-	public static final float HIGH_PREGNANCY_PAIN_PROBABILITY = 0.0015F;
+	public static final float LOW_PREGNANCY_PAIN_PROBABILITY = 0.0015F;
+	public static final float MEDIUM_PREGNANCY_PAIN_PROBABILITY = 0.00175F;
+	public static final float HIGH_PREGNANCY_PAIN_PROBABILITY = 0.002F;
 	
 	public static final float LOW_MORNING_SICKNESS_PROBABILITY = 0.001F;
 	public static final float MEDIUM_MORNING_SICKNESS_PROBABILITY = 0.0015F;

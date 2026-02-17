@@ -3,6 +3,7 @@ package dev.dixmk.minepreggo.world.entity.preggo.ender;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.Inventory;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -20,8 +21,14 @@ public abstract class AbstractTamableMonsterEnderWoman extends AbstractTamableEn
 	}
 	
 	@Override
+	protected void positionRider(Entity passenger, MoveFunction callback) {
+		super.positionRider(passenger, callback);
+		MonsterEnderWomanHelper.positionRider(this, passenger, callback);
+	}
+	
+	@Override
 	public float getStepHeight() {
-		return 1.0f;
+		return MonsterEnderWomanHelper.getStepHeight(this);
 	}
 	
 	@Override

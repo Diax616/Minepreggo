@@ -48,7 +48,7 @@ public abstract class AbstractEnderWomanMainScreen
 			Button ride = Button.builder(Component.translatable("gui.minepreggo.preggo_mob_main.button.mount"), e -> {
 				MinepreggoModPacketHandler.INSTANCE.sendToServer(new MountEnderWomanC2SPacket(mob.getId()));
 				this.minecraft.player.closeContainer();
-			}).bounds(this.leftPos + 190, this.topPos + 1, 46, 20).build();
+			}).bounds(this.leftPos -53, this.topPos + 59, 51, 20).build();
 			this.addRenderableWidget(ride);
 			this.addPickUpLootCheckBox();
 		});

@@ -24,7 +24,8 @@ public class TamableMonsterEnderWomanExpressionLayer
 	protected static final RenderType VERY_SAD_MASK = RenderType.entityCutoutNoCull(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/ender/monster/expressions/monster_ender_woman_face_very_sad.png"));
 	protected static final RenderType SUPRISED_MASK = RenderType.entityCutoutNoCull(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/ender/monster/expressions/monster_ender_woman_face_surprised.png"));
 	protected static final RenderType BLUSHED_MASK = RenderType.entityCutoutNoCull(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/ender/monster/expressions/monster_ender_woman_face_blushed.png"));
-	
+	protected static final RenderType PAIN_MASK = RenderType.entityCutoutNoCull(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/ender/monster/expressions/monster_ender_woman_face_pain.png"));
+
 	public TamableMonsterEnderWomanExpressionLayer(RenderLayerParent<E, M> p_117346_) {
 		super(p_117346_);
 	}

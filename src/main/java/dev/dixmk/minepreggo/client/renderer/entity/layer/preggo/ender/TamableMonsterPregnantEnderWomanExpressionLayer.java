@@ -25,7 +25,8 @@ public class TamableMonsterPregnantEnderWomanExpressionLayer
 		if (pain != null) {	
 			RenderType face = switch (pain) {
 				case MORNING_SICKNESS, FETAL_MOVEMENT, PREBIRTH, BIRTH -> SAD_MASK;
-				case CONTRACTION, MISCARRIAGE, WATER_BREAKING -> SUPRISED_MASK;
+				case MISCARRIAGE, WATER_BREAKING -> SUPRISED_MASK;
+				case CONTRACTION -> PAIN_MASK;
 				default -> null;
 			};
 			if (face != null)

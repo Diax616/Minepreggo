@@ -16,7 +16,10 @@ import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Entity.MoveFunction;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -166,6 +169,25 @@ public class MonsterEnderWomanHelper {
 		}
 
 		return flag;
+	}
+	
+	static float getStepHeight(AbstractEnderWoman enderWoman) {
+		return enderWoman.isVehicle() ? 1.0F : 0.6F;
+	}
+	
+	static void positionRider(AbstractEnderWoman enderWoman, Entity passenger, MoveFunction callback) {    
+	    if (enderWoman.hasPassenger(passenger)) {
+	        double offsetZ = -0.335D;
+	        
+	        Vec3 offset = new Vec3(0, 0, offsetZ)
+	            .yRot(-enderWoman.getYRot() * (Mth.PI / 180F));
+	        
+	        passenger.setPos(
+	            passenger.getX() + offset.x,
+	            passenger.getY(),
+	            passenger.getZ() + offset.z
+	        );
+	    }
 	}
 	
 	static boolean canBeMountedBeingPregnantBy(AbstractTamablePregnantEnderWoman enderWoman, LivingEntity target) {		

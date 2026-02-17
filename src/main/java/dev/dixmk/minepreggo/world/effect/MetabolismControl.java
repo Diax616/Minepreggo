@@ -19,7 +19,7 @@ public class MetabolismControl extends MobEffect {
             float currentSaturation = foodData.getSaturationLevel();
             
             if (currentSaturation > 0) {
-                float bonus = currentSaturation * 0.2F * (amplifier + 1);
+                float bonus = currentSaturation * 0.25F * (amplifier + 1);
                 float newSaturation = Math.min(currentSaturation + bonus, foodData.getFoodLevel());
                 foodData.setSaturation(newSaturation);
             }
