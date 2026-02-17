@@ -3,6 +3,8 @@ package dev.dixmk.minepreggo.world.entity.preggo.creeper;
 import java.util.EnumSet;
 
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
+import dev.dixmk.minepreggo.world.entity.ai.goal.EatGoal;
+import dev.dixmk.minepreggo.world.entity.ai.goal.GoalHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.Inventory;
 import dev.dixmk.minepreggo.world.entity.preggo.InventorySlot;
@@ -162,5 +164,35 @@ public class MonsterCreeperHelper {
 		}
 
 		return new AbstractCreeperGirl.ExplosionData(explosionIntensity, explosionRadius, maxSwell);
+	}
+	
+	static void reassessTameGoals(AbstractTamableCreeperGirl creeperGirl) {
+		if (creeperGirl.isTame()) {	
+			GoalHelper.addGoalWithReplacement(creeperGirl, 6, new EatGoal<>(creeperGirl, 0.6F, 20, InventorySlot.MOUTH));
+		}
+		else {
+			GoalHelper.removeGoalByClass(creeperGirl.goalSelector, EatGoal.class);
+		}	
+	}
+	
+	static void reassessTameGoalsBeingPregnant(AbstractTamablePregnantCreeperGirl creeperGirl) {
+		if (creeperGirl.isTame()) {		
+			GoalHelper.addGoalWithReplacement(creeperGirl, 6, new EatGoal<>(creeperGirl, 0.6F, 30, InventorySlot.MOUTH) {
+				@Override
+				public boolean canUse() {
+					return super.canUse() 	
+					&& !creeperGirl.getPregnancyData().isIncapacitated();
+				}
+				
+				@Override
+				public boolean canContinueToUse() {
+					return super.canContinueToUse() 
+					&& !creeperGirl.getPregnancyData().isIncapacitated();
+				}
+			});
+		}
+		else {
+			GoalHelper.removeGoalByClass(creeperGirl.goalSelector, EatGoal.class);
+		}
 	}
 }

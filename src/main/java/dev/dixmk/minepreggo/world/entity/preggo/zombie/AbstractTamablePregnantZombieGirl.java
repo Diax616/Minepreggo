@@ -314,25 +314,29 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 				@Override
 				public boolean canUse() {
 					return super.canUse() 
+					&& !isOnFire()
 					&& !getPregnancyData().isIncapacitated();
 				}
 
 				@Override
 				public boolean canContinueToUse() {
 					return super.canContinueToUse()	
+					&& !isOnFire()
 					&& !getPregnancyData().isIncapacitated();
 				}
 			}, true);	
 			GoalHelper.addGoalWithReplacement(this, 6, new EatGoal<>(this, 0.6F, 30) {
 				@Override
 				public boolean canUse() {
-					return super.canUse() 	
+					return super.canUse()
+					&& !isOnFire()
 					&& !getPregnancyData().isIncapacitated();
 				}
 				
 				@Override
 				public boolean canContinueToUse() {
 					return super.canContinueToUse() 
+					&& !isOnFire()
 					&& !getPregnancyData().isIncapacitated();
 				}
 			});

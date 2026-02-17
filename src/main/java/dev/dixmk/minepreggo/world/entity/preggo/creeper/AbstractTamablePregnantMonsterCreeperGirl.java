@@ -45,4 +45,10 @@ public abstract class AbstractTamablePregnantMonsterCreeperGirl extends Abstract
 	protected ExplosionData updateExplosionByPregnancyPhase(PregnancyPhase pregnancyPhase) {
 		return MonsterCreeperHelper.getExplosionValuesByPregnancyPhase(pregnancyPhase);
 	}
+	
+	@Override
+	protected void reassessTameGoals() {
+		super.reassessTameGoals();
+		MonsterCreeperHelper.reassessTameGoalsBeingPregnant(this);
+	}
 }

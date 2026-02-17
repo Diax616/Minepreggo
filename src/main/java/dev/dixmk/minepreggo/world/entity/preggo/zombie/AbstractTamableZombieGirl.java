@@ -343,8 +343,32 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 					&& !isOnFire();	
 				}
 			});
-			GoalHelper.addGoalWithReplacement(this, 4, new BreakBlocksToFollowOwnerGoal<>(this, 2, 5), true);
-			GoalHelper.addGoalWithReplacement(this, 6, new EatGoal<>(this, 0.6F, 20));
+			GoalHelper.addGoalWithReplacement(this, 4, new BreakBlocksToFollowOwnerGoal<>(this, 2, 5) {
+				@Override
+				public boolean canUse() {
+					return super.canUse() 
+					&& !isOnFire();				
+				}
+
+				@Override
+				public boolean canContinueToUse() {
+					return super.canContinueToUse()
+					&& !isOnFire();	
+				}
+			}, true);
+			GoalHelper.addGoalWithReplacement(this, 6, new EatGoal<>(this, 0.6F, 20) {
+				@Override
+				public boolean canUse() {
+					return super.canUse() 
+					&& !isOnFire();				
+				}
+
+				@Override
+				public boolean canContinueToUse() {
+					return super.canContinueToUse()
+					&& !isOnFire();	
+				}
+			});
 		} else {
 			GoalHelper.removeGoalByClass(this.targetSelector, Set.of(BreakBlocksToFollowOwnerGoal.class, OwnerHurtTargetGoal.class));
 			GoalHelper.removeGoalByClass(this.goalSelector, Set.of(EatGoal.class, PreggoMobFollowOwnerGoal.class, OwnerHurtByTargetGoal.class));

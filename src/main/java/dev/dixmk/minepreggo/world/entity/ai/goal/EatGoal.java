@@ -23,16 +23,22 @@ public class EatGoal<E extends PreggoMob & ITamablePreggoMob<?>> extends Goal {
     private boolean isEating;
     private ItemStack food = ItemStack.EMPTY;
     private InteractionHand hand = null;
+    private final InventorySlot foodSlot;
 
     public EatGoal(E mob, float healThreshold, int eatDuration) {
-    	this.mob = mob;
-        this.healThreshold = healThreshold;
-        this.eatDuration = eatDuration;
-        this.eatTimer = 0;
-        this.isEating = false;
-        this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
+    	this(mob, healThreshold, eatDuration, InventorySlot.FOOD);
     }
 
+    public EatGoal(E mob, float healThreshold, int eatDuration, InventorySlot foodSlot) {
+		this.mob = mob;
+		this.healThreshold = healThreshold;
+		this.eatDuration = eatDuration;
+		this.eatTimer = 0;
+		this.isEating = false;
+		this.foodSlot = foodSlot;
+		this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
+    }
+    
     @Override
     public boolean canUse() {
         if (this.isEating) {
@@ -142,14 +148,14 @@ public class EatGoal<E extends PreggoMob & ITamablePreggoMob<?>> extends Goal {
     private ItemStack getFoodItem() {
     	var inventory = mob.getInventory();
     	var slotMapper = inventory.getSlotMapper();
-    	int foodSlotIndex = slotMapper.getSlotIndex(InventorySlot.FOOD);
+    	int foodSlotIndex = slotMapper.getSlotIndex(this.foodSlot);
 		return inventory.getHandler().getStackInSlot(foodSlotIndex);	
     }
     
     private boolean hasFoodInInventory() {
     	var inventory = mob.getInventory();
     	var slotMapper = inventory.getSlotMapper();
-    	int foodSlotIndex = slotMapper.getSlotIndex(InventorySlot.FOOD);
+    	int foodSlotIndex = slotMapper.getSlotIndex(this.foodSlot);
 	
     	if (foodSlotIndex == InventorySlotMapper.DEFAULT_INVALID_SLOT_INDEX) {
     		MinepreggoMod.LOGGER.warn("Mob {} has no food slot mapped in its inventory!", mob.getDisplayName().getString());
@@ -157,6 +163,6 @@ public class EatGoal<E extends PreggoMob & ITamablePreggoMob<?>> extends Goal {
 		}
     	
 		var foodStack = inventory.getHandler().getStackInSlot(foodSlotIndex);
-		return !foodStack.isEmpty();
+		return !foodStack.isEmpty() && mob.isFood(foodStack);
     }
 }

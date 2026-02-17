@@ -212,7 +212,7 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 					&& !getTamableData().isWaiting();			
 				}
 			}, true);
-			GoalHelper.addGoalWithReplacement(this, 6, new PreggoMobFollowOwnerGoal<>(this, 1.2D, 7F, 2F, false));	
+			GoalHelper.addGoalWithReplacement(this, 6, new PreggoMobFollowOwnerGoal<>(this, 1.2D, 7F, 2F, false));				
 		} else {
 			GoalHelper.removeGoalByClass(this.goalSelector, Set.of(PreggoMobFollowOwnerGoal.class, OwnerHurtByTargetGoal.class));
 			GoalHelper.removeGoalByClass(this.targetSelector, OwnerHurtTargetGoal.class);

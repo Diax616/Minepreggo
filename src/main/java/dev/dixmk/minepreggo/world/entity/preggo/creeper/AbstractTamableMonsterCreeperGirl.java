@@ -39,4 +39,10 @@ public abstract class AbstractTamableMonsterCreeperGirl extends AbstractTamableC
 	public String getSimpleName() {
 		return MonsterCreeperHelper.SIMPLE_NAME;
 	}
+	
+	@Override
+	protected void reassessTameGoals() {
+		super.reassessTameGoals();
+		MonsterCreeperHelper.reassessTameGoals(this);
+	}
 }
