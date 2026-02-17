@@ -282,11 +282,11 @@ public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
 		pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.DEPRESSION.get(), MinepreggoModConfig.SERVER.getTotalTicksOfPostPregnancyPhase(), 0, false, false, true));
 		pregnantEntity.addEffect(new MobEffectInstance(MobEffects.UNLUCK, 12000, 0, false, true, true));
 		pregnantEntity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 4800, 0, false, false, true));
-		
-		removePregnancy();
-		
-		PregnancySystemHelper.applyPostPregnancyNerf(pregnantEntity);
 			
+		PregnancySystemHelper.applyPostPregnancyNerf(pregnantEntity);
+	
+		removePregnancy();
+							
 		MinepreggoMod.LOGGER.debug("Player {} has entered postmiscarriage phase.", pregnantEntity.getGameProfile().getName());
 	}
 }

@@ -162,9 +162,9 @@ public class PregnancySystemHelper {
 	
 	// POST PREGNANCY ATTRIBUTE NERFS - START
 	private static final UUID SPEED_MODIFIER_TIRENESS_UUID = UUID.fromString("fa6a4626-c325-4835-8259-69577a99c9c8");
-	private static final AttributeModifier SPEED_MODIFIER_TIRENESS = new AttributeModifier(SPEED_MODIFIER_TIRENESS_UUID, "Tireness speed boost", -0.15D, AttributeModifier.Operation.MULTIPLY_BASE);
+	private static final AttributeModifier SPEED_MODIFIER_TIRENESS = new AttributeModifier(SPEED_MODIFIER_TIRENESS_UUID, "Tireness speed boost", -0.1D, AttributeModifier.Operation.MULTIPLY_BASE);
 	private static final UUID MAX_HEALTH_MODIFIER_TIRENESS_UUID = UUID.fromString("94d78c8b-0983-4ae4-af65-8e477ee52f2e");
-	private static final AttributeModifier MAX_HEALTH_MODIFIER_TIRENESS = new AttributeModifier(MAX_HEALTH_MODIFIER_TIRENESS_UUID, "Tireness max health", -0.25D, AttributeModifier.Operation.MULTIPLY_BASE);
+	private static final AttributeModifier MAX_HEALTH_MODIFIER_TIRENESS = new AttributeModifier(MAX_HEALTH_MODIFIER_TIRENESS_UUID, "Tireness max health", -0.2D, AttributeModifier.Operation.MULTIPLY_BASE);
 
 	public static void applyPostPregnancyNerf(LivingEntity entity) {
 		AttributeInstance speedAttr = entity.getAttribute(Attributes.MOVEMENT_SPEED);

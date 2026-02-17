@@ -142,6 +142,10 @@ public class EnderDragonPregnancy extends MobEffect {
 		AttributeInstance healthAttribute = player.getAttribute(Attributes.MAX_HEALTH);
 		if (healthAttribute != null && healthAttribute.getModifier(MAX_HEALTH_MODIFIER_UUID) != null) {
 			healthAttribute.removeModifier(MAX_HEALTH_MODIFIER_UUID);
+			float newMaxHealth = player.getMaxHealth();
+			if (player.getHealth() > newMaxHealth) {
+				player.setHealth(newMaxHealth * 0.8f);
+			}
 		}
 		AttributeInstance armorAttribute = player.getAttribute(Attributes.ARMOR);
 		if (armorAttribute != null && armorAttribute.getModifier(ARMOR_MODIFIER_UUID) != null) {
@@ -178,7 +182,7 @@ public class EnderDragonPregnancy extends MobEffect {
 		player.removeEffect(MobEffects.REGENERATION);	
 		player.removeEffect(MinepreggoModMobEffects.ENDER_ESSENCE.get());
 		player.removeEffect(MinepreggoModMobEffects.ENDER_DRAGON_RECOGNITION.get());	
-		player.removeEffect(MinepreggoModMobEffects.ENDER_DRAGON_ESSENCE.get());
+		player.removeEffect(MinepreggoModMobEffects.ENDER_DRAGON_ESSENCE.get());		
 	}
 	
     private static void applyEffectsForP0(LivingEntity entity) {
