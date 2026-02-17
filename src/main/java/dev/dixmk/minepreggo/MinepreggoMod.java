@@ -414,6 +414,8 @@ public class MinepreggoMod {
 			MenuScreens.register(MinepreggoModMenus.REQUEST_SEX_P2P_MENU.get(), RequestSexP2PScreen::new);
 		
 			PlayerAnimationRegistry.getInstance().init();
+			
+			
 		});
 	}
 	

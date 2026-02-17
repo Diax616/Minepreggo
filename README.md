@@ -76,3 +76,5 @@ src/main/
 - Uses Mixin for non-invasive code modifications
 - Access Transformers allow modification of protected/private fields in Minecraft classes
 - Supports both single-player and multiplayer environments
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/W7W61SSYDH)
