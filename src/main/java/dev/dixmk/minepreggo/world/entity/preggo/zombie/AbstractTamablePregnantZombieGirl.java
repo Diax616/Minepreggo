@@ -19,6 +19,7 @@ import dev.dixmk.minepreggo.world.entity.ai.goal.GoalHelper;
 import dev.dixmk.minepreggo.world.entity.ai.goal.PregnantPreggoMobFollowOwnerGoal;
 import dev.dixmk.minepreggo.world.entity.ai.goal.PregnantPreggoMobOwnerHurtByTargetGoal;
 import dev.dixmk.minepreggo.world.entity.ai.goal.PregnantPreggoMobOwnerHurtTargetGoal;
+import dev.dixmk.minepreggo.world.entity.ai.goal.WaterAvoidingRandomStrollBeingPregnantGoal;
 import dev.dixmk.minepreggo.world.entity.preggo.IPreggoMobPregnancySystem;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMobData;
@@ -87,12 +88,12 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 		super.readAdditionalSaveData(compoundTag);	
 		if (compoundTag.contains("PregnantTamableData", Tag.TAG_COMPOUND)) {
 			this.pregnancyData.deserializeNBT(compoundTag.getCompound("PregnantTamableData"));
-		}
+		}	
 	}
 	
 	@Override
 	protected void registerGoals() {
-		this.goalSelector.addGoal(8, new AbstractZombieGirl.ZombieGirlAttackTurtleEggGoal(this, 1.0D, 3){
+		this.goalSelector.addGoal(5, new AbstractZombieGirl.ZombieGirlAttackTurtleEggGoal(this, 1.0D, 3){
 			@Override
 			public boolean canUse() {
 				return super.canUse()
@@ -153,21 +154,6 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 			public boolean canContinueToUse() {
 				return super.canContinueToUse()
 				&& !getPregnancyData().isIncapacitated();
-			}
-		});
-		
-		this.goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(this, 1.0D) {
-			@Override
-			public boolean canUse() {
-				return super.canUse() 
-				&& (getTamableData().isSavage() || !isTame())
-				&& !getPregnancyData().isIncapacitated();	
-			}
-			
-			@Override
-			public boolean canContinueToUse() {
-				return super.canContinueToUse() 
-				&& !getPregnancyData().isIncapacitated();	
 			}
 		});
 		this.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false, false) {
@@ -297,7 +283,7 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 					&& !isOnFire();	
 				}
 			}, true);
-			GoalHelper.addGoalWithReplacement(this, 6, new PregnantPreggoMobFollowOwnerGoal<>(this, 1.2D, 7F, 2F, false) {
+			GoalHelper.addGoalWithReplacement(this, 2, new PregnantPreggoMobFollowOwnerGoal<>(this, 1.2D, 7F, 2F, false) {
 				@Override
 				public boolean canUse() {
 					return super.canUse() 
@@ -340,14 +326,26 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 					&& !getPregnancyData().isIncapacitated();
 				}
 			});
+			GoalHelper.removeGoalByClass(this.goalSelector, WaterAvoidingRandomStrollGoal.class);
 		}
 		else {
 			GoalHelper.removeGoalByClass(this.goalSelector, Set.of(PregnantPreggoMobOwnerHurtByTargetGoal.class, PregnantPreggoMobFollowOwnerGoal.class, EatGoal.class));
-			GoalHelper.removeGoalByClass(this.targetSelector, Set.of(PregnantPreggoMobOwnerHurtTargetGoal.class, BreakBlocksToFollowOwnerGoal.class));
+			GoalHelper.addGoalWithReplacement(this, 6, new WaterAvoidingRandomStrollBeingPregnantGoal<>(this, 1.0D));
 		}
 	}
 	
+	@Override
+	protected void registerGoalsBeingTameAndNotSavage() {
+		if (this.tamablePreggoMobData.isWandering()) {		
+			PreggoMobHelper.addWanderingGoalsBeingPregnant(this, 6, 3);
+		}	
+	}
 	
+	@Override
+	protected void registerGoalsBeingTameAndSavage() {
+		GoalHelper.addGoalWithReplacement(this, 6, new WaterAvoidingRandomStrollBeingPregnantGoal<>(this, 1.0D));
+	}
+		
 	@Override
 	public SoundEvent getDeathSound() {
 		return MinepreggoModSounds.PREGNANT_PREGGO_MOB_DEATH.get();

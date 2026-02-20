@@ -42,14 +42,14 @@ public class ToggleableCheckbox extends Checkbox {
     
 	@OnlyIn(Dist.CLIENT)
     public static class Builder {
-    	@Nullable List<ToggleableCheckbox> group;
-    	@Nullable Runnable onSelect;
-    	int x;
-    	int y; 
-    	int width; 
-    	int height; 
-    	Component label;
-    	boolean checked;
+    	private @Nullable List<ToggleableCheckbox> group;
+    	private @Nullable Runnable onSelect;
+    	private int x;
+    	private int y; 
+    	private int width; 
+    	private int height; 
+    	private Component label;
+    	private boolean checked;
     	 		
     	protected Builder(int x, int y, int width, int height, Component label, boolean checked) {
     		this.x = x;

@@ -4,6 +4,8 @@ import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.model.entity.preggo.zombie.AbstractZombieGirlModel;
 import dev.dixmk.minepreggo.client.renderer.entity.layer.ExpressiveFaceLayer;
@@ -56,5 +58,10 @@ public abstract class AbstractZombieGirlRenderer<E extends AbstractZombieGirl, M
 	
 	protected @Nullable ExpressiveFaceLayer<E, M> createExpressiveFaceLayer() {
 		return null;
+	}
+	
+	@Override
+	protected void scale(E p_117798_, PoseStack p_117799_, float p_117800_) {
+		p_117799_.scale(0.9375F, 0.9375F, 0.9375F);
 	}
 }

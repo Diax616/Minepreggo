@@ -14,6 +14,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class PlayerAnimationManager {
 	
+    private final Map<UUID, PlayerAnimationCache> animations;
+	
 	private PlayerAnimationManager() {
 		animations = new HashMap<>();
 	}
@@ -26,9 +28,6 @@ public class PlayerAnimationManager {
         return Holder.INSTANCE;
     }
 	
-    private final Map<UUID, PlayerAnimationCache> animations;
-    
-    
     public PlayerAnimationCache get(Player player) {
         return animations.computeIfAbsent(player.getUUID(), PlayerAnimationCache::new);
     }

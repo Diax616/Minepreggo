@@ -7,7 +7,7 @@ import dev.dixmk.minepreggo.client.model.armor.BellyShieldP5Model;
 import dev.dixmk.minepreggo.client.model.armor.BellyShieldP6Model;
 import dev.dixmk.minepreggo.client.model.armor.BellyShieldP7Model;
 import dev.dixmk.minepreggo.client.model.armor.BellyShieldP8Model;
-import dev.dixmk.minepreggo.client.model.armor.FemaleChestPlateP0Model;
+import dev.dixmk.minepreggo.client.model.armor.FemaleChestPlateModel;
 import dev.dixmk.minepreggo.client.model.armor.KneeBraceModel;
 import dev.dixmk.minepreggo.client.model.armor.MaternityChestPlateP1Model;
 import dev.dixmk.minepreggo.client.model.armor.MaternityChestPlateP2Model;
@@ -262,7 +262,7 @@ public class ClientSetupHandler {
 		event.registerLayerDefinition(BellyShieldP6Model.LAYER_LOCATION, BellyShieldP6Model::createBodyLayer);
 		event.registerLayerDefinition(BellyShieldP7Model.LAYER_LOCATION, BellyShieldP7Model::createBodyLayer);
 		event.registerLayerDefinition(BellyShieldP8Model.LAYER_LOCATION, BellyShieldP8Model::createBodyLayer);
-		event.registerLayerDefinition(FemaleChestPlateP0Model.LAYER_LOCATION, FemaleChestPlateP0Model::createBodyLayer);
+		event.registerLayerDefinition(FemaleChestPlateModel.LAYER_LOCATION, FemaleChestPlateModel::createBodyLayer);
 		event.registerLayerDefinition(MaternityChestPlateP1Model.LAYER_LOCATION, MaternityChestPlateP1Model::createBodyLayer);
 		event.registerLayerDefinition(MaternityChestPlateP2Model.LAYER_LOCATION, MaternityChestPlateP2Model::createBodyLayer);
 		event.registerLayerDefinition(MaternityChestPlateP3Model.LAYER_LOCATION, MaternityChestPlateP3Model::createBodyLayer);

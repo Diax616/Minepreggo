@@ -23,6 +23,11 @@ import dev.dixmk.minepreggo.utils.MathHelper;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.EntityHelper;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
+import dev.dixmk.minepreggo.world.entity.ai.goal.GoalHelper;
+import dev.dixmk.minepreggo.world.entity.ai.goal.RestrictedWanderGoal;
+import dev.dixmk.minepreggo.world.entity.ai.goal.RestrictedWanderGoalBeingPregnant;
+import dev.dixmk.minepreggo.world.entity.ai.goal.ReturnToHomeGoal;
+import dev.dixmk.minepreggo.world.entity.ai.goal.ReturnToHomeGoalBeingPregnant;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractHostilePregnantCreeperGirl;
@@ -932,5 +937,19 @@ public class PreggoMobHelper {
 				new RemovePreggoMobJigglePhysicsS2CPacket(preggoMob.getId()));
 	}	
 	// JIGGLE PHYSICS - END
+	
+	// GOAL AND TARGETING - START
+	
+	public static<E extends PreggoMob & ITamablePreggoMob<?>> void addWanderingGoals(E preggoMob, int wanderingPriority, int returnHomePriority) {
+		GoalHelper.addGoalWithReplacement(preggoMob, wanderingPriority, new RestrictedWanderGoal<>(preggoMob, 0.9D, 18.0D));
+		GoalHelper.addGoalWithReplacement(preggoMob, returnHomePriority, new ReturnToHomeGoal<>(preggoMob, 1.2D, 18.0D));
+	}
+	
+	public static<E extends PreggoMob & ITamablePregnantPreggoMob> void addWanderingGoalsBeingPregnant(E preggoMob, int wanderingPriority, int returnHomePriority) {
+		GoalHelper.addGoalWithReplacement(preggoMob, wanderingPriority, new RestrictedWanderGoalBeingPregnant<>(preggoMob, 0.9D, 18.0D));
+		GoalHelper.addGoalWithReplacement(preggoMob, returnHomePriority, new ReturnToHomeGoalBeingPregnant<>(preggoMob, 1.2D, 18.0D));
+	}
+
+	// GOAL AND TARGETING - END
 }
 

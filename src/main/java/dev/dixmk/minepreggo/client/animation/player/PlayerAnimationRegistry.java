@@ -16,7 +16,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class PlayerAnimationRegistry {
-    private PlayerAnimationRegistry() {}
+    private PlayerAnimationRegistry() {
+    	animations = new HashMap<>();
+    }
 
     private static class Holder {
         private static final PlayerAnimationRegistry INSTANCE = new PlayerAnimationRegistry();
@@ -26,7 +28,7 @@ public class PlayerAnimationRegistry {
         return Holder.INSTANCE;
     }
 
-    private final Map<String, PlayerAnimation> animations = new HashMap<>();
+    private final Map<String, PlayerAnimation> animations;
 
     public void register(PlayerAnimation animation) {
         animations.put(animation.getName(), animation);

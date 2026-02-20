@@ -42,9 +42,9 @@ public class ArmorModelHelper {
 	
 	public static HumanoidModel<LivingEntity> createFemaleP0HumanoidArmorModel (LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {	
 		var armorModel = getOrCreateModel("female", () -> new HumanoidModel<>(new ModelPart(Collections.emptyList(),
-				Map.of("body", new FemaleChestPlateP0Model(Minecraft.getInstance().getEntityModels().bakeLayer(FemaleChestPlateP0Model.LAYER_LOCATION)).body,
-				"left_arm", new FemaleChestPlateP0Model(Minecraft.getInstance().getEntityModels().bakeLayer(FemaleChestPlateP0Model.LAYER_LOCATION)).leftArm,
-				"right_arm", new FemaleChestPlateP0Model(Minecraft.getInstance().getEntityModels().bakeLayer(FemaleChestPlateP0Model.LAYER_LOCATION)).rightArm,
+				Map.of("body", new FemaleChestPlateModel(Minecraft.getInstance().getEntityModels().bakeLayer(FemaleChestPlateModel.LAYER_LOCATION)).body,
+				"left_arm", new FemaleChestPlateModel(Minecraft.getInstance().getEntityModels().bakeLayer(FemaleChestPlateModel.LAYER_LOCATION)).leftArm,
+				"right_arm", new FemaleChestPlateModel(Minecraft.getInstance().getEntityModels().bakeLayer(FemaleChestPlateModel.LAYER_LOCATION)).rightArm,
 				"head", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
 				"hat", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
 				"right_leg", new ModelPart(Collections.emptyList(), Collections.emptyMap()),

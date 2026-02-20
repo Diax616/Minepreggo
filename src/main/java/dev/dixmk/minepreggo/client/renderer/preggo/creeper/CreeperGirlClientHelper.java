@@ -17,8 +17,8 @@ public class CreeperGirlClientHelper {
 		f = Mth.clamp(f, 0.0F, 1.0F);
 		f *= f;
 		f *= f;
-		float f2 = (1.0F + f * 0.4F) * f1;
-		float f3 = (1.0F + f * 0.1F) / f1;
+		float f2 = (0.9375F + f * 0.4F) * f1;
+		float f3 = (0.9375F + f * 0.1F) / f1;				
 		p_114047_.scale(f2, f3, f2);
 	}
 	

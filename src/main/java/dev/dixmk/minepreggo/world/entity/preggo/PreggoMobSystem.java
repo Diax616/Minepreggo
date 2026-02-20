@@ -1,5 +1,7 @@
 package dev.dixmk.minepreggo.world.entity.preggo;
 
+import java.util.Set;
+
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
@@ -13,6 +15,9 @@ import dev.dixmk.minepreggo.network.packet.s2c.SexCinematicControlP2MS2CPacket;
 import dev.dixmk.minepreggo.server.ServerCinematicManager;
 import dev.dixmk.minepreggo.server.ServerParticleHelper;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
+import dev.dixmk.minepreggo.world.entity.ai.goal.GoalHelper;
+import dev.dixmk.minepreggo.world.entity.ai.goal.RestrictedWanderGoal;
+import dev.dixmk.minepreggo.world.entity.ai.goal.ReturnToHomeGoal;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractCreeperGirl.CombatMode;
@@ -33,6 +38,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -75,12 +81,22 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> impleme
 		if (tamableData.getFullness() <= 0 && !tamableData.isSavage()) {
 			this.sendMessageToOwner(Component.translatable("chat.minepreggo.preggo_mob.message.is_savage", preggoMob.getSimpleNameOrCustom()));		
 			tamableData.setSavage(true);
+			GoalHelper.removeGoalByClass(preggoMob.goalSelector, Set.of(RestrictedWanderGoal.class, ReturnToHomeGoal.class));
+			GoalHelper.addGoalWithReplacement(preggoMob, 6, this.createWanderGoal());
 			if (preggoMob.isLeashed()) {
 				preggoMob.dropLeash(true, true);
-			}	
+			}
+			if (preggoMob.isVehicle() && preggoMob.getControllingPassenger() != null) {
+				preggoMob.stopRiding();
+			}
+			
 			return true;
 		}
 		return false;
+	}
+	
+	protected WaterAvoidingRandomStrollGoal createWanderGoal() {
+		return new WaterAvoidingRandomStrollGoal(preggoMob, 1.0D);
 	}
 
 	protected void evaluateSavage() {		
@@ -235,6 +251,8 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> impleme
                 
                 if (tamableData.isSavage() && preggoMob.isTame() && currentFullness >= MIN_FULLNESS_TO_TAME_AGAIN) {
                 	tamableData.setSavage(false);
+                	tamableData.setMovementState(MovementState.FOLLOWING);
+        			GoalHelper.removeGoalByClass(preggoMob.goalSelector, WaterAvoidingRandomStrollGoal.class);
                 	
         			this.sendMessageToOwner(Component.translatable("chat.minepreggo.preggo_mob.message.is_no_longer_savage", preggoMob.getSimpleNameOrCustom()));		
 
@@ -435,7 +453,7 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> impleme
 	
 	private void sendMessageToOwner(Component message) {
 		if (preggoMob.getOwner() instanceof ServerPlayer serverPlayer) {
-			MessageHelper.sendTo(serverPlayer, message, true);
+			MessageHelper.sendTo(serverPlayer, message);
 		}
 	}
 }

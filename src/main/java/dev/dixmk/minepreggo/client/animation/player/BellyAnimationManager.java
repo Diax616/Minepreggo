@@ -19,6 +19,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class BellyAnimationManager {
 	
+    private final Map<UUID, AnimationState> animationStates;
+    private final Map<UUID, AnimationDefinition> currentAnimations;
+	
 	private BellyAnimationManager() {
 	    animationStates = new HashMap<>();
 	    currentAnimations = new HashMap<>();
@@ -31,10 +34,7 @@ public class BellyAnimationManager {
     public static BellyAnimationManager getInstance() {
         return Holder.INSTANCE;
     }
-	
-    private final Map<UUID, AnimationState> animationStates;
-    private final Map<UUID, AnimationDefinition> currentAnimations;
-    
+
     private void startAnimation(LivingEntity entity, AnimationDefinition definition) {
         UUID id = entity.getUUID();
         AnimationState state = animationStates.computeIfAbsent(id, k -> new AnimationState());   

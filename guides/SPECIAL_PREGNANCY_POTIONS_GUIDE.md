@@ -126,17 +126,19 @@ The Baby Duplication potion increases the number of babies in a pregnancy. It ad
 **Effect Type:** Instantaneous (applies immediately upon contact)
 
 **Babies Added:** Based on the potion's power level:
-- **Level 0:** Adds a small number of babies
-- **Level 1:** Adds more babies than Level 0
-- **Level 2:** Adds even more babies
-- **Level 3:** Adds more babies still
-- **Level 4:** Adds the maximum number of babies
+- **Level 0:** Adds 1 baby (safest)
+- **Level 1:** Adds 2 babies
+- **Level 2:** Adds 3 babies  
+- **Level 3:** Adds 4 babies
+- **Level 4:** Adds 5 babies (highest risk)
+
+**⚠️ DANGER**: The higher the level, the greater the risk of exceeding the 8-baby limit and causing fatal Womb Overload!
 
 ### Important Limits
 
-- **Maximum Babies:** There is a cap on how many babies can be carried at once
-- **Can't Exceed Cap:** Baby Duplication potions cannot add more babies than the maximum allowed
-- **Example:** If a mother is already carrying the maximum number, the potion has no additional effect
+- **Maximum Babies:** The womb has a hard cap of 8 babies maximum
+- **Overload Danger:** Exceeding 8 babies causes **Womb Overload** - a potentially fatal condition (see Critical Risks section below)
+- **Cannot Add Beyond Safety:** While you can add more than 8 babies, doing so triggers overload mechanics that can result in death
 
 ### Physical Changes
 
@@ -145,7 +147,7 @@ When the number of babies increases significantly, the mother's pregnancy stage 
 ### Who Uses It
 
 - Fertility Witches throw this potion (10% of the time)
-- Can be brewed through the alchemy system
+- **Cannot be brewed** - Only obtainable by killing Fertility Witches
 - Useful for those wanting larger pregnancies
 
 ### Effects on Body
@@ -153,6 +155,96 @@ When the number of babies increases significantly, the mother's pregnancy stage 
 - Increases apparent pregnancy size and appearance
 - More baby movement and activity
 - Longer pregnancy duration to accommodate more babies
+
+---
+
+## ⚠️ Critical Risks of Baby Duplication Potion
+
+### Womb Overload - Fatal Danger
+
+The Baby Duplication potion carries **extreme risk of death** if used improperly. The womb has a **maximum capacity of 8 babies**. Exceeding this limit causes a condition called **Womb Overload**, which has deadly consequences.
+
+### What is Womb Overload?
+
+**Womb Overload** occurs when the total number of babies in the womb exceeds 8. When this happens:
+
+#### For Players
+
+- **Rapid Pregnancy Advancement**: If overloaded before the final phase, pregnancy rapidly advances through remaining phases
+- **Fatal Belly Burst**: When reaching the final pregnancy stage (ready to give birth) with an overloaded womb, the player suffers **instant death** from a belly burst
+- **Creative/Spectator Immunity**: Only players in Creative or Spectator mode are protected from this death
+- **No Warning**: Once overloaded at final stage, death is immediate and unavoidable
+
+#### For Tamable Pregnant Mobs
+
+- **Accelerated Pregnancy**: The pregnancy rapidly advances through phases
+- **Days Consumed**: Remaining pregnancy days are consumed proportionally, pushing the mob toward the final stage faster
+- **Eventual Complications**: The rapid advancement can lead to dangerous situations
+
+#### For Hostile Pregnant Mobs
+
+- **Immediate Death**: Any womb overload causes **instant death** from a torn womb
+- **No Grace Period**: Unlike players, hostile mobs die immediately when the womb is overloaded, regardless of pregnancy phase
+
+### How to Avoid Womb Overload
+
+1. **Check Current Baby Count**: Know how many babies are already present before using the potion
+2. **Understand Potion Levels**:
+   - Level 0: Adds 1 baby
+   - Level 1: Adds 2 babies
+   - Level 2: Adds 3 babies
+   - Level 3: Adds 4 babies
+   - Level 4: Adds 5 babies
+3. **Calculate Safe Limits**:
+   - **Safe Zone**: 1-6 babies (room for growth)
+   - **Danger Zone**: 7-8 babies (risky, potion may cause overload)
+   - **Critical**: 9+ babies (overloaded - fatal at final stage for players, instant death for mobs)
+
+### Example Scenarios
+
+**Safe Use:**
+- Current pregnancy: 4 babies
+- Using Level 0 potion (adds 1 baby)
+- Result: 5 babies (Safe - well under 8 baby limit)
+
+**Risky Use:**
+- Current pregnancy: 6 babies
+- Using Level 2 potion (adds 3 babies)
+- Result: 9 babies (OVERLOADED - will cause death at final stage)
+
+**Fatal for Hostile Mobs:**
+- Hostile Pregnant Zombie Girl: 7 babies
+- Using Level 1 potion (adds 2 babies)
+- Result: Instant death from torn womb
+
+### Warning Signs
+
+- **Prenatal Checkups**: Use prenatal checkups to monitor baby count
+- **Ultrasound Scans**: Shows current womb capacity and overload status
+- **Physical Appearance**: Higher pregnancy phases indicate more babies
+
+### Emergency Prevention
+
+If you suspect womb overload but haven't reached final stage yet:
+- **DO NOT** advance pregnancy further
+- **AVOID** Pregnancy Acceleration potions
+- There is currently no way to safely reduce baby count once overloaded
+- Players in Creative/Spectator mode are immune to the fatal effects
+
+### Special Case: Ender Dragon Pregnancy
+
+Baby Duplication potion behaves differently during **Ender Dragon Pregnancy**:
+- **Phase 1-2 (Early)**: The potion has no effect and displays a warning message
+- **Phase 3+ (Later)**: The potion deals minor pregnancy pain damage but does not add babies
+- **Reason**: Ender Dragon pregnancies are too unique and powerful to be affected by standard baby duplication
+
+### Why This Mechanic Exists
+
+The womb overload mechanic exists to:
+- Prevent unlimited baby duplication
+- Create meaningful risk/reward for using rare potions
+- Add realism to pregnancy mechanics
+- Make the Baby Duplication potion appropriately dangerous for a rare drop
 
 ---
 
@@ -216,7 +308,7 @@ The witch drops these potions when defeated:
 
 ### Through Alchemy Brewing
 
-Most potions (except Eternal Pregnancy) can be brewed through the alchemy system:
+Most potions (except Eternal Pregnancy and Baby Duplication) can be brewed through the alchemy system:
 - See the Impregnation Potion Recipes Guide for brewing instructions
 - Various ingredients combine to create different potion types and levels
 
@@ -258,7 +350,7 @@ Higher amplifier levels result in more pronounced changes to the pregnancy.
 | Impregnation (Species) | Causes pregnancy | 0-4 | Alchemy Brewing, Fertility Witch | Non-pregnant targets |
 | Pregnancy Delay | Extends pregnancy | 0-4 | Alchemy Brewing, Fertility Witch | Pregnant targets |
 | Pregnancy Acceleration | Shortens pregnancy | 0-4 | Alchemy Brewing, Fertility Witch | Pregnant targets |
-| Baby Duplication | Increases baby count | 0-4 | Alchemy Brewing, Fertility Witch | Pregnant targets |
+| Baby Duplication ⚠️ | Increases baby count (RISK OF DEATH) | 0-4 | Fertility Witch drop only | Pregnant targets |
 | Eternal Pregnancy | Permanent pregnancy | None | Rare Fertility Witch drop | Any entity |
 
 ---
@@ -267,8 +359,11 @@ Higher amplifier levels result in more pronounced changes to the pregnancy.
 
 1. **Protection from Fertility Witches:** Carry milk to cleanse unwanted potion effects
 2. **Intentional Use:** Collect these potions if you want to experiment with pregnancy mechanics
-3. **Rare Drops:** Hunt Fertility Witches if you want to obtain Eternal Pregnancy potions
-4. **Brewing:** Set up an alchemy system if you want to create these potions reliably
+3. **Rare Drops:** Hunt Fertility Witches if you want to obtain Eternal Pregnancy or Baby Duplication potions
+4. **Brewing:** Set up an alchemy system if you want to create pregnancy potions reliably (except Baby Duplication and Eternal Pregnancy)
 5. **Mobs:** Remember that mobs can also be affected by these potions, creating pregnant creatures
+6. **⚠️ CRITICAL:** Never use Baby Duplication potion without checking current baby count - exceeding 8 babies can be fatal!
+7. **Use Prenatal Checkups:** Regularly check baby count and womb status to avoid dangerous overload situations
+8. **Creative Mode Safety:** If experimenting with high baby counts, use Creative or Spectator mode to avoid death from womb overload
 
 ---

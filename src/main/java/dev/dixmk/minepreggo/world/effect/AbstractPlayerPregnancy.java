@@ -25,37 +25,27 @@ public abstract class AbstractPlayerPregnancy<S extends PlayerPregnancySystemP0>
 	static final UUID SPEED_MODIFIER_UUID = UUID.fromString("a0bf6ac9-4354-4977-86fc-5dea9108665d");
 	static final UUID ATTACK_SPEED_MODIFIER_UUID = UUID.fromString("57a3938d-b55a-47b5-93ee-737724ba9d2e");
 	
-	/**
+	/*
 	 * Cache of pregnancy systems indexed by player UUID.
-	 * 
-	 * <h3>Multiplayer Behavior:</h3>
-	 * In Minecraft Forge, MobEffect instances are <b>singletons</b> - there is only ONE instance
-	 * of each effect class (PregnancyP0, PregnancyP1, etc.) shared by ALL players on the server.
-	 * 
-	 * <p>This Map allows multiple players to have the same pregnancy effect simultaneously:
-	 * <ul>
-	 *   <li>Player A in phase P0 → Map entry: {UUID_A → PlayerPregnancySystemP0 for A}</li>
-	 *   <li>Player B in phase P0 → Map entry: {UUID_B → PlayerPregnancySystemP0 for B}</li>
-	 *   <li>Player C in phase P5 → Stored in PregnancyP5's separate Map</li>
-	 * </ul>
-	 * 
-	 * <h3>Why NOT static?</h3>
-	 * This field is <b>intentionally NOT static</b> because:
-	 * <ol>
-	 *   <li>Each pregnancy phase (P0-P8) is a <b>different class</b> with its own singleton instance</li>
-	 *   <li>Each phase needs its own isolated Map to store systems for players in that specific phase</li>
-	 *   <li>If static, all phases would share the same Map, causing conflicts when players are in different phases</li>
-	 * </ol>
-	 * 
-	 * <h3>Lifecycle:</h3>
-	 * <ul>
-	 *   <li><b>Add:</b> When effect is applied via {@link #ensurePregnancySystemInitialized(ServerPlayer)}</li>
-	 *   <li><b>Use:</b> Retrieved every tick in {@link #applyEffectTick(LivingEntity, int)}</li>
-	 *   <li><b>Remove:</b> Cleaned up in {@link #removeAttributeModifiers(LivingEntity, AttributeMap, int)}</li>
-	 * </ul>
-	 * 
-	 * @see #ensurePregnancySystemInitialized(ServerPlayer)
-	 * @see PlayerPregnancySystemP0#isPlayerValid(ServerPlayer)
+	 *
+	 * Multiplayer behavior:
+	 * In Minecraft Forge, MobEffect instances are singletons - there is only one instance
+	 * of each effect class shared by all players on the server.
+	 *
+	 * This map allows multiple players to have the same pregnancy effect simultaneously:
+	 *  - Player A in phase P0 -> {UUID_A -> PlayerPregnancySystemP0 for A}
+	 *  - Player B in phase P0 -> {UUID_B -> PlayerPregnancySystemP0 for B}
+	 *  - Player C in phase P5 -> Stored in PregnancyP5's separate map
+	 *
+	 * Why not static?
+	 *  - Each pregnancy phase (P0-P8) is a different class with its own singleton instance.
+	 *  - Each phase needs its own isolated map to store systems for players in that phase.
+	 *  - If static, all phases would share the same map, causing conflicts when players are in different phases.
+	 *
+	 * Lifecycle:
+	 *  - Add: When effect is applied via ensurePregnancySystemInitialized(ServerPlayer)
+	 *  - Use: Retrieved every tick in applyEffectTick(LivingEntity, int)
+	 *  - Remove: Cleaned up in removeAttributeModifiers(LivingEntity, AttributeMap, int)
 	 */
 	protected final Map<UUID, S> pregnancySystemsCache = new HashMap<>();
 	
@@ -125,7 +115,6 @@ public abstract class AbstractPlayerPregnancy<S extends PlayerPregnancySystemP0>
     @Override
     public void removeAttributeModifiers(LivingEntity entity, AttributeMap p_19470_, int p_19471_) {
     	if (entity instanceof ServerPlayer serverPlayer && !serverPlayer.level().isClientSide) {
-    		// Remove the pregnancy system for this specific player from the Map
     		pregnancySystemsCache.remove(serverPlayer.getUUID());
     		
 			PregnancySystemHelper.removeGravityModifier(entity);

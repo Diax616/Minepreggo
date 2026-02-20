@@ -16,11 +16,11 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class FemaleChestPlateP0Model extends AbstractFemaleChestPlateModel<LivingEntity> {
+public class FemaleChestPlateModel extends AbstractFemaleChestPlateModel<LivingEntity> {
 
-	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "female_chestplate_p0_model"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "female_chestplate_model"), "main");
 
-	public FemaleChestPlateP0Model(ModelPart root) {
+	public FemaleChestPlateModel(ModelPart root) {
 		super(root);
 	}
 

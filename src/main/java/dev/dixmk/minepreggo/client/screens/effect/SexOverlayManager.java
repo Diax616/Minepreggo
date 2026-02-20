@@ -8,25 +8,23 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class SexOverlayManager {
 	
+    private int overlayTimer = 0;    
+    private int pauseTimer = 0; 
+    private int totalOverlayTicks = 0;
+    private int totalPauseTicks = 0;    
+    private boolean isActive = false;
+    private boolean isFirstLoop = true;
+    private boolean isPause = false;
+		
 	private SexOverlayManager() {}
 
 	private static class Holder {
-		private static final  SexOverlayManager INSTANCE = new SexOverlayManager();
+		private static final SexOverlayManager INSTANCE = new SexOverlayManager();
 	}
 	
 	public static SexOverlayManager getInstance() {
 		return Holder.INSTANCE;
 	}
-	
-    private int overlayTimer = 0;    
-    private int pauseTimer = 0; 
-   
-    private int totalOverlayTicks = 0;
-    private int totalPauseTicks = 0;
-    
-    private boolean isActive = false;
-    private boolean isFirstLoop = true;
-    private boolean isPause = false;
     
     public void tick() {
     	

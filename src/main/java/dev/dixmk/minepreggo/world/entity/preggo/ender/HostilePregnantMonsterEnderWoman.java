@@ -68,4 +68,23 @@ public class HostilePregnantMonsterEnderWoman {
 			return MonsterEnderWomanHelper.createBasicAttributes(0.25D);
 		}
 	}
+	
+	/*
+	public HostilPregnantMonsterEnderWoman(EntityType<HostilPregnantMonsterEnderWoman> type, Level level) {
+		super(type, level, PregnancyPhase.P0);
+	}
+
+	public HostilPregnantMonsterEnderWoman(EntityType<HostilPregnantMonsterEnderWoman> type, Level level, PregnancyPhase phase) {
+		super(type, level, phase);
+	}
+	
+	public HostilPregnantMonsterEnderWoman(PlayMessages.SpawnEntity packet, Level level) {
+		this(MinepreggoModEntities.HOSTIL_PREGNANT_MONSTER_ENDER_WOMAN.get(), level, readPregnancyPhase(packet));
+	}
+	
+	private static PregnancyPhase readPregnancyPhase(PlayMessages.SpawnEntity packet) {
+        FriendlyByteBuf buf = packet.getAdditionalData();
+        return buf != null ? buf.readEnum(PregnancyPhase.class) : PregnancyPhase.P0;
+	}
+	*/
 }

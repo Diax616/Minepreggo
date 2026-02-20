@@ -4,6 +4,7 @@ import javax.annotation.Nonnegative;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
 
@@ -15,7 +16,12 @@ public interface ITamablePreggoMobData extends INBTSerializable<CompoundTag> {
     void decrementFullness(@Nonnegative int amount);
     
     boolean isWaiting();
-    void setWaiting(boolean waiting);
+    boolean isFollowing();
+    boolean isWandering();
+    
+    MovementState getMovementState();
+    void setMovementState(MovementState movementState);
+    @Nullable BlockPos getCentralPositionWhenWandering();
     
     boolean isSavage();
     void setSavage(boolean savage);
