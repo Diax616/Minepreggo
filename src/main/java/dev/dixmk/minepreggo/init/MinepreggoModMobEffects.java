@@ -43,6 +43,7 @@ import dev.dixmk.minepreggo.world.effect.WaterBreaking;
 import dev.dixmk.minepreggo.world.effect.ZeroGravityBelly;
 import dev.dixmk.minepreggo.world.effect.ZombieImpregnation;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -101,4 +102,14 @@ public class MinepreggoModMobEffects {
 	public static final RegistryObject<MobEffect> PREBIRTH = REGISTRY.register("prebirth", PreBirth::new);
 
 	public static final RegistryObject<MobEffect> ZERO_GRAVITY_BELLY = REGISTRY.register("zero_gravity_belly", ZeroGravityBelly::new);
+
+	public static boolean hasImpregnationEffect(LivingEntity entity) {
+		return entity.hasEffect(IMPREGNANTION.get())
+				|| entity.hasEffect(ZOMBIE_IMPREGNATION.get())
+				|| entity.hasEffect(CREEPER_IMPREGNATION.get()) 
+				|| entity.hasEffect(ENDER_IMPREGNATION.get())
+				|| entity.hasEffect(HUMANOID_CREEPER_IMPREGNATION.get())
+				|| entity.hasEffect(HUMANOID_ENDER_IMPREGNATION.get())
+				|| entity.hasEffect(VILLAGER_IMPREGNATION.get());
+	}
 }

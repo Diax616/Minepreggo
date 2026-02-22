@@ -21,6 +21,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 
 public class Womb {
@@ -31,14 +32,20 @@ public class Womb {
 	private Womb() {}
 
     public Womb (@NonNull ImmutableTriple<UUID, Species, Creature> mother, @NonNull ImmutableTriple<Optional<UUID>, Species, Creature> father, RandomSource random, @Nonnegative int count) {		
-    	int tempCount = Math.min(count, Womb.getMaxNumOfBabies());   	
+    	if (count < 1) {
+    		MinepreggoMod.LOGGER.warn("Attempted to create a Womb with count less than 1. Count: {}. Defaulting to 1.", count);
+    	}
+    	int tempCount = Mth.clamp(count, 1, Womb.getMaxNumOfBabies());	
     	for (int i = 0; i < tempCount; i++) {
     		addBaby(BabyData.create(mother, father, random));
 		}
     }
     
 	public Womb(UUID mother, ImmutableTriple<Optional<@Nullable UUID>, Species, Creature> father, RandomSource random, int count) {
-    	int tempCount = Math.min(count, Womb.getMaxNumOfBabies());   	
+    	if (count < 1) {
+    		MinepreggoMod.LOGGER.warn("Attempted to create a Womb with count less than 1. Count: {}. Defaulting to 1.", count);
+    	}
+		int tempCount = Mth.clamp(count, 1, Womb.getMaxNumOfBabies());  	
     	for (int i = 0; i < tempCount; i++) {
     		addBaby(BabyData.create(mother, father, random));
 		}
@@ -51,7 +58,7 @@ public class Womb {
 	public boolean removeBaby() {	
 		if (!babies.isEmpty()) {
 			Collections.shuffle(babies);
-			babies.remove(0);
+			return babies.remove(0) != null;
 		}
 		return false;
 	}
@@ -83,7 +90,11 @@ public class Womb {
 	 * @see #isWombOverloaded
 	 * */
 	public boolean duplicateRandomBaby(RandomSource random) {
-	    int idx = random.nextInt(0, this.babies.size());
+		if (this.babies.isEmpty()) {
+	    	MinepreggoMod.LOGGER.warn("Attempted to duplicate a baby in the womb, but there are no babies to duplicate.");
+	        return false;
+	    }	
+	    int idx = random.nextInt(this.babies.size());
 	    BabyData original = this.babies.get(idx);
 	    return this.babies.add(BabyData.duplicate(original));
 	}
@@ -149,6 +160,10 @@ public class Womb {
 	        		MinepreggoMod.LOGGER.warn("Failed to read BabyData from NBT tag in Womb: {}", tag);
 	        	}
 	        }
+	        if (womb.isEmpty()) {
+	        	MinepreggoMod.LOGGER.warn("Womb read from NBT is empty.");
+	        }
+	        
 	        return womb;
 		}		
 		return null;
