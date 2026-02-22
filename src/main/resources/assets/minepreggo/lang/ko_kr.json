@@ -665,6 +665,8 @@
   "chat.minepreggo.player.pregnancy.message.cannot_ride.generic.2": "배가 너무 커서 지금은 탈 수 없습니다.",
   "chat.minepreggo.player.pregnancy.message.cannot_ride.ender_woman.generic.1": "배가 너무 커서 %s의 머리를 치고 있습니다.",
   "chat.minepreggo.player.pregnancy.message.cannot_ride.ender_woman.generic.2": "몸무게가 너무 무거워서 %s를 탈 수 없습니다",
+  "chat.minepreggo.player.pregnancy.message.womb_is_overloaded.creative": "자궁이 과부하 상태입니다. 지금 크리에이티브 모드로 전환하면 죽을 것입니다!",
+
   "chat.minepreggo.player.message.cannot_ride.ender_woman.pregnant.labor": "%s가 진통 중이라 지금은 탈 수 없습니다!",
   "chat.minepreggo.player.message.cannot_ride.ender_woman.pregnant.morning_sickness": "%s가 너무 아파서 지금은 탈 수 없습니다!",
   "chat.minepreggo.player.message.cannot_ride.ender_woman.pregnant.common_pregnancy_pain": "%s가 너무 고통스러워서 지금은 탈 수 없습니다!",

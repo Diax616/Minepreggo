@@ -5,7 +5,6 @@ import net.minecraftforge.network.PlayMessages;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.entity.monster.Witch;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.entity.raid.Raider;
 import net.minecraft.world.item.ItemStack;
@@ -17,6 +16,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 
 import java.util.List;
@@ -25,12 +25,15 @@ import java.util.Optional;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
+import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.init.MinepreggoModPotions;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableHumanoidCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableMonsterCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.TamableMonsterEnderWoman;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirl;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
 
@@ -71,7 +74,7 @@ public class FertilityWitch extends Witch {
 	}
 	
 	private Potion getRandomHarmfulPregnancyPotion() {
-		if (this.random.nextFloat() < 0.25) {
+		if (this.random.nextFloat() < 0.33) {
 			return MinepreggoModPotions.getRandomBabyDuplicationPotion(random);
 		}
 		return MinepreggoModPotions.getRandomPregnancyAccelerationPotion(random);
@@ -110,14 +113,11 @@ public class FertilityWitch extends Witch {
 			}
 			this.setTarget(null);
 		}
-		else if (d3 > 3D && p_34143_ instanceof Player player) {		
+		else if (d3 > 3D && p_34143_ instanceof ServerPlayer player) {		
 			Optional<Integer> result = player.getCapability(MinepreggoCapabilities.PLAYER_DATA).map(cap -> 
 				cap.getFemaleData().map(femaleData -> {
-					if (femaleData.isPregnant()) {
-						if (femaleData.isPregnancyDataInitialized()) {
-							return PregnancyPain.isLaborPain(femaleData.getPregnancyData().getPregnancyPain()) ? 2 : 1;
-						}	
-						return 0;
+					if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
+						return PregnancyPain.isLaborPain(femaleData.getPregnancyData().getPregnancyPain()) ? 1 : 0;
 					}
 					return -1;
 				})
@@ -125,16 +125,19 @@ public class FertilityWitch extends Witch {
 			
 			if (result.isPresent()) {
 				int r = result.get();
-				if (r == 1) {
+				if (r == 0) {
 					potion = getRandomHarmfulPregnancyPotion();
 				}
-				else if (r == -1) {
+				else if (r == -1 && !MinepreggoModMobEffects.hasImpregnationEffect(player)) {
 					potion = getRandomHarmfulImpregnationPotion();
 				}
 			}
 		}		
 		else if (d3 > 3D && p_34143_ instanceof PreggoMob preggoMob) {
-			if (preggoMob instanceof TamableZombieGirl || preggoMob instanceof TamableHumanoidCreeperGirl) {			
+			if (preggoMob instanceof TamableZombieGirl ||
+					preggoMob instanceof TamableHumanoidCreeperGirl ||
+					preggoMob instanceof TamableMonsterCreeperGirl ||
+					preggoMob instanceof TamableMonsterEnderWoman) {			
 				potion = MinepreggoModPotions.getRandomImpregnationPotion(random);
 			}
 			else if (preggoMob instanceof ITamablePregnantPreggoMob tamablePregnantPreggoMob

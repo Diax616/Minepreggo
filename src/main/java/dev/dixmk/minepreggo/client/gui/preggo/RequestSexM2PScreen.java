@@ -6,11 +6,11 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.client.gui.ScreenHelper;
 import dev.dixmk.minepreggo.network.packet.c2s.ResponseSexRequestM2PC2SPacket;
+import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableHumanoidCreeperGirl;
-import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableMonsterCreeperGirl;
-import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractTamableMonsterEnderWoman;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractTamableEnderWoman;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamableZombieGirl;
 import dev.dixmk.minepreggo.world.inventory.preggo.RequestSexM2PMenu;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
@@ -37,41 +37,48 @@ public class RequestSexM2PScreen extends AbstractRequestSexScreen<PreggoMob, Pla
 		source.ifPresent(s -> {	
 			if (s instanceof AbstractTamableZombieGirl zombieGirl) {
 				this.vOffset = 137;
-				if (this.isTamablePregnantAndIsHorny(zombieGirl)) {
+				if (this.isTamedAndPregnantAndHorny(zombieGirl)) {
 					this.uOffset = 17;
 				}
 				else {			
 					this.uOffset = 1;
 				}
 			}
-			else if (s instanceof AbstractTamableHumanoidCreeperGirl creeperGirl) {
-				this.vOffset = 105;
-				if (this.isTamablePregnantAndIsHorny(creeperGirl)) {
-					this.uOffset = 17;
+			else if (s instanceof AbstractTamableCreeperGirl creeperGirl) {		
+				if (creeperGirl.getTypeOfCreature() == Creature.HUMANOID) {
+					this.vOffset = 105;
+					if (this.isTamedAndPregnantAndHorny(creeperGirl)) {
+						this.uOffset = 17;
+					}
+					else {			
+						this.uOffset = 1;
+					}
 				}
-				else {			
-					this.uOffset = 1;
+				else {
+					this.vOffset = 201;
+					if (this.isTamedAndPregnantAndHorny(creeperGirl)) {
+						this.uOffset = 17;
+					}
+					else {			
+						this.uOffset = 1;
+					}
+					this.isMonster = true;
 				}
-			}		
-			else if (s instanceof AbstractTamableMonsterCreeperGirl creeperGirl) {
-				this.vOffset = 201;
-				if (this.isTamablePregnantAndIsHorny(creeperGirl)) {
-					this.uOffset = 17;
+			}			
+			else if (s instanceof AbstractTamableEnderWoman enderWoman) {
+				if (enderWoman.getTypeOfCreature() == Creature.HUMANOID) {
+					// It's not implemented yet
 				}
-				else {			
-					this.uOffset = 1;
+				else {
+					this.vOffset = 169;
+					if (this.isTamedAndPregnantAndHorny(enderWoman)) {
+						this.uOffset = 17;
+					}
+					else {			
+						this.uOffset = 1;
+					}
+					this.isMonster = true;
 				}
-				this.isMonster = true;
-			}	
-			else if (s instanceof AbstractTamableMonsterEnderWoman enderWoman) {
-				this.vOffset = 169;
-				if (this.isTamablePregnantAndIsHorny(enderWoman)) {
-					this.uOffset = 17;
-				}
-				else {			
-					this.uOffset = 1;
-				}
-				this.isMonster = true;
 			}
 		});
 		
@@ -135,7 +142,7 @@ public class RequestSexM2PScreen extends AbstractRequestSexScreen<PreggoMob, Pla
 		return true;
 	}
 	
-	private boolean isTamablePregnantAndIsHorny(PreggoMob preggoMob) {
+	private boolean isTamedAndPregnantAndHorny(PreggoMob preggoMob) {
 		return preggoMob instanceof ITamablePregnantPreggoMob pregnancySystemHandler
 				&& pregnancySystemHandler.getPregnancyData().getPregnancySymptoms().containsPregnancySymptom(PregnancySymptom.HORNY);
 	}

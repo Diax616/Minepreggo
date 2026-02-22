@@ -39,6 +39,7 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 	
 	private int pushCoolDown = 0;
 	protected float pushProb = 0.5f;
+	private boolean wasWombOverloadMessageSent = false;
 	
 	public PlayerPregnancySystemP4(@NonNull ServerPlayer player) {
 		super(player);
@@ -80,7 +81,11 @@ public class PlayerPregnancySystemP4 extends PlayerPregnancySystemP3 {
 		if (canAdvanceNextPregnancyPhase() && hasToGiveBirth()) {			
 			if (pregnancySystem.getWomb().isWombOverloaded()) {
 				if (pregnantEntity.isAlive()) {
-					if (pregnantEntity.getAbilities().instabuild || pregnantEntity.isSpectator()) {
+					if (PlayerHelper.isInvencible(pregnantEntity)) {	
+						if (!wasWombOverloadMessageSent) {
+							MessageHelper.sendTo(pregnantEntity, Component.translatable("chat.minepreggo.player.pregnancy.message.womb_is_overloaded.creative", pregnantEntity.getDisplayName().getString()), true);
+							wasWombOverloadMessageSent = true;
+						}
 						return;
 					}
 					PregnancySystemHelper.tornWomb(pregnantEntity);
