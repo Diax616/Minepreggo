@@ -16,6 +16,7 @@ import dev.dixmk.minepreggo.world.entity.ai.goal.GoalHelper;
 import dev.dixmk.minepreggo.world.entity.ai.goal.PregnantPreggoMobFollowOwnerGoal;
 import dev.dixmk.minepreggo.world.entity.ai.goal.PregnantPreggoMobOwnerHurtByTargetGoal;
 import dev.dixmk.minepreggo.world.entity.ai.goal.PregnantPreggoMobOwnerHurtTargetGoal;
+import dev.dixmk.minepreggo.world.entity.ai.goal.WaterAvoidingRandomStrollBeingPregnantGoal;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.IPreggoMobPregnancySystem;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
@@ -89,7 +90,7 @@ public abstract class AbstractTamablePregnantEnderWoman extends AbstractTamableE
 		super.readAdditionalSaveData(compoundTag);	
 		if (compoundTag.contains("PregnantTamableData")) {
 			this.pregnancyData.deserializeNBT(compoundTag.getCompound("PregnantTamableData"));
-		}
+		}	
 	}
 	
 	@Override
@@ -168,14 +169,6 @@ public abstract class AbstractTamablePregnantEnderWoman extends AbstractTamableE
 						&& !getPregnancyData().isIncapacitated();
 			}
 		});
-		this.goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(this, 1.0D) {
-			@Override
-			public boolean canUse() {
-				return super.canUse() 
-				&& (getTamableData().isSavage() || !isTame())
-				&& !getPregnancyData().isIncapacitated();		
-			}
-		});
 		this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 6F) {
 			@Override
 			public boolean canUse() {
@@ -210,8 +203,8 @@ public abstract class AbstractTamablePregnantEnderWoman extends AbstractTamableE
 	}
 	
 	@Override
-	protected void reassessTameGoals() {
-		if (this.isTame()) {		
+	protected void reassessTameGoals() {	
+		if (this.isTame()) {	
 			GoalHelper.addGoalWithReplacement(this, 6, new EatGoal<>(this, 0.6F, 20) {
 				@Override
 				public boolean canUse() {
@@ -226,13 +219,13 @@ public abstract class AbstractTamablePregnantEnderWoman extends AbstractTamableE
 			});
 			GoalHelper.addGoalWithReplacement(this, 3, new PregnantPreggoMobOwnerHurtByTargetGoal<>(this));
 			GoalHelper.addGoalWithReplacement(this, 4, new PregnantPreggoMobOwnerHurtTargetGoal<>(this), true);
-			GoalHelper.addGoalWithReplacement(this, 6, new PregnantPreggoMobFollowOwnerGoal<>(this, 1.2D, 6F, 2F, false));
+			GoalHelper.addGoalWithReplacement(this, 2, new PregnantPreggoMobFollowOwnerGoal<>(this, 1.2D, 6F, 2F, false));
 			GoalHelper.addGoalWithReplacement(this, 7, new AbstractEnderWoman.EnderWomanTeleportToOwnerGoal(this, 196F, 81F) {
 				@Override
 				public boolean canUse() {
 					return super.canUse() 
+					&& getTamableData().isFollowing()
 					&& !getTamableData().isSavage()
-					&& !getTamableData().isWaiting()
 					&& !getPregnancyData().isIncapacitated();			
 				}
 				@Override
@@ -241,6 +234,7 @@ public abstract class AbstractTamablePregnantEnderWoman extends AbstractTamableE
 					&& !getPregnancyData().isIncapacitated();
 				}
 			});
+			GoalHelper.removeGoalByClass(this.goalSelector, WaterAvoidingRandomStrollGoal.class);
 		}
 		else {
 			GoalHelper.removeGoalByClass(this.goalSelector, Set.of(
@@ -250,7 +244,20 @@ public abstract class AbstractTamablePregnantEnderWoman extends AbstractTamableE
 					AbstractEnderWoman.EnderWomanTeleportToOwnerGoal.class
 			));
 			GoalHelper.removeGoalByClass(this.targetSelector, PregnantPreggoMobOwnerHurtTargetGoal.class);
+			GoalHelper.addGoalWithReplacement(this, 6, new WaterAvoidingRandomStrollBeingPregnantGoal<>(this, 1.0D));
+		}		
+	}
+	
+	@Override
+	protected void registerGoalsBeingTameAndNotSavage() {		
+	    if (this.tamablePreggoMobData.isWandering()) {		
+			PreggoMobHelper.addWanderingGoalsBeingPregnant(this, 6, 3);
 		}	
+	}
+	
+	@Override
+	protected void registerGoalsBeingTameAndSavage() {		
+		GoalHelper.addGoalWithReplacement(this, 6, new WaterAvoidingRandomStrollBeingPregnantGoal<>(this, 1.0D));
 	}
 	
 	@Override

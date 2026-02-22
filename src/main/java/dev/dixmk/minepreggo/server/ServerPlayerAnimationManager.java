@@ -11,7 +11,10 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
-public class ServerPlayerAnimationManager {
+public class ServerPlayerAnimationManager {   
+	private static final int SYNC_INTERVAL = 20;
+    private final Map<UUID, AnimationState> lastSyncedState;
+    private int tickCounter = 0;
     
 	private ServerPlayerAnimationManager() {
 		lastSyncedState = new HashMap<>();
@@ -33,10 +36,6 @@ public class ServerPlayerAnimationManager {
         	instance.syncAnimations();
         }
     }
-    
-	private static final int SYNC_INTERVAL = 20;
-    private final Map<UUID, AnimationState> lastSyncedState;
-    private int tickCounter = 0;
 
     private void syncAnimations() {
         // Periodic sync to ensure all clients stay synchronized

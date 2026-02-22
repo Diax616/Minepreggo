@@ -134,8 +134,17 @@ public abstract class AbstractTamableEnderWoman extends AbstractEnderWoman imple
 			inventory.getHandler().deserializeNBT(inventoryTag);		
 		femaleEntity.deserializeNBT(compound.getCompound("defaultFemaleEntityImpl"));
 		tamablePreggoMobData.deserializeNBT(compound.getCompound("TamableData"));
+		
+		if (!this.level().isClientSide && this.isTame()) {   
+			if (!this.tamablePreggoMobData.isSavage()) {
+				this.registerGoalsBeingTameAndNotSavage();
+			}
+			else {
+				this.registerGoalsBeingTameAndSavage();
+			}
+		}
 	}
-
+	
 	@Override
 	public boolean canBeTamedByPlayer() {
 		return true;
@@ -208,7 +217,16 @@ public abstract class AbstractTamableEnderWoman extends AbstractEnderWoman imple
 	public AgeableMob getBreedOffspring(ServerLevel p_146743_, AgeableMob p_146744_) {
 		return null;
 	}
-	
+
+	@Override
+	protected boolean canReplaceCurrentItem(ItemStack p_21428_, ItemStack p_21429_) {
+		final var slot = LivingEntity.getEquipmentSlotForItem(p_21428_);				
+		if (slot.getType() == EquipmentSlot.Type.HAND) {
+			return super.canReplaceCurrentItem(p_21428_, p_21429_) && !this.isCarring();
+		}
+		return super.canReplaceCurrentItem(p_21428_, p_21429_);
+	}
+
 	@Override
 	protected void pickUpItem(ItemEntity p_21471_) {		
 		ItemStack itemstack = p_21471_.getItem();
@@ -310,13 +328,6 @@ public abstract class AbstractTamableEnderWoman extends AbstractEnderWoman imple
 		});
 		this.targetSelector.addGoal(2, new HurtByTargetGoal(this));		
 		this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.2D, false));
-		this.goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(this, 1.0D) {
-			@Override
-			public boolean canUse() {
-				return super.canUse() 
-				&& (getTamableData().isSavage() || !isTame());		
-			}
-		});
 		this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 6F) {
 			@Override
 			public boolean canUse() {
@@ -366,15 +377,16 @@ public abstract class AbstractTamableEnderWoman extends AbstractEnderWoman imple
 					&& !getTamableData().isWaiting();			
 				}
 			}, true);
-			GoalHelper.addGoalWithReplacement(this, 6, new PreggoMobFollowOwnerGoal<>(this, 1.2D, 6F, 2F, false));
+			GoalHelper.addGoalWithReplacement(this, 2, new PreggoMobFollowOwnerGoal<>(this, 1.2D, 6F, 2F, false));
 			GoalHelper.addGoalWithReplacement(this, 7, new AbstractEnderWoman.EnderWomanTeleportToOwnerGoal(this, 196F, 81F) {
 				@Override
 				public boolean canUse() {
 					return super.canUse() 
-					&& !getTamableData().isSavage()		
-					&& !getTamableData().isWaiting();			
+					&& getTamableData().isFollowing()
+					&& !getTamableData().isSavage();			
 				}
 			});
+			GoalHelper.removeGoalByClass(this.goalSelector, WaterAvoidingRandomStrollGoal.class);
 		}
 		else {
 			GoalHelper.removeGoalByClass(this.goalSelector, Set.of(
@@ -384,7 +396,18 @@ public abstract class AbstractTamableEnderWoman extends AbstractEnderWoman imple
 					AbstractEnderWoman.EnderWomanTeleportToOwnerGoal.class
 			));
 			GoalHelper.removeGoalByClass(this.targetSelector, OwnerHurtTargetGoal.class);
+			GoalHelper.addGoalWithReplacement(this, 6, new WaterAvoidingRandomStrollGoal(this, 1.0D));
 		}	
+	}
+	
+	protected void registerGoalsBeingTameAndNotSavage() {
+		if (this.tamablePreggoMobData.isWandering()) {
+			PreggoMobHelper.addWanderingGoals(this, 6, 3);
+		}	
+	}
+	
+	protected void registerGoalsBeingTameAndSavage() {
+		GoalHelper.addGoalWithReplacement(this, 6, new WaterAvoidingRandomStrollGoal(this, 1.0D));
 	}
 	
 	// ITamablePreggomob START

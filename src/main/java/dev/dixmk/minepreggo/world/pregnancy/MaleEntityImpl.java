@@ -33,25 +33,29 @@ public class MaleEntityImpl extends AbstractBreedableEntity implements IMaleEnti
 	
 	@Override
 	public CompoundTag serializeNBT() {
-		CompoundTag nbt = super.serializeNBT();
-		ListTag list = new ListTag();
-		this.pregnantEntities.forEach(value -> {		
-			CompoundTag pair = new CompoundTag();
-		    pair.putUUID("value", value);
-			list.add(pair);
-		});
-		nbt.put("DataPregnantEntitiesByHim", list);
+		CompoundTag nbt = super.serializeNBT();	
+		if (!this.pregnantEntities.isEmpty()) {
+			ListTag list = new ListTag();
+			this.pregnantEntities.forEach(value -> {		
+				CompoundTag pair = new CompoundTag();
+			    pair.putUUID("value", value);
+				list.add(pair);
+			});
+			nbt.put("DataPregnantEntitiesByHim", list);
+		}
 		return nbt;
 	}
 	
 	@Override
 	public void deserializeNBT(CompoundTag nbt) {
 		super.deserializeNBT(nbt);
-		ListTag list = nbt.getList("DataPregnantEntitiesByHim", Tag.TAG_COMPOUND);		
-	    for (var t : list) {
-	        CompoundTag pair = (CompoundTag) t;
-	        UUID value = pair.getUUID("value");
-	        pregnantEntities.add(value);	        
-	    }    
+		if (nbt.contains("DataPregnantEntitiesByHim", Tag.TAG_LIST)) {
+			ListTag list = nbt.getList("DataPregnantEntitiesByHim", Tag.TAG_COMPOUND);
+			this.pregnantEntities.clear();
+			list.forEach(value -> {
+				CompoundTag pair = (CompoundTag) value;
+				this.pregnantEntities.add(pair.getUUID("value"));
+			});
+		}
 	}
 }

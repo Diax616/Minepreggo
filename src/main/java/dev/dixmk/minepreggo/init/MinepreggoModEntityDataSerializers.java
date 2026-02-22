@@ -2,6 +2,7 @@ package dev.dixmk.minepreggo.init;
 
 import java.util.Optional;
 
+import dev.dixmk.minepreggo.world.entity.preggo.MovementState;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobBody;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobFace;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractCreeperGirl.CombatMode;
@@ -58,6 +59,8 @@ public class MinepreggoModEntityDataSerializers {
                 buf -> PreggoMobBody.valueOf(buf.readUtf(32))
             );
 	
+	public static final EntityDataSerializer<MovementState> MOVEMENT_STATE = EntityDataSerializer.simpleEnum(MovementState.class);
+	
     public static void register() {
         EntityDataSerializers.registerSerializer(OPTIONAL_PREGNANCY_SYMPTOM);
         EntityDataSerializers.registerSerializer(PREGNANCY_STAGE);
@@ -67,5 +70,6 @@ public class MinepreggoModEntityDataSerializers {
         EntityDataSerializers.registerSerializer(OPTIONAL_POST_PREGNANCY);
         EntityDataSerializers.registerSerializer(OPTIONAL_PREGGO_MOB_FACE);
         EntityDataSerializers.registerSerializer(OPTIONAL_PREGGO_MOB_BODY);
+        EntityDataSerializers.registerSerializer(MOVEMENT_STATE);
     }
 }

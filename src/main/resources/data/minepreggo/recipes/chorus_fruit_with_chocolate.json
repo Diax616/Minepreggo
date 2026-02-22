@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+	{
+	  "item": "minecraft:chorus_fruit"
+	},
+	{
+	  "item": "minecraft:chorus_fruit"
+	},
+    {
+      "item": "minepreggo:chocolate_bar"
+    }	
+  ],
+  "result": {
+    "item": "minepreggo:chorus_fruit_with_chocolate",
+    "count": 1
+  }
+}

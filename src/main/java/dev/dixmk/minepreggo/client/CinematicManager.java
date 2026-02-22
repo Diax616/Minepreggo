@@ -6,6 +6,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class CinematicManager {
+    private boolean isInCinematic = false;
+    private int activeCinematicMobId = -1;
+    private float storedYaw = 0.0f;
+    private float storedPitch = 0.0f;
 	
 	private CinematicManager() {}
 	
@@ -17,11 +21,6 @@ public class CinematicManager {
         return Holder.INSTANCE;
     }
 	
-    private boolean isInCinematic = false;
-    private int activeCinematicMobId = -1;
-    private float storedYaw = 0.0f;
-    private float storedPitch = 0.0f;
-
     public void startCinematic(LocalPlayer player, int mobEntityId) {
         isInCinematic = true;
         activeCinematicMobId = mobEntityId;

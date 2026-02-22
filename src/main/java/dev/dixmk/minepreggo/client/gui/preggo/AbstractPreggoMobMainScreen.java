@@ -21,6 +21,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.IPostPregnancyEntity;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMobData;
+import dev.dixmk.minepreggo.world.entity.preggo.MovementState;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.inventory.preggo.AbstractPreggoMobMainMenu;
 import dev.dixmk.minepreggo.world.pregnancy.Craving;
@@ -125,7 +126,7 @@ public abstract class AbstractPreggoMobMainScreen
 	
 	protected void addPreggoMobCheckBoxes() {		
 		this.preggoMob.ifPresentOrElse(mob -> {			
-			final var isWaiting = mob.getTamableData().isWaiting();
+			final var movementState = mob.getTamableData().getMovementState();
 			final var id = mob.getId();
 					
 			inventoryButton = new ImageButton(this.leftPos - 24, this.topPos + 6, 16, 16, 1, 57, 16, ScreenHelper.MINEPREGGO_ICONS_TEXTURE, 256, 256, 
@@ -139,23 +140,32 @@ public abstract class AbstractPreggoMobMainScreen
 					});							
 			sexButton.setTooltip(Tooltip.create(Component.translatable("gui.minepreggo.preggo_mob_inventory.tooltip_sex")));
 				
-			var wait = ToggleableCheckbox.builder(this.leftPos + 6, this.topPos + 5, 20, 20, Component.translatable("gui.minepreggo.preggo_mob_main.checkbox_wait"), isWaiting)
+			var wait = ToggleableCheckbox.builder(this.leftPos + 6, this.topPos + 5, 20, 20, Component.translatable("gui.minepreggo.preggo_mob_main.checkbox_wait"), movementState == MovementState.WAITING)
 					.group(state)
-					.onSelect(() -> MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdatePreggoMobWaitC2SPacket(id, true)))
+					.onSelect(() -> MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdatePreggoMobWaitC2SPacket(id, MovementState.WAITING)))
 					.build();
 		
-			var follow = ToggleableCheckbox.builder(this.leftPos + 6, this.topPos + 29, 20, 20, Component.translatable("gui.minepreggo.preggo_mob_main.checkbox_follow"), !isWaiting)
+			var follow = ToggleableCheckbox.builder(this.leftPos + 6, this.topPos + 29, 20, 20, Component.translatable("gui.minepreggo.preggo_mob_main.checkbox_follow"), movementState == MovementState.FOLLOWING)
 					.group(state)
-					.onSelect(() -> MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdatePreggoMobWaitC2SPacket(id, false)))
+					.onSelect(() -> MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdatePreggoMobWaitC2SPacket(id, MovementState.FOLLOWING)))
+					.build();
+			
+			var wandering = ToggleableCheckbox.builder(this.leftPos + 6, this.topPos + 53, 20, 20, Component.translatable("gui.minepreggo.preggo_mob_main.checkbox_wander"), movementState == MovementState.WANDERING)
+					.group(state)
+					.onSelect(() -> MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdatePreggoMobWaitC2SPacket(id, MovementState.WANDERING)))
 					.build();
 
+			wandering.setTooltip(Tooltip.create(Component.translatable("gui.minepreggo.preggo_mob_inventory.tooltip_wander")));
+		
 			this.addRenderableWidget(inventoryButton);	
 			this.addRenderableWidget(sexButton);
 			this.addRenderableWidget(wait);
 			this.addRenderableWidget(follow);
+			this.addRenderableWidget(wandering);
 			
 			state.add(wait);
 			state.add(follow);
+			state.add(wandering);
 		}, () -> {
 			MinepreggoMod.LOGGER.error("preggoMob was null");
 			this.minecraft.player.closeContainer();
@@ -165,7 +175,7 @@ public abstract class AbstractPreggoMobMainScreen
 	
 	protected void addPickUpLootCheckBox() {
 		this.preggoMob.ifPresent(mob -> {		
-			var pickUpItems = new Checkbox(this.leftPos + 6, this.topPos + 53, 20, 20, Component.translatable("gui.minepreggo.preggo_mob_main.checkbox_pickup"), canPickUpLoot) {
+			var pickUpItems = new Checkbox(this.leftPos + 6, this.topPos + 77, 20, 20, Component.translatable("gui.minepreggo.preggo_mob_main.checkbox_pickup"), canPickUpLoot) {
 				@Override
 				public void onPress() {
 					super.onPress();
@@ -179,7 +189,7 @@ public abstract class AbstractPreggoMobMainScreen
 	
 	protected void addBreakBlocksCheckBox() {
 		this.preggoMob.ifPresent(mob -> {		
-			var breakBlocks = new Checkbox(this.leftPos + 6, this.topPos + 77, 20, 20, Component.translatable("gui.minepreggo.preggo_mob_main.checkbox_break"), canBreakBlocks) {
+			var breakBlocks = new Checkbox(this.leftPos + 6, this.topPos + 101, 20, 20, Component.translatable("gui.minepreggo.preggo_mob_main.checkbox_break"), canBreakBlocks) {
 				@Override
 				public void onPress() {
 					super.onPress();

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+	{
+	  "item": "minecraft:chorus_fruit"
+	},
+	{
+	  "item": "minecraft:chorus_fruit"
+	},
+    {
+      "item": "minepreggo:hot_sauce"
+    }	
+  ],
+  "result": {
+    "item": "minepreggo:chorus_fruit_with_hot_sauce",
+    "count": 1
+  }
+}

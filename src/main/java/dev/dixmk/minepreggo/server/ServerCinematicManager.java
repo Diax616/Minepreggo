@@ -13,7 +13,11 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.npc.Villager;
 
-public class ServerCinematicManager {
+public class ServerCinematicManager {	
+    private final Map<UUID, CinematicSession<?>> activeSessions;
+    private final Set<UUID> playersInCinematic;
+    private final Set<UUID> preggoMobsInCinematic;
+    private final Set<UUID> villagerInCinematic;
 	
 	private ServerCinematicManager() {
 	    activeSessions = new HashMap<>();
@@ -29,11 +33,6 @@ public class ServerCinematicManager {
     public static ServerCinematicManager getInstance() {
         return Holder.INSTANCE;
     }
-	
-    private final Map<UUID, CinematicSession<?>> activeSessions;
-    private final Set<UUID> playersInCinematic;
-    private final Set<UUID> preggoMobsInCinematic;
-    private final Set<UUID> villagerInCinematic;
     
     public void start(ServerPlayer playerA, ServerPlayer playerB, @Nullable Runnable onStart, @Nullable Runnable onEnd) {
         if (isInCinematic(playerA) || isInCinematic(playerB)) return;

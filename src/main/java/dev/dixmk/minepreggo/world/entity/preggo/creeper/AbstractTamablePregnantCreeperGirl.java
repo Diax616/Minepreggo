@@ -15,6 +15,7 @@ import dev.dixmk.minepreggo.world.entity.ai.goal.GoalHelper;
 import dev.dixmk.minepreggo.world.entity.ai.goal.PregnantPreggoMobFollowOwnerGoal;
 import dev.dixmk.minepreggo.world.entity.ai.goal.PregnantPreggoMobOwnerHurtByTargetGoal;
 import dev.dixmk.minepreggo.world.entity.ai.goal.PregnantPreggoMobOwnerHurtTargetGoal;
+import dev.dixmk.minepreggo.world.entity.ai.goal.WaterAvoidingRandomStrollBeingPregnantGoal;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.IPreggoMobPregnancySystem;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
@@ -163,22 +164,7 @@ public abstract class AbstractTamablePregnantCreeperGirl extends AbstractTamable
 				&& !getPregnancyData().isIncapacitated();
 			}
 		});
-		
-		this.goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(this, 1.0D) {
-			@Override
-			public boolean canUse() {
-				return super.canUse() 
-				&& (getTamableData().isSavage() || !isTame())		
-				&& !getPregnancyData().isIncapacitated();
-			}
-
-			@Override
-			public boolean canContinueToUse() {
-				return super.canContinueToUse() 
-				&& !getPregnancyData().isIncapacitated();
-			}
-		});
-				
+						
 		this.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(this, Player.class, false, false) {
 			@Override
 			public boolean canUse() {
@@ -232,13 +218,27 @@ public abstract class AbstractTamablePregnantCreeperGirl extends AbstractTamable
 	protected void reassessTameGoals() {
 		if (this.isTame()) {
 			GoalHelper.addGoalWithReplacement(this, 3, new PregnantPreggoMobOwnerHurtByTargetGoal<>(this));
-			GoalHelper.addGoalWithReplacement(this, 3, new PregnantPreggoMobOwnerHurtTargetGoal<>(this), true);
-			GoalHelper.addGoalWithReplacement(this, 6, new PregnantPreggoMobFollowOwnerGoal<>(this, 1.2D, 6F, 2F, false));	
+			GoalHelper.addGoalWithReplacement(this, 4, new PregnantPreggoMobOwnerHurtTargetGoal<>(this), true);
+			GoalHelper.addGoalWithReplacement(this, 2, new PregnantPreggoMobFollowOwnerGoal<>(this, 1.2D, 6F, 2F, false));	
+			GoalHelper.removeGoalByClass(this.goalSelector, WaterAvoidingRandomStrollGoal.class);
 		}
 		else {
 			GoalHelper.removeGoalByClass(this.goalSelector, Set.of(PregnantPreggoMobOwnerHurtByTargetGoal.class, PregnantPreggoMobFollowOwnerGoal.class));
 			GoalHelper.removeGoalByClass(this.targetSelector, PregnantPreggoMobOwnerHurtTargetGoal.class);
+			GoalHelper.addGoalWithReplacement(this, 6, new WaterAvoidingRandomStrollBeingPregnantGoal<>(this, 1.0D));
 		}
+	}
+	
+	@Override
+	protected void registerGoalsBeingTameAndNotSavage() {
+		if (this.tamablePreggoMobData.isWandering()) {		
+			PreggoMobHelper.addWanderingGoalsBeingPregnant(this, 6, 3);
+		}	
+	}
+	
+	@Override
+	protected void registerGoalsBeingTameAndSavage() {
+		GoalHelper.addGoalWithReplacement(this, 6, new WaterAvoidingRandomStrollBeingPregnantGoal<>(this, 1.0D));
 	}
 	
 	@Override

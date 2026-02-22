@@ -63,16 +63,16 @@ public class EatGoal<E extends PreggoMob & ITamablePreggoMob<?>> extends Goal {
         this.isEating = true;
         this.eatTimer = 0;
         this.mob.getNavigation().stop();
-        this.food = getFoodItem();
+        this.food = getFoodItem().split(1);
         
     	// TODO: it does not handle if mob's hand is not empty, it must implement a function that swaps between current itemstack in target hand and food itemstack.       	
     	if (this.mob.getItemInHand(InteractionHand.OFF_HAND).isEmpty()) {
     		this.hand = InteractionHand.OFF_HAND;
-    		this.mob.setItemInHand(hand, food);
+    		this.mob.setItemInHand(hand, this.food);
     	}
     	else if (this.mob.getItemInHand(InteractionHand.MAIN_HAND).isEmpty()) {
     		this.hand = InteractionHand.MAIN_HAND;
-    		this.mob.setItemInHand(hand, food);
+    		this.mob.setItemInHand(hand, this.food);
     	}
    
         this.mob.playSound(SoundEvents.GENERIC_EAT, 1.0F, 1.0F);
@@ -111,6 +111,7 @@ public class EatGoal<E extends PreggoMob & ITamablePreggoMob<?>> extends Goal {
         this.isEating = false;
         this.eatTimer = 0;
         this.food = ItemStack.EMPTY;
+        this.hand = null;
     }
 
     private void spawnEatingParticles() {

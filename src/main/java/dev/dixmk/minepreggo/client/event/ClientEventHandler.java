@@ -26,6 +26,7 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
@@ -232,7 +233,7 @@ public class ClientEventHandler {
             mc.player
         ));
         
-        if (result.getType() != BlockHitResult.Type.MISS) {
+        if (result.getType() != HitResult.Type.MISS) {
             return result.getBlockPos();
         }
         

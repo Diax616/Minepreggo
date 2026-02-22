@@ -46,7 +46,7 @@ public class PlayerPregnancyDataHolder implements INBTSerializable<CompoundTag> 
 	public CompoundTag serializeNBT() {
         CompoundTag tag;
         if (isInitialized) {
-            tag = lazyValue.get().serializeNBT();
+            tag = (CompoundTag) lazyValue.get().serializeNBT();
         } else if (savedData.contains(PlayerPregnancyDataImpl.NBT_KEY)) {
             tag = savedData.copy();
         } else {

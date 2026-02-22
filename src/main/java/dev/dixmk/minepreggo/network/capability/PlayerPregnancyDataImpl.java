@@ -30,9 +30,10 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.item.Item;
+import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.network.PacketDistributor;
 
-public class PlayerPregnancyDataImpl implements IPlayerPregnancyDataHandler {	
+public class PlayerPregnancyDataImpl implements IPlayerPregnancyDataHandler, INBTSerializable<Tag> {	
 	
 	public static final String NBT_KEY = "DataPlayerPregnancySystemImpl";
 	
@@ -60,13 +61,13 @@ public class PlayerPregnancyDataImpl implements IPlayerPregnancyDataHandler {
 	private int bellyRubs = 0;
 	private int horny = 0;
 	
+	private Optional<ImmutablePair<Craving, Species>> typeOfCraving = Optional.empty();
+	
 	// they do not need to be saved in a NBT
 	private int numOfJumps = 0;
 	private int sprintingTimer = 0;
 	private int sneakingTimer = 0;
-	
-	private Optional<ImmutablePair<Craving, Species>> typeOfCraving = Optional.empty();
-	
+		
 	public final AnimationState bellyAnimationState = new AnimationState();
 	
 	@Override
@@ -539,7 +540,8 @@ public class PlayerPregnancyDataImpl implements IPlayerPregnancyDataHandler {
 		this.typeOfCraving = Optional.ofNullable(craving);
 	}
 	
-	public CompoundTag serializeNBT() {
+	@Override
+	public Tag serializeNBT() {
 		CompoundTag wrapper = new CompoundTag();
 		CompoundTag nbt = new CompoundTag();
 		
@@ -581,7 +583,8 @@ public class PlayerPregnancyDataImpl implements IPlayerPregnancyDataHandler {
 		return wrapper;
 	}
 
-	public void deserializeNBT(@NonNull Tag tag) throws IllegalStateException {
+	@Override
+	public void deserializeNBT(Tag tag) throws IllegalStateException {
 		CompoundTag wrapper = (CompoundTag) tag;	
 		if (!wrapper.contains(NBT_KEY, Tag.TAG_COMPOUND)) {
 			MinepreggoMod.LOGGER.error("{} is not present in nbt", NBT_KEY);

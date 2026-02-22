@@ -14,6 +14,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public abstract class AbstractEnderDragonMainScreen {
 
+	private AbstractEnderDragonMainScreen() {}
+	
 	private static final ImmutableMap<Craving, ResourceLocation> CRAVING_ICONS = ImmutableMap.of(
 			Craving.SALTY, MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/chorus_fruit_with_salt.png"), 
 			Craving.SWEET, MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/chorus_fruit_with_chocolate.png"), 

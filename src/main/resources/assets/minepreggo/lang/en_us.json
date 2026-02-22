@@ -34,9 +34,11 @@
 	"gui.minepreggo.preggo_mob_inventory.tooltip_sex": "Wanna Have Fun?",
 	"gui.minepreggo.preggo_mob_inventory.tooltip_checkbox_break": "Allow Her Break Soft Blocks",
 	"gui.minepreggo.preggo_mob_inventory.tooltip_checkbox_pickup": "Allow Her Pick Up Items",
-	
+	"gui.minepreggo.preggo_mob_inventory.tooltip_wander": "Allow Her Wander Around (Max 16 blocks)",
+
 	"gui.minepreggo.preggo_mob_main.checkbox_follow": "Follow",
 	"gui.minepreggo.preggo_mob_main.checkbox_wait": "Wait",
+	"gui.minepreggo.preggo_mob_main.checkbox_wander": "Wander",
 	"gui.minepreggo.preggo_mob_main.checkbox_break": "Break",
 	"gui.minepreggo.preggo_mob_main.checkbox_pickup": "PickUp",
 	"gui.minepreggo.preggo_mob_main.button.mount": "Mount",
@@ -716,6 +718,8 @@
 	"chat.minepreggo.player.pregnancy.message.cannot_ride.generic.2": "Your belly is too big to ride now",
 	"chat.minepreggo.player.pregnancy.message.cannot_ride.ender_woman.generic.1": "Your belly is so big that it hits %s's head.",
 	"chat.minepreggo.player.pregnancy.message.cannot_ride.ender_woman.generic.2": "You weigh too much to ride %s.",
+	"chat.minepreggo.player.pregnancy.message.womb_is_overloaded.creative": "Your womb is overloaded, you will die if change to creative mode now!",
+
 	"chat.minepreggo.player.message.cannot_ride.ender_woman.pregnant.labor": "%s is in labor, you can't ride her now!",
 	"chat.minepreggo.player.message.cannot_ride.ender_woman.pregnant.morning_sickness": "%s is feeling too sick, you can't ride her now!",
 	"chat.minepreggo.player.message.cannot_ride.ender_woman.pregnant.common_pregnancy_pain": "%s is in too much pain, you can't ride her now!",

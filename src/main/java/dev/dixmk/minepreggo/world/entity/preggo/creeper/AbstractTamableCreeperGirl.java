@@ -137,6 +137,15 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 		tamablePreggoMobData.deserializeNBT(compound.getCompound("TamableData"));
 		this.breakBlocks = compound.getBoolean("breakBlocks");
 		this.poweredTimer = compound.getInt("poweredTimer");
+		
+		if (!this.level().isClientSide && this.isTame()) {   
+			if (!this.tamablePreggoMobData.isSavage()) {
+				this.registerGoalsBeingTameAndNotSavage();
+			}
+			else {
+				this.registerGoalsBeingTameAndSavage();
+			}
+		}		
 	}
 	
 	@Override
@@ -152,15 +161,7 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 		this.goalSelector.addGoal(2, new AvoidEntityGoal<>(this, Ocelot.class, 6F, 1, 1.2));
 		this.goalSelector.addGoal(2, new AvoidEntityGoal<>(this, Cat.class, 6F, 1, 1.2));		
 		this.targetSelector.addGoal(2, new HurtByTargetGoal(this));		
-		this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.2D, false));
-		this.goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(this, 1.0D) {
-			@Override
-			public boolean canUse() {
-				return super.canUse() 
-				&& (getTamableData().isSavage() || !isTame());	
-			}
-		});
-		
+		this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.2D, false));	
 		this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 6F) {
 			@Override
 			public boolean canUse() {
@@ -190,7 +191,7 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 				return super.canUse() 
 				&& (getTamableData().isSavage() || !isTame());		
 			}
-		});	
+		});		
 	}
 	
 	@Override
@@ -212,11 +213,23 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 					&& !getTamableData().isWaiting();			
 				}
 			}, true);
-			GoalHelper.addGoalWithReplacement(this, 6, new PreggoMobFollowOwnerGoal<>(this, 1.2D, 7F, 2F, false));				
+			GoalHelper.addGoalWithReplacement(this, 2, new PreggoMobFollowOwnerGoal<>(this, 1.2D, 7F, 2F, false));				
+			GoalHelper.removeGoalByClass(this.goalSelector, WaterAvoidingRandomStrollGoal.class);
 		} else {
 			GoalHelper.removeGoalByClass(this.goalSelector, Set.of(PreggoMobFollowOwnerGoal.class, OwnerHurtByTargetGoal.class));
 			GoalHelper.removeGoalByClass(this.targetSelector, OwnerHurtTargetGoal.class);
+			GoalHelper.addGoalWithReplacement(this, 6, new WaterAvoidingRandomStrollGoal(this, 1.0D));
 		}
+	}
+	
+	protected void registerGoalsBeingTameAndNotSavage() {
+		if (this.tamablePreggoMobData.isWandering()) {
+			PreggoMobHelper.addWanderingGoals(this, 6, 3);
+		}	
+	}
+	
+	protected void registerGoalsBeingTameAndSavage() {
+		GoalHelper.addGoalWithReplacement(this, 6, new WaterAvoidingRandomStrollGoal(this, 1.0D));
 	}
 	
 	@Override

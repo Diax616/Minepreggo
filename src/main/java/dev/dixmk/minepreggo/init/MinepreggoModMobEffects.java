@@ -47,6 +47,7 @@ import dev.dixmk.minepreggo.world.effect.ZeroGravityBelly;
 import dev.dixmk.minepreggo.world.effect.ZombieImpregnation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -118,5 +119,15 @@ public class MinepreggoModMobEffects {
 	public static final RegistryObject<MobEffect> ENDER_DRAGON_RECOGNITION = REGISTRY.register("ender_dragon_recognition", () -> new MobEffect(MobEffectCategory.BENEFICIAL, -3407668) {});	
 	public static final RegistryObject<MobEffect> ENDER_ESSENCE = REGISTRY.register("ender_essence", () -> new MobEffect(MobEffectCategory.BENEFICIAL, -13434829) {});	
 	public static final RegistryObject<MobEffect> ENDER_DRAGON_ESSENCE = REGISTRY.register("ender_dragon_essence", () -> new MobEffect(MobEffectCategory.BENEFICIAL, -3407668) {});	
-
+	
+	public static boolean hasImpregnationEffect(LivingEntity entity) {
+		return entity.hasEffect(IMPREGNANTION.get())
+				|| entity.hasEffect(ZOMBIE_IMPREGNATION.get())
+				|| entity.hasEffect(CREEPER_IMPREGNATION.get()) 
+				|| entity.hasEffect(ENDER_IMPREGNATION.get())
+				|| entity.hasEffect(HUMANOID_CREEPER_IMPREGNATION.get())
+				|| entity.hasEffect(HUMANOID_ENDER_IMPREGNATION.get())
+				|| entity.hasEffect(VILLAGER_IMPREGNATION.get())
+				|| entity.hasEffect(ENDER_DRAGON_IMPREGNATION.get());
+	}
 }																																																			

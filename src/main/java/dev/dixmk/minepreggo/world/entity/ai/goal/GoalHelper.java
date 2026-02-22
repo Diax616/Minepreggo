@@ -1,5 +1,6 @@
 package dev.dixmk.minepreggo.world.entity.ai.goal;
 
+import java.util.Iterator;
 import java.util.Set;
 
 import net.minecraft.world.entity.Mob;
@@ -20,7 +21,7 @@ public class GoalHelper {
     public static void removeGoalByClass(GoalSelector goalSelector, Class<? extends Goal> goalClass) {
     	goalSelector.getAvailableGoals().removeIf(wrappedGoal ->  {
     		Goal goal = wrappedGoal.getGoal();
-    		if (goal.getClass().equals(goalClass)) {
+    		if (goalClass.isAssignableFrom(goal.getClass())) {
     			if (wrappedGoal.isRunning()) {
     				goal.stop();
 				}
@@ -31,18 +32,26 @@ public class GoalHelper {
     }
     
     public static void removeGoalByClass(GoalSelector goalSelector, Set<Class<? extends Goal>> goalClasses) {
-		goalSelector.getAvailableGoals().removeIf(wrappedGoal ->  {
+    	goalSelector.getAvailableGoals().removeIf(wrappedGoal ->  {
 			Goal goal = wrappedGoal.getGoal();
-			if (goalClasses.contains(goal.getClass())) {
-				if (wrappedGoal.isRunning()) {
-					goal.stop();
+			Iterator<Class<? extends Goal>> iter = goalClasses.iterator();
+			while (iter.hasNext()) {
+				if (iter.next().isAssignableFrom(goal.getClass())) {
+					if (wrappedGoal.isRunning()) {
+						goal.stop();
+					}
+					return true;
 				}
-				return true;
 			}
 			return false;
 		});
 	}
-    
+        
+    public static void addGoalIfNotPresent(GoalSelector selector, int priority, Goal goal) {
+		if (!hasGoalOfClass(selector, goal.getClass())) {
+			selector.addGoal(priority, goal);
+		}
+	}
     
     public static void addGoalWithReplacement(Mob entity, int priority, Goal goal, boolean isTargetSelector) {
         GoalSelector selector = isTargetSelector ? entity.targetSelector : entity.goalSelector;
@@ -52,6 +61,6 @@ public class GoalHelper {
 
     public static boolean hasGoalOfClass(GoalSelector goalSelector, Class<? extends Goal> goalClass) {
         return goalSelector.getAvailableGoals().stream()
-            .anyMatch(wrappedGoal -> wrappedGoal.getGoal().getClass().equals(goalClass));
+            .anyMatch(wrappedGoal -> goalClass.isAssignableFrom(wrappedGoal.getGoal().getClass()));
     }
 }
