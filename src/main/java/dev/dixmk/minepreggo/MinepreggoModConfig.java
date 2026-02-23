@@ -5,6 +5,9 @@ import net.minecraftforge.fml.event.config.ModConfigEvent;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
+
 public class MinepreggoModConfig {
 	
 	private MinepreggoModConfig() {}
@@ -55,6 +58,8 @@ public class MinepreggoModConfig {
         	SERVER.enableSpawningHostilPregnantMonsterCreeperGirls = SERVER.enableSpawningHostilPregnantMonsterCreeperGirlsConfig.get();
         	SERVER.enableSpawningHostilPregnantHumanoidCreeperGirls = SERVER.enableSpawningHostilPregnantHumanoidCreeperGirlsConfig.get();
         	SERVER.enableSpawningHostilPregnantMonsterEnderWomen = SERVER.enableSpawningHostilPregnantMonsterEnderWomenConfig.get();
+        	SERVER.totalTicksForPregnancyHealing = SERVER.totalTicksForPregnancyHealingConfig.get();
+        	SERVER.pregnacyHealingAmount = SERVER.pregnacyHealingAmountConfig.get();
         	
         	SERVER.calculateHungryValues();
         	SERVER.calculateCravingValues();
@@ -128,6 +133,9 @@ public class MinepreggoModConfig {
         private final ForgeConfigSpec.BooleanValue enableSpawningHostilPregnantHumanoidCreeperGirlsConfig;
         private final ForgeConfigSpec.BooleanValue enableSpawningHostilPregnantMonsterEnderWomenConfig;
 
+        private final ForgeConfigSpec.IntValue totalTicksForPregnancyHealingConfig;
+        private final ForgeConfigSpec.IntValue pregnacyHealingAmountConfig;
+
         private int totalTickByPregnancyDays;
         private int totalPregnancyDays;
         private int totalTicksToStartPregnancy;
@@ -187,6 +195,9 @@ public class MinepreggoModConfig {
         private boolean enableSpawningHostilPregnantMonsterCreeperGirls;
         private boolean enableSpawningHostilPregnantHumanoidCreeperGirls;
         private boolean enableSpawningHostilPregnantMonsterEnderWomen;
+        
+        private int totalTicksForPregnancyHealing;
+        private int pregnacyHealingAmount;
             
         private Server(ForgeConfigSpec.Builder builder) {
             builder.push("Server");
@@ -270,6 +281,14 @@ public class MinepreggoModConfig {
             enableSpawningHostilPregnantMonsterEnderWomenConfig = builder
             		.comment("Enable or disable the natural spawning of hostile pregnant monster ender women.")
             		.define("enableSpawningHostilPregnantMonsterEnderWomen", true);
+            
+            totalTicksForPregnancyHealingConfig = builder
+					.comment("Total ticks for pregnancy healing for pregnant entities.")
+					.defineInRange("totalTicksOfPregnancyHealing", 6000, 100, 24000);
+            
+            pregnacyHealingAmountConfig = builder
+            		.comment("Amount of health healed during pregnancy healing for pregnant entities. This amount is reduced 5% by each pregnancy phase.")
+            		.defineInRange("pregnacyHealingAmount", 25, 0, PregnancySystemHelper.MAX_PREGNANCY_HEALTH);
             
             builder.pop();
         }
@@ -473,6 +492,19 @@ public class MinepreggoModConfig {
         public boolean isSpawningHostilPregnantMonsterEnderWomenEnable() {
 			return enableSpawningHostilPregnantMonsterEnderWomen;
 		}
+        
+        public int getTotalTicksForPregnancyHealing() {
+        	return totalTicksForPregnancyHealing;
+        }
+        
+        public int getPregnacyHealingAmount() {
+			return pregnacyHealingAmount;
+		}
+        
+        public int getPregnacyHealingAmount(PregnancyPhase pregnancyPhase) {
+        	float reductionPercentage = 0.05F * pregnancyPhase.ordinal();
+        	return (int) Math.ceil(pregnacyHealingAmount * (1f - reductionPercentage));
+        }
         
         private void calculateHungryValues() { 	
         	totalTicksOfHungryP1 = (int) Math.ceil(totalTicksOfHungryP0 * 0.85F);

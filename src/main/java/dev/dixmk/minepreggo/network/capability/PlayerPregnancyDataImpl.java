@@ -40,6 +40,7 @@ public class PlayerPregnancyDataImpl implements IPlayerPregnancyDataHandler, INB
 	private int daysToGiveBirth = 0;
 	private int daysPassed = 0;
 	private int pregnancyHealth = 0;
+	private int pregnancyHealthTimer = 0;
 	private int pregnancyTimer = 0;
 	private int pregnancyPainTimer = 0;
 
@@ -223,6 +224,11 @@ public class PlayerPregnancyDataImpl implements IPlayerPregnancyDataHandler, INB
 		setPregnancyHealth(pregnancyHealth - amount);
 	}
 
+	@Override
+	public void incrementPregnancyHealth(int amount) {
+		setPregnancyHealth(pregnancyHealth + amount);		
+	}
+	
 	@Override
 	public void resetPregnancyHealth() {
 		pregnancyHealth = 0;
@@ -478,7 +484,6 @@ public class PlayerPregnancyDataImpl implements IPlayerPregnancyDataHandler, INB
 	public void resetHornyTimer() {
 		this.hornyTimer = 0;
 	}
-
 	
 	@Override
 	public void clearTypeOfCravingBySpecies() {
@@ -539,6 +544,26 @@ public class PlayerPregnancyDataImpl implements IPlayerPregnancyDataHandler, INB
 	public void setTypeOfCravingBySpecies(@Nullable ImmutablePair<Craving, Species> craving) {
 		this.typeOfCraving = Optional.ofNullable(craving);
 	}
+
+	@Override
+	public int getPregnancyHealthTimer() {
+		return this.pregnancyHealthTimer;
+	}
+
+	@Override
+	public void setPregnancyHealthTimer(int timer) {
+		this.pregnancyHealthTimer = Math.max(0, timer);
+	}
+
+	@Override
+	public void incrementPregnancyHealthTimer() {
+		++this.pregnancyHealthTimer;
+	}
+
+	@Override
+	public void resetPregnancyHealthTimer() {
+		this.pregnancyHealthTimer = 0;
+	}
 	
 	@Override
 	public Tag serializeNBT() {
@@ -572,6 +597,7 @@ public class PlayerPregnancyDataImpl implements IPlayerPregnancyDataHandler, INB
 		nbt.putInt("DataBellyRubsTimer", bellyRubsTimer);
 		nbt.putInt("DataHorny", horny);
 		nbt.putInt("DataHornyTimer", hornyTimer);
+		nbt.putInt("DataPregnancyHealthTimer", pregnancyHealthTimer);
 		
 		if (typeOfCraving.isPresent()) {
 			nbt.putString(Craving.NBT_KEY, typeOfCraving.get().getLeft().name());
@@ -632,6 +658,7 @@ public class PlayerPregnancyDataImpl implements IPlayerPregnancyDataHandler, INB
 		bellyRubsTimer = nbt.getInt("DataBellyRubsTimer");
 		horny = nbt.getInt("DataHorny");
 		hornyTimer = nbt.getInt("DataHornyTimer");	
+		pregnancyHealthTimer = nbt.getInt("DataPregnancyHealthTimer");
 
 	    if (nbt.contains(Craving.NBT_KEY, Tag.TAG_STRING) && nbt.contains(Species.NBT_KEY, Tag.TAG_STRING)) {
 	        String cravingName = nbt.getString(Craving.NBT_KEY);

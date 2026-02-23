@@ -3,8 +3,10 @@ package dev.dixmk.minepreggo.world.effect;
 import javax.annotation.Nullable;
 
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
+import dev.dixmk.minepreggo.server.ServerParticleHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -25,6 +27,7 @@ public class PregnancyHealing extends MobEffect {
 		
 		if (p_19464_ instanceof ITamablePregnantPreggoMob p) {		
 			p.getPregnancyData().setPregnancyHealth(PregnancySystemHelper.MAX_PREGNANCY_HEALTH);
+			ServerParticleHelper.spawnParticlesAroundSelf(p_19464_, ParticleTypes.HAPPY_VILLAGER, 12);
 		}
 		
 		else if (p_19464_ instanceof ServerPlayer player) {										
@@ -32,6 +35,7 @@ public class PregnancyHealing extends MobEffect {
 				cap.getFemaleData().ifPresent(femaleData -> {
 					if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
 						femaleData.getPregnancyData().setPregnancyHealth(PregnancySystemHelper.MAX_PREGNANCY_HEALTH);
+						ServerParticleHelper.spawnParticlesAroundSelf(p_19464_, ParticleTypes.HAPPY_VILLAGER, 12);
 					}	
 				})
 			);			

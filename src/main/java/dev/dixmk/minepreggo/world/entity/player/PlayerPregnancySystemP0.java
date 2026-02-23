@@ -236,6 +236,11 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 		// This pregnancy phase does not support miscarriage yet	
 	}
 
+	@Override
+	protected void evaluatePregnancyHealing() {
+		// This pregnancy phase does not support pregnancy healing yet	
+	}
+	
 	protected void evaluateRandomWeakness() {
 		// This pregnancy phase does not support random weakness yet
 	}

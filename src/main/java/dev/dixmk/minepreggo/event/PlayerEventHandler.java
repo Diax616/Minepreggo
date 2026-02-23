@@ -739,9 +739,9 @@ public class PlayerEventHandler {
 					var pregnancySystem = femaleData.getPregnancyData();
 					if (pregnancySystem.getPregnancyPain() != PregnancyPain.MISCARRIAGE) {
 											
-						PregnancySystemHelper.calculatePregnancyDamage(serverPlayer, pregnancySystem.getCurrentPregnancyPhase(), damageSource).ifPresent(damage -> {
-														
+						PregnancySystemHelper.calculatePregnancyDamage(serverPlayer, pregnancySystem.getCurrentPregnancyPhase(), damageSource).ifPresent(damage -> {							
 							pregnancySystem.reducePregnancyHealth(damage);
+							pregnancySystem.resetPregnancyHealthTimer();
 							final var health = pregnancySystem.getPregnancyHealth();
 							if (health <= 0) {
 								LivingEntityHelper.playSoundNearTo(serverPlayer, MinepreggoModSounds.PLAYER_MISCARRIAGE.get(), 0.7f);

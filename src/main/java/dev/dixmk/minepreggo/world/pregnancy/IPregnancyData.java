@@ -21,7 +21,13 @@ public interface IPregnancyData extends IPregnant {
 	int getPregnancyHealth();
 	void setPregnancyHealth(@Nonnegative int health);
 	void reducePregnancyHealth(int amount);
+	void incrementPregnancyHealth(int amount);
 	void resetPregnancyHealth();
+	
+	int getPregnancyHealthTimer();
+	void setPregnancyHealthTimer(@Nonnegative int timer);
+	void incrementPregnancyHealthTimer();
+	void resetPregnancyHealthTimer();
 	
 	int getDaysPassed();
 	void setDaysPassed(@Nonnegative int days);

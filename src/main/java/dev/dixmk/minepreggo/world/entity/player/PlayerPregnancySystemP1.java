@@ -15,6 +15,7 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
+import dev.dixmk.minepreggo.server.ServerParticleHelper;
 import dev.dixmk.minepreggo.world.entity.EntityHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.pregnancy.AbstractPregnancySystem;
@@ -23,6 +24,7 @@ import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -91,6 +93,7 @@ public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
 			evaluatePregnancySymptoms();
 		}
 		
+		evaluatePregnancyHealing();
 		evaluatePregnancyNeeds();
 		evaluateRandomWeakness();
 		
@@ -288,5 +291,20 @@ public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
 		removePregnancy();
 							
 		MinepreggoMod.LOGGER.debug("Player {} has entered postmiscarriage phase.", pregnantEntity.getGameProfile().getName());
+	}
+	
+	@Override
+	protected void evaluatePregnancyHealing() {
+		if (pregnancySystem.getPregnancyHealth() < PregnancySystemHelper.MAX_PREGNANCY_HEALTH) {
+			if (pregnancySystem.getPregnancyHealthTimer() > MinepreggoModConfig.SERVER.getTotalTicksForPregnancyHealing()) {
+				pregnancySystem.incrementPregnancyHealth(MinepreggoModConfig.SERVER.getPregnacyHealingAmount(pregnancySystem.getCurrentPregnancyPhase()));
+				pregnancySystem.resetPregnancyHealthTimer();
+				ServerParticleHelper.spawnParticlesAroundSelf(pregnantEntity, ParticleTypes.HAPPY_VILLAGER, 10);
+				MinepreggoMod.LOGGER.debug("Player {} pregnancy health increased to: {}", pregnantEntity.getGameProfile().getName(), pregnancySystem.getPregnancyHealth());
+			}
+			else {
+				pregnancySystem.incrementPregnancyHealthTimer();
+			}
+		}
 	}
 }

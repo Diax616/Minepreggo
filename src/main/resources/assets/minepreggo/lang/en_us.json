@@ -56,8 +56,6 @@
 	"gui.minepreggo.sex_request.preggo_mob.horny.label.message.3": "Can we 'shake' our babies tonight?",
 	"gui.minepreggo.sex_request.preggo_mob.horny.label.message.monster": "<emits timid and unintelligible sounds>",
 
-	
-	
 	"entity.minepreggo.hostile_zombie_girl": "Hostile Zombie Girl",
 	"entity.minepreggo.hostile_pregnant_zombie_girl_p3": "Hostile Pregnant Zombie Girl (P3)",
 	"entity.minepreggo.hostile_pregnant_zombie_girl_p5": "Hostile Pregnant Zombie Girl (P5)",
@@ -718,7 +716,7 @@
 	"chat.minepreggo.player.pregnancy.message.cannot_ride.generic.2": "Your belly is too big to ride now",
 	"chat.minepreggo.player.pregnancy.message.cannot_ride.ender_woman.generic.1": "Your belly is so big that it hits %s's head.",
 	"chat.minepreggo.player.pregnancy.message.cannot_ride.ender_woman.generic.2": "You weigh too much to ride %s.",
-	"chat.minepreggo.player.pregnancy.message.womb_is_overloaded.creative": "Your womb is overloaded, you will die if change to creative mode now!",
+	"chat.minepreggo.player.pregnancy.message.womb_is_overloaded.creative": "Your womb is overloaded, you will die if change to survival mode now!",
 
 	"chat.minepreggo.player.message.cannot_ride.ender_woman.pregnant.labor": "%s is in labor, you can't ride her now!",
 	"chat.minepreggo.player.message.cannot_ride.ender_woman.pregnant.morning_sickness": "%s is feeling too sick, you can't ride her now!",

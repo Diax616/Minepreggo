@@ -86,6 +86,7 @@ public class TamablePregnantPreggoMobDataImpl<E extends PreggoMob & ITamablePreg
     }
 		
 	private int pregnancyHealth = PregnancySystemHelper.MAX_PREGNANCY_HEALTH; 
+	private int pregnancyHealthTimer = 0;
 	private int daysPassed = 0;
 	private int daysToGiveBirth = 0;	
 	private int pregnancyTimer = 0;
@@ -151,6 +152,11 @@ public class TamablePregnantPreggoMobDataImpl<E extends PreggoMob & ITamablePreg
 	@Override
 	public void setPregnancyHealth(int health) {
 		this.pregnancyHealth = Mth.clamp(health, 0, PregnancySystemHelper.MAX_PREGNANCY_HEALTH);
+	}
+	
+	@Override
+	public void incrementPregnancyHealth(int amount) {
+		setPregnancyHealth(this.pregnancyHealth + amount);	
 	}
 	
 	@Override
@@ -487,6 +493,26 @@ public class TamablePregnantPreggoMobDataImpl<E extends PreggoMob & ITamablePreg
 	@Override
 	public SyncedSetPregnancySymptom getSyncedPregnancySymptoms() {
 		return syncedSetPregnancySymptoms;
+	}
+	
+	@Override
+	public int getPregnancyHealthTimer() {
+		return this.pregnancyHealthTimer;
+	}
+
+	@Override
+	public void setPregnancyHealthTimer(int timer) {
+		this.pregnancyHealthTimer = Math.max(0, timer);
+	}
+
+	@Override
+	public void incrementPregnancyHealthTimer() {
+		++this.pregnancyHealthTimer;
+	}
+
+	@Override
+	public void resetPregnancyHealthTimer() {
+		this.pregnancyHealthTimer = 0;
 	}
 
 	@Override

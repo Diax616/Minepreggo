@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
+import dev.dixmk.minepreggo.server.ServerParticleHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem.Result;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.MonsterCreeperHelper;
@@ -23,6 +24,7 @@ import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import dev.dixmk.minepreggo.world.pregnancy.SyncedSetPregnancySymptom;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -91,6 +93,7 @@ public abstract class PreggoMobPregnancySystemP1
 			}
 		}
 		
+		evaluatePregnancyHealing();
 		evaluatePregnancyNeeds();
 		
 		super.evaluatePregnancySystem();
@@ -214,6 +217,7 @@ public abstract class PreggoMobPregnancySystemP1
 
 		PregnancySystemHelper.calculatePregnancyDamage(pregnantEntity, pregnancyData.getCurrentPregnancyPhase(), damagesource).ifPresent(damage -> {
 			pregnancyData.reducePregnancyHealth(damage);
+			pregnancyData.resetPregnancyHealthTimer();
 			var currentPregnancyHealth = pregnancyData.getPregnancyHealth();
 
 			if (currentPregnancyHealth <= 0) {
@@ -315,5 +319,21 @@ public abstract class PreggoMobPregnancySystemP1
 	    }
 	    
 	    return null;
+	}
+	
+	@Override
+	protected void evaluatePregnancyHealing() {
+		var pregnancySystem = pregnantEntity.getPregnancyData();
+		if (pregnancySystem.getPregnancyHealth() < PregnancySystemHelper.MAX_PREGNANCY_HEALTH) {
+			if (pregnancySystem.getPregnancyHealthTimer() > MinepreggoModConfig.SERVER.getTotalTicksForPregnancyHealing()) {
+				pregnancySystem.incrementPregnancyHealth(MinepreggoModConfig.SERVER.getPregnacyHealingAmount(pregnancySystem.getCurrentPregnancyPhase()));
+				pregnancySystem.resetPregnancyHealthTimer();
+				MinepreggoMod.LOGGER.debug("Player {} pregnancy health increased to: {}", pregnantEntity.getSimpleNameOrCustom(), pregnancySystem.getPregnancyHealth());
+				ServerParticleHelper.spawnParticlesAroundSelf(pregnantEntity, ParticleTypes.HAPPY_VILLAGER, 10);
+			}
+			else {
+				pregnancySystem.incrementPregnancyHealthTimer();
+			}
+		}
 	}
 }

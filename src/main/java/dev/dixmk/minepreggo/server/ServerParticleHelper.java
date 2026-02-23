@@ -29,7 +29,7 @@ public class ServerParticleHelper {
 	}
 	
 	public static void spawnRandomlyFromServer(LivingEntity target, ParticleOptions particle, @Nonnegative int count) {		    
-		spawnRandomlyFromServer(target, particle, count, 0.02F, new Vector3f(0.75F), true);
+		spawnRandomlyFromServer(target, particle, count, 0.02F, new Vector3f(0.7F), true);
 	}
 	
 	public static void spawnRandomlyFromServer(LivingEntity target, ParticleOptions particle, @Nonnegative int count, @Nonnegative float maxSpeed, Vector3f dist, boolean overrideLimiter) {		    
@@ -44,6 +44,19 @@ public class ServerParticleHelper {
 	            maxSpeed,
 	            count
 	        );    
+	    PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> target).send(packet);
+	}
+	
+	public static void spawnParticlesAroundSelf(LivingEntity target, ParticleOptions particle, @Nonnegative int count) {
+		ClientboundLevelParticlesPacket packet = new ClientboundLevelParticlesPacket(
+	            particle, 
+	            true, 
+	            target.getRandomX(0.5), target.getRandomY() + 0.5, target.getRandomZ(0.5), 
+	            0.33f, 0.33f, 0.33f,
+	            0.02F,
+	            count
+	        );  
+		
 	    PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> target).send(packet);
 	}
 	
