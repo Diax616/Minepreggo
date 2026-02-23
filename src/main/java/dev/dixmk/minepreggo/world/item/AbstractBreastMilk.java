@@ -23,7 +23,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 public abstract class AbstractBreastMilk extends Item {
 	
 	protected AbstractBreastMilk(int nutrition, float saturation) {
-		super(new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON).food((new FoodProperties.Builder()).nutrition(nutrition).saturationMod(saturation).build()));
+		super(new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON).food((new FoodProperties.Builder()).nutrition(nutrition).saturationMod(saturation).alwaysEat().build()));
 	}
 
 	protected AbstractBreastMilk(int nutrition) {
@@ -48,7 +48,7 @@ public abstract class AbstractBreastMilk extends Item {
 		var result = super.finishUsingItem(itemstack, level, entity);
 		
 		if (!level.isClientSide) {
-			if (entity instanceof Player player && player.getCapability(MinepreggoCapabilities.PLAYER_DATA).isPresent()) {	
+			if (entity instanceof Player player) {	
 				player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> {			
 					Optional<List<MobEffect>> effects = cap.getFemaleData().map(femaleData -> {
 						if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
@@ -62,26 +62,32 @@ public abstract class AbstractBreastMilk extends Item {
 						return LivingEntityHelper.removeEffects(player, effect -> !PregnancySystemHelper.isFemaleEffect(effect));
 					});
 					if (effects.isPresent()) {
-	                    for (MobEffect effect : effects.get()) {
-                            player.removeEffect(effect);
-                        }
+						effects.get().forEach(player::removeEffect);
 					}
 					else {
-						entity.curePotionEffects(itemstack);
+						removeEffects(player);
 					}
 				});		
 			}
 			else {
-				entity.getActiveEffects().stream().toList().forEach(effectInstance -> 
-					entity.removeEffect(effectInstance.getEffect())
-				);
+				removeEffects(entity);
 			}
 		}		
 
-		if (entity instanceof Player player && !result.isEmpty()) {
-			ItemHandlerHelper.giveItemToPlayer(player, new ItemStack(Items.GLASS_BOTTLE));
+		if (entity instanceof Player player) {
+			player.getCooldowns().addCooldown(this, 20);
+			if (!result.isEmpty()) {
+				ItemHandlerHelper.giveItemToPlayer(player, new ItemStack(Items.GLASS_BOTTLE));
+			}
 		}
 		
 		return result.isEmpty() ? new ItemStack(Items.GLASS_BOTTLE) : result;		
+	}
+	
+	private static void removeEffects(LivingEntity entity) {
+		var iter = entity.getActiveEffects().iterator();
+		while (iter.hasNext()) {
+			entity.removeEffect(iter.next().getEffect());
+		}
 	}
 }

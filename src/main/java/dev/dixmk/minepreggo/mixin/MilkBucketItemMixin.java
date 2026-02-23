@@ -51,9 +51,7 @@ public class MilkBucketItemMixin {
 	                
 	                if (flag && effectsToRemove != null) {
 	                    // Remove the effects safely (they were already collected into a separate list)
-	                    for (MobEffect effect : effectsToRemove) {
-	                        player.removeEffect(effect);
-	                    }
+	                	effectsToRemove.forEach(player::removeEffect);
 	                    
 	                    // Handle item consumption and return the appropriate ItemStack (bucket)
 	                    if (!player.getAbilities().instabuild) {

@@ -203,4 +203,9 @@ public abstract class PreggoMobPregnancySystemP0
 	protected void startMiscarriage() {
 		// This pregnancy phase does not support birth yet	
 	}
+	
+	@Override
+	protected void evaluatePregnancyHealing() {
+		// This pregnancy phase does not support pregnancy healing yet	
+	}
 }

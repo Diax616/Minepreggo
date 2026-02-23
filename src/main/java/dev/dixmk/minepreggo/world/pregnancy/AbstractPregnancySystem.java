@@ -73,6 +73,8 @@ public abstract class AbstractPregnancySystem<E extends LivingEntity> implements
 	
 	protected abstract void startMiscarriage();
 	
+	protected abstract void evaluatePregnancyHealing();
+	
 	public static void spawnParticulesForWaterBreaking(ServerLevel serverLevel, LivingEntity target) {	
 		spawnParticulesForWaterBreaking(serverLevel, target, target.getBbHeight() * 0.35);
 	}

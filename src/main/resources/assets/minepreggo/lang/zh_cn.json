@@ -718,7 +718,7 @@
 	"chat.minepreggo.player.pregnancy.message.cannot_ride.generic.2": "你的肚子太大了，现在不能骑乘了",
 	"chat.minepreggo.player.pregnancy.message.cannot_ride.ender_woman.generic.1": "你的肚子太大了，都碰到%s的头了。",
 	"chat.minepreggo.player.pregnancy.message.cannot_ride.ender_woman.generic.2": "你的体重太重，无法乘坐 %s。",
-	"chat.minepreggo.player.pregnancy.message.womb_is_overloaded.creative": "你的子宫已超负荷，若现在切换至创造模式，你将死亡！",
+	"chat.minepreggo.player.pregnancy.message.womb_is_overloaded.creative": "你的子宫超负荷运转，若现在切换至生存模式，你将死亡！",
 
 	"chat.minepreggo.player.message.cannot_ride.ender_woman.pregnant.labor": "%s 正在分娩，你现在不能骑骑乘！",
 	"chat.minepreggo.player.message.cannot_ride.ender_woman.pregnant.morning_sickness": "%s 感觉太难受了，你现在不能骑乘！",
