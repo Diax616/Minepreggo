@@ -27,8 +27,7 @@
 	"gui.minepreggo.medical_checkup.label.prenatal_checkups": "Chequeos prenatales",
 	"gui.minepreggo.medical_checkup.tooltip.ultrasound_scan": "Ecografía",
 	"gui.minepreggo.medical_checkup.tooltip.regular": "Chequeo periódico",
-	"gui.minepreggo.medical_checkup.tooltip.paternity_test testing": "Prueba de paternidad",
-	
+	"gui.minepreggo.medical_checkup.tooltip.paternity_test testing": "Prueba de paternidad",	
 	"gui.minepreggo.medical_checkup.label.inventory": "Inventario",
 	
 	"gui.minepreggo.preggo_mob_inventory.tooltip_sex": "¿Quieres divertirte?",
