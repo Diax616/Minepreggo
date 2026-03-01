@@ -132,7 +132,7 @@ public class MonsterEnderWomanHelper {
 	}
 	
 	public static EntityType<? extends AbstractTamablePregnantMonsterEnderWoman> getEntityType(PregnancyPhase phase) {	
-		switch (phase) {
+		return switch (phase) {
 			case P0 -> MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P0.get();
 			case P1 -> MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P1.get();
 			case P2 -> MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P2.get();
@@ -142,8 +142,8 @@ public class MonsterEnderWomanHelper {
 			case P6 -> MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P6.get();
 			case P7 -> MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P7.get();	
 			case P8 -> MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P8.get();	
-		}
-		throw new IllegalArgumentException("Unexpected value: " + phase);	
+			default -> throw new IllegalArgumentException("Unexpected value: " + phase);
+		};
 	}
 	
 	static boolean canBeMountedBy(AbstractTamableEnderWoman enderWoman, LivingEntity target) {		

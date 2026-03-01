@@ -22,6 +22,7 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -91,7 +92,7 @@ public abstract class AbstractPregnantBodyModel extends HierarchicalModel<Abstra
 		final var armor = entity.getItemBySlot(EquipmentSlot.CHEST);
 		EntityJiggleData jiggleData = JigglePhysicsManager.getInstance().getOrCreate(entity, () -> EntityJiggleDataFactory.create(jiggleConfig, pregnancyPhase));
 		
-		if (armor.isEmpty()) {
+		if (armor.isEmpty() || armor.is(Items.ELYTRA)) {
 			jiggleData.getBoobsJiggle().setupAnim(entity, boobs, leftBoob, rightBoob);
 			jiggleData.getBellyJiggle().ifPresent(jiggle -> jiggle.setupAnim(entity, belly, simpleBellyJiggle));
 

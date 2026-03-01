@@ -717,6 +717,7 @@
 	"chat.minepreggo.player.pregnancy.message.cannot_ride.ender_woman.generic.1": "Your belly is so big that it hits %s's head.",
 	"chat.minepreggo.player.pregnancy.message.cannot_ride.ender_woman.generic.2": "You weigh too much to ride %s.",
 	"chat.minepreggo.player.pregnancy.message.womb_is_overloaded.creative": "Your womb is overloaded, you will die if change to survival mode now!",
+	"chat.minepreggo.player.pregnancy.message.cannot_fly_using_elytras": "You feel too much weight in your belly to fly using elytras now",
 
 	"chat.minepreggo.player.message.cannot_ride.ender_woman.pregnant.labor": "%s is in labor, you can't ride her now!",
 	"chat.minepreggo.player.message.cannot_ride.ender_woman.pregnant.morning_sickness": "%s is feeling too sick, you can't ride her now!",

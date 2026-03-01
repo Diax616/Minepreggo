@@ -122,7 +122,7 @@ public class MonsterCreeperHelper {
 	}
 	
 	public static EntityType<? extends AbstractTamablePregnantMonsterCreeperGirl> getEntityType(PregnancyPhase phase) {	
-		switch (phase) {
+		return switch (phase) {
 			case P0 -> MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL_P0.get();
 			case P1 -> MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL_P1.get();
 			case P2 -> MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL_P2.get();
@@ -132,8 +132,8 @@ public class MonsterCreeperHelper {
 			case P6 -> MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL_P6.get();
 			case P7 -> MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL_P7.get();	
 			case P8 -> MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL_P8.get();	
-		}
-		throw new IllegalArgumentException("Unexpected value: " + phase);	
+			default -> throw new IllegalArgumentException("Invalid pregnancy phase: " + phase);
+		};
 	}
 	
 	static AbstractCreeperGirl.ExplosionData getExplosionValuesByPregnancyPhase(PregnancyPhase pregnancyPhase) {

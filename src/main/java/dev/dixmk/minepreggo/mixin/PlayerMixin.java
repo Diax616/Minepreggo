@@ -12,10 +12,16 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoModSounds;
+import dev.dixmk.minepreggo.network.chat.MessageHelper;
+import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
+import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMaps;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.Pose;
@@ -98,4 +104,17 @@ public abstract class PlayerMixin extends Entity {
             })
         );
     }
+    
+    @Inject(method = "tryToStartFallFlying", at = @At("HEAD"), cancellable = true)
+	private void onTryToStartFallFlying(CallbackInfoReturnable<Boolean> cir) {
+    	if (Player.class.cast(this) instanceof ServerPlayer serverPlayer && !PlayerHelper.canUseElytrasBeingPregnant(serverPlayer)) {
+    		MessageHelper.sendTo(serverPlayer, Component.translatable("chat.minepreggo.player.pregnancy.message.cannot_fly_using_elytras"), true);
+    		
+    		if (serverPlayer.getRandom().nextFloat() < 0.4f) {
+    			LivingEntityHelper.playSoundNearTo(serverPlayer, MinepreggoModSounds.getRandomStomachGrowls(serverPlayer.getRandom()));
+    		}
+    		
+    		cir.setReturnValue(false);
+    	}
+	}
 }

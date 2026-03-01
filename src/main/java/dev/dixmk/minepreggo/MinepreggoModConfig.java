@@ -60,6 +60,7 @@ public class MinepreggoModConfig {
         	SERVER.enableSpawningHostilPregnantMonsterEnderWomen = SERVER.enableSpawningHostilPregnantMonsterEnderWomenConfig.get();
         	SERVER.totalTicksForPregnancyHealing = SERVER.totalTicksForPregnancyHealingConfig.get();
         	SERVER.pregnacyHealingAmount = SERVER.pregnacyHealingAmountConfig.get();
+        	SERVER.maxPregnancyPhaseToUseElytras = SERVER.maxPregnancyPhaseToUseElytrasConfig.get();
         	
         	SERVER.calculateHungryValues();
         	SERVER.calculateCravingValues();
@@ -135,6 +136,8 @@ public class MinepreggoModConfig {
 
         private final ForgeConfigSpec.IntValue totalTicksForPregnancyHealingConfig;
         private final ForgeConfigSpec.IntValue pregnacyHealingAmountConfig;
+        
+        private final ForgeConfigSpec.EnumValue<PregnancyPhase> maxPregnancyPhaseToUseElytrasConfig; 
 
         private int totalTickByPregnancyDays;
         private int totalPregnancyDays;
@@ -198,6 +201,8 @@ public class MinepreggoModConfig {
         
         private int totalTicksForPregnancyHealing;
         private int pregnacyHealingAmount;
+        
+        private PregnancyPhase maxPregnancyPhaseToUseElytras;
             
         private Server(ForgeConfigSpec.Builder builder) {
             builder.push("Server");
@@ -289,6 +294,10 @@ public class MinepreggoModConfig {
             pregnacyHealingAmountConfig = builder
             		.comment("Amount of health healed during pregnancy healing for pregnant entities. This amount is reduced 5% by each pregnancy phase.")
             		.defineInRange("pregnacyHealingAmount", 25, 0, PregnancySystemHelper.MAX_PREGNANCY_HEALTH);
+            
+            maxPregnancyPhaseToUseElytrasConfig = builder
+					.comment("Maximum pregnancy phase to use elytras. If the player is in a pregnancy phase higher than this, the player won't be able to fly using elytras. Use phase P8 to disable this feature.")
+					.defineEnum("maxPregnancyPhaseToUseElytras", PregnancyPhase.P6);
             
             builder.pop();
         }
@@ -504,6 +513,10 @@ public class MinepreggoModConfig {
         public int getPregnacyHealingAmount(PregnancyPhase pregnancyPhase) {
         	float reductionPercentage = 0.05F * pregnancyPhase.ordinal();
         	return (int) Math.ceil(pregnacyHealingAmount * (1f - reductionPercentage));
+        }
+        
+        public PregnancyPhase getMaxPregnancyPhaseToUseElytras() {
+        	return maxPregnancyPhaseToUseElytras;
         }
         
         private void calculateHungryValues() { 	
