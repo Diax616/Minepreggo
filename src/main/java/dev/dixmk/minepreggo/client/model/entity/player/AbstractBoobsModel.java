@@ -14,6 +14,7 @@ import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -65,10 +66,10 @@ public abstract class AbstractBoobsModel extends HierarchicalModel<AbstractClien
 		this.root.getAllParts().forEach(ModelPart::resetPose);
 
 		final var armor = entity.getItemBySlot(EquipmentSlot.CHEST);	
-		if (armor.isEmpty()) {
+		if (armor.isEmpty() || armor.is(Items.ELYTRA)) {
 			animBoobs(entity);
 		}
-		else { 		
+		else { 	
 			if (armor.getItem() instanceof IMaternityArmor maternityArmor && maternityArmor.areBoobsExposed()) {
 				animBoobs(entity);
 			}

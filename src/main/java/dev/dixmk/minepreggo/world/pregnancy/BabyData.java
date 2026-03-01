@@ -139,52 +139,58 @@ public class BabyData {
 		return new BabyData(gender, father.getMiddle(), father.getRight(), mother, null);
 	}
     
-    @CheckForNull
-    public static ImmutablePair<Species, Creature> getValidSpeciesAndCreatureFromParents(ImmutablePair<Species, Creature> mother, ImmutablePair<Species, Creature> father, RandomSource random) {
-        var motherSpecies = mother.getLeft();
-        var motherCreature = mother.getRight();
-        var fatherSpecies = father.getLeft();
-        var fatherCreature = father.getRight();
-  
-        if (motherSpecies == null || motherCreature == null ||
-            fatherSpecies == null || fatherCreature == null) {
-            return null;
-        }
-        
-        List<ImmutablePair<Species, Creature>> candidates = new ArrayList<>();
+	@CheckForNull
+	public static ImmutablePair<Species, Creature> getValidSpeciesAndCreatureFromParents(ImmutablePair<Species, Creature> mother, ImmutablePair<Species, Creature> father, RandomSource random) {
+	    var motherSpecies = mother.getLeft();
+	    var motherCreature = mother.getRight();
+	    var fatherSpecies = father.getLeft();
+	    var fatherCreature = father.getRight();
 
-        // Inheritance rules
-        if (motherSpecies == Species.HUMAN) {
-            // Baby can be either species
-            candidates.add(ImmutablePair.of(motherSpecies, motherCreature));   
-            candidates.add(ImmutablePair.of(fatherSpecies, fatherCreature));
-           
-            // TODO: Change to weighted random selection for a father that is not HUMAN, do not just duplicate entries to increase chance
-            if (fatherSpecies != Species.HUMAN) {
-                candidates.add(ImmutablePair.of(fatherSpecies, fatherCreature));
-                candidates.add(ImmutablePair.of(fatherSpecies, fatherCreature));             
-            }
-        } else {
-            // Baby is mother's species
-            candidates.add(ImmutablePair.of(motherSpecies, motherCreature));
-            // Unless father is HUMAN -> then HUMAN is also allowed
-            if (fatherSpecies == Species.HUMAN) {
-                candidates.add(ImmutablePair.of(fatherSpecies, fatherCreature));
-            }
-        }
+	    if (motherSpecies == null || motherCreature == null ||
+	        fatherSpecies == null || fatherCreature == null) {
+	        return null;
+	    }
+	    
+	    List<ImmutablePair<Species, Creature>> candidates = new ArrayList<>();
 
-        // Filter only valid combinations
-        var validCandidates = candidates.stream()
-            .filter(b -> VALID_COMBINATIONS.containsEntry(b.getLeft(), b.getRight()))
-            .distinct()
-            .toList();
+	    // Inheritance rules
+	    if (motherSpecies == Species.HUMAN) {
+	        // Baby can be either species
+	        candidates.add(ImmutablePair.of(motherSpecies, motherCreature));   
+	        candidates.add(ImmutablePair.of(fatherSpecies, fatherCreature));
+	       
+	        // TODO: Change to weighted random selection for a father that is not HUMAN, do not just duplicate entries to increase chance
+	        if (fatherSpecies != Species.HUMAN) {
+	            candidates.add(ImmutablePair.of(fatherSpecies, fatherCreature));
+	            candidates.add(ImmutablePair.of(fatherSpecies, fatherCreature));             
+	        }
+	    } else {
+	        // Baby is mother's species
+	        candidates.add(ImmutablePair.of(motherSpecies, motherCreature));
+	        // Unless father is HUMAN -> then HUMAN is also allowed
+	        if (fatherSpecies == Species.HUMAN) {
+	            candidates.add(ImmutablePair.of(fatherSpecies, fatherCreature));
+	        }
+	    }
 
-        if (validCandidates.isEmpty()) {
-            return null;
-        }
-               
-        return validCandidates.get(random.nextInt(0, validCandidates.size()));
-    }
+	    if (random.nextFloat() < 0.6f) {
+		    // Cross combinations: mother's Species + father's Creature, and father's Species + mother's Creature
+		    candidates.add(ImmutablePair.of(motherSpecies, fatherCreature));
+		    candidates.add(ImmutablePair.of(fatherSpecies, motherCreature));
+	    }
+
+	    // Filter only valid combinations
+	    var validCandidates = candidates.stream()
+	        .filter(b -> VALID_COMBINATIONS.containsEntry(b.getLeft(), b.getRight()))
+	        .distinct()
+	        .toList();
+
+	    if (validCandidates.isEmpty()) {
+	        return null;
+	    }
+	           
+	    return validCandidates.get(random.nextInt(validCandidates.size()));
+	}
         
     @Override
 	public String toString() {

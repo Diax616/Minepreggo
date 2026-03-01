@@ -606,9 +606,24 @@ public class PlayerHelper {
 					}));
 	}
 	
-	
 	public static boolean isInvencible(Player player) {
 		return player.getAbilities().instabuild || player.isSpectator();
+	}
+	
+	public static boolean canUseElytrasBeingPregnant(ServerPlayer player) {
+		if (player.hasEffect(MinepreggoModMobEffects.ZERO_GRAVITY_BELLY.get())) {
+			return true;
+		}
+		
+		Optional<Boolean> result = player.getCapability(MinepreggoCapabilities.PLAYER_DATA)
+				.resolve()
+				.flatMap(cap -> cap.getFemaleData().map(femaleData -> {
+					if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
+						return femaleData.getPregnancyData().getCurrentPregnancyPhase().compareTo(MinepreggoModConfig.SERVER.getMaxPregnancyPhaseToUseElytras()) <= 0;
+					}
+					return true;
+					}));
+		return result.orElse(Boolean.TRUE);
 	}
 	
 	// COMMON - END

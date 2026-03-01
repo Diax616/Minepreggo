@@ -41,7 +41,7 @@ public class HumanoidCreeperHelper {
 	} 
 	
 	public static EntityType<? extends AbstractTamablePregnantHumanoidCreeperGirl> getEntityType(PregnancyPhase phase) {	
-		switch (phase) {
+		return switch (phase) {
 			case P0 -> MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P0.get();
 			case P1 -> MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P1.get();
 			case P2 -> MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P2.get();
@@ -50,9 +50,9 @@ public class HumanoidCreeperHelper {
 			case P5 -> MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P5.get();
 			case P6 -> MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P6.get();
 			case P7 -> MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P7.get();	
-			case P8 -> MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P8.get();	
-		}
-		throw new IllegalArgumentException("Unexpected value: " + phase);	
+			case P8 -> MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P8.get();
+			default -> throw new IllegalArgumentException("Invalid pregnancy phase: " + phase);
+		};	
 	}
 	
 	static void reassessTameGoals(AbstractTamableCreeperGirl creeperGirl) {

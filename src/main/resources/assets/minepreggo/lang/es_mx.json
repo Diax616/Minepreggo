@@ -718,6 +718,7 @@
 	"chat.minepreggo.player.pregnancy.message.cannot_ride.ender_woman.generic.1": "Tu barriga es tan grande que choca con la cabeza de %s.",
 	"chat.minepreggo.player.pregnancy.message.cannot_ride.ender_woman.generic.2": "Pesas demasiado como para montar a %s.",
 	"chat.minepreggo.player.pregnancy.message.womb_is_overloaded.creative": "Tu útero está sobrecargado, ¡morirás si cambias al modo supervivencia ahora!",
+	"chat.minepreggo.player.pregnancy.message.cannot_fly_using_elytras": "Sientes demasiado peso en tu vientre para volar usando los élitros ahora",
 
 	"chat.minepreggo.player.message.cannot_ride.ender_woman.pregnant.labor": "¡%s está de parto, no puedes montarla ahora!",
 	"chat.minepreggo.player.message.cannot_ride.ender_woman.pregnant.morning_sickness": "¡%s se encuentra muy indispuesta (náuseas matutinas), no puedes montarla ahora!",

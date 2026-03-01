@@ -10,7 +10,8 @@
 	 "ServerPlayerMixin",
 	 "VillagerMixin",
 	 "EntityMixin",
-	 "VillagerHostilesSensorMixin"
+	 "VillagerHostilesSensorMixin",
+	 "LivingEntityMixin"
    ],
    "client": [
 	 "LivingEntityClientMixin",
