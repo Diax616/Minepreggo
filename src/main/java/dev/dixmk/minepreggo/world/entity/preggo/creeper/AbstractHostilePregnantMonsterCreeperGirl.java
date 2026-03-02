@@ -11,8 +11,8 @@ import net.minecraft.world.level.Level;
 
 public abstract class AbstractHostilePregnantMonsterCreeperGirl extends AbstractHostilePregnantCreeperGirl {
 
-	protected AbstractHostilePregnantMonsterCreeperGirl(EntityType<? extends AbstractHostilePregnantCreeperGirl> p_21803_, Level p_21804_, PregnancyPhase currentPregnancyStage) {
-		super(p_21803_, p_21804_, Creature.MONSTER, currentPregnancyStage);
+	protected AbstractHostilePregnantMonsterCreeperGirl(EntityType<? extends AbstractHostilePregnantCreeperGirl> entityType, Level level, PregnancyPhase currentPregnancyStage) {
+		super(entityType, level, Creature.MONSTER, currentPregnancyStage);
 	}
 
 	@Override
@@ -26,7 +26,7 @@ public abstract class AbstractHostilePregnantMonsterCreeperGirl extends Abstract
 	}
 
 	@Override
-	public SoundEvent getHurtSound(DamageSource p_32309_) {
+	public SoundEvent getHurtSound(DamageSource damageSource) {
 		return SoundEvents.CREEPER_HURT;
 	}
 	

@@ -4,7 +4,6 @@ import javax.annotation.CheckForNull;
 
 import com.google.common.collect.ImmutableMap;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.client.gui.preggo.AbstractPreggoMobMainScreen;
 import dev.dixmk.minepreggo.network.packet.c2s.MountEnderWomanC2SPacket;
@@ -24,10 +23,10 @@ public abstract class AbstractEnderWomanMainScreen
 	<E extends AbstractTamableEnderWoman, G extends AbstractEnderWomanMainMenu<E>> extends AbstractPreggoMobMainScreen<E, G> {
 
 	private static final ImmutableMap<Craving, ResourceLocation> CRAVING_ICONS = ImmutableMap.of(
-			Craving.SALTY, MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/ender_slime_jelly_with_salt.png"), 
-			Craving.SWEET, MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/ender_slime_jelly_with_chocolate.png"), 
-			Craving.SOUR, MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/sour_ender_slime_jelly.png"),
-			Craving.SPICY, MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/ender_slime_jelly_with_hot_sauce.png"));
+			Craving.SALTY, MinepreggoHelper.fromThisNamespaceAndPath("textures/item/ender_slime_jelly_with_salt.png"), 
+			Craving.SWEET, MinepreggoHelper.fromThisNamespaceAndPath("textures/item/ender_slime_jelly_with_chocolate.png"), 
+			Craving.SOUR, MinepreggoHelper.fromThisNamespaceAndPath("textures/item/sour_ender_slime_jelly.png"),
+			Craving.SPICY, MinepreggoHelper.fromThisNamespaceAndPath("textures/item/ender_slime_jelly_with_hot_sauce.png"));
 	
 	protected AbstractEnderWomanMainScreen(G container, Inventory inventory, Component text) {
 		super(container, inventory, text, 1, 153);

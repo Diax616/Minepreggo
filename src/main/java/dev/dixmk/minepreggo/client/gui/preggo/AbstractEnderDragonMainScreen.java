@@ -4,7 +4,6 @@ import javax.annotation.CheckForNull;
 
 import com.google.common.collect.ImmutableMap;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.pregnancy.Craving;
 import net.minecraft.resources.ResourceLocation;
@@ -17,10 +16,10 @@ public abstract class AbstractEnderDragonMainScreen {
 	private AbstractEnderDragonMainScreen() {}
 	
 	private static final ImmutableMap<Craving, ResourceLocation> CRAVING_ICONS = ImmutableMap.of(
-			Craving.SALTY, MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/chorus_fruit_with_salt.png"), 
-			Craving.SWEET, MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/chorus_fruit_with_chocolate.png"), 
-			Craving.SOUR, MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/sour_chorus_fruit.png"),
-			Craving.SPICY, MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/chorus_fruit_with_hot_sauce.png"));
+			Craving.SALTY, MinepreggoHelper.fromThisNamespaceAndPath("textures/item/chorus_fruit_with_salt.png"), 
+			Craving.SWEET, MinepreggoHelper.fromThisNamespaceAndPath("textures/item/chorus_fruit_with_chocolate.png"), 
+			Craving.SOUR, MinepreggoHelper.fromThisNamespaceAndPath("textures/item/sour_chorus_fruit.png"),
+			Craving.SPICY, MinepreggoHelper.fromThisNamespaceAndPath("textures/item/chorus_fruit_with_hot_sauce.png"));
 	
 	
 	@CheckForNull

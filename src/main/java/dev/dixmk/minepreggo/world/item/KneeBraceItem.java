@@ -41,7 +41,7 @@ public abstract class KneeBraceItem extends ArmorItem {
 
 			@Override
 			public SoundEvent getEquipSound() {
-				return ForgeRegistries.SOUND_EVENTS.getValue(MinepreggoHelper.withDefaultNamespace("item.armor.equip_leather"));
+				return ForgeRegistries.SOUND_EVENTS.getValue(MinepreggoHelper.fromVanillaNamespaceAndPath("item.armor.equip_leather"));
 			}
 
 			@Override

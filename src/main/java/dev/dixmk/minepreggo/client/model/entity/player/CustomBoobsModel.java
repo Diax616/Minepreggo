@@ -1,6 +1,5 @@
 package dev.dixmk.minepreggo.client.model.entity.player;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.player.SkinType;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -17,7 +16,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class CustomBoobsModel extends AbstractBoobsModel {
-	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "custom_boobs_model"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("custom_boobs_model"), "main");
 	public static final float ORIGINAL_Y_POS = 1.5F;
 	
 	public CustomBoobsModel(ModelPart root) {

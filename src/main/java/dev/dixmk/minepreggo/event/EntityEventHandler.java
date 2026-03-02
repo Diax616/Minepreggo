@@ -42,11 +42,11 @@ public class EntityEventHandler {
 	@SubscribeEvent
 	public static void onAttachCapabilities(AttachCapabilitiesEvent<Entity> event) {
 		if (event.getObject() instanceof Player && !(event.getObject() instanceof FakePlayer)) {
-			event.addCapability(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "player_data"), new PlayerDataProvider());
-			event.addCapability(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "ender_power_data"), new EnderPowerDataProvider());
+			event.addCapability(MinepreggoHelper.fromThisNamespaceAndPath("player_data"), new PlayerDataProvider());
+			event.addCapability(MinepreggoHelper.fromThisNamespaceAndPath("ender_power_data"), new EnderPowerDataProvider());
 		}
 		else if(event.getObject() instanceof Villager) {
-			event.addCapability(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "villager_data"), new VillagerDataProvider());
+			event.addCapability(MinepreggoHelper.fromThisNamespaceAndPath("villager_data"), new VillagerDataProvider());
 		}
 	}
 		

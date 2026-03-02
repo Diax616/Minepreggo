@@ -2,7 +2,6 @@ package dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.zombie;
 
 import javax.annotation.Nullable;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.model.entity.preggo.zombie.AbstractHostilePregnantZombieGirlModel;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractHostilePregnantZombieGirl;
@@ -15,10 +14,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class HostilePregnantZombieGirlExpressionLayer 
 	<E extends AbstractHostilePregnantZombieGirl, M extends AbstractHostilePregnantZombieGirlModel<E>> extends HostileZombieGirlExpressionLayer<E, M> {
 
-	protected static final RenderType HOSTIL_PAIN = RenderType.entityCutoutNoCull(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/expressions/zombie_girl_face_hostil_pain.png"));
+	protected static final RenderType HOSTIL_PAIN = RenderType.entityCutoutNoCull(MinepreggoHelper.fromThisNamespaceAndPath("textures/entity/preggo/zombie/expressions/zombie_girl_face_hostil_pain.png"));
 	
-	public HostilePregnantZombieGirlExpressionLayer(RenderLayerParent<E, M> p_117346_) {
-		super(p_117346_);
+	public HostilePregnantZombieGirlExpressionLayer(RenderLayerParent<E, M> renderer) {
+		super(renderer);
 	}
 
 	@Override

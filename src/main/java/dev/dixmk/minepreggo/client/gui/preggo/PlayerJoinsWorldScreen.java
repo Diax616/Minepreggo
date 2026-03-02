@@ -28,7 +28,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class PlayerJoinsWorldScreen extends AbstractContainerScreen<PlayerJoinsWorldMenu> {
-	private static final ResourceLocation TEXTURE = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/player_main_gui.png");
+	private static final ResourceLocation TEXTURE = MinepreggoHelper.fromThisNamespaceAndPath("textures/screens/player_main_gui.png");
 	protected final Level level;
 	protected final Player player;
 	private final List<ToggleableCheckbox> gender = new ArrayList<>();	
@@ -91,9 +91,9 @@ public class PlayerJoinsWorldScreen extends AbstractContainerScreen<PlayerJoinsW
 			}
 			
 			@Override
-			public void renderWidget(GuiGraphics p_283124_, int p_282925_, int p_282705_, float p_282612_) {
+			public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
 				if (!male.selected()) {
-					super.renderWidget(p_283124_, p_282925_, p_282705_, p_282612_);
+					super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
 				}
 			}
 		};

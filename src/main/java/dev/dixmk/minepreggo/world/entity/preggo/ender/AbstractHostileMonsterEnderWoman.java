@@ -8,8 +8,8 @@ import net.minecraft.world.level.Level;
 
 public abstract class AbstractHostileMonsterEnderWoman extends AbstractHostileEnderWoman {
 
-	protected AbstractHostileMonsterEnderWoman(EntityType<? extends AbstractHostileEnderWoman> p_32485_, Level p_32486_) {
-		super(p_32485_, p_32486_, Creature.MONSTER);
+	protected AbstractHostileMonsterEnderWoman(EntityType<? extends AbstractHostileEnderWoman> entityType, Level level) {
+		super(entityType, level, Creature.MONSTER);
 	}
  
 	@Override
@@ -23,7 +23,7 @@ public abstract class AbstractHostileMonsterEnderWoman extends AbstractHostileEn
 	}
 	
 	@Override
-	public AgeableMob getBreedOffspring(ServerLevel p_146743_, AgeableMob p_146744_) {
+	public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob mate) {
 		return null;
 	}
 }

@@ -111,18 +111,18 @@ public class HostileHumanoidCreeperGirl extends AbstractHostileHumanoidCreeperGi
 	}
 	
 	@Override
-	protected float getStandingEyeHeight(Pose p_34313_, EntityDimensions p_34314_) {
+	protected float getStandingEyeHeight(Pose pose, EntityDimensions dimensions) {
 		return this.isBaby() ? 0.93F : 1.74F;
 	}
 	
 	@Override
-	public void setBaby(boolean p_34309_) {
-		this.getEntityData().set(DATA_BABY_ID, p_34309_);
+	public void setBaby(boolean value) {
+		this.getEntityData().set(DATA_BABY_ID, value);
 		if (this.level() != null && !this.level().isClientSide) {
 			AttributeInstance attributeinstance = this.getAttribute(Attributes.MOVEMENT_SPEED);
 			attributeinstance.removeModifier(SPEED_MODIFIER_BABY);
 	        this.setExplosionData(DEFAULT_EXPLOSION_DATA);
-			if (p_34309_) {
+			if (value) {
 				attributeinstance.addTransientModifier(SPEED_MODIFIER_BABY);
 		        this.setExplosionData(new ExplosionData(1, 1, DEFAULT_EXPLOSION_DATA.maxSwell()));
 			}
@@ -130,11 +130,11 @@ public class HostileHumanoidCreeperGirl extends AbstractHostileHumanoidCreeperGi
 	}
 	
 	@Override
-	public void onSyncedDataUpdated(EntityDataAccessor<?> p_34307_) {
-		if (DATA_BABY_ID.equals(p_34307_)) {
+	public void onSyncedDataUpdated(EntityDataAccessor<?> entityDataAccessor) {
+		if (DATA_BABY_ID.equals(entityDataAccessor)) {
 			this.refreshDimensions();
 		}
-		super.onSyncedDataUpdated(p_34307_);
+		super.onSyncedDataUpdated(entityDataAccessor);
 	}
 	
 	@Override

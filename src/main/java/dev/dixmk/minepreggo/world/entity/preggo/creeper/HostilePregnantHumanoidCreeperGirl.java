@@ -14,10 +14,12 @@ import net.minecraftforge.network.PlayMessages;
 
 public class HostilePregnantHumanoidCreeperGirl {
 	
-	public static boolean checkSpawnRules(EntityType<? extends AbstractHostilePregnantHumanoidCreeperGirl> p_219014_, ServerLevelAccessor p_219015_, MobSpawnType p_219016_, BlockPos p_219017_, RandomSource p_219018_) {
-		return MinepreggoModConfig.SERVER.isSpawningHostilPregnantHumanoidCreeperGirlsEnable() && AbstractHostileCreeperGirl.checkSpawnRules(p_219014_, p_219015_, p_219016_, p_219017_, p_219018_);
-	}
+	private HostilePregnantHumanoidCreeperGirl() {}
 	
+	public static boolean checkSpawnRules(EntityType<? extends AbstractHostilePregnantHumanoidCreeperGirl> entityType, ServerLevelAccessor level, MobSpawnType spawnType, BlockPos pos, RandomSource random) {
+		return MinepreggoModConfig.SERVER.isSpawningHostilPregnantHumanoidCreeperGirlsEnable() && AbstractHostileCreeperGirl.checkSpawnRules(entityType, level, spawnType, pos, random);
+	}
+		
 	public static class MonsterHumanoidCreeperGirlP3 extends AbstractHostilePregnantHumanoidCreeperGirl {
 
 		public MonsterHumanoidCreeperGirlP3(PlayMessages.SpawnEntity packet, Level world) {

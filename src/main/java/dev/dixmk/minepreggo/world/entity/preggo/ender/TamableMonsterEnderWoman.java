@@ -57,8 +57,8 @@ public class TamableMonsterEnderWoman extends AbstractTamableMonsterEnderWoman i
 			PregnancySystemHelper.removePostPregnancyNeft(preggoMob);			
 		}
 	};
-	public TamableMonsterEnderWoman(EntityType<TamableMonsterEnderWoman> p_32485_, Level p_32486_) {
-		super(p_32485_, p_32486_);
+	public TamableMonsterEnderWoman(EntityType<TamableMonsterEnderWoman> entityType, Level level) {
+		super(entityType, level);
 	}
 
 	public TamableMonsterEnderWoman(PlayMessages.SpawnEntity packet, Level world) {

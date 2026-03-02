@@ -55,15 +55,15 @@ public class MinepreggoModPacketHandler {
 	private MinepreggoModPacketHandler() {}
 
 	private static final String PROTOCOL_VERSION = "1";
-	public static final SimpleChannel INSTANCE  = NetworkRegistry.newSimpleChannel(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "main"), () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
+	public static final SimpleChannel INSTANCE  = NetworkRegistry.newSimpleChannel(MinepreggoHelper.fromThisNamespaceAndPath( "main"), () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
 	private static int messageID = 0;
 
-	public static <T> void addNetworkMessage(Class<T> messageType, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<NetworkEvent.Context>> messageConsumer) {
+	private static <T> void addNetworkMessage(Class<T> messageType, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<NetworkEvent.Context>> messageConsumer) {
 		INSTANCE.registerMessage(messageID, messageType, encoder, decoder, messageConsumer);
 		messageID++;
 	}
 	
-	public static void registerMessages() {
+	static void registerMessages() {
 		addNetworkMessage(RemovePlayerJigglePhysicsS2CPacket.class, RemovePlayerJigglePhysicsS2CPacket::encode, RemovePlayerJigglePhysicsS2CPacket::decode, RemovePlayerJigglePhysicsS2CPacket::handler);
 		addNetworkMessage(RemoveMobEffectS2CPacket.class, RemoveMobEffectS2CPacket::encode, RemoveMobEffectS2CPacket::new, RemoveMobEffectS2CPacket::handle);
 		addNetworkMessage(RemovePostPregnancyDataS2CPacket.class, RemovePostPregnancyDataS2CPacket::encode, RemovePostPregnancyDataS2CPacket::decode, RemovePostPregnancyDataS2CPacket::handler);

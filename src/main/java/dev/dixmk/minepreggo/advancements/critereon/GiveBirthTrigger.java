@@ -1,10 +1,13 @@
 package dev.dixmk.minepreggo.advancements.critereon;
 
+import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.Nullable;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
@@ -19,7 +22,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 public class GiveBirthTrigger extends SimpleCriterionTrigger<GiveBirthTrigger.TriggerInstance> {
 	
-	private static final ResourceLocation ID = MinepreggoHelper.fromThisMod("give_birth");
+	private static final ResourceLocation ID = MinepreggoHelper.fromThisNamespaceAndPath("give_birth");
 
 	@Override
 	public ResourceLocation getId() {
@@ -30,7 +33,11 @@ public class GiveBirthTrigger extends SimpleCriterionTrigger<GiveBirthTrigger.Tr
 	protected TriggerInstance createInstance(JsonObject json, ContextAwarePredicate predicate, DeserializationContext context) {
 		Set<Species> successfulBirths = null;
 		if (json.has("successful_births")) {
-			successfulBirths = JsonHelper.parseSpeciesSet(json.getAsJsonObject("successful_births"), "species");
+        	JsonObject successfulBirthsJson = json.getAsJsonObject("successful_births");
+        	String key = "species";
+    		if (successfulBirthsJson.has(key) && successfulBirthsJson.get(key).isJsonArray()) {
+    			successfulBirths = EnumSet.copyOf(Arrays.asList(new Gson().fromJson(successfulBirthsJson.get(key).getAsJsonArray(), Species[].class)));
+    		}
 		}
 		return new TriggerInstance(predicate, successfulBirths);
 	}
@@ -50,8 +57,8 @@ public class GiveBirthTrigger extends SimpleCriterionTrigger<GiveBirthTrigger.Tr
         public boolean matches(ServerPlayer player) {  	
         	return player.getCapability(MinepreggoCapabilities.PLAYER_DATA)
         			.resolve()
-        			.flatMap(cap -> {
-        	            return cap.getFemaleData().map(femaleData -> {
+        			.flatMap(cap -> 
+        	            cap.getFemaleData().map(femaleData -> {
         	            	if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
             					var pregnancyData = femaleData.getPregnancyData();
             					boolean flag = pregnancyData.getCurrentPregnancyPhase() == pregnancyData.getLastPregnancyStage()
@@ -62,8 +69,8 @@ public class GiveBirthTrigger extends SimpleCriterionTrigger<GiveBirthTrigger.Tr
             					return flag;
     						} 
         	                return false;
-        	            });
-        			}).orElse(Boolean.FALSE);
+        	            })
+        			).orElse(Boolean.FALSE);
         }
 	}
 }

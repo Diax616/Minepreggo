@@ -2,7 +2,6 @@ package dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.ender;
 
 import javax.annotation.Nullable;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.model.entity.preggo.ender.AbstractTamableMonsterEnderWomanModel;
 import dev.dixmk.minepreggo.client.renderer.entity.layer.ExpressiveFaceLayer;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
@@ -18,16 +17,16 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class TamableMonsterEnderWomanExpressionLayer 
 	<E extends AbstractTamableEnderWoman, M extends AbstractTamableMonsterEnderWomanModel<E>> extends ExpressiveFaceLayer<E, M> {
 
-	protected static final RenderType ANGRY_MASK = RenderType.entityCutoutNoCull(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/ender/monster/expressions/monster_ender_woman_face_angry.png"));
-	protected static final RenderType ANGRY_AND_BLUSHED_MASK = RenderType.entityCutoutNoCull(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/ender/monster/expressions/monster_ender_woman_face_angry_and_blushed.png"));
-	protected static final RenderType SAD_MASK = RenderType.entityCutoutNoCull(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/ender/monster/expressions/monster_ender_woman_face_sad.png"));
-	protected static final RenderType VERY_SAD_MASK = RenderType.entityCutoutNoCull(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/ender/monster/expressions/monster_ender_woman_face_very_sad.png"));
-	protected static final RenderType SUPRISED_MASK = RenderType.entityCutoutNoCull(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/ender/monster/expressions/monster_ender_woman_face_surprised.png"));
-	protected static final RenderType BLUSHED_MASK = RenderType.entityCutoutNoCull(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/ender/monster/expressions/monster_ender_woman_face_blushed.png"));
-	protected static final RenderType PAIN_MASK = RenderType.entityCutoutNoCull(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/ender/monster/expressions/monster_ender_woman_face_pain.png"));
+	protected static final RenderType ANGRY_MASK = RenderType.entityCutoutNoCull(MinepreggoHelper.fromThisNamespaceAndPath("textures/entity/preggo/ender/monster/expressions/monster_ender_woman_face_angry.png"));
+	protected static final RenderType ANGRY_AND_BLUSHED_MASK = RenderType.entityCutoutNoCull(MinepreggoHelper.fromThisNamespaceAndPath("textures/entity/preggo/ender/monster/expressions/monster_ender_woman_face_angry_and_blushed.png"));
+	protected static final RenderType SAD_MASK = RenderType.entityCutoutNoCull(MinepreggoHelper.fromThisNamespaceAndPath("textures/entity/preggo/ender/monster/expressions/monster_ender_woman_face_sad.png"));
+	protected static final RenderType VERY_SAD_MASK = RenderType.entityCutoutNoCull(MinepreggoHelper.fromThisNamespaceAndPath("textures/entity/preggo/ender/monster/expressions/monster_ender_woman_face_very_sad.png"));
+	protected static final RenderType SUPRISED_MASK = RenderType.entityCutoutNoCull(MinepreggoHelper.fromThisNamespaceAndPath("textures/entity/preggo/ender/monster/expressions/monster_ender_woman_face_surprised.png"));
+	protected static final RenderType BLUSHED_MASK = RenderType.entityCutoutNoCull(MinepreggoHelper.fromThisNamespaceAndPath("textures/entity/preggo/ender/monster/expressions/monster_ender_woman_face_blushed.png"));
+	protected static final RenderType PAIN_MASK = RenderType.entityCutoutNoCull(MinepreggoHelper.fromThisNamespaceAndPath("textures/entity/preggo/ender/monster/expressions/monster_ender_woman_face_pain.png"));
 
-	public TamableMonsterEnderWomanExpressionLayer(RenderLayerParent<E, M> p_117346_) {
-		super(p_117346_);
+	public TamableMonsterEnderWomanExpressionLayer(RenderLayerParent<E, M> renderer) {
+		super(renderer);
 	}
 	
 	public @Nullable RenderType renderType(E enderWoman) {

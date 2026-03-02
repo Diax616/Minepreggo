@@ -2,7 +2,6 @@ package dev.dixmk.minepreggo.client.renderer.preggo.creeper;
 
 import javax.annotation.Nullable;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractMonsterCreeperGirlModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.IllMonsterCreeperGirlModel;
 import dev.dixmk.minepreggo.client.renderer.entity.layer.ExpressiveFaceLayer;
@@ -17,7 +16,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class IllMonsterCreeperGirlRenderer extends AbstractHostileMonsterCreeperGirlRenderer<IllMonsterCreeperGirl, IllMonsterCreeperGirlModel> {
 
-	protected static final ResourceLocation ILL_CREEPER_GIRL = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/monster/ill_creeper_girl.png");
+	protected static final ResourceLocation ILL_CREEPER_GIRL = MinepreggoHelper.fromThisNamespaceAndPath("textures/entity/preggo/creeper/monster/ill_creeper_girl.png");
 	
 	public IllMonsterCreeperGirlRenderer(EntityRendererProvider.Context context) {
 		this(context, AbstractMonsterCreeperGirlModel.LAYER_LOCATION, AbstractMonsterCreeperGirlModel.LAYER_ENERGY_ARMOR_LOCATION);
@@ -28,7 +27,7 @@ public class IllMonsterCreeperGirlRenderer extends AbstractHostileMonsterCreeper
 	}
 	
 	@Override
-	public ResourceLocation getTextureLocation(IllMonsterCreeperGirl p_115812_) {
+	public ResourceLocation getTextureLocation(IllMonsterCreeperGirl entity) {
 		return ILL_CREEPER_GIRL;
 	}
 	

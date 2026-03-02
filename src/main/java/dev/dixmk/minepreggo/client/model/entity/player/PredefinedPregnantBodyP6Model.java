@@ -1,6 +1,5 @@
 package dev.dixmk.minepreggo.client.model.entity.player;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.animation.preggo.BellyInflation;
 import dev.dixmk.minepreggo.client.animation.preggo.FetalMovementIntensity;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
@@ -21,7 +20,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class PredefinedPregnantBodyP6Model extends AbstractHeavyPregnantBodyModel {
 	
-	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "predefined_pregnant_body_p6_model"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("predefined_pregnant_body_p6_model"), "main");
 	
 	public PredefinedPregnantBodyP6Model(ModelPart root) {
 		super(root, BellyInflation.HIGH, FetalMovementIntensity.P6, PregnancyPhase.P6, SkinType.PREDEFINED);

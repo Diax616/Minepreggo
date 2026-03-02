@@ -33,6 +33,8 @@ import net.minecraftforge.network.PlayMessages;
 
 public class TamablePregnantZombieGirl {
 
+	private TamablePregnantZombieGirl() {}
+	
 	public static class TamableZombieGirlP0 extends AbstractTamablePregnantZombieGirl {
 		
 		public TamableZombieGirlP0(PlayMessages.SpawnEntity packet, Level world) {

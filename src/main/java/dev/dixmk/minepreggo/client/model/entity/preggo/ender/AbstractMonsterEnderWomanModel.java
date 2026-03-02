@@ -7,7 +7,6 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.jiggle.EntityJiggleDataFactory;
 import dev.dixmk.minepreggo.client.model.entity.preggo.PregnantFemaleHumanoidModel;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
@@ -27,19 +26,19 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class AbstractMonsterEnderWomanModel<E extends AbstractEnderWoman> extends PregnantFemaleHumanoidModel<E>{
-	public static final ModelLayerLocation LAYER_INNER_ARMOR_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "monster_ender_woman_inner_model"), "inner");
-	public static final ModelLayerLocation LAYER_OUTER_ARMOR_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "monster_ender_woman_outer_model"), "outer");	
+	public static final ModelLayerLocation LAYER_INNER_ARMOR_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("monster_ender_woman_inner_model"), "inner");
+	public static final ModelLayerLocation LAYER_OUTER_ARMOR_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("monster_ender_woman_outer_model"), "outer");	
 	
-	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "monster_ender_woman_model"), "main");
-	public static final ModelLayerLocation LAYER_LOCATION_P0 = new ModelLayerLocation(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "monster_ender_woman_model_p0"), "main");
-	public static final ModelLayerLocation LAYER_LOCATION_P1 = new ModelLayerLocation(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "monster_ender_woman_model_p1"), "main");
-	public static final ModelLayerLocation LAYER_LOCATION_P2 = new ModelLayerLocation(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "monster_ender_woman_model_p2"), "main");
-	public static final ModelLayerLocation LAYER_LOCATION_P3 = new ModelLayerLocation(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "monster_ender_woman_model_p3"), "main");
-	public static final ModelLayerLocation LAYER_LOCATION_P4 = new ModelLayerLocation(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "monster_ender_woman_model_p4"), "main");
-	public static final ModelLayerLocation LAYER_LOCATION_P5 = new ModelLayerLocation(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "monster_ender_woman_model_p5"), "main");
-	public static final ModelLayerLocation LAYER_LOCATION_P6 = new ModelLayerLocation(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "monster_ender_woman_model_p6"), "main");
-	public static final ModelLayerLocation LAYER_LOCATION_P7 = new ModelLayerLocation(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "monster_ender_woman_model_p7"), "main");
-	public static final ModelLayerLocation LAYER_LOCATION_P8 = new ModelLayerLocation(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "monster_ender_woman_model_p8"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("monster_ender_woman_model"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION_P0 = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("monster_ender_woman_model_p0"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION_P1 = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("monster_ender_woman_model_p1"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION_P2 = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("monster_ender_woman_model_p2"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION_P3 = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("monster_ender_woman_model_p3"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION_P4 = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("monster_ender_woman_model_p4"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION_P5 = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("monster_ender_woman_model_p5"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION_P6 = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("monster_ender_woman_model_p6"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION_P7 = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("monster_ender_woman_model_p7"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION_P8 = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("monster_ender_woman_model_p8"), "main");
 
 	protected final ModelPart root;
 	protected final MonsterEnderWomanAnimator<E> animator;
@@ -421,8 +420,8 @@ public abstract class AbstractMonsterEnderWomanModel<E extends AbstractEnderWoma
 	}
     
     @Override
-	public void translateToHand(HumanoidArm p_102854_, PoseStack p_102855_) {
-    	super.translateToHand(p_102854_, p_102855_);
-    	p_102855_.translate(p_102854_ == HumanoidArm.LEFT ? -0.05f : 0.05f, 0.85f, 0f);
+    public void translateToHand(HumanoidArm arm, PoseStack poseStack) {
+    	super.translateToHand(arm, poseStack);
+    	poseStack.translate(arm == HumanoidArm.LEFT ? -0.05f : 0.05f, 0.85f, 0f);
 	}
 }

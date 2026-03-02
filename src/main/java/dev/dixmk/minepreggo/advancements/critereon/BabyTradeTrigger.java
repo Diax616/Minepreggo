@@ -22,7 +22,7 @@ import net.minecraft.world.item.ItemStack;
 
 public class BabyTradeTrigger extends SimpleCriterionTrigger<BabyTradeTrigger.TriggerInstance> {
 
-	private static final ResourceLocation ID = MinepreggoHelper.fromThisMod("baby_trade");
+	private static final ResourceLocation ID = MinepreggoHelper.fromThisNamespaceAndPath("baby_trade");
 
 	@Override
 	public ResourceLocation getId() {

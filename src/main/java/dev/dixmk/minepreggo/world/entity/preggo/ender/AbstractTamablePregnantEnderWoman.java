@@ -55,8 +55,8 @@ public abstract class AbstractTamablePregnantEnderWoman extends AbstractTamableE
 
 	public final AnimationState bellyAnimationState = new AnimationState();
 
-    protected AbstractTamablePregnantEnderWoman(EntityType<? extends AbstractTamableEnderWoman> p_32485_, Level p_32486_, Creature typeOfCreature,  PregnancyPhase currentPregnancyPhase) {
-		super(p_32485_, p_32486_, typeOfCreature);
+    protected AbstractTamablePregnantEnderWoman(EntityType<? extends AbstractTamableEnderWoman> entityType, Level level, Creature typeOfCreature,  PregnancyPhase currentPregnancyPhase) {
+    	super(entityType, level, typeOfCreature);
 		this.pregnancyData = new TamablePregnantPreggoMobDataImpl<>(DATA_HOLDER, this, currentPregnancyPhase);		
 		this.pregnancySystem = createPregnancySystem();
 	}

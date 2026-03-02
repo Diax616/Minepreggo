@@ -12,8 +12,8 @@ import net.minecraft.world.phys.Vec3;
 
 public abstract class AbstractTamablePregnantMonsterEnderWoman extends AbstractTamablePregnantEnderWoman {
 
-	protected AbstractTamablePregnantMonsterEnderWoman(EntityType<? extends AbstractTamableEnderWoman> p_32485_, Level p_32486_, PregnancyPhase currentPregnancyPhase) {
-		super(p_32485_, p_32486_, Creature.MONSTER, currentPregnancyPhase);
+	protected AbstractTamablePregnantMonsterEnderWoman(EntityType<? extends AbstractTamablePregnantEnderWoman> entityType, Level level, PregnancyPhase currentPregnancyPhase) {
+		super(entityType, level, Creature.MONSTER, currentPregnancyPhase);
 	}
 
 	@Override

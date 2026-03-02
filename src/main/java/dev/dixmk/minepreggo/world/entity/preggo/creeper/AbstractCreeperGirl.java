@@ -12,7 +12,6 @@ import java.util.EnumSet;
 
 import javax.annotation.Nullable;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.utils.TagHelper;
@@ -30,16 +29,12 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.Difficulty;
-import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobType;
@@ -60,8 +55,8 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 	protected double maxDistance = 9D;
 	private CombatMode combatMode = CombatMode.EXPLODE;
 	
-	protected AbstractCreeperGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_, Creature typeOfCreature) {
-		super(p_21803_, p_21804_, Species.CREEPER, typeOfCreature);   
+	protected AbstractCreeperGirl(EntityType<? extends PreggoMob> entity, Level level, Creature typeOfCreature) {
+		super(entity, level, Species.CREEPER, typeOfCreature);   
 		this.setRandomCombatMode();
 	}
 		
@@ -103,7 +98,7 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 	}
 	
 	@Override
-	public boolean removeWhenFarAway(double p_27598_) {
+	public boolean removeWhenFarAway(double distanceToClosestPlayer) {
 		return !this.isTame();
 	}
 	
@@ -154,30 +149,15 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 	}
 	
 	@Override
-	protected boolean canReplaceCurrentItem(ItemStack p_21428_, ItemStack p_21429_) {
+	protected boolean canReplaceCurrentItem(ItemStack candidate, ItemStack existing) {
 		if (this.getTypeOfCreature() != Creature.HUMANOID) return false;
 			
-		if (!canReplaceArmorBasedInPregnancyPhase(p_21428_)) return false;
+		if (!canReplaceArmorBasedInPregnancyPhase(candidate)) return false;
 	
-		return super.canReplaceCurrentItem(p_21428_, p_21429_);
+		return super.canReplaceCurrentItem(candidate, existing);
 	}
 	
 	protected abstract boolean canReplaceArmorBasedInPregnancyPhase(ItemStack armor);
-	
-	@Override
-	protected void populateDefaultEquipmentSlots(RandomSource p_219165_, DifficultyInstance p_219166_) {					
-		if (this.getTypeOfCreature() != Creature.HUMANOID) return;
-			
-		this.populateDefaultEquipmentSlots(p_219165_, p_219166_);
-		if (p_219165_.nextFloat() < (this.level().getDifficulty() == Difficulty.HARD ? 0.075F : 0.025F)) {
-			int i = p_219165_.nextInt(3);
-			if (i == 0) {
-				this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.WOODEN_SWORD));
-			} else {
-				this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.WOODEN_AXE));
-			}
-		}
-	}
 	
 	public boolean canExplode() {
 		return true;
@@ -203,8 +183,8 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 		return this.entityData.get(DATA_SWELL_DIR);
 	}
 	
-	public float getSwelling(float p_32321_) {
-		return Mth.lerp(p_32321_, (float)this.oldSwell, (float)this.swell) / (float)(this.maxSwell - 2);
+	public float getSwelling(float partialTick) {
+		return Mth.lerp(partialTick, this.oldSwell, this.swell) / (this.maxSwell - 2);
 	}
 	
 	public void setSwellDir(int value) {
@@ -228,7 +208,7 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 		if (!this.level().isClientSide) {
 			float f = this.isPowered() ? explosionItensity * 2F : explosionItensity;
 			this.dead = true;
-			this.level().explode(this, this.getX(), this.getY(), this.getZ(), (float)this.explosionRadius * f, Level.ExplosionInteraction.MOB);
+			this.level().explode(this, this.getX(), this.getY(), this.getZ(), this.explosionRadius * f, Level.ExplosionInteraction.MOB);
 			this.discard();
 			this.spawnLingeringCloud();
 		}
@@ -259,15 +239,15 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 	}
 
 	@Override
-	public void thunderHit(ServerLevel p_32286_, LightningBolt p_32287_) {
-		super.thunderHit(p_32286_, p_32287_);
+	public void thunderHit(ServerLevel level, LightningBolt lightning) {
+		super.thunderHit(level, lightning);
 		this.setPower(true);
 	}
 
 	@Override
-	public boolean causeFallDamage(float p_149687_, float p_149688_, DamageSource p_149689_) {
-		boolean flag = super.causeFallDamage(p_149687_, p_149688_, p_149689_);
-		this.swell += (int)(p_149687_ * 1.5F);
+	public boolean causeFallDamage(float fallDistance, float multiplier, DamageSource damageSource) {
+		boolean flag = super.causeFallDamage(fallDistance, multiplier, damageSource);
+		this.swell += (int)(fallDistance * 1.5F);
 		if (this.swell > this.maxSwell - 5) {
 			this.swell = this.maxSwell - 5;
 		}
@@ -305,7 +285,7 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 
 	@Override
 	protected ResourceLocation getDefaultLootTable() {
-	    return MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "entities/abstract_creeper_girl_loot");
+	    return MinepreggoHelper.fromThisNamespaceAndPath("entities/abstract_creeper_girl_loot");
 	}
 
 	@Override
@@ -325,9 +305,7 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 				if (!itemstack.isDamageableItem()) {
 					itemstack.shrink(1);
 				} else {
-					itemstack.hurtAndBreak(1, sourceentity, (p_32290_) -> {
-						p_32290_.broadcastBreakEvent(hand);
-					});
+					itemstack.hurtAndBreak(1, sourceentity, entity -> entity.broadcastBreakEvent(hand));
 				}
 			}
 			retval = InteractionResult.sidedSuccess(this.level().isClientSide());
@@ -338,14 +316,14 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 	
 	
 	@Override
-	public boolean canHoldItem(ItemStack p_34332_) {
-		return !this.isPassenger() && super.canHoldItem(p_34332_);
+	public boolean canHoldItem(ItemStack stack) {
+		return !this.isPassenger() && super.canHoldItem(stack);
 		
 	}
 
 	@Override
-	public boolean wantsToPickUp(ItemStack p_182400_) {
-		return !p_182400_.is(Items.GLOW_INK_SAC) && super.wantsToPickUp(p_182400_);
+	public boolean wantsToPickUp(ItemStack stack) {
+		return !stack.is(Items.GLOW_INK_SAC) && super.wantsToPickUp(stack);
 	}
 	
 	@Override
@@ -365,8 +343,8 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 		   @Nullable
 		   private LivingEntity target;
 
-		   public SwellGoal(T p_25919_) {
-		      this.creeperGirl = p_25919_;
+		   public SwellGoal(T creeperGirl) {
+		      this.creeperGirl = creeperGirl;
 		      this.setFlags(EnumSet.of(Goal.Flag.MOVE));
 		   }
 		   

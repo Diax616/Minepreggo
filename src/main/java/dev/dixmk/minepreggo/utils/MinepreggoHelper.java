@@ -30,11 +30,11 @@ public class MinepreggoHelper {
 	 * constructor with the "minecraft" namespace for compatibility with older versions.
 	 */
 	@SuppressWarnings("removal")
-	public static ResourceLocation withDefaultNamespace(String path) {
+	public static ResourceLocation fromVanillaNamespaceAndPath(String path) {
 	    return new ResourceLocation(ResourceLocation.DEFAULT_NAMESPACE, path);
 	}
 
-	public static ResourceLocation fromThisMod(String path) {
+	public static ResourceLocation fromThisNamespaceAndPath(String path) {
 		return fromNamespaceAndPath(MinepreggoMod.MODID, path);
 	}
 	

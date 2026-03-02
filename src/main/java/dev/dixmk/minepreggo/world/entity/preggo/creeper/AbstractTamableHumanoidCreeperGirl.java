@@ -11,8 +11,8 @@ import net.minecraft.world.level.Level;
 
 public abstract class AbstractTamableHumanoidCreeperGirl extends AbstractTamableCreeperGirl {
 
-	protected AbstractTamableHumanoidCreeperGirl(EntityType<? extends AbstractTamableCreeperGirl> p_21803_, Level p_21804_) {
-		super(p_21803_, p_21804_, Creature.HUMANOID);
+	protected AbstractTamableHumanoidCreeperGirl(EntityType<? extends AbstractTamableCreeperGirl> entityType, Level level) {
+		super(entityType, level, Creature.HUMANOID);
 	}
 
 	@Override

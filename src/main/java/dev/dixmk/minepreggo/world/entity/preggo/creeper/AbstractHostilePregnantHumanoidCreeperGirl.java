@@ -12,8 +12,8 @@ import net.minecraft.world.level.Level;
 
 public abstract class AbstractHostilePregnantHumanoidCreeperGirl extends AbstractHostilePregnantCreeperGirl {
 
-	protected AbstractHostilePregnantHumanoidCreeperGirl(EntityType<? extends AbstractHostilePregnantCreeperGirl> p_21803_, Level p_21804_, PregnancyPhase currentPregnancyStage) {
-		super(p_21803_, p_21804_, Creature.HUMANOID, currentPregnancyStage);
+	protected AbstractHostilePregnantHumanoidCreeperGirl(EntityType<? extends AbstractHostilePregnantCreeperGirl> entityType, Level level, PregnancyPhase currentPregnancyStage) {
+		super(entityType, level, Creature.HUMANOID, currentPregnancyStage);
 	}
 	
 	@Override

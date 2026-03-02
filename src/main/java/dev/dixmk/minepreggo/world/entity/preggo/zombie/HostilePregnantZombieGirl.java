@@ -14,8 +14,10 @@ import net.minecraftforge.network.PlayMessages;
 
 public class HostilePregnantZombieGirl {
 
-	public static boolean checkSpawnRules(EntityType<? extends AbstractHostilePregnantZombieGirl> p_219014_, ServerLevelAccessor p_219015_, MobSpawnType p_219016_, BlockPos p_219017_, RandomSource p_219018_) {
-		return MinepreggoModConfig.SERVER.isSpawningHostilPregnantZombieGirlsEnable() && AbstractHostileZombieGirl.checkSpawnRules(p_219014_, p_219015_, p_219016_, p_219017_, p_219018_);
+	private HostilePregnantZombieGirl() {}
+	
+	public static boolean checkSpawnRules(EntityType<? extends AbstractHostilePregnantZombieGirl> entityType, ServerLevelAccessor level, MobSpawnType spawnType, BlockPos pos, RandomSource random) {
+		return MinepreggoModConfig.SERVER.isSpawningHostilPregnantZombieGirlsEnable() && AbstractHostileZombieGirl.checkSpawnRules(entityType, level, spawnType, pos, random);
 	}
 	
 	public static class MonsterZombieGirlP3 extends AbstractHostilePregnantZombieGirl {

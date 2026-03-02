@@ -14,8 +14,8 @@ import net.minecraftforge.network.PlayMessages;
 
 public class HostilePregnantMonsterEnderWoman {
 
-	public static boolean checkSpawnRules(EntityType<? extends AbstractHostilePregnantEnderWoman> p_219014_, ServerLevelAccessor p_219015_, MobSpawnType p_219016_, BlockPos p_219017_, RandomSource p_219018_) {	
-		return MinepreggoModConfig.SERVER.isSpawningHostilPregnantMonsterEnderWomenEnable() && AbstractHostileEnderWoman.checkSpawnRules(p_219014_, p_219015_, p_219016_, p_219017_, p_219018_);
+	public static boolean checkSpawnRules(EntityType<? extends AbstractHostilePregnantEnderWoman> entityType, ServerLevelAccessor level, MobSpawnType spawnType, BlockPos pos, RandomSource random) {	
+		return MinepreggoModConfig.SERVER.isSpawningHostilPregnantMonsterEnderWomenEnable() && AbstractHostileEnderWoman.checkSpawnRules(entityType, level, spawnType, pos, random);
 	}
 	
 	public static class MonsterEnderWomanP3 extends AbstractHostilePregnantEnderWoman {
@@ -68,23 +68,4 @@ public class HostilePregnantMonsterEnderWoman {
 			return MonsterEnderWomanHelper.createBasicAttributes(0.25D);
 		}
 	}
-	
-	/*
-	public HostilPregnantMonsterEnderWoman(EntityType<HostilPregnantMonsterEnderWoman> type, Level level) {
-		super(type, level, PregnancyPhase.P0);
-	}
-
-	public HostilPregnantMonsterEnderWoman(EntityType<HostilPregnantMonsterEnderWoman> type, Level level, PregnancyPhase phase) {
-		super(type, level, phase);
-	}
-	
-	public HostilPregnantMonsterEnderWoman(PlayMessages.SpawnEntity packet, Level level) {
-		this(MinepreggoModEntities.HOSTIL_PREGNANT_MONSTER_ENDER_WOMAN.get(), level, readPregnancyPhase(packet));
-	}
-	
-	private static PregnancyPhase readPregnancyPhase(PlayMessages.SpawnEntity packet) {
-        FriendlyByteBuf buf = packet.getAdditionalData();
-        return buf != null ? buf.readEnum(PregnancyPhase.class) : PregnancyPhase.P0;
-	}
-	*/
 }

@@ -1,6 +1,5 @@
 package dev.dixmk.minepreggo.client.model.entity.player;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.player.SkinType;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
@@ -19,7 +18,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class CustomPregnantBodyP4Model extends AbstractHeavyPregnantBodyModel {
-	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "custom_pregnant_body_p4_model"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("custom_pregnant_body_p4_model"), "main");
 	public static final float ORIGINAL_BELLY_Y_POS = 5.1F;
 	public static final float ORIGINAL_BOOBS_Y_POS = 1.1F;
 	

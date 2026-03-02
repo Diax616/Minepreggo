@@ -54,8 +54,8 @@ public abstract class AbstractTamablePregnantCreeperGirl extends AbstractTamable
 
 	public final AnimationState bellyAnimationState = new AnimationState();
 	
-	protected AbstractTamablePregnantCreeperGirl(EntityType<? extends AbstractTamableCreeperGirl> p_21803_, Level p_21804_, Creature typeOfCreature, PregnancyPhase currentPregnancyStage) {
-		super(p_21803_, p_21804_, typeOfCreature);
+	protected AbstractTamablePregnantCreeperGirl(EntityType<? extends AbstractTamableCreeperGirl> entityType, Level level, Creature typeOfCreature, PregnancyPhase currentPregnancyStage) {
+		super(entityType, level, typeOfCreature);
 		this.pregnancyData = new TamablePregnantPreggoMobDataImpl<>(DATA_HOLDER, this, currentPregnancyStage);		
 		this.pregnancySystem = createPregnancySystem();
 		setExplosionData(updateExplosionByPregnancyPhase(currentPregnancyStage));

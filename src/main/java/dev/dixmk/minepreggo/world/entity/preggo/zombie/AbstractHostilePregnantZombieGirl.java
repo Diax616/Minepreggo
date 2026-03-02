@@ -38,8 +38,8 @@ public abstract class AbstractHostilePregnantZombieGirl extends AbstractHostileZ
 	private static final HostilePregnantPreggoMobDataImpl.DataAccessor<AbstractHostilePregnantZombieGirl> DATA_ACCESOR = new HostilePregnantPreggoMobDataImpl.DataAccessor<>(AbstractHostilePregnantZombieGirl.class);
 	private final IHostilePreggoMobPregnancyData pregnancyData;
 	
-	protected AbstractHostilePregnantZombieGirl(EntityType<? extends AbstractHostileZombieGirl> p_21803_, Level p_21804_, PregnancyPhase currentPregnancyStage) {
-		super(p_21803_, p_21804_);
+	protected AbstractHostilePregnantZombieGirl(EntityType<? extends AbstractHostileZombieGirl> entityType, Level level, PregnancyPhase currentPregnancyStage) {
+		super(entityType, level);
 		pregnancyData = new HostilePregnantPreggoMobDataImpl<>(DATA_ACCESOR, this, currentPregnancyStage);
 	}
 
@@ -127,12 +127,12 @@ public abstract class AbstractHostilePregnantZombieGirl extends AbstractHostileZ
 	}
 	
 	@Override
-	protected boolean canReplaceCurrentItem(ItemStack p_21428_, ItemStack p_21429_) {	
-		if (!PregnancySystemHelper.canUseChestplate(p_21428_.getItem(), this.pregnancyData.getCurrentPregnancyPhase())
-					|| !PregnancySystemHelper.canUseLegging(p_21428_.getItem(), this.pregnancyData.getCurrentPregnancyPhase())) {
+	protected boolean canReplaceCurrentItem(ItemStack candidate, ItemStack existing) {	
+		if (!PregnancySystemHelper.canUseChestplate(candidate.getItem(), this.pregnancyData.getCurrentPregnancyPhase())
+					|| !PregnancySystemHelper.canUseLegging(candidate.getItem(), this.pregnancyData.getCurrentPregnancyPhase())) {
 			return false;
 		}	
-		return super.canReplaceCurrentItem(p_21428_, p_21429_);
+		return super.canReplaceCurrentItem(candidate, existing);
 	}
 	
 	@Override

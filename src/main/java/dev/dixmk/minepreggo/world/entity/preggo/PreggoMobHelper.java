@@ -168,7 +168,7 @@ public class PreggoMobHelper {
             preggoMob.level().playSound(
                 null, 
                 BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()),
-                ForgeRegistries.SOUND_EVENTS.getValue(MinepreggoHelper.withDefaultNamespace("entity.item.pickup")),
+                ForgeRegistries.SOUND_EVENTS.getValue(MinepreggoHelper.fromVanillaNamespaceAndPath("entity.item.pickup")),
                 SoundSource.AMBIENT, 
                 0.75F, 
                 0.75F
@@ -712,7 +712,7 @@ public class PreggoMobHelper {
                 
     	        if (stack.getDamageValue() >= stack.getMaxDamage()) {
     	            world.playSound(null, preggoMob.blockPosition(), 
-    	                ForgeRegistries.SOUND_EVENTS.getValue(MinepreggoHelper.withDefaultNamespace("entity.item.break")),
+    	                ForgeRegistries.SOUND_EVENTS.getValue(MinepreggoHelper.fromVanillaNamespaceAndPath("entity.item.break")),
     	                SoundSource.NEUTRAL, 1.0F, 1.0F);
     	        }
                 updateItemHandler(preggoMob, i + 1, stack);

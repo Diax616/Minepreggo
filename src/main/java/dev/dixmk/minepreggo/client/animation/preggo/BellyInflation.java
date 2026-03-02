@@ -12,7 +12,7 @@ public enum BellyInflation {
 	
 	public final AnimationDefinition animation;
 	
-	BellyInflation(AnimationDefinition animation) {
+	private BellyInflation(AnimationDefinition animation) {
 		this.animation = animation;
 	}
 }

@@ -16,7 +16,6 @@ import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMobSystem;
 import dev.dixmk.minepreggo.world.entity.preggo.Inventory;
 import dev.dixmk.minepreggo.world.entity.preggo.InventorySlot;
 import dev.dixmk.minepreggo.world.entity.preggo.InventorySlotMapper;
-import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.TamablePreggoMobDataImpl;
 import dev.dixmk.minepreggo.world.inventory.preggo.creeper.AbstractHumanoidCreeperGirlInventoryMenu;
@@ -84,8 +83,8 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 	protected boolean breakBlocks = false;
 	private	int poweredTimer = 0;
 	
-	protected AbstractTamableCreeperGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_, Creature typeOfCreature) {
-	      super(p_21803_, p_21804_, typeOfCreature);
+	protected AbstractTamableCreeperGirl(EntityType<? extends AbstractCreeperGirl> entityType, Level level, Creature typeOfCreature) {
+	      super(entityType, level, typeOfCreature);
 	      this.femaleEntityData = createFemaleEntityData();
 	      this.preggoMobSystem = createTamablePreggoMobSystem();    
 	      this.inventory = createInventory();
@@ -108,8 +107,8 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 	}
 
 	@Override
-	public boolean canBeLeashed(Player p_21813_) {
-		return super.canBeLeashed(p_21813_) && this.isOwnedBy(p_21813_) && !this.tamablePreggoMobData.isSavage();
+	public boolean canBeLeashed(Player source) {
+		return super.canBeLeashed(source) && this.isOwnedBy(source) && !this.tamablePreggoMobData.isSavage();
 	}
 	
 	@Override
@@ -448,26 +447,26 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 	}
 
 	@Override
-	protected void pickUpItem(ItemEntity p_21471_) {	
+	protected void pickUpItem(ItemEntity itemEntity) {	
 		if (this.getTypeOfCreature() != Creature.HUMANOID) return;
 		
-		ItemStack itemstack = p_21471_.getItem();
+		ItemStack itemstack = itemEntity.getItem();
 		ItemStack itemstack1 = this.equipItemIfPossible(itemstack.copy());			
 		if (!itemstack1.isEmpty()) {
-			this.onItemPickup(p_21471_);
-			this.take(p_21471_, itemstack1.getCount());
+			this.onItemPickup(itemEntity);
+			this.take(itemEntity, itemstack1.getCount());
 			itemstack.shrink(itemstack1.getCount());		
 			if (itemstack.isEmpty()) {
-				p_21471_.discard();
+				itemEntity.discard();
 			}
 		}
 		else {
-			PreggoMobHelper.storeItemInExtraSlots(this, p_21471_);	
+			PreggoMobHelper.storeItemInExtraSlots(this, itemEntity);	
 		}
 	}
 	
 	@Override
-	public AgeableMob getBreedOffspring(ServerLevel p_146743_, AgeableMob p_146744_) {
+	public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob mate) {
 		return null;
 	}
 	

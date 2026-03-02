@@ -2,7 +2,6 @@ package dev.dixmk.minepreggo.client.renderer.preggo.ender;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.model.entity.preggo.ender.AbstractMonsterEnderWomanModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.ender.IllMonsterEnderWomanModel;
 import dev.dixmk.minepreggo.client.renderer.entity.layer.ExpressiveEyesLayer;
@@ -19,7 +18,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class IllEnderWomanRenderer extends AbstractHostileMonsterEnderWomanRenderer<IllMonsterEnderWoman, IllMonsterEnderWomanModel> {
 
-	private static final RenderType ILL_ENDER_EYES = RenderType.eyes(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/ender/monster/eye/ill_ender_woman_eyes.png"));
+	private static final RenderType ILL_ENDER_EYES = RenderType.eyes(MinepreggoHelper.fromThisNamespaceAndPath("textures/entity/preggo/ender/monster/eye/ill_ender_woman_eyes.png"));
 	
 	public IllEnderWomanRenderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation outter, ModelLayerLocation inner) {
 		super(context, new IllMonsterEnderWomanModel(context.bakeLayer(main)), new IllMonsterEnderWomanModel(context.bakeLayer(inner)), new IllMonsterEnderWomanModel(context.bakeLayer(outter)), ILL_ENDER_EYES);
@@ -30,7 +29,7 @@ public class IllEnderWomanRenderer extends AbstractHostileMonsterEnderWomanRende
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(IllMonsterEnderWoman p_115812_) {
+	public ResourceLocation getTextureLocation(IllMonsterEnderWoman entity) {
 		return MONSTER_ENDER_GIRL_LOCATION;
 	}
 

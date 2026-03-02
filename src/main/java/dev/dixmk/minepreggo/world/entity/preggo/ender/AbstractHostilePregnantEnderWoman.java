@@ -33,8 +33,8 @@ public abstract class AbstractHostilePregnantEnderWoman extends AbstractHostileM
 	private static final HostilePregnantPreggoMobDataImpl.DataAccessor<AbstractHostilePregnantEnderWoman> DATA_ACCESOR = new HostilePregnantPreggoMobDataImpl.DataAccessor<>(AbstractHostilePregnantEnderWoman.class);
 	private final IHostilePreggoMobPregnancyData pregnancyData;
 	
-	protected AbstractHostilePregnantEnderWoman(EntityType<? extends AbstractHostileMonsterEnderWoman> p_32485_, Level p_32486_, PregnancyPhase currentPregnancyStage) {
-		super(p_32485_, p_32486_);
+	protected AbstractHostilePregnantEnderWoman(EntityType<? extends AbstractHostileMonsterEnderWoman> entityType, Level level, PregnancyPhase currentPregnancyStage) {
+		super(entityType, level);
 		pregnancyData = new HostilePregnantPreggoMobDataImpl<>(DATA_ACCESOR, this, currentPregnancyStage);
 	}
 	

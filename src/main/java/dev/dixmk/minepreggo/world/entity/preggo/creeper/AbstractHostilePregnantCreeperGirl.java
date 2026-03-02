@@ -35,8 +35,8 @@ public abstract class AbstractHostilePregnantCreeperGirl extends AbstractHostile
 	private static final HostilePregnantPreggoMobDataImpl.DataAccessor<AbstractHostilePregnantCreeperGirl> DATA_ACCESOR = new HostilePregnantPreggoMobDataImpl.DataAccessor<>(AbstractHostilePregnantCreeperGirl.class);
 	private final IHostilePreggoMobPregnancyData pregnancyDataImpl;
 		
-	protected AbstractHostilePregnantCreeperGirl(EntityType<? extends AbstractHostileCreeperGirl> p_21803_, Level p_21804_, Creature typeOfCreature, PregnancyPhase currentPregnancyStage) {
-		super(p_21803_, p_21804_, typeOfCreature);
+	protected AbstractHostilePregnantCreeperGirl(EntityType<? extends AbstractHostileCreeperGirl> entityType, Level level, Creature typeOfCreature, PregnancyPhase currentPregnancyStage) {
+		super(entityType, level, typeOfCreature);
 		pregnancyDataImpl = new HostilePregnantPreggoMobDataImpl<>(DATA_ACCESOR, this, currentPregnancyStage);
 		setExplosionData(updateExplosionByPregnancyPhase(currentPregnancyStage));
 	}

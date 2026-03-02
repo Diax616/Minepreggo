@@ -32,8 +32,8 @@ import net.minecraft.world.level.ServerLevelAccessor;
 
 public abstract class AbstractHostileZombieGirl extends AbstractZombieGirl implements IHostilePreggoMob, Enemy {
 
-	protected AbstractHostileZombieGirl(EntityType<? extends AbstractZombieGirl> p_21803_, Level p_21804_) {
-		super(p_21803_, p_21804_, Creature.HUMANOID);
+	protected AbstractHostileZombieGirl(EntityType<? extends AbstractZombieGirl> entityType, Level level) {
+		super(entityType, level, Creature.HUMANOID);
 	}
 	
 	@Override
@@ -73,11 +73,11 @@ public abstract class AbstractHostileZombieGirl extends AbstractZombieGirl imple
 	}
 	
 	@Override
-	public AgeableMob getBreedOffspring(ServerLevel p_146743_, AgeableMob p_146744_) {
+	public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob mate) {
 		return null;
 	}
 		
-	public static boolean checkSpawnRules(EntityType<? extends AbstractHostileZombieGirl> p_219014_, ServerLevelAccessor p_219015_, MobSpawnType p_219016_, BlockPos p_219017_, RandomSource p_219018_) {
-		return p_219015_.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(p_219015_, p_219017_, p_219018_) && checkMobSpawnRules(p_219014_, p_219015_, p_219016_, p_219017_, p_219018_);
+	public static boolean checkSpawnRules(EntityType<? extends AbstractHostileZombieGirl> entityType, ServerLevelAccessor level, MobSpawnType spawnType, BlockPos pos, RandomSource random) {
+		return level.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(level, pos, random) && checkMobSpawnRules(entityType, level, spawnType, pos, random);
 	}
 }

@@ -32,7 +32,7 @@ public class MinepreggoModVillagerProfessions {
 	private static final Map<String, ProfessionPoiType> POI_TYPES = new HashMap<>();
 	public static final DeferredRegister<VillagerProfession> REGISTRY = DeferredRegister.create(ForgeRegistries.VILLAGER_PROFESSIONS, MinepreggoMod.MODID);
 	public static final RegistryObject<VillagerProfession> VILLAGER_DOCTOR = registerProfession("doctor", MinepreggoModBlocks.MEDICAL_TABLE::get,
-			() -> ForgeRegistries.SOUND_EVENTS.getValue(MinepreggoHelper.withDefaultNamespace("entity.villager.work_cleric")));
+			() -> ForgeRegistries.SOUND_EVENTS.getValue(MinepreggoHelper.fromVanillaNamespaceAndPath("entity.villager.work_cleric")));
 
 	private static RegistryObject<VillagerProfession> registerProfession(String name, Supplier<Block> block, Supplier<SoundEvent> soundEvent) {
 		POI_TYPES.put(name, new ProfessionPoiType(block, null));

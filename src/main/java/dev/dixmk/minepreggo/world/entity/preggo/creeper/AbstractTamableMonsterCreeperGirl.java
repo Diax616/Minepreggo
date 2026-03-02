@@ -11,8 +11,8 @@ import net.minecraft.world.level.Level;
 
 public abstract class AbstractTamableMonsterCreeperGirl extends AbstractTamableCreeperGirl {
 
-	protected AbstractTamableMonsterCreeperGirl(EntityType<? extends AbstractTamableCreeperGirl> p_21803_, Level p_21804_) {
-		super(p_21803_, p_21804_, Creature.MONSTER);
+	protected AbstractTamableMonsterCreeperGirl(EntityType<? extends AbstractTamableCreeperGirl> entityType, Level level) {
+		super(entityType, level, Creature.MONSTER);
 	}
 	
 	@Override
@@ -21,7 +21,7 @@ public abstract class AbstractTamableMonsterCreeperGirl extends AbstractTamableC
 	}
 	
 	@Override
-	public SoundEvent getHurtSound(DamageSource p_32309_) {
+	public SoundEvent getHurtSound(DamageSource damageSource) {
 		return SoundEvents.CREEPER_HURT;
 	}
 	

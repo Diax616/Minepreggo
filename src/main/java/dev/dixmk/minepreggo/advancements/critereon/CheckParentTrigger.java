@@ -22,7 +22,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
 public class CheckParentTrigger extends SimpleCriterionTrigger<CheckParentTrigger.TriggerInstance> {
-	private static final ResourceLocation ID = MinepreggoHelper.fromThisMod("check_parent");
+	private static final ResourceLocation ID = MinepreggoHelper.fromThisNamespaceAndPath("check_parent");
 
     @Override
     public ResourceLocation getId() {

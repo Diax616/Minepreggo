@@ -14,8 +14,8 @@ import net.minecraftforge.network.PlayMessages;
 
 public class HostilePregnantMonsterCreeperGirl {
 
-	public static boolean checkSpawnRules(EntityType<? extends AbstractHostilePregnantMonsterCreeperGirl> p_219014_, ServerLevelAccessor p_219015_, MobSpawnType p_219016_, BlockPos p_219017_, RandomSource p_219018_) {
-		return MinepreggoModConfig.SERVER.isSpawningHostilPregnantMonsterCreeperGirlsEnable() && AbstractHostileCreeperGirl.checkSpawnRules(p_219014_, p_219015_, p_219016_, p_219017_, p_219018_);
+	public static boolean checkSpawnRules(EntityType<? extends AbstractHostilePregnantMonsterCreeperGirl> entityType, ServerLevelAccessor level, MobSpawnType spawnType, BlockPos pos, RandomSource random) {
+		return MinepreggoModConfig.SERVER.isSpawningHostilPregnantMonsterCreeperGirlsEnable() && AbstractHostileCreeperGirl.checkSpawnRules(entityType, level, spawnType, pos, random);
 	}
 	
 	public static class MonsterCreeperGirlP3 extends AbstractHostilePregnantMonsterCreeperGirl {

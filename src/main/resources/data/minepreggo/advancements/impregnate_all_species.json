@@ -22,7 +22,7 @@
 		"entity": {
 		  "type": "#minepreggo:impregnable_entities"
 		},
-		"entity_gotten_pregnant": {
+		"pregnant_entities": {
 			"species": ["ZOMBIE", "CREEPER", "HUMAN", "ENDER"]
 		}
 	  }

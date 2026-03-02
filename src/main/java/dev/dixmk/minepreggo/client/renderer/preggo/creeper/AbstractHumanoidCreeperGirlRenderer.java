@@ -6,7 +6,6 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractHumanoidCreeperGirlModel;
 import dev.dixmk.minepreggo.client.renderer.entity.layer.ExpressiveFaceLayer;
 import dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.creeper.HumanoidCreeperGirlPowerLayer;
@@ -21,31 +20,31 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class AbstractHumanoidCreeperGirlRenderer<E extends AbstractCreeperGirl, M extends AbstractHumanoidCreeperGirlModel<E>> extends HumanoidMobRenderer<E, M> {
-	protected static final ResourceLocation  CREEPER_GIRL_LOCATION = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/humanoid/humanoid_creeper_girl.png");
-	protected static final ResourceLocation  CREEPER_GIRL_P0_LOCATION = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/humanoid/humanoid_creeper_girl_p0.png");
-	protected static final ResourceLocation  CREEPER_GIRL_P1_LOCATION = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/humanoid/humanoid_creeper_girl_p1.png");
-	protected static final ResourceLocation  CREEPER_GIRL_P2_LOCATION = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/humanoid/humanoid_creeper_girl_p2.png");
-	protected static final ResourceLocation  CREEPER_GIRL_P3_LOCATION = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/humanoid/humanoid_creeper_girl_p3.png");
+	protected static final ResourceLocation  CREEPER_GIRL_LOCATION = MinepreggoHelper.fromThisNamespaceAndPath("textures/entity/preggo/creeper/humanoid/humanoid_creeper_girl.png");
+	protected static final ResourceLocation  CREEPER_GIRL_P0_LOCATION = MinepreggoHelper.fromThisNamespaceAndPath("textures/entity/preggo/creeper/humanoid/humanoid_creeper_girl_p0.png");
+	protected static final ResourceLocation  CREEPER_GIRL_P1_LOCATION = MinepreggoHelper.fromThisNamespaceAndPath("textures/entity/preggo/creeper/humanoid/humanoid_creeper_girl_p1.png");
+	protected static final ResourceLocation  CREEPER_GIRL_P2_LOCATION = MinepreggoHelper.fromThisNamespaceAndPath("textures/entity/preggo/creeper/humanoid/humanoid_creeper_girl_p2.png");
+	protected static final ResourceLocation  CREEPER_GIRL_P3_LOCATION = MinepreggoHelper.fromThisNamespaceAndPath("textures/entity/preggo/creeper/humanoid/humanoid_creeper_girl_p3.png");
 	
 	protected static final ImmutablePair<ResourceLocation, ResourceLocation> CREEPER_GIRL_P4_LOCATION = ImmutablePair.of(
-			MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/humanoid/humanoid_creeper_girl_p4.png"),
-			MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/humanoid/humanoid_creeper_girl_p4_nude.png"));	
+			MinepreggoHelper.fromThisNamespaceAndPath("textures/entity/preggo/creeper/humanoid/humanoid_creeper_girl_p4.png"),
+			MinepreggoHelper.fromThisNamespaceAndPath("textures/entity/preggo/creeper/humanoid/humanoid_creeper_girl_p4_nude.png"));	
 	
 	protected static final ImmutablePair<ResourceLocation, ResourceLocation> CREEPER_GIRL_P5_LOCATION = ImmutablePair.of(
-			MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/humanoid/humanoid_creeper_girl_p5.png"),
-			MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/humanoid/humanoid_creeper_girl_p5_nude.png"));	
+			MinepreggoHelper.fromThisNamespaceAndPath("textures/entity/preggo/creeper/humanoid/humanoid_creeper_girl_p5.png"),
+			MinepreggoHelper.fromThisNamespaceAndPath("textures/entity/preggo/creeper/humanoid/humanoid_creeper_girl_p5_nude.png"));	
 	
 	protected static final ImmutablePair<ResourceLocation, ResourceLocation> CREEPER_GIRL_P6_LOCATION = ImmutablePair.of(
-			MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/humanoid/humanoid_creeper_girl_p6.png"),
-			MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/humanoid/humanoid_creeper_girl_p6_nude.png"));	
+			MinepreggoHelper.fromThisNamespaceAndPath("textures/entity/preggo/creeper/humanoid/humanoid_creeper_girl_p6.png"),
+			MinepreggoHelper.fromThisNamespaceAndPath("textures/entity/preggo/creeper/humanoid/humanoid_creeper_girl_p6_nude.png"));	
 
 	protected static final ImmutablePair<ResourceLocation, ResourceLocation> CREEPER_GIRL_P7_LOCATION = ImmutablePair.of(
-			MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/humanoid/humanoid_creeper_girl_p7.png"),
-			MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/humanoid/humanoid_creeper_girl_p7_nude.png"));	
+			MinepreggoHelper.fromThisNamespaceAndPath("textures/entity/preggo/creeper/humanoid/humanoid_creeper_girl_p7.png"),
+			MinepreggoHelper.fromThisNamespaceAndPath("textures/entity/preggo/creeper/humanoid/humanoid_creeper_girl_p7_nude.png"));	
 	
 	protected static final ImmutablePair<ResourceLocation, ResourceLocation> CREEPER_GIRL_P8_LOCATION = ImmutablePair.of(
-			MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/humanoid/humanoid_creeper_girl_p8.png"),
-			MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/humanoid/humanoid_creeper_girl_p8_nude.png"));	
+			MinepreggoHelper.fromThisNamespaceAndPath("textures/entity/preggo/creeper/humanoid/humanoid_creeper_girl_p8.png"),
+			MinepreggoHelper.fromThisNamespaceAndPath("textures/entity/preggo/creeper/humanoid/humanoid_creeper_girl_p8_nude.png"));	
 	
 	protected AbstractHumanoidCreeperGirlRenderer(EntityRendererProvider.Context context, M main, M inner, M outter, M armor) {
 		super(context, main, 0.5F);
@@ -54,17 +53,17 @@ public abstract class AbstractHumanoidCreeperGirlRenderer<E extends AbstractCree
 		if (expressiveFaceLayer != null) {
 			this.addLayer(expressiveFaceLayer);
 		}
-		this.addLayer(new HumanoidCreeperGirlPowerLayer<>(this, context.getModelSet(), armor));
+		this.addLayer(new HumanoidCreeperGirlPowerLayer<>(this, armor));
 	}
 	
 	@Override
-	protected void scale(E creeperGirl, PoseStack p_114047_, float p_114048_) {
-		CreeperGirlClientHelper.scale(creeperGirl, p_114047_, p_114048_);
+	protected void scale(E creeperGirl, PoseStack poseStack, float partialTick) {
+		CreeperGirlClientHelper.scale(creeperGirl, poseStack, partialTick);
 	}
 	
 	@Override
-	protected float getWhiteOverlayProgress(E creeperGirl, float p_114044_) {
-		return CreeperGirlClientHelper.getWhiteOverlayProgress(creeperGirl, p_114044_);
+	protected float getWhiteOverlayProgress(E creeperGirl, float partialTick) {
+		return CreeperGirlClientHelper.getWhiteOverlayProgress(creeperGirl, partialTick);
 	}
 	
 	protected @Nullable ExpressiveFaceLayer<E, M> createExpressiveFaceLayer() {

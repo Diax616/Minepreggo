@@ -15,7 +15,7 @@ public enum FetalMovementIntensity {
 	
 	public final AnimationDefinition animation;
 	
-	FetalMovementIntensity(AnimationDefinition animation) {
+	private FetalMovementIntensity(AnimationDefinition animation) {
 		this.animation = animation;
 	}
 }

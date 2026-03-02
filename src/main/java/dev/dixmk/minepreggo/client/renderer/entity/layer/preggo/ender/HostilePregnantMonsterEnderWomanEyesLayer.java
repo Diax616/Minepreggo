@@ -1,6 +1,5 @@
 package dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.ender;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.model.entity.preggo.ender.AbstractHostilePregnantMonsterEnderWomanModel;
 import dev.dixmk.minepreggo.client.renderer.entity.layer.ExpressiveEyesLayer;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
@@ -14,10 +13,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class HostilePregnantMonsterEnderWomanEyesLayer 
 	<E extends AbstractHostilePregnantEnderWoman, M extends AbstractHostilePregnantMonsterEnderWomanModel<E>> extends ExpressiveEyesLayer<E, M> {
 
-	protected static final RenderType SURPRISED_ENDER_EYES = RenderType.eyes(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/ender/monster/expressions/monster_ender_woman_eye_surprised.png"));
+	protected static final RenderType SURPRISED_ENDER_EYES = RenderType.eyes(MinepreggoHelper.fromThisNamespaceAndPath("textures/entity/preggo/ender/monster/expressions/monster_ender_woman_eye_surprised.png"));
 	
-	public HostilePregnantMonsterEnderWomanEyesLayer(RenderLayerParent<E, M> p_116981_) {
-		super(p_116981_);
+	public HostilePregnantMonsterEnderWomanEyesLayer(RenderLayerParent<E, M> renderer) {
+		super(renderer);
 	}
 
 	@Override

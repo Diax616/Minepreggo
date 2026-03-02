@@ -4,7 +4,6 @@ import javax.annotation.CheckForNull;
 
 import com.google.common.collect.ImmutableMap;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.gui.preggo.AbstractPreggoMobMainScreen;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamableZombieGirl;
@@ -21,10 +20,10 @@ public abstract class AbstractZombieGirlMainScreen
 	<E extends AbstractTamableZombieGirl, G extends AbstractZombieGirlMainMenu<E>> extends AbstractPreggoMobMainScreen<E, G> {
 	
 	private static final ImmutableMap<Craving, ResourceLocation> CRAVING_ICONS = ImmutableMap.of(
-			Craving.SALTY, MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/brain_with_salt.png"), 
-			Craving.SWEET, MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/brain_with_chocolate.png"), 
-			Craving.SOUR, MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/sour_brain.png"),
-			Craving.SPICY, MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/brain_with_hot_sauce.png"));
+			Craving.SALTY, MinepreggoHelper.fromThisNamespaceAndPath("textures/item/brain_with_salt.png"), 
+			Craving.SWEET, MinepreggoHelper.fromThisNamespaceAndPath("textures/item/brain_with_chocolate.png"), 
+			Craving.SOUR, MinepreggoHelper.fromThisNamespaceAndPath("textures/item/sour_brain.png"),
+			Craving.SPICY, MinepreggoHelper.fromThisNamespaceAndPath("textures/item/brain_with_hot_sauce.png"));
 	
 	protected AbstractZombieGirlMainScreen(G container, Inventory inventory, Component text) {
 		super(container, inventory, text, 1, 121);

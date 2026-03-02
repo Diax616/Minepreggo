@@ -2,7 +2,6 @@ package dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.ender;
 
 import javax.annotation.Nonnull;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.model.entity.preggo.ender.AbstractTamableMonsterEnderWomanModel;
 import dev.dixmk.minepreggo.client.renderer.entity.layer.ExpressiveEyesLayer;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
@@ -17,16 +16,16 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class TamableMonsterEnderWomanExpressiveEyesLayer
 	<E extends AbstractTamableEnderWoman, M extends AbstractTamableMonsterEnderWomanModel<E>> extends ExpressiveEyesLayer<E, M> {
 
-	protected static final RenderType ANGRY_ENDER_EYES_1 = RenderType.eyes(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/ender/monster/expressions/monster_ender_woman_eye_angry1.png"));
-	protected static final RenderType ANGRY_ENDER_EYES_2 = RenderType.eyes(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/ender/monster/expressions/monster_ender_woman_eye_angry2.png"));
-	protected static final RenderType SAD_ENDER_EYES_1 = RenderType.eyes(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/ender/monster/expressions/monster_ender_woman_eye_sad1.png"));
-	protected static final RenderType SAD_ENDER_EYES_2 = RenderType.eyes(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/ender/monster/expressions/monster_ender_woman_eye_sad2.png"));
-	protected static final RenderType SAD_ENDER_EYES_3 = RenderType.eyes(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/ender/monster/expressions/monster_ender_woman_eye_sad3.png"));
-	protected static final RenderType SURPRISED_ENDER_EYES = RenderType.eyes(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/ender/monster/expressions/monster_ender_woman_eye_surprised.png"));
-	protected static final RenderType PAIN_ENDER_EYES = RenderType.eyes(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/ender/monster/expressions/monster_ender_woman_eye_pain.png"));
+	protected static final RenderType ANGRY_ENDER_EYES_1 = RenderType.eyes(MinepreggoHelper.fromThisNamespaceAndPath("textures/entity/preggo/ender/monster/expressions/monster_ender_woman_eye_angry1.png"));
+	protected static final RenderType ANGRY_ENDER_EYES_2 = RenderType.eyes(MinepreggoHelper.fromThisNamespaceAndPath("textures/entity/preggo/ender/monster/expressions/monster_ender_woman_eye_angry2.png"));
+	protected static final RenderType SAD_ENDER_EYES_1 = RenderType.eyes(MinepreggoHelper.fromThisNamespaceAndPath("textures/entity/preggo/ender/monster/expressions/monster_ender_woman_eye_sad1.png"));
+	protected static final RenderType SAD_ENDER_EYES_2 = RenderType.eyes(MinepreggoHelper.fromThisNamespaceAndPath("textures/entity/preggo/ender/monster/expressions/monster_ender_woman_eye_sad2.png"));
+	protected static final RenderType SAD_ENDER_EYES_3 = RenderType.eyes(MinepreggoHelper.fromThisNamespaceAndPath("textures/entity/preggo/ender/monster/expressions/monster_ender_woman_eye_sad3.png"));
+	protected static final RenderType SURPRISED_ENDER_EYES = RenderType.eyes(MinepreggoHelper.fromThisNamespaceAndPath("textures/entity/preggo/ender/monster/expressions/monster_ender_woman_eye_surprised.png"));
+	protected static final RenderType PAIN_ENDER_EYES = RenderType.eyes(MinepreggoHelper.fromThisNamespaceAndPath("textures/entity/preggo/ender/monster/expressions/monster_ender_woman_eye_pain.png"));
 	
-	public TamableMonsterEnderWomanExpressiveEyesLayer(RenderLayerParent<E, M> p_116981_) {
-		super(p_116981_);
+	public TamableMonsterEnderWomanExpressiveEyesLayer(RenderLayerParent<E, M> renderer) {
+		super(renderer);
 	}
 
 	protected @Nonnull RenderType renderType(E enderWoman) {

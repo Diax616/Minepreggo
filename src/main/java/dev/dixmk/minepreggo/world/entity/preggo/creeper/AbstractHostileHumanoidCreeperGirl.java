@@ -1,7 +1,6 @@
 package dev.dixmk.minepreggo.world.entity.preggo.creeper;
 
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
-import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -10,8 +9,8 @@ import net.minecraft.world.level.Level;
 
 public abstract class AbstractHostileHumanoidCreeperGirl extends AbstractHostileCreeperGirl {
 
-	protected AbstractHostileHumanoidCreeperGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_) {
-		super(p_21803_, p_21804_, Creature.HUMANOID);
+	protected AbstractHostileHumanoidCreeperGirl(EntityType<? extends AbstractHostileCreeperGirl> entityType, Level level) {
+		super(entityType, level, Creature.HUMANOID);
 	}
 	
 	@Override

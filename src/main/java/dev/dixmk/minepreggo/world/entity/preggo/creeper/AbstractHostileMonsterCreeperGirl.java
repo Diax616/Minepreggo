@@ -10,8 +10,8 @@ import net.minecraft.world.level.Level;
 
 public abstract class AbstractHostileMonsterCreeperGirl extends AbstractHostileCreeperGirl {
 
-	protected AbstractHostileMonsterCreeperGirl(EntityType<? extends AbstractHostileCreeperGirl> p_21803_, Level p_21804_) {
-		super(p_21803_, p_21804_, Creature.MONSTER);
+	protected AbstractHostileMonsterCreeperGirl(EntityType<? extends AbstractHostileCreeperGirl> entityType, Level level) {
+		super(entityType, level, Creature.MONSTER);
 		this.setCanPickUpLoot(false);
 	}
 
@@ -26,7 +26,7 @@ public abstract class AbstractHostileMonsterCreeperGirl extends AbstractHostileC
 	}
 	
 	@Override
-	public SoundEvent getHurtSound(DamageSource p_32309_) {
+	public SoundEvent getHurtSound(DamageSource damageSource) {
 		return SoundEvents.CREEPER_HURT;
 	}
 	

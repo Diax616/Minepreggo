@@ -63,8 +63,8 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 	
 	public final AnimationState bellyAnimationState = new AnimationState();
 	
-	protected AbstractTamablePregnantZombieGirl(EntityType<? extends AbstractTamablePregnantZombieGirl> p_21803_, Level p_21804_, PregnancyPhase currentPregnancyStage) {
-		super(p_21803_, p_21804_);
+	protected AbstractTamablePregnantZombieGirl(EntityType<? extends AbstractTamablePregnantZombieGirl> entityType, Level level, PregnancyPhase currentPregnancyStage) {
+		super(entityType, level);
 		this.pregnancyData = new TamablePregnantPreggoMobDataImpl<>(DATA_HOLDER, this, currentPregnancyStage);		
 		this.pregnancySystem = createPregnancySystem();
 	}
@@ -401,9 +401,9 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 	}
 	
 	@Override
-	protected boolean canReplaceCurrentItem(ItemStack p_21428_, ItemStack p_21429_) {	
-		final var slot = LivingEntity.getEquipmentSlotForItem(p_21428_);				
-		final var armor = p_21428_.getItem();
+	protected boolean canReplaceCurrentItem(ItemStack candidate, ItemStack existing) {	
+		final var slot = LivingEntity.getEquipmentSlotForItem(candidate);				
+		final var armor = candidate.getItem();
 		
 		if (slot == EquipmentSlot.CHEST) {
 			return PregnancySystemHelper.canUseChestplate(armor, this.pregnancyData.getCurrentPregnancyPhase(), false) && PreggoMobHelper.canUseChestPlateInLactation(this, armor);
@@ -412,7 +412,7 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 			return PregnancySystemHelper.canUseLegging(armor, this.pregnancyData.getCurrentPregnancyPhase());
 		}	
 		
-		return super.canReplaceCurrentItem(p_21428_, p_21429_);
+		return super.canReplaceCurrentItem(candidate, existing);
 	}
 	
 	@Override

@@ -9,7 +9,6 @@ import javax.annotation.Nullable;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.event.entity.living.EnderWomanAngerEvent;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
@@ -48,7 +47,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.Pose;
-import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -97,8 +95,8 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
     @Nullable
     private UUID persistentAngerTarget;
 
-    protected AbstractEnderWoman(EntityType< ? extends TamableAnimal> p_32485_, Level p_32486_, Creature typeOfCreature) {
-        super(p_32485_, p_32486_, Species.ENDER, typeOfCreature);
+    protected AbstractEnderWoman(EntityType<? extends PreggoMob> entityType, Level level, Creature typeOfCreature) {
+        super(entityType, level, Species.ENDER, typeOfCreature);
         this.setMaxUpStep(1.0F);
         this.setPathfindingMalus(BlockPathTypes.WATER, -1.0F);  
     }
@@ -114,13 +112,13 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
 	}
 	
 	@Override
-	public boolean removeWhenFarAway(double p_27598_) {
-		return !this.isTame() && !this.wasTamed();
+	public boolean removeWhenFarAway(double distanceToClosestPlayer) {
+		return !this.isTame();
 	}
 	
 	@Override
 	protected boolean shouldDespawnInPeaceful() {
-		return !this.isTame() && !this.wasTamed();
+		return !this.isTame();
 	}
 	
 	@Override
@@ -134,9 +132,9 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
 	}
 
     @Override
-    public void setTarget(@Nullable LivingEntity p_32537_) {
+    public void setTarget(@Nullable LivingEntity target) {
         AttributeInstance attributeinstance = this.getAttribute(Attributes.MOVEMENT_SPEED);
-        if (p_32537_ == null) {
+        if (target == null) {
             this.targetChangeTime = 0;
             this.entityData.set(DATA_CREEPY, false);
             this.entityData.set(DATA_STARED_AT, false);
@@ -150,7 +148,7 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
             }
         }
 
-        super.setTarget(p_32537_); //Forge: Moved down to allow event handlers to write data manager values.
+        super.setTarget(target); //Forge: Moved down to allow event handlers to write data manager values.
     }
 
     @Override
@@ -165,16 +163,16 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
         this.setRemainingPersistentAngerTime(PERSISTENT_ANGER_TIME.sample(this.random));
     }
 
-    public void setRemainingPersistentAngerTime(int p_32515_) {
-        this.remainingPersistentAngerTime = p_32515_;
+    public void setRemainingPersistentAngerTime(int time) {
+        this.remainingPersistentAngerTime = time;
     }
 
     public int getRemainingPersistentAngerTime() {
         return this.remainingPersistentAngerTime;
     }
 
-    public void setPersistentAngerTarget(@Nullable UUID p_32509_) {
-        this.persistentAngerTarget = p_32509_;
+    public void setPersistentAngerTarget(@Nullable UUID target) {
+        this.persistentAngerTarget = target;
     }
 
     @Nullable
@@ -193,62 +191,62 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
     }
 
     @Override
-    public void onSyncedDataUpdated(EntityDataAccessor< ? > p_32513_) {
-        if (DATA_CREEPY.equals(p_32513_) && this.hasBeenStaredAt() && this.level().isClientSide) {
+    public void onSyncedDataUpdated(EntityDataAccessor<?> entityDataAccessor) {
+        if (DATA_CREEPY.equals(entityDataAccessor) && this.hasBeenStaredAt() && this.level().isClientSide) {
             this.playStareSound();
         }
 
-        super.onSyncedDataUpdated(p_32513_);
+        super.onSyncedDataUpdated(entityDataAccessor);
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag p_32520_) {
-        super.addAdditionalSaveData(p_32520_);
+    public void addAdditionalSaveData(CompoundTag tag) {
+        super.addAdditionalSaveData(tag);
         BlockState blockstate = this.getCarriedBlock();
         if (blockstate != null) {
-            p_32520_.put("carriedBlockState", NbtUtils.writeBlockState(blockstate));
+        	tag.put("carriedBlockState", NbtUtils.writeBlockState(blockstate));
         }
 
-        this.addPersistentAngerSaveData(p_32520_);
+        this.addPersistentAngerSaveData(tag);
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag p_32511_) {
-        super.readAdditionalSaveData(p_32511_);
+    public void readAdditionalSaveData(CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
         BlockState blockstate = null;
-        if (p_32511_.contains("carriedBlockState", 10)) {
-            blockstate = NbtUtils.readBlockState(this.level().holderLookup(Registries.BLOCK), p_32511_.getCompound("carriedBlockState"));
+        if (tag.contains("carriedBlockState", 10)) {
+            blockstate = NbtUtils.readBlockState(this.level().holderLookup(Registries.BLOCK), tag.getCompound("carriedBlockState"));
             if (blockstate.isAir()) {
                 blockstate = null;
             }
         }
 
         this.setCarriedBlock(blockstate);
-        this.readPersistentAngerSaveData(this.level(), p_32511_);
+        this.readPersistentAngerSaveData(this.level(), tag);
     }
 
-    boolean isLookingAtMe(Player p_32535_) {
-        ItemStack itemstack = p_32535_.getInventory().armor.get(3);
-        if (AbstractEnderWoman.shouldSuppressEnderManAnger(this, p_32535_, itemstack)) {
+    boolean isLookingAtMe(Player source) {
+        ItemStack itemstack = source.getInventory().armor.get(3);
+        if (AbstractEnderWoman.shouldSuppressEnderManAnger(this, source, itemstack)) {
             return false;
         }
         else {
-            Vec3 vec3 = p_32535_.getViewVector(1.0F).normalize();
-            Vec3 vec31 = new Vec3(this.getX() - p_32535_.getX(), this.getEyeY() - p_32535_.getEyeY(), this.getZ() - p_32535_.getZ());
+            Vec3 vec3 = source.getViewVector(1.0F).normalize();
+            Vec3 vec31 = new Vec3(this.getX() - source.getX(), this.getEyeY() - source.getEyeY(), this.getZ() - source.getZ());
             double d0 = vec31.length();
             vec31 = vec31.normalize();
             double d1 = vec3.dot(vec31);
-            return d1 > 1.0D - 0.025D / d0 ? p_32535_.hasLineOfSight(this) : false;
+            return d1 > 1.0D - 0.025D / d0 ? source.hasLineOfSight(this) : false;
         }
     }
 
     @Override
-    protected float getStandingEyeHeight(Pose p_32517_, EntityDimensions p_32518_) {
+    protected float getStandingEyeHeight(Pose pose, EntityDimensions dimensions) {
         return 2.55F;
     }
 
 	@Override
-	public AgeableMob getBreedOffspring(ServerLevel p_146743_, AgeableMob p_146744_) {
+	public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob mate) {
 		return null;
 	}
     
@@ -312,12 +310,12 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
         }
     }
 
-    boolean teleportTowards(Entity p_32501_) {
-        Vec3 vec3 = new Vec3(this.getX() - p_32501_.getX(), this.getY(0.5D) - p_32501_.getEyeY(), this.getZ() - p_32501_.getZ());
+    boolean teleportTowards(Entity target) {
+        Vec3 vec3 = new Vec3(this.getX() - target.getX(), this.getY(0.5D) - target.getEyeY(), this.getZ() - target.getZ());
         vec3 = vec3.normalize();
         double d0 = 16.0D;
         double d1 = this.getX() + (this.random.nextDouble() - 0.5D) * 8.0D - vec3.x * d0;
-        double d2 = this.getY() + (double)(this.random.nextInt(16) - 8) - vec3.y * d0;
+        double d2 = this.getY() + (this.random.nextInt(16) - 8) - vec3.y * d0;
         double d3 = this.getZ() + (this.random.nextDouble() - 0.5D) * 8.0D - vec3.z * d0;
         return this.teleport(d1, d2, d3);
     }
@@ -336,18 +334,18 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
     }
     
     @SuppressWarnings("deprecation")
-    protected boolean teleport(double p_32544_, double p_32545_, double p_32546_) {
-        BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos(p_32544_, p_32545_, p_32546_);
+    protected boolean teleport(double targetX, double targetY, double targetZ) {
+        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(targetX, targetY, targetZ);
 
-        while (blockpos$mutableblockpos.getY() > this.level().getMinBuildHeight() && !this.level().getBlockState(blockpos$mutableblockpos).blocksMotion()) {
-            blockpos$mutableblockpos.move(Direction.DOWN);
+        while (pos.getY() > this.level().getMinBuildHeight() && !this.level().getBlockState(pos).blocksMotion()) {
+        	pos.move(Direction.DOWN);
         }
 
-        BlockState blockstate = this.level().getBlockState(blockpos$mutableblockpos);
+        BlockState blockstate = this.level().getBlockState(pos);
 		boolean flag = blockstate.blocksMotion();
         boolean flag1 = blockstate.getFluidState().is(FluidTags.WATER);
         if (flag && !flag1) {
-            net.minecraftforge.event.entity.EntityTeleportEvent.EnderEntity event = net.minecraftforge.event.ForgeEventFactory.onEnderTeleport(this, p_32544_, p_32545_, p_32546_);
+            net.minecraftforge.event.entity.EntityTeleportEvent.EnderEntity event = net.minecraftforge.event.ForgeEventFactory.onEnderTeleport(this, targetX, targetY, targetZ);
             if (event.isCanceled()) return false;
             Vec3 vec3 = this.position();
             boolean flag2 = this.randomTeleport(event.getTargetX(), event.getTargetY(), event.getTargetZ(), true);
@@ -372,7 +370,7 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
     }
 
     @Override
-    protected SoundEvent getHurtSound(DamageSource p_32527_) {
+    protected SoundEvent getHurtSound(DamageSource damageSource) {
         return SoundEvents.ENDERMAN_HURT;
     }
 
@@ -382,23 +380,23 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
     }
 
     @Override
-    protected void dropCustomDeathLoot(DamageSource p_32497_, int p_32498_, boolean p_32499_) {
-        super.dropCustomDeathLoot(p_32497_, p_32498_, p_32499_);
+    protected void dropCustomDeathLoot(DamageSource damageSource, int lootingMultiplier, boolean recentlyHit) {
+    	super.dropCustomDeathLoot(damageSource, lootingMultiplier, recentlyHit);
         BlockState blockstate = this.getCarriedBlock();
         if (blockstate != null) {
             ItemStack itemstack = new ItemStack(Items.DIAMOND_AXE);
             itemstack.enchant(Enchantments.SILK_TOUCH, 1);
-            LootParams.Builder lootparams$builder = (new LootParams.Builder((ServerLevel)this.level())).withParameter(LootContextParams.ORIGIN, this.position()).withParameter(LootContextParams.TOOL, itemstack).withOptionalParameter(LootContextParams.THIS_ENTITY, this);
+            LootParams.Builder builder = (new LootParams.Builder((ServerLevel)this.level())).withParameter(LootContextParams.ORIGIN, this.position()).withParameter(LootContextParams.TOOL, itemstack).withOptionalParameter(LootContextParams.THIS_ENTITY, this);
 
-            for (ItemStack itemstack1 : blockstate.getDrops(lootparams$builder)) {
+            for (ItemStack itemstack1 : blockstate.getDrops(builder)) {
                 this.spawnAtLocation(itemstack1);
             }
         }
 
     }
 
-    public void setCarriedBlock(@Nullable BlockState p_32522_) {
-        this.entityData.set(DATA_CARRY_STATE, Optional.ofNullable(p_32522_));
+    public void setCarriedBlock(@Nullable BlockState blockState) {
+        this.entityData.set(DATA_CARRY_STATE, Optional.ofNullable(blockState));
     }
 
     @Nullable
@@ -415,25 +413,25 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
 	}
     
     @Override
-    public boolean hurt(DamageSource p_32494_, float p_32495_) {
-        if (this.isInvulnerableTo(p_32494_)) {
+    public boolean hurt(DamageSource damageSource, float amount) {
+        if (this.isInvulnerableTo(damageSource)) {
             return false;
         }
-        else if (this.cannotTeleportByDamage(p_32494_)) {
-        	return super.hurt(p_32494_, p_32495_);
+        else if (this.cannotTeleportByDamage(damageSource)) {
+        	return super.hurt(damageSource, amount);
         }
         else {
-            boolean flag = p_32494_.getDirectEntity() instanceof ThrownPotion;
-            if (!p_32494_.is(DamageTypeTags.IS_PROJECTILE) && !flag) {
-                boolean flag2 = super.hurt(p_32494_, p_32495_);
-                if (!this.level().isClientSide() && !(p_32494_.getEntity() instanceof LivingEntity) && this.random.nextInt(10) != 0) {
+            boolean flag = damageSource.getDirectEntity() instanceof ThrownPotion;
+            if (!damageSource.is(DamageTypeTags.IS_PROJECTILE) && !flag) {
+                boolean flag2 = super.hurt(damageSource, amount);
+                if (!this.level().isClientSide() && !(damageSource.getEntity() instanceof LivingEntity) && this.random.nextInt(10) != 0) {
                     this.teleport();
                 }
 
                 return flag2;
             }
             else {
-                boolean flag1 = flag && this.hurtWithCleanWater(p_32494_, (ThrownPotion)p_32494_.getDirectEntity(), p_32495_);
+                boolean flag1 = flag && this.hurtWithCleanWater(damageSource, (ThrownPotion)damageSource.getDirectEntity(), amount);
 
                 for (int i = 0; i < 64; ++i) {
                     if (this.teleport()) {
@@ -446,12 +444,12 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
         }
     }
 
-    private boolean hurtWithCleanWater(DamageSource p_186273_, ThrownPotion p_186274_, float p_186275_) {
-        ItemStack itemstack = p_186274_.getItem();
-        Potion potion = PotionUtils.getPotion(itemstack);
+    private boolean hurtWithCleanWater(DamageSource damageSource, ThrownPotion potion, float damage) {
+        ItemStack itemstack = potion.getItem();
+        Potion tempPotion = PotionUtils.getPotion(itemstack);
         List<MobEffectInstance> list = PotionUtils.getMobEffects(itemstack);
-        boolean flag = potion == Potions.WATER && list.isEmpty();
-        return flag ? super.hurt(p_186273_, p_186275_) : false;
+        boolean flag = tempPotion == Potions.WATER && list.isEmpty();
+        return flag ? super.hurt(damageSource, damage) : false;
     }
 
     public boolean isCreepy() {
@@ -473,7 +471,7 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
 
 	@Override
 	protected ResourceLocation getDefaultLootTable() {
-	    return MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "entities/abstract_ender_girl_loot");
+	    return MinepreggoHelper.fromThisNamespaceAndPath("entities/abstract_ender_girl_loot");
 	}
     
     public static boolean isEnderMask(ItemStack imItemStack, Player player, AbstractEnderWoman abstractEnderGirl) {
@@ -496,32 +494,36 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
     }
     
     protected static class EnderWomanFreezeWhenLookedAt extends Goal {
-        private final AbstractEnderWoman abstractEnderGirl;
+        private final AbstractEnderWoman abstractEnderWoman;
+        
         @Nullable
-            private LivingEntity target;
+        private LivingEntity target;
 
-        public EnderWomanFreezeWhenLookedAt(AbstractEnderWoman p_32550_) {
-            this.abstractEnderGirl = p_32550_;
+        public EnderWomanFreezeWhenLookedAt(AbstractEnderWoman abstractEnderWoman) {
+            this.abstractEnderWoman = abstractEnderWoman;
             this.setFlags(EnumSet.of(Goal.Flag.JUMP, Goal.Flag.MOVE));
         }
-
+        
+        @Override
         public boolean canUse() {
-            this.target = this.abstractEnderGirl.getTarget();
+            this.target = this.abstractEnderWoman.getTarget();
             if (!(this.target instanceof Player)) {
                 return false;
             }
             else {
-                double d0 = this.target.distanceToSqr(this.abstractEnderGirl);
-                return d0 > 256.0D ? false : this.abstractEnderGirl.isLookingAtMe((Player)this.target);
+                double d0 = this.target.distanceToSqr(this.abstractEnderWoman);
+                return d0 > 256.0D ? false : this.abstractEnderWoman.isLookingAtMe((Player)this.target);
             }
         }
 
+        @Override
         public void start() {
-            this.abstractEnderGirl.getNavigation().stop();
+            this.abstractEnderWoman.getNavigation().stop();
         }
 
+        @Override
         public void tick() {
-            this.abstractEnderGirl.getLookControl().setLookAt(this.target.getX(), this.target.getEyeY(), this.target.getZ());
+            this.abstractEnderWoman.getLookControl().setLookAt(this.target.getX(), this.target.getEyeY(), this.target.getZ());
         }
     }
     
@@ -534,12 +536,10 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
         private final TargetingConditions continueAggroTargetConditions = TargetingConditions.forCombat().ignoreLineOfSight();
         private final Predicate<LivingEntity> isAngerInducing;
 
-        public EnderWomanLookForPlayerGoal(AbstractEnderWoman p_32573_, @Nullable Predicate<LivingEntity> p_32574_) {
-            super(p_32573_, Player.class, 10, false, false, p_32574_);
-            this.abstractEnderWoman = p_32573_;
-            this.isAngerInducing = (p_269940_) -> {
-                return (p_32573_.isLookingAtMe((Player)p_269940_) || p_32573_.isAngryAt(p_269940_)) && !p_32573_.hasIndirectPassenger(p_269940_);
-            };
+        public EnderWomanLookForPlayerGoal(AbstractEnderWoman abstractEnderWoman, @Nullable Predicate<LivingEntity> targetPredicate) {
+            super(abstractEnderWoman, Player.class, 10, false, false, targetPredicate);
+            this.abstractEnderWoman = abstractEnderWoman;
+            this.isAngerInducing = target -> (abstractEnderWoman.isLookingAtMe((Player)target) || abstractEnderWoman.isAngryAt(target)) && !abstractEnderWoman.hasIndirectPassenger(target);       
             this.startAggroTargetConditions = TargetingConditions.forCombat().range(this.getFollowDistance()).selector(this.isAngerInducing);
         }
 
@@ -668,8 +668,8 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
     protected static class EnderWomanLeaveBlockGoal extends Goal {
         protected final AbstractEnderWoman abstractEnderWoman;
 
-        public EnderWomanLeaveBlockGoal(AbstractEnderWoman p_32556_) {
-            this.abstractEnderWoman = p_32556_;
+        public EnderWomanLeaveBlockGoal(AbstractEnderWoman abstractEnderWoman) {
+            this.abstractEnderWoman = abstractEnderWoman;
         }
 
         @Override
@@ -708,16 +708,23 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
             }
         }
 
-        private boolean canPlaceBlock(Level p_32559_, BlockPos p_32560_, BlockState p_32561_, BlockState p_32562_, BlockState p_32563_, BlockPos p_32564_) {
-            return !p_32559_.isClientSide() && p_32562_.isAir() && !p_32563_.isAir() && !p_32563_.is(Blocks.BEDROCK) && !p_32563_.is(net.minecraftforge.common.Tags.Blocks.ENDERMAN_PLACE_ON_BLACKLIST) && p_32563_.isCollisionShapeFullBlock(p_32559_, p_32564_) && p_32561_.canSurvive(p_32559_, p_32560_) && p_32559_.getEntities(this.abstractEnderWoman, AABB.unitCubeFromLowerCorner(Vec3.atLowerCornerOf(p_32560_))).isEmpty();
+        private boolean canPlaceBlock(Level level, BlockPos placePos, BlockState blockToPlace, BlockState currentState, BlockState belowState, BlockPos belowPos) {
+            return !level.isClientSide()
+            		&& currentState.isAir()
+            		&& !belowState.isAir()
+            		&& !belowState.is(Blocks.BEDROCK)
+            		&& !belowState.is(net.minecraftforge.common.Tags.Blocks.ENDERMAN_PLACE_ON_BLACKLIST)
+            		&& belowState.isCollisionShapeFullBlock(level, belowPos)
+            		&& blockToPlace.canSurvive(level, placePos)
+            		&& level.getEntities(this.abstractEnderWoman, AABB.unitCubeFromLowerCorner(Vec3.atLowerCornerOf(placePos))).isEmpty();
         }
     }
 
     protected static class EnderWomanTakeBlockGoal extends Goal {
     	protected final AbstractEnderWoman abstractEnderWoman;
 
-        public EnderWomanTakeBlockGoal(AbstractEnderWoman p_32585_) {
-            this.abstractEnderWoman = p_32585_;
+        public EnderWomanTakeBlockGoal(AbstractEnderWoman abstractEnderWoman) {
+            this.abstractEnderWoman = abstractEnderWoman;
         }
         
         @Override
@@ -742,8 +749,8 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
             int k = Mth.floor(this.abstractEnderWoman.getZ() - 2.0D + randomsource.nextDouble() * 4.0D);
             BlockPos blockpos = new BlockPos(i, j, k);
             BlockState blockstate = level.getBlockState(blockpos);
-            Vec3 vec3 = new Vec3((double)this.abstractEnderWoman.getBlockX() + 0.5D, (double)j + 0.5D, (double)this.abstractEnderWoman.getBlockZ() + 0.5D);
-            Vec3 vec31 = new Vec3((double)i + 0.5D, (double)j + 0.5D, (double)k + 0.5D);
+            Vec3 vec3 = new Vec3(this.abstractEnderWoman.getBlockX() + 0.5D, j + 0.5D, this.abstractEnderWoman.getBlockZ() + 0.5D);
+            Vec3 vec31 = new Vec3(i + 0.5D, j + 0.5D, k + 0.5D);
             BlockHitResult blockhitresult = level.clip(new ClipContext(vec3, vec31, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, this.abstractEnderWoman));
             boolean flag = !level.isClientSide() && blockhitresult.getBlockPos().equals(blockpos);
             if (blockstate.is(BlockTags.ENDERMAN_HOLDABLE) && flag) {
@@ -841,8 +848,7 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
         return false;
     }
     
-    private static boolean canPlaceBlockStatic(Level level, BlockPos placePos, BlockState blockToPlace, 
-            BlockState currentState, BlockState belowState, BlockPos belowPos, AbstractEnderWoman enderWoman) {
+    private static boolean canPlaceBlockStatic(Level level, BlockPos placePos, BlockState blockToPlace, BlockState currentState, BlockState belowState, BlockPos belowPos, AbstractEnderWoman enderWoman) {
         return !level.isClientSide() 
             && currentState.isAir() 
             && !belowState.isAir() 

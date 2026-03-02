@@ -193,6 +193,6 @@ public class PlayerAnimationManager {
             return hasActiveAnimation() && currentAnimation.shouldOverrideVanilla();
         }
     	
-    	private static record PartState(float xRot, float yRot, float zRot, float x, float y, float z) {}
+    	private record PartState(float xRot, float yRot, float zRot, float x, float y, float z) {}
     }
 }

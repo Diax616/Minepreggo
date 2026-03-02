@@ -2,7 +2,6 @@ package dev.dixmk.minepreggo.world.entity.preggo;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.InteractionHand;
@@ -23,27 +22,12 @@ public abstract class PreggoMob extends TamableAnimal {
 	
 	private final Species typeOfSpecies;
 	private final Creature typeOfCreature;
-	private boolean wasTamed = false;
 	
-	protected PreggoMob(EntityType<? extends TamableAnimal> p_21803_, Level p_21804_, Species typeOfSpecies, Creature typeOfCreature) {
-		super(p_21803_, p_21804_);
+	protected PreggoMob(EntityType<? extends TamableAnimal> entity, Level level, Species typeOfSpecies, Creature typeOfCreature) {
+		super(entity, level);
 		this.typeOfSpecies = typeOfSpecies;
 		this.typeOfCreature = typeOfCreature;
 	}
-	
-    @Override
-    public void addAdditionalSaveData(CompoundTag nbt) {
-    	super.addAdditionalSaveData(nbt);
-    	nbt.putBoolean("WasTamed", this.wasTamed);  	
-    }
-
-    @Override
-    public void readAdditionalSaveData(CompoundTag nbt) {
-    	super.readAdditionalSaveData(nbt);
-    	if (nbt.contains("WasTamed")) {
-			this.wasTamed = nbt.getBoolean("WasTamed");
-		}
-    }
     
 	public String getSimpleNameOrCustom() {
 		return this.hasCustomName() ? this.getCustomName().getString() : this.getSimpleName();
@@ -61,10 +45,6 @@ public abstract class PreggoMob extends TamableAnimal {
 	
 	protected void afterTaming() {
 		
-	}
-	
-	public boolean wasTamed() {
-		return this.wasTamed;
 	}
 	
 	public @NonNull Species getTypeOfSpecies() {
@@ -123,7 +103,6 @@ public abstract class PreggoMob extends TamableAnimal {
 			if (!this.level().isClientSide && this.random.nextInt(3) == 0 && !net.minecraftforge.event.ForgeEventFactory.onAnimalTame(this, sourceentity)) {
 				this.tame(sourceentity);
 				this.afterTaming();
-				this.wasTamed = true;
 				this.level().broadcastEntityEvent(this, (byte) 7);		
 				for (EquipmentSlot slot : EquipmentSlot.values()) {
 					this.setGuaranteedDrop(slot);

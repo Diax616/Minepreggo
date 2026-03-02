@@ -21,7 +21,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 public class GetPregnantTrigger extends SimpleCriterionTrigger<GetPregnantTrigger.TriggerInstance> {
 
-	private static final ResourceLocation ID = MinepreggoHelper.fromThisMod("get_pregnant");
+	private static final ResourceLocation ID = MinepreggoHelper.fromThisNamespaceAndPath("get_pregnant");
 
 	@Override
 	public ResourceLocation getId() {

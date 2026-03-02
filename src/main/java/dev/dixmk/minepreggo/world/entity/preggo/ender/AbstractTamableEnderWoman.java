@@ -77,8 +77,8 @@ public abstract class AbstractTamableEnderWoman extends AbstractEnderWoman imple
 
 	protected boolean breakBlocks = false;
 	
-	protected AbstractTamableEnderWoman(EntityType<? extends AbstractEnderWoman> p_32485_, Level p_32486_, Creature typeOfCreature) {
-		super(p_32485_, p_32486_, typeOfCreature);
+	protected AbstractTamableEnderWoman(EntityType<? extends AbstractEnderWoman> entityType, Level level, Creature typeOfCreature) {
+		super(entityType, level, typeOfCreature);
 		this.femaleEntity = createFemaleEntityData();   
 		this.tamablePreggoMobSystem = createTamablePreggoMobSystem();
 		this.inventory = createInventory();
@@ -109,8 +109,8 @@ public abstract class AbstractTamableEnderWoman extends AbstractEnderWoman imple
 	}
 	
 	@Override
-	public boolean canBeLeashed(Player p_21813_) {
-		return super.canBeLeashed(p_21813_) && this.isOwnedBy(p_21813_) && !this.tamablePreggoMobData.isSavage();
+	public boolean canBeLeashed(Player source) {
+		return super.canBeLeashed(source) && this.isOwnedBy(source) && !this.tamablePreggoMobData.isSavage();
 	}
 	
 	@Override
@@ -214,33 +214,33 @@ public abstract class AbstractTamableEnderWoman extends AbstractEnderWoman imple
 	}
 	
 	@Override
-	public AgeableMob getBreedOffspring(ServerLevel p_146743_, AgeableMob p_146744_) {
+	public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob mate) {
 		return null;
 	}
 
 	@Override
-	protected boolean canReplaceCurrentItem(ItemStack p_21428_, ItemStack p_21429_) {
-		final var slot = LivingEntity.getEquipmentSlotForItem(p_21428_);				
+	protected boolean canReplaceCurrentItem(ItemStack candidate, ItemStack existing) {
+		final var slot = LivingEntity.getEquipmentSlotForItem(candidate);				
 		if (slot.getType() == EquipmentSlot.Type.HAND) {
-			return super.canReplaceCurrentItem(p_21428_, p_21429_) && !this.isCarring();
+			return super.canReplaceCurrentItem(candidate, existing) && !this.isCarring();
 		}
-		return super.canReplaceCurrentItem(p_21428_, p_21429_);
+		return super.canReplaceCurrentItem(candidate, existing);
 	}
 
 	@Override
-	protected void pickUpItem(ItemEntity p_21471_) {		
-		ItemStack itemstack = p_21471_.getItem();
+	protected void pickUpItem(ItemEntity stack) {		
+		ItemStack itemstack = stack.getItem();
 		ItemStack itemstack1 = this.equipItemIfPossible(itemstack.copy());			
 		if (!itemstack1.isEmpty()) {
-			this.onItemPickup(p_21471_);
-			this.take(p_21471_, itemstack1.getCount());
+			this.onItemPickup(stack);
+			this.take(stack, itemstack1.getCount());
 			itemstack.shrink(itemstack1.getCount());		
 			if (itemstack.isEmpty()) {
-				p_21471_.discard();
+				stack.discard();
 			}
 		}
 		else {
-			PreggoMobHelper.storeItemInExtraSlots(this, p_21471_);	
+			PreggoMobHelper.storeItemInExtraSlots(this, stack);	
 		}
 	}
 	

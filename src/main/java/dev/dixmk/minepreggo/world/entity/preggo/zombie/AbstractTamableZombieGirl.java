@@ -43,16 +43,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.Difficulty;
-import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.animal.IronGolem;
@@ -63,7 +59,6 @@ import net.minecraft.world.entity.monster.Ghast;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -83,10 +78,10 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	
 	protected boolean breakBlocks = false;
 	
-	protected AbstractTamableZombieGirl(EntityType<? extends AbstractZombieGirl> p_21803_, Level p_21804_) {
-	      super(p_21803_, p_21804_, Creature.HUMANOID);
-	      this.femaleEntityData = createFemaleEntityData();
-	      this.tamablePreggoMobSystem = createTamablePreggoMobSystem();
+	protected AbstractTamableZombieGirl(EntityType<? extends AbstractZombieGirl> entityType, Level level) {
+		super(entityType, level, Creature.HUMANOID);
+		this.femaleEntityData = createFemaleEntityData();
+		this.tamablePreggoMobSystem = createTamablePreggoMobSystem();
 	}
 
 	protected abstract @Nonnull ITamablePreggoMobSystem createTamablePreggoMobSystem();
@@ -104,8 +99,8 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	}
 	
 	@Override
-	public boolean canBeLeashed(Player p_21813_) {
-		return super.canBeLeashed(p_21813_) && this.isOwnedBy(p_21813_) && !this.tamablePreggoMobData.isSavage();
+	public boolean canBeLeashed(Player source) {
+		return super.canBeLeashed(source) && this.isOwnedBy(source) && !this.tamablePreggoMobData.isSavage();
 	}
 	
 	@Override
@@ -175,19 +170,6 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 			}
 		});
 	}	
-   
-	@Override
-	protected void populateDefaultEquipmentSlots(RandomSource p_219165_, DifficultyInstance p_219166_) {
-		super.populateDefaultEquipmentSlots(p_219165_, p_219166_);
-		if (p_219165_.nextFloat() < (this.level().getDifficulty() == Difficulty.HARD ? 0.05F : 0.01F)) {
-			int i = p_219165_.nextInt(3);
-			if (i == 0) {
-				this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SWORD));
-			} else {
-				this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SHOVEL));
-			}
-		}
-	}
 	
 	@Override
 	public boolean hurt(DamageSource damagesource, float amount) {
@@ -459,24 +441,24 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	}
 	
 	@Override
-	protected void pickUpItem(ItemEntity p_21471_) {
-		ItemStack itemstack = p_21471_.getItem();
+	protected void pickUpItem(ItemEntity stack) {
+		ItemStack itemstack = stack.getItem();
 		ItemStack itemstack1 = this.equipItemIfPossible(itemstack.copy());			
 		if (!itemstack1.isEmpty()) {
-			this.onItemPickup(p_21471_);
-			this.take(p_21471_, itemstack1.getCount());
+			this.onItemPickup(stack);
+			this.take(stack, itemstack1.getCount());
 			itemstack.shrink(itemstack1.getCount());		
 			if (itemstack.isEmpty()) {
-				p_21471_.discard();
+				stack.discard();
 			}
 		}
 		else {
-			PreggoMobHelper.storeItemInExtraSlots(this, p_21471_);	
+			PreggoMobHelper.storeItemInExtraSlots(this, stack);	
 		}
 	}
 	
 	@Override
-	public AgeableMob getBreedOffspring(ServerLevel p_146743_, AgeableMob p_146744_) {
+	public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob mate) {
 		return null;
 	}
 	

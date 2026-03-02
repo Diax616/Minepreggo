@@ -17,7 +17,6 @@ import javax.annotation.CheckForNull;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.client.gui.ScreenHelper;
 import dev.dixmk.minepreggo.client.gui.component.PreggoMobScrollList;
@@ -34,7 +33,7 @@ import dev.dixmk.minepreggo.world.inventory.preggo.SelectPregnantEntityForPrenat
 
 @OnlyIn(Dist.CLIENT)
 public class SelectPregnantEntityForPrenatalCheckUpScreen extends AbstractContainerScreen<SelectPregnantEntityForPrenatalCheckUpMenu> {	
-	private static final ResourceLocation TEXTURE = MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/select_preggo_mob_for_medical_check_up_gui.png");
+	private static final ResourceLocation TEXTURE = MinepreggoHelper.fromThisNamespaceAndPath("textures/screens/select_preggo_mob_for_medical_check_up_gui.png");
 
 	private final Optional<ScientificIllager> scientificIllager;
 	private final List<? extends LivingEntity> pregnantEntities;

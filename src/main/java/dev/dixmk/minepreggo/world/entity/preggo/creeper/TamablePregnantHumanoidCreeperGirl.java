@@ -33,6 +33,8 @@ import net.minecraftforge.network.PlayMessages;
 
 public class TamablePregnantHumanoidCreeperGirl {
 	
+	private TamablePregnantHumanoidCreeperGirl() {}
+	
 	public static class TamableHumanoidCreeperGirlP0 extends AbstractTamablePregnantHumanoidCreeperGirl {
 		
 		public TamableHumanoidCreeperGirlP0(PlayMessages.SpawnEntity packet, Level world) {

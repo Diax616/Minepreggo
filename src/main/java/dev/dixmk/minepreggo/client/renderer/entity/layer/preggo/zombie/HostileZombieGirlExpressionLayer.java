@@ -2,7 +2,6 @@ package dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.zombie;
 
 import javax.annotation.Nullable;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.model.entity.preggo.zombie.AbstractHostileZombieGirlModel;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractHostileZombieGirl;
@@ -15,11 +14,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class HostileZombieGirlExpressionLayer 
 	<E extends AbstractHostileZombieGirl, M extends AbstractHostileZombieGirlModel<E>> extends AbstractZombieGirlExpressionLayer<E, M> {
 
-	protected static final RenderType HOSTIL = RenderType.entityCutoutNoCull(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/expressions/zombie_girl_face_hostil.png"));
-	protected static final RenderType SURPRISED = RenderType.entityCutoutNoCull(MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/expressions/zombie_girl_face_hostil_surprised.png"));
+	protected static final RenderType HOSTIL = RenderType.entityCutoutNoCull(MinepreggoHelper.fromThisNamespaceAndPath("textures/entity/preggo/zombie/expressions/zombie_girl_face_hostil.png"));
+	protected static final RenderType SURPRISED = RenderType.entityCutoutNoCull(MinepreggoHelper.fromThisNamespaceAndPath("textures/entity/preggo/zombie/expressions/zombie_girl_face_hostil_surprised.png"));
 
-	public HostileZombieGirlExpressionLayer(RenderLayerParent<E, M> p_117346_) {
-		super(p_117346_);
+	public HostileZombieGirlExpressionLayer(RenderLayerParent<E, M> renderer) {
+		super(renderer);
 	}
 	
 	@Override

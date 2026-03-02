@@ -22,7 +22,6 @@ import net.minecraft.sounds.SoundEvents;
 import java.util.List;
 import java.util.Optional;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
@@ -70,7 +69,7 @@ public class FertilityWitch extends Witch {
 
 	@Override
 	protected ResourceLocation getDefaultLootTable() {
-	    return MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "entities/fertility_witch_loot");
+	    return MinepreggoHelper.fromThisNamespaceAndPath("entities/fertility_witch_loot");
 	}
 	
 	private Potion getRandomHarmfulPregnancyPotion() {
@@ -94,18 +93,18 @@ public class FertilityWitch extends Witch {
 	}
 
 	@Override
-	public void performRangedAttack(LivingEntity p_34143_, float p_34144_) {
+	public void performRangedAttack(LivingEntity target, float distanceFactor) {
 		if (this.isDrinkingPotion()) return;
 					
-		Vec3 vec3 = p_34143_.getDeltaMovement();
-		double d0 = p_34143_.getX() + vec3.x - this.getX();
-		double d1 = p_34143_.getEyeY() - 1.1 - this.getY();
-		double d2 = p_34143_.getZ() + vec3.z - this.getZ();
+		Vec3 vec3 = target.getDeltaMovement();
+		double d0 = target.getX() + vec3.x - this.getX();
+		double d1 = target.getEyeY() - 1.1 - this.getY();
+		double d2 = target.getZ() + vec3.z - this.getZ();
 		double d3 = Math.sqrt(d0 * d0 + d2 * d2);
 		Potion potion = Potions.HARMING;
 		
-		if (p_34143_ instanceof Raider) {
-			if (p_34143_.getHealth() <= 6.0F) {
+		if (target instanceof Raider) {
+			if (target.getHealth() <= 6.0F) {
 				potion = Potions.HEALING;
 			}
 			else {
@@ -113,7 +112,7 @@ public class FertilityWitch extends Witch {
 			}
 			this.setTarget(null);
 		}
-		else if (d3 > 3D && p_34143_ instanceof ServerPlayer player) {		
+		else if (d3 > 3D && target instanceof ServerPlayer player) {		
 			Optional<Integer> result = player.getCapability(MinepreggoCapabilities.PLAYER_DATA).map(cap -> 
 				cap.getFemaleData().map(femaleData -> {
 					if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
@@ -133,7 +132,7 @@ public class FertilityWitch extends Witch {
 				}
 			}
 		}		
-		else if (d3 > 3D && p_34143_ instanceof PreggoMob preggoMob) {
+		else if (d3 > 3D && target instanceof PreggoMob preggoMob) {
 			if (preggoMob instanceof TamableZombieGirl ||
 					preggoMob instanceof TamableHumanoidCreeperGirl ||
 					preggoMob instanceof TamableMonsterCreeperGirl ||
@@ -145,10 +144,10 @@ public class FertilityWitch extends Witch {
 				potion = getRandomHarmfulPregnancyPotion();
 			} 		
 		}	
-		else if (p_34143_.getHealth() >= 8.0F && !p_34143_.hasEffect(MobEffects.POISON)) {
+		else if (target.getHealth() >= 8.0F && !target.hasEffect(MobEffects.POISON)) {
 			potion = Potions.POISON;
 		}
-		else if (d3 <= 3.0D && !p_34143_.hasEffect(MobEffects.WEAKNESS) && this.random.nextFloat() < 0.25F) {
+		else if (d3 <= 3.0D && !target.hasEffect(MobEffects.WEAKNESS) && this.random.nextFloat() < 0.25F) {
 			potion = Potions.WEAKNESS;
 		}
 

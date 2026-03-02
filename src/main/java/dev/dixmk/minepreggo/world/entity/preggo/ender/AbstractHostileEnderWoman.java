@@ -21,8 +21,8 @@ import net.minecraft.world.level.ServerLevelAccessor;
 
 public abstract class AbstractHostileEnderWoman extends AbstractEnderWoman implements IHostilePreggoMob, Enemy {
 
-	protected AbstractHostileEnderWoman(EntityType<? extends AbstractEnderWoman> p_32485_, Level p_32486_, Creature creatureType) {
-		super(p_32485_, p_32486_, creatureType);
+	protected AbstractHostileEnderWoman(EntityType<? extends AbstractEnderWoman> entityType, Level level, Creature creatureType) {
+		super(entityType, level, creatureType);
 	}
 	
 	@Override
@@ -50,22 +50,22 @@ public abstract class AbstractHostileEnderWoman extends AbstractEnderWoman imple
 		return MonsterEnderWomanHelper.SIMPLE_NAME;
 	}
 	
-	public static boolean checkSpawnRules(EntityType<? extends AbstractHostileEnderWoman> p_219014_, ServerLevelAccessor p_219015_, MobSpawnType p_219016_, BlockPos p_219017_, RandomSource p_219018_) {	
-		if (p_219015_.getDifficulty() == Difficulty.PEACEFUL) {
+	public static boolean checkSpawnRules(EntityType<? extends AbstractHostileEnderWoman> entityType, ServerLevelAccessor level, MobSpawnType spawnType, BlockPos pos, RandomSource random) {	
+		if (level.getDifficulty() == Difficulty.PEACEFUL) {
 			return false;
 		}
 		
-	    if (p_219015_.getLevel().dimension() == Level.END) {
-	        var below = p_219015_.getBlockState(p_219017_.below());
+	    if (level.getLevel().dimension() == Level.END) {
+	        var below = level.getBlockState(pos.below());
 	        
-	        return below.isSolidRender(p_219015_, p_219017_.below()) 
-	               && p_219015_.getBlockState(p_219017_).isAir()
-	               && p_219015_.getBlockState(p_219017_.above()).isAir();
+	        return below.isSolidRender(level, pos.below()) 
+	               && level.getBlockState(pos).isAir()
+	               && level.getBlockState(pos.above()).isAir();
 	    }
-	    else if (p_219015_.getLevel().dimension() == Level.NETHER) {
-			return Mob.checkMobSpawnRules(p_219014_, p_219015_, p_219016_, p_219017_, p_219018_);
+	    else if (level.getLevel().dimension() == Level.NETHER) {
+			return Mob.checkMobSpawnRules(entityType, level, spawnType, pos, random);
 	    }
 	      
-		return Monster.isDarkEnoughToSpawn(p_219015_, p_219017_, p_219018_) && Mob.checkMobSpawnRules(p_219014_, p_219015_, p_219016_, p_219017_, p_219018_);
+		return Monster.isDarkEnoughToSpawn(level, pos, random) && Mob.checkMobSpawnRules(entityType, level, spawnType, pos, random);
 	}
 }

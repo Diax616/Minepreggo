@@ -7,7 +7,6 @@ import javax.annotation.CheckForNull;
 
 import com.google.common.collect.ImmutableMap;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.client.gui.component.ToggleableCheckbox;
 import dev.dixmk.minepreggo.client.gui.preggo.AbstractPreggoMobMainScreen;
@@ -28,10 +27,10 @@ public abstract class AbstractCreeperGirlMainScreen
 	<E extends AbstractTamableCreeperGirl, G extends AbstractCreeperGirlMainMenu<E>> extends AbstractPreggoMobMainScreen<E, G> {
 	
 	private static final ImmutableMap<Craving, ResourceLocation> CRAVING_ICONS = ImmutableMap.of(
-			Craving.SALTY, MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/activated_gunpowder_with_salt.png"), 
-			Craving.SWEET, MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/activated_gunpowder_with_chocolate.png"), 
-			Craving.SOUR, MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/sour_activated_gunpowder.png"),
-			Craving.SPICY, MinepreggoHelper.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/activated_gunpowder_with_hot_sauce.png"));
+			Craving.SALTY, MinepreggoHelper.fromThisNamespaceAndPath("textures/item/activated_gunpowder_with_salt.png"), 
+			Craving.SWEET, MinepreggoHelper.fromThisNamespaceAndPath("textures/item/activated_gunpowder_with_chocolate.png"), 
+			Craving.SOUR, MinepreggoHelper.fromThisNamespaceAndPath("textures/item/sour_activated_gunpowder.png"),
+			Craving.SPICY, MinepreggoHelper.fromThisNamespaceAndPath("textures/item/activated_gunpowder_with_hot_sauce.png"));
 					
 	private final List<ToggleableCheckbox> combatModes = new ArrayList<>();
 	protected final CombatMode currentCombatMode;

@@ -1,10 +1,13 @@
 package dev.dixmk.minepreggo.advancements.critereon;
 
+import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.Nullable;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
@@ -22,7 +25,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
 public class ImpregnateEntityTrigger extends SimpleCriterionTrigger<ImpregnateEntityTrigger.TriggerInstance> {
-	private static final ResourceLocation ID = MinepreggoHelper.fromThisMod("impregnate_entity");
+	private static final ResourceLocation ID = MinepreggoHelper.fromThisNamespaceAndPath("impregnate_entity");
 
     @Override
     public ResourceLocation getId() {
@@ -33,8 +36,12 @@ public class ImpregnateEntityTrigger extends SimpleCriterionTrigger<ImpregnateEn
     protected TriggerInstance createInstance(JsonObject json, ContextAwarePredicate playerPredicate, DeserializationContext context) {
         EntityPredicate entityPredicate = EntityPredicate.fromJson(json.get("entity"));        
         Set<Species> entityGottenPregnant = null;
-        if (json.has("entity_gotten_pregnant")) {
-            entityGottenPregnant = JsonHelper.parseSpeciesSet(json.getAsJsonObject("entity_gotten_pregnant"), "species");
+        if (json.has("pregnant_entities")) {
+        	JsonObject entityGottenPregnantJson = json.getAsJsonObject("pregnant_entities");
+        	String key = "species";
+    		if (entityGottenPregnantJson.has(key) && entityGottenPregnantJson.get(key).isJsonArray()) {
+    			entityGottenPregnant = EnumSet.copyOf(Arrays.asList(new Gson().fromJson(entityGottenPregnantJson.get(key).getAsJsonArray(), Species[].class)));
+    		}
         }
         
         return new TriggerInstance(playerPredicate, entityPredicate, entityGottenPregnant);

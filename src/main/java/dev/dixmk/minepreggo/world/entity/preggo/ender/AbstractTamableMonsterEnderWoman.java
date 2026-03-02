@@ -11,8 +11,8 @@ import net.minecraft.world.phys.Vec3;
 
 public abstract class AbstractTamableMonsterEnderWoman extends AbstractTamableEnderWoman {
 
-	protected AbstractTamableMonsterEnderWoman(EntityType<? extends AbstractTamableEnderWoman> p_32485_, Level p_32486_) {
-		super(p_32485_, p_32486_, Creature.MONSTER);
+	protected AbstractTamableMonsterEnderWoman(EntityType<? extends AbstractTamableEnderWoman> entityType, Level level) {
+		super(entityType, level, Creature.MONSTER);
 	}
 	
 	@Override
