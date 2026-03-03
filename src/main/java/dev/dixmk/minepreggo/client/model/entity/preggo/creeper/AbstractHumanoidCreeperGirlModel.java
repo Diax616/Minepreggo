@@ -5,12 +5,10 @@ import javax.annotation.Nullable;
 
 import dev.dixmk.minepreggo.client.jiggle.EntityJiggleDataFactory;
 import dev.dixmk.minepreggo.client.model.entity.preggo.PregnantFemaleHumanoidModel;
-import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractCreeperGirl;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
@@ -23,32 +21,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class AbstractHumanoidCreeperGirlModel<E extends AbstractCreeperGirl> extends PregnantFemaleHumanoidModel<E> {
-
-	public static final ModelLayerLocation LAYER_INNER_ARMOR_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("humanoid_creeper_girl_inner_model"), "inner");
-	public static final ModelLayerLocation LAYER_OUTER_ARMOR_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("humanoid_creeper_girl_outer_model"), "outer");
-	
-	public static final ModelLayerLocation LAYER_ENERGY_ARMOR_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("humanoid_creeper_girl_energy_armor_model"), "armor");
-	public static final ModelLayerLocation LAYER_ENERGY_ARMOR_P0_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("humanoid_creeper_girl_energy_armor_p0_model"), "armor");
-	public static final ModelLayerLocation LAYER_ENERGY_ARMOR_P1_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("humanoid_creeper_girl_energy_armor_p1_model"), "armor");
-	public static final ModelLayerLocation LAYER_ENERGY_ARMOR_P2_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("humanoid_creeper_girl_energy_armor_p2_model"), "armor");
-	public static final ModelLayerLocation LAYER_ENERGY_ARMOR_P3_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("humanoid_creeper_girl_energy_armor_p3_model"), "armor");
-	public static final ModelLayerLocation LAYER_ENERGY_ARMOR_P4_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("humanoid_creeper_girl_energy_armor_p4_model"), "armor");
-	public static final ModelLayerLocation LAYER_ENERGY_ARMOR_P5_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("humanoid_creeper_girl_energy_armor_p5_model"), "armor");
-	public static final ModelLayerLocation LAYER_ENERGY_ARMOR_P6_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("humanoid_creeper_girl_energy_armor_p6_model"), "armor");
-	public static final ModelLayerLocation LAYER_ENERGY_ARMOR_P7_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("humanoid_creeper_girl_energy_armor_p7_model"), "armor");
-	public static final ModelLayerLocation LAYER_ENERGY_ARMOR_P8_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("humanoid_creeper_girl_energy_armor_p8_model"), "armor");
-
-	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("humanoid_creeper_girl_model"), "main");
-	public static final ModelLayerLocation LAYER_LOCATION_P0 = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("humanoid_creeper_girl_p0_model"), "main");
-	public static final ModelLayerLocation LAYER_LOCATION_P1 = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("humanoid_creeper_girl_p1_model"), "main");
-	public static final ModelLayerLocation LAYER_LOCATION_P2 = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("humanoid_creeper_girl_p2_model"), "main");
-	public static final ModelLayerLocation LAYER_LOCATION_P3 = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("humanoid_creeper_girl_p3_model"), "main");
-	public static final ModelLayerLocation LAYER_LOCATION_P4 = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("humanoid_creeper_girl_p4_model"), "main");
-	public static final ModelLayerLocation LAYER_LOCATION_P5 = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("humanoid_creeper_girl_p5_model"), "main");
-	public static final ModelLayerLocation LAYER_LOCATION_P6 = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("humanoid_creeper_girl_p6_model"), "main");
-	public static final ModelLayerLocation LAYER_LOCATION_P7 = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("humanoid_creeper_girl_p7_model"), "main");
-	public static final ModelLayerLocation LAYER_LOCATION_P8 = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("humanoid_creeper_girl_p8_model"), "main");
-
 	protected final ModelPart root;
 	protected final HumanoidCreeperGirlAnimator<E> animator;
 	protected final EntityJiggleDataFactory.JigglePositionConfig jiggleConfig;

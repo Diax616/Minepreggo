@@ -1,7 +1,7 @@
 package dev.dixmk.minepreggo.world.entity.preggo.creeper;
 
 import dev.dixmk.minepreggo.MinepreggoModConfig;
-import dev.dixmk.minepreggo.init.MinepreggoModEntities;
+import dev.dixmk.minepreggo.init.MinepreggoEntities;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
@@ -21,7 +21,7 @@ public class HostilePregnantMonsterCreeperGirl {
 	public static class MonsterCreeperGirlP3 extends AbstractHostilePregnantMonsterCreeperGirl {
 
 		public MonsterCreeperGirlP3(PlayMessages.SpawnEntity packet, Level world) {
-			this(MinepreggoModEntities.HOSTILE_PREGNANT_MONSTER_CREEPER_GIRL_P3.get(), world);
+			this(MinepreggoEntities.HOSTILE_PREGNANT_MONSTER_CREEPER_GIRL_P3.get(), world);
 		}
 
 		public MonsterCreeperGirlP3(EntityType<MonsterCreeperGirlP3> type, Level world) {
@@ -39,7 +39,7 @@ public class HostilePregnantMonsterCreeperGirl {
 	public static class MonsterCreeperGirlP5 extends AbstractHostilePregnantMonsterCreeperGirl {
 
 		public MonsterCreeperGirlP5(PlayMessages.SpawnEntity packet, Level world) {
-			this(MinepreggoModEntities.HOSTILE_PREGNANT_MONSTER_CREEPER_GIRL_P5.get(), world);
+			this(MinepreggoEntities.HOSTILE_PREGNANT_MONSTER_CREEPER_GIRL_P5.get(), world);
 		}
 
 		public MonsterCreeperGirlP5(EntityType<MonsterCreeperGirlP5> type, Level world) {
@@ -57,7 +57,7 @@ public class HostilePregnantMonsterCreeperGirl {
 	public static class MonsterCreeperGirlP7 extends AbstractHostilePregnantMonsterCreeperGirl {
 
 		public MonsterCreeperGirlP7(PlayMessages.SpawnEntity packet, Level world) {
-			this(MinepreggoModEntities.HOSTILE_PREGNANT_MONSTER_CREEPER_GIRL_P7.get(), world);
+			this(MinepreggoEntities.HOSTILE_PREGNANT_MONSTER_CREEPER_GIRL_P7.get(), world);
 		}
 
 		public MonsterCreeperGirlP7(EntityType<MonsterCreeperGirlP7> type, Level world) {

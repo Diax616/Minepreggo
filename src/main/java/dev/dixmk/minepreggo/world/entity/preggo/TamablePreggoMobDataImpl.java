@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
-import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
+import dev.dixmk.minepreggo.init.MinepreggoEntityDataSerializers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -26,10 +26,10 @@ public class TamablePreggoMobDataImpl<E extends PreggoMob> implements ITamablePr
     	public DataAccessor(Class<E> entityClass) {
             this.dataHungry = SynchedEntityData.defineId(entityClass, EntityDataSerializers.INT);
             this.dataSavage = SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN);
-            this.dataMovementState = SynchedEntityData.defineId(entityClass, MinepreggoModEntityDataSerializers.MOVEMENT_STATE);
+            this.dataMovementState = SynchedEntityData.defineId(entityClass, MinepreggoEntityDataSerializers.MOVEMENT_STATE);
             this.dataAngry = SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN);
-            this.dataFace = SynchedEntityData.defineId(entityClass, MinepreggoModEntityDataSerializers.OPTIONAL_PREGGO_MOB_FACE);
-            this.dataBody = SynchedEntityData.defineId(entityClass, MinepreggoModEntityDataSerializers.OPTIONAL_PREGGO_MOB_BODY);
+            this.dataFace = SynchedEntityData.defineId(entityClass, MinepreggoEntityDataSerializers.OPTIONAL_PREGGO_MOB_FACE);
+            this.dataBody = SynchedEntityData.defineId(entityClass, MinepreggoEntityDataSerializers.OPTIONAL_PREGGO_MOB_BODY);
     	}
     	
     	public void defineSynchedData(E preggomob) {	

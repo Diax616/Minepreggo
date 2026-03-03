@@ -1,7 +1,7 @@
 package dev.dixmk.minepreggo.world.entity.preggo.ender;
 
 import dev.dixmk.minepreggo.MinepreggoModConfig;
-import dev.dixmk.minepreggo.init.MinepreggoModEntities;
+import dev.dixmk.minepreggo.init.MinepreggoEntities;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
@@ -20,7 +20,7 @@ public class HostilePregnantMonsterEnderWoman {
 	
 	public static class MonsterEnderWomanP3 extends AbstractHostilePregnantEnderWoman {
 		public MonsterEnderWomanP3(PlayMessages.SpawnEntity packet, Level world) {
-			super(MinepreggoModEntities.HOSTILE_PREGNANT_MONSTER_ENDER_WOMAN_P3.get(), world, PregnancyPhase.P3);
+			super(MinepreggoEntities.HOSTILE_PREGNANT_MONSTER_ENDER_WOMAN_P3.get(), world, PregnancyPhase.P3);
 		}
 
 		public MonsterEnderWomanP3(EntityType<MonsterEnderWomanP3> type, Level world) {
@@ -37,7 +37,7 @@ public class HostilePregnantMonsterEnderWoman {
 	
 	public static class MonsterEnderWomanP5 extends AbstractHostilePregnantEnderWoman {
 		public MonsterEnderWomanP5(PlayMessages.SpawnEntity packet, Level world) {
-			super(MinepreggoModEntities.HOSTILE_PREGNANT_MONSTER_ENDER_WOMAN_P5.get(), world, PregnancyPhase.P5);
+			super(MinepreggoEntities.HOSTILE_PREGNANT_MONSTER_ENDER_WOMAN_P5.get(), world, PregnancyPhase.P5);
 		}
 
 		public MonsterEnderWomanP5(EntityType<MonsterEnderWomanP5> type, Level world) {
@@ -54,7 +54,7 @@ public class HostilePregnantMonsterEnderWoman {
 	
 	public static class MonsterEnderWomanP7 extends AbstractHostilePregnantEnderWoman {
 		public MonsterEnderWomanP7(PlayMessages.SpawnEntity packet, Level world) {
-			super(MinepreggoModEntities.HOSTILE_PREGNANT_MONSTER_ENDER_WOMAN_P7.get(), world, PregnancyPhase.P7);
+			super(MinepreggoEntities.HOSTILE_PREGNANT_MONSTER_ENDER_WOMAN_P7.get(), world, PregnancyPhase.P7);
 		}
 
 		public MonsterEnderWomanP7(EntityType<MonsterEnderWomanP7> type, Level world) {

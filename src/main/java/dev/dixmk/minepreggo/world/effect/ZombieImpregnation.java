@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.init.MinepreggoModEntities;
+import dev.dixmk.minepreggo.init.MinepreggoEntities;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
@@ -41,11 +41,11 @@ public class ZombieImpregnation extends Impregnantion {
 			final double z = entity.getZ();
 			
 			if (entity instanceof HostileZombieGirl zombieGirl && !zombieGirl.isBaby()) {
-				var nextStage = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
+				var nextStage = MinepreggoEntities.TAMABLE_ZOMBIE_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
 				initPregnancy(zombieGirl, nextStage, amplifier);
 			}
 			else if (entity instanceof TamableZombieGirl zombieGirl && zombieGirl.getGenderedData().getPostPregnancyData().isEmpty()) {
-				var nextStage = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
+				var nextStage = MinepreggoEntities.TAMABLE_ZOMBIE_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
 				initPregnancyInTamable(zombieGirl, nextStage, amplifier);
 			}
 			else {

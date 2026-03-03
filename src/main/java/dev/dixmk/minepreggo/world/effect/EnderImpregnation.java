@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.init.MinepreggoModEntities;
+import dev.dixmk.minepreggo.init.MinepreggoEntities;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
@@ -42,13 +42,13 @@ public class EnderImpregnation extends Impregnantion {
 			final double y = entity.getY();	
 			final double z = entity.getZ();		
 			if (entity instanceof HostileMonsterEnderWoman enderWoman) {
-				var nextStage = MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
+				var nextStage = MinepreggoEntities.TAMABLE_MONSTER_ENDER_WOMAN_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
 				nextStage.setCarriedBlock(enderWoman.getCarriedBlock());
 				AbstractTamableEnderWoman.syncBlockToInventory(nextStage);
 				initPregnancy(enderWoman, nextStage, amplifier);
 			}
 			else if (entity instanceof TamableMonsterEnderWoman enderWoman && enderWoman.getGenderedData().getPostPregnancyData().isEmpty()) {
-				var nextStage = MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
+				var nextStage = MinepreggoEntities.TAMABLE_MONSTER_ENDER_WOMAN_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
 				nextStage.setCarriedBlock(enderWoman.getCarriedBlock());
 				AbstractTamableEnderWoman.syncBlockToInventory(nextStage);
 				initPregnancyInTamable(enderWoman, nextStage, amplifier);

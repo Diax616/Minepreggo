@@ -3,7 +3,7 @@ package dev.dixmk.minepreggo.world.effect;
 import java.util.List;
 import java.util.UUID;
 
-import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoMobEffects;
 import dev.dixmk.minepreggo.server.ServerParticleHelper;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import net.minecraft.core.particles.ParticleTypes;
@@ -47,10 +47,10 @@ public class Horny extends AbstractPlayerPregnancySymptom {
         final var center = new Vec3(entity.getX(), entity.getY(), entity.getZ());      
         final var aabb = new AABB(center, center);
         
-        if (entity.hasEffect(MinepreggoModMobEffects.FULL_OF_CREEPERS.get())) {
+        if (entity.hasEffect(MinepreggoMobEffects.FULL_OF_CREEPERS.get())) {
         	mobs = level.getEntitiesOfClass(Creeper.class, aabb.inflate(64D));     	
         }
-        else if (entity.hasEffect(MinepreggoModMobEffects.FULL_OF_ZOMBIES.get())) {
+        else if (entity.hasEffect(MinepreggoMobEffects.FULL_OF_ZOMBIES.get())) {
         	mobs = level.getEntitiesOfClass(Zombie.class, aabb.inflate(64D));
         }
         else {
@@ -99,10 +99,10 @@ public class Horny extends AbstractPlayerPregnancySymptom {
 	        final var center = new Vec3(entity.getX(), entity.getY(), entity.getZ());      
 	        final var aabb = new AABB(center, center);
 	        
-	        if (entity.hasEffect(MinepreggoModMobEffects.FULL_OF_CREEPERS.get())) {
+	        if (entity.hasEffect(MinepreggoMobEffects.FULL_OF_CREEPERS.get())) {
 	        	mobs = level.getEntitiesOfClass(Zombie.class, aabb.inflate(64D));
 	        }      
-	        else if (entity.hasEffect(MinepreggoModMobEffects.FULL_OF_ZOMBIES.get())) {
+	        else if (entity.hasEffect(MinepreggoMobEffects.FULL_OF_ZOMBIES.get())) {
 	        	mobs = level.getEntitiesOfClass(Creeper.class, aabb.inflate(64D));
 	        }
 	        else {

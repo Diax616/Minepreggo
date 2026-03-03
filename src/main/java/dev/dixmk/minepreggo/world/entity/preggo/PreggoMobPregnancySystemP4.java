@@ -8,8 +8,8 @@ import javax.annotation.Nonnull;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
-import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
-import dev.dixmk.minepreggo.init.MinepreggoModSounds;
+import dev.dixmk.minepreggo.init.MinepreggoMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoSounds;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGirl;
@@ -248,11 +248,11 @@ public abstract class PreggoMobPregnancySystemP4
 		}			
 		final var pregnancyData = pregnantEntity.getPregnancyData();
 		if (hasToGiveBirth()
-				&& !pregnantEntity.hasEffect(MinepreggoModMobEffects.ETERNAL_PREGNANCY.get())
+				&& !pregnantEntity.hasEffect(MinepreggoMobEffects.ETERNAL_PREGNANCY.get())
 				&& randomSource.nextFloat() < contractionProb) {
 			pregnancyData.setPregnancyPain(PregnancyPain.CONTRACTION);
 			pregnancyData.resetPregnancyPainTimer();
-			LivingEntityHelper.playSoundNearTo(pregnantEntity, MinepreggoModSounds.getRandomStomachGrowls(randomSource));
+			LivingEntityHelper.playSoundNearTo(pregnantEntity, MinepreggoSounds.getRandomStomachGrowls(randomSource));
 			PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, InventorySlot.CHEST);					
 			return true;
 		}     

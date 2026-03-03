@@ -2,7 +2,7 @@ package dev.dixmk.minepreggo.world.entity.preggo;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
-import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoMobEffects;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem.Result;
 import dev.dixmk.minepreggo.world.pregnancy.AbstractPregnancySystem;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
@@ -74,7 +74,7 @@ public abstract class PreggoMobPregnancySystemP0
 
 	
 	protected void evaluatePregnancyTimer() {
-		if (this.pregnantEntity.hasEffect(MinepreggoModMobEffects.ETERNAL_PREGNANCY.get())) {
+		if (this.pregnantEntity.hasEffect(MinepreggoMobEffects.ETERNAL_PREGNANCY.get())) {
 			return;
 		}
 		final var pregnancyData = pregnantEntity.getPregnancyData();

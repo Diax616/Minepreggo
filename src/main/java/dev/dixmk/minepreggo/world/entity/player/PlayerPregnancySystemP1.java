@@ -13,7 +13,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
-import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoMobEffects;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.server.ServerParticleHelper;
 import dev.dixmk.minepreggo.world.entity.EntityHelper;
@@ -166,7 +166,7 @@ public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
 		if (pregnancySystem.getPregnancySymptoms().containsPregnancySymptom(PregnancySymptom.CRAVING) && pregnancySystem.getCraving() <= PregnancySystemHelper.DESACTIVATE_CRAVING_SYMPTOM) {	
 			pregnancySystem.getPregnancySymptoms().removePregnancySymptom(PregnancySymptom.CRAVING);
 			pregnancySystem.clearTypeOfCravingBySpecies();
-			pregnantEntity.removeEffect(MinepreggoModMobEffects.CRAVING.get());
+			pregnantEntity.removeEffect(MinepreggoMobEffects.CRAVING.get());
 			pregnancySystem.syncState(pregnantEntity);
 			pregnancySystem.syncEffect(pregnantEntity);	
 			MinepreggoMod.LOGGER.debug("Player {} pregnancy symptom cleared: {}",
@@ -178,7 +178,7 @@ public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
 	protected void evaluatePregnancyPains() {
 		if (pregnancySystem.getPregnancyPain() == PregnancyPain.MORNING_SICKNESS) {
 			if (pregnancySystem.getPregnancyPainTimer() >= PregnancySystemHelper.TOTAL_TICKS_MORNING_SICKNESS) {
-				pregnantEntity.removeEffect(MinepreggoModMobEffects.MORNING_SICKNESS.get());
+				pregnantEntity.removeEffect(MinepreggoMobEffects.MORNING_SICKNESS.get());
 				pregnancySystem.clearPregnancyPain();
 				pregnancySystem.resetPregnancyPainTimer();
 				pregnancySystem.syncState(pregnantEntity);
@@ -210,7 +210,7 @@ public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
 	protected boolean tryInitRandomPregnancyPain() {
 		if (randomSource.nextFloat() < morningSicknessProb) {
 			pregnancySystem.setPregnancyPain(PregnancyPain.MORNING_SICKNESS);
-			pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.MORNING_SICKNESS.get(), PregnancySystemHelper.TOTAL_TICKS_MORNING_SICKNESS, 0, false, false, true));
+			pregnantEntity.addEffect(new MobEffectInstance(MinepreggoMobEffects.MORNING_SICKNESS.get(), PregnancySystemHelper.TOTAL_TICKS_MORNING_SICKNESS, 0, false, false, true));
 			pregnancySystem.syncState(pregnantEntity);
 			
 			MinepreggoMod.LOGGER.debug("Player {} has developed pregnancy pain: {}",
@@ -244,7 +244,7 @@ public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
 			
 			MinepreggoMod.LOGGER.debug("Player {} craving set to: {}", pregnantEntity.getGameProfile().getName(), pregnancySystem.getTypeOfCraving());
 			
-			pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.CRAVING.get(), -1, 0, false, false, true));
+			pregnantEntity.addEffect(new MobEffectInstance(MinepreggoMobEffects.CRAVING.get(), -1, 0, false, false, true));
 			pregnancySystem.syncState(pregnantEntity);
 			pregnancySystem.syncEffect(pregnantEntity);
 			MinepreggoMod.LOGGER.debug("Player {} has developed pregnancy symptom: {}, all pregnancy symptoms: {}",
@@ -260,7 +260,7 @@ public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
 		MessageHelper.sendTo(pregnantEntity, Component.translatable("chat.minepreggo.player.miscarriage.message.init", pregnantEntity.getDisplayName().getString()));
 		pregnancySystem.resetPregnancyPainTimer();
 		pregnancySystem.setPregnancyPain(PregnancyPain.MISCARRIAGE);
-		pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.MISCARRIAGE.get(), PregnancySystemHelper.TOTAL_TICKS_MISCARRIAGE, 0, false, false, true));
+		pregnantEntity.addEffect(new MobEffectInstance(MinepreggoMobEffects.MISCARRIAGE.get(), PregnancySystemHelper.TOTAL_TICKS_MISCARRIAGE, 0, false, false, true));
 		pregnancySystem.syncState(pregnantEntity);
 		MinepreggoMod.LOGGER.debug("Miscarriage just started");
 	}
@@ -282,7 +282,7 @@ public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
 		femaleData.resetPregnancy();
 		femaleData.resetPregnancyOnClient(pregnantEntity);
 	
-		pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.DEPRESSION.get(), MinepreggoModConfig.SERVER.getTotalTicksOfPostPregnancyPhase(), 0, false, false, true));
+		pregnantEntity.addEffect(new MobEffectInstance(MinepreggoMobEffects.DEPRESSION.get(), MinepreggoModConfig.SERVER.getTotalTicksOfPostPregnancyPhase(), 0, false, false, true));
 		pregnantEntity.addEffect(new MobEffectInstance(MobEffects.UNLUCK, 12000, 0, false, true, true));
 		pregnantEntity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 4800, 0, false, false, true));
 			

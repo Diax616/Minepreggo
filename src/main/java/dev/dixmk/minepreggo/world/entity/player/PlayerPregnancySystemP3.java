@@ -6,8 +6,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
-import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
-import dev.dixmk.minepreggo.init.MinepreggoModSounds;
+import dev.dixmk.minepreggo.init.MinepreggoMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoSounds;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
@@ -91,7 +91,7 @@ public class PlayerPregnancySystemP3 extends PlayerPregnancySystemP2 {
 		super.evaluatePregnancySymptoms();
 		if (pregnancySystem.getPregnancySymptoms().containsPregnancySymptom(PregnancySymptom.BELLY_RUBS) && pregnancySystem.getBellyRubs() <= PregnancySystemHelper.DESACTIVATEL_BELLY_RUBS_SYMPTOM) {	
 			pregnancySystem.getPregnancySymptoms().removePregnancySymptom(PregnancySymptom.BELLY_RUBS);
-			pregnantEntity.removeEffect(MinepreggoModMobEffects.BELLY_RUBS.get());
+			pregnantEntity.removeEffect(MinepreggoMobEffects.BELLY_RUBS.get());
 			pregnancySystem.syncState(pregnantEntity);
 			pregnancySystem.syncEffect(pregnantEntity);	
 			MinepreggoMod.LOGGER.debug("Player {} pregnancy symptom cleared: {}",
@@ -120,7 +120,7 @@ public class PlayerPregnancySystemP3 extends PlayerPregnancySystemP2 {
 		super.evaluatePregnancyPains();
 		if (pregnancySystem.getPregnancyPain() == PregnancyPain.FETAL_MOVEMENT) {
 			if (pregnancySystem.getPregnancyPainTimer() >= totalTicksOfFetalMovement) {
-				pregnantEntity.removeEffect(MinepreggoModMobEffects.FETAL_MOVEMENT.get());
+				pregnantEntity.removeEffect(MinepreggoMobEffects.FETAL_MOVEMENT.get());
 				pregnancySystem.clearPregnancyPain();
 				pregnancySystem.resetPregnancyPainTimer();
 				pregnancySystem.syncState(pregnantEntity);
@@ -142,7 +142,7 @@ public class PlayerPregnancySystemP3 extends PlayerPregnancySystemP2 {
 		
 		float newFetalMovementProb = fetalMovementProb;
 		
-		if (this.pregnantEntity.hasEffect(MinepreggoModMobEffects.ETERNAL_PREGNANCY.get())) {
+		if (this.pregnantEntity.hasEffect(MinepreggoMobEffects.ETERNAL_PREGNANCY.get())) {
 			newFetalMovementProb *= 5f;
 		}
 		if (this.isMovingRidingSaddledHorse()) {		
@@ -150,10 +150,10 @@ public class PlayerPregnancySystemP3 extends PlayerPregnancySystemP2 {
 		}
 		
 		if (randomSource.nextFloat() < newFetalMovementProb) {
-			LivingEntityHelper.playSoundNearTo(pregnantEntity, MinepreggoModSounds.getRandomPregnancyPain(randomSource));	
+			LivingEntityHelper.playSoundNearTo(pregnantEntity, MinepreggoSounds.getRandomPregnancyPain(randomSource));	
 			
 			pregnancySystem.setPregnancyPain(PregnancyPain.FETAL_MOVEMENT);
-			pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.FETAL_MOVEMENT.get(), totalTicksOfFetalMovement, 0, false, false, true));
+			pregnantEntity.addEffect(new MobEffectInstance(MinepreggoMobEffects.FETAL_MOVEMENT.get(), totalTicksOfFetalMovement, 0, false, false, true));
 			pregnancySystem.syncState(pregnantEntity);
 			
 			PlayerHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, EquipmentSlot.CHEST);
@@ -174,7 +174,7 @@ public class PlayerPregnancySystemP3 extends PlayerPregnancySystemP2 {
 		if (pregnancySystem.getBellyRubs() >= PregnancySystemHelper.MAX_BELLY_RUBBING_LEVEL
 				&& !pregnancySystem.getPregnancySymptoms().containsPregnancySymptom(PregnancySymptom.BELLY_RUBS)) {
 			pregnancySystem.getPregnancySymptoms().addPregnancySymptom(PregnancySymptom.BELLY_RUBS);
-			pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.BELLY_RUBS.get(), -1, 0, false, false, true));
+			pregnantEntity.addEffect(new MobEffectInstance(MinepreggoMobEffects.BELLY_RUBS.get(), -1, 0, false, false, true));
 			pregnancySystem.syncState(pregnantEntity);	
 			MinepreggoMod.LOGGER.debug("Player {} has developed pregnancy symptom: {}, all pregnancy symptom: {}",
 					pregnantEntity.getGameProfile().getName(), PregnancySymptom.BELLY_RUBS, pregnancySystem.getPregnancySymptoms());

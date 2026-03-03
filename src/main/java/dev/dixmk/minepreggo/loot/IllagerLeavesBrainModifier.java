@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import dev.dixmk.minepreggo.init.MinepreggoModItems;
+import dev.dixmk.minepreggo.init.MinepreggoItems;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.world.entity.monster.AbstractIllager;
 import net.minecraft.world.item.ItemStack;
@@ -28,7 +28,7 @@ public class IllagerLeavesBrainModifier extends LootModifier {
 	@Override
 	protected @NotNull ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
 		if (context.getParamOrNull(LootContextParams.THIS_ENTITY) instanceof AbstractIllager) {
-			generatedLoot.add(new ItemStack(MinepreggoModItems.ILLAGER_BRAIN.get()));
+			generatedLoot.add(new ItemStack(MinepreggoItems.ILLAGER_BRAIN.get()));
 		}        
 		return generatedLoot;
 	}

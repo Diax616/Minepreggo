@@ -15,9 +15,9 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
-import dev.dixmk.minepreggo.init.MinepreggoModDamageSources;
-import dev.dixmk.minepreggo.init.MinepreggoModEntities;
-import dev.dixmk.minepreggo.init.MinepreggoModItems;
+import dev.dixmk.minepreggo.init.MinepreggoDamageSources;
+import dev.dixmk.minepreggo.init.MinepreggoEntities;
+import dev.dixmk.minepreggo.init.MinepreggoItems;
 import dev.dixmk.minepreggo.network.packet.s2c.RemovePreggoMobJigglePhysicsS2CPacket;
 import dev.dixmk.minepreggo.utils.MathHelper;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
@@ -679,7 +679,7 @@ public class PreggoMobHelper {
 	}
 	
 	public static <E extends PreggoMob & ITamablePreggoMob<?>> void tryToDamageArmor(@NonNull E preggoMob, DamageSource damageSource) {
-		if (damageSource.is(MinepreggoModDamageSources.PREGNANCY_PAIN)) {
+		if (damageSource.is(MinepreggoDamageSources.PREGNANCY_PAIN)) {
 			return;
 		}
 		
@@ -759,7 +759,7 @@ public class PreggoMobHelper {
 					entityToSpawn = EntityType.ZOMBIE.spawn(serverLevel, BlockPos.containing(zombieGirl.getX(), zombieGirl.getY() + zombieGirl.getBbHeight() / 2F, zombieGirl.getZ()), MobSpawnType.MOB_SUMMONED);
 				}
 				else {
-					entityToSpawn = MinepreggoModEntities.HOSTILE_ZOMBIE_GIRL.get().spawn(serverLevel, BlockPos.containing(zombieGirl.getX(), zombieGirl.getY() + zombieGirl.getBbHeight() / 2F, zombieGirl.getZ()), MobSpawnType.MOB_SUMMONED);
+					entityToSpawn = MinepreggoEntities.HOSTILE_ZOMBIE_GIRL.get().spawn(serverLevel, BlockPos.containing(zombieGirl.getX(), zombieGirl.getY() + zombieGirl.getBbHeight() / 2F, zombieGirl.getZ()), MobSpawnType.MOB_SUMMONED);
 				}				
 				entityToSpawn.setBaby(true);
 				entityToSpawn.setYRot(randomSource.nextFloat() * 360F);
@@ -771,7 +771,7 @@ public class PreggoMobHelper {
 				}				
 			}	
 			else {
-				EntityHelper.spawnItemOn(serverLevel, zombieGirl.position(), MinepreggoModItems.DEAD_ZOMBIE_FETUS.get());
+				EntityHelper.spawnItemOn(serverLevel, zombieGirl.position(), MinepreggoItems.DEAD_ZOMBIE_FETUS.get());
 			}
 		}	
 	}
@@ -786,7 +786,7 @@ public class PreggoMobHelper {
 		
 		for (int i = 0; i < numOfBabies; ++i) {				
 			if (randomSource.nextFloat() < p) {								
-				var entityToSpawn = MinepreggoModEntities.HOSTILE_HUMANOID_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(creeperGirl.getX(), creeperGirl.getY() + creeperGirl.getBbHeight() / 2F, creeperGirl.getZ()), MobSpawnType.MOB_SUMMONED);
+				var entityToSpawn = MinepreggoEntities.HOSTILE_HUMANOID_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(creeperGirl.getX(), creeperGirl.getY() + creeperGirl.getBbHeight() / 2F, creeperGirl.getZ()), MobSpawnType.MOB_SUMMONED);
 				entityToSpawn.setBaby(true);
 				entityToSpawn.setYRot(randomSource.nextFloat() * 360F);	
 				entityToSpawn.setHealth(randomSource.nextInt(minHealth, maxHealth));			
@@ -798,7 +798,7 @@ public class PreggoMobHelper {
 				}
 			}	
 			else {
-				EntityHelper.spawnItemOn(serverLevel, creeperGirl.position(), MinepreggoModItems.DEAD_CREEPER_FETUS.get());
+				EntityHelper.spawnItemOn(serverLevel, creeperGirl.position(), MinepreggoItems.DEAD_CREEPER_FETUS.get());
 			}
 		}	
 	}

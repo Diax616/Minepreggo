@@ -4,6 +4,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import dev.dixmk.minepreggo.client.model.entity.player.AbstractBoobsModel;
 import dev.dixmk.minepreggo.client.model.entity.player.PredefinedBoobsModel;
+import dev.dixmk.minepreggo.client.model.geom.MinepreggoModelLayers;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -18,7 +19,7 @@ public class PredefinedBoobsLayer extends AbstractBoobsLayer {
 	    
     public PredefinedBoobsLayer(RenderLayerParent<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> parent, EntityModelSet modelSet) {
         super(parent);
-        this.boobsModel = new PredefinedBoobsModel(modelSet.bakeLayer(PredefinedBoobsModel.LAYER_LOCATION));
+        this.boobsModel = new PredefinedBoobsModel(modelSet.bakeLayer(MinepreggoModelLayers.PREDEFINED_BOOBS));
     }
 
 	@Override

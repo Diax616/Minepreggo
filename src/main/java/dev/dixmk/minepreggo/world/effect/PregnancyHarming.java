@@ -3,7 +3,7 @@ package dev.dixmk.minepreggo.world.effect;
 import javax.annotation.Nullable;
 
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
-import dev.dixmk.minepreggo.init.MinepreggoModSounds;
+import dev.dixmk.minepreggo.init.MinepreggoSounds;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import net.minecraft.core.registries.Registries;
@@ -28,7 +28,7 @@ public class PregnancyHarming extends MobEffect {
 			
 		if (p_19464_ instanceof ITamablePregnantPreggoMob p) {		
 			p.getPregnancyData().reducePregnancyHealth(30);
-			LivingEntityHelper.playSoundNearTo(p_19464_, MinepreggoModSounds.getRandomStomachGrowls(p_19464_.getRandom()));
+			LivingEntityHelper.playSoundNearTo(p_19464_, MinepreggoSounds.getRandomStomachGrowls(p_19464_.getRandom()));
 			p_19464_.hurt(new DamageSource(p_19464_.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.MAGIC)), 1);
 		}
 		
@@ -37,7 +37,7 @@ public class PregnancyHarming extends MobEffect {
 				cap.getFemaleData().ifPresent(femaleData -> {
 					if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
 						femaleData.getPregnancyData().reducePregnancyHealth(30);
-						LivingEntityHelper.playSoundNearTo(p_19464_, MinepreggoModSounds.getRandomStomachGrowls(p_19464_.getRandom()));
+						LivingEntityHelper.playSoundNearTo(p_19464_, MinepreggoSounds.getRandomStomachGrowls(p_19464_.getRandom()));
 						p_19464_.hurt(new DamageSource(p_19464_.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.MAGIC)), 1);
 					}	
 				})

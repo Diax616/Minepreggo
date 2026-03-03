@@ -8,7 +8,7 @@ import java.util.function.Predicate;
 import org.apache.commons.lang3.function.ToBooleanBiFunction;
 
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
-import dev.dixmk.minepreggo.init.MinepreggoModEntities;
+import dev.dixmk.minepreggo.init.MinepreggoEntities;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Inventory;
 import dev.dixmk.minepreggo.world.entity.preggo.InventorySlot;
@@ -133,15 +133,15 @@ public class MonsterEnderWomanHelper {
 	
 	public static EntityType<? extends AbstractTamablePregnantMonsterEnderWoman> getEntityType(PregnancyPhase phase) {	
 		return switch (phase) {
-			case P0 -> MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P0.get();
-			case P1 -> MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P1.get();
-			case P2 -> MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P2.get();
-			case P3 -> MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P3.get();
-			case P4 -> MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P4.get();
-			case P5 -> MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P5.get();
-			case P6 -> MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P6.get();
-			case P7 -> MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P7.get();	
-			case P8 -> MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P8.get();	
+			case P0 -> MinepreggoEntities.TAMABLE_MONSTER_ENDER_WOMAN_P0.get();
+			case P1 -> MinepreggoEntities.TAMABLE_MONSTER_ENDER_WOMAN_P1.get();
+			case P2 -> MinepreggoEntities.TAMABLE_MONSTER_ENDER_WOMAN_P2.get();
+			case P3 -> MinepreggoEntities.TAMABLE_MONSTER_ENDER_WOMAN_P3.get();
+			case P4 -> MinepreggoEntities.TAMABLE_MONSTER_ENDER_WOMAN_P4.get();
+			case P5 -> MinepreggoEntities.TAMABLE_MONSTER_ENDER_WOMAN_P5.get();
+			case P6 -> MinepreggoEntities.TAMABLE_MONSTER_ENDER_WOMAN_P6.get();
+			case P7 -> MinepreggoEntities.TAMABLE_MONSTER_ENDER_WOMAN_P7.get();	
+			case P8 -> MinepreggoEntities.TAMABLE_MONSTER_ENDER_WOMAN_P8.get();	
 			default -> throw new IllegalArgumentException("Unexpected value: " + phase);
 		};
 	}

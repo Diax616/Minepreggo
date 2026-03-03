@@ -1,6 +1,6 @@
 package dev.dixmk.minepreggo.world.item.alchemy;
 
-import dev.dixmk.minepreggo.init.MinepreggoModPotions;
+import dev.dixmk.minepreggo.init.MinepreggoPotions;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -11,7 +11,7 @@ public class LongMetabolismControlPotionBrewingRecipe implements IBrewingRecipe 
 	@Override
 	public boolean isInput(ItemStack input) {
 		Item inputItem = input.getItem();
-		return (inputItem == Items.POTION || inputItem == Items.SPLASH_POTION || inputItem == Items.LINGERING_POTION) && PotionUtils.getPotion(input) == MinepreggoModPotions.METABOLISM_CONTROL.get();
+		return (inputItem == Items.POTION || inputItem == Items.SPLASH_POTION || inputItem == Items.LINGERING_POTION) && PotionUtils.getPotion(input) == MinepreggoPotions.METABOLISM_CONTROL.get();
 	}
 
 	@Override
@@ -22,7 +22,7 @@ public class LongMetabolismControlPotionBrewingRecipe implements IBrewingRecipe 
 	@Override
 	public ItemStack getOutput(ItemStack input, ItemStack ingredient) {
 		if (isInput(input) && isIngredient(ingredient)) {
-			return PotionUtils.setPotion(new ItemStack(input.getItem()), MinepreggoModPotions.LONG_METABOLISM_CONTROL.get());
+			return PotionUtils.setPotion(new ItemStack(input.getItem()), MinepreggoPotions.LONG_METABOLISM_CONTROL.get());
 		}
 		return ItemStack.EMPTY;
 	}

@@ -11,6 +11,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.OwnerHurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.OwnerHurtTargetGoal;
@@ -36,9 +37,6 @@ public interface Ill {
 	
 	void removeIllagerOwner();
 	
-	// TODO: Use PlayMessages.SpawnEntity in Ill entities for proper spawning handling
-	default void onFinalizeSpawnWithOwner() {}
-		
 	static <E extends PreggoMob & Ill> void addBehaviourGoalsWhenOwnerDies(@NonNull E ill) {
 		ill.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(ill, Player.class, false, false));
 	}
@@ -79,8 +77,8 @@ public interface Ill {
 	    private final double alertRangeY;
 	    private int timestamp;
 	    
-	    public IllMobHurtByTargetGoal(PathfinderMob p_26039_, double alertRangeY) {
-			super(p_26039_, true);
+	    public IllMobHurtByTargetGoal(PathfinderMob mob, double alertRangeY) {
+			super(mob, true);
 	        this.setFlags(EnumSet.of(Goal.Flag.TARGET));
 	        this.alertRangeY = alertRangeY;
 	    }
@@ -131,8 +129,10 @@ public interface Ill {
 	        }
 	    }
 
-	    protected void alertOther(Mob p_26042_, LivingEntity p_26043_) {
-	        p_26042_.setTarget(p_26043_);
+	    protected void alertOther(Mob source, LivingEntity target) {
+	    	source.setTarget(target);
 	    }
 	}
+	
+	public static record IllGroupData(boolean hasOwner) implements SpawnGroupData {}
 }

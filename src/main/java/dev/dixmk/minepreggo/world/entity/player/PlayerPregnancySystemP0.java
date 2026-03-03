@@ -3,7 +3,7 @@ package dev.dixmk.minepreggo.world.entity.player;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
-import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoMobEffects;
 import dev.dixmk.minepreggo.network.capability.FemalePlayerImpl;
 import dev.dixmk.minepreggo.network.capability.PlayerDataImpl;
 import dev.dixmk.minepreggo.network.capability.PlayerPregnancyDataImpl;
@@ -136,7 +136,7 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 
 	@Override
 	protected void evaluatePregnancyTimer() {
-		if (this.pregnantEntity.hasEffect(MinepreggoModMobEffects.ETERNAL_PREGNANCY.get())) {
+		if (this.pregnantEntity.hasEffect(MinepreggoMobEffects.ETERNAL_PREGNANCY.get())) {
 			return;
 		}
 		
@@ -253,8 +253,8 @@ public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlaye
 			}
 		});	
 		
-		pregnantEntity.removeEffect(MinepreggoModMobEffects.ETERNAL_PREGNANCY.get());
-		pregnantEntity.removeEffect(MinepreggoModMobEffects.ZERO_GRAVITY_BELLY.get());	
+		pregnantEntity.removeEffect(MinepreggoMobEffects.ETERNAL_PREGNANCY.get());
+		pregnantEntity.removeEffect(MinepreggoMobEffects.ZERO_GRAVITY_BELLY.get());	
 		 
 		MinepreggoMod.LOGGER.debug("Pregnancy removed for player {}", pregnantEntity.getGameProfile().getName());
 	}

@@ -1,7 +1,7 @@
 package dev.dixmk.minepreggo.client.renderer.preggo.zombie;
 
-import dev.dixmk.minepreggo.client.model.entity.preggo.zombie.AbstractZombieGirlModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.zombie.TamablePregnantZombieGirlModel;
+import dev.dixmk.minepreggo.client.model.geom.MinepreggoModelLayers;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobBody;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamablePregnantZombieGirl;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -13,11 +13,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class TamablePregnantZombieGirlRenderer {
 
+	private TamablePregnantZombieGirlRenderer() {}
+	
 	@OnlyIn(Dist.CLIENT)
 	public static class TamableZombieGirlP0Renderer extends AbstractTamablePregnantZombieGirlRenderer<TamablePregnantZombieGirl.TamableZombieGirlP0, TamablePregnantZombieGirlModel.TamableZombieGirlP0Model> {
 
 		public TamableZombieGirlP0Renderer(EntityRendererProvider.Context context) {
-			this(context, AbstractZombieGirlModel.LAYER_LOCATION_P0, AbstractZombieGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractZombieGirlModel.LAYER_OUTER_ARMOR_LOCATION);
+			this(context, MinepreggoModelLayers.PREGNANT_ZOMBIE_GIRL_P0, MinepreggoModelLayers.ZOMBIE_GIRL_INNER_ARMOR, MinepreggoModelLayers.ZOMBIE_GIRL_OUTER_ARMOR);
 		}
 		
 		public TamableZombieGirlP0Renderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter) {
@@ -25,7 +27,7 @@ public class TamablePregnantZombieGirlRenderer {
 		}
 		
 		@Override
-		public ResourceLocation getTextureLocation(TamablePregnantZombieGirl.TamableZombieGirlP0 p_115812_) {
+		public ResourceLocation getTextureLocation(TamablePregnantZombieGirl.TamableZombieGirlP0 entity) {
 			return ZOMBIE_GIRL_P0_LOCATION;
 		}
 	}
@@ -34,7 +36,7 @@ public class TamablePregnantZombieGirlRenderer {
 	public static class TamableZombieGirlP1Renderer extends AbstractTamablePregnantZombieGirlRenderer<TamablePregnantZombieGirl.TamableZombieGirlP1, TamablePregnantZombieGirlModel.TamableZombieGirlP1Model> {
 
 		public TamableZombieGirlP1Renderer(EntityRendererProvider.Context context) {
-			this(context, AbstractZombieGirlModel.LAYER_LOCATION_P1, AbstractZombieGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractZombieGirlModel.LAYER_OUTER_ARMOR_LOCATION);
+			this(context, MinepreggoModelLayers.PREGNANT_ZOMBIE_GIRL_P1, MinepreggoModelLayers.ZOMBIE_GIRL_INNER_ARMOR, MinepreggoModelLayers.ZOMBIE_GIRL_OUTER_ARMOR);
 		}
 		
 		public TamableZombieGirlP1Renderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter) {
@@ -42,7 +44,7 @@ public class TamablePregnantZombieGirlRenderer {
 		}
 
 		@Override
-		public ResourceLocation getTextureLocation(TamablePregnantZombieGirl.TamableZombieGirlP1 p_115812_) {
+		public ResourceLocation getTextureLocation(TamablePregnantZombieGirl.TamableZombieGirlP1 entity) {
 			return ZOMBIE_GIRL_P1_LOCATION;
 		}
 	}
@@ -51,7 +53,7 @@ public class TamablePregnantZombieGirlRenderer {
 	public static class TamableZombieGirlP2Renderer extends AbstractTamablePregnantZombieGirlRenderer<TamablePregnantZombieGirl.TamableZombieGirlP2, TamablePregnantZombieGirlModel.TamableZombieGirlP2Model> {
 
 		public TamableZombieGirlP2Renderer(EntityRendererProvider.Context context) {
-			this(context, AbstractZombieGirlModel.LAYER_LOCATION_P2, AbstractZombieGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractZombieGirlModel.LAYER_OUTER_ARMOR_LOCATION);
+			this(context, MinepreggoModelLayers.PREGNANT_ZOMBIE_GIRL_P2, MinepreggoModelLayers.ZOMBIE_GIRL_INNER_ARMOR, MinepreggoModelLayers.ZOMBIE_GIRL_OUTER_ARMOR);
 		}
 		
 		public TamableZombieGirlP2Renderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter) {
@@ -59,7 +61,7 @@ public class TamablePregnantZombieGirlRenderer {
 		}
 
 		@Override
-		public ResourceLocation getTextureLocation(TamablePregnantZombieGirl.TamableZombieGirlP2 p_115812_) {
+		public ResourceLocation getTextureLocation(TamablePregnantZombieGirl.TamableZombieGirlP2 entity) {
 			return ZOMBIE_GIRL_P2_LOCATION;
 		}
 	}
@@ -68,7 +70,7 @@ public class TamablePregnantZombieGirlRenderer {
 	public static class TamableZombieGirlP3Renderer extends AbstractTamablePregnantZombieGirlRenderer<TamablePregnantZombieGirl.TamableZombieGirlP3, TamablePregnantZombieGirlModel.TamableZombieGirlP3Model> {
 
 		public TamableZombieGirlP3Renderer(EntityRendererProvider.Context context) {
-			this(context, AbstractZombieGirlModel.LAYER_LOCATION_P3, AbstractZombieGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractZombieGirlModel.LAYER_OUTER_ARMOR_LOCATION);
+			this(context, MinepreggoModelLayers.PREGNANT_ZOMBIE_GIRL_P3, MinepreggoModelLayers.ZOMBIE_GIRL_INNER_ARMOR, MinepreggoModelLayers.ZOMBIE_GIRL_OUTER_ARMOR);
 		}
 		
 		public TamableZombieGirlP3Renderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter) {
@@ -76,7 +78,7 @@ public class TamablePregnantZombieGirlRenderer {
 		}
 
 		@Override
-		public ResourceLocation getTextureLocation(TamablePregnantZombieGirl.TamableZombieGirlP3 p_115812_) {
+		public ResourceLocation getTextureLocation(TamablePregnantZombieGirl.TamableZombieGirlP3 entity) {
 			return ZOMBIE_GIRL_P3_LOCATION;
 		}
 	}
@@ -85,7 +87,7 @@ public class TamablePregnantZombieGirlRenderer {
 	public static class TamableZombieGirlP4Renderer extends AbstractTamablePregnantZombieGirlRenderer<TamablePregnantZombieGirl.TamableZombieGirlP4, TamablePregnantZombieGirlModel.TamableZombieGirlP4Model> {
 
 		public TamableZombieGirlP4Renderer(EntityRendererProvider.Context context) {
-			this(context, AbstractZombieGirlModel.LAYER_LOCATION_P4, AbstractZombieGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractZombieGirlModel.LAYER_OUTER_ARMOR_LOCATION);
+			this(context, MinepreggoModelLayers.PREGNANT_ZOMBIE_GIRL_P4, MinepreggoModelLayers.ZOMBIE_GIRL_INNER_ARMOR, MinepreggoModelLayers.ZOMBIE_GIRL_OUTER_ARMOR);
 		}
 		
 		public TamableZombieGirlP4Renderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter) {
@@ -105,7 +107,7 @@ public class TamablePregnantZombieGirlRenderer {
 	public static class TamableZombieGirlP5Renderer extends AbstractTamablePregnantZombieGirlRenderer<TamablePregnantZombieGirl.TamableZombieGirlP5, TamablePregnantZombieGirlModel.TamableZombieGirlP5Model> {
 
 		public TamableZombieGirlP5Renderer(EntityRendererProvider.Context context) {
-			this(context, AbstractZombieGirlModel.LAYER_LOCATION_P5, AbstractZombieGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractZombieGirlModel.LAYER_OUTER_ARMOR_LOCATION);
+			this(context, MinepreggoModelLayers.PREGNANT_ZOMBIE_GIRL_P5, MinepreggoModelLayers.ZOMBIE_GIRL_INNER_ARMOR, MinepreggoModelLayers.ZOMBIE_GIRL_OUTER_ARMOR);
 		}
 		
 		public TamableZombieGirlP5Renderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter) {
@@ -125,7 +127,7 @@ public class TamablePregnantZombieGirlRenderer {
 	public static class TamableZombieGirlP6Renderer extends AbstractTamablePregnantZombieGirlRenderer<TamablePregnantZombieGirl.TamableZombieGirlP6, TamablePregnantZombieGirlModel.TamableZombieGirlP6Model> {
 
 		public TamableZombieGirlP6Renderer(EntityRendererProvider.Context context) {
-			this(context, AbstractZombieGirlModel.LAYER_LOCATION_P6, AbstractZombieGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractZombieGirlModel.LAYER_OUTER_ARMOR_LOCATION);
+			this(context, MinepreggoModelLayers.PREGNANT_ZOMBIE_GIRL_P6, MinepreggoModelLayers.ZOMBIE_GIRL_INNER_ARMOR, MinepreggoModelLayers.ZOMBIE_GIRL_OUTER_ARMOR);
 		}
 		
 		public TamableZombieGirlP6Renderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter) {
@@ -145,7 +147,7 @@ public class TamablePregnantZombieGirlRenderer {
 	public static class TamableZombieGirlP7Renderer extends AbstractTamablePregnantZombieGirlRenderer<TamablePregnantZombieGirl.TamableZombieGirlP7, TamablePregnantZombieGirlModel.TamableZombieGirlP7Model> {
 
 		public TamableZombieGirlP7Renderer(EntityRendererProvider.Context context) {
-			this(context, AbstractZombieGirlModel.LAYER_LOCATION_P7, AbstractZombieGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractZombieGirlModel.LAYER_OUTER_ARMOR_LOCATION);
+			this(context, MinepreggoModelLayers.PREGNANT_ZOMBIE_GIRL_P7, MinepreggoModelLayers.ZOMBIE_GIRL_INNER_ARMOR, MinepreggoModelLayers.ZOMBIE_GIRL_OUTER_ARMOR);
 		}
 		
 		public TamableZombieGirlP7Renderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter) {
@@ -164,7 +166,7 @@ public class TamablePregnantZombieGirlRenderer {
 	@OnlyIn(Dist.CLIENT)
 	public static class TamableZombieGirlP8Renderer extends AbstractTamablePregnantZombieGirlRenderer<TamablePregnantZombieGirl.TamableZombieGirlP8, TamablePregnantZombieGirlModel.TamableZombieGirlP8Model> {
 		public TamableZombieGirlP8Renderer(EntityRendererProvider.Context context) {
-			this(context, AbstractZombieGirlModel.LAYER_LOCATION_P8, AbstractZombieGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractZombieGirlModel.LAYER_OUTER_ARMOR_LOCATION);
+			this(context, MinepreggoModelLayers.PREGNANT_ZOMBIE_GIRL_P8, MinepreggoModelLayers.ZOMBIE_GIRL_INNER_ARMOR, MinepreggoModelLayers.ZOMBIE_GIRL_OUTER_ARMOR);
 		}
 		
 		public TamableZombieGirlP8Renderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter) {

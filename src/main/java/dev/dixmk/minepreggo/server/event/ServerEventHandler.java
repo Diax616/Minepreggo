@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
-import dev.dixmk.minepreggo.init.MinepreggoModAdvancements;
+import dev.dixmk.minepreggo.init.MinepreggoAdvancements;
 import dev.dixmk.minepreggo.server.PendingTasksSavedData;
 import dev.dixmk.minepreggo.server.ServerParticleHelper;
 import dev.dixmk.minepreggo.server.ServerPendingPlayerTaskManager;
@@ -50,7 +50,7 @@ public class ServerEventHandler {
                 .findFirst();
             
             if (targetOpt.isPresent()) {
-                MinepreggoModAdvancements.IMPREGNATE_ENTITY_TRIGGER.trigger(source, targetOpt.get());
+                MinepreggoAdvancements.IMPREGNATE_ENTITY_TRIGGER.trigger(source, targetOpt.get());
             } 
         });
         

@@ -23,9 +23,9 @@ import java.util.List;
 import java.util.Optional;
 
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
-import dev.dixmk.minepreggo.init.MinepreggoModEntities;
-import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
-import dev.dixmk.minepreggo.init.MinepreggoModPotions;
+import dev.dixmk.minepreggo.init.MinepreggoEntities;
+import dev.dixmk.minepreggo.init.MinepreggoMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoPotions;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
@@ -52,7 +52,7 @@ public class FertilityWitch extends Witch {
 	private static final List<Species> HARMFUL_SPECIES = List.of(Species.ZOMBIE, Species.CREEPER, Species.ENDER);
 	
 	public FertilityWitch(PlayMessages.SpawnEntity packet, Level world) {
-		this(MinepreggoModEntities.FERTILITY_WITCH.get(), world);
+		this(MinepreggoEntities.FERTILITY_WITCH.get(), world);
 	}
 
 	public FertilityWitch(EntityType<FertilityWitch> type, Level world) {
@@ -74,21 +74,21 @@ public class FertilityWitch extends Witch {
 	
 	private Potion getRandomHarmfulPregnancyPotion() {
 		if (this.random.nextFloat() < 0.33) {
-			return MinepreggoModPotions.getRandomBabyDuplicationPotion(random);
+			return MinepreggoPotions.getRandomBabyDuplicationPotion(random);
 		}
-		return MinepreggoModPotions.getRandomPregnancyAccelerationPotion(random);
+		return MinepreggoPotions.getRandomPregnancyAccelerationPotion(random);
 	}
 	
 	private Potion getRandomHarmfulImpregnationPotion() {
 		switch (HARMFUL_SPECIES.get(random.nextInt(HARMFUL_SPECIES.size()))) {
 		case ENDER: {
-			return random.nextBoolean() ? MinepreggoModPotions.getRandomEnderImpregnationPotion(random) : MinepreggoModPotions.getRandomHumanoidEnderImpregnationPotion(random);		
+			return random.nextBoolean() ? MinepreggoPotions.getRandomEnderImpregnationPotion(random) : MinepreggoPotions.getRandomHumanoidEnderImpregnationPotion(random);		
 		}
 		case CREEPER: {
-			return random.nextBoolean() ? MinepreggoModPotions.getRandomCreeperImpregnationPotion(random) : MinepreggoModPotions.getRandomHumanoidCreeperImpregnationPotion(random);		
+			return random.nextBoolean() ? MinepreggoPotions.getRandomCreeperImpregnationPotion(random) : MinepreggoPotions.getRandomHumanoidCreeperImpregnationPotion(random);		
 		}
 		default:
-			return MinepreggoModPotions.getRandomZombieImpregnationPotion(random);
+			return MinepreggoPotions.getRandomZombieImpregnationPotion(random);
 		}
 	}
 
@@ -127,7 +127,7 @@ public class FertilityWitch extends Witch {
 				if (r == 0) {
 					potion = getRandomHarmfulPregnancyPotion();
 				}
-				else if (r == -1 && !MinepreggoModMobEffects.hasImpregnationEffect(player)) {
+				else if (r == -1 && !MinepreggoMobEffects.hasImpregnationEffect(player)) {
 					potion = getRandomHarmfulImpregnationPotion();
 				}
 			}
@@ -137,7 +137,7 @@ public class FertilityWitch extends Witch {
 					preggoMob instanceof TamableHumanoidCreeperGirl ||
 					preggoMob instanceof TamableMonsterCreeperGirl ||
 					preggoMob instanceof TamableMonsterEnderWoman) {			
-				potion = MinepreggoModPotions.getRandomImpregnationPotion(random);
+				potion = MinepreggoPotions.getRandomImpregnationPotion(random);
 			}
 			else if (preggoMob instanceof ITamablePregnantPreggoMob tamablePregnantPreggoMob
 					&& !PregnancyPain.isLaborPain(tamablePregnantPreggoMob.getPregnancyData().getPregnancyPain())) {

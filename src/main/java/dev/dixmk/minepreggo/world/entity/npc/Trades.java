@@ -11,9 +11,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
-import dev.dixmk.minepreggo.init.MinepreggoModItems;
-import dev.dixmk.minepreggo.init.MinepreggoModPotions;
-import dev.dixmk.minepreggo.init.MinepreggoModVillagerProfessions;
+import dev.dixmk.minepreggo.init.MinepreggoItems;
+import dev.dixmk.minepreggo.init.MinepreggoPotions;
+import dev.dixmk.minepreggo.init.MinepreggoVillagerProfessions;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -54,54 +54,54 @@ public class Trades {
 		protected static final Map<VillagerProfession, Int2ObjectMap<VillagerTrades.ItemListing[]>> TRADES = Util.make(Maps.newHashMap(), (p_35633_) -> {	   
 			p_35633_.put(VillagerProfession.FARMER, new Int2ObjectOpenHashMap<>(ImmutableMap.of(
 					1, new VillagerTrades.ItemListing[]
-					{ new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.CHILI_PEPPER.get(), 2, 10, 10),
-					new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.LEMON.get(), 2, 12, 10),
-					new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.CUCUMBER.get(), 4, 10, 10), 
-					new VillagerTrades.EmeraldForItems(MinepreggoModItems.CHILI_PEPPER.get(), 13, 10, 10),
-					new VillagerTrades.EmeraldForItems(MinepreggoModItems.LEMON.get(), 15, 10, 10)},
+					{ new VillagerTrades.ItemsForEmeralds(MinepreggoItems.CHILI_PEPPER.get(), 2, 10, 10),
+					new VillagerTrades.ItemsForEmeralds(MinepreggoItems.LEMON.get(), 2, 12, 10),
+					new VillagerTrades.ItemsForEmeralds(MinepreggoItems.CUCUMBER.get(), 4, 10, 10), 
+					new VillagerTrades.EmeraldForItems(MinepreggoItems.CHILI_PEPPER.get(), 13, 10, 10),
+					new VillagerTrades.EmeraldForItems(MinepreggoItems.LEMON.get(), 15, 10, 10)},
 					2, new VillagerTrades.ItemListing[]
-					{ new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.CHILI_PEPPER.get(), 4, 25, 10),
-					new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.LEMON.get(), 4, 25, 10),
+					{ new VillagerTrades.ItemsForEmeralds(MinepreggoItems.CHILI_PEPPER.get(), 4, 25, 10),
+					new VillagerTrades.ItemsForEmeralds(MinepreggoItems.LEMON.get(), 4, 25, 10),
 					new VillagerTrades.ItemsForEmeralds(Items.COCOA_BEANS, 10, 5, 10),
-					new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.CUCUMBER.get(), 8, 25, 10)},
+					new VillagerTrades.ItemsForEmeralds(MinepreggoItems.CUCUMBER.get(), 8, 25, 10)},
 					3, new VillagerTrades.ItemListing[] { 
-					new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.CHILI_PEPPER.get(), 6, 41, 10),
+					new VillagerTrades.ItemsForEmeralds(MinepreggoItems.CHILI_PEPPER.get(), 6, 41, 10),
 					new VillagerTrades.ItemsForEmeralds(Items.COCOA_BEANS, 15, 10, 10),
-					new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.LEMON.get(), 6, 50, 10),
-					new VillagerTrades.EmeraldForItems(MinepreggoModItems.CUCUMBER.get(), 10, 10, 10)},
+					new VillagerTrades.ItemsForEmeralds(MinepreggoItems.LEMON.get(), 6, 50, 10),
+					new VillagerTrades.EmeraldForItems(MinepreggoItems.CUCUMBER.get(), 10, 10, 10)},
 					4, new VillagerTrades.ItemListing[] { 
 					new VillagerTrades.ItemsForEmeralds(Items.COCOA_BEANS, 17, 20, 15),
-					new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.CHOCOLATE_BAR.get(), 9, 3, 20)})));	
+					new VillagerTrades.ItemsForEmeralds(MinepreggoItems.CHOCOLATE_BAR.get(), 9, 3, 20)})));	
 				
 			p_35633_.put(VillagerProfession.BUTCHER, new Int2ObjectOpenHashMap<>(ImmutableMap.of(
 					1, new VillagerTrades.ItemListing[] 
-					{ new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.LEMON_ICE_CREAM.get(), 4, 8, 10),
-						new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.HOT_SAUCE.get(), 7, 16, 10),
-						new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.SALT.get(), 3, 20, 10)},
+					{ new VillagerTrades.ItemsForEmeralds(MinepreggoItems.LEMON_ICE_CREAM.get(), 4, 8, 10),
+						new VillagerTrades.ItemsForEmeralds(MinepreggoItems.HOT_SAUCE.get(), 7, 16, 10),
+						new VillagerTrades.ItemsForEmeralds(MinepreggoItems.SALT.get(), 3, 20, 10)},
 					2, new VillagerTrades.ItemListing[]
-					{ new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.PICKLE.get(), 8, 20, 10),
-						new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.HOT_CHICKEN.get(), 10, 16, 10),
-						new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.LEMON_ICE_CREAM.get(), 7, 18, 10),
-						new VillagerTrades.EmeraldForItems(MinepreggoModItems.PICKLE.get(), 10, 10, 10)},
+					{ new VillagerTrades.ItemsForEmeralds(MinepreggoItems.PICKLE.get(), 8, 20, 10),
+						new VillagerTrades.ItemsForEmeralds(MinepreggoItems.HOT_CHICKEN.get(), 10, 16, 10),
+						new VillagerTrades.ItemsForEmeralds(MinepreggoItems.LEMON_ICE_CREAM.get(), 7, 18, 10),
+						new VillagerTrades.EmeraldForItems(MinepreggoItems.PICKLE.get(), 10, 10, 10)},
 					3, new VillagerTrades.ItemListing[]
-					{ new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.LEMON_ICE_POPSICLES.get(), 10, 24, 10),
-						new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.HOT_CHICKEN.get(), 17, 17, 10),
-						new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.PICKLE.get(), 13, 20, 10),
-						new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.CHOCOLATE_BAR.get(), 10, 5, 20)})));
+					{ new VillagerTrades.ItemsForEmeralds(MinepreggoItems.LEMON_ICE_POPSICLES.get(), 10, 24, 10),
+						new VillagerTrades.ItemsForEmeralds(MinepreggoItems.HOT_CHICKEN.get(), 17, 17, 10),
+						new VillagerTrades.ItemsForEmeralds(MinepreggoItems.PICKLE.get(), 13, 20, 10),
+						new VillagerTrades.ItemsForEmeralds(MinepreggoItems.CHOCOLATE_BAR.get(), 10, 5, 20)})));
 			
-			p_35633_.put(MinepreggoModVillagerProfessions.VILLAGER_DOCTOR.get(), new Int2ObjectOpenHashMap<>(ImmutableMap.of(
+			p_35633_.put(MinepreggoVillagerProfessions.VILLAGER_DOCTOR.get(), new Int2ObjectOpenHashMap<>(ImmutableMap.of(
 					1, new VillagerTrades.ItemListing[]
 					{ new PotionForEmeralds(Potions.HEALING, PotionForEmeralds.PotionType.REGULAR, 15, 20, 15),
-					  new PotionForEmeralds(MinepreggoModPotions.FERTILITY.get(), PotionForEmeralds.PotionType.REGULAR, 15, 20, 15)},
+					  new PotionForEmeralds(MinepreggoPotions.FERTILITY.get(), PotionForEmeralds.PotionType.REGULAR, 15, 20, 15)},
 					2, new VillagerTrades.ItemListing[]
 					{ new PotionForEmeralds(Potions.STRONG_HEALING, PotionForEmeralds.PotionType.SPLASH, 17, 20, 17),
 						new PotionForEmeralds(Potions.HEALING, PotionForEmeralds.PotionType.SPLASH, 16, 20, 17)},
 					3, new VillagerTrades.ItemListing[]
-					{ new PotionForEmeralds(MinepreggoModPotions.ZERO_GRAVITY_BELLY.get(), PotionForEmeralds.PotionType.REGULAR, 15, 20, 15)},
+					{ new PotionForEmeralds(MinepreggoPotions.ZERO_GRAVITY_BELLY.get(), PotionForEmeralds.PotionType.REGULAR, 15, 20, 15)},
 					4, new VillagerTrades.ItemListing[]
-					{ new PotionForEmeralds(MinepreggoModPotions.PREGNANCY_HEALING.get(), PotionForEmeralds.PotionType.REGULAR, 20, 20, 20)},
+					{ new PotionForEmeralds(MinepreggoPotions.PREGNANCY_HEALING.get(), PotionForEmeralds.PotionType.REGULAR, 20, 20, 20)},
 					5, new VillagerTrades.ItemListing[]
-					{ new PotionForEmeralds(MinepreggoModPotions.PREGNANCY_RESISTANCE.get(), PotionForEmeralds.PotionType.SPLASH, 25, 20, 25)}))); 
+					{ new PotionForEmeralds(MinepreggoPotions.PREGNANCY_RESISTANCE.get(), PotionForEmeralds.PotionType.SPLASH, 25, 20, 25)}))); 
 		});
 		
 		@CheckForNull
@@ -125,92 +125,92 @@ public class Trades {
 		
 		protected static final List<VillagerTrades.ItemListing[]> TRADES = List.of(
 				new VillagerTrades.ItemListing[]{ 
-						new ItemsForItems(MinepreggoModItems.BABY_HUMAN.get(), 1, Items.DIAMOND, 24, 20),
-						new ItemsForItems(MinepreggoModItems.BABY_HUMANOID_CREEPER.get(), 1, Items.DIAMOND, 32, 10),
-						new ItemsForItems(MinepreggoModItems.BABY_HUMANOID_ENDER.get(), 1, Items.DIAMOND, 36, 10),
-						new ItemsForItems(MinepreggoModItems.BABY_ENDER.get(), 1, Items.DIAMOND, 40, 20),
-						new ItemsForItems(MinepreggoModItems.BABY_ZOMBIE.get(), 1, Items.DIAMOND, 20, 15),
-						new ItemsForItems(MinepreggoModItems.BABY_CREEPER.get(), 1, Items.DIAMOND, 16, 10),
-						new ItemsForItems(MinepreggoModItems.HUMAN_BREAST_MILK_BOTTLE.get(), 12, Items.DIAMOND, 16, 10),
-						new ItemsForItems(MinepreggoModItems.CREEPER_BREAST_MILK_BOTTLE.get(), 12, Items.DIAMOND, 12, 10),
-						new ItemsForItems(MinepreggoModItems.ZOMBIE_BREAST_MILK_BOTTLE.get(), 12, Items.GOLD_INGOT, 16, 10),
+						new ItemsForItems(MinepreggoItems.BABY_HUMAN.get(), 1, Items.DIAMOND, 24, 20),
+						new ItemsForItems(MinepreggoItems.BABY_HUMANOID_CREEPER.get(), 1, Items.DIAMOND, 32, 10),
+						new ItemsForItems(MinepreggoItems.BABY_HUMANOID_ENDER.get(), 1, Items.DIAMOND, 36, 10),
+						new ItemsForItems(MinepreggoItems.BABY_ENDER.get(), 1, Items.DIAMOND, 40, 20),
+						new ItemsForItems(MinepreggoItems.BABY_ZOMBIE.get(), 1, Items.DIAMOND, 20, 15),
+						new ItemsForItems(MinepreggoItems.BABY_CREEPER.get(), 1, Items.DIAMOND, 16, 10),
+						new ItemsForItems(MinepreggoItems.HUMAN_BREAST_MILK_BOTTLE.get(), 12, Items.DIAMOND, 16, 10),
+						new ItemsForItems(MinepreggoItems.CREEPER_BREAST_MILK_BOTTLE.get(), 12, Items.DIAMOND, 12, 10),
+						new ItemsForItems(MinepreggoItems.ZOMBIE_BREAST_MILK_BOTTLE.get(), 12, Items.GOLD_INGOT, 16, 10),
 						new EnchantBookForBaby(Species.HUMAN),
 						new EnchantBookForBaby(Species.CREEPER),
 						new EnchantBookForBaby(Species.ZOMBIE),
 						new EnchantBookForBaby(Species.ENDER),
-						new ItemstackForItemstack(MinepreggoModItems.BABY_ENDER_DRAGON_BLOCK.get().getDefaultInstance(), createLootForBabyEnderDragon(2, 16, 8, 1, 32), 1, 10, 0.5f),
-						new PotionForEmeralds(MinepreggoModPotions.PREGNANCY_ACCELERATION_0.get(), PotionForEmeralds.PotionType.REGULAR, 25, 10, 0),
-						new PotionForEmeralds(MinepreggoModPotions.IMPREGNATION_POTION_0.get(), PotionForEmeralds.PotionType.REGULAR, 20, 10, 0),
-						new PotionForEmeralds(MinepreggoModPotions.IMPREGNATION_POTION_1.get(), PotionForEmeralds.PotionType.REGULAR, 30, 10, 0),
-						new PotionForEmeralds(MinepreggoModPotions.ZOMBIE_IMPREGNATION_0.get(), PotionForEmeralds.PotionType.REGULAR, 15, 10, 0),
-						new PotionForEmeralds(MinepreggoModPotions.PREGNANCY_RESISTANCE.get(), PotionForEmeralds.PotionType.REGULAR, 27, 10, 0),
-						new PotionForEmeralds(MinepreggoModPotions.PREGNANCY_HEALING.get(), PotionForEmeralds.PotionType.REGULAR, 27, 10, 0),
-						new PotionForEmeralds(MinepreggoModPotions.ZERO_GRAVITY_BELLY.get(), PotionForEmeralds.PotionType.REGULAR, 20, 10, 0),
-						new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.VILLAGER_BRAIN.get(), 12, 24, 10, 0),
-						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_HUMAN_FETUS.get(), 3, 30, 10),
-						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_ZOMBIE_FETUS.get(), 4, 30, 10),
-						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_HUMANOID_CREEPER_FETUS.get(), 2, 30, 10),
-						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_CREEPER_FETUS.get(), 3, 30, 10),
-						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_HUMANOID_ENDER_FETUS.get(), 1, 30, 10),
-						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_ENDER_FETUS.get(), 1, 30, 10),
-						new ItemsForItems(MinepreggoModItems.BABY_VILLAGER.get(), 1, MinepreggoModItems.ENDER_LIFE_SUBSTANCE.get(), 1, 5)},	
+						new ItemstackForItemstack(MinepreggoItems.BABY_ENDER_DRAGON_BLOCK.get().getDefaultInstance(), createLootForBabyEnderDragon(2, 16, 8, 1, 32), 1, 10, 0.5f),
+						new PotionForEmeralds(MinepreggoPotions.PREGNANCY_ACCELERATION_0.get(), PotionForEmeralds.PotionType.REGULAR, 25, 10, 0),
+						new PotionForEmeralds(MinepreggoPotions.IMPREGNATION_POTION_0.get(), PotionForEmeralds.PotionType.REGULAR, 20, 10, 0),
+						new PotionForEmeralds(MinepreggoPotions.IMPREGNATION_POTION_1.get(), PotionForEmeralds.PotionType.REGULAR, 30, 10, 0),
+						new PotionForEmeralds(MinepreggoPotions.ZOMBIE_IMPREGNATION_0.get(), PotionForEmeralds.PotionType.REGULAR, 15, 10, 0),
+						new PotionForEmeralds(MinepreggoPotions.PREGNANCY_RESISTANCE.get(), PotionForEmeralds.PotionType.REGULAR, 27, 10, 0),
+						new PotionForEmeralds(MinepreggoPotions.PREGNANCY_HEALING.get(), PotionForEmeralds.PotionType.REGULAR, 27, 10, 0),
+						new PotionForEmeralds(MinepreggoPotions.ZERO_GRAVITY_BELLY.get(), PotionForEmeralds.PotionType.REGULAR, 20, 10, 0),
+						new VillagerTrades.ItemsForEmeralds(MinepreggoItems.VILLAGER_BRAIN.get(), 12, 24, 10, 0),
+						new VillagerTrades.EmeraldForItems(MinepreggoItems.DEAD_HUMAN_FETUS.get(), 3, 30, 10),
+						new VillagerTrades.EmeraldForItems(MinepreggoItems.DEAD_ZOMBIE_FETUS.get(), 4, 30, 10),
+						new VillagerTrades.EmeraldForItems(MinepreggoItems.DEAD_HUMANOID_CREEPER_FETUS.get(), 2, 30, 10),
+						new VillagerTrades.EmeraldForItems(MinepreggoItems.DEAD_CREEPER_FETUS.get(), 3, 30, 10),
+						new VillagerTrades.EmeraldForItems(MinepreggoItems.DEAD_HUMANOID_ENDER_FETUS.get(), 1, 30, 10),
+						new VillagerTrades.EmeraldForItems(MinepreggoItems.DEAD_ENDER_FETUS.get(), 1, 30, 10),
+						new ItemsForItems(MinepreggoItems.BABY_VILLAGER.get(), 1, MinepreggoItems.ENDER_LIFE_SUBSTANCE.get(), 1, 5)},	
 				new VillagerTrades.ItemListing[]{
-						new ItemsForItems(MinepreggoModItems.HUMAN_BREAST_MILK_BOTTLE.get(), 12, Items.DIAMOND, 16, 10),
-						new ItemsForItems(MinepreggoModItems.CREEPER_BREAST_MILK_BOTTLE.get(), 12, Items.DIAMOND, 12, 10),
-						new ItemsForItems(MinepreggoModItems.ZOMBIE_BREAST_MILK_BOTTLE.get(), 12, Items.GOLD_INGOT, 16, 10),
-						new ItemsForItems(MinepreggoModItems.BABY_HUMAN.get(), 1, Items.DIAMOND, 24, 20),
-						new ItemsForItems(MinepreggoModItems.BABY_HUMANOID_CREEPER.get(), 1, Items.DIAMOND, 32, 10),
-						new ItemsForItems(MinepreggoModItems.BABY_HUMANOID_ENDER.get(), 1, Items.DIAMOND, 36, 10),
-						new ItemsForItems(MinepreggoModItems.BABY_ENDER.get(), 1, Items.DIAMOND, 40, 20),
-						new ItemsForItems(MinepreggoModItems.BABY_ZOMBIE.get(), 1, Items.DIAMOND, 20, 15),
-						new ItemsForItems(MinepreggoModItems.BABY_CREEPER.get(), 1, Items.DIAMOND, 16, 10),
-						new PotionForEmeralds(MinepreggoModPotions.IMPREGNATION_POTION_1.get(), PotionForEmeralds.PotionType.REGULAR, 30, 10, 0),
-						new PotionForEmeralds(MinepreggoModPotions.ZOMBIE_IMPREGNATION_2.get(), PotionForEmeralds.PotionType.REGULAR, 33, 10, 0),
-						new PotionForEmeralds(MinepreggoModPotions.CREEPER_IMPREGNATION_1.get(), PotionForEmeralds.PotionType.REGULAR, 35, 10, 0),
-						new PotionForEmeralds(MinepreggoModPotions.PREGNANCY_ACCELERATION_0.get(), PotionForEmeralds.PotionType.REGULAR, 27, 10, 0),
-						new PotionForEmeralds(MinepreggoModPotions.PREGNANCY_HEALING.get(), PotionForEmeralds.PotionType.REGULAR, 27, 10, 0),
-						new PotionForEmeralds(MinepreggoModPotions.ZERO_GRAVITY_BELLY.get(), PotionForEmeralds.PotionType.REGULAR, 20, 10, 0),
+						new ItemsForItems(MinepreggoItems.HUMAN_BREAST_MILK_BOTTLE.get(), 12, Items.DIAMOND, 16, 10),
+						new ItemsForItems(MinepreggoItems.CREEPER_BREAST_MILK_BOTTLE.get(), 12, Items.DIAMOND, 12, 10),
+						new ItemsForItems(MinepreggoItems.ZOMBIE_BREAST_MILK_BOTTLE.get(), 12, Items.GOLD_INGOT, 16, 10),
+						new ItemsForItems(MinepreggoItems.BABY_HUMAN.get(), 1, Items.DIAMOND, 24, 20),
+						new ItemsForItems(MinepreggoItems.BABY_HUMANOID_CREEPER.get(), 1, Items.DIAMOND, 32, 10),
+						new ItemsForItems(MinepreggoItems.BABY_HUMANOID_ENDER.get(), 1, Items.DIAMOND, 36, 10),
+						new ItemsForItems(MinepreggoItems.BABY_ENDER.get(), 1, Items.DIAMOND, 40, 20),
+						new ItemsForItems(MinepreggoItems.BABY_ZOMBIE.get(), 1, Items.DIAMOND, 20, 15),
+						new ItemsForItems(MinepreggoItems.BABY_CREEPER.get(), 1, Items.DIAMOND, 16, 10),
+						new PotionForEmeralds(MinepreggoPotions.IMPREGNATION_POTION_1.get(), PotionForEmeralds.PotionType.REGULAR, 30, 10, 0),
+						new PotionForEmeralds(MinepreggoPotions.ZOMBIE_IMPREGNATION_2.get(), PotionForEmeralds.PotionType.REGULAR, 33, 10, 0),
+						new PotionForEmeralds(MinepreggoPotions.CREEPER_IMPREGNATION_1.get(), PotionForEmeralds.PotionType.REGULAR, 35, 10, 0),
+						new PotionForEmeralds(MinepreggoPotions.PREGNANCY_ACCELERATION_0.get(), PotionForEmeralds.PotionType.REGULAR, 27, 10, 0),
+						new PotionForEmeralds(MinepreggoPotions.PREGNANCY_HEALING.get(), PotionForEmeralds.PotionType.REGULAR, 27, 10, 0),
+						new PotionForEmeralds(MinepreggoPotions.ZERO_GRAVITY_BELLY.get(), PotionForEmeralds.PotionType.REGULAR, 20, 10, 0),
 						new EnchantBookForBaby(Species.HUMAN),
 						new EnchantBookForBaby(Species.CREEPER),
 						new EnchantBookForBaby(Species.ZOMBIE),
 						new EnchantBookForBaby(Species.ENDER),
-						new ItemstackForItemstack(MinepreggoModItems.BABY_ENDER_DRAGON_BLOCK.get().getDefaultInstance(), createLootForBabyEnderDragon(1, 24, 4, 1, 32), 1, 10, 0.5f),
-						new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.VILLAGER_BRAIN.get(), 12, 24, 10, 0),
-						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_HUMAN_FETUS.get(), 3, 30, 10),
-						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_ZOMBIE_FETUS.get(), 4, 30, 10),
-						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_HUMANOID_CREEPER_FETUS.get(), 2, 30, 10),
-						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_CREEPER_FETUS.get(), 3, 30, 10),
-						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_HUMANOID_ENDER_FETUS.get(), 1, 30, 10),
-						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_ENDER_FETUS.get(), 1, 30, 10),
-						new ItemsForItems(MinepreggoModItems.BABY_VILLAGER.get(), 1, MinepreggoModItems.CREEPER_LIFE_SUBSTANCE.get(), 1, 5)},
+						new ItemstackForItemstack(MinepreggoItems.BABY_ENDER_DRAGON_BLOCK.get().getDefaultInstance(), createLootForBabyEnderDragon(1, 24, 4, 1, 32), 1, 10, 0.5f),
+						new VillagerTrades.ItemsForEmeralds(MinepreggoItems.VILLAGER_BRAIN.get(), 12, 24, 10, 0),
+						new VillagerTrades.EmeraldForItems(MinepreggoItems.DEAD_HUMAN_FETUS.get(), 3, 30, 10),
+						new VillagerTrades.EmeraldForItems(MinepreggoItems.DEAD_ZOMBIE_FETUS.get(), 4, 30, 10),
+						new VillagerTrades.EmeraldForItems(MinepreggoItems.DEAD_HUMANOID_CREEPER_FETUS.get(), 2, 30, 10),
+						new VillagerTrades.EmeraldForItems(MinepreggoItems.DEAD_CREEPER_FETUS.get(), 3, 30, 10),
+						new VillagerTrades.EmeraldForItems(MinepreggoItems.DEAD_HUMANOID_ENDER_FETUS.get(), 1, 30, 10),
+						new VillagerTrades.EmeraldForItems(MinepreggoItems.DEAD_ENDER_FETUS.get(), 1, 30, 10),
+						new ItemsForItems(MinepreggoItems.BABY_VILLAGER.get(), 1, MinepreggoItems.CREEPER_LIFE_SUBSTANCE.get(), 1, 5)},
 				new VillagerTrades.ItemListing[]{
-						new ItemsForItems(MinepreggoModItems.HUMAN_BREAST_MILK_BOTTLE.get(), 12, Items.DIAMOND, 16, 10),
-						new ItemsForItems(MinepreggoModItems.CREEPER_BREAST_MILK_BOTTLE.get(), 12, Items.DIAMOND, 12, 10),
-						new ItemsForItems(MinepreggoModItems.ZOMBIE_BREAST_MILK_BOTTLE.get(), 12, Items.GOLD_INGOT, 16, 10),
-						new ItemsForItems(MinepreggoModItems.BABY_HUMAN.get(), 1, Items.DIAMOND, 24, 20),
-						new ItemsForItems(MinepreggoModItems.BABY_HUMANOID_CREEPER.get(), 1, Items.DIAMOND, 32, 10),
-						new ItemsForItems(MinepreggoModItems.BABY_HUMANOID_ENDER.get(), 1, Items.DIAMOND, 36, 10),
-						new ItemsForItems(MinepreggoModItems.BABY_ENDER.get(), 1, Items.DIAMOND, 40, 20),
-						new ItemsForItems(MinepreggoModItems.BABY_ZOMBIE.get(), 1, Items.DIAMOND, 20, 15),
-						new ItemsForItems(MinepreggoModItems.BABY_CREEPER.get(), 1, Items.DIAMOND, 16, 10),	
-						new PotionForEmeralds(MinepreggoModPotions.ZOMBIE_IMPREGNATION_3.get(), PotionForEmeralds.PotionType.REGULAR, 15, 15, 0),
-						new PotionForEmeralds(MinepreggoModPotions.IMPREGNATION_POTION_2.get(), PotionForEmeralds.PotionType.REGULAR, 36, 15, 0),
-						new PotionForEmeralds(MinepreggoModPotions.LONG_METABOLISM_CONTROL.get(), PotionForEmeralds.PotionType.REGULAR, 20, 20, 0),
-						new PotionForEmeralds(MinepreggoModPotions.PREGNANCY_RESISTANCE.get(), PotionForEmeralds.PotionType.REGULAR, 27, 25, 0),
-						new PotionForEmeralds(MinepreggoModPotions.ZERO_GRAVITY_BELLY.get(), PotionForEmeralds.PotionType.REGULAR, 20, 10, 0),
+						new ItemsForItems(MinepreggoItems.HUMAN_BREAST_MILK_BOTTLE.get(), 12, Items.DIAMOND, 16, 10),
+						new ItemsForItems(MinepreggoItems.CREEPER_BREAST_MILK_BOTTLE.get(), 12, Items.DIAMOND, 12, 10),
+						new ItemsForItems(MinepreggoItems.ZOMBIE_BREAST_MILK_BOTTLE.get(), 12, Items.GOLD_INGOT, 16, 10),
+						new ItemsForItems(MinepreggoItems.BABY_HUMAN.get(), 1, Items.DIAMOND, 24, 20),
+						new ItemsForItems(MinepreggoItems.BABY_HUMANOID_CREEPER.get(), 1, Items.DIAMOND, 32, 10),
+						new ItemsForItems(MinepreggoItems.BABY_HUMANOID_ENDER.get(), 1, Items.DIAMOND, 36, 10),
+						new ItemsForItems(MinepreggoItems.BABY_ENDER.get(), 1, Items.DIAMOND, 40, 20),
+						new ItemsForItems(MinepreggoItems.BABY_ZOMBIE.get(), 1, Items.DIAMOND, 20, 15),
+						new ItemsForItems(MinepreggoItems.BABY_CREEPER.get(), 1, Items.DIAMOND, 16, 10),	
+						new PotionForEmeralds(MinepreggoPotions.ZOMBIE_IMPREGNATION_3.get(), PotionForEmeralds.PotionType.REGULAR, 15, 15, 0),
+						new PotionForEmeralds(MinepreggoPotions.IMPREGNATION_POTION_2.get(), PotionForEmeralds.PotionType.REGULAR, 36, 15, 0),
+						new PotionForEmeralds(MinepreggoPotions.LONG_METABOLISM_CONTROL.get(), PotionForEmeralds.PotionType.REGULAR, 20, 20, 0),
+						new PotionForEmeralds(MinepreggoPotions.PREGNANCY_RESISTANCE.get(), PotionForEmeralds.PotionType.REGULAR, 27, 25, 0),
+						new PotionForEmeralds(MinepreggoPotions.ZERO_GRAVITY_BELLY.get(), PotionForEmeralds.PotionType.REGULAR, 20, 10, 0),
 						new EnchantBookForBaby(Species.HUMAN),
 						new EnchantBookForBaby(Species.CREEPER),
 						new EnchantBookForBaby(Species.ZOMBIE),
 						new EnchantBookForBaby(Species.ENDER),
-						new ItemstackForItemstack(MinepreggoModItems.BABY_ENDER_DRAGON_BLOCK.get().getDefaultInstance(), createLootForBabyEnderDragon(3, 16, 4, 1, 4), 1, 10, 0.5f),
-						new VillagerTrades.ItemsForEmeralds(MinepreggoModItems.VILLAGER_BRAIN.get(), 12, 24, 10, 0),
-						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_HUMAN_FETUS.get(), 3, 30, 10),
-						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_ZOMBIE_FETUS.get(), 4, 30, 10),
-						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_HUMANOID_CREEPER_FETUS.get(), 2, 30, 10),
-						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_CREEPER_FETUS.get(), 3, 30, 10),
-						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_HUMANOID_ENDER_FETUS.get(), 1, 30, 10),
-						new VillagerTrades.EmeraldForItems(MinepreggoModItems.DEAD_ENDER_FETUS.get(), 1, 30, 10),
-						new ItemsForItems(MinepreggoModItems.BABY_VILLAGER.get(), 1, MinepreggoModItems.ZOMBIE_LIFE_SUBSTANCE.get(), 1, 5)});
+						new ItemstackForItemstack(MinepreggoItems.BABY_ENDER_DRAGON_BLOCK.get().getDefaultInstance(), createLootForBabyEnderDragon(3, 16, 4, 1, 4), 1, 10, 0.5f),
+						new VillagerTrades.ItemsForEmeralds(MinepreggoItems.VILLAGER_BRAIN.get(), 12, 24, 10, 0),
+						new VillagerTrades.EmeraldForItems(MinepreggoItems.DEAD_HUMAN_FETUS.get(), 3, 30, 10),
+						new VillagerTrades.EmeraldForItems(MinepreggoItems.DEAD_ZOMBIE_FETUS.get(), 4, 30, 10),
+						new VillagerTrades.EmeraldForItems(MinepreggoItems.DEAD_HUMANOID_CREEPER_FETUS.get(), 2, 30, 10),
+						new VillagerTrades.EmeraldForItems(MinepreggoItems.DEAD_CREEPER_FETUS.get(), 3, 30, 10),
+						new VillagerTrades.EmeraldForItems(MinepreggoItems.DEAD_HUMANOID_ENDER_FETUS.get(), 1, 30, 10),
+						new VillagerTrades.EmeraldForItems(MinepreggoItems.DEAD_ENDER_FETUS.get(), 1, 30, 10),
+						new ItemsForItems(MinepreggoItems.BABY_VILLAGER.get(), 1, MinepreggoItems.ZOMBIE_LIFE_SUBSTANCE.get(), 1, 5)});
 		
 		@NonNull
 		public static VillagerTrades.ItemListing[] getRandomTrades(RandomSource random) {		
@@ -401,22 +401,22 @@ public class Trades {
 			if (species == Species.ENDER) {
 				enchantment = Enchantments.MENDING;
 				level = Enchantments.MENDING.getMaxLevel();
-				babyItem = random.nextBoolean() ? MinepreggoModItems.BABY_ENDER.get() : MinepreggoModItems.BABY_HUMANOID_ENDER.get();
+				babyItem = random.nextBoolean() ? MinepreggoItems.BABY_ENDER.get() : MinepreggoItems.BABY_HUMANOID_ENDER.get();
 			}
 			else {			
 				Enchantment.Rarity rarity;
 				
 				if (species == Species.CREEPER) {
 					rarity = Enchantment.Rarity.VERY_RARE;
-					babyItem = random.nextBoolean() ? MinepreggoModItems.BABY_CREEPER.get() : MinepreggoModItems.BABY_HUMANOID_CREEPER.get();
+					babyItem = random.nextBoolean() ? MinepreggoItems.BABY_CREEPER.get() : MinepreggoItems.BABY_HUMANOID_CREEPER.get();
 				}
 				else if (species == Species.HUMAN) {
 					rarity = Enchantment.Rarity.UNCOMMON;
-					babyItem = MinepreggoModItems.BABY_HUMAN.get();
+					babyItem = MinepreggoItems.BABY_HUMAN.get();
 				}
 				else {
 					rarity = Enchantment.Rarity.COMMON;
-					babyItem = MinepreggoModItems.BABY_ZOMBIE.get();
+					babyItem = MinepreggoItems.BABY_ZOMBIE.get();
 				}
 				
 				List<Enchantment> list = ForgeRegistries.ENCHANTMENTS.getValues().stream()

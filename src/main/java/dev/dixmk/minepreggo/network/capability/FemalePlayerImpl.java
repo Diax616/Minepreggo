@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
-import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoMobEffects;
 import dev.dixmk.minepreggo.network.packet.s2c.ResetPregnancyS2CPacket;
 import dev.dixmk.minepreggo.network.packet.s2c.SyncFemalePlayerDataS2CPacket;
 import dev.dixmk.minepreggo.network.packet.s2c.SyncPlayerLactationS2CPacket;
@@ -167,15 +167,15 @@ public class FemalePlayerImpl extends FemaleEntityImpl implements IFemalePlayer 
 				boolean flag = false;		
 				if (symptom == PregnancySymptom.CRAVING && pregnancySystem.getCraving() <= PregnancySystemHelper.DESACTIVATE_CRAVING_SYMPTOM) {
 					pregnancySystem.clearTypeOfCravingBySpecies();
-					pregnantEntity.removeEffect(MinepreggoModMobEffects.CRAVING.get());
+					pregnantEntity.removeEffect(MinepreggoMobEffects.CRAVING.get());
 					flag = true;
 				}
 				else if (symptom == PregnancySymptom.MILKING && pregnancySystem.getMilking() <= PregnancySystemHelper.DESACTIVATE_MILKING_SYMPTOM) {
-					pregnantEntity.removeEffect(MinepreggoModMobEffects.LACTATION.get());
+					pregnantEntity.removeEffect(MinepreggoMobEffects.LACTATION.get());
 					flag = true;
 				}
 				else if (symptom == PregnancySymptom.BELLY_RUBS && pregnancySystem.getBellyRubs() <= PregnancySystemHelper.DESACTIVATEL_BELLY_RUBS_SYMPTOM) {
-					pregnantEntity.removeEffect(MinepreggoModMobEffects.BELLY_RUBS.get());
+					pregnantEntity.removeEffect(MinepreggoMobEffects.BELLY_RUBS.get());
 					flag = true;
 				}
 						

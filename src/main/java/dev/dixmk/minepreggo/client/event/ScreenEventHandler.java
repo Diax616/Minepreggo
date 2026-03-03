@@ -16,7 +16,7 @@ import dev.dixmk.minepreggo.client.gui.preggo.ender.AbstractEnderWomanMainScreen
 import dev.dixmk.minepreggo.client.gui.preggo.zombie.AbstractZombieGirlMainScreen;
 import dev.dixmk.minepreggo.client.renderer.entity.layer.player.ClientPlayerHelper;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
-import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoMobEffects;
 import dev.dixmk.minepreggo.network.capability.IEnderPowerData;
 import dev.dixmk.minepreggo.network.capability.PlayerPregnancyDataImpl;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
@@ -121,7 +121,7 @@ public class ScreenEventHandler {
 			})
 		);
 			
-		if (player.hasEffect(MinepreggoModMobEffects.ENDER_ESSENCE.get()) || player.hasEffect(MinepreggoModMobEffects.ENDER_DRAGON_ESSENCE.get())) {
+		if (player.hasEffect(MinepreggoMobEffects.ENDER_ESSENCE.get()) || player.hasEffect(MinepreggoMobEffects.ENDER_DRAGON_ESSENCE.get())) {
 			player.getCapability(MinepreggoCapabilities.ENDER_POWER_DATA).ifPresent(enderPowerData -> {
 				RenderSystem.disableDepthTest();
 				RenderSystem.depthMask(false);

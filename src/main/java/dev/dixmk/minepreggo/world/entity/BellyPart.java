@@ -2,7 +2,7 @@ package dev.dixmk.minepreggo.world.entity;
 
 import java.util.List;
 
-import dev.dixmk.minepreggo.init.MinepreggoModEntities;
+import dev.dixmk.minepreggo.init.MinepreggoEntities;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.nbt.CompoundTag;
@@ -46,7 +46,7 @@ public class BellyPart extends Entity implements IEntityAdditionalSpawnData {
     }
 
     public BellyPart(LivingEntity parent, float width, float height, float offsetX, float offsetY, float offsetZ) {
-        this(MinepreggoModEntities.BELLY_PART.get(), parent.level());
+        this(MinepreggoEntities.BELLY_PART.get(), parent.level());
         this.parent = parent;
         this.getEntityData().set(PARENT_ID, parent.getId());
         this.teleportTo(parent.getX(), parent.getY(), parent.getZ());

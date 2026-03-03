@@ -539,11 +539,12 @@
 	"item.minepreggo.belly_shield_p7": "腹部护盾（P7）",
 	"item.minepreggo.belly_shield_p8": "腹部护盾（P8）",
 
-	"item.minepreggo.diamond_knee_brace": "钻石护膝",
-	"item.minepreggo.golden_knee_brace": "金色护膝",
-	"item.minepreggo.iron_knee_brace": "铁制护膝",
-	"item.minepreggo.netherite_knee_brace": "下界合金护膝",
-	"item.minepreggo.leather_knee_brace": "皮质护膝",
+	"item.minepreggo.diamond_knee_braces": "钻石护膝",
+	"item.minepreggo.golden_knee_braces": "金色护膝",
+	"item.minepreggo.iron_knee_braces": "铁制护膝",
+	"item.minepreggo.netherite_knee_braces": "下界合金护膝",
+	"item.minepreggo.leather_knee_braces": "皮质护膝",
+	"item.minepreggo.chainmail_knee_braces": "锁子甲护膝",
 	"item.minepreggo.ropes": "绳索",
 
 	"item.minepreggo.chili_pepper": "辣椒",

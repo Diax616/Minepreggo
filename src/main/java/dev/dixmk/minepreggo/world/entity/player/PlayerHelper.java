@@ -18,8 +18,8 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
-import dev.dixmk.minepreggo.init.MinepreggoModAdvancements;
-import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoAdvancements;
+import dev.dixmk.minepreggo.init.MinepreggoMobEffects;
 import dev.dixmk.minepreggo.network.capability.FemalePlayerImpl;
 import dev.dixmk.minepreggo.network.packet.s2c.RemovePlayerJigglePhysicsS2CPacket;
 import dev.dixmk.minepreggo.network.packet.s2c.SyncJigglePhysicsS2CPacket;
@@ -216,10 +216,10 @@ public class PlayerHelper {
 						pregnancySystem.setCurrentPregnancyPhase(PregnancyPhase.P0);	
 									
 						if (speciesOfFather == Species.DRAGON) {
-							player.addEffect(new MobEffectInstance(MinepreggoModMobEffects.ENDER_DRAGON_PREGNANCY.get(), -1, 0, false, false, true));
+							player.addEffect(new MobEffectInstance(MinepreggoMobEffects.ENDER_DRAGON_PREGNANCY.get(), -1, 0, false, false, true));
 						}
 						
-						player.addEffect(new MobEffectInstance(MinepreggoModMobEffects.PREGNANCY_P0.get(), -1, 0, false, false, true));				
+						player.addEffect(new MobEffectInstance(MinepreggoMobEffects.PREGNANCY_P0.get(), -1, 0, false, false, true));				
 						
 						PlayerHelper.updateJigglePhysics(player, cap.getSkinType(), PregnancyPhase.P0);
 						
@@ -233,7 +233,7 @@ public class PlayerHelper {
 								daysByStage,
 								womb);				
 						
-						MinepreggoModAdvancements.GET_PREGNANT_TRIGGER.trigger(player);
+						MinepreggoAdvancements.GET_PREGNANT_TRIGGER.trigger(player);
 
 						return Boolean.TRUE;
 					}
@@ -259,7 +259,7 @@ public class PlayerHelper {
 					player.getGameProfile().getName(), 
 					numOfBabies, 
 					father);
-			player.removeEffect(MinepreggoModMobEffects.FERTILE.get());
+			player.removeEffect(MinepreggoMobEffects.FERTILE.get());
 			return true;
 		}
 
@@ -297,7 +297,7 @@ public class PlayerHelper {
 				.flatMap(cap -> cap.getFemaleData().resolve())
 				.map(femaleData -> {
 					float femaleFertility = femaleData.getFertilityRate();
-					float villagerFertility = female.hasEffect(MinepreggoModMobEffects.FERTILE.get()) ? IBreedable.MAX_FERTILITY_RATE : Math.min(0.3f + villager.getRandom().nextFloat(), IBreedable.MAX_FERTILITY_RATE);
+					float villagerFertility = female.hasEffect(MinepreggoMobEffects.FERTILE.get()) ? IBreedable.MAX_FERTILITY_RATE : Math.min(0.3f + villager.getRandom().nextFloat(), IBreedable.MAX_FERTILITY_RATE);
 					int babies = PregnancySystemHelper.calculateNumOfBabiesByFertility(villagerFertility, femaleFertility, Gender.FEMALE);
 					
 					MinepreggoMod.LOGGER.debug("Calculating number of babies for player {} and villager {} with fertilities {} and {} respectively, result: {}",
@@ -342,7 +342,7 @@ public class PlayerHelper {
 						pregnancyData.setHorny(0);
 						pregnancyData.resetHornyTimer();
 						pregnancyData.getPregnancySymptoms().removePregnancySymptom(PregnancySymptom.HORNY);
-						source.removeEffect(MinepreggoModMobEffects.HORNY.get());
+						source.removeEffect(MinepreggoMobEffects.HORNY.get());
 						pregnancyData.syncState(source);
 						pregnancyData.syncEffect(source);
 					}
@@ -373,29 +373,29 @@ public class PlayerHelper {
 			var pre = result.get();	
 			switch (pre.typeOfSpeciesOfFather()){
 				case ZOMBIE: {			
-					if (!serverPlayer.hasEffect(MinepreggoModMobEffects.FULL_OF_ZOMBIES.get())) {
-						serverPlayer.addEffect(new MobEffectInstance(MinepreggoModMobEffects.FULL_OF_ZOMBIES.get(), -1, 0, false, false, true));
+					if (!serverPlayer.hasEffect(MinepreggoMobEffects.FULL_OF_ZOMBIES.get())) {
+						serverPlayer.addEffect(new MobEffectInstance(MinepreggoMobEffects.FULL_OF_ZOMBIES.get(), -1, 0, false, false, true));
 						return Species.ZOMBIE;
 					}
 					break;
 				}
 				case CREEPER: {		
-					if (!serverPlayer.hasEffect(MinepreggoModMobEffects.FULL_OF_CREEPERS.get())) {
-						serverPlayer.addEffect(new MobEffectInstance(MinepreggoModMobEffects.FULL_OF_CREEPERS.get(), -1, 0, false, false, true));
+					if (!serverPlayer.hasEffect(MinepreggoMobEffects.FULL_OF_CREEPERS.get())) {
+						serverPlayer.addEffect(new MobEffectInstance(MinepreggoMobEffects.FULL_OF_CREEPERS.get(), -1, 0, false, false, true));
 						return Species.CREEPER;
 					}
 					break;
 				}
 				case ENDER: {	
-					if (!serverPlayer.hasEffect(MinepreggoModMobEffects.FULL_OF_ENDERS.get())) {
-						serverPlayer.addEffect(new MobEffectInstance(MinepreggoModMobEffects.FULL_OF_ENDERS.get(), -1, 0, false, false, true));
+					if (!serverPlayer.hasEffect(MinepreggoMobEffects.FULL_OF_ENDERS.get())) {
+						serverPlayer.addEffect(new MobEffectInstance(MinepreggoMobEffects.FULL_OF_ENDERS.get(), -1, 0, false, false, true));
 						return Species.ENDER;
 					}
 					break;
 				}
 				case DRAGON: {
-					if (!serverPlayer.hasEffect(MinepreggoModMobEffects.ENDER_DRAGON_PREGNANCY.get())) {
-						serverPlayer.addEffect(new MobEffectInstance(MinepreggoModMobEffects.ENDER_DRAGON_PREGNANCY.get(), -1, 0, false, false, true));
+					if (!serverPlayer.hasEffect(MinepreggoMobEffects.ENDER_DRAGON_PREGNANCY.get())) {
+						serverPlayer.addEffect(new MobEffectInstance(MinepreggoMobEffects.ENDER_DRAGON_PREGNANCY.get(), -1, 0, false, false, true));
 						return Species.DRAGON;
 					}
 					break;
@@ -420,7 +420,7 @@ public class PlayerHelper {
 
 	// ARMOR HELPERS - START
 	public static boolean canUseChestPlateInLactation(LivingEntity target, Item armor) {	
-		if (!target.hasEffect(MinepreggoModMobEffects.LACTATION.get())) {
+		if (!target.hasEffect(MinepreggoMobEffects.LACTATION.get())) {
 			return true;
 		}
 		return armor instanceof IMaternityArmor maternityArmor && maternityArmor.areBoobsExposed();
@@ -460,15 +460,15 @@ public class PlayerHelper {
 	}
 	
 	private static final ImmutableMap<PregnancyPhase, MobEffect> PREGNANCY_EFFECTS = ImmutableMap.of(
-			PregnancyPhase.P0, MinepreggoModMobEffects.PREGNANCY_P0.get(),
-			PregnancyPhase.P1, MinepreggoModMobEffects.PREGNANCY_P1.get(),
-			PregnancyPhase.P2, MinepreggoModMobEffects.PREGNANCY_P2.get(),
-			PregnancyPhase.P3, MinepreggoModMobEffects.PREGNANCY_P3.get(),
-			PregnancyPhase.P4, MinepreggoModMobEffects.PREGNANCY_P4.get(),
-			PregnancyPhase.P5, MinepreggoModMobEffects.PREGNANCY_P5.get(),
-			PregnancyPhase.P6, MinepreggoModMobEffects.PREGNANCY_P6.get(),
-			PregnancyPhase.P7, MinepreggoModMobEffects.PREGNANCY_P7.get(),
-			PregnancyPhase.P8, MinepreggoModMobEffects.PREGNANCY_P8.get()
+			PregnancyPhase.P0, MinepreggoMobEffects.PREGNANCY_P0.get(),
+			PregnancyPhase.P1, MinepreggoMobEffects.PREGNANCY_P1.get(),
+			PregnancyPhase.P2, MinepreggoMobEffects.PREGNANCY_P2.get(),
+			PregnancyPhase.P3, MinepreggoMobEffects.PREGNANCY_P3.get(),
+			PregnancyPhase.P4, MinepreggoMobEffects.PREGNANCY_P4.get(),
+			PregnancyPhase.P5, MinepreggoMobEffects.PREGNANCY_P5.get(),
+			PregnancyPhase.P6, MinepreggoMobEffects.PREGNANCY_P6.get(),
+			PregnancyPhase.P7, MinepreggoMobEffects.PREGNANCY_P7.get(),
+			PregnancyPhase.P8, MinepreggoMobEffects.PREGNANCY_P8.get()
 			);
 	
 	public static MobEffect getPregnancyEffects(PregnancyPhase phase) {
@@ -482,8 +482,8 @@ public class PlayerHelper {
 				.map(femaleData -> {
 					if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
 						var pre = femaleData.getPrePregnancyData().orElse(null);
-						if (pre != null && pre.typeOfSpeciesOfFather() == Species.DRAGON && !player.hasEffect(MinepreggoModMobEffects.ENDER_DRAGON_PREGNANCY.get())) {
-							player.addEffect(new MobEffectInstance(MinepreggoModMobEffects.ENDER_DRAGON_PREGNANCY.get(), -1, 0, false, false, true));
+						if (pre != null && pre.typeOfSpeciesOfFather() == Species.DRAGON && !player.hasEffect(MinepreggoMobEffects.ENDER_DRAGON_PREGNANCY.get())) {
+							player.addEffect(new MobEffectInstance(MinepreggoMobEffects.ENDER_DRAGON_PREGNANCY.get(), -1, 0, false, false, true));
 							return Boolean.TRUE;
 						}			
 					}
@@ -611,7 +611,7 @@ public class PlayerHelper {
 	}
 	
 	public static boolean canUseElytrasBeingPregnant(ServerPlayer player) {
-		if (player.hasEffect(MinepreggoModMobEffects.ZERO_GRAVITY_BELLY.get())) {
+		if (player.hasEffect(MinepreggoMobEffects.ZERO_GRAVITY_BELLY.get())) {
 			return true;
 		}
 		

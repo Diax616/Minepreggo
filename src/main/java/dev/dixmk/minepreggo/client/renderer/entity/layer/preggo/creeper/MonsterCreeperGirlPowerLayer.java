@@ -30,6 +30,7 @@ public class MonsterCreeperGirlPowerLayer
 		if (entity.isPowered()) {
 			poseStack.pushPose();
 			poseStack.scale(1.05F, 1.05F, 1.05F);
+			poseStack.translate(0.0D, -0.035D, 0.0D);
 			super.render(poseStack, bufferSource, packedLight, entity, limbSwing, limbSwingAmount, partialTick, ageInTicks, netHeadYaw, headPitch);
 			poseStack.popPose();
 		}

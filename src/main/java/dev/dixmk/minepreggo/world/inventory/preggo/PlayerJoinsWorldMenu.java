@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.joml.Vector3i;
 
-import dev.dixmk.minepreggo.init.MinepreggoModMenus;
+import dev.dixmk.minepreggo.init.MinepreggoMenus;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -18,7 +18,7 @@ public class PlayerJoinsWorldMenu extends AbstractContainerMenu {
 	public final Optional<Vector3i> pos;
 
 	public PlayerJoinsWorldMenu(int id, Inventory inv, FriendlyByteBuf extraData) {
-		super(MinepreggoModMenus.PLAYER_JOINS_WORLD_MENU.get(), id);			
+		super(MinepreggoMenus.PLAYER_JOINS_WORLD_MENU.get(), id);			
 		this.player = inv.player;
 		this.level = inv.player.level();
 		

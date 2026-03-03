@@ -2,7 +2,7 @@ package dev.dixmk.minepreggo.world.pregnancy;
 
 import javax.annotation.Nonnull;
 
-import dev.dixmk.minepreggo.init.MinepreggoModSounds;
+import dev.dixmk.minepreggo.init.MinepreggoSounds;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -120,7 +120,7 @@ public abstract class AbstractPregnancySystem<E extends LivingEntity> implements
 		}
 		stomachGrowlCoolDown = 0;	
 		if (randomSource.nextFloat() < stomachGrowlProb) {
-			LivingEntityHelper.playSoundNearTo(pregnantEntity, MinepreggoModSounds.getRandomStomachGrowls(randomSource), 0.2f);	
+			LivingEntityHelper.playSoundNearTo(pregnantEntity, MinepreggoSounds.getRandomStomachGrowls(randomSource), 0.2f);	
 			return true;
 		}	
 		return false;

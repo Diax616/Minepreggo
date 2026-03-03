@@ -6,7 +6,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
-import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoMobEffects;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.server.level.ServerPlayer;
@@ -38,7 +38,7 @@ public class PlayerPregnancySystemP2 extends PlayerPregnancySystemP1 {
 		super.evaluatePregnancySymptoms();
 		if (pregnancySystem.getPregnancySymptoms().containsPregnancySymptom(PregnancySymptom.MILKING) && pregnancySystem.getMilking() <= PregnancySystemHelper.DESACTIVATE_MILKING_SYMPTOM) {	
 			pregnancySystem.getPregnancySymptoms().removePregnancySymptom(PregnancySymptom.MILKING);
-			pregnantEntity.removeEffect(MinepreggoModMobEffects.LACTATION.get());
+			pregnantEntity.removeEffect(MinepreggoMobEffects.LACTATION.get());
 			pregnancySystem.syncState(pregnantEntity);
 			pregnancySystem.syncEffect(pregnantEntity);	
 			MinepreggoMod.LOGGER.debug("Player {} pregnancy symptom cleared: {}",
@@ -70,7 +70,7 @@ public class PlayerPregnancySystemP2 extends PlayerPregnancySystemP1 {
 		if (pregnancySystem.getMilking() >= PregnancySystemHelper.ACTIVATE_MILKING_SYMPTOM
 				&& !pregnancySystem.getPregnancySymptoms().containsPregnancySymptom(PregnancySymptom.MILKING)) {
 			pregnancySystem.getPregnancySymptoms().addPregnancySymptom(PregnancySymptom.MILKING);
-			pregnantEntity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.LACTATION.get(), -1, 0, false, false, true));
+			pregnantEntity.addEffect(new MobEffectInstance(MinepreggoMobEffects.LACTATION.get(), -1, 0, false, false, true));
 			pregnancySystem.syncState(pregnantEntity);
 			MinepreggoMod.LOGGER.debug("Player {} has developed pregnancy symptom: {}, all pregnancy symptoms: {}",
 					pregnantEntity.getGameProfile().getName(), PregnancySymptom.MILKING, pregnancySystem.getPregnancySymptoms());

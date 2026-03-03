@@ -7,7 +7,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
+import dev.dixmk.minepreggo.init.MinepreggoEntityDataSerializers;
 import dev.dixmk.minepreggo.world.pregnancy.Craving;
 import dev.dixmk.minepreggo.world.pregnancy.MapPregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
@@ -41,8 +41,8 @@ public class TamablePregnantPreggoMobDataImpl<E extends PreggoMob & ITamablePreg
         	dataBellyRubs = SynchedEntityData.defineId(entityClass, EntityDataSerializers.INT);
         	dataHorny = SynchedEntityData.defineId(entityClass, EntityDataSerializers.INT);
         	dataPregnancySymptom = SynchedEntityData.defineId(entityClass, EntityDataSerializers.BYTE);
-        	dataPregnancyPain = SynchedEntityData.defineId(entityClass, MinepreggoModEntityDataSerializers.OPTIONAL_PREGNANCY_PAIN);
-        	dataCravingChosen = SynchedEntityData.defineId(entityClass, MinepreggoModEntityDataSerializers.OPTIONAL_CRAVING);           
+        	dataPregnancyPain = SynchedEntityData.defineId(entityClass, MinepreggoEntityDataSerializers.OPTIONAL_PREGNANCY_PAIN);
+        	dataCravingChosen = SynchedEntityData.defineId(entityClass, MinepreggoEntityDataSerializers.OPTIONAL_CRAVING);           
         }  
         
     	public void defineSynchedData(E preggomob) {

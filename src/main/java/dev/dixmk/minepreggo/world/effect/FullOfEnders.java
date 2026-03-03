@@ -2,7 +2,7 @@ package dev.dixmk.minepreggo.world.effect;
 
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
-import dev.dixmk.minepreggo.init.MinepreggoModSounds;
+import dev.dixmk.minepreggo.init.MinepreggoSounds;
 import dev.dixmk.minepreggo.world.entity.BellyPartManager;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
@@ -37,7 +37,7 @@ public class FullOfEnders extends MobEffect {
 									bellyPart.teleportTo(entity.getX(), entity.getY(), entity.getZ());
 								}
 							}	
-							LivingEntityHelper.playSoundNearTo(entity, MinepreggoModSounds.getRandomStomachGrowls(entity.getRandom()));
+							LivingEntityHelper.playSoundNearTo(entity, MinepreggoSounds.getRandomStomachGrowls(entity.getRandom()));
 						}					
 					}
 				})

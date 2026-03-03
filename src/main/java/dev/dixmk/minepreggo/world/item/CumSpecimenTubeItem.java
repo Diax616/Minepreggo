@@ -4,7 +4,7 @@ import net.minecraft.world.item.Rarity;
 import java.util.Optional;
 
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
-import dev.dixmk.minepreggo.init.MinepreggoModItems;
+import dev.dixmk.minepreggo.init.MinepreggoItems;
 import dev.dixmk.minepreggo.network.capability.IPlayerData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
@@ -27,7 +27,7 @@ public class CumSpecimenTubeItem extends Item {
 		var result = source.getCapability(MinepreggoCapabilities.PLAYER_DATA).map(IPlayerData::isMale).orElse(null);
 
 		if (result != null && result.booleanValue()) {
-			var cum = new ItemStack(MinepreggoModItems.CUM_SPECIMEN_TUBE.get());
+			var cum = new ItemStack(MinepreggoItems.CUM_SPECIMEN_TUBE.get());
 			cum.getOrCreateTag().putUUID(NBT_KEY, source.getUUID());	
 			return Optional.of(cum);
 		}
@@ -36,7 +36,7 @@ public class CumSpecimenTubeItem extends Item {
 	}
 	
 	public static boolean tryTransferOwner(ItemStack input, ItemStack output) {
-		if (input.is(MinepreggoModItems.CUM_SPECIMEN_TUBE.get())
+		if (input.is(MinepreggoItems.CUM_SPECIMEN_TUBE.get())
 				&& input.getOrCreateTag().hasUUID(NBT_KEY)) {
 			output.getOrCreateTag().putUUID(NBT_KEY, input.getOrCreateTag().getUUID(NBT_KEY));	
 			return true;

@@ -1,7 +1,7 @@
 package dev.dixmk.minepreggo.world.entity.preggo.creeper;
 
 import dev.dixmk.minepreggo.MinepreggoModConfig;
-import dev.dixmk.minepreggo.init.MinepreggoModEntities;
+import dev.dixmk.minepreggo.init.MinepreggoEntities;
 import dev.dixmk.minepreggo.world.entity.preggo.IPreggoMobPregnancySystem;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMobSystem;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
@@ -38,7 +38,7 @@ public class TamablePregnantHumanoidCreeperGirl {
 	public static class TamableHumanoidCreeperGirlP0 extends AbstractTamablePregnantHumanoidCreeperGirl {
 		
 		public TamableHumanoidCreeperGirlP0(PlayMessages.SpawnEntity packet, Level world) {
-			this(MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P0.get(), world);
+			this(MinepreggoEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P0.get(), world);
 		}
 
 		public TamableHumanoidCreeperGirlP0(EntityType<TamableHumanoidCreeperGirlP0> type, Level world) {
@@ -64,7 +64,7 @@ public class TamablePregnantHumanoidCreeperGirl {
 				@Override
 				protected void advanceToNextPregnancyPhase() {
 					if (pregnantEntity.level() instanceof ServerLevel serverLevel) {
-						var creeperGirl = MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P1.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);
+						var creeperGirl = MinepreggoEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P1.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);
 						PreggoMobHelper.copyAllData(pregnantEntity, creeperGirl);
 						creeperGirl.setCombatMode(pregnantEntity.getCombatMode());
 					}
@@ -80,7 +80,7 @@ public class TamablePregnantHumanoidCreeperGirl {
 	public static class TamableHumanoidCreeperGirlP1 extends AbstractTamablePregnantHumanoidCreeperGirl {
 		
 		public TamableHumanoidCreeperGirlP1(PlayMessages.SpawnEntity packet, Level world) {
-			this(MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P1.get(), world);
+			this(MinepreggoEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P1.get(), world);
 		}
 
 		public TamableHumanoidCreeperGirlP1(EntityType<TamableHumanoidCreeperGirlP1> type, Level world) {
@@ -106,7 +106,7 @@ public class TamablePregnantHumanoidCreeperGirl {
 				@Override
 				protected void advanceToNextPregnancyPhase() {
 					if (pregnantEntity.level() instanceof ServerLevel serverLevel) {
-						var creeperGirl = MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P2.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);
+						var creeperGirl = MinepreggoEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P2.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);
 						PreggoMobHelper.copyAllData(pregnantEntity, creeperGirl);
 						creeperGirl.setCombatMode(pregnantEntity.getCombatMode());
 					}
@@ -127,7 +127,7 @@ public class TamablePregnantHumanoidCreeperGirl {
 	public static class TamableHumanoidCreeperGirlP2 extends AbstractTamablePregnantHumanoidCreeperGirl {
 		
 		public TamableHumanoidCreeperGirlP2(PlayMessages.SpawnEntity packet, Level world) {
-			this(MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P2.get(), world);
+			this(MinepreggoEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P2.get(), world);
 		}
 
 		public TamableHumanoidCreeperGirlP2(EntityType<TamableHumanoidCreeperGirlP2> type, Level world) {
@@ -153,7 +153,7 @@ public class TamablePregnantHumanoidCreeperGirl {
 				@Override
 				protected void advanceToNextPregnancyPhase() {
 					if (pregnantEntity.level() instanceof ServerLevel serverLevel) {
-						var creeperGirl = MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P3.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);
+						var creeperGirl = MinepreggoEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P3.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);
 						PreggoMobHelper.copyAllData(pregnantEntity, creeperGirl);
 						creeperGirl.setCombatMode(pregnantEntity.getCombatMode());
 					}
@@ -174,7 +174,7 @@ public class TamablePregnantHumanoidCreeperGirl {
 	public static class TamableHumanoidCreeperGirlP3 extends AbstractTamablePregnantHumanoidCreeperGirl {
 		
 		public TamableHumanoidCreeperGirlP3(PlayMessages.SpawnEntity packet, Level world) {
-			this(MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P3.get(), world);
+			this(MinepreggoEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P3.get(), world);
 		}
 
 		public TamableHumanoidCreeperGirlP3(EntityType<TamableHumanoidCreeperGirlP3> type, Level world) {
@@ -200,7 +200,7 @@ public class TamablePregnantHumanoidCreeperGirl {
 				@Override
 				protected void advanceToNextPregnancyPhase() {
 					if (pregnantEntity.level() instanceof ServerLevel serverLevel) {
-						var creeperGirl = MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P4.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);
+						var creeperGirl = MinepreggoEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P4.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);
 						PreggoMobHelper.copyAllData(pregnantEntity, creeperGirl);
 						creeperGirl.setCombatMode(pregnantEntity.getCombatMode());
 					}
@@ -221,7 +221,7 @@ public class TamablePregnantHumanoidCreeperGirl {
 	public static class TamableHumanoidCreeperGirlP4 extends AbstractTamablePregnantHumanoidCreeperGirl {
 		
 		public TamableHumanoidCreeperGirlP4(PlayMessages.SpawnEntity packet, Level world) {
-			this(MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P4.get(), world);
+			this(MinepreggoEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P4.get(), world);
 		}
 
 		public TamableHumanoidCreeperGirlP4(EntityType<TamableHumanoidCreeperGirlP4> type, Level world) {
@@ -247,7 +247,7 @@ public class TamablePregnantHumanoidCreeperGirl {
 				@Override
 				protected void advanceToNextPregnancyPhase() {
 					if (pregnantEntity.level() instanceof ServerLevel serverLevel) {
-						var creeperGirl = MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P5.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);
+						var creeperGirl = MinepreggoEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P5.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);
 						PreggoMobHelper.copyAllData(pregnantEntity, creeperGirl);
 						creeperGirl.setCombatMode(pregnantEntity.getCombatMode());
 					}
@@ -273,7 +273,7 @@ public class TamablePregnantHumanoidCreeperGirl {
 	public static class TamableHumanoidCreeperGirlP5 extends AbstractTamablePregnantHumanoidCreeperGirl {
 		
 		public TamableHumanoidCreeperGirlP5(PlayMessages.SpawnEntity packet, Level world) {
-			this(MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P5.get(), world);
+			this(MinepreggoEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P5.get(), world);
 		}
 
 		public TamableHumanoidCreeperGirlP5(EntityType<TamableHumanoidCreeperGirlP5> type, Level world) {
@@ -299,7 +299,7 @@ public class TamablePregnantHumanoidCreeperGirl {
 				@Override
 				protected void advanceToNextPregnancyPhase() {
 					if (pregnantEntity.level() instanceof ServerLevel serverLevel) {
-						var creeperGirl = MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P6.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);
+						var creeperGirl = MinepreggoEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P6.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);
 						PreggoMobHelper.copyAllData(pregnantEntity, creeperGirl);
 						creeperGirl.setCombatMode(pregnantEntity.getCombatMode());
 					}
@@ -325,7 +325,7 @@ public class TamablePregnantHumanoidCreeperGirl {
 	public static class TamableHumanoidCreeperGirlP6 extends AbstractTamablePregnantHumanoidCreeperGirl {
 		
 		public TamableHumanoidCreeperGirlP6(PlayMessages.SpawnEntity packet, Level world) {
-			this(MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P6.get(), world);
+			this(MinepreggoEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P6.get(), world);
 		}
 
 		public TamableHumanoidCreeperGirlP6(EntityType<TamableHumanoidCreeperGirlP6> type, Level world) {
@@ -351,7 +351,7 @@ public class TamablePregnantHumanoidCreeperGirl {
 				@Override
 				protected void advanceToNextPregnancyPhase() {
 					if (pregnantEntity.level() instanceof ServerLevel serverLevel) {
-						var creeperGirl = MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P7.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);
+						var creeperGirl = MinepreggoEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P7.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);
 						PreggoMobHelper.copyAllData(pregnantEntity, creeperGirl);
 						creeperGirl.setCombatMode(pregnantEntity.getCombatMode());
 					}
@@ -377,7 +377,7 @@ public class TamablePregnantHumanoidCreeperGirl {
 	public static class TamableHumanoidCreeperGirlP7 extends AbstractTamablePregnantHumanoidCreeperGirl {
 		
 		public TamableHumanoidCreeperGirlP7(PlayMessages.SpawnEntity packet, Level world) {
-			this(MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P7.get(), world);
+			this(MinepreggoEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P7.get(), world);
 		}
 
 		public TamableHumanoidCreeperGirlP7(EntityType<TamableHumanoidCreeperGirlP7> type, Level world) {
@@ -403,7 +403,7 @@ public class TamablePregnantHumanoidCreeperGirl {
 				@Override
 				protected void advanceToNextPregnancyPhase() {
 					if (pregnantEntity.level() instanceof ServerLevel serverLevel) {
-						var creeperGirl = MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P8.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);
+						var creeperGirl = MinepreggoEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P8.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);
 						PreggoMobHelper.copyAllData(pregnantEntity, creeperGirl);
 						creeperGirl.setCombatMode(pregnantEntity.getCombatMode());
 					}
@@ -429,7 +429,7 @@ public class TamablePregnantHumanoidCreeperGirl {
 	public static class TamableHumanoidCreeperGirlP8 extends AbstractTamablePregnantHumanoidCreeperGirl {
 		
 		public TamableHumanoidCreeperGirlP8(PlayMessages.SpawnEntity packet, Level world) {
-			this(MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P8.get(), world);
+			this(MinepreggoEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P8.get(), world);
 		}
 
 		public TamableHumanoidCreeperGirlP8(EntityType<TamableHumanoidCreeperGirlP8> type, Level world) {

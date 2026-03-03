@@ -9,7 +9,7 @@ import dev.dixmk.minepreggo.client.jiggle.JigglePhysicsManager;
 import dev.dixmk.minepreggo.client.jiggle.EntityJiggleData;
 import dev.dixmk.minepreggo.client.jiggle.EntityJiggleDataFactory;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
-import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoMobEffects;
 import dev.dixmk.minepreggo.world.entity.player.SkinType;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import net.minecraft.client.model.geom.ModelPart;
@@ -51,7 +51,7 @@ public abstract class AbstractHeavyPregnantBodyModel extends AbstractPregnantBod
 	protected void animBellyIdle(AbstractClientPlayer entity, float ageInTicks) {      	
 		entity.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
 			cap.getFemaleData().ifPresent(femaleData -> {		
-				if (entity.hasEffect(MinepreggoModMobEffects.FETAL_MOVEMENT.get()) ) {
+				if (entity.hasEffect(MinepreggoMobEffects.FETAL_MOVEMENT.get()) ) {
 					this.animate(femaleData.getPregnancyData().bellyAnimationState, fetalMovementIntensity.animation, ageInTicks);
 				}		
 				else {

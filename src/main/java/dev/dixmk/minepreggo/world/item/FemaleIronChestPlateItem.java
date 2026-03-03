@@ -50,7 +50,7 @@ public abstract class FemaleIronChestPlateItem extends ArmorItem implements IFem
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return ArmorModelHelper.createFemaleP0HumanoidArmorModel(living, stack, slot, defaultModel);
+					return ArmorModelHelper.createFemaleChestplateModel(living, stack, slot, defaultModel);
 				}
 			});
 		}
@@ -72,7 +72,7 @@ public abstract class FemaleIronChestPlateItem extends ArmorItem implements IFem
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return ArmorModelHelper.createMaternalP1HumanoidArmorModel(living, stack, slot, defaultModel);
+					return ArmorModelHelper.createMaternityChestplateP1Model(living, stack, slot, defaultModel);
 				}
 			});
 		}
@@ -94,7 +94,7 @@ public abstract class FemaleIronChestPlateItem extends ArmorItem implements IFem
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return ArmorModelHelper.createMaternalP2HumanoidArmorModel(living, stack, slot, defaultModel);
+					return ArmorModelHelper.createMaternityChestplateP2Model(living, stack, slot, defaultModel);
 				}
 			});
 		}
@@ -116,7 +116,7 @@ public abstract class FemaleIronChestPlateItem extends ArmorItem implements IFem
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return ArmorModelHelper.createMaternalP3HumanoidArmorModel(living, stack, slot, defaultModel);
+					return ArmorModelHelper.createMaternityChestplateP3Model(living, stack, slot, defaultModel);
 				}
 			});
 		}
@@ -138,7 +138,7 @@ public abstract class FemaleIronChestPlateItem extends ArmorItem implements IFem
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return ArmorModelHelper.createMaternalP4HumanoidArmorModel(living, stack, slot, defaultModel);
+					return ArmorModelHelper.createMaternityChestplateP4Model(living, stack, slot, defaultModel);
 				}
 			});
 		}

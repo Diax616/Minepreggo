@@ -11,7 +11,7 @@ import dev.dixmk.minepreggo.client.renderer.entity.layer.player.ClientPlayerHelp
 import dev.dixmk.minepreggo.client.screens.effect.SexOverlayManager;
 import dev.dixmk.minepreggo.common.animation.CommonPlayerAnimationRegistry;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
-import dev.dixmk.minepreggo.init.MinepreggoModKeyMappings;
+import dev.dixmk.minepreggo.init.MinepreggoKeyMappings;
 import dev.dixmk.minepreggo.network.packet.c2s.RequestBellyRubbingAnimationC2SPacket;
 import dev.dixmk.minepreggo.network.packet.c2s.ShootEnderDragonExplosiveBallC2SPacket;
 import dev.dixmk.minepreggo.network.packet.c2s.StopPlayerAnimationC2SPacket;
@@ -173,7 +173,7 @@ public class ClientEventHandler {
     	if (player == null) return;
     	
     	
-    	if (MinepreggoModKeyMappings.RUB_BELLY_KEY.consumeClick()) {        
+    	if (MinepreggoKeyMappings.RUB_BELLY_KEY.consumeClick()) {        
         	player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
         		cap.getFemaleData().ifPresent(femaleData -> {
         			if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
@@ -192,7 +192,7 @@ public class ClientEventHandler {
         		})
         	);	
         }
-    	else if (MinepreggoModKeyMappings.TELEPORT_WITH_ENDER_WOMAN.consumeClick()) {
+    	else if (MinepreggoKeyMappings.TELEPORT_WITH_ENDER_WOMAN.consumeClick()) {
 			BlockPos targetPos = getTargetBlock();
 			if (targetPos != null) {
 				MinepreggoModPacketHandler.INSTANCE.sendToServer(
@@ -200,7 +200,7 @@ public class ClientEventHandler {
 				);
 			}   		    	
     	}	
-    	else if (MinepreggoModKeyMappings.TELEPORT_USING_ENDER_POWER.consumeClick()) {
+    	else if (MinepreggoKeyMappings.TELEPORT_USING_ENDER_POWER.consumeClick()) {
 			BlockPos targetPos = getTargetBlock();
 			if (targetPos != null) {
 				MinepreggoModPacketHandler.INSTANCE.sendToServer(
@@ -208,7 +208,7 @@ public class ClientEventHandler {
 				);
 			}   		    	
     	}
-    	else if (MinepreggoModKeyMappings.SHOOT_DRAGON_FIRE_BALL.consumeClick()) {
+    	else if (MinepreggoKeyMappings.SHOOT_DRAGON_FIRE_BALL.consumeClick()) {
 			MinepreggoModPacketHandler.INSTANCE.sendToServer(
 					new ShootEnderDragonExplosiveBallC2SPacket(player.getLookAngle())
 				);		    	

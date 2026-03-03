@@ -1,9 +1,9 @@
 package dev.dixmk.minepreggo.client.renderer.preggo.zombie;
 
 import dev.dixmk.minepreggo.client.model.entity.preggo.zombie.HostileZombieGirlModel;
+import dev.dixmk.minepreggo.client.model.geom.MinepreggoModelLayers;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.HostileZombieGirl;
 
-import dev.dixmk.minepreggo.client.model.entity.preggo.zombie.AbstractZombieGirlModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
@@ -14,7 +14,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class HostileZombieGirlRenderer extends AbstractHostileZombieGirlRenderer<HostileZombieGirl, HostileZombieGirlModel> {
 
 	public HostileZombieGirlRenderer(EntityRendererProvider.Context context) {
-		this(context, AbstractZombieGirlModel.LAYER_LOCATION, AbstractZombieGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractZombieGirlModel.LAYER_OUTER_ARMOR_LOCATION);
+		this(context, MinepreggoModelLayers.ZOMBIE_GIRL, MinepreggoModelLayers.ZOMBIE_GIRL_INNER_ARMOR, MinepreggoModelLayers.ZOMBIE_GIRL_OUTER_ARMOR);
 	}
 	
 	public HostileZombieGirlRenderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter) {
@@ -22,7 +22,7 @@ public class HostileZombieGirlRenderer extends AbstractHostileZombieGirlRenderer
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(HostileZombieGirl p_115812_) {
+	public ResourceLocation getTextureLocation(HostileZombieGirl entity) {
 		return ZOMBIE_GIRL_LOCATION;
 	}
 }

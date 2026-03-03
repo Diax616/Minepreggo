@@ -2,7 +2,7 @@ package dev.dixmk.minepreggo.world.entity.preggo;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
-import dev.dixmk.minepreggo.init.MinepreggoModAdvancements;
+import dev.dixmk.minepreggo.init.MinepreggoAdvancements;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem.Result;
 import dev.dixmk.minepreggo.world.pregnancy.IFemaleEntity;
 import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
@@ -107,7 +107,7 @@ public abstract class FemaleFertilitySystem<E extends PreggoMob & ITamablePreggo
        	
         	femaleData.getPrePregnancyData().ifPresent(prePregnancyData -> {
         		if (prePregnancyData.pregnancyType() == PregnancyType.SEX && preggoMob.getOwner() instanceof ServerPlayer serverPlayer) {
-    				MinepreggoModAdvancements.IMPREGNATE_ENTITY_TRIGGER.trigger(serverPlayer, preggoMob);
+    				MinepreggoAdvancements.IMPREGNATE_ENTITY_TRIGGER.trigger(serverPlayer, preggoMob);
         		}
         	});
         	

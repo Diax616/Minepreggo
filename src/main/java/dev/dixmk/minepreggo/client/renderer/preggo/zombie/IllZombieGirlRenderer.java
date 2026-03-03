@@ -2,8 +2,8 @@ package dev.dixmk.minepreggo.client.renderer.preggo.zombie;
 
 import javax.annotation.Nullable;
 
-import dev.dixmk.minepreggo.client.model.entity.preggo.zombie.AbstractZombieGirlModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.zombie.IllZombieGirlP0Model;
+import dev.dixmk.minepreggo.client.model.geom.MinepreggoModelLayers;
 import dev.dixmk.minepreggo.client.renderer.entity.layer.ExpressiveFaceLayer;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.IllZombieGirl;
@@ -16,10 +16,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class IllZombieGirlRenderer extends AbstractHostileZombieGirlRenderer<IllZombieGirl, IllZombieGirlP0Model> {
 
-	private static final ResourceLocation ILL_ZOMBIE_GIRL = MinepreggoHelper.fromThisNamespaceAndPath("textures/entity/preggo/zombie/ill_zombie_girl_p0.png");
+	private static final ResourceLocation ILL_ZOMBIE_GIRL = MinepreggoHelper.fromThisNamespaceAndPath("textures/entity/preggo/zombie/ill_zombie_girl.png");
 	
 	public IllZombieGirlRenderer(EntityRendererProvider.Context context) {
-		this(context, AbstractZombieGirlModel.LAYER_LOCATION_P0, AbstractZombieGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractZombieGirlModel.LAYER_OUTER_ARMOR_LOCATION);
+		this(context, MinepreggoModelLayers.ZOMBIE_GIRL, MinepreggoModelLayers.ZOMBIE_GIRL_INNER_ARMOR, MinepreggoModelLayers.ZOMBIE_GIRL_OUTER_ARMOR);
 	}
 	
 	public IllZombieGirlRenderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter) {

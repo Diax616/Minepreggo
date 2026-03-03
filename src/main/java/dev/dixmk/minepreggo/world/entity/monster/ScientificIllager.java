@@ -54,7 +54,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -76,8 +75,8 @@ import com.google.common.collect.Maps;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
-import dev.dixmk.minepreggo.init.MinepreggoModAdvancements;
-import dev.dixmk.minepreggo.init.MinepreggoModEntities;
+import dev.dixmk.minepreggo.init.MinepreggoAdvancements;
+import dev.dixmk.minepreggo.init.MinepreggoEntities;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.network.packet.s2c.PlaySoundPacketS2C;
 import dev.dixmk.minepreggo.world.entity.npc.Trades;
@@ -103,7 +102,7 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
     private int restockTimer = 0;
     
 	public ScientificIllager(PlayMessages.SpawnEntity packet, Level world) {
-		this(MinepreggoModEntities.SCIENTIFIC_ILLAGER.get(), world);
+		this(MinepreggoEntities.SCIENTIFIC_ILLAGER.get(), world);
 	}
 	
 	public ScientificIllager(EntityType<ScientificIllager> type, Level world) {
@@ -283,38 +282,6 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
 		this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, Mob.class, 8.0F));		
 	}
 
-	private boolean spawnPets() {			
-		if (!this.spawnedPets && this.level() instanceof ServerLevel serverLevel) {	
-			this.spawnedPets = true;
-			this.petsUUID = new HashSet<>(4);			
-			final var x = this.getX();
-			final var y = this.getY();
-			final var z = this.getZ();
-						
-			IllZombieGirl zombieGirl = MinepreggoModEntities.ILL_ZOMBIE_GIRL.get().spawn(serverLevel, BlockPos.containing(x + 1.25, y, z), MobSpawnType.MOB_SUMMONED);
-			zombieGirl.setYRot(this.random.nextFloat() * 360F);
-			zombieGirl.tameByIllager(this);
-			petsUUID.add(zombieGirl.getUUID());
-						
-			IllHumanoidCreeperGirl humanoidCreeperGirl = MinepreggoModEntities.ILL_HUMANOID_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(x - 1.25, y, z), MobSpawnType.MOB_SUMMONED);
-			humanoidCreeperGirl.setYRot(this.random.nextFloat() * 360F);
-			humanoidCreeperGirl.tameByIllager(this);	
-			petsUUID.add(humanoidCreeperGirl.getUUID());
-			
-			IllMonsterCreeperGirl creeperGirl = MinepreggoModEntities.ILL_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(x, y, z + 1.25), MobSpawnType.MOB_SUMMONED);
-			creeperGirl.setYRot(this.random.nextFloat() * 360F);
-			creeperGirl.tameByIllager(this);
-			petsUUID.add(creeperGirl.getUUID());
-			
-			IllMonsterEnderWoman enderWoman = MinepreggoModEntities.ILL_ENDER_WOMAN.get().spawn(serverLevel, BlockPos.containing(x, y, z - 1.25), MobSpawnType.MOB_SUMMONED);
-			enderWoman.setYRot(this.random.nextFloat() * 360F);
-			enderWoman.tameByIllager(this);
-			petsUUID.add(enderWoman.getUUID());					
-			return true;
-		}	
-		return false;
-	}
-	
 	@Override
 	public boolean hurt(DamageSource source, float amount) {
 		boolean result = super.hurt(source, amount);	
@@ -389,30 +356,80 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
 
 	@Override
 	@Nullable
-	public SpawnGroupData finalizeSpawn(ServerLevelAccessor p_34088_, DifficultyInstance p_34089_, MobSpawnType p_34090_, @Nullable SpawnGroupData p_34091_, @Nullable CompoundTag p_34092_) {
-	    SpawnGroupData spawngroupdata = super.finalizeSpawn(p_34088_, p_34089_, p_34090_, p_34091_, p_34092_);
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData, @Nullable CompoundTag dataTag) {
+	    SpawnGroupData spawngroupdata = super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData, dataTag);
 	    ((GroundPathNavigation)this.getNavigation()).setCanOpenDoors(true);
-	    RandomSource randomsource = p_34088_.getRandom();
-	    this.populateDefaultEquipmentSlots(randomsource, p_34089_);
-	    this.populateDefaultEquipmentEnchantments(randomsource, p_34089_);
-	    this.spawnPets();
+	    RandomSource randomsource = level.getRandom();
+	    this.populateDefaultEquipmentSlots(randomsource, difficulty);
+	    this.populateDefaultEquipmentEnchantments(randomsource, difficulty);
+
+	    if (!this.spawnedPets) {
+			this.spawnedPets = true;
+			this.petsUUID = new HashSet<>(4);			
+			final var x = this.getX();
+			final var y = this.getY();
+			final var z = this.getZ();
+
+			Ill.IllGroupData groupData = new Ill.IllGroupData(true);
+			
+			IllZombieGirl zombieGirl = MinepreggoEntities.ILL_ZOMBIE_GIRL.get().create(this.level());
+			if (zombieGirl != null) {
+				zombieGirl.moveTo(x + 1.25, y, z, 0, 0);
+				zombieGirl.setYRot(this.random.nextFloat() * 360F);
+				zombieGirl.tameByIllager(this);
+				petsUUID.add(zombieGirl.getUUID());
+				zombieGirl.finalizeSpawn(level, difficulty, spawnType, groupData, dataTag);
+				level.addFreshEntity(zombieGirl);
+			}
+						
+			IllHumanoidCreeperGirl humanoidCreeperGirl = MinepreggoEntities.ILL_HUMANOID_CREEPER_GIRL.get().create(this.level());
+			if (humanoidCreeperGirl != null) {
+				humanoidCreeperGirl.moveTo(x - 1.25, y, z, 0, 0);
+				humanoidCreeperGirl.setYRot(this.random.nextFloat() * 360F);
+				humanoidCreeperGirl.tameByIllager(this);	
+				petsUUID.add(humanoidCreeperGirl.getUUID());
+				humanoidCreeperGirl.finalizeSpawn(level, difficulty, spawnType, groupData, dataTag);
+				level.addFreshEntity(humanoidCreeperGirl);
+			}
+				
+			IllMonsterCreeperGirl creeperGirl = MinepreggoEntities.ILL_CREEPER_GIRL.get().create(this.level());
+			if (creeperGirl != null) {
+				creeperGirl.moveTo(x, y, z + 1.25, 0, 0);
+				creeperGirl.setYRot(this.random.nextFloat() * 360F);
+				creeperGirl.tameByIllager(this);
+				petsUUID.add(creeperGirl.getUUID());
+				creeperGirl.finalizeSpawn(level, difficulty, spawnType, groupData, dataTag);
+				level.addFreshEntity(creeperGirl);
+			}
+			
+			IllMonsterEnderWoman enderWoman = MinepreggoEntities.ILL_ENDER_WOMAN.get().create(this.level());
+			if (enderWoman != null) {
+				enderWoman.moveTo(x, y, z - 1.25, 0, 0);
+				enderWoman.setYRot(this.random.nextFloat() * 360F);
+				enderWoman.tameByIllager(this);
+				petsUUID.add(enderWoman.getUUID());	
+				enderWoman.finalizeSpawn(level, difficulty, spawnType, groupData, dataTag);
+				level.addFreshEntity(enderWoman);
+			}
+	    }
+
 	    return spawngroupdata;
 	}
 	
 	@Override
-	protected void populateDefaultEquipmentSlots(RandomSource p_219149_, DifficultyInstance p_219150_) {
+	protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty) {
 	    if (this.getCurrentRaid() == null) {
 	        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_AXE));
 	    }
 	}
 
 	@Override
-	public boolean isAlliedTo(Entity p_34110_) {
-	    if (super.isAlliedTo(p_34110_) || p_34110_ instanceof Ill) {
+	public boolean isAlliedTo(Entity target) {
+	    if (super.isAlliedTo(target) || target instanceof Ill) {
 	        return true;
 	    }
-	    else if (p_34110_ instanceof LivingEntity livingEntity && livingEntity.getMobType() == MobType.ILLAGER) {
-	        return this.getTeam() == null && p_34110_.getTeam() == null;
+	    else if (target instanceof LivingEntity livingEntity && livingEntity.getMobType() == MobType.ILLAGER) {
+	        return this.getTeam() == null && target.getTeam() == null;
 	    }
 	    else {
 	        return false;
@@ -442,15 +459,15 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
 	}
 
 	@Override
-	protected SoundEvent getHurtSound(DamageSource p_34103_) {
+	protected SoundEvent getHurtSound(DamageSource damageSource) {
 	    return SoundEvents.VINDICATOR_HURT;
 	}
 
-	public void applyRaidBuffs(int p_34079_, boolean p_34080_) {
+	public void applyRaidBuffs(int wave, boolean unused) {
 	      ItemStack itemstack = new ItemStack(Items.IRON_AXE);
 	      Raid raid = this.getCurrentRaid();
 	      int i = 1;
-	      if (p_34079_ > raid.getNumGroups(Difficulty.NORMAL)) {
+	      if (wave > raid.getNumGroups(Difficulty.NORMAL)) {
 	         i = 2;
 	      }
 
@@ -502,8 +519,8 @@ public class ScientificIllager extends AbstractIllager implements Merchant, IObs
             ItemStack originalInput1 = findInInventory(serverPlayer, offer.getBaseCostA());
             ItemStack originalInput2 = offer.getCostB().isEmpty() ? ItemStack.EMPTY : findInInventory(serverPlayer, offer.getCostB());
             
-			MinepreggoModAdvancements.BABY_TRADE_TRIGGER.trigger(serverPlayer, originalInput1);   
-			MinepreggoModAdvancements.BABY_TRADE_TRIGGER.trigger(serverPlayer, originalInput2);
+			MinepreggoAdvancements.BABY_TRADE_TRIGGER.trigger(serverPlayer, originalInput1);   
+			MinepreggoAdvancements.BABY_TRADE_TRIGGER.trigger(serverPlayer, originalInput2);
 		}
     }
    

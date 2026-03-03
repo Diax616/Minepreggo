@@ -2,8 +2,8 @@ package dev.dixmk.minepreggo.network.packet.c2s;
 
 import java.util.function.Supplier;
 
-import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
-import dev.dixmk.minepreggo.init.MinepreggoModSounds;
+import dev.dixmk.minepreggo.init.MinepreggoMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoSounds;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.world.entity.EnderPowerHelper;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
@@ -32,7 +32,7 @@ public record ShootEnderDragonExplosiveBallC2SPacket(Vec3 direction) {
 		context.enqueueWork(() -> {
             if (context.getDirection().getReceptionSide().isServer()) {
     			var serverPlayer = context.getSender();		
-    			if (serverPlayer.hasEffect(MinepreggoModMobEffects.ENDER_DRAGON_ESSENCE.get())) {    				
+    			if (serverPlayer.hasEffect(MinepreggoMobEffects.ENDER_DRAGON_ESSENCE.get())) {    				
     				if (PlayerHelper.isPregnantAndInLabor(serverPlayer)) {
     					MessageHelper.sendTo(serverPlayer, Component.translatable("chat.minepreggo.ender_power.message.in_labor"), true);
 						return;
@@ -40,7 +40,7 @@ public record ShootEnderDragonExplosiveBallC2SPacket(Vec3 direction) {
     				if (EnderPowerHelper.tryShootFireball(serverPlayer, message.direction)) {
     					PlayerHelper.getCurrentPregnancyPhase(serverPlayer).ifPresent(phase -> {
     						if (phase.compareTo(PregnancyPhase.P4) >= 0) {
-    							LivingEntityHelper.playSoundNearTo(serverPlayer, MinepreggoModSounds.getRandomStomachGrowls(serverPlayer.getRandom()));
+    							LivingEntityHelper.playSoundNearTo(serverPlayer, MinepreggoSounds.getRandomStomachGrowls(serverPlayer.getRandom()));
 							}
     					});
     				}

@@ -9,9 +9,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
-import dev.dixmk.minepreggo.init.MinepreggoModAdvancements;
-import dev.dixmk.minepreggo.init.MinepreggoModItems;
-import dev.dixmk.minepreggo.init.MinepreggoModVillagerProfessions;
+import dev.dixmk.minepreggo.init.MinepreggoAdvancements;
+import dev.dixmk.minepreggo.init.MinepreggoItems;
+import dev.dixmk.minepreggo.init.MinepreggoVillagerProfessions;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.server.ServerCinematicManager;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
@@ -90,12 +90,12 @@ public class VillagerMixin {
             cir.setReturnValue(InteractionResult.FAIL);
             return;
         }    
-    	else if ((itemInHand.is(MinepreggoModItems.BABY_VILLAGER.get()) || itemInHand.is(MinepreggoModItems.BABY_HUMAN.get()))
+    	else if ((itemInHand.is(MinepreggoItems.BABY_VILLAGER.get()) || itemInHand.is(MinepreggoItems.BABY_HUMAN.get()))
     			&& !villager.isBaby()
     			&& player.level() instanceof ServerLevel serverLevel
     			&& player instanceof ServerPlayer serverPlayer) {  
 			
-    		if (itemInHand.is(MinepreggoModItems.BABY_VILLAGER.get()) ) {
+    		if (itemInHand.is(MinepreggoItems.BABY_VILLAGER.get()) ) {
         		Villager babyVillager = EntityType.VILLAGER.spawn(serverLevel, BlockPos.containing(villager.getX(), villager.getY(), villager.getZ()), MobSpawnType.BREEDING);
     			babyVillager.setBaby(true);
     		}
@@ -122,7 +122,7 @@ public class VillagerMixin {
 				MinepreggoMod.LOGGER.debug("Player {} tried to give a baby villager item to villager {} but the player is not the mother or the father of the baby, this should not happen", player.getName().getString(), villager.getName().getString());
 			}
 			
-            MinepreggoModAdvancements.CHECK_PARENT_TRIGGER.trigger(serverPlayer, villager, itemInHand);
+            MinepreggoAdvancements.CHECK_PARENT_TRIGGER.trigger(serverPlayer, villager, itemInHand);
             
             itemInHand.shrink(1);
             if (itemInHand.isEmpty()) {
@@ -134,7 +134,7 @@ public class VillagerMixin {
             return;
     	}
     	else if (player instanceof ServerPlayer serverPlayer) {
-    		if (serverPlayer.isCrouching() && villager.getVillagerData().getProfession() == MinepreggoModVillagerProfessions.VILLAGER_DOCTOR.get()) {  			
+    		if (serverPlayer.isCrouching() && villager.getVillagerData().getProfession() == MinepreggoVillagerProfessions.VILLAGER_DOCTOR.get()) {  			
     			Integer result = serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA)
     					.resolve()
     					.flatMap(playerCap -> playerCap.getFemaleData().resolve()

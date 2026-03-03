@@ -1,6 +1,6 @@
 package dev.dixmk.minepreggo.world.entity.preggo.ender;
 
-import dev.dixmk.minepreggo.init.MinepreggoModEntities;
+import dev.dixmk.minepreggo.init.MinepreggoEntities;
 import dev.dixmk.minepreggo.world.entity.EntityHelper;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
@@ -16,7 +16,7 @@ import net.minecraftforge.network.PlayMessages;
 public class HostileMonsterEnderWoman extends AbstractHostileEnderWoman {
 	
 	public HostileMonsterEnderWoman(PlayMessages.SpawnEntity packet, Level world) {
-		this(MinepreggoModEntities.HOSTILE_MONSTER_ENDER_WOMAN.get(), world);
+		this(MinepreggoEntities.HOSTILE_MONSTER_ENDER_WOMAN.get(), world);
 	}
 
 	public HostileMonsterEnderWoman(EntityType<HostileMonsterEnderWoman> type, Level world) {
@@ -34,7 +34,7 @@ public class HostileMonsterEnderWoman extends AbstractHostileEnderWoman {
 	@Override
 	protected void afterTaming() {
 		if (this.level() instanceof ServerLevel serverLevel) {
-			TamableMonsterEnderWoman next = MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN.get().spawn(serverLevel, BlockPos.containing(this.getX(), this.getY(), this.getZ()), MobSpawnType.CONVERSION);
+			TamableMonsterEnderWoman next = MinepreggoEntities.TAMABLE_MONSTER_ENDER_WOMAN.get().spawn(serverLevel, BlockPos.containing(this.getX(), this.getY(), this.getZ()), MobSpawnType.CONVERSION);
 			LivingEntityHelper.copyRotation(this, next);
 			EntityHelper.copyName(this, next);
 			LivingEntityHelper.copyHealth(this, next);

@@ -1,7 +1,7 @@
 package dev.dixmk.minepreggo.world.entity.preggo.zombie;
 
 import dev.dixmk.minepreggo.MinepreggoModConfig;
-import dev.dixmk.minepreggo.init.MinepreggoModEntities;
+import dev.dixmk.minepreggo.init.MinepreggoEntities;
 import dev.dixmk.minepreggo.world.entity.preggo.IPreggoMobPregnancySystem;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMobSystem;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
@@ -38,7 +38,7 @@ public class TamablePregnantZombieGirl {
 	public static class TamableZombieGirlP0 extends AbstractTamablePregnantZombieGirl {
 		
 		public TamableZombieGirlP0(PlayMessages.SpawnEntity packet, Level world) {
-			this(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P0.get(), world);
+			this(MinepreggoEntities.TAMABLE_ZOMBIE_GIRL_P0.get(), world);
 		}
 
 		public TamableZombieGirlP0(EntityType<TamableZombieGirlP0> type, Level world) {
@@ -64,7 +64,7 @@ public class TamablePregnantZombieGirl {
 				@Override
 				protected void advanceToNextPregnancyPhase() {
 					if (pregnantEntity.level() instanceof ServerLevel serverLevel) {
-						var zombieGirl = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P1.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);		
+						var zombieGirl = MinepreggoEntities.TAMABLE_ZOMBIE_GIRL_P1.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);		
 						PreggoMobHelper.copyAllData(pregnantEntity, zombieGirl);			
 					}			
 				}
@@ -79,7 +79,7 @@ public class TamablePregnantZombieGirl {
 	public static class TamableZombieGirlP1 extends AbstractTamablePregnantZombieGirl {
 		
 		public TamableZombieGirlP1(PlayMessages.SpawnEntity packet, Level world) {
-			this(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P1.get(), world);
+			this(MinepreggoEntities.TAMABLE_ZOMBIE_GIRL_P1.get(), world);
 		}
 
 		public TamableZombieGirlP1(EntityType<TamableZombieGirlP1> type, Level world) {
@@ -105,7 +105,7 @@ public class TamablePregnantZombieGirl {
 				@Override
 				protected void advanceToNextPregnancyPhase() {
 					if (pregnantEntity.level() instanceof ServerLevel serverLevel) {
-						var zombieGirl = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P2.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);		
+						var zombieGirl = MinepreggoEntities.TAMABLE_ZOMBIE_GIRL_P2.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);		
 						PreggoMobHelper.copyAllData(pregnantEntity, zombieGirl);			
 					}
 				}
@@ -125,7 +125,7 @@ public class TamablePregnantZombieGirl {
 	public static class TamableZombieGirlP2 extends AbstractTamablePregnantZombieGirl {
 		
 		public TamableZombieGirlP2(PlayMessages.SpawnEntity packet, Level world) {
-			this(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P2.get(), world);
+			this(MinepreggoEntities.TAMABLE_ZOMBIE_GIRL_P2.get(), world);
 		}
 
 		public TamableZombieGirlP2(EntityType<TamableZombieGirlP2> type, Level world) {
@@ -151,7 +151,7 @@ public class TamablePregnantZombieGirl {
 				@Override
 				protected void advanceToNextPregnancyPhase() {
 					if (pregnantEntity.level() instanceof ServerLevel serverLevel) {
-						var zombieGirl = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P3.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);		
+						var zombieGirl = MinepreggoEntities.TAMABLE_ZOMBIE_GIRL_P3.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);		
 						PreggoMobHelper.copyAllData(pregnantEntity, zombieGirl);			
 					}
 				}
@@ -171,7 +171,7 @@ public class TamablePregnantZombieGirl {
 	public static class TamableZombieGirlP3 extends AbstractTamablePregnantZombieGirl {
 		
 		public TamableZombieGirlP3(PlayMessages.SpawnEntity packet, Level world) {
-			this(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P3.get(), world);
+			this(MinepreggoEntities.TAMABLE_ZOMBIE_GIRL_P3.get(), world);
 		}
 
 		public TamableZombieGirlP3(EntityType<TamableZombieGirlP3> type, Level world) {
@@ -197,7 +197,7 @@ public class TamablePregnantZombieGirl {
 				@Override
 				protected void advanceToNextPregnancyPhase() {
 					if (pregnantEntity.level() instanceof ServerLevel serverLevel) {
-						var zombieGirl = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P4.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);		
+						var zombieGirl = MinepreggoEntities.TAMABLE_ZOMBIE_GIRL_P4.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);		
 						PreggoMobHelper.copyAllData(pregnantEntity, zombieGirl);			
 					}
 				}
@@ -217,7 +217,7 @@ public class TamablePregnantZombieGirl {
 	public static class TamableZombieGirlP4 extends AbstractTamablePregnantZombieGirl {
 		
 		public TamableZombieGirlP4(PlayMessages.SpawnEntity packet, Level world) {
-			this(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P4.get(), world);
+			this(MinepreggoEntities.TAMABLE_ZOMBIE_GIRL_P4.get(), world);
 		}
 
 		public TamableZombieGirlP4(EntityType<TamableZombieGirlP4> type, Level world) {
@@ -243,7 +243,7 @@ public class TamablePregnantZombieGirl {
 				@Override
 				protected void advanceToNextPregnancyPhase() {
 					if (pregnantEntity.level() instanceof ServerLevel serverLevel) {
-						var zombieGirl = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P5.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);		
+						var zombieGirl = MinepreggoEntities.TAMABLE_ZOMBIE_GIRL_P5.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);		
 						PreggoMobHelper.copyAllData(pregnantEntity, zombieGirl);			
 					}
 				}
@@ -268,7 +268,7 @@ public class TamablePregnantZombieGirl {
 	public static class TamableZombieGirlP5 extends AbstractTamablePregnantZombieGirl {
 		
 		public TamableZombieGirlP5(PlayMessages.SpawnEntity packet, Level world) {
-			this(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P5.get(), world);
+			this(MinepreggoEntities.TAMABLE_ZOMBIE_GIRL_P5.get(), world);
 		}
 
 		public TamableZombieGirlP5(EntityType<TamableZombieGirlP5> type, Level world) {
@@ -294,7 +294,7 @@ public class TamablePregnantZombieGirl {
 				@Override
 				protected void advanceToNextPregnancyPhase() {
 					if (pregnantEntity.level() instanceof ServerLevel serverLevel) {
-						var zombieGirl = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P6.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);		
+						var zombieGirl = MinepreggoEntities.TAMABLE_ZOMBIE_GIRL_P6.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);		
 						PreggoMobHelper.copyAllData(pregnantEntity, zombieGirl);
 					}
 				}
@@ -319,7 +319,7 @@ public class TamablePregnantZombieGirl {
 	public static class TamableZombieGirlP6 extends AbstractTamablePregnantZombieGirl {
 		
 		public TamableZombieGirlP6(PlayMessages.SpawnEntity packet, Level world) {
-			this(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P6.get(), world);
+			this(MinepreggoEntities.TAMABLE_ZOMBIE_GIRL_P6.get(), world);
 		}
 
 		public TamableZombieGirlP6(EntityType<TamableZombieGirlP6> type, Level world) {
@@ -345,7 +345,7 @@ public class TamablePregnantZombieGirl {
 				@Override
 				protected void advanceToNextPregnancyPhase() {
 					if (pregnantEntity.level() instanceof ServerLevel serverLevel) {
-						var zombieGirl = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P7.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);		
+						var zombieGirl = MinepreggoEntities.TAMABLE_ZOMBIE_GIRL_P7.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);		
 						PreggoMobHelper.copyAllData(pregnantEntity, zombieGirl);			
 					}
 				}
@@ -370,7 +370,7 @@ public class TamablePregnantZombieGirl {
 	public static class TamableZombieGirlP7 extends AbstractTamablePregnantZombieGirl {
 		
 		public TamableZombieGirlP7(PlayMessages.SpawnEntity packet, Level world) {
-			this(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P7.get(), world);
+			this(MinepreggoEntities.TAMABLE_ZOMBIE_GIRL_P7.get(), world);
 		}
 
 		public TamableZombieGirlP7(EntityType<TamableZombieGirlP7> type, Level world) {
@@ -396,7 +396,7 @@ public class TamablePregnantZombieGirl {
 				@Override
 				protected void advanceToNextPregnancyPhase() {
 					if (pregnantEntity.level() instanceof ServerLevel serverLevel) {
-						var zombieGirl = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P8.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);		
+						var zombieGirl = MinepreggoEntities.TAMABLE_ZOMBIE_GIRL_P8.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);		
 						PreggoMobHelper.copyAllData(pregnantEntity, zombieGirl);			
 					}
 				}
@@ -421,7 +421,7 @@ public class TamablePregnantZombieGirl {
 	public static class TamableZombieGirlP8 extends AbstractTamablePregnantZombieGirl {
 		
 		public TamableZombieGirlP8(PlayMessages.SpawnEntity packet, Level world) {
-			this(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P8.get(), world);
+			this(MinepreggoEntities.TAMABLE_ZOMBIE_GIRL_P8.get(), world);
 		}
 		
 		public TamableZombieGirlP8(EntityType<TamableZombieGirlP8> type, Level world) {

@@ -1,7 +1,7 @@
 package dev.dixmk.minepreggo.client.renderer.preggo.ender;
 
-import dev.dixmk.minepreggo.client.model.entity.preggo.ender.AbstractMonsterEnderWomanModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.ender.HostilePregnantMonsterEnderWomanModel;
+import dev.dixmk.minepreggo.client.model.geom.MinepreggoModelLayers;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.HostilePregnantMonsterEnderWoman;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -13,6 +13,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class HostilePregnantMonsterEnderWomanRenderer {
 
+	private HostilePregnantMonsterEnderWomanRenderer() {}
+	
 	@OnlyIn(Dist.CLIENT)
 	public static class MonsteEnderWomanP3 extends AbstractHostilePregnantMonsterEnderWomanRenderer<HostilePregnantMonsterEnderWoman.MonsterEnderWomanP3, HostilePregnantMonsterEnderWomanModel.MonsterEnderWomanP3> {
 		protected MonsteEnderWomanP3(Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter) {
@@ -20,11 +22,11 @@ public class HostilePregnantMonsterEnderWomanRenderer {
 		}
 
 		public MonsteEnderWomanP3(EntityRendererProvider.Context context) {
-			this(context, AbstractMonsterEnderWomanModel.LAYER_LOCATION_P3, AbstractMonsterEnderWomanModel.LAYER_INNER_ARMOR_LOCATION, AbstractMonsterEnderWomanModel.LAYER_OUTER_ARMOR_LOCATION);
+			this(context, MinepreggoModelLayers.PREGNANT_MONSTER_ENDER_WOMAN_P3, MinepreggoModelLayers.MONSTER_ENDER_WOMAN_INNER_ARMOR, MinepreggoModelLayers.MONSTER_ENDER_WOMAN_OUTER_ARMOR);
 		}
 		
 		@Override
-		public ResourceLocation getTextureLocation(HostilePregnantMonsterEnderWoman.MonsterEnderWomanP3 p_115812_) {
+		public ResourceLocation getTextureLocation(HostilePregnantMonsterEnderWoman.MonsterEnderWomanP3 entity) {
 			return MONSTER_PREGNANT_ENDER_WOMAN_P3_TEXTURE;
 		}
 	}
@@ -36,11 +38,11 @@ public class HostilePregnantMonsterEnderWomanRenderer {
 		}
 
 		public MonsteEnderWomanP5(EntityRendererProvider.Context context) {
-			this(context, AbstractMonsterEnderWomanModel.LAYER_LOCATION_P5, AbstractMonsterEnderWomanModel.LAYER_INNER_ARMOR_LOCATION, AbstractMonsterEnderWomanModel.LAYER_OUTER_ARMOR_LOCATION);
+			this(context, MinepreggoModelLayers.PREGNANT_MONSTER_ENDER_WOMAN_P5, MinepreggoModelLayers.MONSTER_ENDER_WOMAN_INNER_ARMOR, MinepreggoModelLayers.MONSTER_ENDER_WOMAN_OUTER_ARMOR);
 		}
 
 		@Override
-		public ResourceLocation getTextureLocation(HostilePregnantMonsterEnderWoman.MonsterEnderWomanP5 p_115812_) {
+		public ResourceLocation getTextureLocation(HostilePregnantMonsterEnderWoman.MonsterEnderWomanP5 entity) {
 			return MONSTER_PREGNANT_ENDER_WOMAN_P5_TEXTURE;
 		}
 	}
@@ -52,11 +54,11 @@ public class HostilePregnantMonsterEnderWomanRenderer {
 		}
 
 		public MonsteEnderWomanP7(EntityRendererProvider.Context context) {
-			this(context, AbstractMonsterEnderWomanModel.LAYER_LOCATION_P7, AbstractMonsterEnderWomanModel.LAYER_INNER_ARMOR_LOCATION, AbstractMonsterEnderWomanModel.LAYER_OUTER_ARMOR_LOCATION);
+			this(context, MinepreggoModelLayers.PREGNANT_MONSTER_ENDER_WOMAN_P7, MinepreggoModelLayers.MONSTER_ENDER_WOMAN_INNER_ARMOR, MinepreggoModelLayers.MONSTER_ENDER_WOMAN_OUTER_ARMOR);
 		}
 		
 		@Override
-		public ResourceLocation getTextureLocation(HostilePregnantMonsterEnderWoman.MonsterEnderWomanP7 p_115812_) {
+		public ResourceLocation getTextureLocation(HostilePregnantMonsterEnderWoman.MonsterEnderWomanP7 entity) {
 			return MONSTER_PREGNANT_ENDER_WOMAN_P7_TEXTURE;
 		}
 	}

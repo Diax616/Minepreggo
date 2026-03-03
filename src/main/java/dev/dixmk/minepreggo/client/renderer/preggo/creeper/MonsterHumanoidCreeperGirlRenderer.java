@@ -1,7 +1,7 @@
 package dev.dixmk.minepreggo.client.renderer.preggo.creeper;
 
-import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractHumanoidCreeperGirlModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.HostileHumanoidCreeperGirlModel;
+import dev.dixmk.minepreggo.client.model.geom.MinepreggoModelLayers;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.HostileHumanoidCreeperGirl;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -13,7 +13,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class MonsterHumanoidCreeperGirlRenderer extends AbstractHostileHumanoidCreeperGirlRenderer<HostileHumanoidCreeperGirl, HostileHumanoidCreeperGirlModel> {
 	
 	public MonsterHumanoidCreeperGirlRenderer(EntityRendererProvider.Context context) {
-		this(context, AbstractHumanoidCreeperGirlModel.LAYER_LOCATION, AbstractHumanoidCreeperGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractHumanoidCreeperGirlModel.LAYER_OUTER_ARMOR_LOCATION, AbstractHumanoidCreeperGirlModel.LAYER_ENERGY_ARMOR_LOCATION);
+		this(context, MinepreggoModelLayers.HUMANOID_CREEPER_GIRL, MinepreggoModelLayers.HUMANOID_CREEPER_GIRL_INNER_ARMOR, MinepreggoModelLayers.HUMANOID_CREEPER_GIRL_OUTER_ARMOR, MinepreggoModelLayers.HUMANOID_CREEPER_GIRL_ENERGY_ARMOR);
 	}
 	
 	public MonsterHumanoidCreeperGirlRenderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter, ModelLayerLocation armor) {
@@ -21,7 +21,7 @@ public class MonsterHumanoidCreeperGirlRenderer extends AbstractHostileHumanoidC
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(HostileHumanoidCreeperGirl p_115812_) {
+	public ResourceLocation getTextureLocation(HostileHumanoidCreeperGirl entity) {
 		return CREEPER_GIRL_LOCATION;
 	}
 }

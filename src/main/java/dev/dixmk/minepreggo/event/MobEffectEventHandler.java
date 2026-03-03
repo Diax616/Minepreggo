@@ -2,7 +2,7 @@ package dev.dixmk.minepreggo.event;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
-import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoMobEffects;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.effect.Impregnantion;
 import dev.dixmk.minepreggo.world.effect.MobEffectHelper;
@@ -44,21 +44,21 @@ public class MobEffectEventHandler {
 		}
              
         // Unmark entity for impregnation if Impregnantion effect is removed by other means (like milk)
-        if ((effect == MinepreggoModMobEffects.IMPREGNANTION.get() || effect instanceof Impregnantion)) {
+        if ((effect == MinepreggoMobEffects.IMPREGNANTION.get() || effect instanceof Impregnantion)) {
         	Impregnantion.unmarkForImpregnation(entity);
         }
         
     	if (entity instanceof ServerPlayer player && MinepreggoHelper.isFromThisMod(effect)) {     
     		// Only sync from server side to avoid client-side PacketDistributor usage
     		MobEffectHelper.syncRemovedMobEffect(player, effect);
-    		if (effect == MinepreggoModMobEffects.FERTILE.get()) {           		
+    		if (effect == MinepreggoMobEffects.FERTILE.get()) {           		
         		removeMobAttacks(player);
         		resetFertilityRate(player);
         	}
     		MinepreggoMod.LOGGER.debug("Removed mob effect {} from player {}", effect.getDescriptionId(), player.getScoreboardName());
     	}
     	else if (entity instanceof PreggoMob && entity instanceof ITamablePreggoMob<?> tamablePreggoMob) {  		
-    		if (effect == MinepreggoModMobEffects.FERTILE.get()) {
+    		if (effect == MinepreggoMobEffects.FERTILE.get()) {
 				resetFertilityRate(tamablePreggoMob);
 			} else if (effect == MobEffects.CONFUSION) {
 	    		MobEffectHelper.syncRemovedMobEffect(entity, effect);
@@ -85,14 +85,14 @@ public class MobEffectEventHandler {
         if (entity instanceof ServerPlayer player && MinepreggoHelper.isFromThisMod(effect)) {  	
             // Only sync from server side to avoid client-side PacketDistributor usage
         	MobEffectHelper.syncRemovedMobEffect(player, effect);
-        	if (effect == MinepreggoModMobEffects.FERTILE.get()) {
+        	if (effect == MinepreggoMobEffects.FERTILE.get()) {
         		removeMobAttacks(player);
         		resetFertilityRate(player);
         	}
         	MinepreggoMod.LOGGER.debug("Expired mob effect {} from player {}", effect.getDescriptionId(), player.getScoreboardName());
         }
     	else if (entity instanceof PreggoMob && entity instanceof ITamablePreggoMob<?> tamablePreggoMob) {
-    		if (effect == MinepreggoModMobEffects.FERTILE.get()) {
+    		if (effect == MinepreggoMobEffects.FERTILE.get()) {
 				resetFertilityRate(tamablePreggoMob);
 			} else if (effect == MobEffects.CONFUSION) {
 	    		MobEffectHelper.syncRemovedMobEffect(entity, effect);
@@ -116,11 +116,11 @@ public class MobEffectEventHandler {
             return;
         }
         
-        if ((effect == MobEffects.POISON && entity.hasEffect(MinepreggoModMobEffects.POISON_IMMUNITY.get()))
-        		|| (effect == MobEffects.WITHER && entity.hasEffect(MinepreggoModMobEffects.WIHER_IMMUNITY.get()))) {
+        if ((effect == MobEffects.POISON && entity.hasEffect(MinepreggoMobEffects.POISON_IMMUNITY.get()))
+        		|| (effect == MobEffects.WITHER && entity.hasEffect(MinepreggoMobEffects.WIHER_IMMUNITY.get()))) {
             event.setResult(Event.Result.DENY);
         }   
-        else if ((effect == MinepreggoModMobEffects.ETERNAL_PREGNANCY.get() || effect == MinepreggoModMobEffects.ZERO_GRAVITY_BELLY.get()) && !PregnancySystemHelper.canHavePregnancyEffects(entity)) {
+        else if ((effect == MinepreggoMobEffects.ETERNAL_PREGNANCY.get() || effect == MinepreggoMobEffects.ZERO_GRAVITY_BELLY.get()) && !PregnancySystemHelper.canHavePregnancyEffects(entity)) {
             event.setResult(Event.Result.DENY);
             entity.hurt(new DamageSource(entity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.MAGIC)), 1);
         }

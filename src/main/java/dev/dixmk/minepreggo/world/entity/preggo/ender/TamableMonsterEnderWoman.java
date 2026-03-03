@@ -4,7 +4,7 @@ import java.util.Optional;
 import java.util.OptionalInt;
 
 import dev.dixmk.minepreggo.MinepreggoModConfig;
-import dev.dixmk.minepreggo.init.MinepreggoModEntities;
+import dev.dixmk.minepreggo.init.MinepreggoEntities;
 import dev.dixmk.minepreggo.world.entity.EntityHelper;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.FemaleFertilitySystem;
@@ -37,7 +37,7 @@ public class TamableMonsterEnderWoman extends AbstractTamableMonsterEnderWoman i
 		@Override
 		protected void startPregnancy() {		
 			if (preggoMob.level() instanceof ServerLevel serverLevel && !serverLevel.isClientSide) {
-				TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP0 enderWoman = MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P0.get().spawn(serverLevel, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), MobSpawnType.CONVERSION);		
+				TamablePregnantMonsterEnderWoman.TamableMonsterEnderWomanP0 enderWoman = MinepreggoEntities.TAMABLE_MONSTER_ENDER_WOMAN_P0.get().spawn(serverLevel, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), MobSpawnType.CONVERSION);		
 				LivingEntityHelper.copyRotation(preggoMob, enderWoman);
 				PreggoMobHelper.copyOwner(preggoMob, enderWoman);
 				LivingEntityHelper.copyHealth(preggoMob, enderWoman);
@@ -62,7 +62,7 @@ public class TamableMonsterEnderWoman extends AbstractTamableMonsterEnderWoman i
 	}
 
 	public TamableMonsterEnderWoman(PlayMessages.SpawnEntity packet, Level world) {
-		this(MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN.get(), world);
+		this(MinepreggoEntities.TAMABLE_MONSTER_ENDER_WOMAN.get(), world);
 	}
 	
 	@Override
@@ -117,7 +117,7 @@ public class TamableMonsterEnderWoman extends AbstractTamableMonsterEnderWoman i
 	
 	public static<E extends AbstractTamablePregnantEnderWoman> void onPostPartum(E source) {
 		if (source.level() instanceof ServerLevel serverLevel) {
-			TamableMonsterEnderWoman enderWoman = MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN.get().spawn(serverLevel, BlockPos.containing(source.getX(), source.getY(), source.getZ()), MobSpawnType.CONVERSION);	
+			TamableMonsterEnderWoman enderWoman = MinepreggoEntities.TAMABLE_MONSTER_ENDER_WOMAN.get().spawn(serverLevel, BlockPos.containing(source.getX(), source.getY(), source.getZ()), MobSpawnType.CONVERSION);	
 			LivingEntityHelper.copyRotation(source, enderWoman);
 			PreggoMobHelper.copyOwner(source, enderWoman);
 			LivingEntityHelper.copyHealth(source, enderWoman);
@@ -142,7 +142,7 @@ public class TamableMonsterEnderWoman extends AbstractTamableMonsterEnderWoman i
 	
 	public static<E extends AbstractTamablePregnantEnderWoman> void onPostMiscarriage(E source) {
 		if (source.level() instanceof ServerLevel serverLevel) {
-			TamableMonsterEnderWoman enderWoman = MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN.get().spawn(serverLevel, BlockPos.containing(source.getX(), source.getY(), source.getZ()), MobSpawnType.CONVERSION);	
+			TamableMonsterEnderWoman enderWoman = MinepreggoEntities.TAMABLE_MONSTER_ENDER_WOMAN.get().spawn(serverLevel, BlockPos.containing(source.getX(), source.getY(), source.getZ()), MobSpawnType.CONVERSION);	
 			LivingEntityHelper.copyRotation(source, enderWoman);
 			PreggoMobHelper.copyOwner(source, enderWoman);
 			LivingEntityHelper.copyHealth(source, enderWoman);

@@ -1,6 +1,6 @@
 package dev.dixmk.minepreggo.world.item;
 
-import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoMobEffects;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
@@ -22,13 +22,13 @@ public class EnderBreastMilkBottleItem extends AbstractBreastMilk {
 	public ItemStack finishUsingItem(ItemStack itemstack, Level world, LivingEntity entity) {		
 		var result = super.finishUsingItem(itemstack, world, entity);
 		if (!entity.level().isClientSide) {	
-			if (entity.hasEffect(MinepreggoModMobEffects.ENDER_ESSENCE.get()) || entity.hasEffect(MinepreggoModMobEffects.ENDER_DRAGON_ESSENCE.get())) {
+			if (entity.hasEffect(MinepreggoMobEffects.ENDER_ESSENCE.get()) || entity.hasEffect(MinepreggoMobEffects.ENDER_DRAGON_ESSENCE.get())) {
 				entity.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 2400, 0));
 			}
 			else if (entity instanceof PreggoMob preggoMob && preggoMob.getTypeOfSpecies() == Species.ENDER) {	
 				entity.heal(4f);
 			}
-			else if (entity instanceof Player && entity.hasEffect(MinepreggoModMobEffects.FULL_OF_ENDERS.get())) {
+			else if (entity instanceof Player && entity.hasEffect(MinepreggoMobEffects.FULL_OF_ENDERS.get())) {
 				entity.heal(2f);
 			}
 			else {

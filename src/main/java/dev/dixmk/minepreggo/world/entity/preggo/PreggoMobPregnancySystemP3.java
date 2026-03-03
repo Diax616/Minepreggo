@@ -5,8 +5,8 @@ import javax.annotation.Nonnull;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
-import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
-import dev.dixmk.minepreggo.init.MinepreggoModSounds;
+import dev.dixmk.minepreggo.init.MinepreggoMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoSounds;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem.Result;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
@@ -86,14 +86,14 @@ public abstract class PreggoMobPregnancySystemP3
 		
 		final var pregnancyData = pregnantEntity.getPregnancyData();
 		float newFetalMovementProb = fetalMovementProb;	
-		if (this.pregnantEntity.hasEffect(MinepreggoModMobEffects.ETERNAL_PREGNANCY.get())) {
+		if (this.pregnantEntity.hasEffect(MinepreggoMobEffects.ETERNAL_PREGNANCY.get())) {
 			newFetalMovementProb *= 5f;
 		}
 		
 		if (randomSource.nextFloat() < newFetalMovementProb) {
 			pregnancyData.setPregnancyPain(PregnancyPain.FETAL_MOVEMENT);
 			pregnancyData.resetPregnancyPainTimer();
-			LivingEntityHelper.playSoundNearTo(pregnantEntity, MinepreggoModSounds.getRandomStomachGrowls(randomSource));
+			LivingEntityHelper.playSoundNearTo(pregnantEntity, MinepreggoSounds.getRandomStomachGrowls(randomSource));
 			PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, InventorySlot.CHEST);				
 			return true;
 		}     

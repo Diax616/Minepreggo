@@ -1,6 +1,6 @@
 package dev.dixmk.minepreggo.world.level.block;
 
-import dev.dixmk.minepreggo.init.MinepreggoModItems;
+import dev.dixmk.minepreggo.init.MinepreggoItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ItemLike;
@@ -21,7 +21,7 @@ public class ChilipepperBlock extends CropBlock {
 
 	@Override
 	protected ItemLike getBaseSeedId() {
-		return MinepreggoModItems.CHILI_PEPPER.get();
+		return MinepreggoItems.CHILI_PEPPER.get();
 	}
 
 	@Override

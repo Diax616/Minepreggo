@@ -4,7 +4,7 @@ import java.util.Optional;
 import java.util.OptionalInt;
 
 import dev.dixmk.minepreggo.MinepreggoModConfig;
-import dev.dixmk.minepreggo.init.MinepreggoModEntities;
+import dev.dixmk.minepreggo.init.MinepreggoEntities;
 import dev.dixmk.minepreggo.world.entity.EntityHelper;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.FemaleFertilitySystem;
@@ -37,7 +37,7 @@ public class TamableMonsterCreeperGirl extends AbstractTamableMonsterCreeperGirl
 		@Override
 		protected void startPregnancy() {		
 			if (preggoMob.level() instanceof ServerLevel serverLevel && !serverLevel.isClientSide) {
-				var creeperGirl = MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), MobSpawnType.CONVERSION);		
+				var creeperGirl = MinepreggoEntities.TAMABLE_MONSTER_CREEPER_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), MobSpawnType.CONVERSION);		
 				LivingEntityHelper.copyRotation(preggoMob, creeperGirl);
 				PreggoMobHelper.copyOwner(preggoMob, creeperGirl);
 				LivingEntityHelper.copyHealth(preggoMob, creeperGirl);
@@ -59,7 +59,7 @@ public class TamableMonsterCreeperGirl extends AbstractTamableMonsterCreeperGirl
 	};
 	
 	public TamableMonsterCreeperGirl(PlayMessages.SpawnEntity packet, Level world) {
-		this(MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL.get(), world);
+		this(MinepreggoEntities.TAMABLE_MONSTER_CREEPER_GIRL.get(), world);
 	}
 
 	public TamableMonsterCreeperGirl(EntityType<TamableMonsterCreeperGirl> type, Level world) {
@@ -122,7 +122,7 @@ public class TamableMonsterCreeperGirl extends AbstractTamableMonsterCreeperGirl
 	
 	public static<E extends AbstractTamablePregnantCreeperGirl> void onPostPartum(E source) {
 		if (source.level() instanceof ServerLevel serverLevel) {
-			TamableMonsterCreeperGirl creeperGirl = MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(source.getX(), source.getY(), source.getZ()), MobSpawnType.CONVERSION);	
+			TamableMonsterCreeperGirl creeperGirl = MinepreggoEntities.TAMABLE_MONSTER_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(source.getX(), source.getY(), source.getZ()), MobSpawnType.CONVERSION);	
 			LivingEntityHelper.copyRotation(source, creeperGirl);
 			PreggoMobHelper.copyOwner(source, creeperGirl);
 			LivingEntityHelper.copyHealth(source, creeperGirl);
@@ -147,7 +147,7 @@ public class TamableMonsterCreeperGirl extends AbstractTamableMonsterCreeperGirl
 	
 	public static<E extends AbstractTamablePregnantCreeperGirl> void onPostMiscarriage(E source) {
 		if (source.level() instanceof ServerLevel serverLevel) {
-			TamableMonsterCreeperGirl creeperGirl = MinepreggoModEntities.TAMABLE_MONSTER_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(source.getX(), source.getY(), source.getZ()), MobSpawnType.CONVERSION);	
+			TamableMonsterCreeperGirl creeperGirl = MinepreggoEntities.TAMABLE_MONSTER_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(source.getX(), source.getY(), source.getZ()), MobSpawnType.CONVERSION);	
 			LivingEntityHelper.copyRotation(source, creeperGirl);
 			PreggoMobHelper.copyOwner(source, creeperGirl);
 			LivingEntityHelper.copyHealth(source, creeperGirl);

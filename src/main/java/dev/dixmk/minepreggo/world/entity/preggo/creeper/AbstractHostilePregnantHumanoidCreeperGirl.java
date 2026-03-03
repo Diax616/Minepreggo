@@ -1,6 +1,6 @@
 package dev.dixmk.minepreggo.world.entity.preggo.creeper;
 
-import dev.dixmk.minepreggo.init.MinepreggoModSounds;
+import dev.dixmk.minepreggo.init.MinepreggoSounds;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
@@ -35,7 +35,7 @@ public abstract class AbstractHostilePregnantHumanoidCreeperGirl extends Abstrac
 	
 	@Override
 	public SoundEvent getDeathSound() {
-		return MinepreggoModSounds.PREGNANT_PREGGO_MOB_DEATH.get();
+		return MinepreggoSounds.PREGNANT_PREGGO_MOB_DEATH.get();
 	}
 	
 	@Override

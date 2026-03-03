@@ -3,6 +3,7 @@ package dev.dixmk.minepreggo.world.entity.preggo.creeper;
 import net.minecraftforge.network.PlayMessages;
 
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
@@ -12,10 +13,12 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -27,7 +30,10 @@ import net.minecraft.nbt.CompoundTag;
 
 import java.util.UUID;
 
-import dev.dixmk.minepreggo.init.MinepreggoModEntities;
+import javax.annotation.Nullable;
+
+import dev.dixmk.minepreggo.MinepreggoModConfig;
+import dev.dixmk.minepreggo.init.MinepreggoEntities;
 import dev.dixmk.minepreggo.world.entity.EntityHelper;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
@@ -39,7 +45,7 @@ public class HostileHumanoidCreeperGirl extends AbstractHostileHumanoidCreeperGi
 	private static final EntityDataAccessor<Boolean> DATA_BABY_ID = SynchedEntityData.defineId(HostileHumanoidCreeperGirl.class, EntityDataSerializers.BOOLEAN);
 	
 	public HostileHumanoidCreeperGirl(PlayMessages.SpawnEntity packet, Level world) {
-		this(MinepreggoModEntities.HOSTILE_HUMANOID_CREEPER_GIRL.get(), world);
+		this(MinepreggoEntities.HOSTILE_HUMANOID_CREEPER_GIRL.get(), world);
 	}
 
 	public HostileHumanoidCreeperGirl(EntityType<HostileHumanoidCreeperGirl> type, Level world) {
@@ -84,7 +90,7 @@ public class HostileHumanoidCreeperGirl extends AbstractHostileHumanoidCreeperGi
 	@Override
 	protected void afterTaming() {
 		if (this.level() instanceof ServerLevel serverLevel) {
-			TamableHumanoidCreeperGirl next = MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(this.getX(), this.getY(), this.getZ()), MobSpawnType.CONVERSION);
+			TamableHumanoidCreeperGirl next = MinepreggoEntities.TAMABLE_HUMANOID_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(this.getX(), this.getY(), this.getZ()), MobSpawnType.CONVERSION);
 			LivingEntityHelper.copyRotation(this, next);
 			EntityHelper.copyName(this, next);
 			LivingEntityHelper.copyHealth(this, next);
@@ -124,7 +130,7 @@ public class HostileHumanoidCreeperGirl extends AbstractHostileHumanoidCreeperGi
 	        this.setExplosionData(DEFAULT_EXPLOSION_DATA);
 			if (value) {
 				attributeinstance.addTransientModifier(SPEED_MODIFIER_BABY);
-		        this.setExplosionData(new ExplosionData(1, 1, DEFAULT_EXPLOSION_DATA.maxSwell()));
+		        this.setExplosionData(new ExplosionData(1, 1, DEFAULT_EXPLOSION_DATA.getMaxSwell()));
 			}
 		}
 	}
@@ -139,10 +145,22 @@ public class HostileHumanoidCreeperGirl extends AbstractHostileHumanoidCreeperGi
 	
 	@Override
 	public AgeableMob getBreedOffspring(ServerLevel serverWorld, AgeableMob ageable) {
-		HostileHumanoidCreeperGirl retval = MinepreggoModEntities.HOSTILE_HUMANOID_CREEPER_GIRL.get().create(serverWorld);
-		retval.finalizeSpawn(serverWorld, serverWorld.getCurrentDifficultyAt(retval.blockPosition()), MobSpawnType.BREEDING, null, null);
-		retval.setBaby(true);
+		HostileHumanoidCreeperGirl retval = MinepreggoEntities.HOSTILE_HUMANOID_CREEPER_GIRL.get().create(serverWorld);
+		if (retval != null) {
+			retval.finalizeSpawn(serverWorld, serverWorld.getCurrentDifficultyAt(retval.blockPosition()), MobSpawnType.BREEDING, null, null);
+			retval.setBaby(true);
+		}
 		return retval;
+	}
+	
+	@Override
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData, @Nullable CompoundTag dataTag) {
+		SpawnGroupData spawnData = super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData, dataTag);		
+    	this.setCanPickUpLoot(this.random.nextFloat() < 0.35F * difficulty.getSpecialMultiplier());    	
+    	if (this.random.nextFloat() < MinepreggoModConfig.SERVER.getBabyCreeperGirlProbability()) {
+    		this.setBaby(true);
+    	}  
+		return spawnData;
 	}
 	
 	public static AttributeSupplier.Builder createAttributes() {

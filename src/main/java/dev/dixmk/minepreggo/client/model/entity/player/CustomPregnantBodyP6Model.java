@@ -1,11 +1,9 @@
 package dev.dixmk.minepreggo.client.model.entity.player;
 
-import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.player.SkinType;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.client.animation.preggo.BellyInflation;
 import dev.dixmk.minepreggo.client.animation.preggo.FetalMovementIntensity;
-import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
@@ -18,8 +16,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class CustomPregnantBodyP6Model extends AbstractHeavyPregnantBodyModel {
-	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("custom_pregnant_body_p6_model"), "main");
-
 	public CustomPregnantBodyP6Model(ModelPart root) {
 		super(root, BellyInflation.HIGH, FetalMovementIntensity.P6, PregnancyPhase.P6, SkinType.CUSTOM);
 		milkingBoobsYPos = -0.6F;

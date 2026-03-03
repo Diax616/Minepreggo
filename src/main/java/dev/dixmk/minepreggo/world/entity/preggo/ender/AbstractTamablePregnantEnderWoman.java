@@ -3,11 +3,12 @@ package dev.dixmk.minepreggo.world.entity.preggo.ender;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.client.animation.player.BellyAnimationManager;
 import dev.dixmk.minepreggo.client.animation.preggo.BellyAnimation;
-import dev.dixmk.minepreggo.init.MinepreggoModDamageSources;
+import dev.dixmk.minepreggo.init.MinepreggoDamageSources;
 import dev.dixmk.minepreggo.world.entity.BellyPartFactory;
 import dev.dixmk.minepreggo.world.entity.BellyPartManager;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
@@ -27,12 +28,15 @@ import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
@@ -44,6 +48,7 @@ import net.minecraft.world.entity.ai.goal.target.ResetUniversalAngerTargetGoal;
 import net.minecraft.world.entity.monster.Endermite;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 
 public abstract class AbstractTamablePregnantEnderWoman extends AbstractTamableEnderWoman implements ITamablePregnantPreggoMob {
 
@@ -65,7 +70,7 @@ public abstract class AbstractTamablePregnantEnderWoman extends AbstractTamableE
 	
 	@Override
     protected boolean cannotTeleportByDamage(DamageSource damageSource) {
-    	return damageSource.is(MinepreggoModDamageSources.PREGNANCY_PAIN);
+    	return damageSource.is(MinepreggoDamageSources.PREGNANCY_PAIN);
 	}
 	
 	@Override
@@ -269,7 +274,7 @@ public abstract class AbstractTamablePregnantEnderWoman extends AbstractTamableE
 	public void die(DamageSource source) {
 		super.die(source);		
 		if (!this.level().isClientSide) {
-			if (source.is(MinepreggoModDamageSources.BELLY_BURST)) {
+			if (source.is(MinepreggoDamageSources.BELLY_BURST)) {
 				PregnancySystemHelper.deathByBellyBurst(this, (ServerLevel) this.level());
 			}
 			PreggoMobHelper.spawnBabyAndFetus(this);
@@ -340,5 +345,17 @@ public abstract class AbstractTamablePregnantEnderWoman extends AbstractTamableE
 			return super.causeFallDamage(pFallDistance, pMultiplier * PregnancySystemHelper.calculateExtraFallDamageMultiplier(currentPregnancyPhase), pSource);
 		}
 		return super.causeFallDamage(pFallDistance, pMultiplier, pSource);
+	}
+	
+	@Override
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData, @Nullable CompoundTag dataTag) {
+		SpawnGroupData spawnData = super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData, dataTag);	
+		if (spawnType != MobSpawnType.CONVERSION) {  	
+			PreggoMobHelper.initDefaultPregnancy(this);    	
+		}	
+		PregnancyPhase phase = this.getPregnancyData().getCurrentPregnancyPhase();
+		PregnancySystemHelper.applyGravityModifier(this, phase);
+		PregnancySystemHelper.applyKnockbackResistanceModifier(this, phase);
+		return spawnData;
 	}
 }

@@ -8,13 +8,11 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import dev.dixmk.minepreggo.client.jiggle.EntityJiggleData;
 import dev.dixmk.minepreggo.client.jiggle.EntityJiggleDataFactory;
 import dev.dixmk.minepreggo.client.jiggle.JigglePhysicsManager;
-import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractCreeperGirl;
 import dev.dixmk.minepreggo.world.item.IMaternityArmor;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import net.minecraft.client.model.CreeperModel;
 import net.minecraft.client.model.HeadedModel;
-import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
@@ -29,30 +27,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class AbstractMonsterCreeperGirlModel<E extends AbstractCreeperGirl> extends CreeperModel<E> implements HeadedModel {	
-	public static final ModelLayerLocation LAYER_OUTER_ARMOR_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("monster_creeper_girl_outer_model"), "outer");
-	public static final ModelLayerLocation LAYER_ENERGY_ARMOR_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("monster_creeper_girl_energy_armor_model"), "armor");
-	public static final ModelLayerLocation LAYER_ENERGY_ARMOR_P0_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("monster_creeper_girl_energy_p0_armor_model"), "armor");
-	public static final ModelLayerLocation LAYER_ENERGY_ARMOR_P1_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("monster_creeper_girl_energy_p1_armor_model"), "armor");
-	public static final ModelLayerLocation LAYER_ENERGY_ARMOR_P2_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("monster_creeper_girl_energy_p2_armor_model"), "armor");
-	public static final ModelLayerLocation LAYER_ENERGY_ARMOR_P3_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("monster_creeper_girl_energy_p3_armor_model"), "armor");
-	public static final ModelLayerLocation LAYER_ENERGY_ARMOR_P4_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("monster_creeper_girl_energy_p4_armor_model"), "armor");
-	public static final ModelLayerLocation LAYER_ENERGY_ARMOR_P5_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("monster_creeper_girl_energy_p5_armor_model"), "armor");
-	public static final ModelLayerLocation LAYER_ENERGY_ARMOR_P6_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("monster_creeper_girl_energy_p6_armor_model"), "armor");
-	public static final ModelLayerLocation LAYER_ENERGY_ARMOR_P7_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("monster_creeper_girl_energy_p7_armor_model"), "armor");
-	public static final ModelLayerLocation LAYER_ENERGY_ARMOR_P8_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("monster_creeper_girl_energy_p8_armor_model"), "armor");
-	
-	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("monster_creeper_girl_model"), "main");
-	
-	public static final ModelLayerLocation LAYER_LOCATION_P0 = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("monster_creeper_girl_p0_model"), "main");
-	public static final ModelLayerLocation LAYER_LOCATION_P1 = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("monster_creeper_girl_p1_model"), "main");
-	public static final ModelLayerLocation LAYER_LOCATION_P2 = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("monster_creeper_girl_p2_model"), "main");
-	public static final ModelLayerLocation LAYER_LOCATION_P3 = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("monster_creeper_girl_p3_model"), "main");
-	public static final ModelLayerLocation LAYER_LOCATION_P4 = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("monster_creeper_girl_p4_model"), "main");
-	public static final ModelLayerLocation LAYER_LOCATION_P5 = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("monster_creeper_girl_p5_model"), "main");
-	public static final ModelLayerLocation LAYER_LOCATION_P6 = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("monster_creeper_girl_p6_model"), "main");
-	public static final ModelLayerLocation LAYER_LOCATION_P7 = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("monster_creeper_girl_p7_model"), "main");
-	public static final ModelLayerLocation LAYER_LOCATION_P8 = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("monster_creeper_girl_p8_model"), "main");
-	
 	public final ModelPart hat;
 	public final ModelPart head;
 	public final ModelPart belly;

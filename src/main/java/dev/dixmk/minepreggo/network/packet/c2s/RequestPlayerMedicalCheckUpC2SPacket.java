@@ -4,7 +4,7 @@ import java.util.function.Supplier;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
-import dev.dixmk.minepreggo.init.MinepreggoModVillagerProfessions;
+import dev.dixmk.minepreggo.init.MinepreggoVillagerProfessions;
 import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
 import dev.dixmk.minepreggo.world.inventory.preggo.PlayerPrenatalCheckUpMenu;
 import net.minecraft.network.FriendlyByteBuf;
@@ -34,7 +34,7 @@ public record RequestPlayerMedicalCheckUpC2SPacket(int targetId) {
             			if (target instanceof ScientificIllager scientificIllager) { 
             				PlayerPrenatalCheckUpMenu.IllagerMenu.showPrenatalCheckUpMenu(serverPlayer, scientificIllager);
             			}
-            			else if (target instanceof Villager villager && villager.getVillagerData().getProfession() == MinepreggoModVillagerProfessions.VILLAGER_DOCTOR.get()) {
+            			else if (target instanceof Villager villager && villager.getVillagerData().getProfession() == MinepreggoVillagerProfessions.VILLAGER_DOCTOR.get()) {
             				PlayerPrenatalCheckUpMenu.VillagerMenu.showPrenatalCheckUpMenu(serverPlayer, villager);
             			}  
             			else {

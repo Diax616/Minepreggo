@@ -5,6 +5,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.gameevent.GameEvent;
 
 import java.util.Collection;
@@ -12,7 +13,7 @@ import java.util.EnumSet;
 
 import javax.annotation.Nullable;
 
-import dev.dixmk.minepreggo.init.MinepreggoModItems;
+import dev.dixmk.minepreggo.init.MinepreggoItems;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.utils.TagHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
@@ -29,6 +30,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -37,8 +39,10 @@ import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.PowerableMob;
+import net.minecraft.world.entity.SpawnGroupData;
 
 public abstract class AbstractCreeperGirl extends PreggoMob implements PowerableMob {
 	public static final ExplosionData DEFAULT_EXPLOSION_DATA = new ExplosionData(3, 1, 30);
@@ -49,21 +53,21 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 	private int oldSwell;
 	private int swell;
 	private int droppedSkulls;
-	private int maxSwell = DEFAULT_EXPLOSION_DATA.maxSwell();
-	private int explosionRadius = DEFAULT_EXPLOSION_DATA.explosionRadius();
-	private int explosionItensity = DEFAULT_EXPLOSION_DATA.explosionItensity();
+	private ExplosionData explosionData = new ExplosionData(DEFAULT_EXPLOSION_DATA);
+	
 	protected double maxDistance = 9D;
 	private CombatMode combatMode = CombatMode.EXPLODE;
 	
 	protected AbstractCreeperGirl(EntityType<? extends PreggoMob> entity, Level level, Creature typeOfCreature) {
 		super(entity, level, Species.CREEPER, typeOfCreature);   
-		this.setRandomCombatMode();
 	}
 		
 	protected void setExplosionData(ExplosionData explosionData) {
-		this.explosionRadius = explosionData.explosionRadius();
-		this.explosionItensity = explosionData.explosionItensity();
-		this.maxSwell = explosionData.maxSwell();
+		this.explosionData = explosionData;
+	}
+	
+	public ExplosionData getExplosionData() {
+		return explosionData;
 	}
 	
 	public void setCombatMode(CombatMode value) {
@@ -75,23 +79,7 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 	public CombatMode getCombatMode() {
 		return combatMode;
 	}
-	
-	protected void setRandomCombatMode() {		
-		if (this.level().isClientSide()) {
-			return;
-		}	
-		final var p = this.getRandom().nextFloat();		
-	    if (p < 0.4F) {    	
-	    	this.setCombatMode(CombatMode.FIGHT_AND_EXPLODE);
-	    }
-	    else if (p < 0.9F) {
-	    	this.setCombatMode(CombatMode.EXPLODE);
-	    }
-	    else {
-	    	this.setCombatMode(CombatMode.DONT_EXPLODE);
-	    }
-	}
-	
+
 	@Override
 	public boolean hasJigglePhysics() {
 		return true;
@@ -119,7 +107,7 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 	
 	@Override
 	public boolean isFoodToTame(ItemStack stack) {
-		return stack.is(MinepreggoModItems.ACTIVATED_GUNPOWDER.get());
+		return stack.is(MinepreggoItems.ACTIVATED_GUNPOWDER.get());
 	}
 	
 	@Override
@@ -184,7 +172,7 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 	}
 	
 	public float getSwelling(float partialTick) {
-		return Mth.lerp(partialTick, this.oldSwell, this.swell) / (this.maxSwell - 2);
+		return Mth.lerp(partialTick, this.oldSwell, this.swell) / (this.explosionData.maxSwell - 2);
 	}
 	
 	public void setSwellDir(int value) {
@@ -206,9 +194,9 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 	
 	private void explodeCreeper() {
 		if (!this.level().isClientSide) {
-			float f = this.isPowered() ? explosionItensity * 2F : explosionItensity;
+			float f = this.isPowered() ? this.explosionData.explosionItensity * 2F : this.explosionData.explosionItensity;
 			this.dead = true;
-			this.level().explode(this, this.getX(), this.getY(), this.getZ(), this.explosionRadius * f, Level.ExplosionInteraction.MOB);
+			this.level().explode(this, this.getX(), this.getY(), this.getZ(), this.explosionData.explosionRadius * f, Level.ExplosionInteraction.MOB);
 			this.discard();
 			this.spawnLingeringCloud();
 		}
@@ -248,8 +236,8 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 	public boolean causeFallDamage(float fallDistance, float multiplier, DamageSource damageSource) {
 		boolean flag = super.causeFallDamage(fallDistance, multiplier, damageSource);
 		this.swell += (int)(fallDistance * 1.5F);
-		if (this.swell > this.maxSwell - 5) {
-			this.swell = this.maxSwell - 5;
+		if (this.swell > this.explosionData.maxSwell - 5) {
+			this.swell = this.explosionData.maxSwell - 5;
 		}
 
 		return flag;
@@ -274,8 +262,8 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 				this.swell = 0;
 			}
 
-			if (this.swell >= this.maxSwell) {
-				this.swell = this.maxSwell;
+			if (this.swell >= this.explosionData.maxSwell) {
+				this.swell = this.explosionData.maxSwell;
 				this.explodeCreeper();
 			}
 		}	
@@ -336,52 +324,81 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 		return SoundEvents.GENERIC_DEATH;
 	}
 	
+	@Override
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData, @Nullable CompoundTag dataTag) {
+		SpawnGroupData spawnData = super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData, dataTag);		
+	    final float p = this.getRandom().nextFloat();
+	    final float specialMultiplier = difficulty.getSpecialMultiplier(); // 0.0 (Easy) -> 1.0 (Hard)
+
+	    // Base thresholds scale with difficulty:
+	    // DONT_EXPLODE: starts at 20% on Easy, drops to ~5% on Hard
+	    // FIGHT_AND_EXPLODE: starts at 15% on Easy, rises to ~45% on Hard
+	    // EXPLODE: fills the rest
+
+	    final float dontExplodeChance = Mth.lerp(specialMultiplier, 0.20F, 0.05F);
+	    final float fightAndExplodeChance = Mth.lerp(specialMultiplier, 0.15F, 0.45F);
+
+	    // Cumulative thresholds
+	    final float thresholdDontExplode = dontExplodeChance;
+	    final float thresholdFightAndExplode = dontExplodeChance + fightAndExplodeChance;
+	    // EXPLODE fills the rest: from thresholdFightAndExplode to 1.0
+
+	    if (p < thresholdDontExplode) {
+	        this.setCombatMode(CombatMode.DONT_EXPLODE);
+	    } else if (p < thresholdFightAndExplode) {
+	        this.setCombatMode(CombatMode.FIGHT_AND_EXPLODE);
+	    } else {
+	        this.setCombatMode(CombatMode.EXPLODE);
+	    }
+		
+		return spawnData;
+	}
+	
 	protected static class SwellGoal<T extends AbstractCreeperGirl> extends Goal {
+		private final T creeperGirl;
 
-		  private final T creeperGirl;
+		@Nullable
+		private LivingEntity target;
 
-		   @Nullable
-		   private LivingEntity target;
-
-		   public SwellGoal(T creeperGirl) {
-		      this.creeperGirl = creeperGirl;
-		      this.setFlags(EnumSet.of(Goal.Flag.MOVE));
-		   }
+		public SwellGoal(T creeperGirl) {
+			this.creeperGirl = creeperGirl;
+			this.setFlags(EnumSet.of(Goal.Flag.MOVE));
+		}
 		   
-           @Override
-		   public boolean canUse() {
-		      LivingEntity livingentity = this.creeperGirl.getTarget();
-		      return this.creeperGirl.getSwellDir() > 0 || livingentity != null && this.creeperGirl.distanceToSqr(livingentity) < creeperGirl.maxDistance;
-		   }
+		@Override
+		public boolean canUse() {
+			LivingEntity livingentity = this.creeperGirl.getTarget();
+			return this.creeperGirl.getSwellDir() > 0 || livingentity != null && this.creeperGirl.distanceToSqr(livingentity) < creeperGirl.maxDistance;
+		}
 
-		   @Override
-		   public void start() {
-		      this.creeperGirl.getNavigation().stop();
-		      this.target = this.creeperGirl.getTarget();
-		   }
+		@Override
+		public void start() {
+			this.creeperGirl.getNavigation().stop();
+			this.target = this.creeperGirl.getTarget();
+		}
 
-		   @Override
-		   public void stop() {
-		      this.target = null;
-		   }
+		@Override
+		public void stop() {
+			this.target = null;
+		}
 
-	 	   @Override
-		   public boolean requiresUpdateEveryTick() {
-		      return true;
-		   }
+		@Override
+		public boolean requiresUpdateEveryTick() {
+			return true;
+		}
 
-           @Override
-		   public void tick() {
-		      if (this.target == null) {
-		         this.creeperGirl.setSwellDir(-1);
-		      } else if (this.creeperGirl.distanceToSqr(this.target) > 49.0D) {
-		         this.creeperGirl.setSwellDir(-1);
-		      } else if (!this.creeperGirl.getSensing().hasLineOfSight(this.target)) {
-		         this.creeperGirl.setSwellDir(-1);
-		      } else {
-		         this.creeperGirl.setSwellDir(1);
-		      }
-		   }
+		@Override
+		public void tick() {
+			if (this.target == null) {
+				this.creeperGirl.setSwellDir(-1);
+			} else if (this.creeperGirl.distanceToSqr(this.target) > 49.0D) {
+				this.creeperGirl.setSwellDir(-1);
+			} else if (!this.creeperGirl.getSensing().hasLineOfSight(this.target)) {
+				this.creeperGirl.setSwellDir(-1);
+			} else {
+				this.creeperGirl.setSwellDir(1);
+			}
+		}
 	}
 	
 	public enum CombatMode {
@@ -392,5 +409,33 @@ public abstract class AbstractCreeperGirl extends PreggoMob implements Powerable
 		public static final String NBT_KEY = "DataCombatMode";
 	}	
 	
-	public static record ExplosionData (int explosionRadius, int explosionItensity, int maxSwell) {}
+	public static class ExplosionData {
+		private int explosionRadius;
+		private int explosionItensity;
+		private int maxSwell;
+		
+		public ExplosionData(int explosionRadius, int explosionItensity, int maxSwell) {
+			this.explosionRadius = explosionRadius;
+			this.explosionItensity = explosionItensity;
+			this.maxSwell = maxSwell;
+		}
+		
+		public ExplosionData(ExplosionData other) {
+			this.explosionRadius = other.explosionRadius;
+			this.explosionItensity = other.explosionItensity;
+			this.maxSwell = other.maxSwell;
+		}
+		
+		public int getExplosionRadius() {
+			return explosionRadius;
+		}
+		
+		public int getExplosionItensity() {
+			return explosionItensity;
+		}
+		
+		public int getMaxSwell() {
+			return maxSwell;
+		}
+	}
 }

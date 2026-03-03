@@ -9,7 +9,7 @@ import java.util.OptionalInt;
 
 import javax.annotation.Nonnegative;
 
-import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
+import dev.dixmk.minepreggo.init.MinepreggoEntityDataSerializers;
 import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
 import dev.dixmk.minepreggo.world.pregnancy.PostPregnancyData;
 
@@ -20,7 +20,7 @@ public class SyncedPostPregnancyData<E extends PreggoMob> extends PostPregnancyD
         private final EntityDataAccessor<OptionalInt> dataLactation;
         
         public DataAccessor(Class<E> entityClass) {
-            this.dataPostPregnancy = SynchedEntityData.defineId(entityClass, MinepreggoModEntityDataSerializers.OPTIONAL_POST_PREGNANCY);
+            this.dataPostPregnancy = SynchedEntityData.defineId(entityClass, MinepreggoEntityDataSerializers.OPTIONAL_POST_PREGNANCY);
             this.dataLactation = SynchedEntityData.defineId(entityClass, EntityDataSerializers.OPTIONAL_UNSIGNED_INT);
         }   
         

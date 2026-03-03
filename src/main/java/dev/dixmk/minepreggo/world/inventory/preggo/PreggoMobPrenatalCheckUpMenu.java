@@ -11,7 +11,7 @@ import org.joml.Vector3i;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
-import dev.dixmk.minepreggo.init.MinepreggoModMenus;
+import dev.dixmk.minepreggo.init.MinepreggoMenus;
 import dev.dixmk.minepreggo.network.packet.s2c.PlaySoundPacketS2C;
 import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
@@ -39,7 +39,7 @@ public class PreggoMobPrenatalCheckUpMenu extends AbstractPrenatalCheckUpMenu<Pr
 	private Optional<ITamablePregnantPreggoMob> pregnancySystem;
 	
 	public PreggoMobPrenatalCheckUpMenu(int id, Inventory inv, FriendlyByteBuf buffer) {
-		super(MinepreggoModMenus.PREGGO_MOB_PRENATAL_CHECKUP_MENU.get(), id, inv, buffer);	
+		super(MinepreggoMenus.PREGGO_MOB_PRENATAL_CHECKUP_MENU.get(), id, inv, buffer);	
 	}
 
 	@Override

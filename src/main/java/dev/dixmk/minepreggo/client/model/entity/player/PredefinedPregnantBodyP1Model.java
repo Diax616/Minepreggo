@@ -1,10 +1,8 @@
 package dev.dixmk.minepreggo.client.model.entity.player;
 
 import dev.dixmk.minepreggo.client.animation.preggo.BellyInflation;
-import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.player.SkinType;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
-import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
@@ -15,12 +13,8 @@ import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-
 @OnlyIn(Dist.CLIENT)
-public class PredefinedPregnantBodyP1Model extends AbstractPregnantBodyModel {
-	
-	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(MinepreggoHelper.fromThisNamespaceAndPath("predefined_pregnant_body_p1_model"), "main");
-	
+public class PredefinedPregnantBodyP1Model extends AbstractPregnantBodyModel {	
 	public PredefinedPregnantBodyP1Model(ModelPart root) {
 		super(root, BellyInflation.LOW, PregnancyPhase.P1, true, SkinType.PREDEFINED);
 	}
@@ -37,5 +31,4 @@ public class PredefinedPregnantBodyP1Model extends AbstractPregnantBodyModel {
 		leftBoob.addOrReplaceChild("Boob_2_r1", CubeListBuilder.create().texOffs(2, 1).mirror().addBox(-0.9F, -0.2717F, -3.266F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.15F)).mirror(false), PartPose.offsetAndRotation(-0.5F, 0.2F, 0.3F, 0.3491F, -0.1309F, -0.0436F));
 		return LayerDefinition.create(meshdefinition, 64, 32);
 	}
-	
 }

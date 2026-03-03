@@ -3,10 +3,10 @@ package dev.dixmk.minepreggo.world.item;
 import java.util.function.Consumer;
 
 import dev.dixmk.minepreggo.client.model.armor.ArmorModelHelper;
-import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -18,10 +18,9 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import net.minecraftforge.registries.ForgeRegistries;
 
 public abstract class BellyShieldChestPlateItem extends ArmorItem implements IMaternityArmor {
-	final PregnancyPhase maxPregnancyPhase;
+	private final PregnancyPhase maxPregnancyPhase;
 	
 	protected BellyShieldChestPlateItem(PregnancyPhase maxPregnancyPhase) {
 		super(new ArmorMaterial() {
@@ -42,7 +41,7 @@ public abstract class BellyShieldChestPlateItem extends ArmorItem implements IMa
 
 			@Override
 			public SoundEvent getEquipSound() {
-				return ForgeRegistries.SOUND_EVENTS.getValue(MinepreggoHelper.fromVanillaNamespaceAndPath("item.armor.equip_leather"));
+				return SoundEvents.ARMOR_EQUIP_LEATHER;
 			}
 
 			@Override
@@ -90,7 +89,7 @@ public abstract class BellyShieldChestPlateItem extends ArmorItem implements IMa
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return ArmorModelHelper.createMaternalP5HumanoidArmorModel(living, stack, slot, defaultModel);
+					return ArmorModelHelper.createBellyShieldP5Model(living, stack, slot, defaultModel);
 				}
 			});
 		}
@@ -112,7 +111,7 @@ public abstract class BellyShieldChestPlateItem extends ArmorItem implements IMa
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return ArmorModelHelper.createMaternalP6HumanoidArmorModel(living, stack, slot, defaultModel);
+					return ArmorModelHelper.createBellyShieldP6Model(living, stack, slot, defaultModel);
 				}
 			});
 		}
@@ -134,7 +133,7 @@ public abstract class BellyShieldChestPlateItem extends ArmorItem implements IMa
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return ArmorModelHelper.createMaternalP7HumanoidArmorModel(living, stack, slot, defaultModel);
+					return ArmorModelHelper.createBellyShieldP7Model(living, stack, slot, defaultModel);
 				}
 			});
 		}
@@ -156,7 +155,7 @@ public abstract class BellyShieldChestPlateItem extends ArmorItem implements IMa
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return ArmorModelHelper.createMaternalP8HumanoidArmorModel(living, stack, slot, defaultModel);
+					return ArmorModelHelper.createBellyShieldP8Model(living, stack, slot, defaultModel);
 				}
 			});
 		}

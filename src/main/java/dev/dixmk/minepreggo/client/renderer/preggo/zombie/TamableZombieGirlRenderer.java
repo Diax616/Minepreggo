@@ -2,8 +2,8 @@ package dev.dixmk.minepreggo.client.renderer.preggo.zombie;
 
 import javax.annotation.Nullable;
 
-import dev.dixmk.minepreggo.client.model.entity.preggo.zombie.AbstractZombieGirlModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.zombie.TamableZombieGirlModel;
+import dev.dixmk.minepreggo.client.model.geom.MinepreggoModelLayers;
 import dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.zombie.TamableZombieGirlExpressionLayer;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirl;
 import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
@@ -18,7 +18,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class TamableZombieGirlRenderer extends AbstractTamableZombieGirlRenderer<TamableZombieGirl, TamableZombieGirlModel> {
 
 	public TamableZombieGirlRenderer(EntityRendererProvider.Context context) {
-		this(context, AbstractZombieGirlModel.LAYER_LOCATION, AbstractZombieGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractZombieGirlModel.LAYER_OUTER_ARMOR_LOCATION);
+		this(context, MinepreggoModelLayers.ZOMBIE_GIRL, MinepreggoModelLayers.ZOMBIE_GIRL_INNER_ARMOR, MinepreggoModelLayers.ZOMBIE_GIRL_OUTER_ARMOR);
 	}
 	
 	public TamableZombieGirlRenderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter) {
@@ -26,7 +26,7 @@ public class TamableZombieGirlRenderer extends AbstractTamableZombieGirlRenderer
 	}
 	
 	@Override
-	public ResourceLocation getTextureLocation(TamableZombieGirl p_115812_) {
+	public ResourceLocation getTextureLocation(TamableZombieGirl entity) {
 		return ZOMBIE_GIRL_LOCATION;
 	}
 		

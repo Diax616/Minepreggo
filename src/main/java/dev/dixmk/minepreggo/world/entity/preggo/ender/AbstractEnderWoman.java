@@ -10,7 +10,7 @@ import javax.annotation.Nullable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import dev.dixmk.minepreggo.event.entity.living.EnderWomanAngerEvent;
-import dev.dixmk.minepreggo.init.MinepreggoModItems;
+import dev.dixmk.minepreggo.init.MinepreggoItems;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.utils.TagHelper;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
@@ -123,7 +123,7 @@ public abstract class AbstractEnderWoman extends PreggoMob implements NeutralMob
 	
 	@Override
 	public boolean isFoodToTame(ItemStack stack) {
-		return stack.is(MinepreggoModItems.REFINED_CHORUS_SHARDS.get()) || stack.is(MinepreggoModItems.ENDER_SLIME_JELLY.get());
+		return stack.is(MinepreggoItems.REFINED_CHORUS_SHARDS.get()) || stack.is(MinepreggoItems.ENDER_SLIME_JELLY.get());
 	}
 	
 	@Override

@@ -3,13 +3,14 @@ package dev.dixmk.minepreggo.world.entity.preggo.zombie;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.client.animation.player.BellyAnimationManager;
 import dev.dixmk.minepreggo.client.animation.preggo.BellyAnimation;
-import dev.dixmk.minepreggo.init.MinepreggoModDamageSources;
-import dev.dixmk.minepreggo.init.MinepreggoModEntities;
-import dev.dixmk.minepreggo.init.MinepreggoModSounds;
+import dev.dixmk.minepreggo.init.MinepreggoDamageSources;
+import dev.dixmk.minepreggo.init.MinepreggoEntities;
+import dev.dixmk.minepreggo.init.MinepreggoSounds;
 import dev.dixmk.minepreggo.world.entity.BellyPartFactory;
 import dev.dixmk.minepreggo.world.entity.BellyPartManager;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
@@ -31,6 +32,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -38,6 +40,8 @@ import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.goal.FleeSunGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
@@ -52,6 +56,7 @@ import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 
 public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZombieGirl implements ITamablePregnantPreggoMob {
 
@@ -348,7 +353,7 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 		
 	@Override
 	public SoundEvent getDeathSound() {
-		return MinepreggoModSounds.PREGNANT_PREGGO_MOB_DEATH.get();
+		return MinepreggoSounds.PREGNANT_PREGGO_MOB_DEATH.get();
 	}
 	
 	@Override
@@ -360,7 +365,7 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 	public void die(DamageSource source) {
 		super.die(source);		
 		if (!this.level().isClientSide) {
-			if (source.is(MinepreggoModDamageSources.BELLY_BURST)) {
+			if (source.is(MinepreggoDamageSources.BELLY_BURST)) {
 				PregnancySystemHelper.deathByBellyBurst(this, (ServerLevel) this.level());
 			}
 			PreggoMobHelper.spawnBabyAndFetus(this);
@@ -452,17 +457,29 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 		return super.causeFallDamage(pFallDistance, pMultiplier, pSource);
 	}
 	
+	@Override
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData, @Nullable CompoundTag dataTag) {
+		SpawnGroupData spawnData = super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData, dataTag);	
+		if (spawnType != MobSpawnType.CONVERSION) {  	
+			PreggoMobHelper.initDefaultPregnancy(this);    	
+		}	
+		PregnancyPhase phase = this.getPregnancyData().getCurrentPregnancyPhase();
+		PregnancySystemHelper.applyGravityModifier(this, phase);
+		PregnancySystemHelper.applyKnockbackResistanceModifier(this, phase);
+		return spawnData;
+	}
+	
 	public static EntityType<? extends AbstractTamablePregnantZombieGirl> getEntityType(PregnancyPhase phase) {	
 		return switch (phase) {
-			case P0 -> MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P0.get();
-			case P1 -> MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P1.get();
-			case P2 -> MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P2.get();
-			case P3 -> MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P3.get();
-			case P4 -> MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P4.get();
-			case P5 -> MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P5.get();
-			case P6 -> MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P6.get();
-			case P7 -> MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P7.get();
-			case P8 -> MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P8.get();
+			case P0 -> MinepreggoEntities.TAMABLE_ZOMBIE_GIRL_P0.get();
+			case P1 -> MinepreggoEntities.TAMABLE_ZOMBIE_GIRL_P1.get();
+			case P2 -> MinepreggoEntities.TAMABLE_ZOMBIE_GIRL_P2.get();
+			case P3 -> MinepreggoEntities.TAMABLE_ZOMBIE_GIRL_P3.get();
+			case P4 -> MinepreggoEntities.TAMABLE_ZOMBIE_GIRL_P4.get();
+			case P5 -> MinepreggoEntities.TAMABLE_ZOMBIE_GIRL_P5.get();
+			case P6 -> MinepreggoEntities.TAMABLE_ZOMBIE_GIRL_P6.get();
+			case P7 -> MinepreggoEntities.TAMABLE_ZOMBIE_GIRL_P7.get();
+			case P8 -> MinepreggoEntities.TAMABLE_ZOMBIE_GIRL_P8.get();
 			default -> throw new IllegalArgumentException("Unexpected value: " + phase);
 		};
 	}

@@ -12,7 +12,7 @@ import dev.dixmk.minepreggo.client.jiggle.JigglePhysicsManager;
 import dev.dixmk.minepreggo.client.jiggle.EntityJiggleData;
 import dev.dixmk.minepreggo.client.jiggle.EntityJiggleDataFactory;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
-import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoMobEffects;
 import dev.dixmk.minepreggo.world.entity.player.SkinType;
 import dev.dixmk.minepreggo.world.item.IMaternityArmor;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
@@ -82,7 +82,7 @@ public abstract class AbstractPregnantBodyModel extends HierarchicalModel<Abstra
 	public void setupAnim(AbstractClientPlayer entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {		
 		this.root.getAllParts().forEach(ModelPart::resetPose);
 				
-		if (entity.hasEffect(MinepreggoModMobEffects.LACTATION.get())) {
+		if (entity.hasEffect(MinepreggoMobEffects.LACTATION.get())) {
 			this.boobs.y += milkingBoobsYPos;		
 			this.boobs.xScale = milkingBoobsXScale;
 			this.boobs.yScale = milkingBoobsYScale;

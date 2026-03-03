@@ -11,8 +11,8 @@ import com.google.common.collect.ImmutableMap;
 import org.spongepowered.asm.mixin.injection.At;
 
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
-import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
-import dev.dixmk.minepreggo.init.MinepreggoModSounds;
+import dev.dixmk.minepreggo.init.MinepreggoMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoSounds;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
@@ -53,9 +53,9 @@ public abstract class PlayerMixin extends Entity {
 		player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> 
 			cap.getFemaleData().ifPresent(femaleData -> {
 				if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {			
-					if (player.hasEffect(MinepreggoModMobEffects.MISCARRIAGE.get()) ||
-							player.hasEffect(MinepreggoModMobEffects.PREBIRTH.get()) || 
-							player.hasEffect(MinepreggoModMobEffects.BIRTH.get())) {
+					if (player.hasEffect(MinepreggoMobEffects.MISCARRIAGE.get()) ||
+							player.hasEffect(MinepreggoMobEffects.PREBIRTH.get()) || 
+							player.hasEffect(MinepreggoMobEffects.BIRTH.get())) {
 						ci.cancel();
 					}
 				}
@@ -111,7 +111,7 @@ public abstract class PlayerMixin extends Entity {
     		MessageHelper.sendTo(serverPlayer, Component.translatable("chat.minepreggo.player.pregnancy.message.cannot_fly_using_elytras"), true);
     		
     		if (serverPlayer.getRandom().nextFloat() < 0.4f) {
-    			LivingEntityHelper.playSoundNearTo(serverPlayer, MinepreggoModSounds.getRandomStomachGrowls(serverPlayer.getRandom()));
+    			LivingEntityHelper.playSoundNearTo(serverPlayer, MinepreggoSounds.getRandomStomachGrowls(serverPlayer.getRandom()));
     		}
     		
     		cir.setReturnValue(false);

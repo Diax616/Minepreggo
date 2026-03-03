@@ -6,9 +6,9 @@ import javax.annotation.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
-import dev.dixmk.minepreggo.init.MinepreggoModDamageSources;
-import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
-import dev.dixmk.minepreggo.init.MinepreggoModSounds;
+import dev.dixmk.minepreggo.init.MinepreggoDamageSources;
+import dev.dixmk.minepreggo.init.MinepreggoMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoSounds;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
@@ -64,7 +64,7 @@ public class BabyDuplication extends MobEffect {
         	var pregnancyData = tamablePregnantPreggoMob.getPregnancyData();
         	var random = target.getRandom();
         	var newPhase = apply(pregnancyData, getExtraBabiesByAmplifier(amplifier), random);
-        	LivingEntityHelper.playSoundNearTo(target, MinepreggoModSounds.getRandomStomachGrowls(target.getRandom()));         	
+        	LivingEntityHelper.playSoundNearTo(target, MinepreggoSounds.getRandomStomachGrowls(target.getRandom()));         	
 
         	if (newPhase != pregnancyData.getCurrentPregnancyPhase()) {    		
         		MinepreggoMod.LOGGER.debug("BabyDuplication Effect: Entity {} advanced from phase {} to {}", target.getDisplayName().getString(), pregnancyData.getCurrentPregnancyPhase(), newPhase);
@@ -104,13 +104,13 @@ public class BabyDuplication extends MobEffect {
             player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap ->
                 cap.getFemaleData().ifPresent(femaleData -> {
                     if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {          	
-                    	if (player.hasEffect(MinepreggoModMobEffects.ENDER_DRAGON_PREGNANCY.get())) {
-                        	LivingEntityHelper.playSoundNearTo(target, MinepreggoModSounds.getRandomStomachGrowls(target.getRandom()));         	
+                    	if (player.hasEffect(MinepreggoMobEffects.ENDER_DRAGON_PREGNANCY.get())) {
+                        	LivingEntityHelper.playSoundNearTo(target, MinepreggoSounds.getRandomStomachGrowls(target.getRandom()));         	
                         	if (femaleData.getPregnancyData().getCurrentPregnancyPhase().compareTo(PregnancyPhase.P3) >= 0) {   
                         		MessageHelper.sendTo(player, Component.translatable("chat.minepreggo.player.pregnancy.message.cannot_apply_baby_duplication.ender_dragon_pregnancy.2"), true);
                         		if (player.getHealth() > 2f) {
-                                	LivingEntityHelper.playSoundNearTo(target, MinepreggoModSounds.getRandomPregnancyPain(target.getRandom()));         	
-                        			target.hurt(new DamageSource(target.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(MinepreggoModDamageSources.PREGNANCY_PAIN)), 1);
+                                	LivingEntityHelper.playSoundNearTo(target, MinepreggoSounds.getRandomPregnancyPain(target.getRandom()));         	
+                        			target.hurt(new DamageSource(target.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(MinepreggoDamageSources.PREGNANCY_PAIN)), 1);
                             	}
                         	}
                         	else {
@@ -122,7 +122,7 @@ public class BabyDuplication extends MobEffect {
                     	var random = player.getRandom();
                     	var oldPhase = pregnancySystem.getCurrentPregnancyPhase(); 	
                     	var newPhase = apply(pregnancySystem, getExtraBabiesByAmplifier(amplifier), random);
-                    	LivingEntityHelper.playSoundNearTo(target, MinepreggoModSounds.getRandomStomachGrowls(target.getRandom()));
+                    	LivingEntityHelper.playSoundNearTo(target, MinepreggoSounds.getRandomStomachGrowls(target.getRandom()));
         	
                     	if (newPhase != oldPhase) {
                     		player.removeEffect(PlayerHelper.getPregnancyEffects(oldPhase));

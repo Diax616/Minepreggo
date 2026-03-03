@@ -20,6 +20,7 @@ import dev.dixmk.minepreggo.client.model.entity.player.PredefinedPregnantBodyP5M
 import dev.dixmk.minepreggo.client.model.entity.player.PredefinedPregnantBodyP6Model;
 import dev.dixmk.minepreggo.client.model.entity.player.PredefinedPregnantBodyP7Model;
 import dev.dixmk.minepreggo.client.model.entity.player.PredefinedPregnantBodyP8Model;
+import dev.dixmk.minepreggo.client.model.geom.MinepreggoModelLayers;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.world.entity.player.SkinType;
 import net.minecraft.client.model.PlayerModel;
@@ -49,16 +50,16 @@ public class PredefinedPregnantBodyLayer extends AbstractPregnantBodyLayer {
 	
 	public PredefinedPregnantBodyLayer(RenderLayerParent<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> parent, EntityModelSet modelSet) {
 		super(parent);
-        this.boobsModel = new PredefinedBoobsModel(modelSet.bakeLayer(PredefinedBoobsModel.LAYER_LOCATION));
-        this.pregnantBodyP0Model = new PredefinedPregnantBodyP0Model(modelSet.bakeLayer(PredefinedPregnantBodyP0Model.LAYER_LOCATION));
-        this.pregnantBodyP1Model = new PredefinedPregnantBodyP1Model(modelSet.bakeLayer(PredefinedPregnantBodyP1Model.LAYER_LOCATION));
-        this.pregnantBodyP2Model = new PredefinedPregnantBodyP2Model(modelSet.bakeLayer(PredefinedPregnantBodyP2Model.LAYER_LOCATION));
-        this.pregnantBodyP3Model = new PredefinedPregnantBodyP3Model(modelSet.bakeLayer(PredefinedPregnantBodyP3Model.LAYER_LOCATION));
-        this.pregnantBodyP4Model = new PredefinedPregnantBodyP4Model(modelSet.bakeLayer(PredefinedPregnantBodyP4Model.LAYER_LOCATION));
-        this.pregnantBodyP5Model = new PredefinedPregnantBodyP5Model(modelSet.bakeLayer(PredefinedPregnantBodyP5Model.LAYER_LOCATION));
-        this.pregnantBodyP6Model = new PredefinedPregnantBodyP6Model(modelSet.bakeLayer(PredefinedPregnantBodyP6Model.LAYER_LOCATION));
-        this.pregnantBodyP7Model = new PredefinedPregnantBodyP7Model(modelSet.bakeLayer(PredefinedPregnantBodyP7Model.LAYER_LOCATION));
-        this.pregnantBodyP8Model = new PredefinedPregnantBodyP8Model(modelSet.bakeLayer(PredefinedPregnantBodyP8Model.LAYER_LOCATION));
+        this.boobsModel = new PredefinedBoobsModel(modelSet.bakeLayer(MinepreggoModelLayers.PREDEFINED_BOOBS));
+        this.pregnantBodyP0Model = new PredefinedPregnantBodyP0Model(modelSet.bakeLayer(MinepreggoModelLayers.PREDEFINED_PREGNANT_BODY_P0));
+        this.pregnantBodyP1Model = new PredefinedPregnantBodyP1Model(modelSet.bakeLayer(MinepreggoModelLayers.PREDEFINED_PREGNANT_BODY_P1));
+        this.pregnantBodyP2Model = new PredefinedPregnantBodyP2Model(modelSet.bakeLayer(MinepreggoModelLayers.PREDEFINED_PREGNANT_BODY_P2));
+        this.pregnantBodyP3Model = new PredefinedPregnantBodyP3Model(modelSet.bakeLayer(MinepreggoModelLayers.PREDEFINED_PREGNANT_BODY_P3));
+        this.pregnantBodyP4Model = new PredefinedPregnantBodyP4Model(modelSet.bakeLayer(MinepreggoModelLayers.PREDEFINED_PREGNANT_BODY_P4));
+        this.pregnantBodyP5Model = new PredefinedPregnantBodyP5Model(modelSet.bakeLayer(MinepreggoModelLayers.PREDEFINED_PREGNANT_BODY_P5));
+        this.pregnantBodyP6Model = new PredefinedPregnantBodyP6Model(modelSet.bakeLayer(MinepreggoModelLayers.PREDEFINED_PREGNANT_BODY_P6));
+        this.pregnantBodyP7Model = new PredefinedPregnantBodyP7Model(modelSet.bakeLayer(MinepreggoModelLayers.PREDEFINED_PREGNANT_BODY_P7));
+        this.pregnantBodyP8Model = new PredefinedPregnantBodyP8Model(modelSet.bakeLayer(MinepreggoModelLayers.PREDEFINED_PREGNANT_BODY_P8));
 	}
 
 	@Override

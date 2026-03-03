@@ -2,7 +2,7 @@ package dev.dixmk.minepreggo.world.entity.projectile;
 
 import java.util.List;
 
-import dev.dixmk.minepreggo.init.MinepreggoModItems;
+import dev.dixmk.minepreggo.init.MinepreggoItems;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -21,7 +21,7 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 
 public class ExplosiveDragonFireball extends AbstractHurtingProjectile implements ItemSupplier {
-   public static final ItemStack PROJECTILE_ITEM = new ItemStack(MinepreggoModItems.EXPLOSIVE_DRAGON_FIREBALL.get());
+   public static final ItemStack PROJECTILE_ITEM = new ItemStack(MinepreggoItems.EXPLOSIVE_DRAGON_FIREBALL.get());
 
    private int explosionPower = 2;
    

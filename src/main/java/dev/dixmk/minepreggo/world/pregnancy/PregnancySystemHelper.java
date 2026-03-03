@@ -21,11 +21,11 @@ import com.google.common.collect.Table;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
-import dev.dixmk.minepreggo.init.MinepreggoModDamageSources;
-import dev.dixmk.minepreggo.init.MinepreggoModEntities;
-import dev.dixmk.minepreggo.init.MinepreggoModItems;
-import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
-import dev.dixmk.minepreggo.init.MinepreggoModSounds;
+import dev.dixmk.minepreggo.init.MinepreggoDamageSources;
+import dev.dixmk.minepreggo.init.MinepreggoEntities;
+import dev.dixmk.minepreggo.init.MinepreggoItems;
+import dev.dixmk.minepreggo.init.MinepreggoMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoSounds;
 import dev.dixmk.minepreggo.network.packet.s2c.RemoveMobEffectS2CPacket;
 import dev.dixmk.minepreggo.server.ServerParticleHelper;
 import dev.dixmk.minepreggo.utils.MathHelper;
@@ -40,7 +40,7 @@ import dev.dixmk.minepreggo.world.item.BabyItem;
 import dev.dixmk.minepreggo.world.item.IFemaleArmor;
 import dev.dixmk.minepreggo.world.item.IMaternityArmor;
 import dev.dixmk.minepreggo.world.item.ItemHelper;
-import dev.dixmk.minepreggo.world.item.KneeBraceItem;
+import dev.dixmk.minepreggo.world.item.KneeBracesItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Position;
@@ -263,59 +263,59 @@ public class PregnancySystemHelper {
 	
 	// ITEMS USED DURING PREGNANCY - START
 	private static final ImmutableMap<Species, Item> MILK_ITEM = ImmutableMap.of(
-			Species.CREEPER, MinepreggoModItems.CREEPER_BREAST_MILK_BOTTLE.get(),
-			Species.ZOMBIE, MinepreggoModItems.ZOMBIE_BREAST_MILK_BOTTLE.get(),
-			Species.HUMAN, MinepreggoModItems.HUMAN_BREAST_MILK_BOTTLE.get(),
-			Species.ENDER, MinepreggoModItems.ENDER_BREAST_MILK_BOTTLE.get()
+			Species.CREEPER, MinepreggoItems.CREEPER_BREAST_MILK_BOTTLE.get(),
+			Species.ZOMBIE, MinepreggoItems.ZOMBIE_BREAST_MILK_BOTTLE.get(),
+			Species.HUMAN, MinepreggoItems.HUMAN_BREAST_MILK_BOTTLE.get(),
+			Species.ENDER, MinepreggoItems.ENDER_BREAST_MILK_BOTTLE.get()
 	);
 		
 	private static final ImmutableMap<Species, ImmutableMap<Craving, List<Item>>> CRAVING_ITEM = ImmutableMap.of(
 			Species.CREEPER, ImmutableMap.of(
-					Craving.SALTY, List.of(MinepreggoModItems.ACTIVATED_GUNPOWDER_WITH_SALT.get()), 
-					Craving.SWEET, List.of(MinepreggoModItems.ACTIVATED_GUNPOWDER_WITH_CHOCOLATE.get()), 
-					Craving.SOUR, List.of(MinepreggoModItems.SOUR_ACTIVATED_GUNPOWDER.get()),
-					Craving.SPICY, List.of(MinepreggoModItems.ACTIVATED_GUNPOWDER_WITH_HOT_SAUCE.get())),	
+					Craving.SALTY, List.of(MinepreggoItems.ACTIVATED_GUNPOWDER_WITH_SALT.get()), 
+					Craving.SWEET, List.of(MinepreggoItems.ACTIVATED_GUNPOWDER_WITH_CHOCOLATE.get()), 
+					Craving.SOUR, List.of(MinepreggoItems.SOUR_ACTIVATED_GUNPOWDER.get()),
+					Craving.SPICY, List.of(MinepreggoItems.ACTIVATED_GUNPOWDER_WITH_HOT_SAUCE.get())),	
 			Species.ZOMBIE, ImmutableMap.of(
-					Craving.SALTY, List.of(MinepreggoModItems.BRAIN_WITH_SALT.get()), 
-					Craving.SWEET, List.of(MinepreggoModItems.BRAIN_WITH_CHOCOLATE.get()), 
-					Craving.SOUR, List.of(MinepreggoModItems.SOUR_BRAIN.get()),
-					Craving.SPICY, List.of(MinepreggoModItems.BRAIN_WITH_HOT_SAUCE.get())),
+					Craving.SALTY, List.of(MinepreggoItems.BRAIN_WITH_SALT.get()), 
+					Craving.SWEET, List.of(MinepreggoItems.BRAIN_WITH_CHOCOLATE.get()), 
+					Craving.SOUR, List.of(MinepreggoItems.SOUR_BRAIN.get()),
+					Craving.SPICY, List.of(MinepreggoItems.BRAIN_WITH_HOT_SAUCE.get())),
 			Species.ENDER, ImmutableMap.of(
-					Craving.SALTY, List.of(MinepreggoModItems.ENDER_SLIME_JELLY_WITH_SALT.get()), 
-					Craving.SWEET, List.of(MinepreggoModItems.ENDER_SLIME_JELLY_WITH_CHOCOLATE.get()), 
-					Craving.SOUR, List.of(MinepreggoModItems.SOUR_ENDER_SLIME_JELLY.get()),
-					Craving.SPICY, List.of(MinepreggoModItems.ENDER_SLIME_JELLY_WITH_HOT_SAUCE.get())),
+					Craving.SALTY, List.of(MinepreggoItems.ENDER_SLIME_JELLY_WITH_SALT.get()), 
+					Craving.SWEET, List.of(MinepreggoItems.ENDER_SLIME_JELLY_WITH_CHOCOLATE.get()), 
+					Craving.SOUR, List.of(MinepreggoItems.SOUR_ENDER_SLIME_JELLY.get()),
+					Craving.SPICY, List.of(MinepreggoItems.ENDER_SLIME_JELLY_WITH_HOT_SAUCE.get())),
 			Species.DRAGON, ImmutableMap.of(
-					Craving.SALTY, List.of(MinepreggoModItems.CHORUS_FRUIT_WITH_SALT.get()), 
-					Craving.SWEET, List.of(MinepreggoModItems.CHORUS_FRUIT_WITH_CHOCOLATE.get()), 
-					Craving.SOUR, List.of(MinepreggoModItems.SOUR_CHORUS_FRUIT.get()),
-					Craving.SPICY, List.of(MinepreggoModItems.CHORUS_FRUIT_WITH_HOT_SAUCE.get())),
+					Craving.SALTY, List.of(MinepreggoItems.CHORUS_FRUIT_WITH_SALT.get()), 
+					Craving.SWEET, List.of(MinepreggoItems.CHORUS_FRUIT_WITH_CHOCOLATE.get()), 
+					Craving.SOUR, List.of(MinepreggoItems.SOUR_CHORUS_FRUIT.get()),
+					Craving.SPICY, List.of(MinepreggoItems.CHORUS_FRUIT_WITH_HOT_SAUCE.get())),
 			Species.HUMAN,	ImmutableMap.of(
-					Craving.SALTY, List.of(MinepreggoModItems.PICKLE.get(), MinepreggoModItems.FRENCH_FRIES.get()), 
-					Craving.SWEET, List.of(MinepreggoModItems.CHOCOLATE_BAR.get(), MinepreggoModItems.CANDY_APPLE.get()), 
-					Craving.SOUR, List.of(MinepreggoModItems.LEMON_ICE_POPSICLES.get(), MinepreggoModItems.LEMON_ICE_CREAM.get(), MinepreggoModItems.LEMON_DROP.get()),
-					Craving.SPICY, List.of(MinepreggoModItems.HOT_CHICKEN.get(), MinepreggoModItems.CHILI_POPPERS.get()))	
+					Craving.SALTY, List.of(MinepreggoItems.PICKLE.get(), MinepreggoItems.FRENCH_FRIES.get()), 
+					Craving.SWEET, List.of(MinepreggoItems.CHOCOLATE_BAR.get(), MinepreggoItems.CANDY_APPLE.get()), 
+					Craving.SOUR, List.of(MinepreggoItems.LEMON_ICE_POPSICLES.get(), MinepreggoItems.LEMON_ICE_CREAM.get(), MinepreggoItems.LEMON_DROP.get()),
+					Craving.SPICY, List.of(MinepreggoItems.HOT_CHICKEN.get(), MinepreggoItems.CHILI_POPPERS.get()))	
 	);
 	
 	private static final Table<Species, Creature, Item> ALIVE_BABIES = ImmutableTable.<Species, Creature, Item>builder()
-			.put(Species.HUMAN, Creature.HUMANOID, MinepreggoModItems.BABY_HUMAN.get())
-			.put(Species.ZOMBIE, Creature.HUMANOID, MinepreggoModItems.BABY_ZOMBIE.get())
-			.put(Species.CREEPER, Creature.HUMANOID, MinepreggoModItems.BABY_HUMANOID_CREEPER.get())
-			.put(Species.CREEPER, Creature.MONSTER, MinepreggoModItems.BABY_CREEPER.get())
-			.put(Species.ENDER, Creature.MONSTER, MinepreggoModItems.BABY_ENDER.get())
-			.put(Species.ENDER, Creature.HUMANOID, MinepreggoModItems.BABY_HUMANOID_ENDER.get())
-			.put(Species.VILLAGER, Creature.HUMANOID, MinepreggoModItems.BABY_VILLAGER.get())
-			.put(Species.DRAGON, Creature.MONSTER, MinepreggoModItems.BABY_ENDER_DRAGON_BLOCK.get())
+			.put(Species.HUMAN, Creature.HUMANOID, MinepreggoItems.BABY_HUMAN.get())
+			.put(Species.ZOMBIE, Creature.HUMANOID, MinepreggoItems.BABY_ZOMBIE.get())
+			.put(Species.CREEPER, Creature.HUMANOID, MinepreggoItems.BABY_HUMANOID_CREEPER.get())
+			.put(Species.CREEPER, Creature.MONSTER, MinepreggoItems.BABY_CREEPER.get())
+			.put(Species.ENDER, Creature.MONSTER, MinepreggoItems.BABY_ENDER.get())
+			.put(Species.ENDER, Creature.HUMANOID, MinepreggoItems.BABY_HUMANOID_ENDER.get())
+			.put(Species.VILLAGER, Creature.HUMANOID, MinepreggoItems.BABY_VILLAGER.get())
+			.put(Species.DRAGON, Creature.MONSTER, MinepreggoItems.BABY_ENDER_DRAGON_BLOCK.get())
 			.build();
 
 	private static final Table<Species, Creature, Item> DEAD_BABIES = ImmutableTable.<Species, Creature, Item>builder()
-			.put(Species.HUMAN, Creature.HUMANOID, MinepreggoModItems.DEAD_HUMAN_FETUS.get())
-			.put(Species.ZOMBIE, Creature.HUMANOID, MinepreggoModItems.DEAD_ZOMBIE_FETUS.get())
-			.put(Species.CREEPER, Creature.HUMANOID, MinepreggoModItems.DEAD_HUMANOID_CREEPER_FETUS.get())
-			.put(Species.CREEPER, Creature.MONSTER, MinepreggoModItems.DEAD_CREEPER_FETUS.get())
-			.put(Species.ENDER, Creature.MONSTER, MinepreggoModItems.DEAD_ENDER_FETUS.get())
-			.put(Species.ENDER, Creature.HUMANOID, MinepreggoModItems.DEAD_HUMANOID_ENDER_FETUS.get())
-			.put(Species.VILLAGER, Creature.HUMANOID, MinepreggoModItems.DEAD_VILLAGER_FETUS.get())
+			.put(Species.HUMAN, Creature.HUMANOID, MinepreggoItems.DEAD_HUMAN_FETUS.get())
+			.put(Species.ZOMBIE, Creature.HUMANOID, MinepreggoItems.DEAD_ZOMBIE_FETUS.get())
+			.put(Species.CREEPER, Creature.HUMANOID, MinepreggoItems.DEAD_HUMANOID_CREEPER_FETUS.get())
+			.put(Species.CREEPER, Creature.MONSTER, MinepreggoItems.DEAD_CREEPER_FETUS.get())
+			.put(Species.ENDER, Creature.MONSTER, MinepreggoItems.DEAD_ENDER_FETUS.get())
+			.put(Species.ENDER, Creature.HUMANOID, MinepreggoItems.DEAD_HUMANOID_ENDER_FETUS.get())
+			.put(Species.VILLAGER, Creature.HUMANOID, MinepreggoItems.DEAD_VILLAGER_FETUS.get())
 			.build();
 
 	private static final ImmutableMap<Craving, Float> CRAVING_WEIGHTS = ImmutableMap.of(		
@@ -534,7 +534,7 @@ public class PregnancySystemHelper {
 		if (!ItemHelper.isLegging(armor)) {
 			return false;
 		}		
-		else if (armor instanceof KneeBraceItem) {
+		else if (armor instanceof KneeBracesItem) {
 			return true;
 		}		
 
@@ -544,11 +544,9 @@ public class PregnancySystemHelper {
 	public static boolean shouldBoobsBeHidden(Item armor) {
 		return !(armor instanceof IMaternityArmor maternityArmor && maternityArmor.areBoobsExposed());
 	}
-    
 	// ARMOR USAGE DURING PREGNANCY - END
 	
 
-	
 	// PREGNANCY CALCULATES - START
 	public static PregnancyPhase calculateMinPhaseToGiveBirth(PregnancyPhase currentPregnancyStage) {
 		if (currentPregnancyStage.compareTo(PregnancyPhase.P5) >= 0) {
@@ -593,13 +591,13 @@ public class PregnancySystemHelper {
     }  
     
     public static OptionalInt calculatePregnancyDamage(LivingEntity pregnantEntity, PregnancyPhase phase, DamageSource damagesource) {
-    	if (phase == PregnancyPhase.P0 || damagesource.is(MinepreggoModDamageSources.PREGNANCY_PAIN)) {
+    	if (phase == PregnancyPhase.P0 || damagesource.is(MinepreggoDamageSources.PREGNANCY_PAIN)) {
     		return OptionalInt.empty();
     	}
     	
     	RandomSource randomSource = pregnantEntity.getRandom();
 
-		if (pregnantEntity.hasEffect(MinepreggoModMobEffects.PREGNANCY_RESISTANCE.get())
+		if (pregnantEntity.hasEffect(MinepreggoMobEffects.PREGNANCY_RESISTANCE.get())
 				|| (!damagesource.is(DamageTypes.FALL) && !pregnantEntity.getItemBySlot(EquipmentSlot.CHEST).isEmpty() && randomSource.nextFloat() < 0.7)) {
 			return OptionalInt.empty();
 		}
@@ -653,7 +651,7 @@ public class PregnancySystemHelper {
 					if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized() && canTouchBelly(source, target)) {		
 						if (!level.isClientSide) {
 											
-							LivingEntityHelper.playSoundNearTo(target, MinepreggoModSounds.BELLY_TOUCH.get(), 0.6f);
+							LivingEntityHelper.playSoundNearTo(target, MinepreggoSounds.BELLY_TOUCH.get(), 0.6f);
 							
 							final var pregnancySystem = femaleData.getPregnancyData();
 							final var isFather = femaleData.getPrePregnancyData().isPresent() && femaleData.getPrePregnancyData().get().fatherId().equals(source.getUUID());
@@ -827,14 +825,14 @@ public class PregnancySystemHelper {
 
 		if (species == Species.ZOMBIE) {
 			if (random.nextBoolean()) {
-				entity = MinepreggoModEntities.HOSTILE_ZOMBIE_GIRL.get().spawn(serverLevel, blockPos, MobSpawnType.MOB_SUMMONED);
+				entity = MinepreggoEntities.HOSTILE_ZOMBIE_GIRL.get().spawn(serverLevel, blockPos, MobSpawnType.MOB_SUMMONED);
 			}
 			else {
 				entity = EntityType.ZOMBIE.spawn(serverLevel, blockPos, MobSpawnType.MOB_SUMMONED);
 			}
 		}
 		else if (species == Species.CREEPER) {
-			entity = MinepreggoModEntities.HOSTILE_HUMANOID_CREEPER_GIRL.get().spawn(serverLevel, blockPos, MobSpawnType.MOB_SUMMONED);
+			entity = MinepreggoEntities.HOSTILE_HUMANOID_CREEPER_GIRL.get().spawn(serverLevel, blockPos, MobSpawnType.MOB_SUMMONED);
 		}
 		else if (species == Species.VILLAGER) {
 			entity = EntityType.VILLAGER.spawn(serverLevel, blockPos, MobSpawnType.MOB_SUMMONED);
@@ -887,17 +885,17 @@ public class PregnancySystemHelper {
 	
 	// DEATH HELPERS - START
     public static void deathByBellyBurst(LivingEntity entity, ServerLevel serverLevel) {
-    	LivingEntityHelper.playSoundNearTo(entity, MinepreggoModSounds.getRandomStomachGrowls(entity.getRandom()));
+    	LivingEntityHelper.playSoundNearTo(entity, MinepreggoSounds.getRandomStomachGrowls(entity.getRandom()));
 		serverLevel.explode(entity, entity.getX(), entity.getY(), entity.getZ(), 1, ExplosionInteraction.MOB);
 		ServerParticleHelper.startBloodRainAtEntity(serverLevel, entity);
     }
     
 	public static void tornWomb(LivingEntity entity) {
-		entity.hurt(new DamageSource(entity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(MinepreggoModDamageSources.BELLY_BURST)), Float.MAX_VALUE);
+		entity.hurt(new DamageSource(entity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(MinepreggoDamageSources.BELLY_BURST)), Float.MAX_VALUE);
 	}
 	
 	public static void applyDamageByPregnancyPain(LivingEntity entity, int damage) {
-		entity.hurt(new DamageSource(entity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(MinepreggoModDamageSources.PREGNANCY_PAIN)), damage);
+		entity.hurt(new DamageSource(entity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(MinepreggoDamageSources.PREGNANCY_PAIN)), damage);
 	}
 	// DEATH HELPERS - END
 }

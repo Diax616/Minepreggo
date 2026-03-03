@@ -9,7 +9,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
-import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoMobEffects;
 import dev.dixmk.minepreggo.server.ServerParticleHelper;
 import dev.dixmk.minepreggo.server.ServerTaskQueueManager;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
@@ -98,7 +98,7 @@ public class WorldEventHandler {
 				ServerTaskQueueManager.getInstance().queueTask(20, () -> ServerParticleHelper.spawnParticlesAroundSelf(entity, ParticleTypes.HAPPY_VILLAGER, 10));
             }
             
-            if (entity.hasEffect(MinepreggoModMobEffects.ETERNAL_PREGNANCY.get())) {
+            if (entity.hasEffect(MinepreggoMobEffects.ETERNAL_PREGNANCY.get())) {
 				return; 
 			}
             

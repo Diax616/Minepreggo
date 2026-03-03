@@ -1,6 +1,6 @@
 package dev.dixmk.minepreggo.world.item.alchemy;
 
-import dev.dixmk.minepreggo.init.MinepreggoModPotions;
+import dev.dixmk.minepreggo.init.MinepreggoPotions;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -23,7 +23,7 @@ public class MetabolismControlPotionBrewingRecipe implements IBrewingRecipe {
 	@Override
 	public ItemStack getOutput(ItemStack input, ItemStack ingredient) {
 		if (isInput(input) && isIngredient(ingredient)) {
-			return PotionUtils.setPotion(new ItemStack(input.getItem()), MinepreggoModPotions.METABOLISM_CONTROL.get());
+			return PotionUtils.setPotion(new ItemStack(input.getItem()), MinepreggoPotions.METABOLISM_CONTROL.get());
 		}
 		return ItemStack.EMPTY;
 	}

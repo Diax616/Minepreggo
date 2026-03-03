@@ -10,7 +10,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.BlockPos;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.init.MinepreggoModMenus;
+import dev.dixmk.minepreggo.init.MinepreggoMenus;
 import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
 
 import java.util.Optional;
@@ -27,7 +27,7 @@ public class SelectPregnantEntityForPrenatalCheckUpMenu extends AbstractContaine
 	private List<LivingEntity> pregnantLivingEntities = new ArrayList<>();
 	
 	public SelectPregnantEntityForPrenatalCheckUpMenu(int id, Inventory inv, FriendlyByteBuf extraData) {
-		super(MinepreggoModMenus.SELECT_PREGNANT_ENTITY_FOR_PRENATAL_CHECKUP_MENU.get(), id);	
+		super(MinepreggoMenus.SELECT_PREGNANT_ENTITY_FOR_PRENATAL_CHECKUP_MENU.get(), id);	
 		this.player = inv.player;
 		this.level = inv.player.level();
 

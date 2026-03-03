@@ -2,7 +2,7 @@ package dev.dixmk.minepreggo.world.item;
 
 import net.minecraft.world.level.Level;
 import net.minecraft.world.item.ItemStack;
-import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoMobEffects;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -22,7 +22,7 @@ public class ZombieBreastMilkBottleItem extends AbstractBreastMilk {
 			if (entity instanceof PreggoMob preggoMob && preggoMob.getTypeOfSpecies() == Species.ZOMBIE) {	
 				entity.heal(4f);
 			}
-			else if (entity instanceof Player && entity.hasEffect(MinepreggoModMobEffects.FULL_OF_ZOMBIES.get())) {
+			else if (entity instanceof Player && entity.hasEffect(MinepreggoMobEffects.FULL_OF_ZOMBIES.get())) {
 				entity.heal(2f);
 			}
 			else {

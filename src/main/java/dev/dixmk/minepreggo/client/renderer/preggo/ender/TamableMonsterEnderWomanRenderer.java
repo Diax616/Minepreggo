@@ -3,8 +3,8 @@ package dev.dixmk.minepreggo.client.renderer.preggo.ender;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import dev.dixmk.minepreggo.client.model.entity.preggo.ender.AbstractMonsterEnderWomanModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.ender.TamableMonsterEnderWomanModel;
+import dev.dixmk.minepreggo.client.model.geom.MinepreggoModelLayers;
 import dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.ender.TamableMonsterEnderWomanExpressionLayer;
 import dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.ender.TamableMonsterEnderWomanExpressiveEyesLayer;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.TamableMonsterEnderWoman;
@@ -20,7 +20,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class TamableMonsterEnderWomanRenderer extends AbstractTamableMonsterEnderWomanRenderer<TamableMonsterEnderWoman, TamableMonsterEnderWomanModel> {
 	
 	public TamableMonsterEnderWomanRenderer(EntityRendererProvider.Context context) {
-		this(context, AbstractMonsterEnderWomanModel.LAYER_LOCATION, AbstractMonsterEnderWomanModel.LAYER_INNER_ARMOR_LOCATION, AbstractMonsterEnderWomanModel.LAYER_OUTER_ARMOR_LOCATION);
+		this(context, MinepreggoModelLayers.MONSTER_ENDER_WOMAN, MinepreggoModelLayers.MONSTER_ENDER_WOMAN_INNER_ARMOR, MinepreggoModelLayers.MONSTER_ENDER_WOMAN_OUTER_ARMOR);
 	}
 	
 	public TamableMonsterEnderWomanRenderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter) {
@@ -28,7 +28,7 @@ public class TamableMonsterEnderWomanRenderer extends AbstractTamableMonsterEnde
 	}
 	
 	@Override
-	public ResourceLocation getTextureLocation(TamableMonsterEnderWoman p_115812_) {
+	public ResourceLocation getTextureLocation(TamableMonsterEnderWoman entity) {
 		return MONSTER_ENDER_GIRL_LOCATION;
 	}	
 	

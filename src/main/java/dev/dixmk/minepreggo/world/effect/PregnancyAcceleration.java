@@ -4,8 +4,8 @@ import javax.annotation.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
-import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
-import dev.dixmk.minepreggo.init.MinepreggoModSounds;
+import dev.dixmk.minepreggo.init.MinepreggoMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoSounds;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancyData;
@@ -35,18 +35,18 @@ public class PregnancyAcceleration extends MobEffect {
 
     @Override
     public void applyInstantenousEffect(@Nullable Entity source, @Nullable Entity indirectSource, LivingEntity target, int amplifier, double effectiveness) {             
-        if (target.level().isClientSide || target.hasEffect(MinepreggoModMobEffects.ETERNAL_PREGNANCY.get())) return;
+        if (target.level().isClientSide || target.hasEffect(MinepreggoMobEffects.ETERNAL_PREGNANCY.get())) return;
         
         if (target instanceof ITamablePregnantPreggoMob handler) {
         	apply(handler.getPregnancyData(), getDaysByAmplifier(target.getRandom(), amplifier));
-        	LivingEntityHelper.playSoundNearTo(target, MinepreggoModSounds.getRandomStomachGrowls(target.getRandom()));
+        	LivingEntityHelper.playSoundNearTo(target, MinepreggoSounds.getRandomStomachGrowls(target.getRandom()));
 
         } else if (target instanceof ServerPlayer serverPlayer) {
             serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap ->
                 cap.getFemaleData().ifPresent(femaleData -> {
                     if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
                     	apply(femaleData.getPregnancyData(), getDaysByAmplifier(target.getRandom(), amplifier));
-                    	LivingEntityHelper.playSoundNearTo(target, MinepreggoModSounds.getRandomStomachGrowls(target.getRandom()));
+                    	LivingEntityHelper.playSoundNearTo(target, MinepreggoSounds.getRandomStomachGrowls(target.getRandom()));
                     }
                 })
             );

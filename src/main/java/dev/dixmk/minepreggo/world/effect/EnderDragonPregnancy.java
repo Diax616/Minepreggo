@@ -6,7 +6,7 @@ import com.google.common.collect.ImmutableMap;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
-import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoMobEffects;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
@@ -173,16 +173,16 @@ public class EnderDragonPregnancy extends MobEffect {
 		}
 		
 		player.removeEffect(MobEffects.NIGHT_VISION);
-		player.removeEffect(MinepreggoModMobEffects.PREGNANCY_RESISTANCE.get());
+		player.removeEffect(MinepreggoMobEffects.PREGNANCY_RESISTANCE.get());
 		player.removeEffect(MobEffects.FIRE_RESISTANCE);
-		player.removeEffect(MinepreggoModMobEffects.POISON_IMMUNITY.get());
-		player.removeEffect(MinepreggoModMobEffects.WIHER_IMMUNITY.get());
+		player.removeEffect(MinepreggoMobEffects.POISON_IMMUNITY.get());
+		player.removeEffect(MinepreggoMobEffects.WIHER_IMMUNITY.get());
 		player.removeEffect(MobEffects.DAMAGE_BOOST);
 		player.removeEffect(MobEffects.DAMAGE_RESISTANCE);
 		player.removeEffect(MobEffects.REGENERATION);	
-		player.removeEffect(MinepreggoModMobEffects.ENDER_ESSENCE.get());
-		player.removeEffect(MinepreggoModMobEffects.ENDER_DRAGON_RECOGNITION.get());	
-		player.removeEffect(MinepreggoModMobEffects.ENDER_DRAGON_ESSENCE.get());		
+		player.removeEffect(MinepreggoMobEffects.ENDER_ESSENCE.get());
+		player.removeEffect(MinepreggoMobEffects.ENDER_DRAGON_RECOGNITION.get());	
+		player.removeEffect(MinepreggoMobEffects.ENDER_DRAGON_ESSENCE.get());		
 	}
 	
     private static void applyEffectsForP0(LivingEntity entity) {
@@ -211,15 +211,15 @@ public class EnderDragonPregnancy extends MobEffect {
     private static void applyEffectsForP3(LivingEntity entity) {
     	applyEffectsForP2(entity);
     	entity.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, -1, 0, false, false, false));
-    	entity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.PREGNANCY_RESISTANCE.get(), -1, 0, false, false, false));
+    	entity.addEffect(new MobEffectInstance(MinepreggoMobEffects.PREGNANCY_RESISTANCE.get(), -1, 0, false, false, false));
     	entity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, -1, 0, false, false, false));
     }
     
     private static void applyEffectsForP4(LivingEntity entity) {
     	applyEffectsForP3(entity);
     	entity.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, -1, 0, false, false, false));
-    	entity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.POISON_IMMUNITY.get(), -1, 0, false, false, false));
-    	entity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.WIHER_IMMUNITY.get(), -1, 0, false, false, false));
+    	entity.addEffect(new MobEffectInstance(MinepreggoMobEffects.POISON_IMMUNITY.get(), -1, 0, false, false, false));
+    	entity.addEffect(new MobEffectInstance(MinepreggoMobEffects.WIHER_IMMUNITY.get(), -1, 0, false, false, false));
    
     	AttributeInstance movementSpeedAttribute = entity.getAttribute(Attributes.MOVEMENT_SPEED);
     	if (movementSpeedAttribute != null && movementSpeedAttribute.getModifier(MOVEMENT_SPEED_MODIFIER_UUID) == null) {
@@ -245,13 +245,13 @@ public class EnderDragonPregnancy extends MobEffect {
     	applyEffectsForP5(entity);
     	entity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, -1, 1, false, false, false));
 		addKnockBack(2, entity);
-    	entity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.ENDER_ESSENCE.get(), -1, 0, false, false, true));
+    	entity.addEffect(new MobEffectInstance(MinepreggoMobEffects.ENDER_ESSENCE.get(), -1, 0, false, false, true));
     }
     
     private static void applyEffectsForP7(LivingEntity entity) {
     	applyEffectsForP6(entity);
     	entity.addEffect(new MobEffectInstance(MobEffects.REGENERATION, -1, 0, false, false, false));
-    	entity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.ENDER_DRAGON_RECOGNITION.get(), -1, 0, false, false, true));
+    	entity.addEffect(new MobEffectInstance(MinepreggoMobEffects.ENDER_DRAGON_RECOGNITION.get(), -1, 0, false, false, true));
     }
     
     private static void applyEffectsForP8(LivingEntity entity) {
@@ -259,7 +259,7 @@ public class EnderDragonPregnancy extends MobEffect {
 		addKnockBack(3, entity);
     	entity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, -1, 1, false, false, false));
     	entity.addEffect(new MobEffectInstance(MobEffects.REGENERATION, -1, 1, false, false, false));
-    	entity.addEffect(new MobEffectInstance(MinepreggoModMobEffects.ENDER_DRAGON_ESSENCE.get(), -1, 0, false, false, true));
+    	entity.addEffect(new MobEffectInstance(MinepreggoMobEffects.ENDER_DRAGON_ESSENCE.get(), -1, 0, false, false, true));
     }
     
     private static void addKnockBack(int level, LivingEntity entity) {
@@ -290,11 +290,11 @@ public class EnderDragonPregnancy extends MobEffect {
 	}
     
     private static boolean isEffectInPhaseP3(MobEffect effect) {
-		return effect == MobEffects.NIGHT_VISION || effect == MinepreggoModMobEffects.PREGNANCY_RESISTANCE.get() || effect == MobEffects.DAMAGE_RESISTANCE;
+		return effect == MobEffects.NIGHT_VISION || effect == MinepreggoMobEffects.PREGNANCY_RESISTANCE.get() || effect == MobEffects.DAMAGE_RESISTANCE;
 	}
     
     private static boolean isEffectInPhaseP4(MobEffect effect) {
-    	return effect == MobEffects.FIRE_RESISTANCE || effect == MinepreggoModMobEffects.POISON_IMMUNITY.get() || effect == MinepreggoModMobEffects.WIHER_IMMUNITY.get();
+    	return effect == MobEffects.FIRE_RESISTANCE || effect == MinepreggoMobEffects.POISON_IMMUNITY.get() || effect == MinepreggoMobEffects.WIHER_IMMUNITY.get();
     }
     
     private static boolean isEffectInPhaseP5(MobEffect effect) {
@@ -302,14 +302,14 @@ public class EnderDragonPregnancy extends MobEffect {
 	}
     
     private static boolean isEffectInPhaseP6(MobEffect effect) {
-    	return effect == MobEffects.DAMAGE_RESISTANCE || effect == MinepreggoModMobEffects.ENDER_ESSENCE.get();
+    	return effect == MobEffects.DAMAGE_RESISTANCE || effect == MinepreggoMobEffects.ENDER_ESSENCE.get();
     }
     
     private static boolean isEffectInPhaseP7(MobEffect effect) {
-		return effect == MobEffects.REGENERATION || effect == MinepreggoModMobEffects.ENDER_DRAGON_RECOGNITION.get();
+		return effect == MobEffects.REGENERATION || effect == MinepreggoMobEffects.ENDER_DRAGON_RECOGNITION.get();
 	}
     
     private static boolean isEffectInPhaseP8(MobEffect effect) {
-		return effect == MobEffects.DAMAGE_BOOST || effect == MinepreggoModMobEffects.ENDER_DRAGON_ESSENCE.get() || effect == MobEffects.REGENERATION;
+		return effect == MobEffects.DAMAGE_BOOST || effect == MinepreggoMobEffects.ENDER_DRAGON_ESSENCE.get() || effect == MobEffects.REGENERATION;
 	}
 }

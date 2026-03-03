@@ -11,8 +11,8 @@ import org.joml.Vector3i;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
-import dev.dixmk.minepreggo.init.MinepreggoModAdvancements;
-import dev.dixmk.minepreggo.init.MinepreggoModMenus;
+import dev.dixmk.minepreggo.init.MinepreggoAdvancements;
+import dev.dixmk.minepreggo.init.MinepreggoMenus;
 import dev.dixmk.minepreggo.network.packet.s2c.PlaySoundPacketS2C;
 import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
 import dev.dixmk.minepreggo.world.item.checkup.PrenatalCheckups;
@@ -47,7 +47,7 @@ public abstract class PlayerPrenatalCheckUpMenu<T extends Mob> extends AbstractP
 	protected void onSuccessful(PrenatalCheckup prenatalCheckup) {		
 		if (this.source.orElse(null) instanceof ServerPlayer serverPlayer) {
 			serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> cap.getPlayerStatistic().addPrenatalCheckupDoneMyself(prenatalCheckup));
-			MinepreggoModAdvancements.PRENATAL_CHECKUP_TRIGGER.trigger(serverPlayer);
+			MinepreggoAdvancements.PRENATAL_CHECKUP_TRIGGER.trigger(serverPlayer);
 		}
 	}
 		
@@ -121,7 +121,7 @@ public abstract class PlayerPrenatalCheckUpMenu<T extends Mob> extends AbstractP
 	public static class VillagerMenu extends PlayerPrenatalCheckUpMenu<Villager> {
 		
 		public VillagerMenu(int id, Inventory inv, FriendlyByteBuf buffer) {
-			super(MinepreggoModMenus.PLAYER_PRENATAL_CHECKUP_BY_VILLAGER_MENU.get(), id, inv, buffer);	
+			super(MinepreggoMenus.PLAYER_PRENATAL_CHECKUP_BY_VILLAGER_MENU.get(), id, inv, buffer);	
 		}
 		
 		@Override
@@ -218,7 +218,7 @@ public abstract class PlayerPrenatalCheckUpMenu<T extends Mob> extends AbstractP
 	public static class IllagerMenu extends PlayerPrenatalCheckUpMenu<ScientificIllager> {
 		
 		public IllagerMenu(int id, Inventory inv, FriendlyByteBuf buffer) {
-			super(MinepreggoModMenus.PLAYER_PRENATAL_CHECKUP_BY_ILLAGER_MENU.get(), id, inv, buffer);
+			super(MinepreggoMenus.PLAYER_PRENATAL_CHECKUP_BY_ILLAGER_MENU.get(), id, inv, buffer);
 		}
 		
 		@Override

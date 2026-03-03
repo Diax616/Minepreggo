@@ -9,7 +9,7 @@ import java.util.UUID;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
-import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoMobEffects;
 import dev.dixmk.minepreggo.world.entity.BellyPartManager;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.player.PlayerPregnancySystemP0;
@@ -66,7 +66,7 @@ public abstract class AbstractPlayerPregnancy<S extends PlayerPregnancySystemP0>
     							
     					PlayerHelper.addEnderDragonPregnancyEffects(serverPlayer);	
     					
-    					if (serverPlayer.hasEffect(MinepreggoModMobEffects.ENDER_DRAGON_PREGNANCY.get())) {
+    					if (serverPlayer.hasEffect(MinepreggoMobEffects.ENDER_DRAGON_PREGNANCY.get())) {
     						MinepreggoMod.LOGGER.debug("Applying Ender Dragon pregnancy effects for player: {} in phase: {}", serverPlayer.getName().getString(), phase);
     						EnderDragonPregnancy.applyEffects(serverPlayer, phase);
     					}

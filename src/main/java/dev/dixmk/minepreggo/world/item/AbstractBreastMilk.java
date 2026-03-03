@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
-import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoMobEffects;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
@@ -52,7 +52,7 @@ public abstract class AbstractBreastMilk extends Item {
 				player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> {			
 					Optional<List<MobEffect>> effects = cap.getFemaleData().map(femaleData -> {
 						if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
-							if (player.hasEffect(MinepreggoModMobEffects.ENDER_DRAGON_PREGNANCY.get())) {
+							if (player.hasEffect(MinepreggoMobEffects.ENDER_DRAGON_PREGNANCY.get())) {
 								return PlayerHelper.removeEffectsBeingPregnantOfEnderDragon(player, femaleData.getPregnancyData().getCurrentPregnancyPhase());
 							}
 							else {

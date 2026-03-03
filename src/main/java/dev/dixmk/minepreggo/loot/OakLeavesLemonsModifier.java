@@ -3,7 +3,7 @@ package dev.dixmk.minepreggo.loot;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import dev.dixmk.minepreggo.init.MinepreggoModItems;
+import dev.dixmk.minepreggo.init.MinepreggoItems;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -41,7 +41,7 @@ public class OakLeavesLemonsModifier extends LootModifier {
                         }
                     }        
                     if (context.getRandom().nextFloat() < chance) {
-                        generatedLoot.add(new ItemStack(MinepreggoModItems.LEMON.get(), 1 + context.getRandom().nextInt(3)));
+                        generatedLoot.add(new ItemStack(MinepreggoItems.LEMON.get(), 1 + context.getRandom().nextInt(3)));
                     }   		
             	}	
             }

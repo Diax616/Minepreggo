@@ -2,8 +2,8 @@ package dev.dixmk.minepreggo.client.renderer.preggo.creeper;
 
 import javax.annotation.Nullable;
 
-import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractHumanoidCreeperGirlModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.TamableHumanoidCreeperGirlModel;
+import dev.dixmk.minepreggo.client.model.geom.MinepreggoModelLayers;
 import dev.dixmk.minepreggo.client.renderer.entity.layer.ExpressiveFaceLayer;
 import dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.creeper.TamableHumanoidCreeperGirlExpressionLayer;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamableHumanoidCreeperGirl;
@@ -19,7 +19,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class TamableHumanoidCreeperGirlRenderer extends AbstractTamableHumanoidCreeperGirlRenderer<TamableHumanoidCreeperGirl, TamableHumanoidCreeperGirlModel> {
 	
 	public TamableHumanoidCreeperGirlRenderer(EntityRendererProvider.Context context) {
-		this(context, AbstractHumanoidCreeperGirlModel.LAYER_LOCATION, AbstractHumanoidCreeperGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractHumanoidCreeperGirlModel.LAYER_OUTER_ARMOR_LOCATION, AbstractHumanoidCreeperGirlModel.LAYER_ENERGY_ARMOR_LOCATION);
+		this(context, MinepreggoModelLayers.HUMANOID_CREEPER_GIRL, MinepreggoModelLayers.HUMANOID_CREEPER_GIRL_INNER_ARMOR, MinepreggoModelLayers.HUMANOID_CREEPER_GIRL_OUTER_ARMOR, MinepreggoModelLayers.HUMANOID_CREEPER_GIRL_ENERGY_ARMOR);
 	}
 	
 	public TamableHumanoidCreeperGirlRenderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter, ModelLayerLocation armor) {
@@ -27,7 +27,7 @@ public class TamableHumanoidCreeperGirlRenderer extends AbstractTamableHumanoidC
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(TamableHumanoidCreeperGirl p_115812_) {
+	public ResourceLocation getTextureLocation(TamableHumanoidCreeperGirl entity) {
 		return CREEPER_GIRL_LOCATION;
 	}
 	

@@ -7,15 +7,19 @@ import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.monster.ZombieVillager;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.ServerLevelAccessor;
+
+import javax.annotation.Nullable;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import dev.dixmk.minepreggo.init.MinepreggoModItems;
+import dev.dixmk.minepreggo.init.MinepreggoItems;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.utils.TagHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
+import dev.dixmk.minepreggo.world.item.ItemHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -33,6 +37,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -91,7 +96,7 @@ public abstract class AbstractZombieGirl extends PreggoMob {
 	
 	@Override
 	public boolean isFoodToTame(ItemStack stack) {
-		return stack.is(MinepreggoModItems.VILLAGER_BRAIN.get());
+		return stack.is(MinepreggoItems.VILLAGER_BRAIN.get());
 	}
     
 	@Override
@@ -173,6 +178,24 @@ public abstract class AbstractZombieGirl extends PreggoMob {
 	@Override
 	public SoundEvent getDeathSound() {
 		return SoundEvents.GENERIC_DEATH;
+	}
+	
+	@Override
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData, @Nullable CompoundTag dataTag) {
+		SpawnGroupData spawnData = super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData, dataTag);
+		RandomSource randomsource = level.getRandom();
+    	this.setCanPickUpLoot(this.random.nextFloat() < 0.55F * difficulty.getSpecialMultiplier());     
+		this.populateDefaultEquipmentSlots(randomsource, difficulty);
+		this.populateDefaultEquipmentEnchantments(randomsource, difficulty);
+		ItemStack chestplate = this.getItemBySlot(EquipmentSlot.CHEST);
+		if (!chestplate.isEmpty()) {
+			ItemStack femaleChestplate = ItemHelper.createFemaleChestplateByVanillaChestplate(chestplate);
+			if (!femaleChestplate.isEmpty()) {
+				ItemHelper.copyEnchantments(chestplate, femaleChestplate);
+				this.setItemSlot(EquipmentSlot.CHEST, femaleChestplate);
+			}
+		}			
+		return spawnData;
 	}
 			
 	protected static class ZombieGirlAttackTurtleEggGoal extends RemoveBlockGoal {   

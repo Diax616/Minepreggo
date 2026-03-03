@@ -4,7 +4,7 @@ import java.util.Optional;
 import java.util.OptionalInt;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoMobEffects;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.player.PlayerPregnancySystemP3;
 import net.minecraft.server.level.ServerPlayer;
@@ -44,7 +44,7 @@ public class PregnancyP3 extends AbstractPlayerPregnancy<PlayerPregnancySystemP3
         	return;
         }
 		
-		if (!entity.level().isClientSide && !entity.hasEffect(MinepreggoModMobEffects.ZERO_GRAVITY_BELLY.get())) {
+		if (!entity.level().isClientSide && !entity.hasEffect(MinepreggoMobEffects.ZERO_GRAVITY_BELLY.get())) {
 			entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, -1, 0, false, false));			
 		
 			AttributeInstance speedAttr = entity.getAttribute(Attributes.MOVEMENT_SPEED);

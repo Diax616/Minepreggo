@@ -1,6 +1,6 @@
 package dev.dixmk.minepreggo.world.item;
 
-import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoMobEffects;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -27,7 +27,7 @@ public class EnderSlimeJellyItem extends Item {
 	
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {	
-		if (!player.hasEffect(MinepreggoModMobEffects.FULL_OF_ENDERS.get())) {
+		if (!player.hasEffect(MinepreggoMobEffects.FULL_OF_ENDERS.get())) {
 			return InteractionResultHolder.fail(player.getItemInHand(hand));
 		}
 		return super.use(level, player, hand);

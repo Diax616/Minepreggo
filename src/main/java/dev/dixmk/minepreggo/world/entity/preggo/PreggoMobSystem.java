@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
-import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoMobEffects;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.network.packet.s2c.SexCinematicControlP2MS2CPacket;
 import dev.dixmk.minepreggo.server.ServerCinematicManager;
@@ -437,7 +437,7 @@ public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob<?>> impleme
 	        );
 	        
 	        if (owner != null && !PlayerHelper.isInvencible(owner) && !LivingEntityHelper.hasValidTarget(preggoMob)) {        	
-	        	if (preggoMob instanceof AbstractEnderWoman && owner.hasEffect(MinepreggoModMobEffects.ENDER_DRAGON_RECOGNITION.get())) {
+	        	if (preggoMob instanceof AbstractEnderWoman && owner.hasEffect(MinepreggoMobEffects.ENDER_DRAGON_RECOGNITION.get())) {
 	        		return;
 	        	}	      		        	
 	        	else if (preggoMob instanceof AbstractCreeperGirl creeperGirl) {

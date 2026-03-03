@@ -1,6 +1,6 @@
 package dev.dixmk.minepreggo.world.entity.preggo.creeper;
 
-import dev.dixmk.minepreggo.init.MinepreggoModEntities;
+import dev.dixmk.minepreggo.init.MinepreggoEntities;
 import dev.dixmk.minepreggo.world.entity.ai.goal.BreakBlocksToFollowOwnerGoal;
 import dev.dixmk.minepreggo.world.entity.ai.goal.EatGoal;
 import dev.dixmk.minepreggo.world.entity.ai.goal.GoalHelper;
@@ -42,15 +42,15 @@ public class HumanoidCreeperHelper {
 	
 	public static EntityType<? extends AbstractTamablePregnantHumanoidCreeperGirl> getEntityType(PregnancyPhase phase) {	
 		return switch (phase) {
-			case P0 -> MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P0.get();
-			case P1 -> MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P1.get();
-			case P2 -> MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P2.get();
-			case P3 -> MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P3.get();
-			case P4 -> MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P4.get();
-			case P5 -> MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P5.get();
-			case P6 -> MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P6.get();
-			case P7 -> MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P7.get();	
-			case P8 -> MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P8.get();
+			case P0 -> MinepreggoEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P0.get();
+			case P1 -> MinepreggoEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P1.get();
+			case P2 -> MinepreggoEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P2.get();
+			case P3 -> MinepreggoEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P3.get();
+			case P4 -> MinepreggoEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P4.get();
+			case P5 -> MinepreggoEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P5.get();
+			case P6 -> MinepreggoEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P6.get();
+			case P7 -> MinepreggoEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P7.get();	
+			case P8 -> MinepreggoEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P8.get();
 			default -> throw new IllegalArgumentException("Invalid pregnancy phase: " + phase);
 		};	
 	}
@@ -132,9 +132,9 @@ public class HumanoidCreeperHelper {
 	}
 	
 	static AbstractCreeperGirl.ExplosionData getExplosionValuesByPregnancyPhase(PregnancyPhase pregnancyPhase) {
-		int explosionIntensity = AbstractCreeperGirl.DEFAULT_EXPLOSION_DATA.explosionItensity();
-		int explosionRadius = AbstractCreeperGirl.DEFAULT_EXPLOSION_DATA.explosionRadius();
-		int maxSwell = AbstractCreeperGirl.DEFAULT_EXPLOSION_DATA.maxSwell();
+		int explosionIntensity = AbstractCreeperGirl.DEFAULT_EXPLOSION_DATA.getExplosionItensity();
+		int explosionRadius = AbstractCreeperGirl.DEFAULT_EXPLOSION_DATA.getExplosionRadius();
+		int maxSwell = AbstractCreeperGirl.DEFAULT_EXPLOSION_DATA.getMaxSwell();
 	
 		switch (pregnancyPhase) {
 			case P3, P4 -> explosionRadius++;

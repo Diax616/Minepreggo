@@ -1,7 +1,7 @@
 package dev.dixmk.minepreggo.world.item.alchemy;
 
-import dev.dixmk.minepreggo.init.MinepreggoModItems;
-import dev.dixmk.minepreggo.init.MinepreggoModPotions;
+import dev.dixmk.minepreggo.init.MinepreggoItems;
+import dev.dixmk.minepreggo.init.MinepreggoPotions;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -19,13 +19,13 @@ public class InfertilityPotionBrewingRecipe implements IBrewingRecipe {
 
 	@Override
 	public boolean isIngredient(ItemStack ingredient) {
-		return ingredient.is(MinepreggoModItems.ZOMBIE_BREAST_MILK_BOTTLE.get());
+		return ingredient.is(MinepreggoItems.ZOMBIE_BREAST_MILK_BOTTLE.get());
 	}
 
 	@Override
 	public ItemStack getOutput(ItemStack input, ItemStack ingredient) {
 		if (isInput(input) && isIngredient(ingredient)) {
-			return PotionUtils.setPotion(new ItemStack(input.getItem()), MinepreggoModPotions.INFERTILITY.get());
+			return PotionUtils.setPotion(new ItemStack(input.getItem()), MinepreggoPotions.INFERTILITY.get());
 		}
 		return ItemStack.EMPTY;
 	}

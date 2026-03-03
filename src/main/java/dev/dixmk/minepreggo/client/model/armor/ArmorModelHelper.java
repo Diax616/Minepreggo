@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import dev.dixmk.minepreggo.client.model.geom.MinepreggoModelLayers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -25,10 +26,10 @@ public class ArmorModelHelper {
 		return MODEL_CACHE.computeIfAbsent(key, k -> supplier.get());
 	}
 	
-	public static HumanoidModel<LivingEntity> createHumanoidKneeBraceArmorModel (LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {	
-		var armorModel = getOrCreateModel("knee_brace", () -> new HumanoidModel<>(new ModelPart(Collections.emptyList(),
-				Map.of("left_leg", new KneeBraceModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(KneeBraceModel.LAYER_LOCATION)).leftLeg,
-						"right_leg", new KneeBraceModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(KneeBraceModel.LAYER_LOCATION)).rightLeg,
+	public static HumanoidModel<LivingEntity> createKneeBracesModel (LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {	
+		var armorModel = getOrCreateModel("knee_braces", () -> new HumanoidModel<>(new ModelPart(Collections.emptyList(),
+				Map.of("left_leg", new KneeBracesModel(Minecraft.getInstance().getEntityModels().bakeLayer(MinepreggoModelLayers.KNEE_BRACES)).leftLeg,
+						"right_leg", new KneeBracesModel(Minecraft.getInstance().getEntityModels().bakeLayer(MinepreggoModelLayers.KNEE_BRACES)).rightLeg,
 						"head", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
 						"hat", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
 						"body", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
@@ -40,11 +41,11 @@ public class ArmorModelHelper {
 		return armorModel;
 	}
 	
-	public static HumanoidModel<LivingEntity> createFemaleP0HumanoidArmorModel (LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {	
-		var armorModel = getOrCreateModel("female", () -> new HumanoidModel<>(new ModelPart(Collections.emptyList(),
-				Map.of("body", new FemaleChestPlateModel(Minecraft.getInstance().getEntityModels().bakeLayer(FemaleChestPlateModel.LAYER_LOCATION)).body,
-				"left_arm", new FemaleChestPlateModel(Minecraft.getInstance().getEntityModels().bakeLayer(FemaleChestPlateModel.LAYER_LOCATION)).leftArm,
-				"right_arm", new FemaleChestPlateModel(Minecraft.getInstance().getEntityModels().bakeLayer(FemaleChestPlateModel.LAYER_LOCATION)).rightArm,
+	public static HumanoidModel<LivingEntity> createFemaleChestplateModel (LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {	
+		var armorModel = getOrCreateModel("female_chestplate", () -> new HumanoidModel<>(new ModelPart(Collections.emptyList(),
+				Map.of("body", new FemaleChestplateModel(Minecraft.getInstance().getEntityModels().bakeLayer(MinepreggoModelLayers.FEMALE_CHESTPLATE)).body,
+				"left_arm", new FemaleChestplateModel(Minecraft.getInstance().getEntityModels().bakeLayer(MinepreggoModelLayers.FEMALE_CHESTPLATE)).leftArm,
+				"right_arm", new FemaleChestplateModel(Minecraft.getInstance().getEntityModels().bakeLayer(MinepreggoModelLayers.FEMALE_CHESTPLATE)).rightArm,
 				"head", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
 				"hat", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
 				"right_leg", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
@@ -56,11 +57,11 @@ public class ArmorModelHelper {
 		return armorModel;
 	}
 	
-	public static HumanoidModel<LivingEntity> createMaternalP1HumanoidArmorModel (LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {	
-		var armorModel = getOrCreateModel("maternal_p1", () -> new HumanoidModel<>(new ModelPart(Collections.emptyList(),
-				Map.of("body", new MaternityChestPlateP1Model(Minecraft.getInstance().getEntityModels().bakeLayer(MaternityChestPlateP1Model.LAYER_LOCATION)).body,
-				"left_arm", new MaternityChestPlateP1Model(Minecraft.getInstance().getEntityModels().bakeLayer(MaternityChestPlateP1Model.LAYER_LOCATION)).leftArm,
-				"right_arm", new MaternityChestPlateP1Model(Minecraft.getInstance().getEntityModels().bakeLayer(MaternityChestPlateP1Model.LAYER_LOCATION)).rightArm,
+	public static HumanoidModel<LivingEntity> createMaternityChestplateP1Model (LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {	
+		var armorModel = getOrCreateModel("maternity_chestplate_p1", () -> new HumanoidModel<>(new ModelPart(Collections.emptyList(),
+				Map.of("body", new FemaleMaternityChestplateModel(Minecraft.getInstance().getEntityModels().bakeLayer(MinepreggoModelLayers.FEMALE_MATERNITY_CHESTPLATE_P1)).body,
+				"left_arm", new FemaleMaternityChestplateModel(Minecraft.getInstance().getEntityModels().bakeLayer(MinepreggoModelLayers.FEMALE_MATERNITY_CHESTPLATE_P1)).leftArm,
+				"right_arm", new FemaleMaternityChestplateModel(Minecraft.getInstance().getEntityModels().bakeLayer(MinepreggoModelLayers.FEMALE_MATERNITY_CHESTPLATE_P1)).rightArm,
 				"head", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
 				"hat", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
 				"right_leg", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
@@ -72,11 +73,11 @@ public class ArmorModelHelper {
 		return armorModel;
 	}
 	
-	public static HumanoidModel<LivingEntity> createMaternalP2HumanoidArmorModel (LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {	
-		var armorModel = getOrCreateModel("maternal_p2", () -> new HumanoidModel<>(new ModelPart(Collections.emptyList(),
-				Map.of("body", new MaternityChestPlateP2Model(Minecraft.getInstance().getEntityModels().bakeLayer(MaternityChestPlateP2Model.LAYER_LOCATION)).body,
-				"left_arm", new MaternityChestPlateP2Model(Minecraft.getInstance().getEntityModels().bakeLayer(MaternityChestPlateP2Model.LAYER_LOCATION)).leftArm,
-				"right_arm", new MaternityChestPlateP2Model(Minecraft.getInstance().getEntityModels().bakeLayer(MaternityChestPlateP2Model.LAYER_LOCATION)).rightArm,
+	public static HumanoidModel<LivingEntity> createMaternityChestplateP2Model (LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {	
+		var armorModel = getOrCreateModel("maternity_chestplate_p2", () -> new HumanoidModel<>(new ModelPart(Collections.emptyList(),
+				Map.of("body", new FemaleMaternityChestplateModel(Minecraft.getInstance().getEntityModels().bakeLayer(MinepreggoModelLayers.FEMALE_MATERNITY_CHESTPLATE_P2)).body,
+				"left_arm", new FemaleMaternityChestplateModel(Minecraft.getInstance().getEntityModels().bakeLayer(MinepreggoModelLayers.FEMALE_MATERNITY_CHESTPLATE_P2)).leftArm,
+				"right_arm", new FemaleMaternityChestplateModel(Minecraft.getInstance().getEntityModels().bakeLayer(MinepreggoModelLayers.FEMALE_MATERNITY_CHESTPLATE_P2)).rightArm,
 				"head", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
 				"hat", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
 				"right_leg", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
@@ -88,11 +89,11 @@ public class ArmorModelHelper {
 		return armorModel;
 	}
 	
-	public static HumanoidModel<LivingEntity> createMaternalP3HumanoidArmorModel (LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {	
-		var armorModel = getOrCreateModel("maternal_p3", () -> new HumanoidModel<>(new ModelPart(Collections.emptyList(),
-				Map.of("body", new MaternityChestPlateP3Model(Minecraft.getInstance().getEntityModels().bakeLayer(MaternityChestPlateP3Model.LAYER_LOCATION)).body,
-				"left_arm", new MaternityChestPlateP3Model(Minecraft.getInstance().getEntityModels().bakeLayer(MaternityChestPlateP3Model.LAYER_LOCATION)).leftArm,
-				"right_arm", new MaternityChestPlateP3Model(Minecraft.getInstance().getEntityModels().bakeLayer(MaternityChestPlateP3Model.LAYER_LOCATION)).rightArm,
+	public static HumanoidModel<LivingEntity> createMaternityChestplateP3Model (LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {	
+		var armorModel = getOrCreateModel("maternity_chestplate_p3", () -> new HumanoidModel<>(new ModelPart(Collections.emptyList(),
+				Map.of("body", new FemaleMaternityChestplateModel(Minecraft.getInstance().getEntityModels().bakeLayer(MinepreggoModelLayers.FEMALE_MATERNITY_CHESTPLATE_P3)).body,
+				"left_arm", new FemaleMaternityChestplateModel(Minecraft.getInstance().getEntityModels().bakeLayer(MinepreggoModelLayers.FEMALE_MATERNITY_CHESTPLATE_P3)).leftArm,
+				"right_arm", new FemaleMaternityChestplateModel(Minecraft.getInstance().getEntityModels().bakeLayer(MinepreggoModelLayers.FEMALE_MATERNITY_CHESTPLATE_P3)).rightArm,
 				"head", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
 				"hat", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
 				"right_leg", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
@@ -104,11 +105,11 @@ public class ArmorModelHelper {
 		return armorModel;
 	}
 	
-	public static HumanoidModel<LivingEntity> createMaternalP4HumanoidArmorModel (LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {	
-		var armorModel = getOrCreateModel("maternal_p4", () -> new HumanoidModel<>(new ModelPart(Collections.emptyList(),
-				Map.of("body", new MaternityChestPlateP4Model(Minecraft.getInstance().getEntityModels().bakeLayer(MaternityChestPlateP4Model.LAYER_LOCATION)).body,
-				"left_arm", new MaternityChestPlateP4Model(Minecraft.getInstance().getEntityModels().bakeLayer(MaternityChestPlateP4Model.LAYER_LOCATION)).leftArm,
-				"right_arm", new MaternityChestPlateP4Model(Minecraft.getInstance().getEntityModels().bakeLayer(MaternityChestPlateP4Model.LAYER_LOCATION)).rightArm,
+	public static HumanoidModel<LivingEntity> createMaternityChestplateP4Model (LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {	
+		var armorModel = getOrCreateModel("maternity_chestplate_p4", () -> new HumanoidModel<>(new ModelPart(Collections.emptyList(),
+				Map.of("body", new FemaleMaternityChestplateModel(Minecraft.getInstance().getEntityModels().bakeLayer(MinepreggoModelLayers.FEMALE_MATERNITY_CHESTPLATE_P4)).body,
+				"left_arm", new FemaleMaternityChestplateModel(Minecraft.getInstance().getEntityModels().bakeLayer(MinepreggoModelLayers.FEMALE_MATERNITY_CHESTPLATE_P4)).leftArm,
+				"right_arm", new FemaleMaternityChestplateModel(Minecraft.getInstance().getEntityModels().bakeLayer(MinepreggoModelLayers.FEMALE_MATERNITY_CHESTPLATE_P4)).rightArm,
 				"head", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
 				"hat", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
 				"right_leg", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
@@ -120,9 +121,9 @@ public class ArmorModelHelper {
 		return armorModel;
 	}
 	
-	public static HumanoidModel<LivingEntity> createMaternalP5HumanoidArmorModel (LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {	
-		var armorModel = getOrCreateModel("maternal_p5", () -> new HumanoidModel<>(new ModelPart(Collections.emptyList(),
-				Map.of("body", new BellyShieldP5Model(Minecraft.getInstance().getEntityModels().bakeLayer(BellyShieldP5Model.LAYER_LOCATION)).body,
+	public static HumanoidModel<LivingEntity> createBellyShieldP5Model (LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {	
+		var armorModel = getOrCreateModel("belly_shield_p5", () -> new HumanoidModel<>(new ModelPart(Collections.emptyList(),
+				Map.of("body", new BellyShieldModel(Minecraft.getInstance().getEntityModels().bakeLayer(MinepreggoModelLayers.BELLY_SHIELD_P5)).body,
 				"left_arm", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
 				"right_arm", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
 				"head", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
@@ -135,9 +136,9 @@ public class ArmorModelHelper {
 		return armorModel;
 	}
 	
-	public static HumanoidModel<LivingEntity> createMaternalP6HumanoidArmorModel (LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {	
-		var armorModel = getOrCreateModel("maternal_p6", () -> new HumanoidModel<>(new ModelPart(Collections.emptyList(),
-				Map.of("body", new BellyShieldP6Model(Minecraft.getInstance().getEntityModels().bakeLayer(BellyShieldP6Model.LAYER_LOCATION)).body,
+	public static HumanoidModel<LivingEntity> createBellyShieldP6Model (LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {	
+		var armorModel = getOrCreateModel("belly_shield_p6", () -> new HumanoidModel<>(new ModelPart(Collections.emptyList(),
+				Map.of("body", new BellyShieldModel(Minecraft.getInstance().getEntityModels().bakeLayer(MinepreggoModelLayers.BELLY_SHIELD_P6)).body,
 				"left_arm", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
 				"right_arm", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
 				"head", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
@@ -150,9 +151,9 @@ public class ArmorModelHelper {
 		return armorModel;
 	}
 	
-	public static HumanoidModel<LivingEntity> createMaternalP7HumanoidArmorModel (LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {	
-		var armorModel = getOrCreateModel("maternal_p7", () -> new HumanoidModel<>(new ModelPart(Collections.emptyList(),
-				Map.of("body", new BellyShieldP7Model(Minecraft.getInstance().getEntityModels().bakeLayer(BellyShieldP7Model.LAYER_LOCATION)).body,
+	public static HumanoidModel<LivingEntity> createBellyShieldP7Model (LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {	
+		var armorModel = getOrCreateModel("belly_shield_p7", () -> new HumanoidModel<>(new ModelPart(Collections.emptyList(),
+				Map.of("body", new BellyShieldModel(Minecraft.getInstance().getEntityModels().bakeLayer(MinepreggoModelLayers.BELLY_SHIELD_P7)).body,
 				"left_arm", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
 				"right_arm", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
 				"head", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
@@ -165,9 +166,9 @@ public class ArmorModelHelper {
 		return armorModel;
 	}
 		
-	public static HumanoidModel<LivingEntity> createMaternalP8HumanoidArmorModel (LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {	
-		var armorModel = getOrCreateModel("maternal_p8", () -> new HumanoidModel<>(new ModelPart(Collections.emptyList(),
-				Map.of("body", new BellyShieldP8Model(Minecraft.getInstance().getEntityModels().bakeLayer(BellyShieldP8Model.LAYER_LOCATION)).body,
+	public static HumanoidModel<LivingEntity> createBellyShieldP8Model (LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {	
+		var armorModel = getOrCreateModel("belly_shield_p8", () -> new HumanoidModel<>(new ModelPart(Collections.emptyList(),
+				Map.of("body", new BellyShieldModel(Minecraft.getInstance().getEntityModels().bakeLayer(MinepreggoModelLayers.BELLY_SHIELD_P8)).body,
 				"left_arm", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
 				"right_arm", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
 				"head", new ModelPart(Collections.emptyList(), Collections.emptyMap()),

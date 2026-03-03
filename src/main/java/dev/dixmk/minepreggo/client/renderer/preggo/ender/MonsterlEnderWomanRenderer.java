@@ -2,8 +2,8 @@ package dev.dixmk.minepreggo.client.renderer.preggo.ender;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
-import dev.dixmk.minepreggo.client.model.entity.preggo.ender.AbstractMonsterEnderWomanModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.ender.MonsterEnderWomanModel;
+import dev.dixmk.minepreggo.client.model.geom.MinepreggoModelLayers;
 import dev.dixmk.minepreggo.client.renderer.entity.layer.ExpressiveEyesLayer;
 import dev.dixmk.minepreggo.client.renderer.entity.layer.ExpressiveFaceLayer;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.HostileMonsterEnderWoman;
@@ -21,11 +21,11 @@ public class MonsterlEnderWomanRenderer extends AbstractHostileMonsterEnderWoman
 	}
 	
 	public MonsterlEnderWomanRenderer(EntityRendererProvider.Context context) {
-		this(context, AbstractMonsterEnderWomanModel.LAYER_LOCATION, AbstractMonsterEnderWomanModel.LAYER_INNER_ARMOR_LOCATION, AbstractMonsterEnderWomanModel.LAYER_OUTER_ARMOR_LOCATION);
+		this(context, MinepreggoModelLayers.MONSTER_ENDER_WOMAN, MinepreggoModelLayers.MONSTER_ENDER_WOMAN_INNER_ARMOR, MinepreggoModelLayers.MONSTER_ENDER_WOMAN_OUTER_ARMOR);
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(HostileMonsterEnderWoman p_115812_) {
+	public ResourceLocation getTextureLocation(HostileMonsterEnderWoman entity) {
 		return MONSTER_ENDER_GIRL_LOCATION;
 	}
 

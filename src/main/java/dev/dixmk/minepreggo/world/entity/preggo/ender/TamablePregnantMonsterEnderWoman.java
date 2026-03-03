@@ -1,7 +1,7 @@
 package dev.dixmk.minepreggo.world.entity.preggo.ender;
 
 import dev.dixmk.minepreggo.MinepreggoModConfig;
-import dev.dixmk.minepreggo.init.MinepreggoModEntities;
+import dev.dixmk.minepreggo.init.MinepreggoEntities;
 import dev.dixmk.minepreggo.world.entity.preggo.IPreggoMobPregnancySystem;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMobSystem;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobHelper;
@@ -38,7 +38,7 @@ public class TamablePregnantMonsterEnderWoman {
 	public static class TamableMonsterEnderWomanP0 extends AbstractTamablePregnantMonsterEnderWoman {
 		
 		public TamableMonsterEnderWomanP0(PlayMessages.SpawnEntity packet, Level world) {
-			this(MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P0.get(), world);
+			this(MinepreggoEntities.TAMABLE_MONSTER_ENDER_WOMAN_P0.get(), world);
 		}
 
 		public TamableMonsterEnderWomanP0(EntityType<TamableMonsterEnderWomanP0> type, Level world) {
@@ -64,7 +64,7 @@ public class TamablePregnantMonsterEnderWoman {
 				@Override
 				protected void advanceToNextPregnancyPhase() {
 					if (pregnantEntity.level() instanceof ServerLevel serverLevel) {
-						var enderWoman = MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P1.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);
+						var enderWoman = MinepreggoEntities.TAMABLE_MONSTER_ENDER_WOMAN_P1.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);
 						PreggoMobHelper.copyAllData(pregnantEntity, enderWoman);
 						enderWoman.setCarriedBlock(pregnantEntity.getCarriedBlock());
 						syncBlockToInventory(enderWoman);
@@ -81,7 +81,7 @@ public class TamablePregnantMonsterEnderWoman {
 	public static class TamableMonsterEnderWomanP1 extends AbstractTamablePregnantMonsterEnderWoman {
 		
 		public TamableMonsterEnderWomanP1(PlayMessages.SpawnEntity packet, Level world) {
-			this(MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P1.get(), world);
+			this(MinepreggoEntities.TAMABLE_MONSTER_ENDER_WOMAN_P1.get(), world);
 		}
 
 		public TamableMonsterEnderWomanP1(EntityType<TamableMonsterEnderWomanP1> type, Level world) {
@@ -107,7 +107,7 @@ public class TamablePregnantMonsterEnderWoman {
 				@Override
 				protected void advanceToNextPregnancyPhase() {
 					if (pregnantEntity.level() instanceof ServerLevel serverLevel) {
-						var enderWoman = MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P2.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);
+						var enderWoman = MinepreggoEntities.TAMABLE_MONSTER_ENDER_WOMAN_P2.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);
 						PreggoMobHelper.copyAllData(pregnantEntity, enderWoman);
 						enderWoman.setCarriedBlock(pregnantEntity.getCarriedBlock());
 						syncBlockToInventory(enderWoman);
@@ -129,7 +129,7 @@ public class TamablePregnantMonsterEnderWoman {
 	public static class TamableMonsterEnderWomanP2 extends AbstractTamablePregnantMonsterEnderWoman {
 		
 		public TamableMonsterEnderWomanP2(PlayMessages.SpawnEntity packet, Level world) {
-			this(MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P2.get(), world);
+			this(MinepreggoEntities.TAMABLE_MONSTER_ENDER_WOMAN_P2.get(), world);
 		}
 
 		public TamableMonsterEnderWomanP2(EntityType<TamableMonsterEnderWomanP2> type, Level world) {
@@ -155,7 +155,7 @@ public class TamablePregnantMonsterEnderWoman {
 				@Override
 				protected void advanceToNextPregnancyPhase() {
 					if (pregnantEntity.level() instanceof ServerLevel serverLevel) {
-						var enderWoman = MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P3.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);
+						var enderWoman = MinepreggoEntities.TAMABLE_MONSTER_ENDER_WOMAN_P3.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);
 						PreggoMobHelper.copyAllData(pregnantEntity, enderWoman);
 						enderWoman.setCarriedBlock(pregnantEntity.getCarriedBlock());
 						syncBlockToInventory(enderWoman);
@@ -177,7 +177,7 @@ public class TamablePregnantMonsterEnderWoman {
 	public static class TamableMonsterEnderWomanP3 extends AbstractTamablePregnantMonsterEnderWoman {
 		
 		public TamableMonsterEnderWomanP3(PlayMessages.SpawnEntity packet, Level world) {
-			this(MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P3.get(), world);
+			this(MinepreggoEntities.TAMABLE_MONSTER_ENDER_WOMAN_P3.get(), world);
 		}
 
 		public TamableMonsterEnderWomanP3(EntityType<TamableMonsterEnderWomanP3> type, Level world) {
@@ -203,7 +203,7 @@ public class TamablePregnantMonsterEnderWoman {
 				@Override
 				protected void advanceToNextPregnancyPhase() {
 					if (pregnantEntity.level() instanceof ServerLevel serverLevel) {
-						var enderWoman = MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P4.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);
+						var enderWoman = MinepreggoEntities.TAMABLE_MONSTER_ENDER_WOMAN_P4.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);
 						PreggoMobHelper.copyAllData(pregnantEntity, enderWoman);
 						enderWoman.setCarriedBlock(pregnantEntity.getCarriedBlock());
 						syncBlockToInventory(enderWoman);
@@ -225,7 +225,7 @@ public class TamablePregnantMonsterEnderWoman {
 	public static class TamableMonsterEnderWomanP4 extends AbstractTamablePregnantMonsterEnderWoman {
 		
 		public TamableMonsterEnderWomanP4(PlayMessages.SpawnEntity packet, Level world) {
-			this(MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P4.get(), world);
+			this(MinepreggoEntities.TAMABLE_MONSTER_ENDER_WOMAN_P4.get(), world);
 		}
 
 		public TamableMonsterEnderWomanP4(EntityType<TamableMonsterEnderWomanP4> type, Level world) {
@@ -251,7 +251,7 @@ public class TamablePregnantMonsterEnderWoman {
 				@Override
 				protected void advanceToNextPregnancyPhase() {
 					if (pregnantEntity.level() instanceof ServerLevel serverLevel) {
-						var enderWoman = MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P5.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);
+						var enderWoman = MinepreggoEntities.TAMABLE_MONSTER_ENDER_WOMAN_P5.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);
 						PreggoMobHelper.copyAllData(pregnantEntity, enderWoman);
 						enderWoman.setCarriedBlock(pregnantEntity.getCarriedBlock());
 						syncBlockToInventory(enderWoman);
@@ -278,7 +278,7 @@ public class TamablePregnantMonsterEnderWoman {
 	public static class TamableMonsterEnderWomanP5 extends AbstractTamablePregnantMonsterEnderWoman {
 		
 		public TamableMonsterEnderWomanP5(PlayMessages.SpawnEntity packet, Level world) {
-			this(MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P5.get(), world);
+			this(MinepreggoEntities.TAMABLE_MONSTER_ENDER_WOMAN_P5.get(), world);
 		}
 
 		public TamableMonsterEnderWomanP5(EntityType<TamableMonsterEnderWomanP5> type, Level world) {
@@ -304,7 +304,7 @@ public class TamablePregnantMonsterEnderWoman {
 				@Override
 				protected void advanceToNextPregnancyPhase() {
 					if (pregnantEntity.level() instanceof ServerLevel serverLevel) {
-						var enderWoman = MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P6.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);
+						var enderWoman = MinepreggoEntities.TAMABLE_MONSTER_ENDER_WOMAN_P6.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);
 						PreggoMobHelper.copyAllData(pregnantEntity, enderWoman);
 						enderWoman.setCarriedBlock(pregnantEntity.getCarriedBlock());
 						syncBlockToInventory(enderWoman);
@@ -331,7 +331,7 @@ public class TamablePregnantMonsterEnderWoman {
 	public static class TamableMonsterEnderWomanP6 extends AbstractTamablePregnantMonsterEnderWoman {
 		
 		public TamableMonsterEnderWomanP6(PlayMessages.SpawnEntity packet, Level world) {
-			this(MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P6.get(), world);
+			this(MinepreggoEntities.TAMABLE_MONSTER_ENDER_WOMAN_P6.get(), world);
 		}
 
 		public TamableMonsterEnderWomanP6(EntityType<TamableMonsterEnderWomanP6> type, Level world) {
@@ -357,7 +357,7 @@ public class TamablePregnantMonsterEnderWoman {
 				@Override
 				protected void advanceToNextPregnancyPhase() {
 					if (pregnantEntity.level() instanceof ServerLevel serverLevel) {
-						var enderWoman = MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P7.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);
+						var enderWoman = MinepreggoEntities.TAMABLE_MONSTER_ENDER_WOMAN_P7.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);
 						PreggoMobHelper.copyAllData(pregnantEntity, enderWoman);
 						enderWoman.setCarriedBlock(pregnantEntity.getCarriedBlock());
 						syncBlockToInventory(enderWoman);
@@ -384,7 +384,7 @@ public class TamablePregnantMonsterEnderWoman {
 	public static class TamableMonsterEnderWomanP7 extends AbstractTamablePregnantMonsterEnderWoman {
 		
 		public TamableMonsterEnderWomanP7(PlayMessages.SpawnEntity packet, Level world) {
-			this(MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P7.get(), world);
+			this(MinepreggoEntities.TAMABLE_MONSTER_ENDER_WOMAN_P7.get(), world);
 		}
 
 		public TamableMonsterEnderWomanP7(EntityType<TamableMonsterEnderWomanP7> type, Level world) {
@@ -410,7 +410,7 @@ public class TamablePregnantMonsterEnderWoman {
 				@Override
 				protected void advanceToNextPregnancyPhase() {
 					if (pregnantEntity.level() instanceof ServerLevel serverLevel) {
-						var enderWoman = MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P8.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);
+						var enderWoman = MinepreggoEntities.TAMABLE_MONSTER_ENDER_WOMAN_P8.get().spawn(serverLevel, BlockPos.containing(pregnantEntity.getX(), pregnantEntity.getY(), pregnantEntity.getZ()), MobSpawnType.CONVERSION);
 						PreggoMobHelper.copyAllData(pregnantEntity, enderWoman);
 						enderWoman.setCarriedBlock(pregnantEntity.getCarriedBlock());
 						syncBlockToInventory(enderWoman);
@@ -437,7 +437,7 @@ public class TamablePregnantMonsterEnderWoman {
 	public static class TamableMonsterEnderWomanP8 extends AbstractTamablePregnantMonsterEnderWoman {
 		
 		public TamableMonsterEnderWomanP8(PlayMessages.SpawnEntity packet, Level world) {
-			this(MinepreggoModEntities.TAMABLE_MONSTER_ENDER_WOMAN_P8.get(), world);
+			this(MinepreggoEntities.TAMABLE_MONSTER_ENDER_WOMAN_P8.get(), world);
 		}
 
 		public TamableMonsterEnderWomanP8(EntityType<TamableMonsterEnderWomanP8> type, Level world) {

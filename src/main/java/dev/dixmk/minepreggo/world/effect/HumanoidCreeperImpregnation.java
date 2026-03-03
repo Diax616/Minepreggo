@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.init.MinepreggoModEntities;
+import dev.dixmk.minepreggo.init.MinepreggoEntities;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
@@ -41,12 +41,12 @@ public class HumanoidCreeperImpregnation extends Impregnantion {
 			final double y = entity.getY();	
 			final double z = entity.getZ();		
 			if (entity instanceof HostileHumanoidCreeperGirl creeperGirl && !creeperGirl.isBaby()) {
-				var nextStage = MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
+				var nextStage = MinepreggoEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
 				nextStage.setCombatMode(creeperGirl.getCombatMode());
 				initPregnancy(creeperGirl, nextStage, amplifier);
 			}		
 			else if (entity instanceof TamableHumanoidCreeperGirl creeperGirl && creeperGirl.getGenderedData().getPostPregnancyData().isEmpty()) {
-				var nextStage = MinepreggoModEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
+				var nextStage = MinepreggoEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
 				nextStage.setCombatMode(creeperGirl.getCombatMode());
 				initPregnancyInTamable(creeperGirl, nextStage, amplifier);
 			}

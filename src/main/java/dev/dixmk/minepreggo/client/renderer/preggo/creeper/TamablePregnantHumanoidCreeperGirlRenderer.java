@@ -1,7 +1,7 @@
 package dev.dixmk.minepreggo.client.renderer.preggo.creeper;
 
-import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractHumanoidCreeperGirlModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.TamablePregnantHumanoidCreeperGirlModel;
+import dev.dixmk.minepreggo.client.model.geom.MinepreggoModelLayers;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobBody;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.TamablePregnantHumanoidCreeperGirl;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -13,11 +13,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class TamablePregnantHumanoidCreeperGirlRenderer {
 
+	private TamablePregnantHumanoidCreeperGirlRenderer() {}
+	
 	@OnlyIn(Dist.CLIENT)
 	public static class TamableHumanoidCreeperGirlP0Renderer extends AbstractTamablePregnantHumanoidCreeperGirlRenderer<TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP0, TamablePregnantHumanoidCreeperGirlModel.TamableHumanoidCreeperGirlP0Model> {
 		
 		public TamableHumanoidCreeperGirlP0Renderer(EntityRendererProvider.Context context) {
-			this(context, AbstractHumanoidCreeperGirlModel.LAYER_LOCATION_P0, AbstractHumanoidCreeperGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractHumanoidCreeperGirlModel.LAYER_OUTER_ARMOR_LOCATION, AbstractHumanoidCreeperGirlModel.LAYER_ENERGY_ARMOR_P0_LOCATION);
+			this(context, MinepreggoModelLayers.PREGNANT_HUMANOID_CREEPER_GIRL_P0, MinepreggoModelLayers.HUMANOID_CREEPER_GIRL_INNER_ARMOR, MinepreggoModelLayers.HUMANOID_CREEPER_GIRL_OUTER_ARMOR, MinepreggoModelLayers.PREGNANT_HUMANOID_CREEPER_GIRL_ENERGY_ARMOR_P0);
 		}
 		
 		public TamableHumanoidCreeperGirlP0Renderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter, ModelLayerLocation armor) {
@@ -25,7 +27,7 @@ public class TamablePregnantHumanoidCreeperGirlRenderer {
 		}
 
 		@Override
-		public ResourceLocation getTextureLocation(TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP0 p_115812_) {
+		public ResourceLocation getTextureLocation(TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP0 entity) {
 			return CREEPER_GIRL_P0_LOCATION;
 		}
 	}
@@ -34,7 +36,7 @@ public class TamablePregnantHumanoidCreeperGirlRenderer {
 	public static class TamableHumanoidCreeperGirlP1Renderer extends AbstractTamablePregnantHumanoidCreeperGirlRenderer<TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP1, TamablePregnantHumanoidCreeperGirlModel.TamableHumanoidCreeperGirlP1Model> {
 		
 		public TamableHumanoidCreeperGirlP1Renderer(EntityRendererProvider.Context context) {
-			this(context, AbstractHumanoidCreeperGirlModel.LAYER_LOCATION_P1, AbstractHumanoidCreeperGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractHumanoidCreeperGirlModel.LAYER_OUTER_ARMOR_LOCATION, AbstractHumanoidCreeperGirlModel.LAYER_ENERGY_ARMOR_P1_LOCATION);
+			this(context, MinepreggoModelLayers.PREGNANT_HUMANOID_CREEPER_GIRL_P1, MinepreggoModelLayers.HUMANOID_CREEPER_GIRL_INNER_ARMOR, MinepreggoModelLayers.HUMANOID_CREEPER_GIRL_OUTER_ARMOR, MinepreggoModelLayers.PREGNANT_HUMANOID_CREEPER_GIRL_ENERGY_ARMOR_P1);
 		}
 		
 		public TamableHumanoidCreeperGirlP1Renderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter, ModelLayerLocation armor) {
@@ -42,7 +44,7 @@ public class TamablePregnantHumanoidCreeperGirlRenderer {
 		}
 
 		@Override
-		public ResourceLocation getTextureLocation(TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP1 p_115812_) {
+		public ResourceLocation getTextureLocation(TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP1 entity) {
 			return CREEPER_GIRL_P1_LOCATION;
 		}
 	}
@@ -51,7 +53,7 @@ public class TamablePregnantHumanoidCreeperGirlRenderer {
 	public static class TamableHumanoidCreeperGirlP2Renderer extends AbstractTamablePregnantHumanoidCreeperGirlRenderer<TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP2, TamablePregnantHumanoidCreeperGirlModel.TamableHumanoidCreeperGirlP2Model> {
 		
 		public TamableHumanoidCreeperGirlP2Renderer(EntityRendererProvider.Context context) {
-			this(context, AbstractHumanoidCreeperGirlModel.LAYER_LOCATION_P2, AbstractHumanoidCreeperGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractHumanoidCreeperGirlModel.LAYER_OUTER_ARMOR_LOCATION, AbstractHumanoidCreeperGirlModel.LAYER_ENERGY_ARMOR_P2_LOCATION);
+			this(context, MinepreggoModelLayers.PREGNANT_HUMANOID_CREEPER_GIRL_P2, MinepreggoModelLayers.HUMANOID_CREEPER_GIRL_INNER_ARMOR, MinepreggoModelLayers.HUMANOID_CREEPER_GIRL_OUTER_ARMOR, MinepreggoModelLayers.PREGNANT_HUMANOID_CREEPER_GIRL_ENERGY_ARMOR_P2);
 		}
 		
 		public TamableHumanoidCreeperGirlP2Renderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter, ModelLayerLocation armor) {
@@ -59,7 +61,7 @@ public class TamablePregnantHumanoidCreeperGirlRenderer {
 		}
 
 		@Override
-		public ResourceLocation getTextureLocation(TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP2 p_115812_) {
+		public ResourceLocation getTextureLocation(TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP2 entity) {
 			return CREEPER_GIRL_P2_LOCATION;
 		}
 
@@ -69,7 +71,7 @@ public class TamablePregnantHumanoidCreeperGirlRenderer {
 	public static class TamableHumanoidCreeperGirlP3Renderer extends AbstractTamablePregnantHumanoidCreeperGirlRenderer<TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP3, TamablePregnantHumanoidCreeperGirlModel.TamableHumanoidCreeperGirlP3Model> {
 		
 		public TamableHumanoidCreeperGirlP3Renderer(EntityRendererProvider.Context context) {
-			this(context, AbstractHumanoidCreeperGirlModel.LAYER_LOCATION_P3, AbstractHumanoidCreeperGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractHumanoidCreeperGirlModel.LAYER_OUTER_ARMOR_LOCATION, AbstractHumanoidCreeperGirlModel.LAYER_ENERGY_ARMOR_P3_LOCATION);
+			this(context, MinepreggoModelLayers.PREGNANT_HUMANOID_CREEPER_GIRL_P3, MinepreggoModelLayers.HUMANOID_CREEPER_GIRL_INNER_ARMOR, MinepreggoModelLayers.HUMANOID_CREEPER_GIRL_OUTER_ARMOR, MinepreggoModelLayers.PREGNANT_HUMANOID_CREEPER_GIRL_ENERGY_ARMOR_P3);
 		}
 		
 		public TamableHumanoidCreeperGirlP3Renderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter, ModelLayerLocation armor) {
@@ -77,7 +79,7 @@ public class TamablePregnantHumanoidCreeperGirlRenderer {
 		}
 
 		@Override
-		public ResourceLocation getTextureLocation(TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP3 p_115812_) {
+		public ResourceLocation getTextureLocation(TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP3 entity) {
 			return CREEPER_GIRL_P3_LOCATION;
 		}
 
@@ -87,7 +89,7 @@ public class TamablePregnantHumanoidCreeperGirlRenderer {
 	public static class TamableHumanoidCreeperGirlP4Renderer extends AbstractTamablePregnantHumanoidCreeperGirlRenderer<TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP4, TamablePregnantHumanoidCreeperGirlModel.TamableHumanoidCreeperGirlP4Model> {
 		
 		public TamableHumanoidCreeperGirlP4Renderer(EntityRendererProvider.Context context) {
-			this(context, AbstractHumanoidCreeperGirlModel.LAYER_LOCATION_P4, AbstractHumanoidCreeperGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractHumanoidCreeperGirlModel.LAYER_OUTER_ARMOR_LOCATION, AbstractHumanoidCreeperGirlModel.LAYER_ENERGY_ARMOR_P4_LOCATION);
+			this(context, MinepreggoModelLayers.PREGNANT_HUMANOID_CREEPER_GIRL_P4, MinepreggoModelLayers.HUMANOID_CREEPER_GIRL_INNER_ARMOR, MinepreggoModelLayers.HUMANOID_CREEPER_GIRL_OUTER_ARMOR, MinepreggoModelLayers.PREGNANT_HUMANOID_CREEPER_GIRL_ENERGY_ARMOR_P4);
 		}
 		
 		public TamableHumanoidCreeperGirlP4Renderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter, ModelLayerLocation armor) {
@@ -107,7 +109,7 @@ public class TamablePregnantHumanoidCreeperGirlRenderer {
 	public static class TamableHumanoidCreeperGirlP5Renderer extends AbstractTamablePregnantHumanoidCreeperGirlRenderer<TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP5, TamablePregnantHumanoidCreeperGirlModel.TamableHumanoidCreeperGirlP5Model> {
 		
 		public TamableHumanoidCreeperGirlP5Renderer(EntityRendererProvider.Context context) {
-			this(context, AbstractHumanoidCreeperGirlModel.LAYER_LOCATION_P5, AbstractHumanoidCreeperGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractHumanoidCreeperGirlModel.LAYER_OUTER_ARMOR_LOCATION, AbstractHumanoidCreeperGirlModel.LAYER_ENERGY_ARMOR_P5_LOCATION);
+			this(context, MinepreggoModelLayers.PREGNANT_HUMANOID_CREEPER_GIRL_P5, MinepreggoModelLayers.HUMANOID_CREEPER_GIRL_INNER_ARMOR, MinepreggoModelLayers.HUMANOID_CREEPER_GIRL_OUTER_ARMOR, MinepreggoModelLayers.PREGNANT_HUMANOID_CREEPER_GIRL_ENERGY_ARMOR_P5);
 		}
 		
 		public TamableHumanoidCreeperGirlP5Renderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter, ModelLayerLocation armor) {
@@ -127,7 +129,7 @@ public class TamablePregnantHumanoidCreeperGirlRenderer {
 	public static class TamableHumanoidCreeperGirlP6Renderer extends AbstractTamablePregnantHumanoidCreeperGirlRenderer<TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP6, TamablePregnantHumanoidCreeperGirlModel.TamableHumanoidCreeperGirlP6Model> {
 		
 		public TamableHumanoidCreeperGirlP6Renderer(EntityRendererProvider.Context context) {
-			this(context, AbstractHumanoidCreeperGirlModel.LAYER_LOCATION_P6, AbstractHumanoidCreeperGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractHumanoidCreeperGirlModel.LAYER_OUTER_ARMOR_LOCATION, AbstractHumanoidCreeperGirlModel.LAYER_ENERGY_ARMOR_P6_LOCATION);
+			this(context, MinepreggoModelLayers.PREGNANT_HUMANOID_CREEPER_GIRL_P6, MinepreggoModelLayers.HUMANOID_CREEPER_GIRL_INNER_ARMOR, MinepreggoModelLayers.HUMANOID_CREEPER_GIRL_OUTER_ARMOR, MinepreggoModelLayers.PREGNANT_HUMANOID_CREEPER_GIRL_ENERGY_ARMOR_P6);
 		}
 		
 		public TamableHumanoidCreeperGirlP6Renderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter, ModelLayerLocation armor) {
@@ -147,7 +149,7 @@ public class TamablePregnantHumanoidCreeperGirlRenderer {
 	public static class TamableHumanoidCreeperGirlP7Renderer extends AbstractTamablePregnantHumanoidCreeperGirlRenderer<TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP7, TamablePregnantHumanoidCreeperGirlModel.TamableHumanoidCreeperGirlP7Model> {
 		
 		public TamableHumanoidCreeperGirlP7Renderer(EntityRendererProvider.Context context) {
-			this(context, AbstractHumanoidCreeperGirlModel.LAYER_LOCATION_P7, AbstractHumanoidCreeperGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractHumanoidCreeperGirlModel.LAYER_OUTER_ARMOR_LOCATION, AbstractHumanoidCreeperGirlModel.LAYER_ENERGY_ARMOR_P7_LOCATION);
+			this(context, MinepreggoModelLayers.PREGNANT_HUMANOID_CREEPER_GIRL_P7, MinepreggoModelLayers.HUMANOID_CREEPER_GIRL_INNER_ARMOR, MinepreggoModelLayers.HUMANOID_CREEPER_GIRL_OUTER_ARMOR, MinepreggoModelLayers.PREGNANT_HUMANOID_CREEPER_GIRL_ENERGY_ARMOR_P7);
 		}
 		
 		public TamableHumanoidCreeperGirlP7Renderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter, ModelLayerLocation armor) {
@@ -168,7 +170,7 @@ public class TamablePregnantHumanoidCreeperGirlRenderer {
 	public static class TamableHumanoidCreeperGirlP8Renderer extends AbstractTamablePregnantHumanoidCreeperGirlRenderer<TamablePregnantHumanoidCreeperGirl.TamableHumanoidCreeperGirlP8, TamablePregnantHumanoidCreeperGirlModel.TamableHumanoidCreeperGirlP8Model> {
 		
 		public TamableHumanoidCreeperGirlP8Renderer(EntityRendererProvider.Context context) {
-			this(context, AbstractHumanoidCreeperGirlModel.LAYER_LOCATION_P8, AbstractHumanoidCreeperGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractHumanoidCreeperGirlModel.LAYER_OUTER_ARMOR_LOCATION, AbstractHumanoidCreeperGirlModel.LAYER_ENERGY_ARMOR_P8_LOCATION);
+			this(context, MinepreggoModelLayers.PREGNANT_HUMANOID_CREEPER_GIRL_P8, MinepreggoModelLayers.HUMANOID_CREEPER_GIRL_INNER_ARMOR, MinepreggoModelLayers.HUMANOID_CREEPER_GIRL_OUTER_ARMOR, MinepreggoModelLayers.PREGNANT_HUMANOID_CREEPER_GIRL_ENERGY_ARMOR_P8);
 		}
 		
 		public TamableHumanoidCreeperGirlP8Renderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter, ModelLayerLocation armor) {

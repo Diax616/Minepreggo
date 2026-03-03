@@ -538,11 +538,12 @@
 	"item.minepreggo.belly_shield_p7": "Escudo de barriga (E7)",
 	"item.minepreggo.belly_shield_p8": "Escudo de barriga (E8)",
 
-	"item.minepreggo.diamond_knee_brace": "Rodilleras de diamante",
-	"item.minepreggo.golden_knee_brace": "Rodilleras de oro",
-	"item.minepreggo.iron_knee_brace": "Rodilleras de hierro",
-	"item.minepreggo.netherite_knee_brace": "Rodilleras de netherita",
-	"item.minepreggo.leather_knee_brace": "Rodilleras de cuero",
+	"item.minepreggo.diamond_knee_braces": "Rodilleras de diamante",
+	"item.minepreggo.golden_knee_braces": "Rodilleras de oro",
+	"item.minepreggo.iron_knee_braces": "Rodilleras de hierro",
+	"item.minepreggo.netherite_knee_braces": "Rodilleras de netherita",
+	"item.minepreggo.leather_knee_braces": "Rodilleras de cuero",
+	"item.minepreggo.chainmail_knee_braces": "Rodilleras de cotas de malla",
 	"item.minepreggo.ropes": "Cuerdas",
 
 	"item.minepreggo.chili_pepper": "Pimiento picante",

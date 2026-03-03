@@ -1,6 +1,6 @@
 package dev.dixmk.minepreggo.world.level.block;
 
-import dev.dixmk.minepreggo.init.MinepreggoModItems;
+import dev.dixmk.minepreggo.init.MinepreggoItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ItemLike;
@@ -21,7 +21,7 @@ public class CucumberBlock extends CropBlock {
 
 	@Override
 	protected ItemLike getBaseSeedId() {
-		return MinepreggoModItems.CUCUMBER.get();
+		return MinepreggoItems.CUCUMBER.get();
 	}
 
 	@Override

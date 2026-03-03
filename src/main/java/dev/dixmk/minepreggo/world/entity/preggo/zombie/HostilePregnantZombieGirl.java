@@ -1,7 +1,7 @@
 package dev.dixmk.minepreggo.world.entity.preggo.zombie;
 
 import dev.dixmk.minepreggo.MinepreggoModConfig;
-import dev.dixmk.minepreggo.init.MinepreggoModEntities;
+import dev.dixmk.minepreggo.init.MinepreggoEntities;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
@@ -23,7 +23,7 @@ public class HostilePregnantZombieGirl {
 	public static class MonsterZombieGirlP3 extends AbstractHostilePregnantZombieGirl {
 
 		public MonsterZombieGirlP3(PlayMessages.SpawnEntity packet, Level world) {
-			this(MinepreggoModEntities.HOSTILE_ZOMBIE_GIRL_P3.get(), world);
+			this(MinepreggoEntities.HOSTILE_ZOMBIE_GIRL_P3.get(), world);
 		}
 
 		public MonsterZombieGirlP3(EntityType<MonsterZombieGirlP3> type, Level world) {
@@ -42,7 +42,7 @@ public class HostilePregnantZombieGirl {
 	
 		
 		public MonsterZombieGirlP5(PlayMessages.SpawnEntity packet, Level world) {
-			this(MinepreggoModEntities.HOSTILE_ZOMBIE_GIRL_P5.get(), world);
+			this(MinepreggoEntities.HOSTILE_ZOMBIE_GIRL_P5.get(), world);
 		}
 	
 		public MonsterZombieGirlP5(EntityType<MonsterZombieGirlP5> type, Level world) {
@@ -60,7 +60,7 @@ public class HostilePregnantZombieGirl {
 	public static class MonsterZombieGirlP7 extends AbstractHostilePregnantZombieGirl {
 		
 		public MonsterZombieGirlP7(PlayMessages.SpawnEntity packet, Level world) {
-			this(MinepreggoModEntities.HOSTILE_ZOMBIE_GIRL_P7.get(), world);
+			this(MinepreggoEntities.HOSTILE_ZOMBIE_GIRL_P7.get(), world);
 		}
 	
 		public MonsterZombieGirlP7(EntityType<MonsterZombieGirlP7> type, Level world) {

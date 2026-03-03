@@ -7,7 +7,7 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.jiggle.JigglePhysicsManager;
 import dev.dixmk.minepreggo.client.jiggle.EntityJiggleData;
 import dev.dixmk.minepreggo.client.jiggle.EntityJiggleDataFactory;
-import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoMobEffects;
 import dev.dixmk.minepreggo.world.entity.player.SkinType;
 import dev.dixmk.minepreggo.world.item.IMaternityArmor;
 import net.minecraft.client.model.HierarchicalModel;
@@ -88,7 +88,7 @@ public abstract class AbstractBoobsModel extends HierarchicalModel<AbstractClien
 		EntityJiggleData jiggleData = JigglePhysicsManager.getInstance().getOrCreate(entity, () -> EntityJiggleDataFactory.create(jiggleConfig, null));
 		jiggleData.getBoobsJiggle().setupAnim(entity, boobs, leftBoob, rightBoob);
 	
-		if (entity.hasEffect(MinepreggoModMobEffects.LACTATION.get())) {
+		if (entity.hasEffect(MinepreggoMobEffects.LACTATION.get())) {
 			boobs.y -= 0.42F;		
 			boobs.xScale = 1.4F;
 			boobs.yScale = 1.2F;

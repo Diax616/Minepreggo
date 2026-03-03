@@ -1,8 +1,10 @@
 package dev.dixmk.minepreggo.world.entity.preggo.creeper;
 
+import javax.annotation.Nullable;
+
 import dev.dixmk.minepreggo.MinepreggoModConfig;
-import dev.dixmk.minepreggo.init.MinepreggoModDamageSources;
-import dev.dixmk.minepreggo.init.MinepreggoModSounds;
+import dev.dixmk.minepreggo.init.MinepreggoDamageSources;
+import dev.dixmk.minepreggo.init.MinepreggoSounds;
 import dev.dixmk.minepreggo.world.entity.BellyPartFactory;
 import dev.dixmk.minepreggo.world.entity.BellyPartManager;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
@@ -15,8 +17,11 @@ import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
@@ -29,6 +34,7 @@ import net.minecraft.world.entity.animal.Cat;
 import net.minecraft.world.entity.animal.Ocelot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 
 public abstract class AbstractHostilePregnantCreeperGirl extends AbstractHostileCreeperGirl implements IHostilePregnantPreggoMob {
 
@@ -38,7 +44,6 @@ public abstract class AbstractHostilePregnantCreeperGirl extends AbstractHostile
 	protected AbstractHostilePregnantCreeperGirl(EntityType<? extends AbstractHostileCreeperGirl> entityType, Level level, Creature typeOfCreature, PregnancyPhase currentPregnancyStage) {
 		super(entityType, level, typeOfCreature);
 		pregnancyDataImpl = new HostilePregnantPreggoMobDataImpl<>(DATA_ACCESOR, this, currentPregnancyStage);
-		setExplosionData(updateExplosionByPregnancyPhase(currentPregnancyStage));
 	}
 	
 	protected abstract ExplosionData updateExplosionByPregnancyPhase(PregnancyPhase pregnancyPhase);
@@ -72,7 +77,7 @@ public abstract class AbstractHostilePregnantCreeperGirl extends AbstractHostile
 	public void die(DamageSource source) {
 		super.die(source);		
 		if (!this.level().isClientSide) {
-			if (source.is(MinepreggoModDamageSources.BELLY_BURST)) {
+			if (source.is(MinepreggoDamageSources.BELLY_BURST)) {
 				PregnancySystemHelper.deathByBellyBurst(this, (ServerLevel) this.level());
 			}
 			PreggoMobHelper.spawnBabyAndFetus(this);
@@ -87,7 +92,7 @@ public abstract class AbstractHostilePregnantCreeperGirl extends AbstractHostile
 				&& !this.pregnancyDataImpl.isIncapacitated()
 				&& this.getRandom().nextFloat() < pregnancyDataImpl.getPregnancyPainProbability()) {		
 			this.pregnancyDataImpl.setPregnancyPain(true);	
-			LivingEntityHelper.playSoundNearTo(this, MinepreggoModSounds.getRandomStomachGrowls(random));
+			LivingEntityHelper.playSoundNearTo(this, MinepreggoSounds.getRandomStomachGrowls(random));
 		}
 		return result;
 	}
@@ -220,5 +225,16 @@ public abstract class AbstractHostilePregnantCreeperGirl extends AbstractHostile
 				return super.canContinueToUse() && !pregnancyDataImpl.isIncapacitated();			   
 			}
 		});	
+	}
+	
+	@Override
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData, @Nullable CompoundTag dataTag) {
+		SpawnGroupData spawnData = super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData, dataTag);	
+		setExplosionData(updateExplosionByPregnancyPhase(this.getPregnancyData().getCurrentPregnancyPhase()));
+		this.getPregnancyData().init();
+		PregnancyPhase phase = this.getPregnancyData().getCurrentPregnancyPhase();
+		PregnancySystemHelper.applyGravityModifier(this, phase);
+		PregnancySystemHelper.applyKnockbackResistanceModifier(this, phase);
+		return spawnData;
 	}
 }

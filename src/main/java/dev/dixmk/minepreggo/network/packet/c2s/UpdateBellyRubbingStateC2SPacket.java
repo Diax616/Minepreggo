@@ -4,7 +4,7 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
-import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoMobEffects;
 import dev.dixmk.minepreggo.server.ServerParticleHelper;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
@@ -47,7 +47,7 @@ public record UpdateBellyRubbingStateC2SPacket(UUID target) {
    	        				
    	        				if (system.getPregnancySymptoms().containsPregnancySymptom((PregnancySymptom.BELLY_RUBS)) && bellyRubs <= PregnancySystemHelper.DESACTIVATEL_BELLY_RUBS_SYMPTOM) {
    	        					system.getPregnancySymptoms().removePregnancySymptom(PregnancySymptom.BELLY_RUBS);
-   	        					target.removeEffect(MinepreggoModMobEffects.BELLY_RUBS.get());
+   	        					target.removeEffect(MinepreggoMobEffects.BELLY_RUBS.get());
    	        					system.syncState(target);
    	        				}
    	        				system.syncEffect(target);

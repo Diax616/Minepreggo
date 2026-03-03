@@ -1,6 +1,6 @@
 package dev.dixmk.minepreggo.world.entity.preggo;
 
-import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
+import dev.dixmk.minepreggo.init.MinepreggoEntityDataSerializers;
 import dev.dixmk.minepreggo.utils.MathHelper;
 import dev.dixmk.minepreggo.world.pregnancy.MapPregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
@@ -22,7 +22,7 @@ public class HostilePregnantPreggoMobDataImpl<E extends PreggoMob> implements IH
 		
 		public DataAccessor(Class<E> entityClass) {
 			this.hasPregnancyPain = SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN);
-			this.currentPregnanctPhase = SynchedEntityData.defineId(entityClass, MinepreggoModEntityDataSerializers.PREGNANCY_STAGE);
+			this.currentPregnanctPhase = SynchedEntityData.defineId(entityClass, MinepreggoEntityDataSerializers.PREGNANCY_STAGE);
 		}
 		
 		public void defineSynchedData(E preggomob) {

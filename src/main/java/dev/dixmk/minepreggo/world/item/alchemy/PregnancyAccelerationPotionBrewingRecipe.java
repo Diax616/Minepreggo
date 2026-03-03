@@ -1,6 +1,6 @@
 package dev.dixmk.minepreggo.world.item.alchemy;
 
-import dev.dixmk.minepreggo.init.MinepreggoModPotions;
+import dev.dixmk.minepreggo.init.MinepreggoPotions;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -15,7 +15,7 @@ public abstract class PregnancyAccelerationPotionBrewingRecipe implements IBrewi
 		@Override
 		public boolean isInput(ItemStack input) {
 			Item inputItem = input.getItem();
-			return (inputItem == Items.POTION || inputItem == Items.SPLASH_POTION || inputItem == Items.LINGERING_POTION) && PotionUtils.getPotion(input) == MinepreggoModPotions.FERTILITY.get();
+			return (inputItem == Items.POTION || inputItem == Items.SPLASH_POTION || inputItem == Items.LINGERING_POTION) && PotionUtils.getPotion(input) == MinepreggoPotions.FERTILITY.get();
 		}
 
 		@Override
@@ -26,7 +26,7 @@ public abstract class PregnancyAccelerationPotionBrewingRecipe implements IBrewi
 		@Override
 		public ItemStack getOutput(ItemStack input, ItemStack ingredient) {
 			if (isInput(input) && isIngredient(ingredient)) {
-				return PotionUtils.setPotion(new ItemStack(input.getItem()), MinepreggoModPotions.PREGNANCY_ACCELERATION_0.get());
+				return PotionUtils.setPotion(new ItemStack(input.getItem()), MinepreggoPotions.PREGNANCY_ACCELERATION_0.get());
 			}
 			return ItemStack.EMPTY;
 		}	
@@ -36,7 +36,7 @@ public abstract class PregnancyAccelerationPotionBrewingRecipe implements IBrewi
 		@Override
 		public boolean isInput(ItemStack input) {
 			Item inputItem = input.getItem();
-			return (inputItem == Items.POTION || inputItem == Items.SPLASH_POTION || inputItem == Items.LINGERING_POTION) && PotionUtils.getPotion(input) == MinepreggoModPotions.PREGNANCY_ACCELERATION_0.get();
+			return (inputItem == Items.POTION || inputItem == Items.SPLASH_POTION || inputItem == Items.LINGERING_POTION) && PotionUtils.getPotion(input) == MinepreggoPotions.PREGNANCY_ACCELERATION_0.get();
 		}
 
 		@Override
@@ -47,7 +47,7 @@ public abstract class PregnancyAccelerationPotionBrewingRecipe implements IBrewi
 		@Override
 		public ItemStack getOutput(ItemStack input, ItemStack ingredient) {
 			if (isInput(input) && isIngredient(ingredient)) {
-				return PotionUtils.setPotion(new ItemStack(input.getItem()), MinepreggoModPotions.PREGNANCY_ACCELERATION_1.get());
+				return PotionUtils.setPotion(new ItemStack(input.getItem()), MinepreggoPotions.PREGNANCY_ACCELERATION_1.get());
 			}
 			return ItemStack.EMPTY;
 		}	
@@ -57,7 +57,7 @@ public abstract class PregnancyAccelerationPotionBrewingRecipe implements IBrewi
 		@Override
 		public boolean isInput(ItemStack input) {
 			Item inputItem = input.getItem();
-			return (inputItem == Items.POTION || inputItem == Items.SPLASH_POTION || inputItem == Items.LINGERING_POTION) && PotionUtils.getPotion(input) == MinepreggoModPotions.PREGNANCY_ACCELERATION_1.get();
+			return (inputItem == Items.POTION || inputItem == Items.SPLASH_POTION || inputItem == Items.LINGERING_POTION) && PotionUtils.getPotion(input) == MinepreggoPotions.PREGNANCY_ACCELERATION_1.get();
 		}
 
 		@Override
@@ -68,7 +68,7 @@ public abstract class PregnancyAccelerationPotionBrewingRecipe implements IBrewi
 		@Override
 		public ItemStack getOutput(ItemStack input, ItemStack ingredient) {
 			if (isInput(input) && isIngredient(ingredient)) {
-				return PotionUtils.setPotion(new ItemStack(input.getItem()), MinepreggoModPotions.PREGNANCY_ACCELERATION_2.get());
+				return PotionUtils.setPotion(new ItemStack(input.getItem()), MinepreggoPotions.PREGNANCY_ACCELERATION_2.get());
 			}
 			return ItemStack.EMPTY;
 		}	
@@ -78,7 +78,7 @@ public abstract class PregnancyAccelerationPotionBrewingRecipe implements IBrewi
 		@Override
 		public boolean isInput(ItemStack input) {
 			Item inputItem = input.getItem();
-			return (inputItem == Items.POTION || inputItem == Items.SPLASH_POTION || inputItem == Items.LINGERING_POTION) && PotionUtils.getPotion(input) == MinepreggoModPotions.PREGNANCY_ACCELERATION_2.get();
+			return (inputItem == Items.POTION || inputItem == Items.SPLASH_POTION || inputItem == Items.LINGERING_POTION) && PotionUtils.getPotion(input) == MinepreggoPotions.PREGNANCY_ACCELERATION_2.get();
 		}
 
 		@Override
@@ -89,7 +89,7 @@ public abstract class PregnancyAccelerationPotionBrewingRecipe implements IBrewi
 		@Override
 		public ItemStack getOutput(ItemStack input, ItemStack ingredient) {
 			if (isInput(input) && isIngredient(ingredient)) {
-				return PotionUtils.setPotion(new ItemStack(input.getItem()), MinepreggoModPotions.PREGNANCY_ACCELERATION_3.get());
+				return PotionUtils.setPotion(new ItemStack(input.getItem()), MinepreggoPotions.PREGNANCY_ACCELERATION_3.get());
 			}
 			return ItemStack.EMPTY;
 		}	
@@ -99,7 +99,7 @@ public abstract class PregnancyAccelerationPotionBrewingRecipe implements IBrewi
 		@Override
 		public boolean isInput(ItemStack input) {
 			Item inputItem = input.getItem();
-			return (inputItem == Items.POTION || inputItem == Items.SPLASH_POTION || inputItem == Items.LINGERING_POTION) && PotionUtils.getPotion(input) == MinepreggoModPotions.PREGNANCY_ACCELERATION_3.get();
+			return (inputItem == Items.POTION || inputItem == Items.SPLASH_POTION || inputItem == Items.LINGERING_POTION) && PotionUtils.getPotion(input) == MinepreggoPotions.PREGNANCY_ACCELERATION_3.get();
 		}
 
 		@Override
@@ -110,7 +110,7 @@ public abstract class PregnancyAccelerationPotionBrewingRecipe implements IBrewi
 		@Override
 		public ItemStack getOutput(ItemStack input, ItemStack ingredient) {
 			if (isInput(input) && isIngredient(ingredient)) {
-				return PotionUtils.setPotion(new ItemStack(input.getItem()), MinepreggoModPotions.PREGNANCY_ACCELERATION_4.get());
+				return PotionUtils.setPotion(new ItemStack(input.getItem()), MinepreggoPotions.PREGNANCY_ACCELERATION_4.get());
 			}
 			return ItemStack.EMPTY;
 		}	
