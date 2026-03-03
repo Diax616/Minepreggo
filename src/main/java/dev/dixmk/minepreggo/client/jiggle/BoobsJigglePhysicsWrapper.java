@@ -14,13 +14,13 @@ public class BoobsJigglePhysicsWrapper {
 
 	public BoobsJigglePhysicsWrapper(float originalParentYPos) {
 		this.originalParentYPos = originalParentYPos;
-        this.leftBoobJiggle = BoobJigglePhysics.builder(0.0f, true).originalYPos(originalParentYPos).build();
-        this.rightBoobJiggle = BoobJigglePhysics.builder(Mth.PI, false).originalYPos(originalParentYPos).build(); // 180 degrees out of phase
+        this.leftBoobJiggle = new BoobJigglePhysics(originalParentYPos, BoobJigglePhysicsConfig.builder(0.0f, true).build()); // 0 degrees phase offset
+        this.rightBoobJiggle = new BoobJigglePhysics(originalParentYPos, BoobJigglePhysicsConfig.builder(Mth.PI, false).build()); // 180 degrees phase offset
 	}
 	
-	BoobsJigglePhysicsWrapper(float originalParentYPos, BoobJigglePhysics.Builder leftBoobJiggle, BoobJigglePhysics.Builder rightBoobJiggle, boolean axisX, boolean axisZ) {
-		this.leftBoobJiggle = leftBoobJiggle.originalYPos(originalParentYPos).build();
-		this.rightBoobJiggle = rightBoobJiggle.originalYPos(originalParentYPos).build();
+	public BoobsJigglePhysicsWrapper(float originalParentYPos, BoobJigglePhysicsConfig leftBoobJiggle, BoobJigglePhysicsConfig rightBoobJiggle, boolean axisX, boolean axisZ) {
+		this.leftBoobJiggle = new BoobJigglePhysics(originalParentYPos, leftBoobJiggle);
+		this.rightBoobJiggle = new BoobJigglePhysics(originalParentYPos, rightBoobJiggle);
 		this.originalParentYPos = originalParentYPos;
 		useAxisX(axisX);
 		useAxisZ(axisZ);

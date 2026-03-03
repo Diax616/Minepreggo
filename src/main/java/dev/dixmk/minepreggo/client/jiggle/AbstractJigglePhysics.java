@@ -10,10 +10,10 @@ public abstract class AbstractJigglePhysics<E extends AbstractJigglePhysics.Abst
     protected float position = 0.0f;
     protected float previousPlayerY = 0.0f;
     
-    protected final E config;
+    protected final JigglePhysicsConfig<E> physicsConfig;
 	
-	protected AbstractJigglePhysics(E config) {
-		this.config = config;
+	protected AbstractJigglePhysics(JigglePhysicsConfig<E> physicsConfig) {
+		this.physicsConfig = physicsConfig;
 	}
 	
 	public void update(float playerY, float deltaTime) {
@@ -22,17 +22,17 @@ public abstract class AbstractJigglePhysics<E extends AbstractJigglePhysics.Abst
         previousPlayerY = playerY;
         
         // Apply forces
-        float springForce = -position * config.springStrength;
-        float gravityForce = config.gravity * Math.signum(velocity);
+        float springForce = -position * physicsConfig.config.springStrength;
+        float gravityForce = physicsConfig.config.gravity * Math.signum(velocity);
         
         // Update velocity with player movement influence
         velocity += springForce - (playerVelocity * 0.1f) - gravityForce;
-        velocity *= config.damping;
+        velocity *= physicsConfig.config.damping;
         
         // Update position
         position += velocity * deltaTime;
         
-        position = Mth.clamp(position, -config.maxDisplacement, config.maxDisplacement);   
+        position = Mth.clamp(position, -physicsConfig.config.maxDisplacement, physicsConfig.config.maxDisplacement);   
     }
     
     public float getOffset() {
@@ -50,15 +50,12 @@ public abstract class AbstractJigglePhysics<E extends AbstractJigglePhysics.Abst
 		public final float damping;
 		public final float gravity;
 		public final float maxDisplacement;
-		public final float originalYPos;
 		
-		protected AbstractJigglePhysicsConfig(float springStrength, float damping, float gravity, float maxDisplacement, float originalYPos) {
+		protected AbstractJigglePhysicsConfig(float springStrength, float damping, float gravity, float maxDisplacement) {
 			this.springStrength = springStrength;
 			this.damping = damping;
 			this.gravity = gravity;
 			this.maxDisplacement = maxDisplacement;
-			this.originalYPos = originalYPos;
-
 		}
 	}
 }

@@ -1,6 +1,7 @@
 package dev.dixmk.minepreggo.client.jiggle;
 
 import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -21,98 +22,57 @@ public class EntityJiggleDataFactory {
     public static @NonNull EntityJiggleData create(@NonNull JigglePositionConfig config, @Nullable PregnancyPhase phase) { 
     	if (phase == null) {
 			return createNonPregnancy(config);
-		}
-    	
-    	switch (phase) {
-            case P0:
-                return createP0(config);
-            case P1:
-                return createP1(config);
-            case P2:
-                return createP2(config);
-            case P3:
-                return createP3(config);
-            case P4:
-                return createP4(config);
-            case P5:
-                return createP5(config);
-            case P6:
-                return createP6(config);
-            case P7:
-                return createP7(config);
-            case P8:
-                return createP8(config);
-            default:
-                throw new IllegalArgumentException("Unknown pregnancy phase: " + phase);
-        }
+		}  	
+    	return switch (phase) {
+            case P0, P1 -> createLightweightPregnancy(config);
+            case P2 -> createSubstantialPregnancy(config);
+            case P3, P4 -> createWeightyPregnancy(config);
+            case P5, P6, P7 -> createHeavyweightPregnancy(config);
+            case P8 -> createMassivePregnancy(config);
+            default -> throw new IllegalArgumentException("Unsupported pregnancy phase: " + phase);
+        };
     }
-    
+
     private static EntityJiggleData createNonPregnancy(@NonNull JigglePositionConfig config) {
-        BoobsJigglePhysicsWrapper boobs = JigglePhysicsFactory.createLightweightBoobs(config.originalYBoobsPos, true, true);
+        BoobsJigglePhysicsWrapper boobs = new BoobsJigglePhysicsWrapper(config.originalYBoobsPos, JigglePhysicsConfigs.LIGHTWEIGHT_BOOBS_CONFIG.getLeft(), JigglePhysicsConfigs.LIGHTWEIGHT_BOOBS_CONFIG.getRight(), true, true);
         return new EntityJiggleData(boobs, null, null);
     }  
     
-    private static EntityJiggleData createP0(@NonNull JigglePositionConfig config) {
-        BoobsJigglePhysicsWrapper boobs = JigglePhysicsFactory.createLightweightBoobs(config.originalYBoobsPos, true, true);
-        BellyJigglePhysics belly = JigglePhysicsFactory.createBelly(config.originalYBellyPos, PregnancyPhase.P0);
+    private static EntityJiggleData createLightweightPregnancy(@NonNull JigglePositionConfig config) {
+		BoobsJigglePhysicsWrapper boobs = new BoobsJigglePhysicsWrapper(config.originalYBoobsPos, JigglePhysicsConfigs.LIGHTWEIGHT_BOOBS_CONFIG.getLeft(), JigglePhysicsConfigs.LIGHTWEIGHT_BOOBS_CONFIG.getRight(), true, true);
+		BellyJigglePhysics belly = new BellyJigglePhysics(config.originalYBellyPos, JigglePhysicsConfigs.LIGHTWEIGHT_BELLY_CONFIG);
+		return new EntityJiggleData(boobs, belly, null);
+	}
+    
+    private static EntityJiggleData createSubstantialPregnancy(@NonNull JigglePositionConfig config) {
+        BoobsJigglePhysicsWrapper boobs = new BoobsJigglePhysicsWrapper(config.originalYBoobsPos, JigglePhysicsConfigs.DEFAULT_BOOBS_CONFIG.getLeft(), JigglePhysicsConfigs.DEFAULT_BOOBS_CONFIG.getRight(), false, false);
+        BellyJigglePhysics belly = new BellyJigglePhysics(config.originalYBellyPos, JigglePhysicsConfigs.DEFAULT_BELLY_CONFIG);
         return new EntityJiggleData(boobs, belly, null);
     }
-
-    private static EntityJiggleData createP1(@NonNull JigglePositionConfig config) {
-        BoobsJigglePhysicsWrapper boobs = JigglePhysicsFactory.createLightweightBoobs(config.originalYBoobsPos, true, true);
-        BellyJigglePhysics belly = JigglePhysicsFactory.createBelly(config.originalYBellyPos, PregnancyPhase.P1);
-        return new EntityJiggleData(boobs, belly, null);
-    }
-
-    private static EntityJiggleData createP2(@NonNull JigglePositionConfig config) {
-        BoobsJigglePhysicsWrapper boobs = JigglePhysicsFactory.createBoobs(config.originalYBoobsPos, false, false);
-        BellyJigglePhysics belly = JigglePhysicsFactory.createBelly(config.originalYBellyPos, PregnancyPhase.P2);
-        return new EntityJiggleData(boobs, belly, null);
-    }
-
-    private static EntityJiggleData createP3(@NonNull JigglePositionConfig config) {
-        BoobsJigglePhysicsWrapper boobs = JigglePhysicsFactory.createBoobs(config.originalYBoobsPos, false, false);
-        BellyJigglePhysics belly = JigglePhysicsFactory.createBelly(config.originalYBellyPos, PregnancyPhase.P3);
-        ButtJigglePhysicsWrapper butt = JigglePhysicsFactory.createLightweightButt(config.originalYButtPos);
-        return new EntityJiggleData(boobs, belly, butt);
-    }
-
-    private static EntityJiggleData createP4(@NonNull JigglePositionConfig config) {
-        BoobsJigglePhysicsWrapper boobs = JigglePhysicsFactory.createHeavyweightBoobs(config.originalYBoobsPos, false, false);
-        BellyJigglePhysics belly = JigglePhysicsFactory.createBelly(config.originalYBellyPos, PregnancyPhase.P4);
-        ButtJigglePhysicsWrapper butt = JigglePhysicsFactory.createLightweightButt(config.originalYButtPos);
-        return new EntityJiggleData(boobs, belly, butt);
-    }
-
-    private static EntityJiggleData createP5(@NonNull JigglePositionConfig config) {
-        BoobsJigglePhysicsWrapper boobs = JigglePhysicsFactory.createHeavyweightBoobs(config.originalYBoobsPos, false, false);
-        BellyJigglePhysics belly = JigglePhysicsFactory.createBelly(config.originalYBellyPos, PregnancyPhase.P5);
-        ButtJigglePhysicsWrapper butt = JigglePhysicsFactory.createLightweightButt(config.originalYButtPos);
-        return new EntityJiggleData(boobs, belly, butt);
-    }
-
-    private static EntityJiggleData createP6(@NonNull JigglePositionConfig config) {
-        BoobsJigglePhysicsWrapper boobs = JigglePhysicsFactory.createHeavyweightBoobs(config.originalYBoobsPos, false, false);
-        BellyJigglePhysics belly = JigglePhysicsFactory.createBelly(config.originalYBellyPos, PregnancyPhase.P6);
-        ButtJigglePhysicsWrapper butt = JigglePhysicsFactory.createHeavyweightButt(config.originalYButtPos);
+    
+    private static EntityJiggleData createWeightyPregnancy(@NonNull JigglePositionConfig config) {
+        BoobsJigglePhysicsWrapper boobs = new BoobsJigglePhysicsWrapper(config.originalYBoobsPos, JigglePhysicsConfigs.DEFAULT_BOOBS_CONFIG.getLeft(), JigglePhysicsConfigs.DEFAULT_BOOBS_CONFIG.getRight(), false, false);
+        BellyJigglePhysics belly = new BellyJigglePhysics(config.originalYBellyPos, JigglePhysicsConfigs.DEFAULT_BELLY_CONFIG);
+        ButtJigglePhysicsWrapper butt = new ButtJigglePhysicsWrapper(config.originalYButtPos, JigglePhysicsConfigs.DEFAULT_BUTT_CONFIG.getLeft(), JigglePhysicsConfigs.DEFAULT_BUTT_CONFIG.getRight());
         return new EntityJiggleData(boobs, belly, butt);
     }
     
-    private static EntityJiggleData createP7(@NonNull JigglePositionConfig config) {
-        BoobsJigglePhysicsWrapper boobs = JigglePhysicsFactory.createHeavyweightBoobs(config.originalYBoobsPos, false, false);
-        BellyJigglePhysics belly = JigglePhysicsFactory.createBelly(config.originalYBellyPos, PregnancyPhase.P7);
-        ButtJigglePhysicsWrapper butt = JigglePhysicsFactory.createHeavyweightButt(config.originalYButtPos);
-        return new EntityJiggleData(boobs, belly, butt);
-    }
+    private static EntityJiggleData createHeavyweightPregnancy(@NonNull JigglePositionConfig config) {
+        BoobsJigglePhysicsWrapper boobs = new BoobsJigglePhysicsWrapper(config.originalYBoobsPos, JigglePhysicsConfigs.HEAVYWEIGHT_BOOBS_CONFIG.getLeft(), JigglePhysicsConfigs.HEAVYWEIGHT_BOOBS_CONFIG.getRight(), false, false);
+        BellyJigglePhysics belly = new BellyJigglePhysics(config.originalYBellyPos, JigglePhysicsConfigs.DEFAULT_BELLY_CONFIG);
+        ButtJigglePhysicsWrapper butt = new ButtJigglePhysicsWrapper(config.originalYButtPos, JigglePhysicsConfigs.DEFAULT_BUTT_CONFIG.getLeft(), JigglePhysicsConfigs.DEFAULT_BUTT_CONFIG.getRight());
+		return new EntityJiggleData(boobs, belly, butt);
+	}
     
-    private static EntityJiggleData createP8(@NonNull JigglePositionConfig config) {
-        BoobsJigglePhysicsWrapper boobs = JigglePhysicsFactory.createHeavyweightBoobs(config.originalYBoobsPos, false, false);
-        BellyJigglePhysics belly = JigglePhysicsFactory.createBelly(config.originalYBellyPos, PregnancyPhase.P8);
-        ButtJigglePhysicsWrapper butt = JigglePhysicsFactory.createHeavyweightButt(config.originalYButtPos);
-        return new EntityJiggleData(boobs, belly, butt);
-    }
-    
+    private static EntityJiggleData createMassivePregnancy(@NonNull JigglePositionConfig config) {
+		BoobsJigglePhysicsWrapper boobs = new BoobsJigglePhysicsWrapper(config.originalYBoobsPos, JigglePhysicsConfigs.VERY_HEAVYWEIGHT_BOOBS_CONFIG.getLeft(), JigglePhysicsConfigs.VERY_HEAVYWEIGHT_BOOBS_CONFIG.getRight(), false, false);
+		BellyJigglePhysics belly = new BellyJigglePhysics(config.originalYBellyPos, JigglePhysicsConfigs.VERY_HEAVYWEIGHT_BELLY_CONFIG);
+		ButtJigglePhysicsWrapper butt = new ButtJigglePhysicsWrapper(config.originalYButtPos, JigglePhysicsConfigs.DEFAULT_BUTT_CONFIG.getLeft(), JigglePhysicsConfigs.DEFAULT_BUTT_CONFIG.getRight());
+		return new EntityJiggleData(boobs, belly, butt);
+	}
+
     @OnlyIn(Dist.CLIENT)
+    @Immutable
     public static class JigglePositionConfig {
     	private final float originalYBoobsPos;
     	private final float originalYBellyPos;

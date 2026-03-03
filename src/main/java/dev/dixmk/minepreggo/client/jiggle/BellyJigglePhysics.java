@@ -6,26 +6,19 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class BellyJigglePhysics extends AbstractJigglePhysics<BellyJigglePhysics.JigglePhysicsConfig> {
+public class BellyJigglePhysics extends AbstractJigglePhysics<BellyJigglePhysicsConfig> {
     private float rotationVelocity = 0.0f;
-    private float rotation = 0.0f;
-	
+    private float rotation = 0.0f;	
     private double previousPlayerX = 0.0;
     private double previousPlayerZ = 0.0;
     private float movementIntensity = 0.0f;
+    private float oscillationTime = 0.0f;
+    private Cache cache = new Cache(3);
 	
-	protected BellyJigglePhysics(JigglePhysicsConfig config) {
-		super(config);
-	}
-	
-	public BellyJigglePhysics(Builder builder) {
-		this(new JigglePhysicsConfig(builder));
+	public BellyJigglePhysics(float originalYPos, BellyJigglePhysicsConfig physicsConfig) {
+		super(new JigglePhysicsConfig<>(originalYPos, physicsConfig));
 	}
 
-	public static BellyJigglePhysics.Builder builder() {
-		return new BellyJigglePhysics.Builder();
-	}
-	
     public void update(float playerY, double playerX, double playerZ, float deltaTime, boolean isMoving) {
         // Calculate player velocity on Y-axis
         float playerVelocityY = (playerY - previousPlayerY) / deltaTime;
@@ -40,33 +33,41 @@ public class BellyJigglePhysics extends AbstractJigglePhysics<BellyJigglePhysics
         
         // Update movement intensity with decay
         if (isMoving && horizontalMovement > 0.001f) {
-            movementIntensity = Math.min(1.0f, movementIntensity + horizontalMovement * config.movementMultiplier);
+            movementIntensity = Math.min(1.0f, movementIntensity + horizontalMovement * physicsConfig.config.movementMultiplier);
+            oscillationTime += physicsConfig.config.oscillationSpeed * Math.max(movementIntensity, Math.abs(playerVelocityY) * 2.0f);
         } else {
-            movementIntensity *= config.movementDecay;
+            movementIntensity *= physicsConfig.config.movementDecay;
+        }
+        
+        float phaseTime = oscillationTime * physicsConfig.config.asymmetricFrequency + physicsConfig.config.phaseOffset;
+        
+        cache.tick();
+        if (cache.shouldUpdate()) {
+            cache.refreshTrigCache(phaseTime);
         }
         
         // Apply forces to vertical position
-        float springForce = -position * config.springStrength;
-        float gravityForce = config.gravity * Math.signum(velocity);
-        float movementForce = movementIntensity * 0.05f * (float) Math.sin(System.currentTimeMillis() * 0.01);
+        float springForce = -position * physicsConfig.config.springStrength;
+        float gravityForce = physicsConfig.config.gravity * Math.signum(velocity);
+        float movementForce = movementIntensity * 0.05f * cache.sinTime;
         
         // Update velocity with player movement influence
         velocity += springForce - (playerVelocityY * 0.1f) - gravityForce + movementForce;
-        velocity *= config.damping;
+        velocity *= physicsConfig.config.damping;
         
         // Update position
         position += velocity * deltaTime;
-        position = Math.max(-config.maxDisplacement, Math.min(config.maxDisplacement, position));
+        position = Math.max(-physicsConfig.config.maxDisplacement, Math.min(physicsConfig.config.maxDisplacement, position));
         
         // Calculate rotation based on velocity and movement
-        float targetRotation = velocity * 0.5f + (movementIntensity * 0.2f * (float) Math.cos(System.currentTimeMillis() * 0.008));
-        float rotationSpringForce = (targetRotation - rotation) * config.rotationSpring;
+        float targetRotation = velocity * 0.5f + (movementIntensity * 0.2f * cache.cosTime);
+        float rotationSpringForce = (targetRotation - rotation) * physicsConfig.config.rotationSpring;
         
         rotationVelocity += rotationSpringForce;
-        rotationVelocity *= config.rotationDamping;
+        rotationVelocity *= physicsConfig.config.rotationDamping;
         
         rotation += rotationVelocity * deltaTime;
-        rotation = Math.max(-config.maxRotation, Math.min(config.maxRotation, rotation));
+        rotation = Math.max(-physicsConfig.config.maxRotation, Math.min(physicsConfig.config.maxRotation, rotation));
     }
     
     public float getRotation() {
@@ -91,102 +92,35 @@ public class BellyJigglePhysics extends AbstractJigglePhysics<BellyJigglePhysics
 				
 		if (!simple) {
 			this.update((float) entity.getY(), entity.getX(), entity.getZ(), deltaTime, entity.walkAnimation.isMoving());
-			bellyModel.y = config.originalYPos + this.getOffset();	
+			bellyModel.y = physicsConfig.originalYPos + this.getOffset();	
 			bellyModel.yRot = this.getRotation();
 		}
 		else {
 			this.update((float) entity.getY(), deltaTime);
-			bellyModel.y = config.originalYPos + this.getOffset();	
+			bellyModel.y = physicsConfig.originalYPos + this.getOffset();	
 		}
 	}
     
-    
     @OnlyIn(Dist.CLIENT)
-    public static class Builder {
-    	private float springStrength = 0.15f;
-    	private float damping = 0.85f;
-    	private float gravity = 0.02f;
-    	private float maxDisplacement = 0.3f;
-        protected float originalYPos = 2.0f;
+    private class Cache extends JigglePhysicsCache {
+        float sinTime;   // Math.sin(currentTimeMillis * 0.01)
+        float cosTime;   // Math.cos(currentTimeMillis * 0.008)
         
-        private float rotationSpring = 0.2f;
-        private float rotationDamping = 0.88f;
-        private float maxRotation = 0.125f;
-        
-        private float movementMultiplier = 0.3f;
-        private float movementDecay = 0.92f;
-    	  
-    	
-    	public BellyJigglePhysics build() {
-    		return new BellyJigglePhysics(this);
-    	}
-        
-    	public Builder springStrength(float springStrength) {
-    		this.springStrength = springStrength;
-    		return this;
-    	}
-    	
-    	public Builder damping(float damping) {
-    		this.damping = damping;
-    		return this;
-    	}
-    	
-    	public Builder gravity(float gravity) {
-    		this.gravity = gravity;
-    		return this;
-    	}
-    	
-    	public Builder originalYPos(float originalYPos) {
-    		this.originalYPos = originalYPos;
-    		return this;
-    	}
-	
-    	public Builder maxDisplacement(float maxDisplacement) {
-    		this.maxDisplacement = maxDisplacement;
-    		return this;
-    	}
+        private float lastPhaseTime = Float.NaN;
 
-        public Builder rotationSpring(float rotationSpring) {
-        	this.rotationSpring = rotationSpring;
-        	return this;
+        public Cache(int ticksForUpdate) {
+            super(ticksForUpdate);
         }
-        
-        public Builder rotationDamping(float rotationDamping) {
-        	this.rotationDamping = rotationDamping;
-        	return this;
-        }
-        
-        public Builder maxRotation(float maxRotation) {
-        	this.maxRotation = maxRotation;
-        	return this;
-        }
-        
-        public Builder movementMultiplier(float movementMultiplier) {
-        	this.movementMultiplier = movementMultiplier;
-        	return this;
-        }
-        
-        public Builder movementDecay(float movementDecay) {
-        	this.movementDecay = movementDecay;
-        	return this;
-        }       
-    }
-    
-    @OnlyIn(Dist.CLIENT)
-    public static class JigglePhysicsConfig extends AbstractJigglePhysics.AbstractJigglePhysicsConfig {
-        public final float rotationSpring;
-        public final float rotationDamping;
-        public final float maxRotation;
-        public final float movementMultiplier;
-        public final float movementDecay;
 
-        public JigglePhysicsConfig(Builder builder) {
-            super(builder.springStrength, builder.damping, builder.gravity, builder.maxDisplacement, builder.originalYPos);
-            this.rotationSpring = builder.rotationSpring;
-            this.rotationDamping = builder.rotationDamping;
-            this.maxRotation = builder.maxRotation;
-            this.movementMultiplier = builder.movementMultiplier;
-            this.movementDecay = builder.movementDecay;
+        @Override
+        public void refreshTrigCache() {
+            refreshTrigCache(lastPhaseTime);
+        }
+
+        public void refreshTrigCache(float phaseTime) {
+            this.lastPhaseTime = phaseTime;
+            sinTime = (float) Math.sin(phaseTime);
+            cosTime = (float) Math.cos(phaseTime * 0.8);
         }
     }
 }

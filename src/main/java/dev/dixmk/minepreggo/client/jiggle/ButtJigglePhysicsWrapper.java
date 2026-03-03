@@ -13,14 +13,14 @@ public class ButtJigglePhysicsWrapper {
 	
 	public ButtJigglePhysicsWrapper(float originalParentYPos) {
 		this.originalParentYPos = originalParentYPos;
-		this.leftButtockJiggle = ButtJigglePhysics.builder().originalYPos(originalParentYPos).build();
-		this.rightButtockJiggle = ButtJigglePhysics.builder().originalYPos(originalParentYPos).build();	
+		this.leftButtockJiggle = new ButtJigglePhysics(originalParentYPos, ButtJigglePhysicsConfig.builder().build());
+		this.rightButtockJiggle = new ButtJigglePhysics(originalParentYPos, ButtJigglePhysicsConfig.builder().build());
 	}
 	
-	ButtJigglePhysicsWrapper(float originalParentYPos, ButtJigglePhysics.Builder leftButtockJiggle, ButtJigglePhysics.Builder rightButtockJiggle) {
+	public ButtJigglePhysicsWrapper(float originalParentYPos, ButtJigglePhysicsConfig leftButtockJiggle, ButtJigglePhysicsConfig rightButtockJiggle) {
 		this.originalParentYPos = originalParentYPos;
-		this.leftButtockJiggle = leftButtockJiggle.originalYPos(originalParentYPos).build();
-		this.rightButtockJiggle = rightButtockJiggle.originalYPos(originalParentYPos).build();	
+		this.leftButtockJiggle = new ButtJigglePhysics(originalParentYPos, leftButtockJiggle);
+		this.rightButtockJiggle = new ButtJigglePhysics(originalParentYPos, rightButtockJiggle);
 	}
 	
     public void setupAnim(LivingEntity entity, ModelPart leftButt, ModelPart rightButt) {       
