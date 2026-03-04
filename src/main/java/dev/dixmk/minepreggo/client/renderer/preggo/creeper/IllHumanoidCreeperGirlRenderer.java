@@ -4,7 +4,7 @@ import javax.annotation.Nullable;
 
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.IllHumanoidCreeperGirlModel;
 import dev.dixmk.minepreggo.client.model.geom.MinepreggoModelLayers;
-import dev.dixmk.minepreggo.client.renderer.entity.layer.ExpressiveFaceLayer;
+import dev.dixmk.minepreggo.client.renderer.entity.layers.ExpressiveFaceLayer;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.IllHumanoidCreeperGirl;
 import net.minecraft.client.model.geom.ModelLayerLocation;

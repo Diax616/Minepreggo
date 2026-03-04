@@ -16,14 +16,13 @@ import net.minecraft.client.model.HumanoidModel;
 
 import java.util.function.Consumer;
 
-import dev.dixmk.minepreggo.client.model.armor.ArmorModelHelper;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 
-public abstract class FemaleDiamondChestPlateItem extends ArmorItem implements IFemaleArmor {
+public abstract class FemaleDiamondChestPlateItem extends FemaleChestPlateItem {
 	protected FemaleDiamondChestPlateItem() {
 		super(ArmorMaterials.DIAMOND, ArmorItem.Type.CHESTPLATE, new Item.Properties());
 	}
-	
+
 	public static class Chestplate extends FemaleDiamondChestPlateItem {
 		@Override
 		public void initializeClient(Consumer<IClientItemExtensions> consumer) {
@@ -31,7 +30,8 @@ public abstract class FemaleDiamondChestPlateItem extends ArmorItem implements I
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return ArmorModelHelper.createFemaleChestplateModel(living, stack, slot, defaultModel);
+					defaultModel.setAllVisible(false);
+					return defaultModel;
 				}
 			});
 		}
@@ -43,20 +43,15 @@ public abstract class FemaleDiamondChestPlateItem extends ArmorItem implements I
 	}
 	
 	public abstract static class MaternityFemaleDiamondChestPlateItem extends FemaleDiamondChestPlateItem implements IMaternityArmor {
-		final PregnancyPhase maxPregnancyPhase;
+		private final PregnancyPhase current;
 			
-		protected MaternityFemaleDiamondChestPlateItem(PregnancyPhase maxPregnancyPhase) {
-			this.maxPregnancyPhase = maxPregnancyPhase;
+		protected MaternityFemaleDiamondChestPlateItem(PregnancyPhase current) {
+			this.current = current;
 		}
 		
 		@Override
-		public PregnancyPhase getMinPregnancyPhaseAllowed() {
-			return maxPregnancyPhase;
-		}
-		
-		@Override
-		public boolean areBoobsExposed() {
-			return false;
+		public PregnancyPhase getCurrentPregnancyPhase() {
+			return current;
 		}
 	}
 	
@@ -71,7 +66,8 @@ public abstract class FemaleDiamondChestPlateItem extends ArmorItem implements I
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return ArmorModelHelper.createMaternityChestplateP1Model(living, stack, slot, defaultModel);
+					defaultModel.setAllVisible(false);
+					return defaultModel;
 				}
 			});
 		}
@@ -93,7 +89,8 @@ public abstract class FemaleDiamondChestPlateItem extends ArmorItem implements I
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return ArmorModelHelper.createMaternityChestplateP2Model(living, stack, slot, defaultModel);
+					defaultModel.setAllVisible(false);
+					return defaultModel;
 				}
 			});
 		}
@@ -115,7 +112,8 @@ public abstract class FemaleDiamondChestPlateItem extends ArmorItem implements I
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return ArmorModelHelper.createMaternityChestplateP3Model(living, stack, slot, defaultModel);
+					defaultModel.setAllVisible(false);
+					return defaultModel;
 				}
 			});
 		}
@@ -137,7 +135,8 @@ public abstract class FemaleDiamondChestPlateItem extends ArmorItem implements I
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return ArmorModelHelper.createMaternityChestplateP4Model(living, stack, slot, defaultModel);
+					defaultModel.setAllVisible(false);
+					return defaultModel;
 				}
 			});
 		}

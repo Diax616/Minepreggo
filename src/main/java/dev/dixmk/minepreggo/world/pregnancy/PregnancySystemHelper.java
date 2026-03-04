@@ -527,7 +527,7 @@ public class PregnancySystemHelper {
 			}		
 			return true;
 		}		
-		return armor instanceof IMaternityArmor maternityArmor && pregnancyPhase.compareTo(maternityArmor.getMinPregnancyPhaseAllowed()) <= 0;
+		return armor instanceof IMaternityArmor maternityArmor && pregnancyPhase.compareTo(maternityArmor.getCurrentPregnancyPhase()) <= 0;
 	}
 
 	public static boolean canUseLegging(Item armor, PregnancyPhase pregnancyPhase) {	

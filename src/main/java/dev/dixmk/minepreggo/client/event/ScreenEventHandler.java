@@ -14,7 +14,7 @@ import dev.dixmk.minepreggo.client.gui.preggo.AbstractEnderDragonMainScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.creeper.AbstractCreeperGirlMainScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.ender.AbstractEnderWomanMainScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.zombie.AbstractZombieGirlMainScreen;
-import dev.dixmk.minepreggo.client.renderer.entity.layer.player.ClientPlayerHelper;
+import dev.dixmk.minepreggo.client.renderer.entity.layers.player.ClientPlayerHelper;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoMobEffects;
 import dev.dixmk.minepreggo.network.capability.IEnderPowerData;

@@ -1,8 +1,8 @@
 package dev.dixmk.minepreggo.client.renderer.preggo.ender;
 
 import dev.dixmk.minepreggo.client.model.entity.preggo.ender.AbstractTamableMonsterEnderWomanModel;
-import dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.ender.TamableMonsterEnderWomanExpressionLayer;
-import dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.ender.TamableMonsterEnderWomanExpressiveEyesLayer;
+import dev.dixmk.minepreggo.client.renderer.entity.layers.preggo.ender.TamableMonsterEnderWomanExpressionLayer;
+import dev.dixmk.minepreggo.client.renderer.entity.layers.preggo.ender.TamableMonsterEnderWomanExpressiveEyesLayer;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractTamableEnderWoman;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraftforge.api.distmarker.Dist;

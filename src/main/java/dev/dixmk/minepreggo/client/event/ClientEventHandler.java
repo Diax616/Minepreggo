@@ -7,7 +7,7 @@ import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.client.animation.player.PlayerAnimationManager;
 import dev.dixmk.minepreggo.client.animation.player.PlayerAnimationManager.PlayerAnimationCache;
 import dev.dixmk.minepreggo.client.jiggle.JigglePhysicsManager;
-import dev.dixmk.minepreggo.client.renderer.entity.layer.player.ClientPlayerHelper;
+import dev.dixmk.minepreggo.client.renderer.entity.layers.player.ClientPlayerHelper;
 import dev.dixmk.minepreggo.client.screens.effect.SexOverlayManager;
 import dev.dixmk.minepreggo.common.animation.CommonPlayerAnimationRegistry;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;

@@ -7,7 +7,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import dev.dixmk.minepreggo.client.model.entity.preggo.zombie.AbstractZombieGirlModel;
-import dev.dixmk.minepreggo.client.renderer.entity.layer.ExpressiveFaceLayer;
+import dev.dixmk.minepreggo.client.renderer.entity.layers.ExpressiveFaceLayer;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractZombieGirl;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;

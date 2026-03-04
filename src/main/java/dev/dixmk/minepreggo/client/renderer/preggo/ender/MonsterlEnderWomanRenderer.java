@@ -4,8 +4,8 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import dev.dixmk.minepreggo.client.model.entity.preggo.ender.MonsterEnderWomanModel;
 import dev.dixmk.minepreggo.client.model.geom.MinepreggoModelLayers;
-import dev.dixmk.minepreggo.client.renderer.entity.layer.ExpressiveEyesLayer;
-import dev.dixmk.minepreggo.client.renderer.entity.layer.ExpressiveFaceLayer;
+import dev.dixmk.minepreggo.client.renderer.entity.layers.ExpressiveEyesLayer;
+import dev.dixmk.minepreggo.client.renderer.entity.layers.ExpressiveFaceLayer;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.HostileMonsterEnderWoman;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;

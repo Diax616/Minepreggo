@@ -5,8 +5,8 @@ import javax.annotation.Nullable;
 
 import dev.dixmk.minepreggo.client.model.entity.preggo.ender.TamableMonsterEnderWomanModel;
 import dev.dixmk.minepreggo.client.model.geom.MinepreggoModelLayers;
-import dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.ender.TamableMonsterEnderWomanExpressionLayer;
-import dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.ender.TamableMonsterEnderWomanExpressiveEyesLayer;
+import dev.dixmk.minepreggo.client.renderer.entity.layers.preggo.ender.TamableMonsterEnderWomanExpressionLayer;
+import dev.dixmk.minepreggo.client.renderer.entity.layers.preggo.ender.TamableMonsterEnderWomanExpressiveEyesLayer;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.TamableMonsterEnderWoman;
 import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
 import net.minecraft.client.model.geom.ModelLayerLocation;

@@ -16,30 +16,11 @@ import net.minecraft.client.model.HumanoidModel;
 
 import java.util.function.Consumer;
 
-import dev.dixmk.minepreggo.client.model.armor.ArmorModelHelper;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 
-public abstract class FemaleChainmailChestPlateItem extends ArmorItem implements IFemaleArmor {
+public abstract class FemaleChainmailChestPlateItem extends FemaleChestPlateItem {
 	protected FemaleChainmailChestPlateItem() {
 		super(ArmorMaterials.CHAIN, ArmorItem.Type.CHESTPLATE, new Item.Properties());
-	}
-
-	public abstract static class MaternityFemaleChainmailChestPlateItem extends FemaleChainmailChestPlateItem implements IMaternityArmor{
-		final PregnancyPhase maxPregnancyPhase;
-			
-		protected MaternityFemaleChainmailChestPlateItem(PregnancyPhase maxPregnancyPhase) {
-			this.maxPregnancyPhase = maxPregnancyPhase;
-		}
-		
-		@Override
-		public PregnancyPhase getMinPregnancyPhaseAllowed() {
-			return maxPregnancyPhase;
-		}
-		
-		@Override
-		public boolean areBoobsExposed() {
-			return false;
-		}
 	}
 		
 	public static class Chestplate extends FemaleChainmailChestPlateItem {	
@@ -49,7 +30,8 @@ public abstract class FemaleChainmailChestPlateItem extends ArmorItem implements
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return ArmorModelHelper.createFemaleChestplateModel(living, stack, slot, defaultModel);
+					defaultModel.setAllVisible(false);
+					return defaultModel;				
 				}
 			});
 		}
@@ -57,6 +39,19 @@ public abstract class FemaleChainmailChestPlateItem extends ArmorItem implements
 		@Override
 		public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
 			return "minepreggo:textures/models/armor/chainmail_layer_1.png";
+		}
+	}
+	
+	public abstract static class MaternityFemaleChainmailChestPlateItem extends FemaleChainmailChestPlateItem implements IMaternityArmor{
+		private final PregnancyPhase current;
+			
+		protected MaternityFemaleChainmailChestPlateItem(PregnancyPhase current) {
+			this.current = current;
+		}
+		
+		@Override
+		public PregnancyPhase getCurrentPregnancyPhase() {
+			return current;
 		}
 	}
 	
@@ -71,11 +66,12 @@ public abstract class FemaleChainmailChestPlateItem extends ArmorItem implements
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return ArmorModelHelper.createMaternityChestplateP1Model(living, stack, slot, defaultModel);
+					defaultModel.setAllVisible(false);
+					return defaultModel;				
 				}
 			});
 		}
-
+		
 		@Override
 		public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
 			return "minepreggo:textures/models/armor/chainmail_p1_layer_1.png";
@@ -93,15 +89,16 @@ public abstract class FemaleChainmailChestPlateItem extends ArmorItem implements
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return ArmorModelHelper.createMaternityChestplateP2Model(living, stack, slot, defaultModel);
+					defaultModel.setAllVisible(false);
+					return defaultModel;				
 				}
 			});
 		}
-
+		
 		@Override
 		public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
 			return "minepreggo:textures/models/armor/chainmail_p2_layer_1.png";
-		}
+		}	
 	}
 	
 	public static class MaternityChestplateP3 extends MaternityFemaleChainmailChestPlateItem {
@@ -115,7 +112,8 @@ public abstract class FemaleChainmailChestPlateItem extends ArmorItem implements
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return ArmorModelHelper.createMaternityChestplateP3Model(living, stack, slot, defaultModel);
+					defaultModel.setAllVisible(false);
+					return defaultModel;				
 				}
 			});
 		}
@@ -123,7 +121,7 @@ public abstract class FemaleChainmailChestPlateItem extends ArmorItem implements
 		@Override
 		public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
 			return "minepreggo:textures/models/armor/chainmail_p3_layer_1.png";
-		}
+		}		
 	}
 	
 	public static class MaternityChestplateP4 extends MaternityFemaleChainmailChestPlateItem {
@@ -137,7 +135,8 @@ public abstract class FemaleChainmailChestPlateItem extends ArmorItem implements
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return ArmorModelHelper.createMaternityChestplateP4Model(living, stack, slot, defaultModel);
+					defaultModel.setAllVisible(false);
+					return defaultModel;				
 				}
 			});
 		}

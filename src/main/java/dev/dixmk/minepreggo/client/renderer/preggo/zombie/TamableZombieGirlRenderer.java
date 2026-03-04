@@ -4,7 +4,7 @@ import javax.annotation.Nullable;
 
 import dev.dixmk.minepreggo.client.model.entity.preggo.zombie.TamableZombieGirlModel;
 import dev.dixmk.minepreggo.client.model.geom.MinepreggoModelLayers;
-import dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.zombie.TamableZombieGirlExpressionLayer;
+import dev.dixmk.minepreggo.client.renderer.entity.layers.preggo.zombie.TamableZombieGirlExpressionLayer;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.TamableZombieGirl;
 import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
 import net.minecraft.client.model.geom.ModelLayerLocation;

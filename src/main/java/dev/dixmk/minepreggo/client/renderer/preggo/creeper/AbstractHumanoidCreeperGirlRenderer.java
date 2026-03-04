@@ -7,8 +7,8 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractHumanoidCreeperGirlModel;
-import dev.dixmk.minepreggo.client.renderer.entity.layer.ExpressiveFaceLayer;
-import dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.creeper.HumanoidCreeperGirlPowerLayer;
+import dev.dixmk.minepreggo.client.renderer.entity.layers.ExpressiveFaceLayer;
+import dev.dixmk.minepreggo.client.renderer.entity.layers.preggo.creeper.HumanoidCreeperGirlPowerLayer;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractCreeperGirl;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;

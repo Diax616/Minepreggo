@@ -2,7 +2,6 @@ package dev.dixmk.minepreggo.world.item;
 
 import java.util.function.Consumer;
 
-import dev.dixmk.minepreggo.client.model.armor.ArmorModelHelper;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.world.entity.Entity;
@@ -10,37 +9,16 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterials;
-import net.minecraft.world.item.DyeableArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 
-public abstract class FemaleLeatherChestPlateItem extends DyeableArmorItem implements IFemaleArmor {
+public abstract class FemaleLeatherChestPlateItem extends DyeableFemaleChestPlateItem {
 	protected FemaleLeatherChestPlateItem() {
 		super(ArmorMaterials.LEATHER, ArmorItem.Type.CHESTPLATE, new Item.Properties());	
 	}
-	
-
-	public abstract static class MaternityFemaleLeatherChestPlateItem extends FemaleLeatherChestPlateItem implements IMaternityArmor{
-		final PregnancyPhase maxPregnancyPhase;
-			
-		protected MaternityFemaleLeatherChestPlateItem(PregnancyPhase maxPregnancyPhase) {
-			this.maxPregnancyPhase = maxPregnancyPhase;
-		}
-		
-		@Override
-		public PregnancyPhase getMinPregnancyPhaseAllowed() {
-			return maxPregnancyPhase;
-		}
-		
-		@Override
-		public boolean areBoobsExposed() {
-			return false;
-		}
-	}
-	
 	
 	public static class Chestplate extends FemaleLeatherChestPlateItem {		
 		@Override
@@ -49,7 +27,8 @@ public abstract class FemaleLeatherChestPlateItem extends DyeableArmorItem imple
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return ArmorModelHelper.createFemaleChestplateModel(living, stack, slot, defaultModel);
+					defaultModel.setAllVisible(false);
+					return defaultModel;
 				}
 			});
 		}	
@@ -63,6 +42,19 @@ public abstract class FemaleLeatherChestPlateItem extends DyeableArmorItem imple
 		}
 	}	
 	
+	public abstract static class MaternityFemaleLeatherChestPlateItem extends FemaleLeatherChestPlateItem implements IMaternityArmor{
+		private final PregnancyPhase current;
+			
+		protected MaternityFemaleLeatherChestPlateItem(PregnancyPhase current) {
+			this.current = current;
+		}
+		
+		@Override
+		public PregnancyPhase getCurrentPregnancyPhase() {
+			return current;
+		}	
+	}
+	
 	public static class MaternityChestplateP1 extends MaternityFemaleLeatherChestPlateItem {		
 		public MaternityChestplateP1() {
 			super(PregnancyPhase.P1);
@@ -74,7 +66,8 @@ public abstract class FemaleLeatherChestPlateItem extends DyeableArmorItem imple
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return ArmorModelHelper.createMaternityChestplateP1Model(living, stack, slot, defaultModel);
+					defaultModel.setAllVisible(false);
+					return defaultModel;
 				}
 			});
 		}
@@ -99,7 +92,8 @@ public abstract class FemaleLeatherChestPlateItem extends DyeableArmorItem imple
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return ArmorModelHelper.createMaternityChestplateP2Model(living, stack, slot, defaultModel);
+					defaultModel.setAllVisible(false);
+					return defaultModel;
 				}
 			});
 		}
@@ -124,7 +118,8 @@ public abstract class FemaleLeatherChestPlateItem extends DyeableArmorItem imple
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return ArmorModelHelper.createMaternityChestplateP3Model(living, stack, slot, defaultModel);
+					defaultModel.setAllVisible(false);
+					return defaultModel;
 				}
 			});
 		}
@@ -149,7 +144,8 @@ public abstract class FemaleLeatherChestPlateItem extends DyeableArmorItem imple
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return ArmorModelHelper.createMaternityChestplateP4Model(living, stack, slot, defaultModel);
+					defaultModel.setAllVisible(false);
+					return defaultModel;
 				}
 			});
 		}

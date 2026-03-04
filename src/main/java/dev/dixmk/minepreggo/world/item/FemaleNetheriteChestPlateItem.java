@@ -15,32 +15,12 @@ import net.minecraft.client.model.HumanoidModel;
 
 import java.util.function.Consumer;
 
-import dev.dixmk.minepreggo.client.model.armor.ArmorModelHelper;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 
-public abstract class FemaleNetheriteChestPlateItem extends ArmorItem implements IFemaleArmor {
+public abstract class FemaleNetheriteChestPlateItem extends FemaleChestPlateItem {
 	protected FemaleNetheriteChestPlateItem() {
 		super(ArmorMaterials.NETHERITE, ArmorItem.Type.CHESTPLATE, new Item.Properties());
 	}
-
-	public abstract static class MaternityFemaleNetheriteChestPlateItem extends FemaleNetheriteChestPlateItem implements IMaternityArmor{
-		final PregnancyPhase maxPregnancyPhase;
-			
-		protected MaternityFemaleNetheriteChestPlateItem(PregnancyPhase maxPregnancyPhase) {
-			this.maxPregnancyPhase = maxPregnancyPhase;
-		}
-		
-		@Override
-		public PregnancyPhase getMinPregnancyPhaseAllowed() {
-			return maxPregnancyPhase;
-		}
-		
-		@Override
-		public boolean areBoobsExposed() {
-			return false;
-		}
-	}
-	
 	
 	public static class Chestplate extends FemaleNetheriteChestPlateItem {
 		@Override
@@ -49,7 +29,8 @@ public abstract class FemaleNetheriteChestPlateItem extends ArmorItem implements
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return ArmorModelHelper.createFemaleChestplateModel(living, stack, slot, defaultModel);
+					defaultModel.setAllVisible(false);
+					return defaultModel;
 				}
 			});
 		}
@@ -57,6 +38,19 @@ public abstract class FemaleNetheriteChestPlateItem extends ArmorItem implements
 		@Override
 		public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
 			return "minepreggo:textures/models/armor/netherite_layer_1.png";
+		}
+	}
+	
+	public abstract static class MaternityFemaleNetheriteChestPlateItem extends FemaleNetheriteChestPlateItem implements IMaternityArmor{
+		private final PregnancyPhase current;
+			
+		protected MaternityFemaleNetheriteChestPlateItem(PregnancyPhase current) {
+			this.current = current;
+		}
+		
+		@Override
+		public PregnancyPhase getCurrentPregnancyPhase() {
+			return current;
 		}
 	}
 	
@@ -71,7 +65,8 @@ public abstract class FemaleNetheriteChestPlateItem extends ArmorItem implements
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return ArmorModelHelper.createMaternityChestplateP1Model(living, stack, slot, defaultModel);
+					defaultModel.setAllVisible(false);
+					return defaultModel;
 				}
 			});
 		}
@@ -93,7 +88,8 @@ public abstract class FemaleNetheriteChestPlateItem extends ArmorItem implements
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return ArmorModelHelper.createMaternityChestplateP2Model(living, stack, slot, defaultModel);
+					defaultModel.setAllVisible(false);
+					return defaultModel;
 				}
 			});
 		}
@@ -115,7 +111,8 @@ public abstract class FemaleNetheriteChestPlateItem extends ArmorItem implements
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return ArmorModelHelper.createMaternityChestplateP3Model(living, stack, slot, defaultModel);
+					defaultModel.setAllVisible(false);
+					return defaultModel;
 				}
 			});
 		}
@@ -137,7 +134,8 @@ public abstract class FemaleNetheriteChestPlateItem extends ArmorItem implements
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return ArmorModelHelper.createMaternityChestplateP4Model(living, stack, slot, defaultModel);
+					defaultModel.setAllVisible(false);
+					return defaultModel;
 				}
 			});
 		}

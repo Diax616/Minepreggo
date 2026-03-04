@@ -1,8 +1,8 @@
 package dev.dixmk.minepreggo.client.renderer.preggo.zombie;
 
 import dev.dixmk.minepreggo.client.model.entity.preggo.zombie.AbstractTamableZombieGirlModel;
-import dev.dixmk.minepreggo.client.renderer.entity.layer.ExpressiveFaceLayer;
-import dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.zombie.TamableZombieGirlExpressionLayer;
+import dev.dixmk.minepreggo.client.renderer.entity.layers.ExpressiveFaceLayer;
+import dev.dixmk.minepreggo.client.renderer.entity.layers.preggo.zombie.TamableZombieGirlExpressionLayer;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamableZombieGirl;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraftforge.api.distmarker.Dist;

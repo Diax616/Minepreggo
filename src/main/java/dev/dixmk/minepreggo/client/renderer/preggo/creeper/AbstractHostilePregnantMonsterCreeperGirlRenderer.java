@@ -3,8 +3,8 @@ package dev.dixmk.minepreggo.client.renderer.preggo.creeper;
 import javax.annotation.Nullable;
 
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractHostilePregnantMonsterCreeperGirlModel;
-import dev.dixmk.minepreggo.client.renderer.entity.layer.ExpressiveFaceLayer;
-import dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.creeper.HostilePregnantMonsterCreeperGirlExpressiveFaceLayer;
+import dev.dixmk.minepreggo.client.renderer.entity.layers.ExpressiveFaceLayer;
+import dev.dixmk.minepreggo.client.renderer.entity.layers.preggo.creeper.HostilePregnantMonsterCreeperGirlExpressiveFaceLayer;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractHostilePregnantCreeperGirl;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraftforge.api.distmarker.Dist;

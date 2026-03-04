@@ -1,8 +1,8 @@
 package dev.dixmk.minepreggo.client.renderer.preggo.creeper;
 
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractTamablePregnantMonsterCreeperGirlModel;
-import dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.creeper.TamableMonsterCreeperGirlExpressionLayer;
-import dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.creeper.TamablePregnantMonsterCreeperGirlExpressionLayer;
+import dev.dixmk.minepreggo.client.renderer.entity.layers.preggo.creeper.TamableMonsterCreeperGirlExpressionLayer;
+import dev.dixmk.minepreggo.client.renderer.entity.layers.preggo.creeper.TamablePregnantMonsterCreeperGirlExpressionLayer;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraftforge.api.distmarker.Dist;

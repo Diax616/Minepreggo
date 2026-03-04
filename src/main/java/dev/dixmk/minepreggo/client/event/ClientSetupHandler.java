@@ -37,8 +37,10 @@ import dev.dixmk.minepreggo.client.model.entity.preggo.zombie.AbstractZombieGirl
 import dev.dixmk.minepreggo.client.model.geom.MinepreggoModelLayers;
 import dev.dixmk.minepreggo.client.renderer.entity.FertilityWitchRenderer;
 import dev.dixmk.minepreggo.client.renderer.entity.ScientificIllagerRenderer;
-import dev.dixmk.minepreggo.client.renderer.entity.layer.player.CustomPregnantBodyLayer;
-import dev.dixmk.minepreggo.client.renderer.entity.layer.player.PredefinedPregnantBodyLayer;
+import dev.dixmk.minepreggo.client.renderer.entity.layers.BellyShieldLayer;
+import dev.dixmk.minepreggo.client.renderer.entity.layers.FemaleChestplateLayer;
+import dev.dixmk.minepreggo.client.renderer.entity.layers.player.CustomPregnantBodyLayer;
+import dev.dixmk.minepreggo.client.renderer.entity.layers.player.PredefinedPregnantBodyLayer;
 import dev.dixmk.minepreggo.client.renderer.preggo.creeper.IllMonsterCreeperGirlRenderer;
 import dev.dixmk.minepreggo.client.renderer.preggo.creeper.HostilePregnantMonsterCreeperGirlRenderer;
 import dev.dixmk.minepreggo.client.renderer.preggo.creeper.IllHumanoidCreeperGirlRenderer;
@@ -62,11 +64,13 @@ import dev.dixmk.minepreggo.client.renderer.preggo.zombie.TamableZombieGirlRende
 import dev.dixmk.minepreggo.init.MinepreggoEntities;
 import dev.dixmk.minepreggo.init.MinepreggoItems;
 import dev.dixmk.minepreggo.init.MinepreggoKeyMappings;
-import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -74,6 +78,7 @@ import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.ForgeRegistries;
 
 @Mod.EventBusSubscriber(modid = MinepreggoMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientSetupHandler {
@@ -82,16 +87,25 @@ public class ClientSetupHandler {
 	
     @SubscribeEvent
     public static void onRegisterRenderers(EntityRenderersEvent.AddLayers event) {	
-    	Consumer<String> registerBoobsLayer = skinName -> {
-            EntityRenderer<? extends Player> renderer = event.getPlayerSkin(skinName);
-            if (renderer instanceof PlayerRenderer playerRenderer) {
+    	Consumer<String> registerPlayerLayers = skinName -> {
+            if (event.getPlayerSkin(skinName) instanceof PlayerRenderer playerRenderer) {
                 playerRenderer.addLayer(new CustomPregnantBodyLayer(playerRenderer, event.getEntityModels()));
                 playerRenderer.addLayer(new PredefinedPregnantBodyLayer(playerRenderer, event.getEntityModels()));
+                playerRenderer.addLayer(new FemaleChestplateLayer<>(playerRenderer, event.getContext().getModelManager(), event.getEntityModels()));
+                playerRenderer.addLayer(new BellyShieldLayer<>(playerRenderer, event.getContext().getModelManager(), event.getEntityModels()));
             }
 		};
-    	
-		registerBoobsLayer.accept("default");
-		registerBoobsLayer.accept("slim");
+		registerPlayerLayers.accept("default");
+		registerPlayerLayers.accept("slim");
+
+	    for (EntityType<?> type : ForgeRegistries.ENTITY_TYPES.getValues()) {;
+	        if (event.getEntityRenderer(type) instanceof LivingEntityRenderer<?,?> living && living.getModel() instanceof HumanoidModel<?>) {	 
+	        	@SuppressWarnings("unchecked")
+	            LivingEntityRenderer<LivingEntity, HumanoidModel<LivingEntity>> castedLiving = (LivingEntityRenderer<LivingEntity, HumanoidModel<LivingEntity>>) living;
+	        	castedLiving.addLayer(new FemaleChestplateLayer<>(castedLiving, event.getContext().getModelManager(), event.getEntityModels()));
+	        	castedLiving.addLayer(new BellyShieldLayer<>(castedLiving, event.getContext().getModelManager(), event.getEntityModels()));
+	        }
+	    }	
     }
 
     @SubscribeEvent
@@ -104,8 +118,7 @@ public class ClientSetupHandler {
         MinepreggoItems.MATERNITY_LEATHER_P4_CHESTPLATE.get(),
         MinepreggoItems.LEATHER_KNEE_BRACES.get());    
     }
-   
-	
+   	
 	@SubscribeEvent
 	public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
 		event.registerEntityRenderer(MinepreggoEntities.HOSTILE_ZOMBIE_GIRL.get(), HostileZombieGirlRenderer::new);
@@ -121,8 +134,7 @@ public class ClientSetupHandler {
 		event.registerEntityRenderer(MinepreggoEntities.TAMABLE_ZOMBIE_GIRL_P5.get(), TamablePregnantZombieGirlRenderer.TamableZombieGirlP5Renderer::new);
 		event.registerEntityRenderer(MinepreggoEntities.TAMABLE_ZOMBIE_GIRL_P6.get(), TamablePregnantZombieGirlRenderer.TamableZombieGirlP6Renderer::new);
 		event.registerEntityRenderer(MinepreggoEntities.TAMABLE_ZOMBIE_GIRL_P7.get(), TamablePregnantZombieGirlRenderer.TamableZombieGirlP7Renderer::new);
-		event.registerEntityRenderer(MinepreggoEntities.TAMABLE_ZOMBIE_GIRL_P8.get(), TamablePregnantZombieGirlRenderer.TamableZombieGirlP8Renderer::new);
-		
+		event.registerEntityRenderer(MinepreggoEntities.TAMABLE_ZOMBIE_GIRL_P8.get(), TamablePregnantZombieGirlRenderer.TamableZombieGirlP8Renderer::new);	
 		event.registerEntityRenderer(MinepreggoEntities.HOSTILE_HUMANOID_CREEPER_GIRL.get(), MonsterHumanoidCreeperGirlRenderer::new);
 		event.registerEntityRenderer(MinepreggoEntities.HOSTILE_HUMANOID_CREEPER_GIRL_P3.get(), MonsterPregnantHumanoidCreeperGirlRenderer.MonsterHumanoidCreeperGirlP3Renderer::new);
 		event.registerEntityRenderer(MinepreggoEntities.HOSTILE_HUMANOID_CREEPER_GIRL_P5.get(), MonsterPregnantHumanoidCreeperGirlRenderer.MonsterHumanoidCreeperGirlP5Renderer::new);
@@ -137,14 +149,12 @@ public class ClientSetupHandler {
 		event.registerEntityRenderer(MinepreggoEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P6.get(), TamablePregnantHumanoidCreeperGirlRenderer.TamableHumanoidCreeperGirlP6Renderer::new);
 		event.registerEntityRenderer(MinepreggoEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P7.get(), TamablePregnantHumanoidCreeperGirlRenderer.TamableHumanoidCreeperGirlP7Renderer::new);
 		event.registerEntityRenderer(MinepreggoEntities.TAMABLE_HUMANOID_CREEPER_GIRL_P8.get(), TamablePregnantHumanoidCreeperGirlRenderer.TamableHumanoidCreeperGirlP8Renderer::new);
-				
 		event.registerEntityRenderer(MinepreggoEntities.ILL_HUMANOID_CREEPER_GIRL.get(), IllHumanoidCreeperGirlRenderer::new);
 		event.registerEntityRenderer(MinepreggoEntities.ILL_ZOMBIE_GIRL.get(), IllZombieGirlRenderer::new);
 		event.registerEntityRenderer(MinepreggoEntities.ILL_ENDER_WOMAN.get(), IllEnderWomanRenderer::new);
 		event.registerEntityRenderer(MinepreggoEntities.ILL_CREEPER_GIRL.get(), IllMonsterCreeperGirlRenderer::new);
 		event.registerEntityRenderer(MinepreggoEntities.SCIENTIFIC_ILLAGER.get(), ScientificIllagerRenderer::new);
 		event.registerEntityRenderer(MinepreggoEntities.FERTILITY_WITCH.get(), FertilityWitchRenderer::new);
-
 		event.registerEntityRenderer(MinepreggoEntities.HOSTILE_MONSTER_ENDER_WOMAN.get(), MonsterlEnderWomanRenderer::new);	
 		event.registerEntityRenderer(MinepreggoEntities.HOSTILE_PREGNANT_MONSTER_ENDER_WOMAN_P3.get(), HostilePregnantMonsterEnderWomanRenderer.MonsteEnderWomanP3::new);	
 		event.registerEntityRenderer(MinepreggoEntities.HOSTILE_PREGNANT_MONSTER_ENDER_WOMAN_P5.get(), HostilePregnantMonsterEnderWomanRenderer.MonsteEnderWomanP5::new);	
@@ -161,7 +171,6 @@ public class ClientSetupHandler {
 		event.registerEntityRenderer(MinepreggoEntities.TAMABLE_MONSTER_ENDER_WOMAN_P6.get(), TamablePregnantMonsterEnderWomanRenderer.TamableMonsterEnderWomanP6Renderer::new);
 		event.registerEntityRenderer(MinepreggoEntities.TAMABLE_MONSTER_ENDER_WOMAN_P7.get(), TamablePregnantMonsterEnderWomanRenderer.TamableMonsterEnderWomanP7Renderer::new);
 		event.registerEntityRenderer(MinepreggoEntities.TAMABLE_MONSTER_ENDER_WOMAN_P8.get(), TamablePregnantMonsterEnderWomanRenderer.TamableMonsterEnderWomanP8Renderer::new);
-
 		event.registerEntityRenderer(MinepreggoEntities.HOSTILE_MONSTER_CREEPER_GIRL.get(), MonsterCreeperGirlRenderer::new);
 		event.registerEntityRenderer(MinepreggoEntities.HOSTILE_PREGNANT_MONSTER_CREEPER_GIRL_P3.get(), HostilePregnantMonsterCreeperGirlRenderer.MonsterCreeperGirlP3::new);
 		event.registerEntityRenderer(MinepreggoEntities.HOSTILE_PREGNANT_MONSTER_CREEPER_GIRL_P5.get(), HostilePregnantMonsterCreeperGirlRenderer.MonsterCreeperGirlP5::new);
@@ -176,9 +185,7 @@ public class ClientSetupHandler {
 		event.registerEntityRenderer(MinepreggoEntities.TAMABLE_MONSTER_CREEPER_GIRL_P6.get(), TamablePregnantMonsterCreeperGirlRenderer.TamablePregnantCreeperGirlP6Renderer::new);
 		event.registerEntityRenderer(MinepreggoEntities.TAMABLE_MONSTER_CREEPER_GIRL_P7.get(), TamablePregnantMonsterCreeperGirlRenderer.TamablePregnantCreeperGirlP7Renderer::new);
 		event.registerEntityRenderer(MinepreggoEntities.TAMABLE_MONSTER_CREEPER_GIRL_P8.get(), TamablePregnantMonsterCreeperGirlRenderer.TamablePregnantCreeperGirlP8Renderer::new);
-
-		event.registerEntityRenderer(MinepreggoEntities.BELLY_PART.get(), NoopRenderer::new);
-		
+		event.registerEntityRenderer(MinepreggoEntities.BELLY_PART.get(), NoopRenderer::new);	
 		event.registerEntityRenderer(MinepreggoEntities.EXPLOSIVE_DRAGON_FIREBALL.get(), ThrownItemRenderer::new);
 	}
 	

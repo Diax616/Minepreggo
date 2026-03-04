@@ -16,7 +16,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class FemaleChestplateModel extends EntityModel<LivingEntity> {
+public class FemaleChestplateModel<T extends LivingEntity> extends EntityModel<T> {
 	public final ModelPart body;
 	public final ModelPart rightArm;
 	public final ModelPart leftArm;
@@ -28,7 +28,7 @@ public class FemaleChestplateModel extends EntityModel<LivingEntity> {
 	}
 	
 	@Override
-	public void setupAnim(LivingEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {}
+	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {}
 
 	@Override
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {

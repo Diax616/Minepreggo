@@ -15,10 +15,9 @@ import net.minecraft.client.model.HumanoidModel;
 
 import java.util.function.Consumer;
 
-import dev.dixmk.minepreggo.client.model.armor.ArmorModelHelper;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 
-public abstract class FemaleGoldenChestPlateItem extends ArmorItem implements IFemaleArmor {
+public abstract class FemaleGoldenChestPlateItem extends FemaleChestPlateItem {
 	protected FemaleGoldenChestPlateItem() {
 		super(ArmorMaterials.GOLD, ArmorItem.Type.CHESTPLATE, new Item.Properties());		
 	}
@@ -28,24 +27,6 @@ public abstract class FemaleGoldenChestPlateItem extends ArmorItem implements IF
 		return true;
 	}
 	
-	public abstract static class MaternityFemaleGoldenChestPlateItem extends FemaleGoldenChestPlateItem implements IMaternityArmor{
-		final PregnancyPhase maxPregnancyPhase;
-			
-		protected MaternityFemaleGoldenChestPlateItem(PregnancyPhase maxPregnancyPhase) {
-			this.maxPregnancyPhase = maxPregnancyPhase;
-		}
-		
-		@Override
-		public PregnancyPhase getMinPregnancyPhaseAllowed() {
-			return maxPregnancyPhase;
-		}
-		
-		@Override
-		public boolean areBoobsExposed() {
-			return false;
-		}
-	}
-	
 	public static class Chestplate extends FemaleGoldenChestPlateItem {
 		@Override
 		public void initializeClient(Consumer<IClientItemExtensions> consumer) {
@@ -53,7 +34,8 @@ public abstract class FemaleGoldenChestPlateItem extends ArmorItem implements IF
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return ArmorModelHelper.createFemaleChestplateModel(living, stack, slot, defaultModel);
+					defaultModel.setAllVisible(false);
+					return defaultModel;
 				}
 			});
 		}
@@ -61,6 +43,19 @@ public abstract class FemaleGoldenChestPlateItem extends ArmorItem implements IF
 		@Override
 		public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
 			return "minepreggo:textures/models/armor/gold_layer_1.png";
+		}
+	}
+	
+	public abstract static class MaternityFemaleGoldenChestPlateItem extends FemaleGoldenChestPlateItem implements IMaternityArmor{
+		private final PregnancyPhase current;
+			
+		protected MaternityFemaleGoldenChestPlateItem(PregnancyPhase current) {
+			this.current = current;
+		}
+		
+		@Override
+		public PregnancyPhase getCurrentPregnancyPhase() {
+			return current;
 		}
 	}
 	
@@ -76,7 +71,8 @@ public abstract class FemaleGoldenChestPlateItem extends ArmorItem implements IF
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return ArmorModelHelper.createMaternityChestplateP1Model(living, stack, slot, defaultModel);
+					defaultModel.setAllVisible(false);
+					return defaultModel;
 				}
 			});
 		}
@@ -98,7 +94,8 @@ public abstract class FemaleGoldenChestPlateItem extends ArmorItem implements IF
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return ArmorModelHelper.createMaternityChestplateP2Model(living, stack, slot, defaultModel);
+					defaultModel.setAllVisible(false);
+					return defaultModel;
 				}
 			});
 		}
@@ -120,7 +117,8 @@ public abstract class FemaleGoldenChestPlateItem extends ArmorItem implements IF
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return ArmorModelHelper.createMaternityChestplateP3Model(living, stack, slot, defaultModel);
+					defaultModel.setAllVisible(false);
+					return defaultModel;
 				}
 			});
 		}
@@ -142,7 +140,8 @@ public abstract class FemaleGoldenChestPlateItem extends ArmorItem implements IF
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return ArmorModelHelper.createMaternityChestplateP4Model(living, stack, slot, defaultModel);
+					defaultModel.setAllVisible(false);
+					return defaultModel;
 				}
 			});
 		}

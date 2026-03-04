@@ -16,33 +16,13 @@ import net.minecraft.client.model.HumanoidModel;
 
 import java.util.function.Consumer;
 
-import dev.dixmk.minepreggo.client.model.armor.ArmorModelHelper;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 
-public abstract class FemaleIronChestPlateItem extends ArmorItem implements IFemaleArmor {
+public abstract class FemaleIronChestPlateItem extends FemaleChestPlateItem {
 	protected FemaleIronChestPlateItem() {
 		super(ArmorMaterials.IRON, ArmorItem.Type.CHESTPLATE, new Item.Properties());
 	}
 
-	public abstract static class MaternityFemaleIronChestPlateItem extends FemaleIronChestPlateItem implements IMaternityArmor{
-		final PregnancyPhase maxPregnancyPhase;
-			
-		protected MaternityFemaleIronChestPlateItem(PregnancyPhase maxPregnancyPhase) {
-			this.maxPregnancyPhase = maxPregnancyPhase;
-		}
-		
-		@Override
-		public PregnancyPhase getMinPregnancyPhaseAllowed() {
-			return maxPregnancyPhase;
-		}
-		
-		@Override
-		public boolean areBoobsExposed() {
-			return false;
-		}
-	}
-	
-	
 	public static class Chestplate extends FemaleIronChestPlateItem {
 		@Override
 		public void initializeClient(Consumer<IClientItemExtensions> consumer) {
@@ -50,7 +30,8 @@ public abstract class FemaleIronChestPlateItem extends ArmorItem implements IFem
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return ArmorModelHelper.createFemaleChestplateModel(living, stack, slot, defaultModel);
+					defaultModel.setAllVisible(false);
+					return defaultModel;
 				}
 			});
 		}
@@ -58,6 +39,19 @@ public abstract class FemaleIronChestPlateItem extends ArmorItem implements IFem
 		@Override
 		public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
 			return "minepreggo:textures/models/armor/iron_layer_1.png";
+		}
+	}
+	
+	public abstract static class MaternityFemaleIronChestPlateItem extends FemaleIronChestPlateItem implements IMaternityArmor{
+		private final PregnancyPhase current;
+			
+		protected MaternityFemaleIronChestPlateItem(PregnancyPhase current) {
+			this.current = current;
+		}
+		
+		@Override
+		public PregnancyPhase getCurrentPregnancyPhase() {
+			return current;
 		}
 	}
 	
@@ -72,7 +66,8 @@ public abstract class FemaleIronChestPlateItem extends ArmorItem implements IFem
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return ArmorModelHelper.createMaternityChestplateP1Model(living, stack, slot, defaultModel);
+					defaultModel.setAllVisible(false);
+					return defaultModel;
 				}
 			});
 		}
@@ -94,7 +89,8 @@ public abstract class FemaleIronChestPlateItem extends ArmorItem implements IFem
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return ArmorModelHelper.createMaternityChestplateP2Model(living, stack, slot, defaultModel);
+					defaultModel.setAllVisible(false);
+					return defaultModel;
 				}
 			});
 		}
@@ -116,7 +112,8 @@ public abstract class FemaleIronChestPlateItem extends ArmorItem implements IFem
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return ArmorModelHelper.createMaternityChestplateP3Model(living, stack, slot, defaultModel);
+					defaultModel.setAllVisible(false);
+					return defaultModel;
 				}
 			});
 		}
@@ -138,7 +135,8 @@ public abstract class FemaleIronChestPlateItem extends ArmorItem implements IFem
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return ArmorModelHelper.createMaternityChestplateP4Model(living, stack, slot, defaultModel);
+					defaultModel.setAllVisible(false);
+					return defaultModel;
 				}
 			});
 		}

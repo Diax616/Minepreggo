@@ -6,7 +6,7 @@ import dev.dixmk.minepreggo.world.item.ActivatedGunpowderWithChocolateItem;
 import dev.dixmk.minepreggo.world.item.ActivatedGunpowderWithHotSauceItem;
 import dev.dixmk.minepreggo.world.item.ActivatedGunpowderWithSaltItem;
 import dev.dixmk.minepreggo.world.item.BabyItem;
-import dev.dixmk.minepreggo.world.item.BellyShieldChestPlateItem;
+import dev.dixmk.minepreggo.world.item.BellyShieldItem;
 import dev.dixmk.minepreggo.world.item.BrainItem;
 import dev.dixmk.minepreggo.world.item.BrainWithChocolateItem;
 import dev.dixmk.minepreggo.world.item.BrainWithHotSauceItem;
@@ -211,10 +211,10 @@ public class MinepreggoItems {
 	public static final RegistryObject<Item> MATERNITY_NETHERITE_P4_CHESTPLATE = REGISTRY.register("maternity_netherite_p4_chestplate", FemaleNetheriteChestPlateItem.MaternityChestplateP4::new);
 	public static final RegistryObject<Item> MATERNITY_LEATHER_P4_CHESTPLATE = REGISTRY.register("maternity_leather_p4_chestplate", FemaleLeatherChestPlateItem.MaternityChestplateP4::new);
 
-	public static final RegistryObject<Item> BELLY_SHIELD_P5 = REGISTRY.register("belly_shield_p5", BellyShieldChestPlateItem.MaternityChestplateP5::new);
-	public static final RegistryObject<Item> BELLY_SHIELD_P6 = REGISTRY.register("belly_shield_p6", BellyShieldChestPlateItem.MaternityChestplateP6::new);
-	public static final RegistryObject<Item> BELLY_SHIELD_P7 = REGISTRY.register("belly_shield_p7", BellyShieldChestPlateItem.MaternityChestplateP7::new);
-	public static final RegistryObject<Item> BELLY_SHIELD_P8 = REGISTRY.register("belly_shield_p8", BellyShieldChestPlateItem.MaternityChestplateP8::new);
+	public static final RegistryObject<Item> BELLY_SHIELD_P5 = REGISTRY.register("belly_shield_p5", BellyShieldItem.MaternityChestplateP5::new);
+	public static final RegistryObject<Item> BELLY_SHIELD_P6 = REGISTRY.register("belly_shield_p6", BellyShieldItem.MaternityChestplateP6::new);
+	public static final RegistryObject<Item> BELLY_SHIELD_P7 = REGISTRY.register("belly_shield_p7", BellyShieldItem.MaternityChestplateP7::new);
+	public static final RegistryObject<Item> BELLY_SHIELD_P8 = REGISTRY.register("belly_shield_p8", BellyShieldItem.MaternityChestplateP8::new);
 	
 	public static final RegistryObject<Item> ROPES = REGISTRY.register("ropes", () -> new Item(new Item.Properties().stacksTo(64).rarity(Rarity.COMMON)));
 	public static final RegistryObject<Item> LEATHER_KNEE_BRACES = REGISTRY.register("leather_knee_braces", KneeBracesItem.LeatherKneeBraces::new);
