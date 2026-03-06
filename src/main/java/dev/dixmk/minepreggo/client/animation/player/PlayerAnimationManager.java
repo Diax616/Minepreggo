@@ -32,8 +32,11 @@ public class PlayerAnimationManager {
         return animations.computeIfAbsent(player.getUUID(), PlayerAnimationCache::new);
     }
     
-    public void cleanup(UUID playerId) {
-    	animations.remove(playerId);
+    public void cleanCache(UUID playerId) {
+    	var cache = animations.remove(playerId);
+    	if (cache != null) {
+			cache.stopAnimation();
+		}
     }
      
     @OnlyIn(Dist.CLIENT)

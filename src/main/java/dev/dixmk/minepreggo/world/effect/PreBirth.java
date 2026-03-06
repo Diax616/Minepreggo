@@ -35,10 +35,10 @@ public class PreBirth extends AbstractPlayerPregnancyPain {
 			AttributeInstance attackSpeedAttr = entity.getAttribute(Attributes.ATTACK_SPEED);
 
 			if (speedAttr != null && speedAttr.getModifier(SPEED_MODIFIER_UUID) == null) {
-			    speedAttr.addTransientModifier(SPEED_MODIFIER);
+			    speedAttr.addPermanentModifier(SPEED_MODIFIER);
 			}	
 			if (attackSpeedAttr != null && attackSpeedAttr.getModifier(ATTACK_SPEED_MODIFIER_UUID) == null) {
-			    attackSpeedAttr.addTransientModifier(ATTACK_SPEED_MODIFIER);
+			    attackSpeedAttr.addPermanentModifier(ATTACK_SPEED_MODIFIER);
 			}		
 		}
 	}

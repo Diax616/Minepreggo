@@ -4,7 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
+import dev.dixmk.minepreggo.common.animation.CommonPlayerAnimationRegistry;
+import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.network.packet.s2c.SyncPlayerAnimationS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -62,9 +65,15 @@ public class ServerPlayerAnimationManager {
     }
     
     public void triggerAnimation(ServerPlayer player, String animationName) {
-        UUID playerId = player.getUUID();
+    	if (!CommonPlayerAnimationRegistry.getInstance().containsAnimation(animationName)) {
+    		MinepreggoMod.LOGGER.warn("Attempted to trigger unknown animation: {}", animationName);
+    		return;
+    	}
+    	
+    	UUID playerId = player.getUUID();
         AnimationState state = new AnimationState(animationName, 0, true);
         lastSyncedState.put(playerId, state);
+		player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> cap.setAnimation(animationName));
 
         // Broadcast to all clients
         MinepreggoModPacketHandler.INSTANCE.send(
@@ -72,14 +81,20 @@ public class ServerPlayerAnimationManager {
         		new SyncPlayerAnimationS2CPacket(playerId, animationName, 0, true));
     }
     
-    public void stopAnimation(ServerPlayer player) {
+    public void stopAnimation(ServerPlayer player, boolean refreshState) {
         UUID playerId = player.getUUID();
         lastSyncedState.remove(playerId); 
-        
+        if (refreshState) {
+			player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> cap.setAnimation(null));
+		} 
         MinepreggoModPacketHandler.INSTANCE.send(
         		PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player),
         		new SyncPlayerAnimationS2CPacket(playerId, null, 0, false));
     }
+    
+    public void stopAnimation(ServerPlayer player) {
+		stopAnimation(player, true);
+	}
     
     private class AnimationState {
         private String animationName;

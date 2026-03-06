@@ -34,7 +34,6 @@ import dev.dixmk.minepreggo.network.packet.s2c.RenderSexOverlayS2CPacket;
 import dev.dixmk.minepreggo.network.packet.s2c.ResetPregnancyS2CPacket;
 import dev.dixmk.minepreggo.network.packet.s2c.SexCinematicControlP2MS2CPacket;
 import dev.dixmk.minepreggo.network.packet.s2c.SexCinematicControlP2PS2CPacket;
-import dev.dixmk.minepreggo.network.packet.s2c.SyncCinematicStateS2CPacket;
 import dev.dixmk.minepreggo.network.packet.s2c.SyncEnderPowerDataS2CPacket;
 import dev.dixmk.minepreggo.network.packet.s2c.SyncFemalePlayerDataS2CPacket;
 import dev.dixmk.minepreggo.network.packet.s2c.SyncJigglePhysicsS2CPacket;
@@ -81,7 +80,6 @@ public class MinepreggoModPacketHandler {
 		addNetworkMessage(SexCinematicControlP2MS2CPacket.class, SexCinematicControlP2MS2CPacket::encode, SexCinematicControlP2MS2CPacket::decode, SexCinematicControlP2MS2CPacket::handler);
 		addNetworkMessage(SexCinematicControlP2PS2CPacket.class, SexCinematicControlP2PS2CPacket::encode, SexCinematicControlP2PS2CPacket::decode, SexCinematicControlP2PS2CPacket::handler);
 		addNetworkMessage(StopPlayerAnimationC2SPacket.class, StopPlayerAnimationC2SPacket::encode, StopPlayerAnimationC2SPacket::decode, StopPlayerAnimationC2SPacket::handler);
-		addNetworkMessage(SyncCinematicStateS2CPacket.class, SyncCinematicStateS2CPacket::encode, SyncCinematicStateS2CPacket::decode, SyncCinematicStateS2CPacket::handler);
 		addNetworkMessage(SyncFemalePlayerDataS2CPacket.class, SyncFemalePlayerDataS2CPacket::encode, SyncFemalePlayerDataS2CPacket::decode, SyncFemalePlayerDataS2CPacket::handler);
 		addNetworkMessage(SyncMobEffectS2CPacket.class, SyncMobEffectS2CPacket::encode, SyncMobEffectS2CPacket::new, SyncMobEffectS2CPacket::handle);
 		addNetworkMessage(SyncPlayerDataS2CPacket.class, SyncPlayerDataS2CPacket::encode, SyncPlayerDataS2CPacket::decode, SyncPlayerDataS2CPacket::handler);
