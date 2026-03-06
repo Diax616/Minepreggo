@@ -11,6 +11,7 @@ import com.google.common.collect.ImmutableMap;
 import org.spongepowered.asm.mixin.injection.At;
 
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
+import dev.dixmk.minepreggo.init.MinepreggoModDamageSources;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
@@ -22,6 +23,7 @@ import it.unimi.dsi.fastutil.objects.Object2FloatMaps;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.Pose;
@@ -117,4 +119,11 @@ public abstract class PlayerMixin extends Entity {
     		cir.setReturnValue(false);
     	}
 	}
+    
+    @Inject(method = "hurtArmor", at = @At("HEAD"), cancellable = true)
+    private void preventArmorDamageFromCustomTypePlayer(DamageSource source, float damage, CallbackInfo ci) {
+        if (source.is(MinepreggoModDamageSources.PREGNANCY_PAIN)) {
+            ci.cancel();
+        }
+    }
 }

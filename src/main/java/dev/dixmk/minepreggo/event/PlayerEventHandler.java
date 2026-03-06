@@ -110,13 +110,19 @@ public class PlayerEventHandler {
 	private PlayerEventHandler() {}
 	
 	@SubscribeEvent
-	public static void onPlayerLoggedInSync(PlayerEvent.PlayerLoggedInEvent event) {
+	public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
 		if (event.getEntity() instanceof ServerPlayer serverPlayer && !serverPlayer.level().isClientSide) {
-			ServerPlayerAnimationManager.getInstance().stopAnimation(serverPlayer);
 			serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(c -> {
 				c.syncAllClientData(serverPlayer);
 				if (c.canShowMainMenu()) {
 					showPlayerMainMenu(serverPlayer);
+				}		
+				if (c.getAnimation() != null) {
+					MinepreggoMod.LOGGER.debug("Triggering animation {} for player {}", c.getAnimation(), serverPlayer.getName().getString());
+					ServerPlayerAnimationManager.getInstance().triggerAnimation(serverPlayer, c.getAnimation());
+				}
+				else {
+					MinepreggoMod.LOGGER.debug("No animation to trigger for player {}", serverPlayer.getName().getString());
 				}
 			});
 			serverPlayer.getCapability(MinepreggoCapabilities.ENDER_POWER_DATA).ifPresent(c -> c.sync(serverPlayer));
@@ -124,12 +130,11 @@ public class PlayerEventHandler {
 		}
 	}
 
-	// TODO: If player has an animation playing when disconnecting, the animation won't play next time they log in. Capability data does not save the animation state.
 	@SubscribeEvent
-	public static void onPlayerQuit(PlayerEvent.PlayerLoggedOutEvent event) {
+	public static void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
 	    if (event.getEntity() instanceof ServerPlayer player) {
 	    	ServerCinematicManager.getInstance().end(player);
-	    	ServerPlayerAnimationManager.getInstance().stopAnimation(player);
+	    	ServerPlayerAnimationManager.getInstance().stopAnimation(player, false);
 	    	PlayerHelper.removeJigglePhysics(player);
 	    	
 	        if (MinepreggoModConfig.SERVER.isBellyColisionsForPlayersEnable()) {
