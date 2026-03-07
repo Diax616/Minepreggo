@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractTamablePregnantEnderWoman;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.world.pregnancy.SexHelper;
 import net.minecraft.network.FriendlyByteBuf;
@@ -44,6 +45,9 @@ public record ResponseSexRequestM2PC2SPacket(int preggoMobId, int playerId, bool
 							}
 							else if (source instanceof AbstractTamablePregnantCreeperGirl creeperGirl) {
 								SexHelper.acceptSexRequest(target, creeperGirl);
+							}
+							else if (source instanceof AbstractTamablePregnantEnderWoman enderWoman) {
+								SexHelper.acceptSexRequest(target, enderWoman);
 							}
 						}	
 					}
