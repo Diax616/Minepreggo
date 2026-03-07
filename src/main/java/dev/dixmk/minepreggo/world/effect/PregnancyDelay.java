@@ -9,7 +9,7 @@ import dev.dixmk.minepreggo.init.MinepreggoSounds;
 import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePregnantPreggoMob;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancyData;
-import dev.dixmk.minepreggo.world.pregnancy.MapPregnancyPhase;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhaseMap;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhaseHelper;
 import net.minecraft.server.level.ServerPlayer;
@@ -58,7 +58,7 @@ public class PregnancyDelay extends MobEffect {
 	}
 	
     private static void apply(IPregnancyData handler, int extraDays) {
-		MapPregnancyPhase map = handler.getMapPregnancyPhase();
+		PregnancyPhaseMap map = handler.getMapPregnancyPhase();
 		PregnancyPhase current = handler.getCurrentPregnancyPhase();
 
 		int added = PregnancyPhaseHelper.addDaysToPhase(map, current, extraDays);

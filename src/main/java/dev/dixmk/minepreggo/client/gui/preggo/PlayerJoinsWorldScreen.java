@@ -28,7 +28,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class PlayerJoinsWorldScreen extends AbstractContainerScreen<PlayerJoinsWorldMenu> {
-	private static final ResourceLocation TEXTURE = MinepreggoHelper.fromThisNamespaceAndPath("textures/screens/player_main_gui.png");
+	private static final ResourceLocation TEXTURE = MinepreggoHelper.fromThisNamespaceAndPath("textures/gui/player_main_gui.png");
 	protected final Level level;
 	protected final Player player;
 	private final List<ToggleableCheckbox> gender = new ArrayList<>();	
@@ -56,7 +56,7 @@ public class PlayerJoinsWorldScreen extends AbstractContainerScreen<PlayerJoinsW
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
-		guiGraphics.blit(TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
+		guiGraphics.blit(TEXTURE, this.leftPos, this.topPos, this.imageWidth, this.imageHeight, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
 		RenderSystem.disableBlend();
 	}
 

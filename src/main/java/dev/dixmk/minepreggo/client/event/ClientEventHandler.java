@@ -29,10 +29,10 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -96,27 +96,18 @@ public class ClientEventHandler {
             }             
         }
     }
-       
-    /**
-     * Called when a player logs out. Cleans up jiggle physics data for that player.
-     * This prevents memory leaks in multiplayer when players disconnect.
-     */
+    
     @SubscribeEvent
-    public static void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
-        if (event.getEntity().level().isClientSide) {
-            JigglePhysicsManager.getInstance().removeJigglePhysics(event.getEntity());
+    public static void onClientDisconnect(ClientPlayerNetworkEvent.LoggingOut event) {
+        if (event.getPlayer() != null) {
+            PlayerAnimationManager.getInstance().cleanCache(event.getPlayer().getUUID());
         }
     }
     
-    /**
-     * Called when the player logs in or changes dimensions.
-     * Clears all cached physics data to ensure a clean state.
-     */
     @SubscribeEvent
-    public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
-        if (event.getEntity().level().isClientSide) {
-            // Clear all cache when logging in to ensure clean state
-            JigglePhysicsManager.getInstance().clearJigglePhysics();
+    public static void onClientConnect(ClientPlayerNetworkEvent.LoggingIn event) {
+        if (event.getPlayer() != null) {
+        	JigglePhysicsManager.getInstance().clearJigglePhysics();
         }
     }
     
@@ -178,7 +169,7 @@ public class ClientEventHandler {
         		cap.getFemaleData().ifPresent(femaleData -> {
         			if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
         				final var pain = femaleData.getPregnancyData().getPregnancyPain();
-        				if (pain != null && pain.incapacitate) {
+        				if (pain != null && pain.getPain().incapacitate) {
         					return;
         				}
         				       				

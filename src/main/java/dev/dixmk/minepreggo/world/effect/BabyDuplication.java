@@ -24,7 +24,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractTamablePregnantMon
 import dev.dixmk.minepreggo.world.entity.preggo.ender.MonsterEnderWomanHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.world.pregnancy.IPregnancyData;
-import dev.dixmk.minepreggo.world.pregnancy.MapPregnancyPhase;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhaseMap;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import dev.dixmk.minepreggo.world.pregnancy.Womb;
@@ -153,7 +153,7 @@ public class BabyDuplication extends MobEffect {
             womb.duplicateRandomBaby(random);
         }       
         
-        MapPregnancyPhase currentMap = handler.getMapPregnancyPhase();
+        PregnancyPhaseMap currentMap = handler.getMapPregnancyPhase();
         PregnancyPhase oldCurrentPhase = handler.getCurrentPregnancyPhase();
         
         int oldDaysPassed = handler.getDaysPassed();
@@ -188,7 +188,7 @@ public class BabyDuplication extends MobEffect {
         handler.setLastPregnancyStage(newLastPregnancyPhase);
         int totalDays = handler.getTotalDaysOfPregnancy();
                     
-        MapPregnancyPhase newMap = new MapPregnancyPhase(totalDays, newLastPregnancyPhase);
+        PregnancyPhaseMap newMap = new PregnancyPhaseMap(totalDays, newLastPregnancyPhase);
         handler.setMapPregnancyPhase(newMap);
         
         // --- Recalculate current phase and daysPassed based on totalDaysElapsed ---
@@ -239,7 +239,7 @@ public class BabyDuplication extends MobEffect {
         return temp; 
     }
     
-    private static int distributeOverloadDaysProportionally(IPregnancyData handler, MapPregnancyPhase map, 
+    private static int distributeOverloadDaysProportionally(IPregnancyData handler, PregnancyPhaseMap map, 
                                                               PregnancyPhase startPhase, int babiesAdded) {
         int baseDaysPerBaby = getBaseDayPerBaby(startPhase);
         int totalDaysToDistribute = babiesAdded * baseDaysPerBaby;
@@ -322,7 +322,7 @@ public class BabyDuplication extends MobEffect {
 		};
 	}
     
-    private static PregnancyPhase calculateCurrentPhaseAfterOverload(IPregnancyData handler, MapPregnancyPhase map, int totalElapsedDays) {
+    private static PregnancyPhase calculateCurrentPhaseAfterOverload(IPregnancyData handler, PregnancyPhaseMap map, int totalElapsedDays) {
         int daysCount = 0;
         
         for (PregnancyPhase phase : PregnancyPhase.values()) {

@@ -17,13 +17,11 @@ import dev.dixmk.minepreggo.server.ServerParticleHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem.Result;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.MonsterCreeperHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.ender.AbstractEnderWoman;
 import dev.dixmk.minepreggo.world.item.ICravingItem;
-import dev.dixmk.minepreggo.world.pregnancy.AbstractPregnancySystem;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPainInstance;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
-import dev.dixmk.minepreggo.world.pregnancy.SyncedSetPregnancySymptom;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -37,12 +35,9 @@ import net.minecraft.world.level.Level;
 
 public abstract class PreggoMobPregnancySystemP1
 	<E extends PreggoMob & ITamablePregnantPreggoMob> extends PreggoMobPregnancySystemP0<E> {
-
 	private int pregnancyPainTicks = 0;
 	private int pregnancysymptonsTicks = 0;
-	
 	private final Set<PregnancySymptom> validPregnancySymptoms = EnumSet.noneOf(PregnancySymptom.class);
-
 	protected @Nonnegative int totalTicksOfCraving = MinepreggoModConfig.SERVER.getTotalTicksOfCravingP1();
 	protected @Nonnegative float morningSicknessProb = PregnancySystemHelper.LOW_MORNING_SICKNESS_PROBABILITY;
 
@@ -135,16 +130,13 @@ public abstract class PreggoMobPregnancySystemP1
 	@Override
 	protected void evaluateMiscarriage(ServerLevel serverLevel) {	    
 		final var pregnancyData = pregnantEntity.getPregnancyData();
+		final var instance = pregnancyData.getPregnancyPain();
+		if (instance == null) {
+			MinepreggoMod.LOGGER.warn("Pregnancy pain instance is null for pregggoMob {} during miscarriage evaluation.", pregnantEntity.getSimpleNameOrCustom());
+			return;
+		}
 		
-		if (pregnancyData.getPregnancyPainTimer() < PregnancySystemHelper.TOTAL_TICKS_MISCARRIAGE) {
-        	pregnancyData.setPregnancyPainTimer(pregnancyData.getPregnancyPainTimer() + 1);	        		        	
-			if (pregnantEntity instanceof AbstractEnderWoman) {
-	    		AbstractPregnancySystem.spawnParticulesForWaterBreaking(serverLevel, pregnantEntity, pregnantEntity.getBbHeight() * 0.65);
-			}
-			else {
-	    		AbstractPregnancySystem.spawnParticulesForWaterBreaking(serverLevel, pregnantEntity);
-			}
-        } else {      	
+		if (instance.isExpired()) {
         	final List<ItemStack> deadBabiesItemStacks = PregnancySystemHelper.getDeadBabies(pregnancyData.getWomb());   	
        		
         	MinepreggoMod.LOGGER.debug("Miscarriage delivering {} dead babies: id={}, class={}",
@@ -177,6 +169,11 @@ public abstract class PreggoMobPregnancySystemP1
         	MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) pregnantEntity.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.miscarriage.message.post", pregnantEntity.getSimpleNameOrCustom()));
         	pregnantEntity.discard();
         	MinepreggoMod.LOGGER.debug("Miscarriage completed: id={}, class={}", pregnantEntity.getId(), pregnantEntity.getClass().getSimpleName());
+        
+        
+        } else {      
+        	instance.tick();
+        	spawnParticulesForMiscarriage(serverLevel);
         }	
 	}
 	
@@ -198,22 +195,28 @@ public abstract class PreggoMobPregnancySystemP1
 	@Override
 	protected void evaluatePregnancyPains() {
 		final var pregnancyData = pregnantEntity.getPregnancyData();
+		final var instance = pregnancyData.getPregnancyPain();
+		if (instance == null || instance.getPain().type != PregnancyPain.Type.COMMON) {
+			return;
+		}
 
-		if (pregnancyData.getPregnancyPain() == PregnancyPain.MORNING_SICKNESS) {
-			if (pregnancyData.getPregnancyPainTimer() >= PregnancySystemHelper.TOTAL_TICKS_MORNING_SICKNESS) {
-				pregnancyData.clearPregnancyPain();
-				pregnancyData.resetPregnancyPainTimer();
-			} else {
-				pregnancyData.incrementPregnancyPainTimer();
+		if (instance.isExpired()) {
+			pregnancyData.clearPregnancyPain();
+		}
+		else {
+			instance.tick();
+			if (instance.getPain() == PregnancyPain.FETAL_MOVEMENT || instance.getPain() == PregnancyPain.CONTRACTION) {
+				tryHurtByCooldown();
 			}
 		}
 	}
 	
 	@Override
-	public void evaluateOnSuccessfulHurt(DamageSource damagesource) {	
-		final var pregnancyData = pregnantEntity.getPregnancyData();
-
-		if (pregnancyData.getPregnancyPain() == PregnancyPain.MISCARRIAGE) return;
+	public void evaluateOnSuccessfulHurt(DamageSource damagesource) {
+		var pregnancyData = pregnantEntity.getPregnancyData();
+		var instance = pregnancyData.getPregnancyPain();
+		
+		if (instance != null && (instance.getPain().type == PregnancyPain.Type.MISBIRTH || instance.getPain().type == PregnancyPain.Type.LABOR)) return;
 
 		PregnancySystemHelper.calculatePregnancyDamage(pregnantEntity, pregnancyData.getCurrentPregnancyPhase(), damagesource).ifPresent(damage -> {
 			pregnancyData.reducePregnancyHealth(damage);
@@ -236,30 +239,28 @@ public abstract class PreggoMobPregnancySystemP1
 	
 	@Override
 	public boolean hasAllPregnancySymptoms() {
-		return pregnantEntity.getPregnancyData().getSyncedPregnancySymptoms().containsAllPregnancySymptoms(validPregnancySymptoms);
+		return pregnantEntity.getPregnancyData().getPregnancySymptoms().containsAll(validPregnancySymptoms);
 	}
 	
 	@Override
 	public boolean isMiscarriageActive() {
-	    return pregnantEntity.getPregnancyData().getPregnancyPain() == PregnancyPain.MISCARRIAGE;
+		var instance = pregnantEntity.getPregnancyData().getPregnancyPain();
+	    return instance != null && instance.getPain() == PregnancyPain.MISCARRIAGE;
 	}
 	
 	@Override
 	protected void startMiscarriage() {
 		tryHurt();
 		final var pregnancyData = pregnantEntity.getPregnancyData();
-		pregnancyData.setPregnancyPain(PregnancyPain.MISCARRIAGE);
-		pregnancyData.resetPregnancyPainTimer();
+		pregnancyData.setPregnancyPain(new PregnancyPainInstance(PregnancyPain.MISCARRIAGE, PregnancySystemHelper.TOTAL_TICKS_MISCARRIAGE, 0));
 		MinepreggoMod.LOGGER.debug("Miscarriage just started");
 		MessageHelper.sendTo(MessageHelper.asServerPlayer((Player) pregnantEntity.getOwner()), Component.translatable("chat.minepreggo.preggo_mob.miscarriage.message.init", pregnantEntity.getSimpleNameOrCustom()));
 	}
 	
 	@Override
 	protected boolean tryInitRandomPregnancyPain() {
-		final var pregnancyData = pregnantEntity.getPregnancyData();
-	    if (randomSource.nextFloat() < morningSicknessProb) {
-	    	pregnancyData.setPregnancyPain(PregnancyPain.MORNING_SICKNESS);
-	    	pregnancyData.resetPregnancyPainTimer();
+	    if (pregnantEntity.getRandom().nextFloat() < morningSicknessProb) {
+	    	this.initCommonPregnancyPain(PregnancyPain.MORNING_SICKNESS, PregnancySystemHelper.TOTAL_TICKS_MORNING_SICKNESS, 0);
 	        return true;
 	    }
 	    return false;
@@ -267,15 +268,10 @@ public abstract class PreggoMobPregnancySystemP1
 	
 	@Override
 	protected boolean tryInitPregnancySymptom() {
-		final var pregnancyData = pregnantEntity.getPregnancyData();
-		SyncedSetPregnancySymptom pregnancySymptoms = pregnancyData.getSyncedPregnancySymptoms();			
+		final var pregnancyData = pregnantEntity.getPregnancyData();	
 		if (pregnancyData.getCraving() >= PregnancySystemHelper.ACTIVATE_CRAVING_SYMPTOM
-				&& !pregnancySymptoms.containsPregnancySymptom(PregnancySymptom.CRAVING)) {
-			pregnancySymptoms.addPregnancySymptom(PregnancySymptom.CRAVING);
-			pregnancyData.setTypeOfCraving(PregnancySystemHelper.getRandomCraving(randomSource));
-	    	
-			MinepreggoMod.LOGGER.debug("PreggomMob {} has developed pregnancy symptom: {}, all pregnancy symptoms: {}",
-					pregnantEntity.getSimpleNameOrCustom(), PregnancySymptom.CRAVING.name(), pregnancySymptoms.toSet());
+				&& !pregnancyData.getPregnancySymptoms().contains(PregnancySymptom.CRAVING)) {
+			initPregnancySymptom(PregnancySymptom.CRAVING);
 	    	return true;		
 		}
 	    return false;
@@ -284,8 +280,8 @@ public abstract class PreggoMobPregnancySystemP1
 	@Nullable
 	protected Result evaluateCraving(Level level, Player source) {		
 		final var pregnancyData = pregnantEntity.getPregnancyData();
-		SyncedSetPregnancySymptom pregnancySymptoms = pregnancyData.getSyncedPregnancySymptoms();			
-		if (!pregnancySymptoms.containsPregnancySymptom(PregnancySymptom.CRAVING)) {
+		var pregnancySymptoms = pregnancyData.getPregnancySymptoms();			
+		if (!pregnancySymptoms.contains(PregnancySymptom.CRAVING)) {
 			MinepreggoMod.LOGGER.debug("No craving symptom active");
 			return null;
 		}
@@ -310,7 +306,7 @@ public abstract class PreggoMobPregnancySystemP1
 	            pregnancyData.decrementCraving(((ICravingItem)item).getGratification());   
 	            
 	    		if (pregnancyData.getCraving() <= PregnancySystemHelper.DESACTIVATE_CRAVING_SYMPTOM) {
-	    			pregnancySymptoms.removePregnancySymptom(PregnancySymptom.CRAVING);
+	    			pregnancySymptoms.remove(PregnancySymptom.CRAVING);
 	    			pregnancyData.clearTypeOfCraving();
 	    		}
 	    	}

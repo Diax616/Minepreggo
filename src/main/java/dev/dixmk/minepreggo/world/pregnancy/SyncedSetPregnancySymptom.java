@@ -1,74 +1,90 @@
 package dev.dixmk.minepreggo.world.pregnancy;
 
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.Iterator;
 import java.util.Set;
 
-import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
+import com.google.common.collect.Sets;
+
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.world.entity.LivingEntity;
 
 public class SyncedSetPregnancySymptom extends SetPregnancySymptom {
-	
+	private final LivingEntity entity;
 	private final EntityDataAccessor<Byte> dataAccessor;
-	private final PreggoMob preggoMob;
+	private final Set<PregnancySymptom> cache = EnumSet.noneOf(PregnancySymptom.class);
 	
-	public SyncedSetPregnancySymptom(EntityDataAccessor<Byte> dataAccessor, PreggoMob entity) {
+	public SyncedSetPregnancySymptom(LivingEntity entity, EntityDataAccessor<Byte> dataAccessor) {
 		super();
+		this.entity = entity;
 		this.dataAccessor = dataAccessor;
-		this.preggoMob = entity;
 	}
-	
+
 	@Override
-	public boolean addPregnancySymptom(PregnancySymptom symptom) {	
-		boolean result = super.addPregnancySymptom(symptom);
+	public boolean add(PregnancySymptom symptom) {
+		boolean result = super.add(symptom);
 		if (result) {
-			preggoMob.getEntityData().set(dataAccessor, bitmask);
+			sync();
+		}
+		return result;
+	}
+
+	@Override
+	public boolean remove(Object symptom) {
+		boolean result = super.remove(symptom);
+		if (result) {
+			sync();
 		}
 		return result;
 	}
 	
 	@Override
-	public void setPregnancySymptoms(Set<PregnancySymptom> symptoms) {
-		super.setPregnancySymptoms(symptoms);
-		preggoMob.getEntityData().set(dataAccessor, bitmask);
+	public void clear() {
+	    super.clear();
+	    sync();
 	}
 	
 	@Override
-	public void setBitMask(byte bitmask) {
-		super.setBitMask(bitmask);
-		preggoMob.getEntityData().set(dataAccessor, bitmask);
+	public void deserializeNBT(CompoundTag nbt) {
+		super.deserializeNBT(nbt);
+		sync();
 	}
 	
 	@Override
-	public boolean removePregnancySymptom(PregnancySymptom symptom) {	
-		boolean result = super.removePregnancySymptom(symptom);
-		if (result) {
-			preggoMob.getEntityData().set(dataAccessor, bitmask);
-		}
-		return result;
+	public int size() {
+		return cache.size();
+	}
+
+	@Override
+	public Iterator<PregnancySymptom> iterator() {
+		return cache.iterator();
+	}
+
+	@Override
+	public boolean contains(Object symptom) {
+		return cache.contains(symptom);
+	}
+	
+	@Override
+	public boolean containsAll(Collection<?> symptoms) {
+		return cache.containsAll(symptoms);
 	}
 	
 	@Override
 	public boolean isEmpty() {
-		return preggoMob.getEntityData().get(dataAccessor) == 0;
+		return cache.isEmpty();
 	}
 	
 	@Override
-	public byte getBitmask() {
-		return preggoMob.getEntityData().get(dataAccessor);
+	public Set<PregnancySymptom> getSymptoms() {
+		return Sets.immutableEnumSet(cache);
 	}
 	
-	@Override
-	public void clearPregnancySymptoms() {
-		super.clearPregnancySymptoms();
-		preggoMob.getEntityData().set(dataAccessor, (byte) 0);
-	}
-	
-	@Override
-	public boolean containsPregnancySymptom(PregnancySymptom symptom) {
-		return (preggoMob.getEntityData().get(dataAccessor) & symptom.flag) != 0;
-	}
-	
-	@Override
-	public Set<PregnancySymptom> toSet() {
-		return PregnancySymptom.fromBitMask(preggoMob.getEntityData().get(dataAccessor));
+	private void sync() {
+	    entity.getEntityData().set(dataAccessor, PregnancySymptom.toBitMask(this));
+	    cache.clear();
+	    cache.addAll(PregnancySymptom.fromBitMask(entity.getEntityData().get(dataAccessor)));
 	}
 }

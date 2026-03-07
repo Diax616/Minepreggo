@@ -145,8 +145,8 @@ public class InventorySlotMapper {
                 .map(v -> " -> Vanilla: " + v.getName())
                 .orElse("");
             
-            debug.put(index, String.format("Slot %d: %s (type: %s, id: %d)%s", 
-                index, slot.name(), slot.type, slot.id, vanillaInfo));
+            debug.put(index, String.format("Slot %d: %s (type: %s)%s", 
+                index, slot.name(), slot.type, vanillaInfo));
         }
         
         int mappedCount = slotToIndex.size();

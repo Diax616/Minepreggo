@@ -13,17 +13,17 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class TamablePregnantHumanoidCreeperGirlExpressionLayer 
 	<E extends AbstractTamablePregnantCreeperGirl, M extends AbstractTamablePregnantHumanoidCreeperGirlModel<E>> extends TamableHumanoidCreeperGirlExpressionLayer<E, M> {
 	
-	public TamablePregnantHumanoidCreeperGirlExpressionLayer(RenderLayerParent<E, M> p_117346_) {
-		super(p_117346_);
+	public TamablePregnantHumanoidCreeperGirlExpressionLayer(RenderLayerParent<E, M> renderer) {
+		super(renderer);
 	}
 	
 	@Override
 	public @Nullable RenderType renderType(E creeperGirl) {		
-		final var pregnancyData =  creeperGirl.getPregnancyData();
-		final var pain = pregnancyData.getPregnancyPain();
-			
-		if (pain != null) {
-			switch (pain) {
+		final var pregnancyData = creeperGirl.getPregnancyData();
+		final var instance = pregnancyData.getPregnancyPain();
+		
+		if (instance != null) {
+			switch (instance.getPain()) {
 			case MORNING_SICKNESS: {		
 				return PAIN4;
 			}
@@ -44,7 +44,7 @@ public class TamablePregnantHumanoidCreeperGirlExpressionLayer
 			}
 		}
 	
-		if (!pregnancyData.getSyncedPregnancySymptoms().isEmpty()) {
+		if (pregnancyData.getSyncedPregnancySymptoms().getSyncedSymptoms() != 0) {
 			return SAD1;
 		}
 

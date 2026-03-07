@@ -49,7 +49,7 @@ public class PlayerAnimationRegistry {
     
 	private void birthAnim() {
 		PlayerAnimation birth = new PlayerAnimation("birth", 360, true);
-		final float extraZ = -20;
+		final float extraZ = 12;
 		
 		birth.addPartAnimation("body", (part, continuousAnimationTick) -> {
 				part.yRot = MathHelper.animateBetweenAnglesMth(-1, 1, continuousAnimationTick, 0.065F);

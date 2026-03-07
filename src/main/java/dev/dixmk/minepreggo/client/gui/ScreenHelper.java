@@ -11,5 +11,5 @@ public class ScreenHelper {
 	private ScreenHelper() {}
 	
 	public static final ResourceLocation MINECRAFT_ICONS_TEXTURE = MinepreggoHelper.fromVanillaNamespaceAndPath("textures/gui/icons.png");
-	public static final ResourceLocation MINEPREGGO_ICONS_TEXTURE = MinepreggoHelper.fromThisNamespaceAndPath("textures/screens/icons.png");
+	public static final ResourceLocation MINEPREGGO_ICONS_TEXTURE = MinepreggoHelper.fromThisNamespaceAndPath("textures/gui/icons.png");
 }

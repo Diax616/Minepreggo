@@ -140,7 +140,8 @@ public class VillagerMixin {
     					.flatMap(playerCap -> playerCap.getFemaleData().resolve()
     					.map(femaleData -> {
     						if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
-    							if (PregnancyPain.isLaborPain(femaleData.getPregnancyData().getPregnancyPain())) {
+    							var instance = femaleData.getPregnancyData().getPregnancyPain();
+    							if (instance != null && (instance.getPain().type == PregnancyPain.Type.LABOR || instance.getPain().type == PregnancyPain.Type.MISBIRTH)) {
     								return 0;
     							}
     							// TODO: Villager does not keep standing facing the player when the menu is open, the method setTradingPlayer from Merchant interface does work for this case

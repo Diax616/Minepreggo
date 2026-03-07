@@ -25,7 +25,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public abstract class AbstractRequestSexScreen 
 	<S extends LivingEntity, T extends LivingEntity, M extends AbstractRequestSexMenu<S, T>> extends AbstractContainerScreen<M> {
 	
-	private static final ResourceLocation TEXTURE = MinepreggoHelper.fromThisNamespaceAndPath("textures/screens/request_sex.png");
+	private static final ResourceLocation TEXTURE = MinepreggoHelper.fromThisNamespaceAndPath("textures/gui/request_sex.png");
 	
 	protected final Level level;
 	protected final Player player;
@@ -66,7 +66,7 @@ public abstract class AbstractRequestSexScreen
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
-		guiGraphics.blit(TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
+		guiGraphics.blit(TEXTURE, this.leftPos, this.topPos, this.imageWidth, this.imageHeight, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
 
 		renderRequestorIcon(guiGraphics);
 

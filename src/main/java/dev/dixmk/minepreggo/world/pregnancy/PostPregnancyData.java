@@ -6,7 +6,7 @@ import javax.annotation.Nonnegative;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 
-public class PostPregnancyData implements IPostPregnancyData {
+public class PostPregnancyData {
 	private static final String NBT_KEY = "NBTPostPregnancyData";
 	
 	private final PostPregnancy postPregnancy;
@@ -25,62 +25,50 @@ public class PostPregnancyData implements IPostPregnancyData {
 		this.postPartumLactationTimer = other.postPartumLactationTimer;
 	}
 	
-	@Override
 	public PostPregnancy getPostPregnancy() {
 		return postPregnancy;
 	}
 
-	@Override
 	public int getPostPregnancyTimer() {
 		return postPregnancyTimer;
 	}
 
-	@Override
 	public void setPostPregnancyTimer(int postPregnancyTimer) {
 		this.postPregnancyTimer = Math.max(0, postPregnancyTimer);
 	}
 	
-	@Override
 	public int getPostPartumLactation() {
 		return postPartumlactation;
 	}
 
-	@Override
 	public void setPostPartumLactation(int postPartumlactation) {
 		this.postPartumlactation = Mth.clamp(postPartumlactation, 0, PregnancySystemHelper.MAX_MILKING_LEVEL);
 	}
 	
-	@Override
 	public void incrementPostPartumLactation() {
 		incrementPostPartumLactation(1);
 	}
 	
-	@Override
 	public void decrementPostPartumLactation() {
 		decrementPostPartumLactation(1);
 	}
 
-	@Override
     public void incrementPostPartumLactation(@Nonnegative int amount) {
         setPostPartumLactation(this.postPartumlactation + Math.abs(amount));
     }
     
-	@Override
     public void decrementPostPartumLactation(@Nonnegative int amount) {
         setPostPartumLactation(this.postPartumlactation - Math.abs(amount));
     }
 	
-	@Override
 	public int getPostPartumLactationTimer() {
 		return postPartumLactationTimer;
 	}
 
-	@Override
 	public void setPostPartumLactationTimer(int postPartumLactationTimer) {
 		this.postPartumLactationTimer = Math.max(0, postPartumLactationTimer);
 	}
 
-	@Override
     public CompoundTag toNBT() {
 		CompoundTag wrapper = new CompoundTag();			
 		CompoundTag nbt = new CompoundTag();
@@ -105,22 +93,18 @@ public class PostPregnancyData implements IPostPregnancyData {
 		return null;
 	}
 
-    @Override
     public void incrementPostPregnancyTimer() {
         this.postPregnancyTimer++;
     }
     
-    @Override
     public void resetPostPregnancyTimer() {
         this.postPregnancyTimer = 0;
     }
 
-    @Override
     public void incrementPostPartumLactationTimer() {
         this.postPartumLactationTimer++;
     }
     
-    @Override
     public void resetPostPartumLactationTimer() {
         this.postPartumLactationTimer = 0;
     }

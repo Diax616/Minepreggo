@@ -31,7 +31,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.PlayMessages;
 
-
 public class TamablePregnantMonsterCreeperGirl {
 	
 	private TamablePregnantMonsterCreeperGirl() {}
@@ -268,6 +267,11 @@ public class TamablePregnantMonsterCreeperGirl {
 				protected void initPostPartum() {
 					TamableMonsterCreeperGirl.onPostPartum(pregnantEntity);
 				}
+				
+				@Override
+				protected double getPussyYOffset() {
+					return MonsterCreeperHelper.getPussyYOffset(pregnantEntity);
+				}				
 			};
 		}
 		
@@ -320,6 +324,11 @@ public class TamablePregnantMonsterCreeperGirl {
 				@Override
 				protected void initPostPartum() {
 					TamableMonsterCreeperGirl.onPostPartum(pregnantEntity);
+				}
+				
+				@Override
+				protected double getPussyYOffset() {
+					return MonsterCreeperHelper.getPussyYOffset(pregnantEntity);
 				}
 			};
 		}
@@ -374,6 +383,11 @@ public class TamablePregnantMonsterCreeperGirl {
 				protected void initPostPartum() {
 					TamableMonsterCreeperGirl.onPostPartum(pregnantEntity);
 				}
+				
+				@Override
+				protected double getPussyYOffset() {
+					return MonsterCreeperHelper.getPussyYOffset(pregnantEntity);
+				}
 			};
 		}
 		
@@ -427,6 +441,11 @@ public class TamablePregnantMonsterCreeperGirl {
 				protected void initPostPartum() {
 					TamableMonsterCreeperGirl.onPostPartum(pregnantEntity);
 				}
+				
+				@Override
+				protected double getPussyYOffset() {
+					return MonsterCreeperHelper.getPussyYOffset(pregnantEntity);
+				}
 			};
 		}
 		
@@ -475,6 +494,11 @@ public class TamablePregnantMonsterCreeperGirl {
 				@Override
 				protected void initPostPartum() {
 					TamableMonsterCreeperGirl.onPostPartum(pregnantEntity);
+				}
+				
+				@Override
+				protected double getPussyYOffset() {
+					return MonsterCreeperHelper.getPussyYOffset(pregnantEntity);
 				}
 			};
 		}

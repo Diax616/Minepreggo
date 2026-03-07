@@ -4,16 +4,15 @@ import java.util.EnumSet;
 import java.util.Set;
 
 public enum PregnancySymptom {
-	
 	CRAVING(1 << 0),
 	MILKING(1 << 1),
 	BELLY_RUBS(1 << 2),
 	HORNY(1 << 3);
 	
-    public final byte flag;
+    public final byte mask;
 
-    PregnancySymptom(int flag) {
-        this.flag = (byte) flag;
+    PregnancySymptom(int mask) {
+        this.mask = (byte) mask;
     }
 	
 	public static final String NBT_KEY = "PregnancySymptomType";
@@ -21,7 +20,7 @@ public enum PregnancySymptom {
 	public static Set<PregnancySymptom> fromBitMask(byte mask) {
 	    Set<PregnancySymptom> set = EnumSet.noneOf(PregnancySymptom.class);
 	    for (final var pregnancySymptom : PregnancySymptom.values()) {
-	        if ((mask & pregnancySymptom.flag) != 0) {
+	        if ((mask & pregnancySymptom.mask) != 0) {
 	            set.add(pregnancySymptom);
 	        }
 	    }
@@ -31,7 +30,7 @@ public enum PregnancySymptom {
 	public static byte toBitMask(Set<PregnancySymptom> pregnancySymptoms) {
 	    byte mask = 0;
 	    for (final var p : pregnancySymptoms) {
-	        mask |= p.flag;
+	        mask |= p.mask;
 	    }
 	    return mask;
 	}

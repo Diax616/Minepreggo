@@ -115,12 +115,11 @@ public class TamableMonsterCreeperGirl extends AbstractTamableMonsterCreeperGirl
 		return (SyncedFemaleEntityImpl<?>) this.femaleEntityData;
 	}
 	
-	
 	public static AttributeSupplier.Builder createAttributes() {
 		return MonsterCreeperHelper.createTamableAttributes(0.27);
 	}
 	
-	public static<E extends AbstractTamablePregnantCreeperGirl> void onPostPartum(E source) {
+	static void onPostPartum(AbstractTamablePregnantCreeperGirl source) {
 		if (source.level() instanceof ServerLevel serverLevel) {
 			TamableMonsterCreeperGirl creeperGirl = MinepreggoEntities.TAMABLE_MONSTER_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(source.getX(), source.getY(), source.getZ()), MobSpawnType.CONVERSION);	
 			LivingEntityHelper.copyRotation(source, creeperGirl);
@@ -145,7 +144,7 @@ public class TamableMonsterCreeperGirl extends AbstractTamableMonsterCreeperGirl
 		}
 	}
 	
-	public static<E extends AbstractTamablePregnantCreeperGirl> void onPostMiscarriage(E source) {
+	static void onPostMiscarriage(AbstractTamablePregnantCreeperGirl source) {
 		if (source.level() instanceof ServerLevel serverLevel) {
 			TamableMonsterCreeperGirl creeperGirl = MinepreggoEntities.TAMABLE_MONSTER_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(source.getX(), source.getY(), source.getZ()), MobSpawnType.CONVERSION);	
 			LivingEntityHelper.copyRotation(source, creeperGirl);

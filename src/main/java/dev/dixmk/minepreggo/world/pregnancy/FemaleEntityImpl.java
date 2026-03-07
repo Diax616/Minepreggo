@@ -24,15 +24,15 @@ public class FemaleEntityImpl extends AbstractBreedableEntity implements IFemale
 	protected int discomfortCooldown = 0;
 	protected boolean pregnant = false;
 
-	protected Optional<IPostPregnancyData> postPregnancyData = Optional.empty();
+	protected Optional<PostPregnancyData> postPregnancyData = Optional.empty();
 	protected Optional<PrePregnancyData> prePregnancyData = Optional.empty(); 
 	
-    protected IPostPregnancyData createPostPregnancyData(PostPregnancy postPregnancy) {
+    protected PostPregnancyData createPostPregnancyData(PostPregnancy postPregnancy) {
         return new PostPregnancyData(postPregnancy);
     }
 	
     @CheckForNull
-    protected IPostPregnancyData createPostPregnancyData(CompoundTag nbt, String key) {
+    protected PostPregnancyData createPostPregnancyData(CompoundTag nbt, String key) {
 	    return PostPregnancyData.fromNBT(nbt.getCompound(key));
 	}
 
@@ -103,7 +103,7 @@ public class FemaleEntityImpl extends AbstractBreedableEntity implements IFemale
 		return this.prePregnancyData;
 	}
 
-    public Optional<IPostPregnancyData> getPostPregnancyData() {
+    public Optional<PostPregnancyData> getPostPregnancyData() {
         return this.postPregnancyData;
     }
 	

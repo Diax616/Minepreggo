@@ -115,13 +115,12 @@ public class TamableHumanoidCreeperGirl extends AbstractTamableHumanoidCreeperGi
 	public ISyncedFemaleEntity<?> getSyncedFemaleEntity() {
 		return (SyncedFemaleEntityImpl<?>) this.femaleEntityData;
 	}
-	
-	
+		
 	public static AttributeSupplier.Builder createAttributes() {
 		return HumanoidCreeperHelper.createTamableAttributes(0.24);
 	}
 	
-	public static<E extends AbstractTamablePregnantCreeperGirl> void onPostPartum(E source) {
+	static void onPostPartum(AbstractTamablePregnantCreeperGirl source) {
 		if (source.level() instanceof ServerLevel serverLevel) {
 			TamableHumanoidCreeperGirl creeperGirl = MinepreggoEntities.TAMABLE_HUMANOID_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(source.getX(), source.getY(), source.getZ()), MobSpawnType.CONVERSION);	
 			LivingEntityHelper.copyRotation(source, creeperGirl);
@@ -145,7 +144,7 @@ public class TamableHumanoidCreeperGirl extends AbstractTamableHumanoidCreeperGi
 		}
 	}
 	
-	public static<E extends AbstractTamablePregnantCreeperGirl> void onPostMiscarriage(E source) {
+	static void onPostMiscarriage(AbstractTamablePregnantCreeperGirl source) {
 		if (source.level() instanceof ServerLevel serverLevel) {
 			TamableHumanoidCreeperGirl creeperGirl = MinepreggoEntities.TAMABLE_HUMANOID_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(source.getX(), source.getY(), source.getZ()), MobSpawnType.CONVERSION);	
 			LivingEntityHelper.copyRotation(source, creeperGirl);

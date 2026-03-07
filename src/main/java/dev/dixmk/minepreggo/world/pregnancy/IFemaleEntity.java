@@ -22,7 +22,7 @@ public interface IFemaleEntity extends IBreedable {
     boolean tryCancelPregnancy();
     
     Optional<PrePregnancyData> getPrePregnancyData();
-    Optional<IPostPregnancyData> getPostPregnancyData();
+    Optional<PostPregnancyData> getPostPregnancyData();
     
     boolean tryActivatePostPregnancyPhase(@NonNull PostPregnancy postPregnancy);
     boolean tryRemovePostPregnancyPhase();

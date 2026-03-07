@@ -38,7 +38,7 @@ public abstract class AbstractTamablePregnantHumanoidCreeperGirlModel<E extends 
 			this.moveHeadWithHat(entity, netHeadYaw, headPitch);
 		}	
 		
-		if (entity.getPregnancyData().getSyncedPregnancySymptoms().containsPregnancySymptom(PregnancySymptom.MILKING)) {
+		if ((entity.getPregnancyData().getSyncedPregnancySymptoms().getSyncedSymptoms() & PregnancySymptom.MILKING.mask) != 0) {
 			this.boobs.y += milkingBoobsYPos;
 			this.boobs.xScale = milkingBoobsXScale;
 			this.boobs.zScale = milkingBoobsYScale;

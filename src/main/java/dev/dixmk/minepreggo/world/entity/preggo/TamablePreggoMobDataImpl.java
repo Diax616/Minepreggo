@@ -16,30 +16,30 @@ import net.minecraft.util.Mth;
 public class TamablePreggoMobDataImpl<E extends PreggoMob> implements ITamablePreggoMobData {
 	
     public static class DataAccessor<E extends PreggoMob> {
-    	private final EntityDataAccessor<Integer> dataHungry;
-    	private final EntityDataAccessor<Boolean> dataSavage;
-    	private final EntityDataAccessor<MovementState> dataMovementState;
-    	private final EntityDataAccessor<Boolean> dataAngry;	
-    	private final EntityDataAccessor<Optional<PreggoMobFace>> dataFace;
-    	private final EntityDataAccessor<Optional<PreggoMobBody>> dataBody;	
+    	private final EntityDataAccessor<Integer> hungryData;
+    	private final EntityDataAccessor<Boolean> savageData;
+    	private final EntityDataAccessor<MovementState> movementStateData;
+    	private final EntityDataAccessor<Boolean> angryData;	
+    	private final EntityDataAccessor<Optional<PreggoMobFace>> faceData;
+    	private final EntityDataAccessor<Optional<PreggoMobBody>> bodyData;	
 	
     	public DataAccessor(Class<E> entityClass) {
-            this.dataHungry = SynchedEntityData.defineId(entityClass, EntityDataSerializers.INT);
-            this.dataSavage = SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN);
-            this.dataMovementState = SynchedEntityData.defineId(entityClass, MinepreggoEntityDataSerializers.MOVEMENT_STATE);
-            this.dataAngry = SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN);
-            this.dataFace = SynchedEntityData.defineId(entityClass, MinepreggoEntityDataSerializers.OPTIONAL_PREGGO_MOB_FACE);
-            this.dataBody = SynchedEntityData.defineId(entityClass, MinepreggoEntityDataSerializers.OPTIONAL_PREGGO_MOB_BODY);
+            this.hungryData = SynchedEntityData.defineId(entityClass, EntityDataSerializers.INT);
+            this.savageData = SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN);
+            this.movementStateData = SynchedEntityData.defineId(entityClass, MinepreggoEntityDataSerializers.MOVEMENT_STATE);
+            this.angryData = SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN);
+            this.faceData = SynchedEntityData.defineId(entityClass, MinepreggoEntityDataSerializers.OPTIONAL_PREGGO_MOB_FACE);
+            this.bodyData = SynchedEntityData.defineId(entityClass, MinepreggoEntityDataSerializers.OPTIONAL_PREGGO_MOB_BODY);
     	}
     	
     	public void defineSynchedData(E preggomob) {	
     		SynchedEntityData entityData = preggomob.getEntityData();
-        	entityData.define(dataHungry, 14);		
-        	entityData.define(dataSavage, true);
-        	entityData.define(dataAngry, false);
-        	entityData.define(dataFace, Optional.empty());
-        	entityData.define(dataBody, Optional.empty());
-        	entityData.define(dataMovementState, MovementState.FOLLOWING);
+        	entityData.define(hungryData, 14);		
+        	entityData.define(savageData, true);
+        	entityData.define(angryData, false);
+        	entityData.define(faceData, Optional.empty());
+        	entityData.define(bodyData, Optional.empty());
+        	entityData.define(movementStateData, MovementState.FOLLOWING);
         }
     }
 	  
@@ -57,12 +57,12 @@ public class TamablePreggoMobDataImpl<E extends PreggoMob> implements ITamablePr
 
 	@Override
 	public int getFullness() {
-	    return this.preggomob.getEntityData().get(this.dataAccessor.dataHungry);
+	    return this.preggomob.getEntityData().get(this.dataAccessor.hungryData);
 	}
 
 	@Override
 	public void setFullness(int hungry) {
-		this.preggomob.getEntityData().set(this.dataAccessor.dataHungry, Mth.clamp(hungry, 0, ITamablePreggoMob.MAX_FULLNESS + 10));
+		this.preggomob.getEntityData().set(this.dataAccessor.hungryData, Mth.clamp(hungry, 0, ITamablePreggoMob.MAX_FULLNESS + 10));
 	}
 
 	@Override
@@ -77,12 +77,12 @@ public class TamablePreggoMobDataImpl<E extends PreggoMob> implements ITamablePr
 	
 	@Override
 	public void incrementFullness(int amount) {
-		this.setFullness(this.preggomob.getEntityData().get(this.dataAccessor.dataHungry) + amount);
+		this.setFullness(this.preggomob.getEntityData().get(this.dataAccessor.hungryData) + amount);
 	}
 	
 	@Override
 	public void decrementFullness(int amount) {
-		this.setFullness(this.preggomob.getEntityData().get(this.dataAccessor.dataHungry) - amount);		
+		this.setFullness(this.preggomob.getEntityData().get(this.dataAccessor.hungryData) - amount);		
 	}
 
 	@Override
@@ -112,22 +112,22 @@ public class TamablePreggoMobDataImpl<E extends PreggoMob> implements ITamablePr
 
 	@Override
 	public boolean isSavage() {
-	    return this.preggomob.getEntityData().get(dataAccessor.dataSavage);
+	    return this.preggomob.getEntityData().get(dataAccessor.savageData);
 	}
 
 	@Override
 	public void setSavage(boolean savage) {
-		this.preggomob.getEntityData().set(dataAccessor.dataSavage, savage);
+		this.preggomob.getEntityData().set(dataAccessor.savageData, savage);
 	}
 	
 	@Override
 	public boolean isAngry() {
-		return this.preggomob.getEntityData().get(dataAccessor.dataAngry);
+		return this.preggomob.getEntityData().get(dataAccessor.angryData);
 	}
 
 	@Override
 	public void setAngry(boolean angry) {
-		this.preggomob.getEntityData().set(dataAccessor.dataAngry, angry);
+		this.preggomob.getEntityData().set(dataAccessor.angryData, angry);
 	}
 
 	@Override
@@ -147,37 +147,37 @@ public class TamablePreggoMobDataImpl<E extends PreggoMob> implements ITamablePr
 
 	@Override
 	public @Nullable PreggoMobFace getFaceState() {
-		return this.preggomob.getEntityData().get(dataAccessor.dataFace).orElse(null);
+		return this.preggomob.getEntityData().get(dataAccessor.faceData).orElse(null);
 	}
 
 	@Override
 	public void setFaceState(@Nullable PreggoMobFace state) {
-		this.preggomob.getEntityData().set(dataAccessor.dataFace, Optional.ofNullable(state));	
+		this.preggomob.getEntityData().set(dataAccessor.faceData, Optional.ofNullable(state));	
 	}
 
 	@Override
 	public void cleanFaceState() {
-		this.preggomob.getEntityData().set(dataAccessor.dataFace, Optional.empty());	
+		this.preggomob.getEntityData().set(dataAccessor.faceData, Optional.empty());	
 	}
 
 	@Override
 	public @Nullable PreggoMobBody getBodyState() {
-		return this.preggomob.getEntityData().get(dataAccessor.dataBody).orElse(null);
+		return this.preggomob.getEntityData().get(dataAccessor.bodyData).orElse(null);
 	}
 
 	@Override
 	public void setBodyState(@Nullable PreggoMobBody state) {
-		this.preggomob.getEntityData().set(dataAccessor.dataBody, Optional.ofNullable(state));	
+		this.preggomob.getEntityData().set(dataAccessor.bodyData, Optional.ofNullable(state));	
 	}
 
 	@Override
 	public void cleanBodyState() {
-		this.preggomob.getEntityData().set(dataAccessor.dataBody, Optional.empty());	
+		this.preggomob.getEntityData().set(dataAccessor.bodyData, Optional.empty());	
 	}
 
 	@Override
 	public MovementState getMovementState() {
-		return this.preggomob.getEntityData().get(dataAccessor.dataMovementState);
+		return this.preggomob.getEntityData().get(dataAccessor.movementStateData);
 	}
 
 	@Override
@@ -187,7 +187,7 @@ public class TamablePreggoMobDataImpl<E extends PreggoMob> implements ITamablePr
 		} else if (movementState != MovementState.WANDERING) {
 			this.centralPositionWhenWandering = Optional.empty();
 		}		
-		this.preggomob.getEntityData().set(dataAccessor.dataMovementState, movementState);
+		this.preggomob.getEntityData().set(dataAccessor.movementStateData, movementState);
 	}
 	
 	@Override
@@ -198,12 +198,12 @@ public class TamablePreggoMobDataImpl<E extends PreggoMob> implements ITamablePr
 	@Override
 	public CompoundTag serializeNBT() {
 		CompoundTag compound = new CompoundTag();
-		compound.putInt("DataHungry", this.preggomob.getEntityData().get(dataAccessor.dataHungry));
+		compound.putInt("DataHungry", this.preggomob.getEntityData().get(dataAccessor.hungryData));
 		compound.putInt("DataHungryTimer", hungryTimer);
-		compound.putBoolean("DataSavage", this.preggomob.getEntityData().get(dataAccessor.dataSavage));
-		compound.putBoolean("DataAngry", this.preggomob.getEntityData().get(dataAccessor.dataAngry));
+		compound.putBoolean("DataSavage", this.preggomob.getEntityData().get(dataAccessor.savageData));
+		compound.putBoolean("DataAngry", this.preggomob.getEntityData().get(dataAccessor.angryData));
 		compound.putBoolean("DataPanic", this.panic);	
-		compound.putString("DataMovementState", this.preggomob.getEntityData().get(dataAccessor.dataMovementState).name());
+		compound.putString("DataMovementState", this.preggomob.getEntityData().get(dataAccessor.movementStateData).name());
 		final var face = getFaceState();
 		if (face != null) {
 			compound.putString(PreggoMobFace.NBT_KEY, face.name());
@@ -223,10 +223,10 @@ public class TamablePreggoMobDataImpl<E extends PreggoMob> implements ITamablePr
 
 	@Override
 	public void deserializeNBT(CompoundTag compound) {
-		this.preggomob.getEntityData().set(dataAccessor.dataHungry, compound.getInt("DataHungry"));
+		this.preggomob.getEntityData().set(dataAccessor.hungryData, compound.getInt("DataHungry"));
 		this.hungryTimer = compound.getInt("DataHungryTimer");		
-		this.preggomob.getEntityData().set(dataAccessor.dataSavage, compound.getBoolean("DataSavage"));		
-		this.preggomob.getEntityData().set(dataAccessor.dataAngry, compound.getBoolean("DataAngry"));	
+		this.preggomob.getEntityData().set(dataAccessor.savageData, compound.getBoolean("DataSavage"));		
+		this.preggomob.getEntityData().set(dataAccessor.angryData, compound.getBoolean("DataAngry"));	
 		this.panic = compound.getBoolean("DataPanic");
 		
 		if (compound.contains("DataMovementState", Tag.TAG_STRING)) {

@@ -145,8 +145,9 @@ public abstract class MonsterEnderWomanAnimator<T extends AbstractEnderWoman> ex
 		
 		@Override
 		protected void animateBelly(E enderWoman, float ageInTicks) {
+			var instance = enderWoman.getPregnancyData().getPregnancyPain();
 		    if (enderWoman.getItemBySlot(EquipmentSlot.CHEST).isEmpty()) {		    			        	
-				if (fetalMovementIntensity != null && enderWoman.getPregnancyData().getPregnancyPain() ==  PregnancyPain.FETAL_MOVEMENT) {
+				if (fetalMovementIntensity != null && instance != null && instance.getPain() == PregnancyPain.FETAL_MOVEMENT) {
 			    	this.animate(enderWoman.bellyAnimationState, fetalMovementIntensity.animation, ageInTicks);		    
 		    	}
 		    	else {
@@ -167,22 +168,24 @@ public abstract class MonsterEnderWomanAnimator<T extends AbstractEnderWoman> ex
 	
 		@Override
 		protected void animatePregnancyPain(E enderWoman, float ageInTicks) {
-			final var pregnancyData = enderWoman.getPregnancyData();
-			final var pregnancyPain = pregnancyData.getPregnancyPain();	
-			if (pregnancyPain == PregnancyPain.MORNING_SICKNESS) {
-				this.animate(enderWoman.loopAnimationState, MonsterEnderWomanAnimation.MORNING_SICKNESS, ageInTicks);										
-			}
-			else if (pregnancyPain == PregnancyPain.MISCARRIAGE) {
-				this.animate(enderWoman.loopAnimationState, MonsterEnderWomanAnimation.MISCARRIAGE, ageInTicks);						
-			}
-			else if (pregnancyPain == PregnancyPain.PREBIRTH) {
-				this.animate(enderWoman.loopAnimationState, MonsterEnderWomanAnimation.PREBIRTH, ageInTicks);						
-			}
-			else if (pregnancyPain == PregnancyPain.BIRTH) {
-				this.animate(enderWoman.loopAnimationState, MonsterEnderWomanAnimation.BIRTH, ageInTicks);						
-			}
-			else if (pregnancyPain == PregnancyPain.CONTRACTION) {
-				this.animate(enderWoman.loopAnimationState, MonsterEnderWomanAnimation.CONTRACTION, ageInTicks);						
+			final var instance = enderWoman.getPregnancyData().getPregnancyPain();	
+			if (instance != null ) {
+				var pregnancyPain = instance.getPain();
+				if (pregnancyPain == PregnancyPain.MORNING_SICKNESS) {
+					this.animate(enderWoman.loopAnimationState, MonsterEnderWomanAnimation.MORNING_SICKNESS, ageInTicks);										
+				}
+				else if (pregnancyPain == PregnancyPain.MISCARRIAGE) {
+					this.animate(enderWoman.loopAnimationState, MonsterEnderWomanAnimation.MISCARRIAGE, ageInTicks);						
+				}
+				else if (pregnancyPain == PregnancyPain.PREBIRTH) {
+					this.animate(enderWoman.loopAnimationState, MonsterEnderWomanAnimation.PREBIRTH, ageInTicks);						
+				}
+				else if (pregnancyPain == PregnancyPain.BIRTH) {
+					this.animate(enderWoman.loopAnimationState, MonsterEnderWomanAnimation.BIRTH, ageInTicks);						
+				}
+				else if (pregnancyPain == PregnancyPain.CONTRACTION) {
+					this.animate(enderWoman.loopAnimationState, MonsterEnderWomanAnimation.CONTRACTION, ageInTicks);						
+				}		
 			}
 		}
     }

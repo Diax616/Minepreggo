@@ -105,7 +105,7 @@ public class TamableZombieGirl extends AbstractTamableZombieGirl implements IPos
 		return AbstractTamableZombieGirl.getBasicAttributes(0.235);
 	}
 	
-	static<E extends AbstractTamablePregnantZombieGirl> void onPostMiscarriage(E source) {
+	static void onPostMiscarriage(AbstractTamablePregnantZombieGirl source) {
 		if (source.level() instanceof ServerLevel serverLevel) {
 			var zombieGirl = MinepreggoEntities.TAMABLE_ZOMBIE_GIRL.get().spawn(serverLevel, BlockPos.containing(source.getX(), source.getY(), source.getZ()), MobSpawnType.CONVERSION);	
 			LivingEntityHelper.copyRotation(source, zombieGirl);
@@ -127,7 +127,7 @@ public class TamableZombieGirl extends AbstractTamableZombieGirl implements IPos
 		}
 	}
 	
-	static<E extends AbstractTamablePregnantZombieGirl> void onPostPartum(E source) {
+	static void onPostPartum(AbstractTamablePregnantZombieGirl source) {
 		if (source.level() instanceof ServerLevel serverLevel) {
 			var zombieGirl = MinepreggoEntities.TAMABLE_ZOMBIE_GIRL.get().spawn(serverLevel, BlockPos.containing(source.getX(), source.getY(), source.getZ()), MobSpawnType.CONVERSION);	
 			LivingEntityHelper.copyRotation(source, zombieGirl);

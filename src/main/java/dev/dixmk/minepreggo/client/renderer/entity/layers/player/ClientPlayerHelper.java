@@ -40,7 +40,7 @@ public class ClientPlayerHelper {
 			));
 
 	private static final ImmutableMap<Craving, List<ResourceLocation>> CRAVING_ICONS = ImmutableMap.of(
-			Craving.SALTY, List.of(MinepreggoHelper.fromThisNamespaceAndPath("textures/item/salty_pickle.png"),
+			Craving.SALTY, List.of(MinepreggoHelper.fromThisNamespaceAndPath("textures/item/pickle.png"),
 					MinepreggoHelper.fromThisNamespaceAndPath("textures/item/french_fries.png")), 
 			Craving.SWEET, List.of(MinepreggoHelper.fromThisNamespaceAndPath("textures/item/chocolate_bar.png"),
 					MinepreggoHelper.fromThisNamespaceAndPath("textures/item/candy_apple.png")), 

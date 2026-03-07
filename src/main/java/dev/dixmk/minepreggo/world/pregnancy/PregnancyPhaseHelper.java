@@ -23,7 +23,7 @@ public class PregnancyPhaseHelper {
      * Consume up to `days` from the provided map starting at `start` phase and moving forward.
      * Modifies the provided map in place and returns the number of days that were actually applied (consumed).
      */
-    public static int consumeDaysFromMap(MapPregnancyPhase map, PregnancyPhase start, int days) {
+    public static int consumeDaysFromMap(PregnancyPhaseMap map, PregnancyPhase start, int days) {
         int daysLeft = days;
         PregnancyPhase phase = start;
         while (daysLeft > 0 && phase != null && map.containsPregnancyPhase(phase)) {
@@ -45,7 +45,7 @@ public class PregnancyPhaseHelper {
      * If the map doesn't contain the phase this is a no-op and returns 0.
      * Returns the number of days actually added (either `days` or 0).
      */
-    public static int addDaysToPhase(MapPregnancyPhase map, PregnancyPhase phase, int days) {
+    public static int addDaysToPhase(PregnancyPhaseMap map, PregnancyPhase phase, int days) {
         if (days <= 0) return 0;
         if (!map.containsPregnancyPhase(phase)) return 0;
         int current = map.getDaysByPregnancyPhase(phase);

@@ -7,86 +7,59 @@ import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 
 public abstract class AbstractPregnancySystem<E extends LivingEntity> implements IPregnancySystem {
-
 	protected E pregnantEntity;
-	protected final RandomSource randomSource;
-	
 	private int stomachGrowlCoolDown = 0;
 	protected float stomachGrowlProb = 0.01f;
-	
 	private int pregnancyPainCoolDown = 0;
 	protected float pregnancyHurtProb = 0.1f;
 	
 	protected AbstractPregnancySystem(@Nonnull E pregnantEntity) {
 		this.pregnantEntity = pregnantEntity;
-		this.randomSource = pregnantEntity.getRandom();	
 	}
 	
 	protected abstract void evaluatePregnancySystem();
-	
 	protected abstract void evaluatePregnancyPains();
+	protected abstract void evaluatePregnancyTimer();	
+	protected abstract void evaluateMiscarriage(ServerLevel serverLevel);	
+	protected abstract void evaluatePregnancySymptoms();	
+	public abstract boolean isMiscarriageActive();	
+	public abstract boolean hasPregnancyPain();	
+	public abstract boolean canAdvanceNextPregnancyPhase();	
+	public abstract boolean hasAllPregnancySymptoms();	
+	protected abstract void advanceToNextPregnancyPhase();	
+	protected abstract void initPostMiscarriage();	
+	protected abstract void initPostPartum();	
+	protected abstract boolean tryInitRandomPregnancyPain();	
+	protected abstract boolean tryInitPregnancySymptom();	
+	protected abstract boolean hasToGiveBirth();	
+	protected abstract boolean isInLabor();	
+	protected abstract void startLabor();	
+	protected abstract boolean isWaterBroken();	
+	protected abstract void breakWater();	
+	protected abstract void evaluateWaterBreaking(ServerLevel serverLevel);	
+	protected abstract void evaluateBirth(ServerLevel serverLevel);	
+	protected abstract void evaluatePregnancyNeeds();	
+	protected abstract void startMiscarriage();	
+	protected abstract void evaluatePregnancyHealing();	
+	public abstract boolean initCommonPregnancyPain(PregnancyPain pain, int duration, int severity);
+	public abstract boolean initPregnancySymptom(PregnancySymptom symptom);
 	
-	protected abstract void evaluatePregnancyTimer();
-	
-	protected abstract void evaluateMiscarriage(ServerLevel serverLevel);
-	
-	protected abstract void evaluatePregnancySymptoms();
-	
-	public abstract boolean isMiscarriageActive();
-	
-	public abstract boolean hasPregnancyPain();
-	
-	public abstract boolean canAdvanceNextPregnancyPhase();
-	
-	public abstract boolean hasAllPregnancySymptoms();
-	
-	protected abstract void advanceToNextPregnancyPhase();
-	
-	protected abstract void initPostMiscarriage();
-	
-	protected abstract void initPostPartum();
-	
-	protected abstract boolean tryInitRandomPregnancyPain();
-	
-	protected abstract boolean tryInitPregnancySymptom();
-	
-	protected abstract boolean hasToGiveBirth();
-	
-	protected abstract boolean isInLabor();
-	
-	protected abstract void startLabor();
-	
-	protected abstract boolean isWaterBroken();
-	
-	protected abstract void breakWater();
-	
-	protected abstract void evaluateWaterBreaking(ServerLevel serverLevel);
-	
-	protected abstract void evaluateBirth(ServerLevel serverLevel);
-	
-	protected abstract void evaluatePregnancyNeeds();
-	
-	protected abstract void startMiscarriage();
-	
-	protected abstract void evaluatePregnancyHealing();
-	
-	public static void spawnParticulesForWaterBreaking(ServerLevel serverLevel, LivingEntity target) {	
-		spawnParticulesForWaterBreaking(serverLevel, target, target.getBbHeight() * 0.35);
+	protected double getPussyYOffset() {
+		return pregnantEntity.getBbHeight() * 0.35;
 	}
 	
-	public static void spawnParticulesForWaterBreaking(ServerLevel serverLevel, LivingEntity target, double extraYOffset) {	
+	protected void spawnParticulesForWaterBreaking(ServerLevel serverLevel) {	
 		for (ServerPlayer player : serverLevel.getServer().getPlayerList().getPlayers()) {
-		    if (player.distanceToSqr(target) <= 256.0) { // 16 blocks
+		    if (player.distanceToSqr(this.pregnantEntity) <= 256.0) { // 16 blocks
 				serverLevel.sendParticles(
 						player,
 						ParticleTypes.FALLING_DRIPSTONE_WATER,
 						true,
-						target.getX(), (target.getY() + extraYOffset), target.getZ(),
+						this.pregnantEntity.getX(), this.pregnantEntity.getY() + this.getPussyYOffset(), this.pregnantEntity.getZ(),
 						1,
 						0, 0, 0,
 						0.02);
@@ -94,18 +67,14 @@ public abstract class AbstractPregnancySystem<E extends LivingEntity> implements
 		}
 	}
 	
-	public static void spawnParticulesForMiscarriage(ServerLevel serverLevel, LivingEntity target) {	
-		spawnParticulesForMiscarriage(serverLevel, target, target.getBbHeight() * 0.35);
-	}
-	
-	public static void spawnParticulesForMiscarriage(ServerLevel serverLevel, LivingEntity target, double extraYOffset) {	
+	protected void spawnParticulesForMiscarriage(ServerLevel serverLevel) {	
 		for (ServerPlayer player : serverLevel.getServer().getPlayerList().getPlayers()) {
-		    if (player.distanceToSqr(target) <= 256.0) { // 16 blocks
+		    if (player.distanceToSqr(this.pregnantEntity) <= 256.0) { // 16 blocks
 				serverLevel.sendParticles(
 						player,
 						ParticleTypes.FALLING_DRIPSTONE_LAVA,
 						true,
-						target.getX(), (target.getY() + extraYOffset), target.getZ(),
+						this.pregnantEntity.getX(), this.pregnantEntity.getY() + this.getPussyYOffset(), this.pregnantEntity.getZ(),
 						1,
 						0, 0, 0,
 						0.02);
@@ -119,8 +88,8 @@ public abstract class AbstractPregnancySystem<E extends LivingEntity> implements
 			return false;
 		}
 		stomachGrowlCoolDown = 0;	
-		if (randomSource.nextFloat() < stomachGrowlProb) {
-			LivingEntityHelper.playSoundNearTo(pregnantEntity, MinepreggoSounds.getRandomStomachGrowls(randomSource), 0.2f);	
+		if (pregnantEntity.getRandom().nextFloat() < stomachGrowlProb) {
+			LivingEntityHelper.playSoundNearTo(pregnantEntity, MinepreggoSounds.getRandomStomachGrowls(pregnantEntity.getRandom()), 0.2f);	
 			return true;
 		}	
 		return false;
@@ -144,7 +113,7 @@ public abstract class AbstractPregnancySystem<E extends LivingEntity> implements
 			return false;
 		}
 		pregnancyPainCoolDown = 0;	
-		if (randomSource.nextFloat() < pregnancyHurtProb) {
+		if (pregnantEntity.getRandom().nextFloat() < pregnancyHurtProb) {
 			PregnancySystemHelper.applyDamageByPregnancyPain(pregnantEntity, 1);
 			return true;
 		}	

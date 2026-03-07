@@ -1,81 +1,92 @@
 package dev.dixmk.minepreggo.world.pregnancy;
 
+import java.util.AbstractSet;
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.Iterator;
 import java.util.Set;
 
-import javax.annotation.CheckForNull;
+import com.google.common.collect.Sets;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraftforge.common.util.INBTSerializable;
 
-public class SetPregnancySymptom {
-	protected byte bitmask = 0;
+public class SetPregnancySymptom extends AbstractSet<PregnancySymptom> implements INBTSerializable<CompoundTag> {
+	private final Set<PregnancySymptom> internal = EnumSet.noneOf(PregnancySymptom.class);
 
-	public Set<PregnancySymptom> toSet() {
-		return PregnancySymptom.fromBitMask(bitmask);
+	public SetPregnancySymptom() {}
+	
+	public SetPregnancySymptom(CompoundTag nbt) throws IllegalArgumentException {
+		deserializeNBT(nbt);
 	}
-
-	public boolean addPregnancySymptom(PregnancySymptom symptom) {	
-		if ((bitmask & symptom.flag) == 0) {
-			bitmask |= symptom.flag;
-			return true;
-		}
 		
-		return false;
+	@Override
+	public boolean add(PregnancySymptom symptom) {
+		return internal.add(symptom);
+	}
+	
+	@Override
+	public boolean remove(Object symptom) {
+		return internal.remove(symptom);
+	}
+	
+	@Override
+	public int size() {
+		return internal.size();
 	}
 
-	public void setPregnancySymptoms(Set<PregnancySymptom> symptoms) {
-		bitmask = PregnancySymptom.toBitMask(symptoms);
+	@Override
+	public Iterator<PregnancySymptom> iterator() {
+		return internal.iterator();
 	}
 
-	public void setBitMask(byte bitmask) {
-		this.bitmask = bitmask;
+	@Override
+	public boolean contains(Object symptom) {
+		return internal.contains(symptom);
 	}
 	
-	public boolean removePregnancySymptom(PregnancySymptom symptom) {	
-		if ((bitmask & symptom.flag) != 0) {
-			bitmask &= ~symptom.flag;
-			return true;
-		}
-		return false;
+	@Override
+	public boolean containsAll(Collection<?> symptoms) {
+		return internal.containsAll(symptoms);
 	}
 	
-	public boolean containsPregnancySymptom(PregnancySymptom symptom) {
-		return (bitmask & symptom.flag) != 0;
-	}
-	
-	public boolean containsAllPregnancySymptoms(Set<PregnancySymptom> symptoms) {
-		for (var symptom : symptoms) {
-			if (!containsPregnancySymptom(symptom)) {
-				return false;
-			}
-		}
-		return true;
-	}
-	
+	@Override
 	public boolean isEmpty() {
-		return bitmask == 0;
+		return internal.isEmpty();
 	}
 	
-	public void clearPregnancySymptoms() {
-		bitmask = 0;
+	@Override
+	public void clear() {
+		internal.clear();
+	}
+	
+	/**
+	 * Returns an immutable copy of the symptoms in this set.
+	 */
+	public Set<PregnancySymptom> getSymptoms() {
+		return Sets.immutableEnumSet(internal);
+	}
+	
+	@Override
+	public CompoundTag serializeNBT() {
+		CompoundTag nbt = new CompoundTag();
+		CompoundTag symptomTags = new CompoundTag();
+		symptomTags.putByte("bitmask", PregnancySymptom.toBitMask(internal));
+		nbt.put("symptoms", symptomTags);
+		return nbt;
 	}
 
-	public byte getBitmask() {
-		return bitmask;
-	}
-	
-    public CompoundTag toNBT() {
-    	CompoundTag nbt = new CompoundTag();
-		nbt.putByte(PregnancySymptom.NBT_KEY, this.bitmask);
-		return nbt;
-    }
-    
-    @CheckForNull
-    public static SetPregnancySymptom fromNBT(CompoundTag nbt) {
-    	if (nbt.contains(PregnancySymptom.NBT_KEY)) {
-			SetPregnancySymptom symptomSet = new SetPregnancySymptom();
-			symptomSet.bitmask = nbt.getByte(PregnancySymptom.NBT_KEY);
-			return symptomSet;
+	@Override
+	public void deserializeNBT(CompoundTag nbt) throws IllegalArgumentException {
+		if (nbt.contains("symptoms", Tag.TAG_COMPOUND)) {
+			CompoundTag symptomTags = nbt.getCompound("symptoms");
+			byte bitmask = symptomTags.getByte("bitmask");
+			internal.clear();
+			internal.addAll(PregnancySymptom.fromBitMask(bitmask));
 		}
-		return null;	
-    }
+		else {
+			throw new IllegalArgumentException("NBT does not contain 'symptoms' compound tag");
+		}
+	}
 }

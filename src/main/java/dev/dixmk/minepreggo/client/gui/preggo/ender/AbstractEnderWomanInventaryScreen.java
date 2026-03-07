@@ -14,7 +14,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public abstract class AbstractEnderWomanInventaryScreen 
 		<E extends AbstractTamableEnderWoman, C extends AbstractEnderWomanInventoryMenu<E>> extends AbstractPreggoMobInventaryScreen<E, C> {
 	
-	protected static final ResourceLocation ENDER_WOMAN_INVENTARY_TEXTURE = MinepreggoHelper.fromThisNamespaceAndPath("textures/screens/monster_ender_woman_inventory.png");
+	protected static final ResourceLocation ENDER_WOMAN_INVENTARY_TEXTURE = MinepreggoHelper.fromThisNamespaceAndPath("textures/gui/monster_ender_woman_inventory.png");
 
 	protected AbstractEnderWomanInventaryScreen(C container, Inventory inv, Component label) {
 		super(container, inv, label, ENDER_WOMAN_INVENTARY_TEXTURE);

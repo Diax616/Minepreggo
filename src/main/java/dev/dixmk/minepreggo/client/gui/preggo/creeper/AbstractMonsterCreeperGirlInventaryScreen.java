@@ -13,7 +13,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public abstract class AbstractMonsterCreeperGirlInventaryScreen 
 	<E extends AbstractTamableCreeperGirl, M extends AbstractMonsterCreeperGirlInventoryMenu<E>>extends AbstractCreeperGirlInventaryScreen<E, M> {
 
-	private static final ResourceLocation MONSTER_CREEPER_GIRL_INVENTARY_TEXTURE = MinepreggoHelper.fromThisNamespaceAndPath("textures/screens/monster_creeper_girl_inventory.png");	
+	private static final ResourceLocation MONSTER_CREEPER_GIRL_INVENTARY_TEXTURE = MinepreggoHelper.fromThisNamespaceAndPath("textures/gui/monster_creeper_girl_inventory.png");	
 	
 	protected AbstractMonsterCreeperGirlInventaryScreen(M container, Inventory inventory, Component text) {
 		super(container, inventory, text, MONSTER_CREEPER_GIRL_INVENTARY_TEXTURE);

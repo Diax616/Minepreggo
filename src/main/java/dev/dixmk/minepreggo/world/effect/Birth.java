@@ -29,16 +29,16 @@ public class Birth extends AbstractPlayerPregnancyPain {
 		if (!entity.level().isClientSide) {			
 			entity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, -1, 3, false, false));	
 			
-	        ServerPlayerAnimationManager.getInstance().triggerAnimation((ServerPlayer) entity, "birth");
-
+	        ServerPlayerAnimationManager.getInstance().triggerAnimation((ServerPlayer) player, "birth");
+	        
 			AttributeInstance speedAttr = entity.getAttribute(Attributes.MOVEMENT_SPEED);
 			AttributeInstance attackSpeedAttr = entity.getAttribute(Attributes.ATTACK_SPEED);
 
 			if (speedAttr != null && speedAttr.getModifier(SPEED_MODIFIER_UUID) == null) {
-			    speedAttr.addTransientModifier(SPEED_MODIFIER);
+			    speedAttr.addPermanentModifier(SPEED_MODIFIER);
 			}			
 			if (attackSpeedAttr != null && attackSpeedAttr.getModifier(ATTACK_SPEED_MODIFIER_UUID) == null) {
-			    attackSpeedAttr.addTransientModifier(ATTACK_SPEED_MODIFIER);
+			    attackSpeedAttr.addPermanentModifier(ATTACK_SPEED_MODIFIER);
 			}				
 		}	
 	}
@@ -49,10 +49,9 @@ public class Birth extends AbstractPlayerPregnancyPain {
         	return;
         }
 		
-		if (!entity.level().isClientSide) {	
-			
-			ServerPlayerAnimationManager.getInstance().stopAnimation((ServerPlayer) entity);
-			
+		if (!entity.level().isClientSide) {		
+			ServerPlayerAnimationManager.getInstance().stopAnimation((ServerPlayer) player);
+
 			AttributeInstance speedAttr = entity.getAttribute(Attributes.MOVEMENT_SPEED);
 			AttributeInstance attackSpeedAttr = entity.getAttribute(Attributes.ATTACK_SPEED);
 			

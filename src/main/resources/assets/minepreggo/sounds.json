@@ -53,11 +53,20 @@
       }
     ]
   },
-  "player_birth": {
+  "player_birth_1": {
     "subtitle": "subtitles.entity.pregnant.player.birth",
     "sounds": [
       {
-        "name": "minepreggo:player_birth",
+        "name": "minepreggo:player_birth_1",
+        "stream": false
+      }
+    ]
+  },
+  "player_birth_2": {
+    "subtitle": "subtitles.entity.pregnant.player.birth",
+    "sounds": [
+      {
+        "name": "minepreggo:player_birth_2",
         "stream": false
       }
     ]
@@ -157,6 +166,15 @@
     "sounds": [
       {
         "name": "minepreggo:player_push_3",
+        "stream": false
+      }
+    ]
+  },
+  "splash": {
+    "subtitle": "subtitles.entity.splash",
+    "sounds": [
+      {
+        "name": "minepreggo:splash",
         "stream": false
       }
     ]

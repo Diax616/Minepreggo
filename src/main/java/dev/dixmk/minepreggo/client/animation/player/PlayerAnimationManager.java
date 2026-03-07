@@ -32,23 +32,26 @@ public class PlayerAnimationManager {
         return animations.computeIfAbsent(player.getUUID(), PlayerAnimationCache::new);
     }
     
-    public void cleanup(UUID playerId) {
-    	animations.remove(playerId);
+    public boolean cleanCache(UUID playerId) {
+    	var cache = animations.remove(playerId);
+    	if (cache != null) {
+			cache.stopAnimation();
+			return true;
+		}
+		return false;
     }
      
     @OnlyIn(Dist.CLIENT)
     public static class PlayerAnimationCache { 	
     	public final UUID playerId;
     	private final Map<String, ModelPart> modelParts = new HashMap<>();
-    	private final Map<String, PartState> originalStates = new HashMap<>();
-    	    
+    	private final Map<String, PartState> originalStates = new HashMap<>();	    
     	private @Nullable PlayerAnimation currentAnimation;
     	private int linearAnimationTick = 0;
         private int continuousAnimationTick = 0; // Tick since animation started playing (does not reset on loop)
     	private boolean isPlaying = false;
     	private @Nullable String lastAnimationName = null;
-    	
-    	
+    	 	
     	private PlayerAnimationCache(UUID playerId) {
     		this.playerId = playerId;
     	}
@@ -88,7 +91,7 @@ public class PlayerAnimationManager {
     		this.linearAnimationTick = 0;
     		this.continuousAnimationTick = 0;
     		this.lastAnimationName = null;
-    		resetToOriginalPose();
+    		resetToOriginalPose();		
     	}
     	    
     	public void tick() {

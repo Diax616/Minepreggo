@@ -28,7 +28,7 @@ public class PregnantMonsterCreeperGirlMainScreen {
 			RenderSystem.enableBlend();
 			RenderSystem.defaultBlendFunc();
 			
-			guiGraphics.blit(DEFAULT_P0_MAIN_GUI_TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight, imageWidth, imageHeight);
+			guiGraphics.blit(DEFAULT_P0_MAIN_GUI_TEXTURE, leftPos, topPos, imageWidth, imageHeight, 0, 0, imageWidth, imageHeight, 256, 256);
 			
 			this.preggoMob.ifPresent(creeperGirl -> renderScreenP0(guiGraphics, this.leftPos, this.topPos, creeperGirl));
 		
@@ -56,7 +56,7 @@ public class PregnantMonsterCreeperGirlMainScreen {
 			RenderSystem.enableBlend();
 			RenderSystem.defaultBlendFunc();
 
-			guiGraphics.blit(DEFAULT_P1_MAIN_GUI_TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight, imageWidth, imageHeight);
+			guiGraphics.blit(DEFAULT_P1_MAIN_GUI_TEXTURE, leftPos, topPos, imageWidth, imageHeight, 0, 0, imageWidth, imageHeight, 256, 256);
 		
 			this.preggoMob.ifPresent(creeperGirl -> renderScreenP1(guiGraphics, this.leftPos, this.topPos, creeperGirl, AbstractCreeperGirlMainScreen::getCravingIcon));
 
@@ -83,7 +83,7 @@ public class PregnantMonsterCreeperGirlMainScreen {
 			RenderSystem.setShaderColor(1, 1, 1, 1);
 			RenderSystem.enableBlend();
 			RenderSystem.defaultBlendFunc();
-			guiGraphics.blit(DEFAULT_P2_MAIN_GUI_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
+			guiGraphics.blit(DEFAULT_P2_MAIN_GUI_TEXTURE, leftPos, topPos, imageWidth, imageHeight, 0, 0, imageWidth, imageHeight, 256, 256);
 
 			this.preggoMob.ifPresent(creeperGirl -> renderScreenP2(guiGraphics, this.leftPos, this.topPos, creeperGirl, AbstractCreeperGirlMainScreen::getCravingIcon));
 			
@@ -110,7 +110,7 @@ public class PregnantMonsterCreeperGirlMainScreen {
 			RenderSystem.setShaderColor(1, 1, 1, 1);
 			RenderSystem.enableBlend();
 			RenderSystem.defaultBlendFunc();
-			guiGraphics.blit(DEFAULT_P3_MAIN_GUI_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
+			guiGraphics.blit(DEFAULT_P3_MAIN_GUI_TEXTURE, leftPos, topPos, imageWidth, imageHeight, 0, 0, imageWidth, imageHeight, 256, 256);
 
 			this.preggoMob.ifPresent(creeperGirl -> renderScreenP3(guiGraphics, this.leftPos, this.topPos, creeperGirl, AbstractCreeperGirlMainScreen::getCravingIcon));
 				
@@ -137,7 +137,7 @@ public class PregnantMonsterCreeperGirlMainScreen {
 			RenderSystem.setShaderColor(1, 1, 1, 1);
 			RenderSystem.enableBlend();
 			RenderSystem.defaultBlendFunc();
-			guiGraphics.blit(DEFAULT_P4_MAIN_GUI_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
+			guiGraphics.blit(DEFAULT_P4_MAIN_GUI_TEXTURE, leftPos, topPos, imageWidth, imageHeight, 0, 0, imageWidth, imageHeight, 256, 256);
 
 			this.preggoMob.ifPresent(creeperGirl -> renderScreenP4(guiGraphics, this.leftPos, this.topPos, creeperGirl, AbstractCreeperGirlMainScreen::getCravingIcon));
 					
@@ -164,7 +164,7 @@ public class PregnantMonsterCreeperGirlMainScreen {
 			RenderSystem.setShaderColor(1, 1, 1, 1);
 			RenderSystem.enableBlend();
 			RenderSystem.defaultBlendFunc();
-			guiGraphics.blit(DEFAULT_P4_MAIN_GUI_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
+			guiGraphics.blit(DEFAULT_P4_MAIN_GUI_TEXTURE, leftPos, topPos, imageWidth, imageHeight, 0, 0, imageWidth, imageHeight, 256, 256);
 
 			this.preggoMob.ifPresent(creeperGirl -> renderScreenP4(guiGraphics, this.leftPos, this.topPos, creeperGirl, AbstractCreeperGirlMainScreen::getCravingIcon));
 					
@@ -191,7 +191,7 @@ public class PregnantMonsterCreeperGirlMainScreen {
 			RenderSystem.setShaderColor(1, 1, 1, 1);
 			RenderSystem.enableBlend();
 			RenderSystem.defaultBlendFunc();
-			guiGraphics.blit(DEFAULT_P4_MAIN_GUI_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
+			guiGraphics.blit(DEFAULT_P4_MAIN_GUI_TEXTURE, leftPos, topPos, imageWidth, imageHeight, 0, 0, imageWidth, imageHeight, 256, 256);
 
 			this.preggoMob.ifPresent(creeperGirl -> renderScreenP4(guiGraphics, this.leftPos, this.topPos, creeperGirl, AbstractCreeperGirlMainScreen::getCravingIcon));
 					
@@ -218,7 +218,7 @@ public class PregnantMonsterCreeperGirlMainScreen {
 			RenderSystem.setShaderColor(1, 1, 1, 1);
 			RenderSystem.enableBlend();
 			RenderSystem.defaultBlendFunc();
-			guiGraphics.blit(DEFAULT_P4_MAIN_GUI_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
+			guiGraphics.blit(DEFAULT_P4_MAIN_GUI_TEXTURE, leftPos, topPos, imageWidth, imageHeight, 0, 0, imageWidth, imageHeight, 256, 256);
 
 			this.preggoMob.ifPresent(creeperGirl -> renderScreenP4(guiGraphics, this.leftPos, this.topPos, creeperGirl, AbstractCreeperGirlMainScreen::getCravingIcon));
 					
@@ -245,7 +245,7 @@ public class PregnantMonsterCreeperGirlMainScreen {
 			RenderSystem.setShaderColor(1, 1, 1, 1);
 			RenderSystem.enableBlend();
 			RenderSystem.defaultBlendFunc();
-			guiGraphics.blit(DEFAULT_P4_MAIN_GUI_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
+			guiGraphics.blit(DEFAULT_P4_MAIN_GUI_TEXTURE, leftPos, topPos, imageWidth, imageHeight, 0, 0, imageWidth, imageHeight, 256, 256);
 
 			this.preggoMob.ifPresent(creeperGirl -> renderScreenP4(guiGraphics, this.leftPos, this.topPos, creeperGirl, AbstractCreeperGirlMainScreen::getCravingIcon));
 					

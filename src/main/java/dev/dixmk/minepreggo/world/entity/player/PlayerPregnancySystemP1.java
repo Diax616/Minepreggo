@@ -3,25 +3,23 @@ package dev.dixmk.minepreggo.world.entity.player;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.Nonnegative;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoSounds;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.server.ServerParticleHelper;
 import dev.dixmk.minepreggo.world.entity.EntityHelper;
-import dev.dixmk.minepreggo.world.entity.preggo.Species;
-import dev.dixmk.minepreggo.world.pregnancy.AbstractPregnancySystem;
+import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
-import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPainInstance;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.core.particles.ParticleTypes;
@@ -125,8 +123,13 @@ public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
 	// TODO: Redesign the way of resetting pregnancy data after miscarriage
 	@Override
 	protected void evaluateMiscarriage(ServerLevel serverLevel) {		
-		if (pregnancySystem.getPregnancyPainTimer() > PregnancySystemHelper.TOTAL_TICKS_MISCARRIAGE) {				
-       		
+		final var instance = pregnancySystem.getPregnancyPain();
+		if (instance == null) {
+			MinepreggoMod.LOGGER.warn("Pregnancy pain instance is null for player {} during miscarriage evaluation.", pregnantEntity.getGameProfile().getName());
+			return;
+		}
+		
+		if (instance.isExpired()) {				    		
 			final List<ItemStack> deadBabiesItemStacks = PregnancySystemHelper.getDeadBabies(pregnancySystem.getWomb());
         	Iterator<ItemStack> iterator = deadBabiesItemStacks.iterator();
 			
@@ -149,22 +152,23 @@ public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
     		while (iterator.hasNext()) {
 				ItemStack baby = iterator.next();
 				if(!pregnantEntity.getInventory().add(baby)) {
-					EntityHelper.dropItemStack(pregnantEntity, baby);
+					EntityHelper.spawnItemOn(pregnantEntity, baby);
 				}
 			}
         			
 			initPostMiscarriage();		
 			MinepreggoMod.LOGGER.debug("Player {} miscarriage has ended.", pregnantEntity.getGameProfile().getName());
 		} else {		
-    		AbstractPregnancySystem.spawnParticulesForMiscarriage(serverLevel, pregnantEntity);	
-			pregnancySystem.incrementPregnancyPainTimer();
+			tryHurtByCooldown();
+			instance.tick();
+			spawnParticulesForMiscarriage(serverLevel);
 		}
 	}
 	
 	@Override
 	protected void evaluatePregnancySymptoms() {
-		if (pregnancySystem.getPregnancySymptoms().containsPregnancySymptom(PregnancySymptom.CRAVING) && pregnancySystem.getCraving() <= PregnancySystemHelper.DESACTIVATE_CRAVING_SYMPTOM) {	
-			pregnancySystem.getPregnancySymptoms().removePregnancySymptom(PregnancySymptom.CRAVING);
+		if (pregnancySystem.getPregnancySymptoms().contains(PregnancySymptom.CRAVING) && pregnancySystem.getCraving() <= PregnancySystemHelper.DESACTIVATE_CRAVING_SYMPTOM) {	
+			pregnancySystem.getPregnancySymptoms().remove(PregnancySymptom.CRAVING);
 			pregnancySystem.clearTypeOfCravingBySpecies();
 			pregnantEntity.removeEffect(MinepreggoMobEffects.CRAVING.get());
 			pregnancySystem.syncState(pregnantEntity);
@@ -176,24 +180,36 @@ public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
 	
 	@Override
 	protected void evaluatePregnancyPains() {
-		if (pregnancySystem.getPregnancyPain() == PregnancyPain.MORNING_SICKNESS) {
-			if (pregnancySystem.getPregnancyPainTimer() >= PregnancySystemHelper.TOTAL_TICKS_MORNING_SICKNESS) {
+		var instance = pregnancySystem.getPregnancyPain();
+		if (instance == null || instance.getPain().type != PregnancyPain.Type.COMMON) {
+			return;
+		}	
+		
+		if (instance.isExpired()) {
+			MinepreggoMod.LOGGER.debug("Player {} pregnancy pain cleared: {}", pregnantEntity.getGameProfile().getName(), instance.getPain());		
+			if (instance.getPain() == PregnancyPain.MORNING_SICKNESS) {
 				pregnantEntity.removeEffect(MinepreggoMobEffects.MORNING_SICKNESS.get());
-				pregnancySystem.clearPregnancyPain();
-				pregnancySystem.resetPregnancyPainTimer();
-				pregnancySystem.syncState(pregnantEntity);
-				
-				MinepreggoMod.LOGGER.debug("Player {} pregnancy pain cleared: {}",
-						pregnantEntity.getGameProfile().getName(), PregnancyPain.MORNING_SICKNESS.name());
-			} else {
-				pregnancySystem.incrementPregnancyPainTimer();
+			}
+			else if (instance.getPain() == PregnancyPain.FETAL_MOVEMENT) {
+				pregnantEntity.removeEffect(MinepreggoMobEffects.FETAL_MOVEMENT.get());
+			}
+			else if (instance.getPain() == PregnancyPain.CONTRACTION) {
+				pregnantEntity.removeEffect(MinepreggoMobEffects.CONTRACTION.get());
+			}			
+			pregnancySystem.clearPregnancyPain();
+			pregnancySystem.syncState(pregnantEntity);
+		} else {
+			instance.tick();
+			if (instance.getPain() == PregnancyPain.FETAL_MOVEMENT || instance.getPain() == PregnancyPain.CONTRACTION) {
+				tryHurtByCooldown();
 			}
 		}
 	}
 	
 	@Override
 	public boolean isMiscarriageActive() {
-		return pregnancySystem.getPregnancyPain() == PregnancyPain.MISCARRIAGE;	
+		var instance = pregnancySystem.getPregnancyPain();
+		return instance != null && instance.getPain() == PregnancyPain.MISCARRIAGE;	
 	}
 	
 	@Override
@@ -203,19 +219,13 @@ public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
 	
 	@Override
 	public boolean hasAllPregnancySymptoms() {
-		return pregnancySystem.getPregnancySymptoms().containsAllPregnancySymptoms(validPregnancySymptoms);
+		return pregnancySystem.getPregnancySymptoms().containsAll(validPregnancySymptoms);
 	}
 	
 	@Override
 	protected boolean tryInitRandomPregnancyPain() {
-		if (randomSource.nextFloat() < morningSicknessProb) {
-			pregnancySystem.setPregnancyPain(PregnancyPain.MORNING_SICKNESS);
-			pregnantEntity.addEffect(new MobEffectInstance(MinepreggoMobEffects.MORNING_SICKNESS.get(), PregnancySystemHelper.TOTAL_TICKS_MORNING_SICKNESS, 0, false, false, true));
-			pregnancySystem.syncState(pregnantEntity);
-			
-			MinepreggoMod.LOGGER.debug("Player {} has developed pregnancy pain: {}",
-					pregnantEntity.getGameProfile().getName(), PregnancyPain.MORNING_SICKNESS.name());
-
+		if (pregnantEntity.getRandom().nextFloat() < morningSicknessProb) {
+			this.initCommonPregnancyPain(PregnancyPain.MORNING_SICKNESS, PregnancySystemHelper.TOTAL_TICKS_MORNING_SICKNESS, 0);
 			return true;
 		}	
 		return false;
@@ -224,31 +234,8 @@ public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
 	@Override
 	protected boolean tryInitPregnancySymptom() {
 		if (pregnancySystem.getCraving() >= PregnancySystemHelper.MAX_CRAVING_LEVEL
-				&& !pregnancySystem.getPregnancySymptoms().containsPregnancySymptom(PregnancySymptom.CRAVING)) {
-			pregnancySystem.getPregnancySymptoms().addPregnancySymptom(PregnancySymptom.CRAVING);
-			
-			if (pregnancySystem.getCurrentPregnancyPhase().compareTo(PregnancyPhase.P3) >= 0 && randomSource.nextDouble() < 0.3f) {
-				var fatherSpecies = femaleData.getPrePregnancyData().map(data -> data.typeOfSpeciesOfFather());
-				if (!fatherSpecies.isEmpty() && !PlayerHelper.isValidCravingBySpecies(fatherSpecies.get())) {
-					fatherSpecies = Optional.of(Species.HUMAN);
-				}
-				else if (fatherSpecies.isEmpty()) {
-					fatherSpecies = Optional.of(Species.HUMAN);
-					MinepreggoMod.LOGGER.warn("Player {} pregnancy craving by species couldn't be set because father species is empty, setting it to HUMAN by default.", pregnantEntity.getGameProfile().getName());
-				}	
-				pregnancySystem.setTypeOfCravingBySpecies(ImmutablePair.of(PregnancySystemHelper.getRandomCraving(randomSource), fatherSpecies.get()));	
-			}
-			else {
-				pregnancySystem.setTypeOfCraving(PregnancySystemHelper.getRandomCraving(randomSource));	
-			}
-			
-			MinepreggoMod.LOGGER.debug("Player {} craving set to: {}", pregnantEntity.getGameProfile().getName(), pregnancySystem.getTypeOfCraving());
-			
-			pregnantEntity.addEffect(new MobEffectInstance(MinepreggoMobEffects.CRAVING.get(), -1, 0, false, false, true));
-			pregnancySystem.syncState(pregnantEntity);
-			pregnancySystem.syncEffect(pregnantEntity);
-			MinepreggoMod.LOGGER.debug("Player {} has developed pregnancy symptom: {}, all pregnancy symptoms: {}",
-					pregnantEntity.getGameProfile().getName(), PregnancySymptom.CRAVING, pregnancySystem.getPregnancySymptoms());
+				&& !pregnancySystem.getPregnancySymptoms().contains(PregnancySymptom.CRAVING)) {
+			this.initPregnancySymptom(PregnancySymptom.CRAVING);
 			return true;
 		}
 		return false;
@@ -257,9 +244,9 @@ public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
 	@Override
 	protected void startMiscarriage() {
 		tryHurt();
-		MessageHelper.sendTo(pregnantEntity, Component.translatable("chat.minepreggo.player.miscarriage.message.init", pregnantEntity.getDisplayName().getString()));
-		pregnancySystem.resetPregnancyPainTimer();
-		pregnancySystem.setPregnancyPain(PregnancyPain.MISCARRIAGE);
+		LivingEntityHelper.playSoundNearTo(pregnantEntity, MinepreggoSounds.PLAYER_MISCARRIAGE.get(), 0.7f);
+		MessageHelper.sendTo(pregnantEntity, Component.translatable("chat.minepreggo.player.miscarriage.message.start", pregnantEntity.getDisplayName().getString()));
+		pregnancySystem.setPregnancyPain(new PregnancyPainInstance(PregnancyPain.MISCARRIAGE, PregnancySystemHelper.TOTAL_TICKS_MISCARRIAGE, 0));
 		pregnantEntity.addEffect(new MobEffectInstance(MinepreggoMobEffects.MISCARRIAGE.get(), PregnancySystemHelper.TOTAL_TICKS_MISCARRIAGE, 0, false, false, true));
 		pregnancySystem.syncState(pregnantEntity);
 		MinepreggoMod.LOGGER.debug("Miscarriage just started");
@@ -268,8 +255,9 @@ public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
 	// TODO: Redesign the way of resetting pregnancy data after birth
 	@Override
 	protected void initPostMiscarriage() {
-    	MessageHelper.sendTo(pregnantEntity, Component.translatable("chat.minepreggo.player.miscarriage.message.post", pregnantEntity.getDisplayName().getString()));
-		pregnancySystem.resetPregnancyPainTimer();
+		MinepreggoMod.LOGGER.debug("Player {} has entered postmiscarriage phase.", pregnantEntity.getGameProfile().getName());
+
+		MessageHelper.sendTo(pregnantEntity, Component.translatable("chat.minepreggo.player.miscarriage.message.post", pregnantEntity.getDisplayName().getString()));
 		pregnancySystem.clearPregnancyPain();
     	
 		PlayerHelper.updateJigglePhysics(pregnantEntity, playerData.getSkinType(), null);
@@ -287,10 +275,9 @@ public class PlayerPregnancySystemP1 extends PlayerPregnancySystemP0 {
 		pregnantEntity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 4800, 0, false, false, true));
 			
 		PregnancySystemHelper.applyPostPregnancyNerf(pregnantEntity);
-	
-		removePregnancy();
-							
-		MinepreggoMod.LOGGER.debug("Player {} has entered postmiscarriage phase.", pregnantEntity.getGameProfile().getName());
+		tryHurt();
+		
+		removePregnancy();						
 	}
 	
 	@Override

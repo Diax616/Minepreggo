@@ -195,4 +195,8 @@ public class MonsterCreeperHelper {
 			GoalHelper.removeGoalByClass(creeperGirl.goalSelector, EatGoal.class);
 		}
 	}
+	
+	static double getPussyYOffset(AbstractTamableCreeperGirl creeperGirl) {
+		return creeperGirl.getBbHeight() * 0.315;
+	}
 }

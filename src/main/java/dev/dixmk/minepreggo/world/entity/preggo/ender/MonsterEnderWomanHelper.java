@@ -12,7 +12,6 @@ import dev.dixmk.minepreggo.init.MinepreggoEntities;
 import dev.dixmk.minepreggo.network.chat.MessageHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.Inventory;
 import dev.dixmk.minepreggo.world.entity.preggo.InventorySlot;
-import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -196,11 +195,11 @@ public class MonsterEnderWomanHelper {
 		}
 		
 		if (target instanceof ServerPlayer player) {
-			PregnancyPain pregnancyPain = enderWoman.getPregnancyData().getPregnancyPain();
-			if (pregnancyPain == null) {
+			var instance = enderWoman.getPregnancyData().getPregnancyPain();
+			if (instance == null) {
 				return true;
 			}
-			
+			var pregnancyPain = instance.getPain();
 			switch (pregnancyPain) {
 				case MORNING_SICKNESS:
 					MessageHelper.sendTo(player, Component.translatable("chat.minepreggo.player.message.cannot_ride.ender_woman.pregnant.morning_sickness", enderWoman.getSimpleNameOrCustom()), true);
@@ -217,6 +216,10 @@ public class MonsterEnderWomanHelper {
 		}
 		
 		return false;
+	}
+	
+	static double getPussyYOffset(AbstractTamableEnderWoman enderWoman) {
+		return enderWoman.getBbHeight() * 0.55;
 	}
 }
 

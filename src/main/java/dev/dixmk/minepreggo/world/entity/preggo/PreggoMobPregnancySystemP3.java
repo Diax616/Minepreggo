@@ -3,16 +3,12 @@ package dev.dixmk.minepreggo.world.entity.preggo;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoMobEffects;
-import dev.dixmk.minepreggo.init.MinepreggoSounds;
-import dev.dixmk.minepreggo.world.entity.LivingEntityHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem.Result;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
-import dev.dixmk.minepreggo.world.pregnancy.SyncedSetPregnancySymptom;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
@@ -65,14 +61,10 @@ public abstract class PreggoMobPregnancySystemP3
 		if (super.tryInitPregnancySymptom()) {
 			return true;
 		}
-		final var pregnancyData = pregnantEntity.getPregnancyData();
-		SyncedSetPregnancySymptom pregnancySymptoms = pregnancyData.getSyncedPregnancySymptoms();	
+		final var pregnancyData = pregnantEntity.getPregnancyData();	
 		if (pregnancyData.getBellyRubs() >= PregnancySystemHelper.ACTIVATE_BELLY_RUBS_SYMPTOM
-				&& !pregnancySymptoms.containsPregnancySymptom(PregnancySymptom.BELLY_RUBS)) {
-			pregnancySymptoms.addPregnancySymptom(PregnancySymptom.BELLY_RUBS);
-	    	
-			MinepreggoMod.LOGGER.debug("Player {} has developed pregnancy symptom: {}, all pregnancy symptoms: {}",
-					pregnantEntity.getSimpleNameOrCustom(), PregnancySymptom.BELLY_RUBS, pregnancySymptoms.toSet());	
+				&& !pregnancyData.getPregnancySymptoms().contains(PregnancySymptom.BELLY_RUBS)) {
+			initPregnancySymptom(PregnancySymptom.BELLY_RUBS);
 	    	return true;		
 		}
 		return false;
@@ -83,37 +75,17 @@ public abstract class PreggoMobPregnancySystemP3
 		if (super.tryInitRandomPregnancyPain()) {
 			return true;
 		}	
-		
-		final var pregnancyData = pregnantEntity.getPregnancyData();
+
 		float newFetalMovementProb = fetalMovementProb;	
 		if (this.pregnantEntity.hasEffect(MinepreggoMobEffects.ETERNAL_PREGNANCY.get())) {
 			newFetalMovementProb *= 5f;
 		}
 		
-		if (randomSource.nextFloat() < newFetalMovementProb) {
-			pregnancyData.setPregnancyPain(PregnancyPain.FETAL_MOVEMENT);
-			pregnancyData.resetPregnancyPainTimer();
-			LivingEntityHelper.playSoundNearTo(pregnantEntity, MinepreggoSounds.getRandomStomachGrowls(randomSource));
-			PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, InventorySlot.CHEST);				
+		if (pregnantEntity.getRandom().nextFloat() < newFetalMovementProb) {
+			initCommonPregnancyPain(PregnancyPain.FETAL_MOVEMENT, totalTicksOfFetalMovement, 0);
 			return true;
 		}     
 	    return false;
-	}
-	
-	@Override
-	protected void evaluatePregnancyPains() {
-		super.evaluatePregnancyPains();
-		final var pregnancyData = pregnantEntity.getPregnancyData();
-		if (pregnancyData.getPregnancyPain() == PregnancyPain.FETAL_MOVEMENT) {
-			if (pregnancyData.getPregnancyPainTimer() >= totalTicksOfFetalMovement) {
-				pregnancyData.clearPregnancyPain();	
-				pregnancyData.resetPregnancyPainTimer();
-			}
-			else {
-				pregnancyData.incrementPregnancyPainTimer();
-				tryHurtByCooldown();
-			}
-		}
 	}
 	
 	@Override
@@ -125,10 +97,10 @@ public abstract class PreggoMobPregnancySystemP3
 			if (!level.isClientSide) { 
 				pregnancyData.decrementBellyRubs(PregnancySystemHelper.BELLY_RUBBING_VALUE);
 				
-				SyncedSetPregnancySymptom pregnancySymptoms = pregnancyData.getSyncedPregnancySymptoms();				
-				if (pregnancySymptoms.containsPregnancySymptom(PregnancySymptom.BELLY_RUBS)
+				var pregnancySymptoms = pregnancyData.getPregnancySymptoms();				
+				if (pregnancySymptoms.contains(PregnancySymptom.BELLY_RUBS)
 						&& pregnancyData.getBellyRubs() <= PregnancySystemHelper.DESACTIVATEL_BELLY_RUBS_SYMPTOM) {									
-					pregnancySymptoms.removePregnancySymptom(PregnancySymptom.BELLY_RUBS);							
+					pregnancySymptoms.remove(PregnancySymptom.BELLY_RUBS);							
 				}	
 			}						
 			return Result.SUCCESS;

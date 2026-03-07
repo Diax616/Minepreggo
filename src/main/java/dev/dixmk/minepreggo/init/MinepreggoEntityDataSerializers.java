@@ -9,6 +9,7 @@ import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractCreeperGirl.Comb
 import dev.dixmk.minepreggo.world.pregnancy.Craving;
 import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPainInstance;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import net.minecraft.network.syncher.EntityDataSerializer;
@@ -59,6 +60,18 @@ public class MinepreggoEntityDataSerializers {
                 buf -> PreggoMobBody.valueOf(buf.readUtf(32))
             );
 	
+    public static final EntityDataSerializer<Optional<PregnancyPainInstance>> OPTIONAL_PREGNANCY_PAIN_INSTANCE =
+    		EntityDataSerializer.optional(
+                (buf, pain) -> pain.write(buf),
+                PregnancyPainInstance::new
+            );
+    
+    public static final EntityDataSerializer<Optional<BirthClientData>> OPTIONAL_BIRTH_CLIENT_DATA =
+    		EntityDataSerializer.optional(
+                (buf, data) -> data.write(buf),
+                BirthClientData::new
+            );
+    
 	public static final EntityDataSerializer<MovementState> MOVEMENT_STATE = EntityDataSerializer.simpleEnum(MovementState.class);
 	
     public static void register() {
@@ -71,5 +84,7 @@ public class MinepreggoEntityDataSerializers {
         EntityDataSerializers.registerSerializer(OPTIONAL_PREGGO_MOB_FACE);
         EntityDataSerializers.registerSerializer(OPTIONAL_PREGGO_MOB_BODY);
         EntityDataSerializers.registerSerializer(MOVEMENT_STATE);
+        EntityDataSerializers.registerSerializer(OPTIONAL_PREGNANCY_PAIN_INSTANCE);
+        EntityDataSerializers.registerSerializer(OPTIONAL_BIRTH_CLIENT_DATA);
     }
 }

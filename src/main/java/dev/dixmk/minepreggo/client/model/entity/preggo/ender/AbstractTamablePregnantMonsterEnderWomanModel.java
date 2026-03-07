@@ -33,7 +33,7 @@ public abstract class AbstractTamablePregnantMonsterEnderWomanModel
 	@Override
 	public void setupAnim(E entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);	
-		if (entity.getPregnancyData().getSyncedPregnancySymptoms().containsPregnancySymptom(PregnancySymptom.MILKING)) {
+		if ((entity.getPregnancyData().getSyncedPregnancySymptoms().getSyncedSymptoms() & PregnancySymptom.MILKING.mask) != 0) {
 			this.boobs.y += milkingBoobsYPos;
 			this.boobs.xScale = milkingBoobsXScale;
 			this.boobs.yScale = milkingBoobsYScale;		

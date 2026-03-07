@@ -33,7 +33,7 @@ import dev.dixmk.minepreggo.world.inventory.preggo.SelectPregnantEntityForPrenat
 
 @OnlyIn(Dist.CLIENT)
 public class SelectPregnantEntityForPrenatalCheckUpScreen extends AbstractContainerScreen<SelectPregnantEntityForPrenatalCheckUpMenu> {	
-	private static final ResourceLocation TEXTURE = MinepreggoHelper.fromThisNamespaceAndPath("textures/screens/select_preggo_mob_for_medical_check_up_gui.png");
+	private static final ResourceLocation TEXTURE = MinepreggoHelper.fromThisNamespaceAndPath("textures/gui/select_preggo_mob_for_medical_check_up_gui.png");
 
 	private final Optional<ScientificIllager> scientificIllager;
 	private final List<? extends LivingEntity> pregnantEntities;
@@ -58,7 +58,7 @@ public class SelectPregnantEntityForPrenatalCheckUpScreen extends AbstractContai
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
-		guiGraphics.blit(TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
+		guiGraphics.blit(TEXTURE, this.leftPos, this.topPos, this.imageWidth, this.imageHeight, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
 		RenderSystem.disableBlend();
 	}
 

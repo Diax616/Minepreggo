@@ -6,105 +6,82 @@ import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Nullable;
 
+import dev.dixmk.minepreggo.init.BirthClientData;
 import net.minecraft.world.item.Item;
 
 public interface IPregnancyData extends IPregnant {
-
 	int getDaysByCurrentStage();
 	boolean setDaysByStage(@Nonnegative int days, PregnancyPhase phase);
-	
-	void setMapPregnancyPhase(@NonNull MapPregnancyPhase map);
-	MapPregnancyPhase getMapPregnancyPhase();
-	
+	void setMapPregnancyPhase(@NonNull PregnancyPhaseMap map);
+	PregnancyPhaseMap getMapPregnancyPhase();
 	int getTotalDaysOfPregnancy();
-	
 	int getPregnancyHealth();
 	void setPregnancyHealth(@Nonnegative int health);
 	void reducePregnancyHealth(int amount);
 	void incrementPregnancyHealth(int amount);
 	void resetPregnancyHealth();
-	
 	int getPregnancyHealthTimer();
 	void setPregnancyHealthTimer(@Nonnegative int timer);
 	void incrementPregnancyHealthTimer();
-	void resetPregnancyHealthTimer();
-	
+	void resetPregnancyHealthTimer();	
 	int getDaysPassed();
 	void setDaysPassed(@Nonnegative int days);
 	void incrementDaysPassed();
 	void resetDaysPassed();
-	
 	int getDaysToGiveBirth();
 	void setDaysToGiveBirth(@Nonnegative int days);
 	void reduceDaysToGiveBirth();
-	
     int getPregnancyTimer();
     void setPregnancyTimer(@Nonnegative int ticks);
     void incrementPregnancyTimer();
-	void resetPregnancyTimer();
-    
-    int getPregnancyPainTimer();
-    void setPregnancyPainTimer(@Nonnegative int ticks);
-    void incrementPregnancyPainTimer();
-    void resetPregnancyPainTimer();
-    
+	void resetPregnancyTimer(); 
 	PregnancyPhase getLastPregnancyStage();
 	void setLastPregnancyStage(PregnancyPhase stage);
-
 	PregnancyPhase getCurrentPregnancyPhase();
 	void setCurrentPregnancyPhase(PregnancyPhase stage);
-	
-	SetPregnancySymptom getPregnancySymptoms();
-	void setPregnancySymptoms(@NonNull SetPregnancySymptom symptoms);
-	
-	@Nullable PregnancyPain getPregnancyPain();
-	void setPregnancyPain(@Nullable PregnancyPain pain);
-	void clearPregnancyPain();
-	 
+	PregnancySymptomSet getPregnancySymptoms();
+	void setPregnancySymptoms(PregnancySymptomSet symptoms);
+	@Nullable PregnancyPainInstance getPregnancyPain();
+	void setPregnancyPain(@Nullable PregnancyPainInstance pain);
+	void clearPregnancyPain();	 
 	Womb getWomb();
 	void setWomb(@NonNull Womb womb);
-	
 	@Nullable Craving getTypeOfCraving();	
 	void setTypeOfCraving(@Nullable Craving craving);
 	boolean isValidCraving(Item itemCraving);
-	void clearTypeOfCraving();
-		
+	void clearTypeOfCraving();	
 	int getCraving();
 	void setCraving(@NonNegative int craving);
 	void incrementCraving();
 	void decrementCraving(@NonNegative int amount);
-	
 	int getCravingTimer();
 	void setCravingTimer(@NonNegative int timer);
 	void incrementCravingTimer();
-	void resetCravingTimer();
-	
+	void resetCravingTimer();	
 	public int getMilking();	
 	public void setMilking(@NonNegative int milking);
 	void incrementMilking();
-	void decrementMilking(int amount);
-		
+	void decrementMilking(int amount);		
 	public int getMilkingTimer();	
 	public void setMilkingTimer(@NonNegative int timer);
 	public void incrementMilkingTimer();
 	public void resetMilkingTimer();
-	
     int getBellyRubs();
     void setBellyRubs(@NonNegative int bellyRubs);
     void incrementBellyRubs();
-    void decrementBellyRubs(int amount);
-    
+    void decrementBellyRubs(int amount);  
     int getBellyRubsTimer();
     void setBellyRubsTimer(@NonNegative int timer);
     void incrementBellyRubsTimer();
-    void resetBellyRubsTimer();
-    
+    void resetBellyRubsTimer();  
 	int getHorny();
 	void setHorny(@NonNegative int horny);
-	void incrementHorny();
-	
+	void incrementHorny();	
 	int getHornyTimer();
 	void setHornyTimer(@NonNegative int timer);
 	void incrementHornyTimer();
 	void resetHornyTimer();
+	@Nullable BirthData getBirthData();
+	void setBirthData(@Nullable BirthData birthData);
+	@Nullable BirthClientData getBirthClientData();
 }

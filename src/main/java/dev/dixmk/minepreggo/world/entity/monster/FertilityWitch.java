@@ -116,7 +116,8 @@ public class FertilityWitch extends Witch {
 			Optional<Integer> result = player.getCapability(MinepreggoCapabilities.PLAYER_DATA).map(cap -> 
 				cap.getFemaleData().map(femaleData -> {
 					if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
-						return PregnancyPain.isLaborPain(femaleData.getPregnancyData().getPregnancyPain()) ? 1 : 0;
+						var instance = femaleData.getPregnancyData().getPregnancyPain();
+						return instance != null && (instance.getPain().type == PregnancyPain.Type.LABOR || instance.getPain().type == PregnancyPain.Type.MISBIRTH) ? 1 : 0;
 					}
 					return -1;
 				})
@@ -139,9 +140,11 @@ public class FertilityWitch extends Witch {
 					preggoMob instanceof TamableMonsterEnderWoman) {			
 				potion = MinepreggoPotions.getRandomImpregnationPotion(random);
 			}
-			else if (preggoMob instanceof ITamablePregnantPreggoMob tamablePregnantPreggoMob
-					&& !PregnancyPain.isLaborPain(tamablePregnantPreggoMob.getPregnancyData().getPregnancyPain())) {
-				potion = getRandomHarmfulPregnancyPotion();
+			else if (preggoMob instanceof ITamablePregnantPreggoMob tamablePregnantPreggoMob) {
+				var instance = tamablePregnantPreggoMob.getPregnancyData().getPregnancyPain();
+				if (instance == null || (instance.getPain().type != PregnancyPain.Type.LABOR && instance.getPain().type != PregnancyPain.Type.MISBIRTH)) {
+					potion = getRandomHarmfulPregnancyPotion();
+				}
 			} 		
 		}	
 		else if (target.getHealth() >= 8.0F && !target.hasEffect(MobEffects.POISON)) {

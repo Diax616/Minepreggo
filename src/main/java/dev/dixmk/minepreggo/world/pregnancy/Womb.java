@@ -1,7 +1,6 @@
 package dev.dixmk.minepreggo.world.pregnancy;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -24,9 +23,9 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 
-public class Womb {
-	
+public class Womb {	
 	private List<BabyData> babies = new ArrayList<>(PregnancySystemHelper.MAX_NUMBER_OF_BABIES);
+	private int originalNumOfBabies = 0;
 	private static final String NBT_KEY = "DataWomb";
 	
 	private Womb() {}
@@ -39,6 +38,7 @@ public class Womb {
     	for (int i = 0; i < tempCount; i++) {
     		addBaby(BabyData.create(mother, father, random));
 		}
+    	this.originalNumOfBabies = tempCount;
     }
     
 	public Womb(UUID mother, ImmutableTriple<Optional<@Nullable UUID>, Species, Creature> father, RandomSource random, int count) {
@@ -49,18 +49,18 @@ public class Womb {
     	for (int i = 0; i < tempCount; i++) {
     		addBaby(BabyData.create(mother, father, random));
 		}
+    	this.originalNumOfBabies = tempCount;
 	}
 
 	public boolean addBaby(@NonNull BabyData babyData) {
 		return babies.add(babyData);
 	}
 	
-	public boolean removeBaby() {	
+	public @Nullable BabyData removeBaby() {	
 		if (!babies.isEmpty()) {
-			Collections.shuffle(babies);
-			return babies.remove(0) != null;
+			return babies.remove(0);
 		}
-		return false;
+		return null;
 	}
 
 	public int getNumOfBabies() {	
@@ -111,12 +111,21 @@ public class Womb {
 		return this.babies.size() > PregnancySystemHelper.MAX_NUMBER_OF_BABIES;
 	}
  
+	public void refreshOriginalNumOfBabies() {
+		this.originalNumOfBabies = this.babies.size();
+	}
+	
+	public int getOriginalNumOfBabies() {
+		return this.originalNumOfBabies;
+	}
+	
     public CompoundTag toNBT() {
     	CompoundTag wrapper = new CompoundTag();
     	CompoundTag data = new CompoundTag();
 		ListTag listTag = new ListTag();
 		babies.forEach(baby -> listTag.add(baby.toNBT()));	
 		data.put("Babies", listTag);
+		data.putInt("OriginalNumOfBabies", this.originalNumOfBabies);
 		wrapper.put(NBT_KEY, data);
         return wrapper;
     }
@@ -150,7 +159,6 @@ public class Womb {
 			CompoundTag dataTag = nbt.getCompound(NBT_KEY);
 			ListTag list = dataTag.getList("Babies", Tag.TAG_COMPOUND);
 			Womb womb = new Womb();	
-			
 	        for (var tag : list) {
 	        	final var baby = BabyData.fromNBT((CompoundTag) tag);     	
 	        	if (baby != null) {
@@ -160,6 +168,8 @@ public class Womb {
 	        		MinepreggoMod.LOGGER.warn("Failed to read BabyData from NBT tag in Womb: {}", tag);
 	        	}
 	        }	        
+	        womb.originalNumOfBabies = dataTag.getInt("OriginalNumOfBabies");
+	        
 	        if (womb.isEmpty()) {
 	        	MinepreggoMod.LOGGER.warn("Womb read from NBT is empty.");
 	        }

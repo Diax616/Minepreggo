@@ -11,7 +11,6 @@ import dev.dixmk.minepreggo.init.MinepreggoSounds;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem.Result;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
-import dev.dixmk.minepreggo.world.pregnancy.SyncedSetPregnancySymptom;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -83,13 +82,8 @@ public abstract class PreggoMobPregnancySystemP2
 		}
 		final var pregnancyData = pregnantEntity.getPregnancyData();
 		if (pregnancyData.getMilking() >= PregnancySystemHelper.ACTIVATE_MILKING_SYMPTOM
-				&& !pregnancyData.getSyncedPregnancySymptoms().containsPregnancySymptom(PregnancySymptom.MILKING)) {
-	    	
-			pregnancyData.getSyncedPregnancySymptoms().addPregnancySymptom(PregnancySymptom.MILKING);
-		
-			MinepreggoMod.LOGGER.debug("Player {} has developed pregnancy symptom: {}, all pregnancy symptoms: {}",
-					pregnantEntity.getSimpleNameOrCustom(), PregnancySymptom.MILKING, pregnancyData.getSyncedPregnancySymptoms().toSet());
-	    	
+				&& !pregnancyData.getPregnancySymptoms().contains(PregnancySymptom.MILKING)) {
+			initPregnancySymptom(PregnancySymptom.MILKING);
 	    	return true;		
 		}
 		return false;
@@ -123,10 +117,10 @@ public abstract class PreggoMobPregnancySystemP2
             }        
             source.getInventory().setChanged();
             
-    		SyncedSetPregnancySymptom pregnancySymptoms = pregnancyData.getSyncedPregnancySymptoms();	
-            if (pregnancySymptoms.containsPregnancySymptom(PregnancySymptom.MILKING)
+    		var pregnancySymptoms = pregnancyData.getPregnancySymptoms();	
+            if (pregnancySymptoms.contains(PregnancySymptom.MILKING)
             		&& pregnancyData.getMilking() <= PregnancySystemHelper.DESACTIVATE_MILKING_SYMPTOM) {
-            	pregnancySymptoms.removePregnancySymptom(PregnancySymptom.MILKING);
+            	pregnancySymptoms.remove(PregnancySymptom.MILKING);
             }           
         }
      

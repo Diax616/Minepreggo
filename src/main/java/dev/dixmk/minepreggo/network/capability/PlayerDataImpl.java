@@ -2,6 +2,8 @@ package dev.dixmk.minepreggo.network.capability;
 
 import java.util.Optional;
 
+import javax.annotation.Nullable;
+
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.network.packet.s2c.SyncPlayerDataS2CPacket;
@@ -16,16 +18,13 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.network.PacketDistributor;
 
 public class PlayerDataImpl implements IPlayerData {
-	private boolean showMainMenu = true; 
-	private boolean cinematic = false;
-	
+	private boolean showMainMenu = true;
 	private Gender gender = Gender.UNKNOWN;
 	private SkinType skinType = SkinType.CUSTOM;
-	
 	private LazyOptional<FemalePlayerImpl> femalePlayerData = LazyOptional.empty();
 	private LazyOptional<MalePlayerImpl> malePlayerData = LazyOptional.empty();
-
 	private final IPlayerStatistic playerStatistic = new PlayerStatisticImpl();
+	private @Nullable String animation = null;
 	
 	@Override
 	public SkinType getSkinType() {
@@ -124,25 +123,16 @@ public class PlayerDataImpl implements IPlayerData {
 
     	return Optional.empty();
     }
-    
-    
-	@Override
-	public boolean isCinamatic() {
-		return this.cinematic;
-	}
-
-	@Override
-	public void setCinematic(boolean value) {
-		this.cinematic = value;
-	}
-    
+      
 	public CompoundTag serializeNBT() {
 		CompoundTag nbt = new CompoundTag();
 		nbt.putString("DataSkinType", skinType.name());
 		nbt.putBoolean("DataShowMainMenu", showMainMenu);	
 		nbt.putString(Gender.NBT_KEY, gender.name());	
 		nbt.put("PlayerStatistic", playerStatistic.serializeNBT());
-		
+		if (animation != null) {
+			nbt.putString("Animation", animation);
+		}
 		if (isFemale()) {			
 	        this.femalePlayerData.resolve().ifPresentOrElse(data -> nbt.put("FemalePlayerImpl", data.serializeNBT()), () -> MinepreggoMod.LOGGER.error("Player is female, but female data is not PRESENT"));		
 		}
@@ -158,6 +148,9 @@ public class PlayerDataImpl implements IPlayerData {
 		showMainMenu = nbt.getBoolean("DataShowMainMenu");		
 		playerStatistic.deserializeNBT(nbt.getCompound("PlayerStatistic"));
 		
+		if (nbt.contains("Animation", Tag.TAG_STRING)) {
+			animation = nbt.getString("Animation");
+		}		
 	    if (nbt.contains(Gender.NBT_KEY, Tag.TAG_STRING)) {
             Gender loadedGender = Gender.valueOf(nbt.getString(Gender.NBT_KEY));
             setGender(loadedGender);
@@ -190,8 +183,8 @@ public class PlayerDataImpl implements IPlayerData {
 	public void invalidate() {
 		skinType = SkinType.CUSTOM;
 		showMainMenu = true; 
-		cinematic = false;
 		gender = Gender.UNKNOWN;
+		animation = null;
 		invalidateGenderData();
 	}
 	
@@ -218,5 +211,15 @@ public class PlayerDataImpl implements IPlayerData {
 	@Override
 	public IPlayerStatistic getPlayerStatistic() {
 		return playerStatistic;
+	}
+
+	@Override
+	public @Nullable String getAnimation() {
+		return animation;
+	}
+
+	@Override
+	public void setAnimation(@Nullable String animation) {
+		this.animation = animation;
 	}
 }

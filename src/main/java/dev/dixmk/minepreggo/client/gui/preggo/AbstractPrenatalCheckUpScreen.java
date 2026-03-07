@@ -24,7 +24,7 @@ public abstract class AbstractPrenatalCheckUpScreen
 	<S extends LivingEntity, T extends Mob, C extends AbstractPrenatalCheckUpMenu<S, T>> extends AbstractContainerScreen<C> {
 	
 	private static final ResourceLocation EMERALD_TEXTURE = MinepreggoHelper.fromVanillaNamespaceAndPath("textures/item/emerald.png");
-	private static final ResourceLocation TEXTURE = MinepreggoHelper.fromThisNamespaceAndPath("textures/screens/prenatal_checkup_menu.png");
+	private static final ResourceLocation TEXTURE = MinepreggoHelper.fromThisNamespaceAndPath("textures/gui/prenatal_checkup_menu.png");
 	protected final Level level;
 	protected final Player player;	
 	protected final Optional<T> target;
@@ -68,7 +68,7 @@ public abstract class AbstractPrenatalCheckUpScreen
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
-		guiGraphics.blit(TEXTURE, this.leftPos, this.topPos, 246, 166, 0, 0, 246, 166, 256, 256);
+		guiGraphics.blit(TEXTURE, this.leftPos, this.topPos, this.imageWidth, this.imageHeight, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
 		
 		guiGraphics.blit(EMERALD_TEXTURE, this.leftPos + 29, this.topPos + 18, 0, 0, 16, 16, 16, 16);
 		guiGraphics.blit(EMERALD_TEXTURE, this.leftPos + 29, this.topPos + 38, 0, 0, 16, 16, 16, 16);

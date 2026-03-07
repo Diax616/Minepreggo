@@ -115,7 +115,7 @@ public class TamableMonsterEnderWoman extends AbstractTamableMonsterEnderWoman i
 		return MonsterEnderWomanHelper.createTamableAttributes(0.3);
 	}
 	
-	public static<E extends AbstractTamablePregnantEnderWoman> void onPostPartum(E source) {
+	static void onPostPartum(AbstractTamablePregnantEnderWoman source) {
 		if (source.level() instanceof ServerLevel serverLevel) {
 			TamableMonsterEnderWoman enderWoman = MinepreggoEntities.TAMABLE_MONSTER_ENDER_WOMAN.get().spawn(serverLevel, BlockPos.containing(source.getX(), source.getY(), source.getZ()), MobSpawnType.CONVERSION);	
 			LivingEntityHelper.copyRotation(source, enderWoman);
@@ -140,7 +140,7 @@ public class TamableMonsterEnderWoman extends AbstractTamableMonsterEnderWoman i
 		}
 	}
 	
-	public static<E extends AbstractTamablePregnantEnderWoman> void onPostMiscarriage(E source) {
+	static void onPostMiscarriage(AbstractTamablePregnantEnderWoman source) {
 		if (source.level() instanceof ServerLevel serverLevel) {
 			TamableMonsterEnderWoman enderWoman = MinepreggoEntities.TAMABLE_MONSTER_ENDER_WOMAN.get().spawn(serverLevel, BlockPos.containing(source.getX(), source.getY(), source.getZ()), MobSpawnType.CONVERSION);	
 			LivingEntityHelper.copyRotation(source, enderWoman);

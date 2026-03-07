@@ -49,7 +49,6 @@ public class BabyData {
 		this.fatherId.ifPresent(buffer::writeUUID);
 	}
 		
-
 	public static BabyData decode(FriendlyByteBuf buffer) {
 		Gender gender = buffer.readEnum(Gender.class);
 		Species typeOfSpecies = buffer.readEnum(Species.class);;

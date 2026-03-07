@@ -5,17 +5,21 @@ import java.util.Collections;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
-//This file is now a stub to prevent server-side loading issues.
-//If server/common code needs animation metadata, use AnimationInfo instead.
 
+/**
+ * This file is now a stub to prevent server-side loading issues.
+ * If server/common code needs animation metadata, use AnimationInfo instead.
+ * */
 public class CommonPlayerAnimationRegistry {
-	
-    private final Map<String, AnimationInfo> animations = new HashMap<>();
-
+    private final Map<String, AnimationInfo> animations;
     private static final String RUBBING_BELLY_ANIM = "rubbing_belly_p";    
-    
-    private CommonPlayerAnimationRegistry() {}
+    private static final Pattern RUBBING_BELLY_PATTERN = Pattern.compile("^rubbing_belly_p\\d+$");
+
+    private CommonPlayerAnimationRegistry() {
+    	animations = new HashMap<>();
+    }
 
     private static class Holder {
         private static final CommonPlayerAnimationRegistry INSTANCE = new CommonPlayerAnimationRegistry();
@@ -42,10 +46,15 @@ public class CommonPlayerAnimationRegistry {
     }
 
     public boolean isBellyRubbingAnimation(String name) {
-        return name != null && name.startsWith(RUBBING_BELLY_ANIM);
+    	return name != null && RUBBING_BELLY_PATTERN.matcher(name).matches() && containsAnimation(name);
     }
 
     public boolean isLaborAnimation(String name) {
     	return name != null && (name.equals("birth") || name.equals("miscarriage") || name.equals("water_breaking") || name.equals("prebirth"));
     }
+    
+    public boolean containsAnimation(String name) {
+    	if (name == null) return false;
+		return animations.containsKey(name);
+	}
 }

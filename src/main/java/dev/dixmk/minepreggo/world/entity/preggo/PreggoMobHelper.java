@@ -44,7 +44,7 @@ import dev.dixmk.minepreggo.world.item.IFemaleArmor;
 import dev.dixmk.minepreggo.world.item.IMaternityArmor;
 import dev.dixmk.minepreggo.world.item.ItemHelper;
 import dev.dixmk.minepreggo.world.pregnancy.IFemaleEntity;
-import dev.dixmk.minepreggo.world.pregnancy.MapPregnancyPhase;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhaseMap;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
@@ -55,7 +55,6 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Position;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -65,6 +64,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
@@ -206,7 +206,7 @@ public class PreggoMobHelper {
         
         // Si sobró algo o no se insertó nada, dropear
         if (!originalItemStack.isEmpty()) {
-            EntityHelper.dropItemStack(preggoMob, originalItemStack);
+            EntityHelper.spawnItemOn(preggoMob, originalItemStack);
         }
     }
     
@@ -386,7 +386,7 @@ public class PreggoMobHelper {
         
         ItemStack stack = inventory.getHandler().getStackInSlot(slotIndex);
         
-        if (!stack.isEmpty() && EntityHelper.dropItemStack(preggoMob, stack)) {
+        if (!stack.isEmpty() && EntityHelper.spawnItemOn(preggoMob, stack)) {
         	inventory.getHandler().setStackInSlot(slotIndex, ItemStack.EMPTY);   
         	inventorySlot.vanilla.ifPresent(equipmentSlot -> preggoMob.setItemSlot(equipmentSlot, ItemStack.EMPTY));
         }
@@ -421,7 +421,7 @@ public class PreggoMobHelper {
                 int slotIndex = slotMapper.getSlotIndex(slot);
                 ItemStack stack = inventory.getHandler().getStackInSlot(slotIndex);
                 
-                if (!stack.isEmpty() && EntityHelper.dropItemStack(preggoMob, stack)) {
+                if (!stack.isEmpty() && EntityHelper.spawnItemOn(preggoMob, stack)) {
                         inventory.getHandler().setStackInSlot(slotIndex, ItemStack.EMPTY);
                     }
                 
@@ -436,7 +436,7 @@ public class PreggoMobHelper {
                 int slotIndex = baseIndex + i;
                 ItemStack stack = inventory.getHandler().getStackInSlot(slotIndex);
                 
-                if (!stack.isEmpty() && EntityHelper.dropItemStack(preggoMob, stack)) {
+                if (!stack.isEmpty() && EntityHelper.spawnItemOn(preggoMob, stack)) {
                         inventory.getHandler().setStackInSlot(slotIndex, ItemStack.EMPTY);
                 }      
             }
@@ -521,7 +521,7 @@ public class PreggoMobHelper {
 					final int totalDays = MinepreggoModConfig.SERVER.getTotalPregnancyDays();
 					final var mother = ImmutableTriple.of(preggoMob.getUUID(), preggoMob.getTypeOfSpecies(), preggoMob.getTypeOfCreature());
 					final var father = ImmutableTriple.of(Optional.ofNullable(prePregnancyData.fatherId()), prePregnancyData.typeOfSpeciesOfFather(), prePregnancyData.typeOfCreatureOfFather());
-					final var map = new MapPregnancyPhase(totalDays, lastPregnancyStage);
+					final var map = new PregnancyPhaseMap(totalDays, lastPregnancyStage);
 					final var womb = new Womb(mother, father, preggoMob.getRandom(), numOfBabies);
 
 					pregnancyData.setLastPregnancyStage(lastPregnancyStage);	
@@ -621,7 +621,7 @@ public class PreggoMobHelper {
 	
 	public static<E extends PreggoMob & ITamablePregnantPreggoMob> boolean canUseChestPlateInLactation(E preggoMob, Item armor) {
 		final ITamablePregnantPreggoMobData pregnancyData = preggoMob.getPregnancyData();
-		if (!pregnancyData.getSyncedPregnancySymptoms().containsPregnancySymptom(PregnancySymptom.MILKING)) {
+		if (!pregnancyData.getPregnancySymptoms().contains(PregnancySymptom.MILKING)) {
 			return true;
 		}
 		return armor instanceof IMaternityArmor maternityArmor && maternityArmor.areBoobsExposed();
@@ -771,7 +771,7 @@ public class PreggoMobHelper {
 				}				
 			}	
 			else {
-				EntityHelper.spawnItemOn(serverLevel, zombieGirl.position(), MinepreggoItems.DEAD_ZOMBIE_FETUS.get());
+				EntityHelper.spawnItemOn(zombieGirl, MinepreggoItems.DEAD_ZOMBIE_FETUS.get());
 			}
 		}	
 	}
@@ -798,7 +798,7 @@ public class PreggoMobHelper {
 				}
 			}	
 			else {
-				EntityHelper.spawnItemOn(serverLevel, creeperGirl.position(), MinepreggoItems.DEAD_CREEPER_FETUS.get());
+				EntityHelper.spawnItemOn(creeperGirl, MinepreggoItems.DEAD_CREEPER_FETUS.get());
 			}
 		}	
 	}
@@ -816,8 +816,7 @@ public class PreggoMobHelper {
 			PregnancySystemHelper.spawnBabiesOrFetuses(serverLevel, zombieGirl.position(), alive, 0.3f, pregnancyData.getWomb(), zombieGirl.getRandom());
 		}	
 		else {		
-			final var fetusSpawn = getSpawnProbabilityBasedPregnancy(zombieGirl, 0.3F, 0.3F, 0.5F, 0.9F);
-			PregnancySystemHelper.spawnFetuses(serverLevel, zombieGirl.position(), fetusSpawn, pregnancyData.getWomb(), zombieGirl.getRandom());
+			PregnancySystemHelper.spawnFetuses(serverLevel, zombieGirl.position(), 1f, pregnancyData.getWomb(), zombieGirl.getRandom());
 		}
 	}
 	
@@ -834,8 +833,7 @@ public class PreggoMobHelper {
 			PregnancySystemHelper.spawnBabiesOrFetuses(serverLevel, creeperGirl.position(), alive, 0.3f, pregnancyData.getWomb(), creeperGirl.getRandom());
 		}	
 		else {		
-			final var fetusSpawn = getSpawnProbabilityBasedPregnancy(creeperGirl, 0.3F, 0.3F, 0.7F, 0.9F);
-			PregnancySystemHelper.spawnFetuses(serverLevel, creeperGirl.position(), fetusSpawn, pregnancyData.getWomb(), creeperGirl.getRandom());
+			PregnancySystemHelper.spawnFetuses(serverLevel, creeperGirl.position(), 1f, pregnancyData.getWomb(), creeperGirl.getRandom());
 		}
 	}
 			
@@ -843,12 +841,10 @@ public class PreggoMobHelper {
 		if (!(enderWoman.level() instanceof ServerLevel serverLevel)) {
 			return;
 		}
-		final var pregnancyData = enderWoman.getPregnancyData();
-		final var fetusSpawn = getSpawnProbabilityBasedPregnancy(enderWoman, 0.3F, 0.3F, 0.7F, 0.9F);
-		PregnancySystemHelper.spawnFetuses(serverLevel, enderWoman.position(), fetusSpawn, pregnancyData.getWomb(), enderWoman.getRandom());
+		PregnancySystemHelper.spawnFetuses(serverLevel, enderWoman.position(), 1f, enderWoman.getPregnancyData().getWomb(), enderWoman.getRandom());
 	}
 	
-	private static void spawnDeadFetusItem(ServerLevel serverLevel, Position pos, Species species, Creature creature, int count, float chance, RandomSource random) {
+	private static void spawnDeadFetusItem(Entity entity, Species species, Creature creature, int count, float chance, RandomSource random) {
 		int tempCount = count;
 		if (tempCount <= 0) {
 			tempCount = 1;
@@ -857,7 +853,7 @@ public class PreggoMobHelper {
 		if (itemToSpawn != null) {
 			for (int i = 0; i < tempCount; i++) {
 				if (random.nextFloat() < chance) {
-					EntityHelper.spawnItemOn(serverLevel, pos, itemToSpawn);
+					EntityHelper.spawnItemOn(entity, itemToSpawn);
 				}
 			}	
 		}
@@ -880,8 +876,7 @@ public class PreggoMobHelper {
 			spawnBabyOrFetusCreepers(serverLevel, p, numOfBabies, creeperGirl);
 		}
 		else {
-			p = MathHelper.sigmoid(0.5F, 0.9F, 0.3F, t, 0.3F);
-			spawnDeadFetusItem(serverLevel, creeperGirl.position(), creeperGirl.getTypeOfSpecies(), creeperGirl.getTypeOfCreature(), numOfBabies, p, creeperGirl.getRandom());
+			spawnDeadFetusItem(creeperGirl, creeperGirl.getTypeOfSpecies(), creeperGirl.getTypeOfCreature(), numOfBabies, 1f, creeperGirl.getRandom());
 		}
 		
 		MinepreggoMod.LOGGER.debug("SPAWN BABY AND FETUS CREEPERS: id={}, class={}, currentPregnancytStage={}, maxPregnancyStage={}, totalDaysPassed={}, t={}",
@@ -906,8 +901,7 @@ public class PreggoMobHelper {
 			spawnBabyOrFetusZombies(serverLevel, p, numOfBabies, zombieGirl);
 		}
 		else {
-			p = MathHelper.sigmoid(0.5F, 0.9F, 0.3F, t, 0.3F);
-			spawnDeadFetusItem(serverLevel, zombieGirl.position(), zombieGirl.getTypeOfSpecies(), zombieGirl.getTypeOfCreature(), numOfBabies, p, zombieGirl.getRandom());
+			spawnDeadFetusItem(zombieGirl, zombieGirl.getTypeOfSpecies(), zombieGirl.getTypeOfCreature(), numOfBabies, 1f, zombieGirl.getRandom());
 		}
 		
 		MinepreggoMod.LOGGER.debug("SPAWN BABY AND FETUS ZOMBIES: id={}, class={}, currentPregnancytStage={}, maxPregnancyStage={}, totalDaysPassed={}, t={}",
@@ -915,17 +909,10 @@ public class PreggoMobHelper {
 	}	
 	
 	public static void spawnBabyAndFetus(@NonNull AbstractHostilePregnantEnderWoman enderWoman) {
-		if (!(enderWoman.level() instanceof ServerLevel serverLevel)) {
-			return;
-		}
-		
 		final var pregnancyData = enderWoman.getPregnancyData();	
 		final var numOfBabies = pregnancyData.getNumOfBabies();
-		final var totalDaysPassed = pregnancyData.getTotalDaysElapsed();
-		final var t = Mth.clamp(totalDaysPassed / (float) PregnancySystemHelper.DEFAULT_TOTAL_PREGNANCY_DAYS, 0, 1);
-		float p = MathHelper.sigmoid(0.5F, 0.9F, 0.3F, t, 0.3F);
 		
-		spawnDeadFetusItem(serverLevel, enderWoman.position(), enderWoman.getTypeOfSpecies(), enderWoman.getTypeOfCreature(), numOfBabies, p, enderWoman.getRandom());
+		spawnDeadFetusItem(enderWoman, enderWoman.getTypeOfSpecies(), enderWoman.getTypeOfCreature(), numOfBabies, 1f, enderWoman.getRandom());
 	}
 	
 	// SPAWN BABIES AND FETUSES - END

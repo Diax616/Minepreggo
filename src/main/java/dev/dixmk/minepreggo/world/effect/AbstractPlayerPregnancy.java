@@ -6,13 +6,15 @@ import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.UUID;
 
+import javax.annotation.CheckForNull;
+
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoMobEffects;
 import dev.dixmk.minepreggo.world.entity.BellyPartManager;
+import dev.dixmk.minepreggo.world.entity.player.AbstractPlayerPregnancySystem;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
-import dev.dixmk.minepreggo.world.entity.player.PlayerPregnancySystemP0;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
@@ -21,7 +23,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 
-public abstract class AbstractPlayerPregnancy<S extends PlayerPregnancySystemP0> extends MobEffect  {
+public abstract class AbstractPlayerPregnancy<S extends AbstractPlayerPregnancySystem> extends MobEffect  {
 	static final UUID SPEED_MODIFIER_UUID = UUID.fromString("a0bf6ac9-4354-4977-86fc-5dea9108665d");
 	static final UUID ATTACK_SPEED_MODIFIER_UUID = UUID.fromString("57a3938d-b55a-47b5-93ee-737724ba9d2e");
 	
@@ -129,4 +131,9 @@ public abstract class AbstractPlayerPregnancy<S extends PlayerPregnancySystemP0>
     abstract Optional<AttributeModifier> getSpeedModifier();
     abstract Optional<AttributeModifier> getAttackSpeedModifier();
     abstract OptionalInt getMovementSpeedNerfAmplifier();
+    
+    @CheckForNull
+    public AbstractPlayerPregnancySystem getCached(UUID playerUUID) {
+		return pregnancySystemsCache.get(playerUUID);
+	}
 }

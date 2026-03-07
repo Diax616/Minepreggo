@@ -211,7 +211,7 @@ public class SexHelper {
 					}	
 					else if (targetMob instanceof ITamablePregnantPreggoMob pregnancyHandler && pregnancyHandler.getPregnancyData().getCurrentPregnancyPhase().compareTo(PregnancyPhase.P4) >= 0) {
 						var pregnancyData =	pregnancyHandler.getPregnancyData();
-						pregnancyData.getSyncedPregnancySymptoms().removePregnancySymptom(PregnancySymptom.HORNY);
+						pregnancyData.getPregnancySymptoms().remove(PregnancySymptom.HORNY);
 						pregnancyData.setHorny(0);		
 						pregnancyData.setHornyTimer(0);
 					}
@@ -313,7 +313,7 @@ public class SexHelper {
 					source.getTamableData().cleanFaceState();
 					var pregnancyData = source.getPregnancyData();
 					pregnancyData.setHorny(0);
-					pregnancyData.getSyncedPregnancySymptoms().removePregnancySymptom(PregnancySymptom.HORNY);
+					pregnancyData.getPregnancySymptoms().remove(PregnancySymptom.HORNY);
 					pregnancyData.setHornyTimer(0);
 					source.getGenderedData().setSexualAppetite(0);
 					PlayerHelper.removeHorny(target);

@@ -20,8 +20,8 @@ import dev.dixmk.minepreggo.init.MinepreggoMobEffects;
 import dev.dixmk.minepreggo.network.capability.IEnderPowerData;
 import dev.dixmk.minepreggo.network.capability.PlayerPregnancyDataImpl;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
-import dev.dixmk.minepreggo.world.pregnancy.IPostPregnancyData;
 import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
+import dev.dixmk.minepreggo.world.pregnancy.PostPregnancyData;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 
@@ -60,7 +60,7 @@ public class ScreenEventHandler {
 					final var pregnancySystem = femaleData.getPregnancyData();
 					final PregnancyPhase phase = pregnancySystem.getCurrentPregnancyPhase();					
 					Runnable cravingOverlay = () -> {
-						if (pregnancySystem.getPregnancySymptoms().containsPregnancySymptom(PregnancySymptom.CRAVING)) {
+						if (pregnancySystem.getPregnancySymptoms().contains(PregnancySymptom.CRAVING)) {
 							renderCravingChoosenScreen(gui, 92, player.getSkinTextureLocation(), pregnancySystem);
 						}
 					};
@@ -216,7 +216,7 @@ public class ScreenEventHandler {
 		}
 	}
 	
-	private static void renderPostPartumLactationScreen(GuiGraphics gui, int top, int init, int diff, @NonNull IPostPregnancyData postPregnancyData) {
+	private static void renderPostPartumLactationScreen(GuiGraphics gui, int top, int init, int diff, @NonNull PostPregnancyData postPregnancyData) {
 		if (postPregnancyData.getPostPregnancy() == PostPregnancy.PARTUM) {
 			int pos;
 			final var lactation = postPregnancyData.getPostPartumLactation();

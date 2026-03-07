@@ -105,6 +105,8 @@ public class PregnancySystemHelper {
 	public static final int TOTAL_TICKS_BIRTH_P7 = 1500;
 	public static final int TOTAL_TICKS_BIRTH_P8 = 1600;
 	
+	public static final int TOTAL_TICKS_BIRTH_PER_BABY = 200;
+	
 	public static final int TOTAL_TICKS_KICKING_P3 = 1200;
 	public static final int TOTAL_TICKS_KICKING_P4 = 1400;
 	public static final int TOTAL_TICKS_KICKING_P5 = 1600;
@@ -898,4 +900,26 @@ public class PregnancySystemHelper {
 		entity.hurt(new DamageSource(entity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(MinepreggoDamageSources.PREGNANCY_PAIN)), damage);
 	}
 	// DEATH HELPERS - END
+	
+	
+	// BIRTH HELPERS - START
+	
+	public static int calculateBirthDuration(BabyData babyData) {
+		int baseDuration = TOTAL_TICKS_BIRTH_PER_BABY;	
+		baseDuration += switch (babyData.typeOfSpecies) {
+			case HUMAN, ZOMBIE, VILLAGER -> 100;
+			case CREEPER -> 200;
+			case DRAGON -> 1000;
+			case ENDER -> 300;
+			default -> 0;
+		};	
+		baseDuration += switch (babyData.typeOfCreature) {
+			case HUMANOID -> 0;
+			case MONSTER -> 200;
+			default -> 0;
+		};				
+		return baseDuration;
+	}
+	
+	// BIRTH HELPERS - END
 }

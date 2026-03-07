@@ -20,7 +20,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.util.RandomSource;
 
-public class MapPregnancyPhase {
+public class PregnancyPhaseMap {
 	private static final ImmutableMap<PregnancyPhase, List<ImmutablePair<PregnancyPhase, Float>>> PREGNANCY_PHASES_WEIGHTS = ImmutableMap.of(
 			PregnancyPhase.P4, List.of(
 					ImmutablePair.of(PregnancyPhase.P0, 0.05F),
@@ -72,7 +72,7 @@ public class MapPregnancyPhase {
 	private Object2IntMap<PregnancyPhase> daysByPregnancyPhase;
 	private final ImmutableMap<PregnancyPhase, Integer> originalDaysByPregnancyPhase;
 	
-    public MapPregnancyPhase(@Nonnegative int totalDays, PregnancyPhase lastPregnancyPhase) {	
+    public PregnancyPhaseMap(@Nonnegative int totalDays, PregnancyPhase lastPregnancyPhase) {	
 		PregnancyPhase last = lastPregnancyPhase;
 		
 		if (last.compareTo(PregnancyPhase.P4) < 0) {
@@ -99,7 +99,7 @@ public class MapPregnancyPhase {
 		originalDaysByPregnancyPhase = ImmutableMap.copyOf(daysByPregnancyPhase);
     }
 	
-    private MapPregnancyPhase(@Nonnull Object2IntMap<PregnancyPhase> daysByPregnancyPhase, @Nonnull ImmutableMap<PregnancyPhase, Integer> originalDaysByPregnancyPhase) {
+    private PregnancyPhaseMap(@Nonnull Object2IntMap<PregnancyPhase> daysByPregnancyPhase, @Nonnull ImmutableMap<PregnancyPhase, Integer> originalDaysByPregnancyPhase) {
 		this.daysByPregnancyPhase = daysByPregnancyPhase;
 		this.originalDaysByPregnancyPhase = originalDaysByPregnancyPhase;
 		this.daysByPregnancyPhase.defaultReturnValue(DEFAULT_INT_VALUE);
@@ -182,7 +182,7 @@ public class MapPregnancyPhase {
     }
     
     @CheckForNull
-    public static MapPregnancyPhase fromNBT(CompoundTag nbt) {	
+    public static PregnancyPhaseMap fromNBT(CompoundTag nbt) {	
     	if (nbt.contains(NBT_KEY, Tag.TAG_LIST) && nbt.contains(NBT_KEY_ORIGINAL, Tag.TAG_LIST)) {	
         	ListTag current = nbt.getList(NBT_KEY, Tag.TAG_COMPOUND);	
         	ListTag original = nbt.getList(NBT_KEY_ORIGINAL, Tag.TAG_COMPOUND);
@@ -200,7 +200,7 @@ public class MapPregnancyPhase {
 		        int value = pair.getInt("originalDays");
 		        originalMap.put(key, value);
 		    }
-    	    return new MapPregnancyPhase(map, ImmutableMap.copyOf(originalMap));
+    	    return new PregnancyPhaseMap(map, ImmutableMap.copyOf(originalMap));
     	}	
     	else {
     		MinepreggoMod.LOGGER.error("{} is not present in nbt", NBT_KEY);

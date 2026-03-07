@@ -9,18 +9,14 @@ import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Nullable;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
-import dev.dixmk.minepreggo.init.MinepreggoMobEffects;
 import dev.dixmk.minepreggo.network.packet.s2c.ResetPregnancyS2CPacket;
 import dev.dixmk.minepreggo.network.packet.s2c.SyncFemalePlayerDataS2CPacket;
 import dev.dixmk.minepreggo.network.packet.s2c.SyncPlayerLactationS2CPacket;
 import dev.dixmk.minepreggo.world.entity.preggo.Creature;
 import dev.dixmk.minepreggo.world.entity.preggo.Species;
 import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
-import dev.dixmk.minepreggo.world.pregnancy.IPostPregnancyData;
-import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
-import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
+import dev.dixmk.minepreggo.world.pregnancy.PostPregnancyData;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyType;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -138,7 +134,7 @@ public class FemalePlayerImpl extends FemaleEntityImpl implements IFemalePlayer 
 	
 	public void syncLactation(ServerPlayer serverPlayer) {
 		MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> serverPlayer),
-				new SyncPlayerLactationS2CPacket(serverPlayer.getUUID(), this.postPregnancyData.map(IPostPregnancyData::getPostPartumLactation).orElse(0)));
+				new SyncPlayerLactationS2CPacket(serverPlayer.getUUID(), this.postPregnancyData.map(PostPregnancyData::getPostPartumLactation).orElse(0)));
 	}
 
 	// TODO: It does not validate if the data is valid for player's current state, it could cause inconsistencies.
@@ -151,45 +147,5 @@ public class FemalePlayerImpl extends FemaleEntityImpl implements IFemalePlayer 
 		this.postPregnancyData = Optional.ofNullable(data.postPregnancy);
 	}
 	
-	
-	/*
-	 *	TODO: This method is temorary, pregnancy symptoms should be handled by a dedicated system,
-	 * but when player is birth, miscarriage, prebirth, their symptoms are not evaluated by the currect system: PlayerPregnancySystemP0, 
-	 * so this method is called after those events to ensure symptoms are properly removed when their conditions are no longer met.
-	 * It needs to be reworked in the future.
-	 * */
-	
-	public void evaluatePregnancySymptom(ServerPlayer pregnantEntity) {
-		if (isPregnant() && isPregnancyDataInitialized()) {
-			var pregnancySystem = getPregnancyData();
-	
-			pregnancySystem.getPregnancySymptoms().toSet().forEach(symptom -> {					
-				boolean flag = false;		
-				if (symptom == PregnancySymptom.CRAVING && pregnancySystem.getCraving() <= PregnancySystemHelper.DESACTIVATE_CRAVING_SYMPTOM) {
-					pregnancySystem.clearTypeOfCravingBySpecies();
-					pregnantEntity.removeEffect(MinepreggoMobEffects.CRAVING.get());
-					flag = true;
-				}
-				else if (symptom == PregnancySymptom.MILKING && pregnancySystem.getMilking() <= PregnancySystemHelper.DESACTIVATE_MILKING_SYMPTOM) {
-					pregnantEntity.removeEffect(MinepreggoMobEffects.LACTATION.get());
-					flag = true;
-				}
-				else if (symptom == PregnancySymptom.BELLY_RUBS && pregnancySystem.getBellyRubs() <= PregnancySystemHelper.DESACTIVATEL_BELLY_RUBS_SYMPTOM) {
-					pregnantEntity.removeEffect(MinepreggoMobEffects.BELLY_RUBS.get());
-					flag = true;
-				}
-						
-				if (flag) {
-					
-					pregnancySystem.getPregnancySymptoms().removePregnancySymptom(symptom);				
-					pregnancySystem.syncState(pregnantEntity);
-					pregnancySystem.syncEffect(pregnantEntity);
-					MinepreggoMod.LOGGER.debug("Player {} pregnancy symptom cleared: {}",
-							pregnantEntity.getGameProfile().getName(), symptom);
-				}
-			});	
-		}
-	}
-	
-	public static record ClientData(boolean pregnant, @Nullable IPostPregnancyData postPregnancy, float fertility) {}
+	public static record ClientData(boolean pregnant, @Nullable PostPregnancyData postPregnancy, float fertility) {}
 }

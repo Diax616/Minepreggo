@@ -45,8 +45,8 @@ public record UpdateBellyRubbingStateC2SPacket(UUID target) {
    	        				
    	        				ServerParticleHelper.spawnRandomlyFromServer(target, ParticleTypes.HEART);
    	        				
-   	        				if (system.getPregnancySymptoms().containsPregnancySymptom((PregnancySymptom.BELLY_RUBS)) && bellyRubs <= PregnancySystemHelper.DESACTIVATEL_BELLY_RUBS_SYMPTOM) {
-   	        					system.getPregnancySymptoms().removePregnancySymptom(PregnancySymptom.BELLY_RUBS);
+   	        				if (system.getPregnancySymptoms().contains((PregnancySymptom.BELLY_RUBS)) && bellyRubs <= PregnancySystemHelper.DESACTIVATEL_BELLY_RUBS_SYMPTOM) {
+   	        					system.getPregnancySymptoms().remove(PregnancySymptom.BELLY_RUBS);
    	        					target.removeEffect(MinepreggoMobEffects.BELLY_RUBS.get());
    	        					system.syncState(target);
    	        				}

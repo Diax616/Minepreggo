@@ -29,7 +29,7 @@ public class CreeperGirlMainScreen extends AbstractHumanoidCreeperGirlMainScreen
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 		
-		guiGraphics.blit(DEFAULT_P0_MAIN_GUI_TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight, imageWidth, imageHeight);
+		guiGraphics.blit(DEFAULT_P0_MAIN_GUI_TEXTURE, leftPos, topPos, imageWidth, imageHeight, 0, 0, imageWidth, imageHeight, 256, 256);
 		
 		this.preggoMob.ifPresent(creeperGirl -> renderScreenNonPreg(guiGraphics, this.leftPos, this.topPos, creeperGirl));
 	

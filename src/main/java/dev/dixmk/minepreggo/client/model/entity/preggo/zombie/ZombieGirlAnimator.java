@@ -140,8 +140,9 @@ public abstract class ZombieGirlAnimator<T extends AbstractZombieGirl> extends P
 
 		@Override
 		protected void animateBelly(E zombieGirl, float ageInTicks) {
+			var instance = zombieGirl.getPregnancyData().getPregnancyPain();
 		    if (zombieGirl.getItemBySlot(EquipmentSlot.CHEST).isEmpty()) {		    			        	
-				if (fetalMovementIntensity != null && zombieGirl.getPregnancyData().getPregnancyPain() ==  PregnancyPain.FETAL_MOVEMENT) {
+				if (fetalMovementIntensity != null && instance != null && instance.getPain() == PregnancyPain.FETAL_MOVEMENT) {
 			    	this.animate(zombieGirl.bellyAnimationState, fetalMovementIntensity.animation, ageInTicks);		    
 		    	}
 		    	else {
@@ -162,22 +163,24 @@ public abstract class ZombieGirlAnimator<T extends AbstractZombieGirl> extends P
 	
 		@Override
 		protected void animatePregnancyPain(E zombieGirl, float ageInTicks) {
-			final var pregnancyData = zombieGirl.getPregnancyData();
-			final var pregnancyPain = pregnancyData.getPregnancyPain();	
-			if (pregnancyPain == PregnancyPain.MORNING_SICKNESS) {
-				this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.MORNING_SICKNESS, ageInTicks);										
-			}
-			else if (pregnancyPain == PregnancyPain.MISCARRIAGE) {
-				this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.MISCARRIAGE, ageInTicks);						
-			}
-			else if (pregnancyPain == PregnancyPain.PREBIRTH) {
-				this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.MISCARRIAGE, ageInTicks);						
-			}
-			else if (pregnancyPain == PregnancyPain.BIRTH) {
-				this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.BIRTH, ageInTicks);						
-			}
-			else if (pregnancyPain == PregnancyPain.CONTRACTION) {
-				this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.CONTRACTION1, ageInTicks);						
+			final var instance = zombieGirl.getPregnancyData().getPregnancyPain();	
+			if (instance != null) {
+				var pregnancyPain = instance.getPain();
+				if (pregnancyPain == PregnancyPain.MORNING_SICKNESS) {
+					this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.MORNING_SICKNESS, ageInTicks);										
+				}
+				else if (pregnancyPain == PregnancyPain.MISCARRIAGE) {
+					this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.MISCARRIAGE, ageInTicks);						
+				}
+				else if (pregnancyPain == PregnancyPain.PREBIRTH) {
+					this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.MISCARRIAGE, ageInTicks);						
+				}
+				else if (pregnancyPain == PregnancyPain.BIRTH) {
+					this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.BIRTH, ageInTicks);						
+				}
+				else if (pregnancyPain == PregnancyPain.CONTRACTION) {
+					this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.CONTRACTION1, ageInTicks);						
+				}
 			}
 		}
 	}

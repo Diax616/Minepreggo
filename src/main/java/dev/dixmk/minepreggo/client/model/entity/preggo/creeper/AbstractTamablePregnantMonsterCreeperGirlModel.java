@@ -48,7 +48,7 @@ public abstract class AbstractTamablePregnantMonsterCreeperGirlModel
 	@Override
 	public void setupAnim(E creeperGirl, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		super.setupAnim(creeperGirl, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-		if (creeperGirl.getPregnancyData().getSyncedPregnancySymptoms().containsPregnancySymptom(PregnancySymptom.MILKING)) {
+		if ((creeperGirl.getPregnancyData().getSyncedPregnancySymptoms().getSyncedSymptoms() & PregnancySymptom.MILKING.mask) != 0) {
 			this.boobs.y += milkingBoobsYPos;
 			this.boobs.xScale = milkingBoobsXScale;
 			this.boobs.zScale = milkingBoobsYScale;
@@ -58,7 +58,8 @@ public abstract class AbstractTamablePregnantMonsterCreeperGirlModel
 	
 	@Override
 	protected void animate(E creeperGirl, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		if (fetalMovementIntensity != null && creeperGirl.getPregnancyData().getPregnancyPain() ==  PregnancyPain.FETAL_MOVEMENT) {
+		var instance = creeperGirl.getPregnancyData().getPregnancyPain();
+		if (fetalMovementIntensity != null && instance != null && instance.getPain() == PregnancyPain.FETAL_MOVEMENT) {
 			this.animate(creeperGirl.bellyAnimationState, fetalMovementIntensity.animation, ageInTicks);		    
 		}
 		else {
@@ -74,25 +75,26 @@ public abstract class AbstractTamablePregnantMonsterCreeperGirlModel
 				this.animate(state, animation, ageInTicks);
 			}
 		} 
-		
-		final var pregnancyData = creeperGirl.getPregnancyData();
-		final var pregnancyPain = pregnancyData.getPregnancyPain();	
-		if (pregnancyPain == PregnancyPain.MORNING_SICKNESS) {
-			this.animate(creeperGirl.loopAnimationState, MonsterCreeperGirlAnimation.MORNING_SICKNESS, ageInTicks);										
+				
+		if (instance != null) {
+			var pregnancyPain = instance.getPain();
+			if (pregnancyPain == PregnancyPain.MORNING_SICKNESS) {
+				this.animate(creeperGirl.loopAnimationState, MonsterCreeperGirlAnimation.MORNING_SICKNESS, ageInTicks);										
+			}
+			else if (pregnancyPain == PregnancyPain.MISCARRIAGE) {
+				this.animate(creeperGirl.loopAnimationState, MonsterCreeperGirlAnimation.MISCARRIAGE, ageInTicks);						
+			}
+			else if (pregnancyPain == PregnancyPain.PREBIRTH) {
+				this.animate(creeperGirl.loopAnimationState, MonsterCreeperGirlAnimation.PREBIRTH, ageInTicks);						
+			}
+			else if (pregnancyPain == PregnancyPain.BIRTH) {
+				this.animate(creeperGirl.loopAnimationState, MonsterCreeperGirlAnimation.BIRTH, ageInTicks);						
+			}
+			else if (pregnancyPain == PregnancyPain.CONTRACTION) {
+				this.animate(creeperGirl.loopAnimationState, MonsterCreeperGirlAnimation.CONTRACTION, ageInTicks);						
+			}
 		}
-		else if (pregnancyPain == PregnancyPain.MISCARRIAGE) {
-			this.animate(creeperGirl.loopAnimationState, MonsterCreeperGirlAnimation.MISCARRIAGE, ageInTicks);						
-		}
-		else if (pregnancyPain == PregnancyPain.PREBIRTH) {
-			this.animate(creeperGirl.loopAnimationState, MonsterCreeperGirlAnimation.PREBIRTH, ageInTicks);						
-		}
-		else if (pregnancyPain == PregnancyPain.BIRTH) {
-			this.animate(creeperGirl.loopAnimationState, MonsterCreeperGirlAnimation.BIRTH, ageInTicks);						
-		}
-		else if (pregnancyPain == PregnancyPain.CONTRACTION) {
-			this.animate(creeperGirl.loopAnimationState, MonsterCreeperGirlAnimation.CONTRACTION, ageInTicks);						
-		}
-		
+			
 		super.animate(creeperGirl, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 	}
 }

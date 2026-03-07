@@ -144,6 +144,6 @@ public class RequestSexM2PScreen extends AbstractRequestSexScreen<PreggoMob, Pla
 	
 	private boolean isTamedAndPregnantAndHorny(PreggoMob preggoMob) {
 		return preggoMob instanceof ITamablePregnantPreggoMob pregnancySystemHandler
-				&& pregnancySystemHandler.getPregnancyData().getPregnancySymptoms().containsPregnancySymptom(PregnancySymptom.HORNY);
+				&& (pregnancySystemHandler.getPregnancyData().getSyncedPregnancySymptoms().getSyncedSymptoms() & PregnancySymptom.HORNY.mask) != 0;
 	}
 }

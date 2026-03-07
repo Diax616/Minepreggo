@@ -2,7 +2,7 @@ package dev.dixmk.minepreggo.world.entity.preggo;
 
 import dev.dixmk.minepreggo.init.MinepreggoEntityDataSerializers;
 import dev.dixmk.minepreggo.utils.MathHelper;
-import dev.dixmk.minepreggo.world.pregnancy.MapPregnancyPhase;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhaseMap;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.nbt.CompoundTag;
@@ -64,7 +64,7 @@ public class HostilePregnantPreggoMobDataImpl<E extends PreggoMob> implements IH
 		
 		var random = preggoMob.getRandom();
 		this.maxPregnanctStage = PregnancySystemHelper.calculateRandomMinPhaseToGiveBirthFrom(this.preggoMob.getEntityData().get(this.dataAccessor.currentPregnanctPhase), random);
-		this.totalDaysPassed = MapPregnancyPhase.calculateRandomTotalDaysElapsed(this.preggoMob.getEntityData().get(this.dataAccessor.currentPregnanctPhase), this.maxPregnanctStage, random);
+		this.totalDaysPassed = PregnancyPhaseMap.calculateRandomTotalDaysElapsed(this.preggoMob.getEntityData().get(this.dataAccessor.currentPregnanctPhase), this.maxPregnanctStage, random);
 		this.pregnancyPainProbability = MathHelper.sigmoid(0.05F, 0.15F, 0.1F, Mth.clamp(this.totalDaysPassed /(float) PregnancySystemHelper.DEFAULT_TOTAL_PREGNANCY_DAYS , 0, 1), 0.6F);
 		this.incapacitatedCooldown = 60 + this.preggoMob.getEntityData().get(this.dataAccessor.currentPregnanctPhase).ordinal() * 20;
 		

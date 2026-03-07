@@ -13,17 +13,17 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class TamableMonsterPregnantEnderWomanExpressiveEyesLayer 
 	<E extends AbstractTamablePregnantEnderWoman, M extends AbstractTamablePregnantMonsterEnderWomanModel<E>> extends TamableMonsterEnderWomanExpressiveEyesLayer<E, M> {
 
-	public TamableMonsterPregnantEnderWomanExpressiveEyesLayer(RenderLayerParent<E, M> p_116981_) {
-		super(p_116981_);
+	public TamableMonsterPregnantEnderWomanExpressiveEyesLayer(RenderLayerParent<E, M> renderer) {
+		super(renderer);
 	}
 
 	@Override
 	protected @Nonnull RenderType renderType(E enderWoman) {
 		final var pregnancyData = enderWoman.getPregnancyData();
-		final var pain = pregnancyData.getPregnancyPain();	
+		final var instance = pregnancyData.getPregnancyPain();	
 
-		if (pain != null) {	
-			RenderType face = switch (pain) {
+		if (instance != null) {	
+			RenderType face = switch (instance.getPain()) {
 				case MORNING_SICKNESS, FETAL_MOVEMENT, PREBIRTH, BIRTH -> SAD_ENDER_EYES_1;
 				case CONTRACTION -> PAIN_ENDER_EYES;
 				case MISCARRIAGE, WATER_BREAKING -> SURPRISED_ENDER_EYES;
@@ -33,7 +33,7 @@ public class TamableMonsterPregnantEnderWomanExpressiveEyesLayer
 				return face;
 		}
 		
-		if (!pregnancyData.getSyncedPregnancySymptoms().isEmpty()) {
+		if (pregnancyData.getSyncedPregnancySymptoms().getSyncedSymptoms() != 0) {
 			return SAD_ENDER_EYES_1;
 		}
 			

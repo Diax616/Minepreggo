@@ -267,6 +267,11 @@ public class TamablePregnantMonsterEnderWoman {
 				protected void initPostPartum() {
 					TamableMonsterEnderWoman.onPostPartum(pregnantEntity);
 				}
+				
+				@Override
+				protected double getPussyYOffset() {
+					return MonsterEnderWomanHelper.getPussyYOffset(pregnantEntity);
+				}
 			};
 		}
 		
@@ -319,6 +324,11 @@ public class TamablePregnantMonsterEnderWoman {
 				@Override
 				protected void initPostPartum() {
 					TamableMonsterEnderWoman.onPostPartum(pregnantEntity);
+				}
+				
+				@Override
+				protected double getPussyYOffset() {
+					return MonsterEnderWomanHelper.getPussyYOffset(pregnantEntity);
 				}
 			};
 		}
@@ -373,6 +383,11 @@ public class TamablePregnantMonsterEnderWoman {
 				protected void initPostPartum() {
 					TamableMonsterEnderWoman.onPostPartum(pregnantEntity);
 				}
+				
+				@Override
+				protected double getPussyYOffset() {
+					return MonsterEnderWomanHelper.getPussyYOffset(pregnantEntity);
+				}
 			};
 		}
 		
@@ -426,6 +441,11 @@ public class TamablePregnantMonsterEnderWoman {
 				protected void initPostPartum() {
 					TamableMonsterEnderWoman.onPostPartum(pregnantEntity);
 				}
+				
+				@Override
+				protected double getPussyYOffset() {
+					return MonsterEnderWomanHelper.getPussyYOffset(pregnantEntity);
+				}
 			};
 		}
 		
@@ -475,6 +495,11 @@ public class TamablePregnantMonsterEnderWoman {
 				protected void initPostPartum() {
 					TamableMonsterEnderWoman.onPostPartum(pregnantEntity);
 				}
+				
+				@Override
+				protected double getPussyYOffset() {
+					return MonsterEnderWomanHelper.getPussyYOffset(pregnantEntity);
+				}
 			};
 		}
 
@@ -482,5 +507,4 @@ public class TamablePregnantMonsterEnderWoman {
 			return MonsterEnderWomanHelper.createTamableAttributes(0.21);
 		}
 	}
-
 }

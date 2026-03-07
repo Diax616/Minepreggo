@@ -6,7 +6,6 @@ import java.util.OptionalInt;
 import javax.annotation.CheckForNull;
 
 import dev.dixmk.minepreggo.world.pregnancy.FemaleEntityImpl;
-import dev.dixmk.minepreggo.world.pregnancy.IPostPregnancyData;
 import dev.dixmk.minepreggo.world.pregnancy.PostPregnancy;
 import dev.dixmk.minepreggo.world.pregnancy.PostPregnancyData;
 import net.minecraft.nbt.CompoundTag;
@@ -23,13 +22,13 @@ public class SyncedFemaleEntityImpl<E extends PreggoMob> extends FemaleEntityImp
 	}
 	
     @Override
-    protected IPostPregnancyData createPostPregnancyData(PostPregnancy postPregnancy) {
+    protected PostPregnancyData createPostPregnancyData(PostPregnancy postPregnancy) {
         return new SyncedPostPregnancyData<>(postPregnancy, this.dataAccessor, this.preggoMob);
     }
     
     @Override
     @CheckForNull
-    protected IPostPregnancyData createPostPregnancyData(CompoundTag nbt, String key) {
+    protected PostPregnancyData createPostPregnancyData(CompoundTag nbt, String key) {
     	PostPregnancyData data = PostPregnancyData.fromNBT(nbt.getCompound(key));  
     	if (data == null) {
     		return null;
@@ -49,7 +48,7 @@ public class SyncedFemaleEntityImpl<E extends PreggoMob> extends FemaleEntityImp
     
     @Override
     public Optional<SyncedPostPregnancyData<E>> getSyncedPostPregnancyData() {
-        Optional<IPostPregnancyData> holder = super.getPostPregnancyData();
+        Optional<PostPregnancyData> holder = super.getPostPregnancyData();
         if (holder.isPresent() && holder.get() instanceof SyncedPostPregnancyData<?>) {
             @SuppressWarnings("unchecked")
             SyncedPostPregnancyData<E> casted = (SyncedPostPregnancyData<E>) holder.get();

@@ -634,6 +634,7 @@
 	"subtitles.entity.pregnant.player.push": "push",
 	"subtitles.entity.pregnant.stomach_growls" : "stomach growls",			
 	"subtitles.entity.pregnant.player.nausea": "nausea",
+	"subtitles.entity.splash": "splash",
 	
 	"chat.minepreggo.scientific_illager.no_pregnant_entities": "There are no pregnant entities to checkup",
 	"chat.minepreggo.prenatal_checkup.message.warning": "It is necessary to be at least in the %s stage of pregnancy to perform this prenatal check-up",

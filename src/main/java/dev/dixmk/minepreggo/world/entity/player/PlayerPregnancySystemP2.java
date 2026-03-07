@@ -10,7 +10,6 @@ import dev.dixmk.minepreggo.init.MinepreggoMobEffects;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.effect.MobEffectInstance;
 
 public class PlayerPregnancySystemP2 extends PlayerPregnancySystemP1 {
 
@@ -36,8 +35,8 @@ public class PlayerPregnancySystemP2 extends PlayerPregnancySystemP1 {
 	@Override
 	protected void evaluatePregnancySymptoms() {
 		super.evaluatePregnancySymptoms();
-		if (pregnancySystem.getPregnancySymptoms().containsPregnancySymptom(PregnancySymptom.MILKING) && pregnancySystem.getMilking() <= PregnancySystemHelper.DESACTIVATE_MILKING_SYMPTOM) {	
-			pregnancySystem.getPregnancySymptoms().removePregnancySymptom(PregnancySymptom.MILKING);
+		if (pregnancySystem.getPregnancySymptoms().contains(PregnancySymptom.MILKING) && pregnancySystem.getMilking() <= PregnancySystemHelper.DESACTIVATE_MILKING_SYMPTOM) {	
+			pregnancySystem.getPregnancySymptoms().remove(PregnancySymptom.MILKING);
 			pregnantEntity.removeEffect(MinepreggoMobEffects.LACTATION.get());
 			pregnancySystem.syncState(pregnantEntity);
 			pregnancySystem.syncEffect(pregnantEntity);	
@@ -68,12 +67,8 @@ public class PlayerPregnancySystemP2 extends PlayerPregnancySystemP1 {
 			return true;
 		} 	
 		if (pregnancySystem.getMilking() >= PregnancySystemHelper.ACTIVATE_MILKING_SYMPTOM
-				&& !pregnancySystem.getPregnancySymptoms().containsPregnancySymptom(PregnancySymptom.MILKING)) {
-			pregnancySystem.getPregnancySymptoms().addPregnancySymptom(PregnancySymptom.MILKING);
-			pregnantEntity.addEffect(new MobEffectInstance(MinepreggoMobEffects.LACTATION.get(), -1, 0, false, false, true));
-			pregnancySystem.syncState(pregnantEntity);
-			MinepreggoMod.LOGGER.debug("Player {} has developed pregnancy symptom: {}, all pregnancy symptoms: {}",
-					pregnantEntity.getGameProfile().getName(), PregnancySymptom.MILKING, pregnancySystem.getPregnancySymptoms());
+				&& !pregnancySystem.getPregnancySymptoms().contains(PregnancySymptom.MILKING)) {
+			this.initPregnancySymptom(PregnancySymptom.MILKING);
 			return true;
 		}
 

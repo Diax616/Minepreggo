@@ -29,14 +29,14 @@ public class TamablePregnantZombieGirlExpressionLayer
 	@Override
 	public @Nullable RenderType renderType(E zombieGirl) {			
 		final var pregnancyData = zombieGirl.getPregnancyData();
-		final var pain = pregnancyData.getPregnancyPain();
+		final var instance = pregnancyData.getPregnancyPain();
 		
-		if (zombieGirl.isOnFire() || pain == PregnancyPain.WATER_BREAKING) {
+		if (zombieGirl.isOnFire() || (instance != null && instance.getPain() == PregnancyPain.WATER_BREAKING)) {
 			return SURPRISED2;
 		}
 				
-		if (pain != null) {			
-			switch (pain) {
+		if (instance != null) {			
+			switch (instance.getPain()) {
 			case MORNING_SICKNESS: {		
 				return PAIN4;
 			}
@@ -57,7 +57,7 @@ public class TamablePregnantZombieGirlExpressionLayer
 			}
 		}
 
-		if (!pregnancyData.getSyncedPregnancySymptoms().isEmpty()) {
+		if (pregnancyData.getSyncedPregnancySymptoms().getSyncedSymptoms() != 0) {
 			return SAD1;
 		}
 

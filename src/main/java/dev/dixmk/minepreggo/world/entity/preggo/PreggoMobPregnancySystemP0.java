@@ -1,57 +1,20 @@
 package dev.dixmk.minepreggo.world.entity.preggo;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.MinepreggoModConfig;
-import dev.dixmk.minepreggo.init.MinepreggoMobEffects;
 import dev.dixmk.minepreggo.world.entity.preggo.PreggoMobSystem.Result;
-import dev.dixmk.minepreggo.world.pregnancy.AbstractPregnancySystem;
-import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
-import dev.dixmk.minepreggo.world.pregnancy.PregnancySymptom;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 public abstract class PreggoMobPregnancySystemP0
-	<E extends PreggoMob & ITamablePregnantPreggoMob> extends AbstractPregnancySystem<E> implements IPreggoMobPregnancySystem {
+	<E extends PreggoMob & ITamablePregnantPreggoMob> extends AbstractPreggoMobPregnancySystem<E> {
 	
 	protected PreggoMobPregnancySystemP0(E pregnantEntity) {
 		super(pregnantEntity);
 	}
 
-	// It has to be executed on server side
-	protected void evaluatePregnancySystem() {	
-		this.evaluatePregnancyTimer();
-		if (canAdvanceNextPregnancyPhase() && !hasToGiveBirth()) {			
-			var chestplate = pregnantEntity.getItemBySlot(EquipmentSlot.CHEST);
-			var leggings = pregnantEntity.getItemBySlot(EquipmentSlot.LEGS);
-			var phases = PregnancyPhase.values();
-			var pregnancyData = pregnantEntity.getPregnancyData();
-			var current = pregnancyData.getCurrentPregnancyPhase();
-			var next = phases[Math.min(current.ordinal() + 1, phases.length - 1)];
-			
-			
-			if (!chestplate.isEmpty()
-					&& (!PregnancySystemHelper.canUseChestplate(chestplate.getItem(), next) || pregnancyData.getSyncedPregnancySymptoms().containsPregnancySymptom(PregnancySymptom.MILKING))) {
-				PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, InventorySlot.CHEST);
-			}
-			
-			if (!leggings.isEmpty()
-					&& !PregnancySystemHelper.canUseLegging(leggings.getItem(), next)) {
-				PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(pregnantEntity, InventorySlot.LEGS);
-			}
-			
-			advanceToNextPregnancyPhase();
-			
-			pregnantEntity.discard();
-			MinepreggoMod.LOGGER.debug("Pregnancy phase advanced from {} for entity {}", pregnancyData.getCurrentPregnancyPhase(), pregnantEntity.getSimpleNameOrCustom());
-			return;
-		}	
-	}
-	
 	protected void evaluatePregnancyPains() {	
 		// This pregnancy phase does not support pregnancy pains yet
 	}
@@ -63,38 +26,11 @@ public abstract class PreggoMobPregnancySystemP0
 	protected void evaluatePregnancyNeeds() {
 		// This pregnancy phase does not support pregnancy needs yet
 	}
-	
-	public final void onServerTick() {
-		if (pregnantEntity.level().isClientSide) {			
-			return;
-		}	
-		
-		evaluatePregnancySystem();
-	}
-
-	
-	protected void evaluatePregnancyTimer() {
-		if (this.pregnantEntity.hasEffect(MinepreggoMobEffects.ETERNAL_PREGNANCY.get())) {
-			return;
-		}
-		final var pregnancyData = pregnantEntity.getPregnancyData();
-        if (pregnancyData.getPregnancyTimer() >= MinepreggoModConfig.SERVER.getTotalTicksByPregnancyDay()) {
-        	pregnancyData.resetPregnancyTimer();
-        	pregnancyData.incrementDaysPassed();
-        	pregnancyData.reduceDaysToGiveBirth();
-        	MinepreggoMod.LOGGER.debug("Pregnancy day advanced to {} for entity {}", pregnancyData.getDaysPassed(), pregnantEntity.getSimpleNameOrCustom());
-        } else {
-        	pregnancyData.incrementPregnancyTimer();
-        }
-	}
 
 	public boolean isMiscarriageActive() {
 	    return false;
 	}
-	
-	public boolean canAdvanceNextPregnancyPhase() {
-	    return pregnantEntity.getPregnancyData().getDaysPassed() >= pregnantEntity.getPregnancyData().getDaysByCurrentStage();
-	}
+
 	
 	public boolean hasPregnancyPain() {
 	    return false;
@@ -124,10 +60,15 @@ public abstract class PreggoMobPregnancySystemP0
 	protected boolean tryInitPregnancySymptom() {
 		return false;
 	}
+
+	// ON HURT	
+	public void evaluateOnSuccessfulHurt(DamageSource damagesource) {	
+		
+	}
 	
 	// RIGHT CLICK	
 	public InteractionResult onRightClick(Player source) {	
-		if (!isRightClickValid(source)) {
+		if (!this.isRightClickValid(source)) {
 			return InteractionResult.FAIL;
 		}				
 		var level = pregnantEntity.level();
@@ -143,17 +84,7 @@ public abstract class PreggoMobPregnancySystemP0
 		
 		return InteractionResult.PASS;
 	}
-	
-	public boolean isRightClickValid(Player source) {
-		return pregnantEntity.isOwnedBy(source);
-	}
-	
-	// ON HURT	
-	public void evaluateOnSuccessfulHurt(DamageSource damagesource) {	
-		
-	}
-	
-	
+
 	protected Result evaluateBellyRubs(Level level, Player source) {
 		// In this pregnancy phase, the belly is not large enough to do some action
 		return Result.FAIL;

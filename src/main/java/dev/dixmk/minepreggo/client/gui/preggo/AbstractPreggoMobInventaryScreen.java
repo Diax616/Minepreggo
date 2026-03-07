@@ -44,7 +44,7 @@ public abstract class AbstractPreggoMobInventaryScreen
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
-		guiGraphics.blit(inventoryTexture, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
+		guiGraphics.blit(inventoryTexture, this.leftPos, this.topPos, this.imageWidth, this.imageHeight, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
 		RenderSystem.disableBlend();
 	}
 

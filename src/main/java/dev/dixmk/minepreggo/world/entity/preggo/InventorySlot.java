@@ -5,24 +5,22 @@ import java.util.Optional;
 import net.minecraft.world.entity.EquipmentSlot;
 
 public enum InventorySlot {	
-	MAINHAND(InventorySlot.Type.EQUIPMENT, Optional.of(EquipmentSlot.MAINHAND), 0),
-	OFFHAND(InventorySlot.Type.EQUIPMENT, Optional.of(EquipmentSlot.OFFHAND), 1),
-	HEAD(InventorySlot.Type.EQUIPMENT, Optional.of(EquipmentSlot.HEAD), 2),
-	CHEST(InventorySlot.Type.EQUIPMENT, Optional.of(EquipmentSlot.CHEST), 3),
-	LEGS(InventorySlot.Type.EQUIPMENT, Optional.of(EquipmentSlot.LEGS), 4),
-	FEET(InventorySlot.Type.EQUIPMENT, Optional.of(EquipmentSlot.FEET), 5),
-	FOOD(InventorySlot.Type.INVENTORY, Optional.empty(), 6),
-	BOTH_HANDS(InventorySlot.Type.EQUIPMENT, Optional.empty(), 7),
-	MOUTH(InventorySlot.Type.EQUIPMENT, Optional.empty(), 8);
+	MAINHAND(InventorySlot.Type.EQUIPMENT, Optional.of(EquipmentSlot.MAINHAND)),
+	OFFHAND(InventorySlot.Type.EQUIPMENT, Optional.of(EquipmentSlot.OFFHAND)),
+	HEAD(InventorySlot.Type.EQUIPMENT, Optional.of(EquipmentSlot.HEAD)),
+	CHEST(InventorySlot.Type.EQUIPMENT, Optional.of(EquipmentSlot.CHEST)),
+	LEGS(InventorySlot.Type.EQUIPMENT, Optional.of(EquipmentSlot.LEGS)),
+	FEET(InventorySlot.Type.EQUIPMENT, Optional.of(EquipmentSlot.FEET)),
+	FOOD(InventorySlot.Type.INVENTORY, Optional.empty()),
+	BOTH_HANDS(InventorySlot.Type.EQUIPMENT, Optional.empty()),
+	MOUTH(InventorySlot.Type.EQUIPMENT, Optional.empty());
 	
 	public final Type type;
 	public final Optional<EquipmentSlot> vanilla;
-	public final int id;
 	   
-	InventorySlot(InventorySlot.Type type, Optional<EquipmentSlot> vanilla, int id) {
+	InventorySlot(InventorySlot.Type type, Optional<EquipmentSlot> vanilla) {
 		this.type = type;
 		this.vanilla = vanilla;
-		this.id = id;
 	}
 	
 	public enum Type {
