@@ -53,24 +53,24 @@ public abstract class AbstractBreastMilk extends Item {
 					Optional<List<MobEffect>> effects = cap.getFemaleData().map(femaleData -> {
 						if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
 							if (player.hasEffect(MinepreggoModMobEffects.ENDER_DRAGON_PREGNANCY.get())) {
-								return PlayerHelper.removeEffectsBeingPregnantOfEnderDragon(player, femaleData.getPregnancyData().getCurrentPregnancyPhase());
+								return PlayerHelper.getNonEnderDragonPregnancyEffects(player, femaleData.getPregnancyData().getCurrentPregnancyPhase());
 							}
 							else {
-								return PlayerHelper.removeEffectsBeingPregnant(player, femaleData.getPregnancyData().getCurrentPregnancyPhase());
+								return PlayerHelper.getNonPregnancyEffects(player, femaleData.getPregnancyData().getCurrentPregnancyPhase());
 							}					
 						}
-						return LivingEntityHelper.removeEffects(player, effect -> !PregnancySystemHelper.isFemaleEffect(effect));
+						return LivingEntityHelper.getEffects(player, effect -> !PregnancySystemHelper.isFemaleEffect(effect));
 					});
 					if (effects.isPresent()) {
 						effects.get().forEach(player::removeEffect);
 					}
 					else {
-						removeEffects(player);
+						LivingEntityHelper.removeEffects(player);
 					}
 				});		
 			}
 			else {
-				removeEffects(entity);
+				LivingEntityHelper.removeEffects(entity);
 			}
 		}		
 
@@ -82,12 +82,5 @@ public abstract class AbstractBreastMilk extends Item {
 		}
 		
 		return result.isEmpty() ? new ItemStack(Items.GLASS_BOTTLE) : result;		
-	}
-	
-	private static void removeEffects(LivingEntity entity) {
-		var iter = entity.getActiveEffects().iterator();
-		while (iter.hasNext()) {
-			entity.removeEffect(iter.next().getEffect());
-		}
 	}
 }

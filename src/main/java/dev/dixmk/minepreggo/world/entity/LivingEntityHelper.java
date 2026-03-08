@@ -1,6 +1,5 @@
 package dev.dixmk.minepreggo.world.entity;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
@@ -33,15 +32,21 @@ public class LivingEntityHelper {
 		from.getActiveEffects().forEach(effect -> to.addEffect(new MobEffectInstance(effect)));
 	}
 	
-	public static List<MobEffect> removeEffects(LivingEntity entity, Predicate<MobEffect> predicate) {
-		List<MobEffect> effectsToRemove = new ArrayList<>();
-    	for (MobEffectInstance effectInstance : entity.getActiveEffects()) {
-            MobEffect effect = effectInstance.getEffect();
-            if (predicate.test(effect)) {
-                effectsToRemove.add(effect);
-            }
-        }
-    	return effectsToRemove;
+	/**
+	 * Returns a unmodifiable list of MobEffects that the entity has, filtered by the given predicate.
+	 * */
+	public static List<MobEffect> getEffects(LivingEntity entity, Predicate<MobEffect> predicate) {
+		return entity.getActiveEffects().stream()
+				.filter(effectInstance -> predicate.test(effectInstance.getEffect()))
+				.map(MobEffectInstance::getEffect)
+				.toList();
+	}
+	
+	public static void removeEffects(LivingEntity entity) {
+		entity.getActiveEffects().stream()
+		.map(MobEffectInstance::getEffect)
+		.toList() // Create a copy of the list to avoid ConcurrentModificationException
+		.forEach(entity::removeEffect);
 	}
 	
 	public static void playSoundNearTo(LivingEntity entity, SoundEvent sound) {

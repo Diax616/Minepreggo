@@ -443,20 +443,26 @@ public class PlayerHelper {
 	
 	
 	// PLAYER MOB EFFECT - START
-	public static List<MobEffect> removeEffectsBeingPregnant(Player player, PregnancyPhase phase) {
+	/**
+	 * Return a unmodifiable list of the player's mob effects that are not pregnancy effects (and not secondary pregnancy effects if the phase is P2 or higher).
+	 * */
+	public static List<MobEffect> getNonPregnancyEffects(Player player, PregnancyPhase phase) {
 		Predicate<MobEffect> predicate = phase.compareTo(PregnancyPhase.P2) >= 0
 				? effect -> !PregnancySystemHelper.isPregnancyEffect(effect) && !PregnancySystemHelper.isSecondaryPregnancyEffect(effect)
 				: effect -> !PregnancySystemHelper.isPregnancyEffect(effect);
 					
-		return LivingEntityHelper.removeEffects(player, predicate);
+		return LivingEntityHelper.getEffects(player, predicate);
 	}
 	
-	public static List<MobEffect> removeEffectsBeingPregnantOfEnderDragon(Player player, PregnancyPhase phase) {
+	/**
+	 * Return a unmodifiable list of the player's mob effects that are not pregnancy effects, not secondary pregnancy effects and not ender dragon pregnancy secondary effects if the phase is P2 or higher.
+	 * */
+	public static List<MobEffect> getNonEnderDragonPregnancyEffects(Player player, PregnancyPhase phase) {
 		Predicate<MobEffect> predicate = phase.compareTo(PregnancyPhase.P2) >= 0
 				? effect -> !EnderDragonPregnancy.isSecondaryEffect(effect, phase) && !PregnancySystemHelper.isPregnancyEffect(effect) && !PregnancySystemHelper.isSecondaryPregnancyEffect(effect)
 				: effect -> !EnderDragonPregnancy.isSecondaryEffect(effect, phase) && !PregnancySystemHelper.isPregnancyEffect(effect);
 					
-		return LivingEntityHelper.removeEffects(player, predicate);
+		return LivingEntityHelper.getEffects(player, predicate);
 	}
 	
 	private static final ImmutableMap<PregnancyPhase, MobEffect> PREGNANCY_EFFECTS = ImmutableMap.of(

@@ -36,15 +36,15 @@ public class MilkBucketItemMixin {
 	            	if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {        
 	                	// TODO: Refactor the logic to avoid removing secondary pregnancy effects	
 	            		if (player.hasEffect(MinepreggoModMobEffects.ENDER_DRAGON_PREGNANCY.get())) {
-		            		effectsToRemove = PlayerHelper.removeEffectsBeingPregnantOfEnderDragon(player, femaleData.getPregnancyData().getCurrentPregnancyPhase());
+		            		effectsToRemove = PlayerHelper.getNonEnderDragonPregnancyEffects(player, femaleData.getPregnancyData().getCurrentPregnancyPhase());
 	            		}
 	            		else {
-		            		effectsToRemove = PlayerHelper.removeEffectsBeingPregnant(player, femaleData.getPregnancyData().getCurrentPregnancyPhase());
+		            		effectsToRemove = PlayerHelper.getNonPregnancyEffects(player, femaleData.getPregnancyData().getCurrentPregnancyPhase());
 	            		}	 
 	                	flag = true;
 	                }
 	                else {         
-	                	effectsToRemove = LivingEntityHelper.removeEffects(entity, effect -> !PregnancySystemHelper.isFemaleEffect(effect));
+	                	effectsToRemove = LivingEntityHelper.getEffects(entity, effect -> !PregnancySystemHelper.isFemaleEffect(effect));
 	                    flag = true;
 	                }
 	                
