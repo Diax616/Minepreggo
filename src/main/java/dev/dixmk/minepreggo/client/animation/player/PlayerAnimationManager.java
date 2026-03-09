@@ -102,8 +102,8 @@ public class PlayerAnimationManager {
     		linearAnimationTick++;
     		continuousAnimationTick++;
     		
-    		if (linearAnimationTick >= currentAnimation.getDuration()) {
-    			if (currentAnimation.isLooping()) {
+    		if (linearAnimationTick >= currentAnimation.getInfo().duration()) {
+    			if (currentAnimation.getInfo().looping()) {
     				linearAnimationTick = 0;
     			} else {
     				stopAnimation();
@@ -130,7 +130,7 @@ public class PlayerAnimationManager {
     			ModelPart part = modelParts.get(partName);
     			if (part != null) {
     				// Reset to original state first
-                    if (currentAnimation.shouldOverrideVanilla()) {
+                    if (currentAnimation.getInfo().overrideVanilla()) {
                         // Reset to original state first
                         PartState original = originalStates.get(partName);
                         if (original != null) {
@@ -193,7 +193,7 @@ public class PlayerAnimationManager {
     	}
     	    
         public boolean shouldOverrideVanillaAnimations() {
-            return hasActiveAnimation() && currentAnimation.shouldOverrideVanilla();
+            return hasActiveAnimation() && currentAnimation.getInfo().overrideVanilla();
         }
     	
     	private static record PartState(float xRot, float yRot, float zRot, float x, float y, float z) {}

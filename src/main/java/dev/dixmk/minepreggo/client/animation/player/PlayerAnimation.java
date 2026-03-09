@@ -5,31 +5,26 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.ObjIntConsumer;
 
+import dev.dixmk.minepreggo.common.animation.PlayerAnimationInfo;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class PlayerAnimation {
-    private final String name;
-    private final int duration;
-    private final boolean looping;
-    private final boolean overrideVanilla;
+	private final PlayerAnimationInfo info;
     private final Map<String, ObjIntConsumer<ModelPart>> timeBasedAnimationFunctions;
-
-    public PlayerAnimation(String name, int duration, boolean looping, boolean overrideVanilla) {
-        this.name = name;
-        this.duration = duration;
-        this.looping = looping;
-        this.overrideVanilla = overrideVanilla;
-        this.timeBasedAnimationFunctions = new HashMap<>();
+    
+    private PlayerAnimation(PlayerAnimationInfo info) {
+    	this.info = info;
+    	this.timeBasedAnimationFunctions = new HashMap<>();
+	}
+    
+    public static Builder builder(PlayerAnimationInfo info) {
+    	return new Builder(info);
     }
-
-    public PlayerAnimation(String name, int duration, boolean looping) {
-        this(name, duration, looping, true);
-    }
-
-    public void addPartAnimation(String partName, ObjIntConsumer<ModelPart> animFunction) {
+    
+    private void addPartAnimation(String partName, ObjIntConsumer<ModelPart> animFunction) {
         timeBasedAnimationFunctions.put(partName, animFunction);
     }
 
@@ -39,24 +34,33 @@ public class PlayerAnimation {
             timeBasedFunc.accept(part, rawTick);
         }
     }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getDuration() {
-        return duration;
-    }
-
-    public boolean isLooping() {
-        return looping;
-    }
-
-    public boolean shouldOverrideVanilla() {
-        return overrideVanilla;
-    }
+    
+    public PlayerAnimationInfo getInfo() {
+		return info;
+	}
 
     public Set<String> getAnimatedParts() {
         return timeBasedAnimationFunctions.keySet();
     }
+    
+    @OnlyIn(Dist.CLIENT)
+    public static class Builder {
+    	private PlayerAnimationInfo info;
+        private final Map<String, ObjIntConsumer<ModelPart>> timeBasedAnimationFunctions = new HashMap<>();
+
+    	public Builder(PlayerAnimationInfo info) {
+			this.info = info;
+		}
+		
+		public Builder addPartAnimation(String partName, ObjIntConsumer<ModelPart> animFunction) {
+			timeBasedAnimationFunctions.put(partName, animFunction);
+			return this;
+		}
+		
+		public PlayerAnimation build() {
+			var anim = new PlayerAnimation(info);
+			timeBasedAnimationFunctions.forEach(anim::addPartAnimation);
+			return anim;
+		}
+	}
 }

@@ -656,9 +656,11 @@ public class PregnancySystemHelper {
 							LivingEntityHelper.playSoundNearTo(target, MinepreggoModSounds.BELLY_TOUCH.get(), 0.6f);
 							
 							final var pregnancySystem = femaleData.getPregnancyData();
-							final var isFather = femaleData.getPrePregnancyData().isPresent() && femaleData.getPrePregnancyData().get().fatherId().equals(source.getUUID());
-							
-							
+				
+							final boolean isFather = femaleData.getPrePregnancyData()
+									.map(prePregnancyData -> prePregnancyData.fatherId() != null && prePregnancyData.fatherId().equals(source.getUUID()))
+									.orElse(Boolean.FALSE);
+													
 							ParticleOptions particle = isFather ? ParticleTypes.HEART : ParticleTypes.SMOKE;
 
 							playSlappingBellyAnimation(source, target);
