@@ -3,6 +3,7 @@ package dev.dixmk.minepreggo;
 import org.apache.logging.log4j.Logger;
 
 import dev.dixmk.minepreggo.client.animation.player.PlayerAnimationRegistry;
+import dev.dixmk.minepreggo.client.animation.player.PlayerAnimations;
 import dev.dixmk.minepreggo.client.gui.preggo.PlayerJoinsWorldScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.PlayerPrenatalCheckUpScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.PreggoMobPrenatalCheckUpScreen;
@@ -25,6 +26,8 @@ import dev.dixmk.minepreggo.client.gui.preggo.zombie.PregnantZombieGirlInventary
 import dev.dixmk.minepreggo.client.gui.preggo.zombie.PregnantZombieGirlMainScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.zombie.ZombieGirlInventaryScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.zombie.ZombieGirlMainScreen;
+import dev.dixmk.minepreggo.common.animation.CommonPlayerAnimationRegistry;
+import dev.dixmk.minepreggo.common.animation.PlayerAnimationInfos;
 import dev.dixmk.minepreggo.init.MinepreggoLootModifier;
 import dev.dixmk.minepreggo.init.MinepreggoModAdvancements;
 import dev.dixmk.minepreggo.init.MinepreggoModBlocks;
@@ -413,9 +416,20 @@ public class MinepreggoMod {
 			MenuScreens.register(MinepreggoModMenus.REQUEST_SEX_M2P_MENU.get(), RequestSexM2PScreen::new);
 			MenuScreens.register(MinepreggoModMenus.REQUEST_SEX_P2P_MENU.get(), RequestSexP2PScreen::new);
 		
-			PlayerAnimationRegistry.getInstance().init();
-			
-			
+			var animationRegistry =	PlayerAnimationRegistry.getInstance();
+			animationRegistry.register(PlayerAnimations.BIRTH);		
+			animationRegistry.register(PlayerAnimations.PREBIRTH);	
+			animationRegistry.register(PlayerAnimations.WATER_BREAKING);	
+			animationRegistry.register(PlayerAnimations.MISCARRIAGE);
+			animationRegistry.register(PlayerAnimations.RUBBING_BELLY_P0);
+			animationRegistry.register(PlayerAnimations.RUBBING_BELLY_P1);
+			animationRegistry.register(PlayerAnimations.RUBBING_BELLY_P2);
+			animationRegistry.register(PlayerAnimations.RUBBING_BELLY_P3);
+			animationRegistry.register(PlayerAnimations.RUBBING_BELLY_P4);
+			animationRegistry.register(PlayerAnimations.RUBBING_BELLY_P5);
+			animationRegistry.register(PlayerAnimations.RUBBING_BELLY_P6);
+			animationRegistry.register(PlayerAnimations.RUBBING_BELLY_P7);
+			animationRegistry.register(PlayerAnimations.RUBBING_BELLY_P8);
 		});
 	}
 	
@@ -484,6 +498,20 @@ public class MinepreggoMod {
             MinepreggoModPacketHandler.registerMessages();
             
             MinepreggoModAdvancements.register();
+            
+            var animationRegistry = CommonPlayerAnimationRegistry.getInstance();
+            animationRegistry.register(PlayerAnimationInfos.BIRTH);
+            animationRegistry.register(PlayerAnimationInfos.PREBIRTH);
+            animationRegistry.register(PlayerAnimationInfos.WATER_BREAKING);
+            animationRegistry.register(PlayerAnimationInfos.MISCARRIAGE);            animationRegistry.register(PlayerAnimationInfos.RUBBING_BELLY_P0);
+            animationRegistry.register(PlayerAnimationInfos.RUBBING_BELLY_P1);
+            animationRegistry.register(PlayerAnimationInfos.RUBBING_BELLY_P2);
+            animationRegistry.register(PlayerAnimationInfos.RUBBING_BELLY_P3);
+            animationRegistry.register(PlayerAnimationInfos.RUBBING_BELLY_P4);
+            animationRegistry.register(PlayerAnimationInfos.RUBBING_BELLY_P5);
+            animationRegistry.register(PlayerAnimationInfos.RUBBING_BELLY_P6);
+            animationRegistry.register(PlayerAnimationInfos.RUBBING_BELLY_P7);
+            animationRegistry.register(PlayerAnimationInfos.RUBBING_BELLY_P8);
         });	
     }  
 }

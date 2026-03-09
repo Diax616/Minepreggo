@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 //If server/common code needs animation metadata, use AnimationInfo instead.
 
 public class CommonPlayerAnimationRegistry {
-    private final Map<String, AnimationInfo> animations;
+    private final Map<String, PlayerAnimationInfo> animations;
     private static final String RUBBING_BELLY_ANIM = "rubbing_belly_p";    
     private static final Pattern RUBBING_BELLY_PATTERN = Pattern.compile("^rubbing_belly_p\\d+$");
     
@@ -27,11 +27,11 @@ public class CommonPlayerAnimationRegistry {
         return Holder.INSTANCE;
     }
 
-    public void register(AnimationInfo animation) {
+    public void register(PlayerAnimationInfo animation) {
         animations.put(animation.name(), animation);
     }
 
-    public AnimationInfo getAnimation(String name) {
+    public PlayerAnimationInfo getAnimation(String name) {
         return animations.get(name);
     }
 
@@ -48,7 +48,7 @@ public class CommonPlayerAnimationRegistry {
     }
 
     public boolean isLaborAnimation(String name) {
-    	return name != null && (name.equals("birth") || name.equals("miscarriage") || name.equals("water_breaking") || name.equals("prebirth"));
+    	return name != null && (name.equals(PlayerAnimationInfos.BIRTH.name()) || name.equals(PlayerAnimationInfos.MISCARRIAGE.name()) || name.equals(PlayerAnimationInfos.WATER_BREAKING.name()) || name.equals(PlayerAnimationInfos.PREBIRTH.name()));
     }
     
     public boolean containsAnimation(String name) {

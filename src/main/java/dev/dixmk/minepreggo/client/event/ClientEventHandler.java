@@ -18,6 +18,7 @@ import dev.dixmk.minepreggo.network.packet.c2s.StopPlayerAnimationC2SPacket;
 import dev.dixmk.minepreggo.network.packet.c2s.TeleportUsingEnderPowerC2SPacket;
 import dev.dixmk.minepreggo.network.packet.c2s.TeleportWithEnderWomanC2SPacket;
 import dev.dixmk.minepreggo.network.packet.c2s.UpdateBellyRubbingStateC2SPacket;
+import dev.dixmk.minepreggo.world.pregnancy.PregnancyPain;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.client.Minecraft;
@@ -169,7 +170,7 @@ public class ClientEventHandler {
         		cap.getFemaleData().ifPresent(femaleData -> {
         			if (femaleData.isPregnant() && femaleData.isPregnancyDataInitialized()) {
         				final var pain = femaleData.getPregnancyData().getPregnancyPain();
-        				if (pain != null && pain.incapacitate) {
+        				if (pain != null && PregnancyPain.isLaborPain(pain)) {
         					return;
         				}
         				       				
