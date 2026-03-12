@@ -5,17 +5,22 @@ import javax.annotation.Nullable;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.InstantenousMobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
-public class Fertility extends MobEffect {
+public class Fertility extends InstantenousMobEffect {
 
 	public Fertility() {
 		super(MobEffectCategory.BENEFICIAL, -10027213);
 	}
 
+    @Override
+    public void applyEffectTick(LivingEntity target, int amplifier) {
+        applyInstantenousEffect(null, null, target, amplifier, 1.0D);
+    }
+	
 	@Override
 	public void applyInstantenousEffect(@Nullable Entity p_19462_, @Nullable Entity p_19463_, LivingEntity p_19464_, int p_19465_, double p_19466_) { 		
 		if (p_19464_.level().isClientSide) {
@@ -34,10 +39,5 @@ public class Fertility extends MobEffect {
 				})
 			);			
 		}
-	}
-	
-	@Override
-	public boolean isInstantenous() {
-		return true;
 	}
 }

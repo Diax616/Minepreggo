@@ -14,12 +14,12 @@ import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhaseHelper;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.InstantenousMobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
-public class PregnancyDelay extends MobEffect {
+public class PregnancyDelay extends InstantenousMobEffect {
 
     private static final float[][] PERCETANGES_RANGES = {
             {0.1f, 0.2f},
@@ -33,10 +33,10 @@ public class PregnancyDelay extends MobEffect {
 		super(MobEffectCategory.HARMFUL, -39220);
 	}
 	
-	@Override
-	public boolean isInstantenous() {
-		return true;
-	}
+    @Override
+    public void applyEffectTick(LivingEntity target, int amplifier) {
+        applyInstantenousEffect(null, null, target, amplifier, 1.0D);
+    }
 	
 	@Override
 	public void applyInstantenousEffect(@Nullable Entity source, @Nullable Entity indirectSource, LivingEntity target, int amplifier, double effectiveness) {

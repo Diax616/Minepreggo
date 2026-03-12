@@ -139,10 +139,10 @@ public abstract class PreggoMobPregnancySystemP1
 		if (pregnancyData.getPregnancyPainTimer() < PregnancySystemHelper.TOTAL_TICKS_MISCARRIAGE) {
         	pregnancyData.setPregnancyPainTimer(pregnancyData.getPregnancyPainTimer() + 1);	        		        	
 			if (pregnantEntity instanceof AbstractEnderWoman) {
-	    		AbstractPregnancySystem.spawnParticulesForWaterBreaking(serverLevel, pregnantEntity, pregnantEntity.getBbHeight() * 0.65);
+	    		AbstractPregnancySystem.spawnParticulesForMiscarriage(serverLevel, pregnantEntity, pregnantEntity.getBbHeight() * 0.65);
 			}
 			else {
-	    		AbstractPregnancySystem.spawnParticulesForWaterBreaking(serverLevel, pregnantEntity);
+	    		AbstractPregnancySystem.spawnParticulesForMiscarriage(serverLevel, pregnantEntity);
 			}
         } else {      	
         	final List<ItemStack> deadBabiesItemStacks = PregnancySystemHelper.getDeadBabies(pregnancyData.getWomb());   	
