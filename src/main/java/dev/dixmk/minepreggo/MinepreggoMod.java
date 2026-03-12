@@ -482,8 +482,6 @@ public class MinepreggoMod {
         	BrewingRecipeRegistry.addRecipe(new InfertilityPotionBrewingRecipe());
         	BrewingRecipeRegistry.addRecipe(new MetabolismControlPotionBrewingRecipe());
         	BrewingRecipeRegistry.addRecipe(new LongMetabolismControlPotionBrewingRecipe());
-        	BrewingRecipeRegistry.addRecipe(new PregnancyHealingBrewingRecipe());
-        	BrewingRecipeRegistry.addRecipe(new PregnancyHealingBrewingRecipe());
         	BrewingRecipeRegistry.addRecipe(new PregnancyResistancePotionBrewingRecipe());
         	BrewingRecipeRegistry.addRecipe(new LongPregnancyResistancePotionBrewingRecipe());
         	BrewingRecipeRegistry.addRecipe(new ZeroGravityBellyPotionBrewingRecipe());

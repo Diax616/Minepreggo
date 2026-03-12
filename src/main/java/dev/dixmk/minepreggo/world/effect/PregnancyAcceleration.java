@@ -14,12 +14,12 @@ import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhaseHelper;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.InstantenousMobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
-public class PregnancyAcceleration extends MobEffect {
+public class PregnancyAcceleration extends InstantenousMobEffect {
     
     private static final float[][] PERCETANGES_RANGES = {
             {0.1f, 0.2f},
@@ -31,6 +31,11 @@ public class PregnancyAcceleration extends MobEffect {
 	
     public PregnancyAcceleration() {
         super(MobEffectCategory.HARMFUL, -52429);
+    }
+    
+    @Override
+    public void applyEffectTick(LivingEntity target, int amplifier) {
+        applyInstantenousEffect(null, null, target, amplifier, 1.0D);
     }
 
     @Override
@@ -66,11 +71,6 @@ public class PregnancyAcceleration extends MobEffect {
         maxDays = Math.min(maxDays, totalPregnancyDays); // Don't exceed total days
 
         return random.nextInt(minDays, maxDays + 1); // upper bound is exclusive, so +1
-    }
-
-    @Override
-    public boolean isInstantenous() {
-        return true;
     }
     
     private static void apply(IPregnancyData handler, int days) {

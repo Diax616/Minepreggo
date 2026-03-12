@@ -36,23 +36,23 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.InstantenousMobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
 
-public class BabyDuplication extends MobEffect {
+public class BabyDuplication extends InstantenousMobEffect {
 
 	public BabyDuplication() {
 		super(MobEffectCategory.HARMFUL, -39220);
 	}
 	
-	@Override
-	public boolean isInstantenous() {
-		return true;
-	}
+    @Override
+    public void applyEffectTick(LivingEntity target, int amplifier) {
+        applyInstantenousEffect(null, null, target, amplifier, 1.0D);
+    }
 	
     @Override
     public void applyInstantenousEffect(@Nullable Entity source, @Nullable Entity indirectSource, LivingEntity target, int amplifier, double effectiveness) {     

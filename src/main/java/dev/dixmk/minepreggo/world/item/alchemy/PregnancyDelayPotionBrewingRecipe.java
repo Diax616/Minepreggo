@@ -62,7 +62,7 @@ public abstract class PregnancyDelayPotionBrewingRecipe implements IBrewingRecip
 
 		@Override
 		public boolean isIngredient(ItemStack ingredient) {
-			return ingredient.is(Items.NETHER_QUARTZ_ORE);
+			return ingredient.is(Items.QUARTZ);
 		}
 
 		@Override
