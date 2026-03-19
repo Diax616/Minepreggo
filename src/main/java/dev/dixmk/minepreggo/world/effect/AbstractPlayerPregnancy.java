@@ -11,8 +11,8 @@ import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.world.entity.BellyPartManager;
+import dev.dixmk.minepreggo.world.entity.player.AbstractPlayerPregnancySystem;
 import dev.dixmk.minepreggo.world.entity.player.PlayerHelper;
-import dev.dixmk.minepreggo.world.entity.player.PlayerPregnancySystemP0;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
@@ -21,34 +21,12 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 
-public abstract class AbstractPlayerPregnancy<S extends PlayerPregnancySystemP0> extends MobEffect  {
+public abstract class AbstractPlayerPregnancy extends MobEffect  {
 	static final UUID SPEED_MODIFIER_UUID = UUID.fromString("a0bf6ac9-4354-4977-86fc-5dea9108665d");
 	static final UUID ATTACK_SPEED_MODIFIER_UUID = UUID.fromString("57a3938d-b55a-47b5-93ee-737724ba9d2e");
 	
-	/*
-	 * Cache of pregnancy systems indexed by player UUID.
-	 *
-	 * Multiplayer behavior:
-	 * In Minecraft Forge, MobEffect instances are singletons - there is only one instance
-	 * of each effect class shared by all players on the server.
-	 *
-	 * This map allows multiple players to have the same pregnancy effect simultaneously:
-	 *  - Player A in phase P0 -> {UUID_A -> PlayerPregnancySystemP0 for A}
-	 *  - Player B in phase P0 -> {UUID_B -> PlayerPregnancySystemP0 for B}
-	 *  - Player C in phase P5 -> Stored in PregnancyP5's separate map
-	 *
-	 * Why not static?
-	 *  - Each pregnancy phase (P0-P8) is a different class with its own singleton instance.
-	 *  - Each phase needs its own isolated map to store systems for players in that phase.
-	 *  - If static, all phases would share the same map, causing conflicts when players are in different phases.
-	 *
-	 * Lifecycle:
-	 *  - Add: When effect is applied via ensurePregnancySystemInitialized(ServerPlayer)
-	 *  - Use: Retrieved every tick in applyEffectTick(LivingEntity, int)
-	 *  - Remove: Cleaned up in removeAttributeModifiers(LivingEntity, AttributeMap, int)
-	 */
-	protected final Map<UUID, S> pregnancySystemsCache = new HashMap<>();
-	
+	protected static final Map<UUID, AbstractPlayerPregnancySystem> SYSTEMS = new HashMap<>();
+		
 	protected AbstractPlayerPregnancy() {
 		super(MobEffectCategory.NEUTRAL, -6750055);
 	}
@@ -95,7 +73,7 @@ public abstract class AbstractPlayerPregnancy<S extends PlayerPregnancySystemP0>
             ensurePregnancySystemInitialized(serverPlayer);
             
             // Get the pregnancy system for this specific player
-            S pregnancySystem = pregnancySystemsCache.get(serverPlayer.getUUID());
+            var pregnancySystem = SYSTEMS.get(serverPlayer.getUUID());
             
             if (pregnancySystem != null) {
                 pregnancySystem.onServerTick();
@@ -114,14 +92,17 @@ public abstract class AbstractPlayerPregnancy<S extends PlayerPregnancySystemP0>
 	
     @Override
     public void removeAttributeModifiers(LivingEntity entity, AttributeMap p_19470_, int p_19471_) {
-    	if (entity instanceof ServerPlayer serverPlayer && !serverPlayer.level().isClientSide) {
-    		pregnancySystemsCache.remove(serverPlayer.getUUID());
-    		
+    	if (entity instanceof ServerPlayer serverPlayer && !serverPlayer.level().isClientSide) {		
 			PregnancySystemHelper.removeGravityModifier(entity);
 			PregnancySystemHelper.removeKnockbackResistanceModifier(entity);
 			
 			if (MinepreggoModConfig.SERVER.isBellyColisionsForPlayersEnable()) {
 				BellyPartManager.getInstance().remove(entity);
+			}
+			
+    		var instance = SYSTEMS.remove(serverPlayer.getUUID());
+    		if (instance != null) {
+				MinepreggoMod.LOGGER.debug("Removed pregnancy system for player: {}", serverPlayer.getName().getString());
 			}
     	}
     }

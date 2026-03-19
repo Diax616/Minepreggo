@@ -38,8 +38,9 @@ public class BellyPartManager {
         	if (part != null && !part.isRemoved()) {
         		part.discard();
         	}	
-        	bellyParts.remove(entity.getUUID());
-        	MinepreggoMod.LOGGER.debug("Removed BellyPart for invalid entity {}", entity.getUUID());
+        	if (bellyParts.remove(entity.getUUID()) != null) {
+				MinepreggoMod.LOGGER.debug("Removed BellyPart for entity {} due to death or removal", entity.getUUID());
+			}
         }    
         else if (part == null || part.isRemoved()) {
             // TODO: BellyPart creates unnecessary when player change dimension. Fix it.
@@ -59,8 +60,7 @@ public class BellyPartManager {
     }
     
     public boolean remove(LivingEntity entity) {
-        UUID entityId = entity.getUUID();
-        BellyPart part = bellyParts.remove(entityId);
+        BellyPart part = bellyParts.remove(entity.getUUID());
         if (part != null) {
             part.discard();
             return true;

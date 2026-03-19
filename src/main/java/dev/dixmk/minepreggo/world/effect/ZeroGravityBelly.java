@@ -41,7 +41,7 @@ public class ZeroGravityBelly extends MobEffect {
 						MobEffect pregnancyEffect = PlayerHelper.getPregnancyEffects(femaleData.getPregnancyData().getCurrentPregnancyPhase());
 						MobEffectInstance instance = serverPlayer.getEffect(pregnancyEffect);
 						
-						if (instance != null && instance.getEffect() instanceof AbstractPlayerPregnancy<?> playerPregnancyEffect) {
+						if (instance != null && instance.getEffect() instanceof AbstractPlayerPregnancy playerPregnancyEffect) {
 							serverPlayer.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);							
 							if (speedAttr != null && speedAttr.getModifier(AbstractPlayerPregnancy.SPEED_MODIFIER_UUID) != null) {	
 								playerPregnancyEffect.getSpeedModifier().ifPresent(speedAttr::removeModifier);
@@ -82,7 +82,7 @@ public class ZeroGravityBelly extends MobEffect {
 						MobEffect pregnancyEffect = PlayerHelper.getPregnancyEffects(femaleData.getPregnancyData().getCurrentPregnancyPhase());
 						MobEffectInstance instance = serverPlayer.getEffect(pregnancyEffect);
 						
-						if (instance != null && instance.getEffect() instanceof AbstractPlayerPregnancy<?> playerPregnancyEffect) {
+						if (instance != null && instance.getEffect() instanceof AbstractPlayerPregnancy playerPregnancyEffect) {
 							playerPregnancyEffect.getMovementSpeedNerfAmplifier().ifPresent(amp -> serverPlayer.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, -1, amp, false, false)));					
 							if (speedAttr != null && speedAttr.getModifier(AbstractPlayerPregnancy.SPEED_MODIFIER_UUID) == null) {	
 								playerPregnancyEffect.getSpeedModifier().ifPresent(speedAttr::addPermanentModifier);

@@ -2,6 +2,8 @@ package dev.dixmk.minepreggo.world.entity.preggo;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import dev.dixmk.minepreggo.MinepreggoModConfig;
+import dev.dixmk.minepreggo.world.entity.BellyPartManager;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -154,8 +156,13 @@ public abstract class PreggoMob extends TamableAnimal {
 	
 	@Override
 	public void remove(RemovalReason reason) {
-		if (!this.level().isClientSide && this.hasJigglePhysics()) {
-			PreggoMobHelper.removeJigglePhysics(this);
+		if (!this.level().isClientSide) {
+			if (this.hasJigglePhysics()) {
+				PreggoMobHelper.removeJigglePhysics(this);
+			}
+			if (MinepreggoModConfig.SERVER.isBellyColisionsForPreggoMobsEnable()) {
+				BellyPartManager.getInstance().remove(this);
+			}
 		}
 		super.remove(reason);
 	}

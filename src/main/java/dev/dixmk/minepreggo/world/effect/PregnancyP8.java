@@ -17,22 +17,23 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 
-public class PregnancyP8 extends AbstractPlayerPregnancy<PlayerPregnancySystemP8> {
+public class PregnancyP8 extends AbstractPlayerPregnancy {
 	private static final AttributeModifier ATTACK_SPEED_MODIFIER = new AttributeModifier(ATTACK_SPEED_MODIFIER_UUID, "pregnancy attack speed nerf", -0.6, AttributeModifier.Operation.MULTIPLY_BASE);
 
 	@Override
     protected void ensurePregnancySystemInitialized(ServerPlayer serverPlayer) {
-        PlayerPregnancySystemP8 pregnancySystem = pregnancySystemsCache.get(serverPlayer.getUUID());
+        var pregnancySystem = SYSTEMS.get(serverPlayer.getUUID());
         
         if (pregnancySystem == null) {
             pregnancySystem = new PlayerPregnancySystemP8(serverPlayer);
-            pregnancySystemsCache.put(serverPlayer.getUUID(), pregnancySystem);
+            SYSTEMS.put(serverPlayer.getUUID(), pregnancySystem);
             MinepreggoMod.LOGGER.info("Initialized PlayerPregnancySystemP8 for player: {}", serverPlayer.getName().getString());
         }
         else if (serverPlayer.isAlive() && !pregnancySystem.isPlayerValid(serverPlayer)) {
             MinepreggoMod.LOGGER.info("Player {} reference is stale, reinitializing PlayerPregnancySystemP8", serverPlayer.getGameProfile().getName());
+            pregnancySystem.invalidate();
             pregnancySystem = new PlayerPregnancySystemP8(serverPlayer);
-            pregnancySystemsCache.put(serverPlayer.getUUID(), pregnancySystem);
+            SYSTEMS.put(serverPlayer.getUUID(), pregnancySystem);
         }
     } 
 	

@@ -8,21 +8,22 @@ import dev.dixmk.minepreggo.world.entity.player.PlayerPregnancySystemP1;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 
-public class PregnancyP1 extends AbstractPlayerPregnancy<PlayerPregnancySystemP1> {
+public class PregnancyP1 extends AbstractPlayerPregnancy {
 
 	@Override
     protected void ensurePregnancySystemInitialized(ServerPlayer serverPlayer) {
-        PlayerPregnancySystemP1 pregnancySystem = pregnancySystemsCache.get(serverPlayer.getUUID());
+        var pregnancySystem = SYSTEMS.get(serverPlayer.getUUID());
         
         if (pregnancySystem == null) {
             pregnancySystem = new PlayerPregnancySystemP1(serverPlayer);
-            pregnancySystemsCache.put(serverPlayer.getUUID(), pregnancySystem);
+            SYSTEMS.put(serverPlayer.getUUID(), pregnancySystem);
             MinepreggoMod.LOGGER.info("Initialized PlayerPregnancySystemP1 for player: {}", serverPlayer.getName().getString());
         }
         else if (serverPlayer.isAlive() && !pregnancySystem.isPlayerValid(serverPlayer)) {
             MinepreggoMod.LOGGER.info("Player {} reference is stale, reinitializing PlayerPregnancySystemP1", serverPlayer.getGameProfile().getName());
+            pregnancySystem.invalidate();
             pregnancySystem = new PlayerPregnancySystemP1(serverPlayer);
-            pregnancySystemsCache.put(serverPlayer.getUUID(), pregnancySystem);
+            SYSTEMS.put(serverPlayer.getUUID(), pregnancySystem);
         }
     }
 	
