@@ -2,13 +2,8 @@ package dev.dixmk.minepreggo.world.entity.player;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
-import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
-import dev.dixmk.minepreggo.network.capability.FemalePlayerImpl;
-import dev.dixmk.minepreggo.network.capability.PlayerDataImpl;
-import dev.dixmk.minepreggo.network.capability.PlayerPregnancyDataImpl;
 import dev.dixmk.minepreggo.world.entity.BellyPartManager;
-import dev.dixmk.minepreggo.world.pregnancy.AbstractPregnancySystem;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancyPhase;
 import dev.dixmk.minepreggo.world.pregnancy.PregnancySystemHelper;
 import net.minecraft.server.level.ServerLevel;
@@ -16,58 +11,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 
-public class PlayerPregnancySystemP0 extends AbstractPregnancySystem<ServerPlayer> {
-	
-	protected PlayerDataImpl playerData = null;
-	protected FemalePlayerImpl femaleData = null;
-	protected PlayerPregnancyDataImpl pregnancySystem = null;
-	
-	private final boolean isValid;
-	
+public class PlayerPregnancySystemP0 extends AbstractPlayerPregnancySystem {	
 	public PlayerPregnancySystemP0(ServerPlayer player) {
 		super(player);
-		
-		player.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> {			
-			this.playerData = cap;				
-			cap.getFemaleData().ifPresent(f -> {
-				this.femaleData = f;
-				this.pregnancySystem = f.getPregnancyData();
-			});	
-		});	
-		
-		this.isValid = this.playerData != null && this.pregnancySystem != null;
-	}
-
-	public boolean isPlayerValid(ServerPlayer currentPlayer) {
-	    if (this.pregnantEntity == null || currentPlayer == null) {
-	        return false;
-	    }
-	    
-	    if (this.pregnantEntity.isRemoved() || currentPlayer.isRemoved()) {
-	        return false;
-	    }	   
-	    
-	    if (!this.pregnantEntity.getUUID().equals(currentPlayer.getUUID())) {
-	        return false;
-	    }
-
-	    // Check if the player is connected
-	    return this.pregnantEntity.connection != null &&
-	    	       this.pregnantEntity.connection.connection != null &&
-	    	       this.pregnantEntity.connection.connection.isConnected();
-	}
-	
-	@Override
-	public final void onServerTick() {			
-		if (pregnantEntity.level().isClientSide) {
-			return;
-		}
-		if (!isValid) {
-			MinepreggoMod.LOGGER.warn("PlayerPregnancySystem is not valid for player: {}. Aborting onServerTick. playerData: {}, femaleData: {}, pregnancySystem: {}",
-					pregnantEntity.getGameProfile().getName(), this.playerData != null, this.femaleData != null, this.pregnancySystem != null);		
-			return;
-		}	
-		evaluatePregnancySystem();
 	}
 	
 	@Override

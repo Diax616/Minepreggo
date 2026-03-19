@@ -4,6 +4,7 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.utils.MinepreggoHelper;
+import dev.dixmk.minepreggo.world.effect.AbstractPlayerPregnancy;
 import dev.dixmk.minepreggo.world.effect.Impregnantion;
 import dev.dixmk.minepreggo.world.effect.MobEffectHelper;
 import dev.dixmk.minepreggo.world.entity.preggo.ITamablePreggoMob;
@@ -124,6 +125,10 @@ public class MobEffectEventHandler {
             event.setResult(Event.Result.DENY);
             entity.hurt(new DamageSource(entity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.MAGIC)), 1);
         }
+        else if (effect instanceof AbstractPlayerPregnancy
+        		&& entity.getActiveEffects().stream().anyMatch(activeEffect -> activeEffect.getEffect() instanceof AbstractPlayerPregnancy)) {
+			event.setResult(Event.Result.DENY);
+		}
     }
 
     @SubscribeEvent
