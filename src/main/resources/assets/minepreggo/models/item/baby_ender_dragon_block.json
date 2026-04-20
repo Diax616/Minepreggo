@@ -1,7 +1,0 @@
-{
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "minepreggo:item/baby_ender_dragon"
-  },
-  "render_type": "translucent"
-}

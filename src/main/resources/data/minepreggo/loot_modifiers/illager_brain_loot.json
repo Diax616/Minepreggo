@@ -1,9 +1,0 @@
-{
-  "type": "minepreggo:illager_brain_loot",
-  "conditions": [
-    {
-      "condition": "minecraft:damage_source_properties",
-      "predicate": {}
-    }
-  ]
-}
