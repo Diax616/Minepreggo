@@ -8,7 +8,7 @@ This mod contains explicit pregnancy-related content and mechanics that are **in
 
 # Minepreggo
 
-A Minecraft Forge mod for version 1.20.1. 
+Maybe the most detailed pregnancy mod for Minecraft Forge.
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/W7W61SSYDH)
 
