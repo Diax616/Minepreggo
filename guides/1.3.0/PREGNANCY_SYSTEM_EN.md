@@ -32,7 +32,7 @@
    - [Differences from the Player](#differences-from-the-player)
    - [Full Flow](#full-flow-preggomob)
 8. [Player vs PreggoMob Comparison Table](#player-vs-preggomob-comparison-table)
-9. [Craving](#cravings-and-its-nerfs)
+9. [Craving](#craving-system)
 10. [Server Configuration](#server-configuration)
 
 ---
@@ -570,7 +570,7 @@ Server admins can modify pregnancy system parameters:
 | `totalTicksPostPartumLactation` | Duration of the post-birth nursing period |
 
 ---
-## Craving System (CRAVING)
+## Craving System
 
 ### When It Shows Up
 
