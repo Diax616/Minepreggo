@@ -32,7 +32,8 @@
    - [Differences from the Player](#differences-from-the-player)
    - [Full Flow](#full-flow-preggomob)
 8. [Player vs PreggoMob Comparison Table](#player-vs-preggomob-comparison-table)
-9. [Server Configuration](#server-configuration)
+9. [Craving](#cravings-and-its-nerfs)
+10. [Server Configuration](#server-configuration)
 
 ---
 
@@ -569,5 +570,59 @@ Server admins can modify pregnancy system parameters:
 | `totalTicksPostPartumLactation` | Duration of the post-birth nursing period |
 
 ---
+## Craving System (CRAVING)
+
+### When It Shows Up
+
+The `CRAVING` symptom can activate starting at **phase P1** of the pregnancy. While active, the game assigns a specific craving type tied to the species of the babies being carried. The symptom has an **internal counter** representing how much is left to satisfy — when it hits zero, the symptom goes away.
+
+---
+
+### Satisfying the Craving
+
+To reduce the craving counter, the player needs to eat a food that the pregnancy recognizes as **valid**. After eating it, the game calculates how much the counter drops:
+
+- If the food is **generic human** type → the item's full gratification is applied
+- If the food is **species-specific** (non-human) → gratification is reduced by the item's own penalty
+
+```
+human food:         full gratification
+species food:       gratification × (1 - item penalty)
+```
+
+When the counter hits zero after eating, the `CRAVING` symptom automatically deactivates and pregnancy symptoms are re-evaluated.
+
+> Only items that implement the mod's craving system reduce the counter. Eating a valid vanilla food that isn't a recognized craving item has no effect on the counter.
+
+---
+
+### Ignoring the Craving
+
+If the player **eats any invalid food** while `CRAVING` is active, the game **cancels normal Minecraft nutrition** and applies reduced values instead based on the symptom's **current severity**.
+
+The food is still consumed, but it feeds you less than you'd expect.
+
+---
+
+### Severity Penalty
+
+The higher the CRAVING symptom's severity, the bigger the nutrition and saturation reduction when eating foods that don't satisfy the craving:
+
+| Severity | Nutrition reduction | Saturation reduction |
+|:--------:|:-------------------:|:--------------------:|
+| 0 | −2 points | −10% |
+| 1 | −4 points | −20% |
+| 2 | −6 points | −30% |
+| 3 | −8 points | −40% |
+| 4 | −10 points | −50% |
+
+The resulting nutrition never drops below **1 point** even if the penalty exceeds the food's base value.
+
+The player also gets a random chat message (one of 3 variants) letting them know the craving wasn't satisfied and reminding them what food they actually want.
+
+> The higher the craving severity, the more important it is to satisfy it: ignoring it at high severity can make it so you don't recover hunger effectively even if you eat normally.
+
+---
+
 
 *Documentation generated from analysis of the Minepreggo source code.*
