@@ -74,7 +74,7 @@ Each player has two visual models layered on top of each other:
 | Model | Description |
 |-------|-------------|
 | **main** (base) | Character's base body |
-| **extra** (overlay) | Additional layer rendered on top of the body (same as Minecraft's second skin layer) |
+| **extra** (overlay) | belly, boobs, butt and female body |
 
 Each model has a dressed variant and a **naked** variant, which the mod uses in specific situations that call for it.
 
