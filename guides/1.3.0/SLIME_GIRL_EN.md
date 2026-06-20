@@ -10,6 +10,7 @@
 1. [Intro](#intro)
 2. [Size System](#size-system)
    - [Stages and Scale](#stages-and-scale)
+   - [Growing](#growing)
    - [Attributes by Stage](#attributes-by-stage)
    - [Jump Power by Stage](#jump-power-by-stage)
 3. [Natural Spawn](#natural-spawn)
@@ -56,6 +57,10 @@ There are four size stages. The hitbox and visual model always scale identically
 | **MASSIVE** | ×2.0 | Max size — exactly double NORMAL. Breaks soft blocks. |
 
 > The Slime Girl can only be ridden when she's **BIG or larger**. At NORMAL size, riding isn't available regardless of who tries.
+
+### Growing
+
+For the girl slime grows, her food bar must be completely full. Once full, hold a bucket of water and right-click on her. The bucket will empty and the slime will grow. Repeat this process two more times until the slime reaches its maximum size. The slime girl can eat stuffed mushroom, rotten flesh, and spider eye.
 
 ### Attributes by Stage
 
