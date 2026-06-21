@@ -482,7 +482,7 @@ PreggoMob labor follows the **same 4-stage flow**, but with key differences: it'
 | Birth sounds | Multiple (random + water) | Water sound only |
 | Clothing removed | Yes (torso, legs, hands) | Yes (torso, legs, hands) |
 | Post-labor fate | Stays alive in recovery | Stays alive in recovery |
-| Post-labor effects | 4 effects (rehab, nursing, luck, weakness) | None (mob doesn't persist) |
+| Post-labor effects | 4 effects (rehab, nursing, luck, weakness) | Stays alive in recovery |
 | Creative mode | Protects from tearing | No protection |
 | Event message | To herself and the father | To the owner only |
 | Ask for sex | Not automatic | Yes (if HORNY symptom is active) |
@@ -517,7 +517,7 @@ DISCARD — the mob disappears from the world
 | Start by potion | Yes | No |
 | Asks owner for sex | No | Yes (if HORNY) |
 | Labor requires input | Yes (manual pushes) | No (automatic) |
-| Survives birth | Yes | No (disappears) |
+| Survives birth | Yes | Yes |
 | Has nursing period | Yes (MATERNITY effect) | No |
 | Has rehabilitation period | Yes | No |
 | Overloaded womb | Blocked in creative, tears in survival | Tears with no exception |
