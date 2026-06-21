@@ -481,7 +481,7 @@ PreggoMob labor follows the **same 4-stage flow**, but with key differences: it'
 | Birth particles | 50 per baby | 30 per baby |
 | Birth sounds | Multiple (random + water) | Water sound only |
 | Clothing removed | Yes (torso, legs, hands) | Yes (torso, legs, hands) |
-| Post-labor fate | Stays alive in recovery | **Disappears from the world** (`discard()`) |
+| Post-labor fate | Stays alive in recovery | Stays alive in recovery |
 | Post-labor effects | 4 effects (rehab, nursing, luck, weakness) | None (mob doesn't persist) |
 | Creative mode | Protects from tearing | No protection |
 | Event message | To herself and the father | To the owner only |
