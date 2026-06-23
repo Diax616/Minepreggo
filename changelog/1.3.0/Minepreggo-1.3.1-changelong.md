@@ -87,9 +87,10 @@ A feature was implemented that allows players to lie down on beds without trigge
 ### Activation
 - **[Player]**
     - Hold down the default “Left Alt” key and right-click on the bed to trigger the event. It works the same as in vanilla, but allows the player to turn their head up to 180. Jump to wake up.
+- **[BackPain]**
+    - If the player remains lying on the bed, the 'back pain' effect will be removed.
 - **[PreggoMobs]**
     - They can't use the beds. This feature isn't currently available for them.
-
 ## [Back Pain]
 ### Triggers
 - **[Walking/Sprinting]**
