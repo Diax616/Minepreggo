@@ -21,6 +21,10 @@
 - **[Owner takes fall damage when she falls to the ground]**
     - The player no longer takes fall damage.
 
+## [Translations]
+### Russian - Русский язык (ru_ru) (by DanMj)
+### Korean - 한국어 (ko_kr) (by ahoon12)
+
 ## [Dynamic Bellies]
 ### Activation
 - **[Womb Overloaded]**
