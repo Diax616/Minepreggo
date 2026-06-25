@@ -137,6 +137,7 @@ If the folder exists but is empty, or if the username has no folder at all, the 
 ---
 
 ## Step-by-Step Setup
+If your username contains uppercase letters, you must put them in lowercase (DixMK_MC123 -> dixmk_mc123) in both the folder name and the textures.
 
 1. **Find the mod's config folder**:
    ```
