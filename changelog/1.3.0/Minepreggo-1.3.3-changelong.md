@@ -13,6 +13,10 @@
     
 <img width="1366" height="768" alt="2026-06-29_21 24 17" src="https://github.com/user-attachments/assets/cff6353b-6498-45b9-87e2-8359acea0d91" />
 
+<img width="1366" height="768" alt="2026-06-29_22 25 47" src="https://github.com/user-attachments/assets/1feb341d-fde8-4f26-8f5a-252a5c3bba4f" />
+
+<img width="1366" height="768" alt="2026-06-29_22 26 04" src="https://github.com/user-attachments/assets/038ae311-823a-4dcb-a087-0adf58605889" />
+
 ## [Config]  
 ### Pains
 - **[Back Pain]**
@@ -95,6 +99,8 @@
     - Preggomobs can jump over blocks normally even when using belly collision. -Fixed
 - **[Belly collision escalate infinitely]**
     - Collisions could escalate infinitely even if it wasn't in the final pregnancy stage (P9) by having more than 10 babies. Now they can only escalate if it's in the final stage.
+- **[Illager's Preggomobs can die of suffocation]**
+    - They could spawn inside walls and cause death by suffocation. - Fixed
 
 ## [Misc]
 ### External
