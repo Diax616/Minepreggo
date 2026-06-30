@@ -11,7 +11,8 @@
 - **[Player Settings]**
     - Boobs size can be set to one of three sizes (SMALL, MEDIUM, LARGE), the scale can be interpolated to a limited extent between 0.8 and 1.4. It can set when selecting the gender and skin type, or in the player settings menu (press the ‘j’ key), however this last mechanic (key 'j') will be modified and the size can only be changed by a doctor villager or illager.
     
-    
+<img width="1366" height="768" alt="2026-06-29_21 24 17" src="https://github.com/user-attachments/assets/cff6353b-6498-45b9-87e2-8359acea0d91" />
+
 ## [Config]  
 ### Pains
 - **[Back Pain]**
@@ -48,7 +49,16 @@
 ## [Recipe]
 ### Belly Shield
 - **[BellyShield Downgrade]**
-    - By using a pair of scissors and a belly shield, you can obtain a smaller version of the item (P5<-P6<-P7<-P8<-P9). The scissors take damage, and the belly shield's damage and enchantments are preserved.
+    - By using shears and a belly shield, you can obtain a smaller version of the item (P5<-P6<-P7<-P8<-P9). The shears take damage, and the belly shield's damage and enchantments are preserved.
+- **[BellyShield Enlarge]**
+    - By using string and a belly shield, you can obtain a higher version of the item (P5->P6->P7->P8->P9). The belly shield's damage and enchantments are preserved.
+
+<img width="1366" height="768" alt="2026-06-29_21 25 15" src="https://github.com/user-attachments/assets/09b8e029-bedb-4e5d-be30-60fdda8e8da7" />
+
+<img width="1366" height="768" alt="2026-06-29_21 26 37" src="https://github.com/user-attachments/assets/e18deacd-4845-49f4-a86e-02573bd4e57d" />
+
+<img width="1366" height="768" alt="2026-06-29_22 20 07" src="https://github.com/user-attachments/assets/c1eb7549-9cb7-4f1d-ac90-0964fbee7de9" />
+
 
 ## [Monster/Humanoid Creeper Girl]
 ### Both
