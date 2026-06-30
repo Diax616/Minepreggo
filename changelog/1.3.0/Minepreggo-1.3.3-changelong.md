@@ -4,7 +4,7 @@
 ## [Naked Default/Vanilla Skin]
 ### Player Textures
 - **[Config]**
-    - it can assign a texture for naked state to the player when using Minecraft's default textures (64x64). It uses the same pattern as the predefined textures but changes the folder from 'predefined' to 'default' -> 'textures/player/default/<username>/<username>_naked.png'. ONLY one texture.
+    - it can assign a texture for naked state to the player when using Minecraft's default textures (64x64). It uses the same pattern as the predefined textures but changes the folder from 'predefined' to 'default' -> 'textures/player/default/username/username_naked.png'. ONLY one texture.
 
 ## [Custom Boobs Size]
 ### Run Time Synced Config
