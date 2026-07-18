@@ -58,6 +58,15 @@
 #### Preggomob
 - Preggomobs can lie down on beds. Pregnant preggomobs with “back pain” can remove the effect in the same way the player does.
 
+<img width="1366" height="768" alt="2026-07-18_10 45 36" src="https://github.com/user-attachments/assets/49c625e8-9439-42fe-a575-35153136474f" />
+
+<img width="1366" height="768" alt="2026-07-18_10 46 26" src="https://github.com/user-attachments/assets/d3b76d49-237c-4348-a15d-adec3ca2aac2" />
+
+#### Player
+- Player can rub them belly while lying down
+
+<img width="1366" height="705" alt="2026-07-18_10 48 21" src="https://github.com/user-attachments/assets/7609df3f-f21f-487e-8bbf-0cd1eb98d316" />
+
 ## [Bugs]
 #### Belly Hitbox
 - It forced chunks to load the moment its parent player teleported. Fixed
