@@ -3,7 +3,7 @@
 
 ## [Preggomob]
 #### Spawn
-- They can appear in caves; however, this also allows them to spawn on farms. To prevent “fetus farms”, pregnant pregomobs have a very low chance of spawning inside caves. The Slime Girl is a special case; they can't spawn in caves—it's completely blocked.
+- They can appear in caves; however, this also allows them to spawn on farms. To prevent “fetus farms”, pregnant preggomobs have a very low chance of spawning inside caves. The Slime Girl is a special case; they can't spawn in caves—it's completely blocked.
 #### Taming Rework
 - Previously, taming occurred randomly; that is, when feeding preggomobs, there was a 33% chance that the Preggo would be tamed. Now, specific conditions are applied to each Preggomob. After reaching the required affection points, there is a random chance—based on a certain probability—that the preggomob can be tamed each time it receives affection points.
 
