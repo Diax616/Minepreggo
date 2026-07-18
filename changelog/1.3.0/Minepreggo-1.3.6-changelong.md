@@ -1,6 +1,10 @@
 # Release Notes: Version [1.3.6]
 **Release Date:** 2026-07-17
 
+## [Translation]
+#### Vietnamese
+- Credits to 'le9k'
+
 ## [Preggomob]
 #### Spawn
 - They can appear in caves; however, this also allows them to spawn on farms. To prevent “fetus farms”, pregnant preggomobs have a very low chance of spawning inside caves. The Slime Girl is a special case; they can't spawn in caves—it's completely blocked.
@@ -20,7 +24,6 @@
 
 * The slime girl has additional conditions. She possesses a collective 'memory' of players who have killed a nearby slime girl (Grudge Keeper). This memory spreads to all nearby slime girls. A slime girl can't be tamed if she has this memory. The memory is erased over time or if the player dies near the slime girls that captured them.
 
-
 ## [Monster Creeper Girl]
 #### Animations
 - New animations for the Creeper, idle, walking, attack, morning sickness etc.
@@ -30,7 +33,6 @@
 - They can spawn naturally throughout the End.
 #### Childbirth Animation
 - The position of the fetus model was corrected during the childbirth animation.
-
 
 ## [Villager]
 #### Conditions for courting
