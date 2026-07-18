@@ -44,7 +44,7 @@
 ## [Scientific Illager]
 #### Trading
 - The number of babies that the Illager can trade has been increased (2 -> 5).
-- The village baby can now be traded for diamonds.
+- The villager baby can now be traded for diamonds.
 - The amount of emeralds obtained through the exchange of fetuses and breast milk was increased.
 - The number of exchanges of enchanted books decreased.
 - The time it takes for the Illager to restock was reduced by one minute. (10min -> 9min)
