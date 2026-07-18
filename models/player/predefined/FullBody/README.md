@@ -1,3 +1,7 @@
+## Download (Mediafire)
+
+ - [Slim](https://www.mediafire.com/file/4b1jztml69heyqi/model-slim.zip/file)
+ - [Wide](https://www.mediafire.com/file/9med09bnqz0gw64/model-wide.zip/file)
 
 # Warning
 
