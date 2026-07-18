@@ -73,13 +73,11 @@
 #### Scientific Illager
 - When the illager renews his offers, he randomly had to choose new a group offers (A, B, C). There was a possibility that he'd choose the same type of offers, creating the 'illusion' of always choosing the same offer. Now he'll always choose a different offer than before. Fixed
 - When opening a GUI where the illager is the trader, there was a possibility that he would move. Fixed
-
+- When the illager renews his offers, he previously had the option to choose the same group (A, B, C); now he will always choose a different one than the one he had. Fixed
+  
 #### Preggomobs AI
 - Preggomobs can't switch to the nearest target that attacked them, causing them to always maintain the same target even if another entity is damaging them from a closer position. Now, they will switch to the nearest entity that attacked them. This change only applies to the following Preggomobs: Zombie Girl, Humanoid/Monster Creeper Girl, and Humanoid Slime Girl.
 
 #### Reproduction Witch
 - Placing her egg spawn inside a spawner causes a reduction in TPS on the client side. Fixed
-
-#### Scientific Illager
-- When the illager renews his offers, he previously had the option to choose the same group (A, B, C); now he will always choose a different one than the one he had. Fixed
 
