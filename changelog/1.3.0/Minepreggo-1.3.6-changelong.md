@@ -54,15 +54,13 @@
 #### Medical Table (Player/Preggomob)
 - It reduces the time it takes to give birth by 40%. The player must right-click on the block to claim it. Preggomobs will try to claim it when labor begins.
 
-
 ## [Lying Down On Bed]
 #### Preggomob
 - Preggomobs can lie down on beds. Pregnant preggomobs with “back pain” can remove the effect in the same way the player does.
 
 ## [Bugs]
 #### Belly Hitbox
-- It forced chunks to load the moment a player teleported. Fixed
-- It forced chunks to load the moment a player teleported. Fixed
+- It forced chunks to load the moment its parent player teleported. Fixed
 
 #### Birth Progress Bar (Player)
 - Interoperability was corrected and progress was smoothed. Fixed
@@ -73,7 +71,6 @@
 #### Scientific Illager
 - When the illager renews his offers, he randomly had to choose new a group offers (A, B, C). There was a possibility that he'd choose the same type of offers, creating the 'illusion' of always choosing the same offer. Now he'll always choose a different offer than before. Fixed
 - When opening a GUI where the illager is the trader, there was a possibility that he would move. Fixed
-- When the illager renews his offers, he previously had the option to choose the same group (A, B, C); now he will always choose a different one than the one he had. Fixed
   
 #### Preggomobs AI
 - Preggomobs can't switch to the nearest target that attacked them, causing them to always maintain the same target even if another entity is damaging them from a closer position. Now, they will switch to the nearest entity that attacked them. This change only applies to the following Preggomobs: Zombie Girl, Humanoid/Monster Creeper Girl, and Humanoid Slime Girl.
