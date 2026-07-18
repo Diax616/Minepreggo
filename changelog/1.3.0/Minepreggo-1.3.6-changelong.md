@@ -37,6 +37,7 @@
 - They will no longer give themselves to just any player who throws bread at them. Using the vanilla player reputation system (gossip), a villager will only agree to have sex with a player if that player has 4 or more good reputation points. In other words, you'd have to purchase at least two full offers. Villagers will reject any player with more than 15 negative reputation points.
 #### Discounts
 - The reputation points earned after the events “have sex”, “confirm pregnancy”, and “give birth to a child” with villagers have been increased.
+#### Trading
 - They can no longer sell the potion of gradual pregnancy acceleration.
 
 
@@ -46,7 +47,6 @@
 - The village baby can now be traded for diamonds.
 - The amount of emeralds obtained through the exchange of fetuses and breast milk was increased.
 - The number of exchanges of enchanted books decreased.
-- The time it takes for the Illager to restock was reduced by one minute. (10min -> 9min)
 - The time it takes for the Illager to restock was reduced by one minute. (10min -> 9min)
 - The number of sold-out offers required to begin restocking the inventory was increased. (3 -> 5)
 
