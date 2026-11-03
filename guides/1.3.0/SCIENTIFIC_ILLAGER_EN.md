@@ -5,7 +5,7 @@
 
 ---
 
-## Table of Contents
+## Table of Contentstrade-restock
 
 1. [Intro](#intro)
 2. [General Behavior](#general-behavior)
@@ -209,8 +209,8 @@ Trades run out with use. For the Illager to restock his offers, **all** of these
 
 | Condition | Detail |
 |-----------|--------|
-| ≥3 depleted offers | Enough slots are out of stock |
-| 12,000 ticks elapsed | ~10 minutes since the last restock |
+| ≥5 depleted offers | Enough slots are out of stock |
+| 10,800 ticks elapsed | ~9 minutes since the last restock |
 | Within or near his structure | The `SCIENTIFIC_ILLAGER_HIDEOUT` structure must be within ~3 chunks |
 | No player in an active menu | He can't restock while someone is shopping |
 
