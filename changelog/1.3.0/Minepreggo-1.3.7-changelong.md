@@ -138,6 +138,9 @@
 ## [Player Stats]
 - New player stats related to pregnancy, preggomobs, and more: *total_pregnancies*, *total_impregnations*, *babies_birthed*, *impregnation_types*, *dimensions_birthed*, *miscarriage_suffered*, *death_while_pregnant*, *total_pregnancies*, *death_while_pregnant*, *checkups_done_myself*, *prenatal_checkups_on_preggomob*, *species_had_sex_with*, *sex_dimensions*, *breast_milk_species_drunk*, *fertility_witch_killed*, *infertility_witch_killed*, *own_babies_sold*, *select_female_gender*, *select_male_gender*.
 
+## [Jiggle Physics]
+- Rework Jiggle Physics (belly, boobs, butt)
+
 ## [Commands]
 - Changed the */anim* and */preggo* commands. Now every command uses */minepreggo* as the root keyword, the old commands were migrated, *preggo* became *pregnancy*, and */preggo gender* was migrated.
 - Added commands for: *pregnancy*, *anim*, *human*, *gender*, *entity*, *stats*, and *tamedlimit*.
@@ -212,7 +215,6 @@
 | Ender Tamer (*tame_monster_ender_woman*) | 30 | 75 |
 | Slime Girl Tamer (*tame_monster_slime_girl*) | 30 | 75 |
 | Slime Girl Tamer (*tame_humanoid_slime_girl*) | 30 | 75 |
-
 
 #### Removed
 - **dimensional_traveler**: travel through the Overworld, the Nether, and the End with a preggomob.
