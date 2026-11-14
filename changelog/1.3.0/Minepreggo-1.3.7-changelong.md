@@ -100,6 +100,9 @@
 - If the entity grows, happy villager particles show up. If it can't grow any further, the effect does nothing.
 - Keep in mind that mod babies can only grow up to the YOUNG stage.
 
+#### ovedue
+- An "instant growth" effect (*minepreggo:overdue*) has been added. It is applied when a player has passed their due date due to the "birth denial" effect. It triggers contractions and level 5 fetal movement every 3 minutes. It doesn't cause death.
+
 ## [Babies]
 - Added the baby mechanic. Items that represent a baby can now be summoned into the world as a living entity or a block.
 - Added these babies: human, zombie, creeper, humanoid creeper, ender, slime, humanoid slime. Babies have a gender, female or male, but only humans actually use it. Everything else is female.
@@ -262,12 +265,8 @@
 #### Data Loss
 
 ##### Baby Ender Dragon (block)
-A Baby Ender Dragon that was **placed as a block in a 1.3.6 world** has no mother or father in 1.3.7. When the block is broken, the item it drops has no parents.
 
-- The block was renamed from `baby_ender_dragon_block` to `baby_ender_dragon` and is remapped automatically, so the block itself is kept.
-- The Baby Ender Dragon has two forms: item and block. In 1.3.6 the item form stored the parents' data (`MotherUUID`), but the block form was a plain block, without a block entity, so that data had nowhere to be saved when the item was placed. Its loot table also dropped a plain item with no data, so breaking the block returned an item without the parents.
-- The parents were already lost in 1.3.6 at the moment the item became a block, so there is nothing for 1.3.7 to recover.
-- Baby Ender Dragon items that were never placed in 1.3.6 are not affected by this loss; they still carry their mother in the item (see *Baby items* below for the legacy item format).
+- The block/item was renamed from `baby_ender_dragon_block` to `baby_ender_dragon`. it's not remapped, so the block/item will be lost.
 
 ##### Baby items
 - In 1.3.6, baby items only stored the mother's UUID (*MotherUUID*) and, if there was one, the father's (*FatherUUID*) at the root of the item. In 1.3.7, baby items store their data in a versioned structure (*BabyData*, inside *BlockEntityTag*), which also includes gender, species, creature type, the baby's life state, and the parents' names.

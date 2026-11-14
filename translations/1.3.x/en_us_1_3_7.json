@@ -9,7 +9,6 @@
 	
 	"gui.minepreggo.mob.label.goal": "Goal",
 	"gui.minepreggo.mob.label.growthphase": "Phase:",
-	"gui.minepreggo.mob.tooltip.change_name": "Change Name",
 	"gui.minepreggo.mob.tooltip.convert_to_item": "Convert To Item",
 	"gui.minepreggo.mob.tooltip.claim_custody": "Take Custody",
 	"gui.minepreggo.mob.label.gender": "Gender:",
@@ -86,7 +85,6 @@
 	"gui.minepreggo.player_setting.tooltip.render_female_body": "Use Female Body Model From Minepreggo",
 	"gui.minepreggo.player_setting.label.tittle": "%s's Setting",
 
-	"gui.minepreggo.text_menu.label.title": "Rename %s's Target",
 	"gui.minepreggo.text_menu.input": "Name",
 	
 	"gui.minepreggo.equipment.label.tittle": "%s's Equipment",
@@ -108,7 +106,7 @@
 	"entity.minepreggo.tamable_pregnant_zombie_girl_p8": "Tamable Pregnant Zombie Girl (P8)",
 	"entity.minepreggo.tamable_pregnant_zombie_girl_p9": "Tamable Pregnant Zombie Girl (P9)",
 	"entity.minepreggo.tamable_pregnant_zombie_girl_p10": "Tamable Pregnant Zombie Girl (P10)",
-	"entity.minepreggo.hostile_humanoid_creeper_girl": "Hostile PregnantHumanoid Creeper Girl",
+	"entity.minepreggo.hostile_humanoid_creeper_girl": "Hostile Humanoid Creeper Girl",
 	"entity.minepreggo.hostile_pregnant_humanoid_creeper_girl_p3": "Hostile Pregnant Humanoid Creeper Girl (P3)",
 	"entity.minepreggo.hostile_pregnant_humanoid_creeper_girl_p5": "Hostile Pregnant Humanoid Creeper Girl (P5)",
 	"entity.minepreggo.hostile_pregnant_humanoid_creeper_girl_p7": "Hostile Pregnant Humanoid Creeper Girl (P7)",
@@ -350,6 +348,7 @@
 	"effect.minepreggo.pregnancy_slowness": "Pregnancy Slowness",
 	"effect.minepreggo.birth_denial": "Birth Denial",
 	"effect.minepreggo.growth": "Growth",
+	"effect.minepreggo.overdue": "Overdue",
 	
 	"item.minecraft.potion.effect.zombie_impregnation_0": "Potion of Zombie Impregnation",
 	"item.minecraft.potion.effect.zombie_impregnation_1": "Potion of Zombie Impregnation",
