@@ -950,6 +950,9 @@
 	"chat.minepreggo.player.message.medical_checkup.pregnant": "You're already pregnant, there is no need for a fertility check-up",
 	
 	"chat.minepreggo.belly_rubs.wearing_armor": "You can't rub the belly while wearing armor",
+	"chat.minepreggo.belly_rubs.in_labor": "You're in labor, you can't rub your belly now!",
+	"chat.minepreggo.belly_rubs.in_miscarriage": "You feel too much pain to rub your belly now...",
+	"chat.minepreggo.belly_rubs.hands_not_empty": "Your hands must be empty to rub your belly",
 	"chat.minepreggo.player.pregnancy.keybinding.push_during_birth": "Press '%s' to push, current progress to give birth one baby: %s%%",
 
 	"chat.minepreggo.sex.message.mobs": "There are nerby hostil mobs",
@@ -1268,6 +1271,8 @@
 	"command.minepreggo.gender.same_gender": "%s is already %s gender (or has no player data)",
 	"command.minepreggo.gender.cannot_change_gender.pregnant": "Cannot change the gender of %s while pregnant (use the 'force' option to remove the pregnancy first)",
 	"command.minepreggo.gender.changed_gender": "Changed gender to %s on %s player(s)",
+	"command.minepreggo.menu.selectgender.opened": "Your gender and pregnancy data were reset; opening the main menu",
+	"command.minepreggo.menu.not_a_player": "This command must be run by a player (use 'execute as <player>' from command blocks)",
 	"command.minepreggo.stats.player_only": "This command can only be run by a player",
 	"command.minepreggo.stats.failed_target": "Failed to get target players",
 	"command.minepreggo.stats.no_data": "%s has no player data to read statistics from",
